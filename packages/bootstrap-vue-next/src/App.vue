@@ -1,7 +1,13 @@
 <template>
   <BContainer>
     <BRow>
-      <BCol> Hello World! </BCol>
+      <BCol>
+        <BCarousel controls>
+          <BCarouselSlide img-src="https://picsum.photos/1024/480/?image=1" />
+          <BCarouselSlide img-src="https://picsum.photos/1024/480/?image=2" />
+          <BCarouselSlide img-src="https://picsum.photos/1024/480/?image=3" />
+        </BCarousel>
+      </BCol>
     </BRow>
   </BContainer>
 </template>

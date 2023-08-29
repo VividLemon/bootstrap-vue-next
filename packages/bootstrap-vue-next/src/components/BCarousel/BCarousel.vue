@@ -157,13 +157,11 @@ const rideResolved = computed<boolean | 'carousel'>(() =>
 // Then reviewing the behavior
 const enterClasses = computed(
   () =>
-    `carousel-item carousel-item-${!direction.value ? 'next' : 'prev'} carousel-item-${
-      !direction.value ? 'start' : 'end'
+    `carousel-item-${direction.value ? 'next' : 'prev'} carousel-item-${
+      direction.value ? 'start' : 'end'
     }`
 )
-const leaveClasses = computed(
-  () => `carousel-item active carousel-item-${direction.value ? 'start' : 'end'}`
-)
+const leaveClasses = computed(() => `active carousel-item-${direction.value ? 'start' : 'end'}`)
 
 const {pause, resume} = useIntervalFn(
   () => {
