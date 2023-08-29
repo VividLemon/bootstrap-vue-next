@@ -15,24 +15,24 @@
     </div>
 
     <div ref="relatedTarget" class="carousel-inner">
-      <TransitionGroup
-        :enter-from-class="enterClasses"
+      <Transition
+        v-for="(slide, i) in slides"
+        :key="i"
+        enter-from-class=""
         :enter-active-class="enterClasses"
-        :enter-to-class="enterClasses"
-        :leave-from-class="leaveClasses"
+        enter-to-class=""
+        leave-from-class=""
         :leave-active-class="leaveClasses"
-        :leave-to-class="leaveClasses"
+        leave-to-class=""
         @before-leave="onBeforeLeave"
         @after-leave="onAfterLeave"
       >
         <component
           :is="slide"
-          v-for="(slide, i) in slides"
           v-show="i === modelValue"
-          :key="i"
           :class="{active: i === modelValue && isTransitioning === false}"
         />
-      </TransitionGroup>
+      </Transition>
     </div>
 
     <template v-if="controlsBoolean">
@@ -149,11 +149,6 @@ const rideResolved = computed<boolean | 'carousel'>(() =>
   isBooleanish(props.ride) ? resolveBooleanish(props.ride) : props.ride
 )
 
-// Class carousel-item is a static property
-// If you make it static, the direction can be reversed -- properly (atm it does the carousel-item-${} logic backwards for entering, a weird hack)
-// So all that would be great. However, when you do this, it will break the transition flow. Something about it breaks and I'm not sure why!
-// Try it by removing carousel-item from below and making `!direction.value` => `direction.value` for enter
-// Then reviewing the behavior
 const enterClasses = computed(
   () =>
     `carousel-item-${direction.value ? 'next' : 'prev'} carousel-item-${
