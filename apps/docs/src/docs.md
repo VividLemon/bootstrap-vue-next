@@ -1,5 +1,9 @@
 # Introduction
 
+```typescript-vue
+{{MyType}}
+```
+
 <ClientOnly>
   <Teleport to=".bd-toc">
 
@@ -421,6 +425,7 @@ import {useLocalStorage} from '@vueuse/core'
 import HighlightCard from './components/HighlightCard.vue'
 import NoteAlert from './components/NoteAlert.vue'
 import BootstrapPluginWarning from './components/BootstrapPluginWarning.vue'
+import MyType from 'bootstrap-vue-next/types/Alignment?raw'
 
 const codePreference = useLocalStorage('code-group-preference', 0)
 </script>

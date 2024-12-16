@@ -118,6 +118,26 @@
         "types": "./dist/src/utils/index.d.ts"
       }
     },
+    "./types": {
+      "import": {
+        "default": "./dist/src/types/index.d.mts",
+        "types": "./dist/src/types/index.d.mts"
+      },
+      "require": {
+        "default": "./dist/src/types/index.d.ts",
+        "types": "./dist/src/types/index.d.ts"
+      }
+    },
+    "./types/*": {
+      "import": {
+        "default": "./dist/src/types/*.d.mts",
+        "types": "./dist/src/types/*.d.mts"
+      },
+      "require": {
+        "default": "./dist/src/types/*.d.ts",
+        "types": "./dist/src/types/*.d.ts"
+      }
+    },
     "./dist/bootstrap-vue-next.css": "./dist/bootstrap-vue-next.css",
     "./src/styles/styles.scss": "./src/styles/styles.scss"
   },
