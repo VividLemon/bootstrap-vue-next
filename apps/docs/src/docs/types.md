@@ -6,6 +6,19 @@
 
 </div>
 
+<ComponentTypeDisplayer
+  v-for="[parentTree, typeValue] in Object.entries(Types)"
+  :key="parentTree"
+  :parent-tree
+  :type-value
+>
+  <template #default="{value}">
+
+  <div v-html="value" />
+
+  </template>
+</ComponentTypeDisplayer>
+
 ## Alignment
 
 <BCard class="bg-body-tertiary">
@@ -577,4 +590,9 @@ New values can be used now and the type check will be successful:
 
 <script setup lang="ts">
 import {BCard, BCardBody} from 'bootstrap-vue-next'
+import ComponentTypeDisplayer from '../components/ComponentTypeDisplayer.vue'
+import {inject} from 'vue'
+import {bvnTypesKey} from '../../.vitepress/theme/keys'
+
+const Types = inject(bvnTypesKey)
 </script>
