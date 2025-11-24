@@ -120,22 +120,6 @@ export const useTableDetails = ({
     }
   })
 
-  watch(
-    () => toValue(items),
-    (items) => {
-      items.forEach((item) => {
-        if (!isTableItem(item)) return
-        const [key, showDetails] = generateDetailsItem(item)
-        // Only set if not already in map, or if _showDetails is explicitly set
-        // This preserves toggled state when items are replaced with same primary key
-        if (!hasDetailsValue(key) || showDetails !== undefined) {
-          setDetailsValueByKey(key, showDetails)
-        }
-      })
-    },
-    {deep: true, immediate: true}
-  )
-
   // Helper functions for type-safe map operations
   const hasDetailsValue = (key: object | string): boolean => {
     if (typeof key === 'string') {
@@ -185,6 +169,22 @@ export const useTableDetails = ({
       tr._showDetails = !prevValue
     }
   }
+
+  watch(
+    () => toValue(items),
+    (items) => {
+      items.forEach((item) => {
+        if (!isTableItem(item)) return
+        const [key, showDetails] = generateDetailsItem(item)
+        // Only set if not already in map, or if _showDetails is explicitly set
+        // This preserves toggled state when items are replaced with same primary key
+        if (!hasDetailsValue(key) || showDetails !== undefined) {
+          setDetailsValueByKey(key, showDetails)
+        }
+      })
+    },
+    {deep: true, immediate: true}
+  )
 
   return {
     getDetailsValue,

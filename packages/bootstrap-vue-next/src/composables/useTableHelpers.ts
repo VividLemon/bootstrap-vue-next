@@ -327,7 +327,12 @@ export const useTableSelectedItems = <Item>({
   const selectableResolved = readonly(toRef(selectable))
   const primaryKeyResolved = readonly(toRef(primaryKey))
   const selectModeResolved = readonly(toRef(selectMode))
-  const allItemsResolved = readonly(toRef(allItems)) as Ref<readonly Item[]>
+  /**
+   * We don't use a common ref here because when a value is proxified, it will fail to equality compare
+   * with the original object... even with toRaw()
+   */
+  const allItemsResolved = () => toValue(allItems) as readonly Item[]
+  // const allItemsResolved = readonly(toRef(allItems)) as Ref<readonly Item[]>
 
   const selectedItemsToSet = computed({
     get: () => new Set(selectedItems.value),
@@ -433,10 +438,11 @@ export const useTableSelectedItems = <Item>({
         // This is where range is different, due to the difference in shift
       } else if (shiftClicked) {
         const lastSelectedItem = [...selectedItemsToSet.value].pop()
-        const lastSelectedIndex = allItemsResolved.value.findIndex((i) => i === lastSelectedItem)
+        const allItems = allItemsResolved()
+        const lastSelectedIndex = allItems.findIndex((i) => i === lastSelectedItem)
         const selectStartIndex = Math.min(lastSelectedIndex, index)
         const selectEndIndex = Math.max(lastSelectedIndex, index)
-        const items = allItemsResolved.value.slice(selectStartIndex, selectEndIndex + 1)
+        const items = allItems.slice(selectStartIndex, selectEndIndex + 1)
         set(items)
         // If nothing is being held, then we just behave like it's single mode
       } else {
@@ -457,11 +463,11 @@ export const useTableSelectedItems = <Item>({
         },
         selectAllRows: () => {
           if (!selectableResolved.value || selectModeResolved.value === 'single') return
-          set(allItemsResolved.value)
+          set(allItemsResolved())
         },
         selectRow: (index: number) => {
           if (!selectableResolved.value) return
-          const item = allItemsResolved.value[index]
+          const item = allItemsResolved()[index]
           if (!item || has(item)) return
           if (selectModeResolved.value === 'single') {
             set([item])
@@ -471,13 +477,13 @@ export const useTableSelectedItems = <Item>({
         },
         unselectRow: (index: number) => {
           if (!selectableResolved.value) return
-          const item = allItemsResolved.value[index]
+          const item = allItemsResolved()[index]
           if (!item || !has(item)) return
           del(item)
         },
         isRowSelected: (index: number) => {
           if (!selectableResolved.value) return false
-          const item = allItemsResolved.value[index]
+          const item = allItemsResolved()[index]
           return has(item)
         },
       },
