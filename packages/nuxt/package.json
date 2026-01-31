@@ -31,10 +31,10 @@
   "scripts": {
     "prepack": "nuxt-module-build build",
     "dev": "run-s dev:prepare \"nuxt dev playground\"",
-    "build": "run-s dev:prepare dev:build prepack",
+    "build": "run-s build:dep dev:prepare dev:build prepack",
+    "build:dep": "cd ../../ && bun run --filter=bootstrap-vue-next build",
     "dev:build": "nuxt build playground",
-    "predev:prepare": "cd ../bootstrap-vue-next && bun run build",
-    "dev:prepare": "run-s \"nuxt-module-build build --stub\" \"nuxt-module-build prepare\" \"nuxt prepare playground\"",
+    "dev:prepare": "run-s build:dep \"nuxt-module-build build --stub\" \"nuxt-module-build prepare\" \"nuxt prepare playground\"",
     "publint": "publint",
     "lint": "eslint .",
     "test": "vitest run",
