@@ -23,11 +23,7 @@
       :indeterminate="indeterminate || undefined"
       v-bind="processedAttrs.inputAttrs"
     />
-    <label
-      v-if="hasDefaultSlot || classesObject.plain === false"
-      :for="computedId"
-      :class="labelClasses"
-    >
+    <label v-if="hasDefaultSlot || props.plain === false" :for="computedId" :class="labelClasses">
       <slot />
     </label>
   </ConditionalWrapper>
@@ -58,20 +54,20 @@ const _props = withDefaults(
     ariaLabel: undefined,
     ariaLabelledby: undefined,
     autofocus: false,
-    button: undefined,
+    button: false,
     buttonGroup: false,
     buttonVariant: null,
     disabled: false,
     form: undefined,
     id: undefined,
-    inline: undefined,
+    inline: false,
     name: undefined,
-    plain: undefined,
+    plain: false,
     required: undefined,
-    reverse: undefined,
+    reverse: false,
     size: undefined,
     state: null,
-    switch: undefined,
+    switch: false,
     uncheckedValue: false,
     value: true,
   }
@@ -133,26 +129,11 @@ const computedRequired = computed(
 const isButtonGroup = computed(() => props.buttonGroup || (parentData?.buttons.value ?? false))
 
 const classesObject = computed(() => ({
-  plain:
-    props.plain === true || props.plain === false
-      ? props.plain
-      : (parentData?.plain.value ?? false),
-  button:
-    props.button === true || props.button === false
-      ? props.button
-      : (parentData?.buttons.value ?? false),
-  inline:
-    props.inline === true || props.inline === false
-      ? props.inline
-      : (parentData?.inline.value ?? false),
-  reverse:
-    props.reverse === true || props.reverse === false
-      ? props.reverse
-      : (parentData?.reverse.value ?? false),
-  switch:
-    props.switch === true || props.switch === false
-      ? props.switch
-      : (parentData?.switch.value ?? false),
+  plain: props.plain || (parentData?.plain.value ?? false),
+  button: props.button || (parentData?.buttons.value ?? false),
+  inline: props.inline || (parentData?.inline.value ?? false),
+  reverse: props.reverse || (parentData?.reverse.value ?? false),
+  switch: props.switch || (parentData?.switch.value ?? false),
   state:
     props.state === true || props.state === false ? props.state : (parentData?.state.value ?? null),
   size: props.size ?? parentData?.size.value ?? 'md', // This is where the true default is made
