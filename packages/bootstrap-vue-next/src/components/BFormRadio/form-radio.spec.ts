@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, it} from 'vitest'
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import BFormRadio from './BFormRadio.vue'
+import BFormRadioGroup from './BFormRadioGroup.vue'
 
 describe('form-radio', () => {
   enableAutoUnmount(afterEach)
@@ -569,5 +570,131 @@ describe('form-radio', () => {
     })
     const $label = wrapper.get('label')
     expect($label.text()).toBe('foobar')
+  })
+
+  describe('group inheritance', () => {
+    it('inherits button style from parent group when buttons prop is true', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {buttons: true, options: ['one', 'two']},
+      })
+      const radios = wrapper.findAllComponents(BFormRadio)
+      expect(radios.length).toBe(2)
+      // btn-check is the input class when button mode is active
+      radios.forEach((radio) => {
+        expect(radio.find('input').classes()).toContain('btn-check')
+      })
+    })
+
+    it('child can override parent button prop with button=false', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {buttons: true},
+        slots: {
+          default: {
+            components: {BFormRadio},
+            template: '<BFormRadio :button="false" value="a">A</BFormRadio>',
+          },
+        },
+      })
+      const radio = wrapper.findComponent(BFormRadio)
+      expect(radio.find('input').classes()).toContain('form-check-input')
+      expect(radio.find('input').classes()).not.toContain('btn-check')
+    })
+
+    it('inherits inline from parent group when stacked is false (inline is true)', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {stacked: false, options: ['one', 'two']},
+      })
+      const radios = wrapper.findAllComponents(BFormRadio)
+      radios.forEach((radio) => {
+        expect(radio.classes()).toContain('form-check-inline')
+      })
+    })
+
+    it('child can override parent inline with inline=false', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {stacked: false},
+        slots: {
+          default: {
+            components: {BFormRadio},
+            template: '<BFormRadio :inline="false" value="a">A</BFormRadio>',
+          },
+        },
+      })
+      const radio = wrapper.findComponent(BFormRadio)
+      expect(radio.classes()).not.toContain('form-check-inline')
+    })
+
+    it('inherits plain from parent group', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {plain: true, options: ['one', 'two']},
+      })
+      const radios = wrapper.findAllComponents(BFormRadio)
+      radios.forEach((radio) => {
+        expect(radio.find('input').classes()).not.toContain('form-check-input')
+      })
+    })
+
+    it('child can override parent plain with plain=false', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {plain: true},
+        slots: {
+          default: {
+            components: {BFormRadio},
+            template: '<BFormRadio :plain="false" value="a">A</BFormRadio>',
+          },
+        },
+      })
+      const radio = wrapper.findComponent(BFormRadio)
+      expect(radio.find('input').classes()).toContain('form-check-input')
+    })
+
+    it('inherits reverse from parent group', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {reverse: true, options: ['one', 'two']},
+      })
+      const radios = wrapper.findAllComponents(BFormRadio)
+      radios.forEach((radio) => {
+        expect(radio.classes()).toContain('form-check-reverse')
+      })
+    })
+
+    it('child can override parent reverse with reverse=false', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {reverse: true},
+        slots: {
+          default: {
+            components: {BFormRadio},
+            template: '<BFormRadio :reverse="false" value="a">A</BFormRadio>',
+          },
+        },
+      })
+      const radio = wrapper.findComponent(BFormRadio)
+      expect(radio.classes()).not.toContain('form-check-reverse')
+    })
+
+    it('inherits state from parent group', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {state: false, options: ['one', 'two']},
+      })
+      const radios = wrapper.findAllComponents(BFormRadio)
+      radios.forEach((radio) => {
+        expect(radio.find('input').classes()).toContain('is-invalid')
+      })
+    })
+
+    it('child can override parent state with state=true', () => {
+      const wrapper = mount(BFormRadioGroup, {
+        props: {state: false},
+        slots: {
+          default: {
+            components: {BFormRadio},
+            template: '<BFormRadio :state="true" value="a">A</BFormRadio>',
+          },
+        },
+      })
+      const radio = wrapper.findComponent(BFormRadio)
+      expect(radio.find('input').classes()).toContain('is-valid')
+      expect(radio.find('input').classes()).not.toContain('is-invalid')
+    })
   })
 })

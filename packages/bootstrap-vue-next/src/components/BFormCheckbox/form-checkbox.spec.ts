@@ -1,6 +1,7 @@
 import {afterEach, describe, expect, it} from 'vitest'
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import BFormCheckbox from './BFormCheckbox.vue'
+import BFormCheckboxGroup from './BFormCheckboxGroup.vue'
 
 describe('form-checkbox', () => {
   enableAutoUnmount(afterEach)
@@ -668,6 +669,155 @@ describe('form-checkbox', () => {
       expect(input.element.indeterminate).toBe(true)
       await input.trigger('click')
       expect(input.element.indeterminate).toBe(false)
+    })
+  })
+
+  describe('group inheritance', () => {
+    it('inherits button style from parent group when buttons prop is true', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {buttons: true, options: ['one', 'two']},
+      })
+      const checkboxes = wrapper.findAllComponents(BFormCheckbox)
+      expect(checkboxes.length).toBe(2)
+      checkboxes.forEach((checkbox) => {
+        expect(checkbox.find('input').classes()).toContain('btn-check')
+      })
+    })
+
+    it('child can override parent button prop with button=false', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {buttons: true},
+        slots: {
+          default: {
+            components: {BFormCheckbox},
+            template: '<BFormCheckbox :button="false" value="a">A</BFormCheckbox>',
+          },
+        },
+      })
+      const checkbox = wrapper.findComponent(BFormCheckbox)
+      expect(checkbox.find('input').classes()).toContain('form-check-input')
+      expect(checkbox.find('input').classes()).not.toContain('btn-check')
+    })
+
+    it('inherits inline from parent group when stacked is false (inline is true)', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {stacked: false, options: ['one', 'two']},
+      })
+      const checkboxes = wrapper.findAllComponents(BFormCheckbox)
+      checkboxes.forEach((checkbox) => {
+        expect(checkbox.classes()).toContain('form-check-inline')
+      })
+    })
+
+    it('child can override parent inline with inline=false', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {stacked: false},
+        slots: {
+          default: {
+            components: {BFormCheckbox},
+            template: '<BFormCheckbox :inline="false" value="a">A</BFormCheckbox>',
+          },
+        },
+      })
+      const checkbox = wrapper.findComponent(BFormCheckbox)
+      expect(checkbox.classes()).not.toContain('form-check-inline')
+    })
+
+    it('inherits plain from parent group', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {plain: true, options: ['one', 'two']},
+      })
+      const checkboxes = wrapper.findAllComponents(BFormCheckbox)
+      checkboxes.forEach((checkbox) => {
+        expect(checkbox.find('input').classes()).not.toContain('form-check-input')
+      })
+    })
+
+    it('child can override parent plain with plain=false', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {plain: true},
+        slots: {
+          default: {
+            components: {BFormCheckbox},
+            template: '<BFormCheckbox :plain="false" value="a">A</BFormCheckbox>',
+          },
+        },
+      })
+      const checkbox = wrapper.findComponent(BFormCheckbox)
+      expect(checkbox.find('input').classes()).toContain('form-check-input')
+    })
+
+    it('inherits reverse from parent group', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {reverse: true, options: ['one', 'two']},
+      })
+      const checkboxes = wrapper.findAllComponents(BFormCheckbox)
+      checkboxes.forEach((checkbox) => {
+        expect(checkbox.classes()).toContain('form-check-reverse')
+      })
+    })
+
+    it('child can override parent reverse with reverse=false', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {reverse: true},
+        slots: {
+          default: {
+            components: {BFormCheckbox},
+            template: '<BFormCheckbox :reverse="false" value="a">A</BFormCheckbox>',
+          },
+        },
+      })
+      const checkbox = wrapper.findComponent(BFormCheckbox)
+      expect(checkbox.classes()).not.toContain('form-check-reverse')
+    })
+
+    it('inherits switch from parent group', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {switches: true, options: ['one', 'two']},
+      })
+      const checkboxes = wrapper.findAllComponents(BFormCheckbox)
+      checkboxes.forEach((checkbox) => {
+        expect(checkbox.classes()).toContain('form-switch')
+      })
+    })
+
+    it('child can override parent switch with switch=false', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {switches: true},
+        slots: {
+          default: {
+            components: {BFormCheckbox},
+            template: '<BFormCheckbox :switch="false" value="a">A</BFormCheckbox>',
+          },
+        },
+      })
+      const checkbox = wrapper.findComponent(BFormCheckbox)
+      expect(checkbox.classes()).not.toContain('form-switch')
+    })
+
+    it('inherits state from parent group', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {state: false, options: ['one', 'two']},
+      })
+      const checkboxes = wrapper.findAllComponents(BFormCheckbox)
+      checkboxes.forEach((checkbox) => {
+        expect(checkbox.find('input').classes()).toContain('is-invalid')
+      })
+    })
+
+    it('child can override parent state with state=true', () => {
+      const wrapper = mount(BFormCheckboxGroup, {
+        props: {state: false},
+        slots: {
+          default: {
+            components: {BFormCheckbox},
+            template: '<BFormCheckbox :state="true" value="a">A</BFormCheckbox>',
+          },
+        },
+      })
+      const checkbox = wrapper.findComponent(BFormCheckbox)
+      expect(checkbox.find('input').classes()).toContain('is-valid')
+      expect(checkbox.find('input').classes()).not.toContain('is-invalid')
     })
   })
 })
