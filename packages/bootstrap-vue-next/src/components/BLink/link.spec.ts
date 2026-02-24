@@ -117,4 +117,83 @@ describe('link', () => {
     expect(wrapper.element.tagName).toBe('A')
     expect(wrapper.attributes('href')).toBe('https://www.example.com')
   })
+
+  it('passes prefetch props to custom router component', () => {
+    const receivedProps = {} as Record<string, unknown>
+    const CustomRouterLink = defineComponent({
+      name: 'CustomRouterLink',
+      props: {
+        to: {type: [String, Object], required: true},
+        custom: {type: Boolean, default: false},
+        prefetch: {type: Boolean, default: undefined},
+        noPrefetch: {type: Boolean, default: undefined},
+        prefetchedClass: {type: String, default: undefined},
+      },
+      setup(props, {slots}) {
+        Object.assign(receivedProps, {
+          prefetch: props.prefetch,
+          noPrefetch: props.noPrefetch,
+          prefetchedClass: props.prefetchedClass,
+        })
+        return () => h('a', {href: String(props.to)}, slots.default?.())
+      },
+    })
+
+    mount(BLink, {
+      props: {
+        to: '/test',
+        routerComponentName: markRaw(CustomRouterLink),
+        prefetch: false,
+        prefetchedClass: 'my-prefetched',
+      },
+      global: {
+        plugins: [router],
+      },
+    })
+
+    expect(receivedProps.prefetch).toBe(false)
+    expect(receivedProps.prefetchedClass).toBe('my-prefetched')
+  })
+
+  it('renders NuxtLink without custom mode in Nuxt environment', () => {
+    const receivedProps = {} as Record<string, unknown>
+    const MockNuxtLink = defineComponent({
+      name: 'MockNuxtLink',
+      props: {
+        to: {type: [String, Object], required: true},
+        prefetch: {type: Boolean, default: undefined},
+        prefetchedClass: {type: String, default: undefined},
+        custom: {type: Boolean, default: false},
+      },
+      setup(props, {slots}) {
+        Object.assign(receivedProps, {
+          prefetch: props.prefetch,
+          prefetchedClass: props.prefetchedClass,
+          custom: props.custom,
+        })
+        return () => h('a', {href: String(props.to)}, slots.default?.())
+      },
+    })
+
+    const nuxtPlugin = {
+      install(app: ReturnType<typeof import('vue').createApp>) {
+        ;(app as unknown as Record<string, unknown>).$nuxt = {}
+      },
+    }
+
+    mount(BLink, {
+      props: {
+        to: '/test',
+        routerComponentName: markRaw(MockNuxtLink),
+        prefetchedClass: 'is-prefetched',
+      },
+      global: {
+        plugins: [router, nuxtPlugin],
+      },
+    })
+
+    // NuxtLink should receive prefetchedClass and not be in custom mode
+    expect(receivedProps.prefetchedClass).toBe('is-prefetched')
+    expect(receivedProps.custom).toBe(false)
+  })
 })

@@ -17,12 +17,14 @@
   </a>
   <component
     :is="tag"
-    v-else-if="isNuxtLink || isRouterLink"
-    v-slot="slotProps"
-    custom
-    v-bind="routerProps"
-    :prefetch="true"
+    v-else-if="isNuxtLink"
+    v-bind="{...nuxtLinkRenderProps, ...nonSpecialAttrs}"
+    :class="[computedClasses, attrs.class]"
+    @click="(e: MouseEvent) => routerNavigate(e, undefined)"
   >
+    <slot />
+  </component>
+  <component :is="tag" v-else-if="isRouterLink" v-slot="slotProps" custom v-bind="routerProps">
     <a
       v-bind="{...anchorProps, ...nonSpecialAttrs}"
       :href="
@@ -214,6 +216,32 @@ const nuxtSpecificProps = computed(() => ({
   prefetchedClass: props.prefetchedClass,
   ...navigationProps.value,
 }))
+const nuxtLinkRenderProps = computed(() => {
+  const obj: Record<string, unknown> = {
+    ...nuxtSpecificProps.value,
+    replace: props.replace,
+    activeClass: props.activeClass,
+    exactActiveClass: props.exactActiveClass,
+    target: props.target,
+    rel: props.rel,
+    noRel: props.noRel,
+    tabindex: computedTabIndex.value,
+  }
+
+  // Prevent a nuxt runtime warning
+  if (obj.noPrefetch === true) {
+    delete obj.prefetch
+  } else {
+    delete obj.noPrefetch
+  }
+
+  // Prevent a nuxt runtime warning when both href and to are used
+  if (obj.to) {
+    delete obj.href
+  }
+
+  return obj
+})
 const routerProps = computed(() => {
   const obj = {
     ...props,
