@@ -1,18 +1,15 @@
 <template>
-  <BLink
-    v-bind="props"
-    :to="undefined"
+  <a
     :href="props.href || props.to"
-    :active="route.path === props.to"
+    :class="{active: route.path === props.to}"
     @click.stop.prevent="onClick"
   >
     <slot />
-  </BLink>
+  </a>
 </template>
 
 <script setup lang="ts">
 import {useRoute, useRouter} from 'vitepress'
-import {BLink} from 'bootstrap-vue-next/components/BLink'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
 import type {BLinkProps} from 'bootstrap-vue-next'
 import {computed, h} from 'vue'
