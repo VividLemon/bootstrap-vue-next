@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import {useRoute, useRouter, withBase} from 'vitepress'
+import {useRoute, useRouter} from 'vitepress'
 import {BLink} from 'bootstrap-vue-next/components/BLink'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
 import type {BLinkProps} from 'bootstrap-vue-next'
@@ -25,11 +25,9 @@ const router = useRouter()
 const modal = useModal()
 
 const isExternalLink = computed(() => {
-  if (props.href) return true
-  return (
-    props.to &&
-    (props.to.startsWith('http://') || props.to.startsWith('https://') || props.to.startsWith('//'))
-  )
+  const url = props.href || props.to
+  if (!url) return false
+  return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')
 })
 
 const onClick = async () => {
@@ -71,7 +69,7 @@ const onClick = async () => {
       window.open(props.href || props.to, '_blank')
     }
   } else if (props.to) {
-    router.go(withBase(props.to))
+    router.go(props.to)
   }
 }
 </script>

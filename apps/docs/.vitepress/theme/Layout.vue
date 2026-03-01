@@ -46,17 +46,19 @@
             <VPNavBarSearch :class="{dark: colorMode === 'dark'}" />
             <div class="d-flex gap-2 flex-wrap socials">
               <BNav class="d-flex">
-                <BNavItem
+                <li
                   v-for="link in headerExternalLinks"
                   :key="link.url"
-                  :href="link.url"
-                  :link-attrs="{'aria-label': link.label}"
-                  target="_blank"
-                  rel="noopener"
-                  link-classes="py-1 px-0"
+                  class="nav-item"
                 >
-                  <component :is="link.icon()" height="1.1em" aria-hidden />
-                </BNavItem>
+                  <VBLink
+                    :href="link.url"
+                    class="nav-link py-1 px-0"
+                    :aria-label="link.label"
+                  >
+                    <component :is="link.icon()" height="1.1em" aria-hidden />
+                  </VBLink>
+                </li>
                 <div class="border border-secondary ms-2 me-3" />
                 <ClientOnly>
                   <BNavItemDropdown toggle-class="px-0">

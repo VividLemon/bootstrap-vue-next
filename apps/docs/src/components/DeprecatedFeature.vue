@@ -1,7 +1,7 @@
 <template>
   <BAlert variant="warning" show class="deprecation-warning">
     <strong v-html="deprecatedLabel" /> {{ reasonText }}.
-    <VBLink :href="learnMoreUrl">Learn more about deprecation reasons</VBLink
+    <VBLink :to="learnMoreUrl">Learn more about deprecation reasons</VBLink
     ><template v-if="$slots.default"> – <slot /></template>
   </BAlert>
 </template>

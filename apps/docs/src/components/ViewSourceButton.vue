@@ -1,8 +1,10 @@
 <template>
-  <BButton variant="outline-info" target="_blank" :href> <slot> View Source </slot> </BButton>
+  <VBLink :href class="btn btn-outline-info"> <slot> View Source </slot> </VBLink>
 </template>
 
 <script setup lang="ts">
+import VBLink from './VBLink.vue'
+
 defineSlots<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   default?: (props: Record<string, never>) => any
