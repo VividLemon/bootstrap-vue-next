@@ -1,20 +1,27 @@
-import type {ComponentInternalInstance, ComputedRef, InjectionKey, Ref, ShallowRef} from 'vue'
-import type {TabType} from '../types/Tab'
+import {
+  type ComponentInternalInstance,
+  type ComputedRef,
+  type InjectionKey,
+  type Ref,
+  type ShallowRef,
+  type StyleValue,
+} from 'vue'
+import type {TabType} from '../types'
 import type {ClassValue} from '../types/AnyValuedAttributes'
 import type {Numberish, ValidationState} from '../types/CommonTypes'
-import type {LiteralUnion} from '../types/LiteralUnion'
-import type {Size} from '../types/Size'
-import type {RadiusElement} from '../types/RadiusElement'
+import type {LiteralUnion} from '../types'
+import type {Size} from '../types'
+import type {RadiusElement} from '../types'
 import type {
   BgColorVariant,
   ButtonVariant,
   ColorVariant,
   TextColorVariant,
 } from '../types/ColorTypes'
-import type {CheckboxValue} from '../types/CheckboxTypes'
-import type {RadioValue} from '../types/RadioTypes'
-import type {BreadcrumbItemRaw} from '../types/BreadcrumbTypes'
-import type {OrchestratorArrayValue} from '../types/ComponentOrchestratorTypes'
+import type {CheckboxValue} from '../types'
+import type {RadioValue} from '../types'
+import type {BreadcrumbItemRaw} from '../types'
+import type {OrchestratorArrayValue} from '../types'
 import type {BvnComponentProps} from '../types/BootstrapVueOptions'
 
 export const genericBvnPrefix = 'BootstrapVueNext__'
@@ -29,7 +36,16 @@ const createBvnRegistryInjectionKey = (name: string) =>
   withBvnPrefix(`${name}__registry`) as unknown as symbol
 
 // BCarousel
-export const carouselInjectionKey: InjectionKey<{
+export const carouselInjectionKey: InjectionKey<(
+  obj: {
+    id: ComputedRef<string>
+    interval: Readonly<Ref<number | 'requestAnimationFrame' | null>>
+  }
+) => {
+  unregister: () => void
+  class: ComputedRef<ClassValue>
+  style: ComputedRef<StyleValue>
+  index: ComputedRef<number>
   background: Readonly<Ref<string | undefined>>
   width: Readonly<Ref<string | undefined>>
   height: Readonly<Ref<string | undefined>>

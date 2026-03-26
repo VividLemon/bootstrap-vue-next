@@ -21,7 +21,7 @@
         :aria-current="i === modelValue ? true : undefined"
         :aria-label="`${props.indicatorsButtonLabel} ${i}`"
         :aria-controls="buttonOwnership"
-        :aria-describedby="slideValues?.[i]?._id"
+        :aria-describedby="slides[i]?.id"
         @click="goToValue(i)"
       />
     </div>
@@ -37,17 +37,17 @@
         @before-leave="onBeforeLeave"
         @after-leave="onAfterLeave"
         @after-enter="onAfterEnter"
-        @enter="onEnter"
       >
-        <component
-          :is="slide"
-          v-for="(slide, i) in slides"
-          v-show="i === modelValue"
-          :key="i"
-          ref="_slideValues"
-          :class="{active: i === modelValue && isTransitioning === false}"
-          :style="props.noAnimation && {transition: 'none'}"
-        />
+        <slot />
+<!--        <component-->
+<!--          :is="slide"-->
+<!--          v-for="(slide, i) in slides"-->
+<!--          v-show="i === modelValue"-->
+<!--          :key="i"-->
+<!--          ref="_slideValues"-->
+<!--          :class="{active: i === modelValue && isTransitioning === false}"-->
+<!--          :style="props.noAnimation && {transition: 'none'}"-->
+<!--        />-->
       </TransitionGroup>
     </div>
 
@@ -66,16 +66,12 @@
 
 <script setup lang="ts">
 import {BvCarouselEvent} from '../../utils'
-import {computed, onMounted, provide, ref, toRef, useTemplateRef, watch} from 'vue'
+import {computed, type ComputedRef, provide, type Ref, ref, toRef, useTemplateRef, watch} from 'vue'
 import {useId} from '../../composables/useId'
-import type {BCarouselProps} from '../../types/ComponentProps'
 import {onKeyStroke, useElementHover, useIntervalFn, useSwipe, useToNumber} from '@vueuse/core'
-import type BCarouselSlide from './BCarouselSlide.vue'
 import {useDefaults} from '../../composables/useDefaults'
-import type {Numberish} from '../../types/CommonTypes'
-import {getSlotElements} from '../../utils/getSlotElements'
 import {carouselInjectionKey} from '../../utils/keys'
-import type {BCarouselEmits, BCarouselSlots} from '../../types'
+import type {BCarouselEmits, BCarouselSlots, BCarouselProps} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BCarouselProps, 'modelValue'>>(), {
   background: undefined,
@@ -101,21 +97,40 @@ const _props = withDefaults(defineProps<Omit<BCarouselProps, 'modelValue'>>(), {
 })
 const props = useDefaults(_props, 'BCarousel')
 const emit = defineEmits<BCarouselEmits>()
-const slots = defineSlots<BCarouselSlots>()
+defineSlots<BCarouselSlots>()
 
 const computedId = useId(() => props.id, 'carousel')
 const buttonOwnership = useId(undefined, 'carousel-button-ownership')
 
 const modelValue = defineModel<Exclude<BCarouselProps['modelValue'], undefined>>({default: 0})
 
-const slideValues = useTemplateRef<InstanceType<typeof BCarouselSlide>[]>('_slideValues')
+const slides = ref<{id: ComputedRef<string>; interval: Readonly<Ref<number | 'requestAnimationFrame' | null>>}[]>([])
+const parentBackground = toRef(() => props.background)
+const parentWidth = toRef(() => props.imgWidth)
+const parentHeight = toRef(() => props.imgHeight)
+const parentStyle = computed(() => props.noAnimation ? {transition: 'none'} : undefined)
+provide(carouselInjectionKey, (obj) => {
+  slides.value.push(obj)
+
+  const index = computed(() => slides.value.findIndex((e) => e.id === obj.id.value))
+  return {
+    index,
+    style: parentStyle,
+    class: computed(() => ({
+      active: index.value === modelValue.value,
+    })),
+    unregister: () => {
+      slides.value.splice(index.value, 1)
+    },
+    background: parentBackground,
+    width: parentWidth,
+    height: parentHeight,
+  }
+})
+const activeSlide = computed(() => slides.value[modelValue.value])
+const slideInterval = computed(() => activeSlide.value?.interval ?? null)
 
 const touchThresholdNumber = useToNumber(() => props.touchThreshold)
-const slideInterval = ref<Numberish | null>(null)
-onMounted(() => {
-  slideInterval.value =
-    slideValues.value?.find((slid) => slid.$el.style.display !== 'none')?._interval ?? null
-})
 const intervalNumber = useToNumber(() => slideInterval.value ?? props.interval)
 
 const isTransitioning = ref(false)
@@ -157,7 +172,8 @@ const {pause, resume} = useIntervalFn(
 const isRiding = computed(
   () => (props.ride === true && rideStarted.value === true) || props.ride === 'carousel'
 )
-const slides = computed(() => getSlotElements(slots.default, 'BCarouselSlide'))
+
+// const slides = computed(() => getSlotElements(slots.default, 'BCarouselSlide'))
 const computedClasses = computed(() => ({'carousel-fade': props.fade}))
 
 const buildBvCarouselEvent = (event: 'slid' | 'slide') =>
@@ -180,7 +196,7 @@ const goToValue = (value: number): void => {
   if (isRiding.value === true) {
     resume()
   }
-  direction.value = value < modelValue.value ? false : true
+  direction.value = value >= modelValue.value
   if (value >= slides.value.length) {
     if (props.noWrap) return
     modelValue.value = 0
@@ -203,7 +219,7 @@ const next = (): void => {
 }
 
 const onKeydown = (fn: () => void) => {
-  if (props.keyboard === false) return
+  if (!props.keyboard) return
   fn()
 }
 
@@ -219,11 +235,11 @@ const onMouseLeave = () => {
 const {lengthX} = useSwipe(element, {
   passive: true,
   onSwipeStart() {
-    if (props.noTouch === true) return
+    if (props.noTouch) return
     pause()
   },
   onSwipeEnd() {
-    if (props.noTouch === true) return
+    if (props.noTouch) return
     const resumeRiding = () => {
       if (isRiding.value === false) return
       resume()
@@ -255,9 +271,6 @@ const onAfterEnter = (el: Readonly<Element>) => {
   if (modelValue.value !== 0) {
     el.classList.add('carousel-item')
   }
-}
-const onEnter = (el: Readonly<Element>) => {
-  slideInterval.value = slideValues.value?.find((slid) => slid.$el === el)?._interval ?? null
 }
 
 onKeyStroke(
@@ -306,11 +319,5 @@ defineExpose({
   pause,
   prev,
   resume,
-})
-
-provide(carouselInjectionKey, {
-  background: toRef(() => props.background),
-  width: toRef(() => props.imgWidth),
-  height: toRef(() => props.imgHeight),
 })
 </script>

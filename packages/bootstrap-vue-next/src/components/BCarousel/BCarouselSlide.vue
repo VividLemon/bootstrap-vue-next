@@ -1,5 +1,5 @@
 <template>
-  <div :id="computedId" class="carousel-item" :style="computedStyle">
+  <div :id="computedId" class="carousel-item" :class="parentData?.class.value" :style="computedStyle">
     <slot name="img">
       <BImg
         class="d-block w-100"
@@ -34,14 +34,14 @@
 </template>
 
 <script setup lang="ts">
-import {computed, type CSSProperties, inject, toRef} from 'vue'
-import type {BCarouselSlideProps} from '../../types/ComponentProps'
+import {computed, inject, onUnmounted, type StyleValue, toRef} from 'vue'
+import type {BCarouselSlideProps} from '../../types'
 import {carouselInjectionKey} from '../../utils/keys'
 import BImg from '../BImg/BImg.vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {isEmptySlot} from '../../utils/dom'
 import {useId} from '../../composables/useId'
-import type {BCarouselSlideSlots} from '../../types/ComponentSlots'
+import type {BCarouselSlideSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BCarouselSlideProps>(), {
   background: undefined,
@@ -65,25 +65,28 @@ const props = useDefaults(_props, 'BCarouselSlide')
 const slots = defineSlots<BCarouselSlideSlots>()
 
 const computedId = useId(() => props.id, 'carousel-slide')
-const parentData = inject(carouselInjectionKey, null)
+const parentData = inject(carouselInjectionKey, null)?.({
+  id: computedId,
+  interval: toRef(() => props.interval ?? null)
+})
+onUnmounted(() => {
+  parentData?.unregister()
+})
 
 const hasText = computed(() => props.text || !isEmptySlot(slots.text))
 const hasCaption = computed(() => props.caption || !isEmptySlot(slots.caption))
 const hasContent = computed(() => hasText.value || hasCaption.value || !isEmptySlot(slots.default))
 
-const computedStyle = computed<CSSProperties>(() => ({
+const computedStyle = computed<StyleValue>(() => [
+  parentData?.style.value,
+  {
   background: `${
     props.background || parentData?.background.value || 'rgb(171, 171, 171)'
   } none repeat scroll 0% 0%`,
-}))
+}])
 
 const computedContentClasses = computed(() => ({
   'd-none': props.contentVisibleUp !== undefined,
   [`d-${props.contentVisibleUp}-block`]: props.contentVisibleUp !== undefined,
 }))
-
-defineExpose({
-  _interval: toRef(() => props.interval),
-  _id: computedId,
-})
 </script>
