@@ -1,6 +1,7 @@
 <template>
   <AutocompleteRoot
     v-model="modelValue"
+    v-model:open="isOpen"
     :disabled="props.disabled"
     :ignore-filter="isExternalSearch"
     open-on-focus
@@ -22,7 +23,7 @@
       >
         <svg
           class="b-autocomplete-chevron"
-          :class="{'b-autocomplete-chevron-open': false}"
+          :class="{'b-autocomplete-chevron-open': isOpen}"
           xmlns="http://www.w3.org/2000/svg"
           width="16"
           height="16"
@@ -113,7 +114,9 @@ const modelValue = computed({
 
 const searchModel = ref(props.search)
 
-const isExternalSearch = computed(() => props.search !== undefined && props.search !== '')
+const isOpen = ref(false)
+
+const isExternalSearch = computed(() => props.search !== '')
 
 watch(
   () => props.search,
