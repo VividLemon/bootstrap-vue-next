@@ -1,17 +1,16 @@
 <template>
   <BOtpInput v-model="value" :length="6" @complete="onComplete" />
-  <BAlert v-if="completed" variant="success" :model-value="true" class="mt-2">
-    OTP Complete: {{ value.join('') }}
-  </BAlert>
+  <div class="mt-2">Value (v-model): {{ value }}</div>
+  <div v-if="completedValue" class="mt-1">Completed (event): {{ completedValue }}</div>
 </template>
 
 <script setup lang="ts">
 import {ref} from 'vue'
 
 const value = ref<string[]>([])
-const completed = ref(false)
+const completedValue = ref<string[] | null>(null)
 
-const onComplete = () => {
-  completed.value = true
+const onComplete = (val: string[]) => {
+  completedValue.value = val
 }
 </script>
