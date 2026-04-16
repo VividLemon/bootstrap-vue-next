@@ -20,13 +20,9 @@ By default, the component handles filtering internally. When you need more contr
 
 ## Async fetching with debounce
 
-When options need to be fetched from an API you can combine `v-model:search` with a short debounce to avoid firing a request on every keystroke. Use a request counter (or `AbortController`) to discard stale responses so that a slow earlier request never overwrites results from a newer one.
+When options need to be fetched from an API you can combine `v-model:search` with a short debounce to avoid firing a request on every keystroke. Use an `AbortController` to cancel in-flight requests so that a slow earlier request never overwrites results from a newer one.
 
 <<< DEMO ./demo/AutocompleteAsync.vue
-
-::: tip Concurrency
-The example above increments a `currentRequestId` before each fetch and ignores any response whose id no longer matches. This is the simplest way to handle out-of-order responses without pulling in a full cancellation library.
-:::
 
 ## Dynamic options
 

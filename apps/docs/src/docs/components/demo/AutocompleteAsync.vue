@@ -45,25 +45,32 @@ const loading = ref(false)
 
 const debouncedSearch = refDebounced(search, 300)
 
-let currentRequestId = 0
+let controller: AbortController | null = null
 
-async function fetchOptions(query: string): Promise<string[]> {
+async function fetchOptions(query: string, signal: AbortSignal): Promise<string[]> {
   // Simulate a network request with a 400ms delay
-  await new Promise((resolve) => setTimeout(resolve, 400))
+  await new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(resolve, 400)
+    signal.addEventListener('abort', () => {
+      clearTimeout(timer)
+      reject(signal.reason)
+    })
+  })
   if (!query) return []
   return allFruits.filter((f) => f.toLowerCase().includes(query.toLowerCase()))
 }
 
 watch(debouncedSearch, async (query) => {
-  const requestId = ++currentRequestId
+  controller?.abort()
+  controller = new AbortController()
+  const {signal} = controller
   loading.value = true
   try {
-    const data = await fetchOptions(query)
-    // Drop the response if a newer request was fired
-    if (requestId !== currentRequestId) return
-    results.value = data
+    results.value = await fetchOptions(query, signal)
+  } catch {
+    if (!signal.aborted) throw
   } finally {
-    if (requestId === currentRequestId) {
+    if (!signal.aborted) {
       loading.value = false
     }
   }
