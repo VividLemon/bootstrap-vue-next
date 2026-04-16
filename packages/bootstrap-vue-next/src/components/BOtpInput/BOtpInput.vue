@@ -83,7 +83,7 @@ const inputClasses = computed(() => [
 
 const inputType = computed(() => {
   if (props.mask) return 'password'
-  return props.type === 'number' ? 'text' : 'text'
+  return 'text'
 })
 
 const updateValue = (newValue: string[]) => {
