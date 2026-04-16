@@ -48,8 +48,10 @@ Key points for async usage:
 
 - **`v-model:search`** — Bind to the raw search text so you can watch it and trigger fetches
 - **`debounce`** — Set to a number of milliseconds (e.g. `300`) to delay emitting search updates until the user stops typing
-- **`filter-function`** — Provide a pass-through function (returning all options) to bypass the built-in client-side filter, since the API handles filtering
+- **`filter-function`** — Provide a pass-through function (returning all options) to bypass the built-in client-side filter, since the server handles filtering
 - **`AbortController`** — Create a new controller for each request and abort the previous one to avoid race conditions
+
+The following example simulates an async lookup with a local list and a 500ms delay. In a real application, replace the simulated `searchUsers` function with an actual API call.
 
 <<< DEMO ./demo/AutocompleteAsync.vue
 
