@@ -22,7 +22,7 @@ export default {
         },
         length: {
           type: 'Numberish',
-          default: '5',
+          default: '6',
           description: 'The number of input fields to render',
         },
         mask: {
