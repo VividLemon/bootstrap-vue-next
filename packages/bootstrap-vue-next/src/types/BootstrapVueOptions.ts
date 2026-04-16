@@ -18,6 +18,7 @@ export const componentsWithExternalPath = {
   BAccordion: '/components/BAccordion',
   BAccordionItem: '/components/BAccordion',
   BAlert: '/components/BAlert',
+  BAutocomplete: '/components/BAutocomplete',
   BApp: '/components/BApp',
   BAvatar: '/components/BAvatar',
   BAvatarGroup: '/components/BAvatar',
@@ -256,6 +257,7 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BSpinner: ComponentProps.BSpinnerProps
   BAccordionItem: ComponentProps.BAccordionItemProps
   BAlert: ComponentProps.BAlertProps
+  BAutocomplete: ComponentProps.BAutocompleteProps
   BAvatar: ComponentProps.BAvatarProps
   BAvatarGroup: ComponentProps.BAvatarGroupProps
   BBadge: ComponentProps.BBadgeProps

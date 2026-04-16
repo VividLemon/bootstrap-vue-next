@@ -1,6 +1,7 @@
 export * from './BAspect'
 export * from './BAccordion'
 export * from './BAlert'
+export * from './BAutocomplete'
 export * from './BApp'
 export * from './BAvatar'
 export * from './BBadge'

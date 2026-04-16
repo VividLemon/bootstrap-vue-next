@@ -1050,6 +1050,14 @@ export interface BAlertProps
   title?: string
 }
 
+export interface BAutocompleteProps {
+  disabled?: boolean
+  modelValue?: string
+  options?: string[]
+  placeholder?: string
+  search?: string
+}
+
 export interface BAvatarProps
   extends Omit<BLinkProps, 'routerTag' | 'icon'>, ColorExtendables, RadiusElementExtendables {
   alt?: string
