@@ -1,5 +1,5 @@
 ---
-description: 'An input with a dropdown suggestions list that allows free-form text entry. Unlike a select or combobox, the value is the selected item from the list rather than arbitrary typed text.'
+description: 'An input with a dropdown suggestions list. Users can type freely to filter options, and the value is set when an item is selected from the list. Supports single and multiple selection, async fetching, and tags mode.'
 ---
 
 ## Overview

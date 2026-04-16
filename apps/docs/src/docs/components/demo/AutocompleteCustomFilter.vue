@@ -32,6 +32,7 @@ const languages = [
 
 const startsWithFilter = (options: SelectOption[], searchTerm: string) => {
   if (!searchTerm) return options
-  return options.filter((opt) => String(opt.text).toLowerCase().startsWith(searchTerm.toLowerCase()))
+  const term = searchTerm.toLowerCase()
+  return options.filter((opt) => String(opt.text).toLowerCase().startsWith(term))
 }
 </script>
