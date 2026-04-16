@@ -33,7 +33,7 @@ export default {
         },
         modelValue: {
           type: 'string[] | null',
-          default: undefined,
+          default: 'null',
           description:
             'The controlled value of the OTP input. Can be bound as `v-model`. Each element in the array represents one input field',
         },
