@@ -432,6 +432,23 @@ export interface BFormFileProps {
   state?: ValidationState
 }
 
+export interface BOtpInputProps {
+  defaultValue?: string[]
+  dir?: 'ltr' | 'rtl'
+  disabled?: boolean
+  id?: string
+  length?: Numberish
+  mask?: boolean
+  modelValue?: string[] | null
+  name?: string
+  otp?: boolean
+  placeholder?: string
+  required?: boolean
+  size?: Size
+  state?: ValidationState
+  type?: 'number' | 'text'
+}
+
 export interface BFormInputProps extends CommonInputProps {
   max?: Numberish
   min?: Numberish

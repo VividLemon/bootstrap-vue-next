@@ -93,6 +93,7 @@ export const componentsWithExternalPath = {
   BNavbarNav: '/components/BNavbar',
   BNavbarToggle: '/components/BNavbar',
   BOffcanvas: '/components/BOffcanvas',
+  BOtpInput: '/components/BOtpInput',
   BOverlay: '/components/BOverlay',
   BOrchestrator: '/components/BApp',
   BPagination: '/components/BPagination',
@@ -240,6 +241,7 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BNavbarNav: ComponentProps.BNavbarNavProps
   BNavbarToggle: ComponentProps.BNavbarToggleProps
   BOffcanvas: ComponentProps.BOffcanvasProps
+  BOtpInput: ComponentProps.BOtpInputProps
   BOrchestrator: ComponentProps.BAppProps
   BOverlay: ComponentProps.BOverlayProps
   BPagination: ComponentProps.BPaginationProps
