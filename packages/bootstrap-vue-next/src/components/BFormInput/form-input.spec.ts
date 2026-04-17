@@ -102,6 +102,18 @@ describe('form-input', () => {
       await wrapper.trigger('change')
       expect(wrapper.emitted('update:modelValue')).toBeUndefined()
     })
+
+    it('still emits native change event when type is file', async () => {
+      const wrapper = mount(BFormInput, {props: {type: 'file'}})
+      await wrapper.trigger('change')
+      expect(wrapper.emitted('change')).toHaveLength(1)
+    })
+
+    it('still emits native input event when type is file', async () => {
+      const wrapper = mount(BFormInput, {props: {type: 'file'}})
+      await wrapper.trigger('input')
+      expect(wrapper.emitted('input')).toHaveLength(1)
+    })
   })
 
   describe('CSS classes', () => {
