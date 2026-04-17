@@ -15,12 +15,12 @@ BFormFile provides a customized, cross-browser consistent file input control wit
 
 ## Lightweight Alternative
 
-If you need a simple, native file picker without the advanced features of `BFormFile`, you can use [`BFormInput`](/docs/components/form-input) with `type="file"` instead. This renders the browser's built-in file control with Bootstrap styling and is sufficient for basic file selection use cases.
+If you need a simple, native file picker without the advanced features of `BFormFile`, you can use a plain HTML `<input type="file">` with Bootstrap's `form-control` class. This renders the browser's built-in file control with Bootstrap styling and is sufficient for basic file selection use cases.
 
 <<< DEMO ./demo/FormFileNativeAlternative.vue#template{vue-html}
 
 ::: tip
-When using `BFormInput` with `type="file"`, the `v-model` will contain the file path string rather than `File` objects. Use a `@change` event handler and `event.target.files` to access the selected files. See the [BFormInput file type documentation](/docs/components/form-input#file-type-input) for more details.
+With a native `<input type="file">`, use a `@change` event handler and `event.target.files` to access the selected `File` objects. For advanced features like `v-model` with `File` objects, drag and drop, multiple file selection, directory mode, custom placeholders, and file name formatting, use `BFormFile` instead.
 :::
 
 ## Single File Mode

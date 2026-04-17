@@ -41,20 +41,6 @@ If the `type` prop is set to an input type that is not supported (see above), a 
   IME composition is completed
   :::
 
-### File type input
-
-While `BFormInput` does not include `file` in its list of explicitly supported types, you can still use `type="file"` for a lightweight, native file input. This renders the browser's built-in file picker styled with Bootstrap's `.form-control` class.
-
-<<< DEMO ./demo/FormInputFile.vue#template{vue-html}
-
-::: tip When to use BFormInput vs BFormFile
-Use `BFormInput` with `type="file"` when you need a simple, native file picker without advanced features. For full-featured file handling — including `v-model` binding with `File` objects, drag and drop support, multiple file selection, directory mode, custom placeholders, and file name formatting — use [`BFormFile`](/docs/components/form-file) instead.
-:::
-
-::: warning
-When using `type="file"`, the `v-model` will contain the file path string (e.g., `C:\fakepath\filename.txt`) as per native browser behavior — **not** a `File` object. To access the actual `File` objects, use a `@change` event handler and read from `event.target.files`. Features like `formatter`, `debounce`, and `lazy` modifier will not work meaningfully with file inputs.
-:::
-
 ### Range type input
 
 Inputs with type `range` render using Bootstrap v5's `.form-range` class. The track (the
