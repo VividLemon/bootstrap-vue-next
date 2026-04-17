@@ -49,7 +49,7 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   loadingFill: false,
   loadingText: 'Loading...',
   pill: false,
-  size: 'md',
+  size: undefined,
   squared: false,
   tag: 'button',
   type: 'button',
@@ -138,7 +138,7 @@ const computedClasses = computed(() => [
   variantIsLinkType.value === true && computedLink.value === false
     ? linkValueClasses.value
     : undefined,
-  [`btn-${props.size}`],
+  {[`btn-${props.size}`]: props.size !== undefined},
   {
     [`btn-${props.variant}`]: props.variant !== null && variantIsLinkTypeSubset.value === false,
     'active': props.active || pressedValue.value,
