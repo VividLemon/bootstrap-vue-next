@@ -2,7 +2,7 @@
   <input
     :id="computedId"
     ref="_input"
-    :value="modelValue"
+    :value="isFileInput ? undefined : modelValue"
     :class="computedClasses"
     :name="props.name || undefined"
     :form="props.form || undefined"
@@ -18,9 +18,9 @@
     :list="props.type !== 'password' ? props.list : undefined"
     :aria-required="props.required || undefined"
     :aria-invalid="computedAriaInvalid"
-    @input="onInput"
-    @change="onChange"
-    @blur="onBlur"
+    @input="handleInput"
+    @change="handleChange"
+    @blur="handleBlur"
   />
 </template>
 
@@ -73,6 +73,8 @@ const input = useTemplateRef('_input')
 
 const inInputGroup = inject(inputGroupKey, false)
 
+const isFileInput = computed(() => props.type === 'file')
+
 const {
   computedId,
   computedAriaInvalid,
@@ -84,6 +86,26 @@ const {
   blur,
   isDisabled,
 } = useFormInput(props, input, modelValue, modelModifiers)
+
+// File inputs use a different value model (FileList via event.target.files)
+// so we skip the string-based formatter, debounce, and model-value logic
+const handleInput = (evt: Event) => {
+  if (!isFileInput.value) {
+    onInput(evt)
+  }
+}
+
+const handleChange = (evt: Event) => {
+  if (!isFileInput.value) {
+    onChange(evt)
+  }
+}
+
+const handleBlur = (evt: FocusEvent) => {
+  if (!isFileInput.value) {
+    onBlur(evt)
+  }
+}
 
 const computedClasses = computed(() => {
   const isRange = props.type === 'range'

@@ -57,7 +57,7 @@ export const useFormInput = (
     return value
   }
   onMounted(() => {
-    if (input.value) {
+    if (input.value && input.value.type !== 'file') {
       input.value.value = modelValue.value?.toString() ?? ''
     }
   })
