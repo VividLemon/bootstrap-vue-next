@@ -6,7 +6,7 @@ description: 'Create various type inputs such as: `text`, `password`, `number`, 
 
 ## Input type
 
-`BFormInput` defaults to a `text` input, but you can set the `type` prop to one of the supported native browser HTML5 types: `text`, `password`, `email`, `number`, `url`, `tel`, `search`, `date`, `datetime-local`, `month`, `week`, `time`, `range`, or `color`.
+`BFormInput` defaults to a `text` input, but you can set the `type` prop to one of the supported native browser HTML5 types: `text`, `password`, `email`, `number`, `url`, `tel`, `search`, `date`, `datetime-local`, `month`, `week`, `time`, `range`, `color`, or `file`.
 
 <<< DEMO ./demo/FormInputTypes.vue
 
@@ -60,6 +60,14 @@ In the example below, we double the number of steps by using step="0.5".
 Range inputs (as do all input types) return their value as a string. You may need to
 convert the value to a native number by using `Number(value)`, `parseInt(value, 10)`,
 `parseFloat(value)`, or use the `number` prop.
+:::
+
+### File type input
+
+Setting `type` to `file` renders a native browser file picker with Bootstrap styling. This provides a lightweight alternative to [`BFormFile`](/docs/components/form-file) when you only need basic file selection without drag-and-drop, custom placeholders, or `v-model` binding to `File` objects.
+
+::: warning
+When `type` is `file`, the `v-model`, `formatter`, `debounce`, and `lazy` props are non-functional. Use a `@change` event handler with `event.target.files` to access the selected `File` objects. For full-featured file handling including `v-model` with `File` objects, drag-and-drop, and multiple file selection, use [`BFormFile`](/docs/components/form-file) instead.
 :::
 
 ## Control sizing
