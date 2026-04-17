@@ -20,7 +20,13 @@ If you need a simple, native file picker without the advanced features of `BForm
 <<< DEMO ./demo/FormFileNativeAlternative.vue#template{vue-html}
 
 ::: tip
-With a native `<input type="file">`, use a `@change` event handler and `event.target.files` to access the selected `File` objects. For advanced features like `v-model` with `File` objects, drag and drop, multiple file selection, directory mode, custom placeholders, and file name formatting, use `BFormFile` instead.
+With a native `<input type="file">`, use a `@change` event handler to access the selected `File` objects:
+
+```html
+<input type="file" class="form-control" @change="(e) => files = e.target.files">
+```
+
+For advanced features like `v-model` with `File` objects, drag and drop, multiple file selection, directory mode, custom placeholders, and file name formatting, use `BFormFile` instead.
 :::
 
 ## Single File Mode
