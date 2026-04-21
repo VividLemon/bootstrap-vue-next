@@ -1,20 +1,16 @@
 <template>
   <component :is="props.tag" :id="props.id" class="tabs" :class="computedClasses">
-    <ReusableEmptyTab.define>
-      <div class="tab-content" :class="props.contentClass">
-        <slot />
-        <div
-          v-if="showEmpty"
-          key="bv-empty-tab"
-          class="tab-pane active"
-          :class="{'card-body': props.card}"
-        >
-          <slot name="empty" />
-        </div>
-      </div>
-    </ReusableEmptyTab.define>
-
-    <ReusableEmptyTab.reuse v-if="props.end" />
+    <BTabsTabContent
+      v-if="props.end"
+      :content-class="props.contentClass"
+      :show-empty="showEmpty"
+      :card="props.card"
+    >
+      <slot />
+      <template #empty>
+        <slot name="empty" />
+      </template>
+    </BTabsTabContent>
     <div
       :class="[
         props.navWrapperClass,
@@ -69,7 +65,17 @@
         <slot name="tabs-end" />
       </ul>
     </div>
-    <ReusableEmptyTab.reuse v-if="!props.end" />
+    <BTabsTabContent
+      v-if="!props.end"
+      :content-class="props.contentClass"
+      :show-empty="showEmpty"
+      :card="props.card"
+    >
+      <slot />
+      <template #empty>
+        <slot name="empty" />
+      </template>
+    </BTabsTabContent>
   </component>
 </template>
 
@@ -89,13 +95,13 @@ import {
 import {BvEvent} from '../../utils/classes'
 import {useAlignment} from '../../composables/useAlignment'
 import {useId} from '../../composables/useId'
-import {createReusableTemplate} from '@vueuse/core'
 import type {TabType, BTabsProps, BTabsEmits, BTabsSlots} from '../../types'
 import {tabsInjectionKey} from '../../utils/keys'
 import {useDefaults} from '../../composables/useDefaults'
 import {getSafeDocument, sortSlotElementsByPosition} from '../../utils/dom'
 import {flattenFragments} from '../../utils/flattenFragments'
 import BTab from './BTab.vue'
+import BTabsTabContent from './BTabsTabContent.vue'
 
 const _props = withDefaults(defineProps<Omit<BTabsProps, 'modelValue' | 'activeIndex'>>(), {
   activeNavItemClass: undefined,
@@ -133,8 +139,6 @@ const activeIndex = defineModel<Exclude<BTabsProps['index'], undefined>>('index'
 const activeId = defineModel<BTabsProps['modelValue']>({
   default: undefined,
 })
-
-const ReusableEmptyTab = createReusableTemplate()
 
 const tabsInternal = ref<Ref<TabType>[]>([])
 
