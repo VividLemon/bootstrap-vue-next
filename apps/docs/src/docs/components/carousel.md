@@ -27,6 +27,14 @@ of its parent container.
 Internally, `<BCarouselSlide>` uses the [`<BImg>`](/docs/components/image) component to render
 the images. The `img-*` props map to the corresponding props available to `<BImg>`.
 
+### Responsive images
+
+Use the `img-srcset` prop on `<BCarouselSlide>` to provide a comma-separated list of candidate
+image sources, letting the browser pick the best fit for the current viewport and pixel density.
+This pairs naturally with `img-src` (which acts as the fallback).
+
+<<< DEMO ./demo/CarouselResponsiveImages.vue#template{vue-html}
+
 ### Indicators
 
 With the `indicators` prop, can add indicators to the Carousel, along side the previous/next controls. The indicators let users jump to a particular slide.
@@ -112,6 +120,18 @@ You can change the default starting slide by binding the v-model to the index of
 - Starts at the last index (2)
 
 <<< DEMO ./demo/CarouselStartingSlide.vue
+
+## Handling navigation events
+
+`BCarousel` emits `prev-click` and `next-click` events when the user clicks the previous/next
+controls. These are useful for analytics, logging, or triggering side effects without reading the
+current slide index. Both events pass the native `MouseEvent`.
+
+Note: these events fire only from the prev/next arrow controls — clicking the indicators or
+programmatic navigation (via `v-model` or the exposed `next()`/`prev()` methods) will not
+trigger them.
+
+<<< DEMO ./demo/CarouselClickEvents.vue
 
 ## Exposed Methods
 
