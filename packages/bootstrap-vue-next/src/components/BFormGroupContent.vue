@@ -41,11 +41,13 @@ defineProps<{
   descriptionId: string | undefined
 }>()
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 defineSlots<{
-  'invalid-feedback'?: () => unknown
-  'valid-feedback'?: () => unknown
-  description?: () => unknown
+  'invalid-feedback'?: (props: Record<string, never>) => any
+  'valid-feedback'?: (props: Record<string, never>) => any
+  description?: (props: Record<string, never>) => any
 }>()
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 const slots = useSlots()
 const hasInvalidFeedbackSlot = computed(() => !!slots['invalid-feedback'])

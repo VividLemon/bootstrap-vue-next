@@ -21,8 +21,10 @@ defineProps<{
   card: boolean
 }>()
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 defineSlots<{
-  default?: () => unknown
-  empty?: () => unknown
+  default?: (props: Record<string, never>) => any
+  empty?: (props: Record<string, never>) => any
 }>()
+/* eslint-enable @typescript-eslint/no-explicit-any */
 </script>

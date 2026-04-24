@@ -12,7 +12,7 @@
   >
     <!-- End of definitions -->
     <BFormRow v-if="isHorizontal">
-      <BFormGroupLabel v-if="labelShowing" v-bind="labelComponentProps">
+      <BFormGroupLabel v-if="labelShowing" v-bind="labelComponentProps" @legend-click="onLegendClick">
         <template v-if="slots.label" #label>
           <slot name="label" />
         </template>
@@ -45,7 +45,7 @@
           :description-id="descriptionId"
           :label-id="labelId"
         />
-        <BFormGroupLabel v-if="labelShowing" v-bind="labelComponentProps">
+        <BFormGroupLabel v-if="labelShowing" v-bind="labelComponentProps" @legend-click="onLegendClick">
           <template v-if="slots.label" #label>
             <slot name="label" />
           </template>
@@ -63,7 +63,7 @@
         </BFormGroupContent>
       </div>
       <template v-else>
-        <BFormGroupLabel v-if="labelShowing" v-bind="labelComponentProps">
+        <BFormGroupLabel v-if="labelShowing" v-bind="labelComponentProps" @legend-click="onLegendClick">
           <template v-if="slots.label" #label>
             <slot name="label" />
           </template>
@@ -280,7 +280,6 @@ const labelComponentProps = computed(() => ({
   labelColProps: labelColProps.value,
   labelAlignClasses: labelAlignClasses.value,
   labelClasses: labelClasses.value,
-  onLegendClick,
 }))
 
 const contentComponentProps = computed(() => ({

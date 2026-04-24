@@ -7,7 +7,7 @@
     :for="computedLabelFor || null"
     :tabindex="isFieldset ? '-1' : null"
     :class="[labelAlignClasses, labelClasses]"
-    @click="isFieldset ? onLegendClick : undefined"
+    @click="isFieldset ? (e: MouseEvent) => emit('legendClick', e) : undefined"
   >
     <slot name="label">{{ label }}</slot>
   </BCol>
@@ -18,7 +18,7 @@
     :for="computedLabelFor || null"
     :tabindex="isFieldset ? '-1' : null"
     :class="labelClasses"
-    @click="isFieldset ? onLegendClick : undefined"
+    @click="isFieldset ? (e: MouseEvent) => emit('legendClick', e) : undefined"
   >
     <slot name="label">{{ label }}</slot>
   </component>
@@ -38,10 +38,15 @@ defineProps<{
   labelColProps: Record<string, unknown>
   labelAlignClasses: string[]
   labelClasses: ClassValue
-  onLegendClick: (event: MouseEvent) => void
 }>()
 
-defineSlots<{
-  label?: () => unknown
+const emit = defineEmits<{
+  legendClick: [event: MouseEvent]
 }>()
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+defineSlots<{
+  label?: (props: Record<string, never>) => any
+}>()
+/* eslint-enable @typescript-eslint/no-explicit-any */
 </script>
