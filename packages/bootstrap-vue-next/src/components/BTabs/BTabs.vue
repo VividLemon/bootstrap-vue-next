@@ -1,11 +1,6 @@
 <template>
   <component :is="props.tag" :id="props.id" class="tabs" :class="computedClasses">
-    <BTabsTabContent
-      v-if="props.end"
-      :content-class="props.contentClass"
-      :show-empty="showEmpty"
-      :card="props.card"
-    >
+    <BTabsTabContent v-if="props.end" v-bind="tabContentProps">
       <slot />
       <template #empty>
         <slot name="empty" />
@@ -65,12 +60,7 @@
         <slot name="tabs-end" />
       </ul>
     </div>
-    <BTabsTabContent
-      v-if="!props.end"
-      :content-class="props.contentClass"
-      :show-empty="showEmpty"
-      :card="props.card"
-    >
+    <BTabsTabContent v-if="!props.end" v-bind="tabContentProps">
       <slot />
       <template #empty>
         <slot name="empty" />
@@ -101,7 +91,7 @@ import {useDefaults} from '../../composables/useDefaults'
 import {getSafeDocument, sortSlotElementsByPosition} from '../../utils/dom'
 import {flattenFragments} from '../../utils/flattenFragments'
 import BTab from './BTab.vue'
-import BTabsTabContent from './BTabsTabContent.vue'
+import BTabsTabContent from '../BTabsTabContent.vue'
 
 const _props = withDefaults(defineProps<Omit<BTabsProps, 'modelValue' | 'activeIndex'>>(), {
   activeNavItemClass: undefined,
@@ -310,6 +300,12 @@ function updateInitialIndexAndId() {
 updateInitialIndexAndId()
 
 const showEmpty = computed(() => !(tabs?.value && tabs.value.length > 0))
+
+const tabContentProps = computed(() => ({
+  contentClass: props.contentClass,
+  showEmpty: showEmpty.value,
+  card: props.card,
+}))
 
 const computedClasses = computed(() => ({
   'd-flex': props.vertical,

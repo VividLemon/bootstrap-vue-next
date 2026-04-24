@@ -24,21 +24,21 @@
 
 <script setup lang="ts">
 import {computed, useSlots} from 'vue'
-import type {ValidationState} from '../../types'
-import BFormInvalidFeedback from '../BForm/BFormInvalidFeedback.vue'
-import BFormValidFeedback from '../BForm/BFormValidFeedback.vue'
-import BFormText from '../BForm/BFormText.vue'
+import type {ValidationState} from '../types'
+import BFormInvalidFeedback from './BForm/BFormInvalidFeedback.vue'
+import BFormValidFeedback from './BForm/BFormValidFeedback.vue'
+import BFormText from './BForm/BFormText.vue'
 
 defineProps<{
-  invalidFeedback?: string
-  validFeedback?: string
-  description?: string
-  feedbackAriaLive?: string
-  state?: ValidationState
-  tooltip?: boolean
-  invalidFeedbackId?: string
-  validFeedbackId?: string
-  descriptionId?: string
+  invalidFeedback: string | undefined
+  validFeedback: string | undefined
+  description: string | undefined
+  feedbackAriaLive: string | undefined
+  state: ValidationState | undefined
+  tooltip: boolean | undefined
+  invalidFeedbackId: string | undefined
+  validFeedbackId: string | undefined
+  descriptionId: string | undefined
 }>()
 
 defineSlots<{

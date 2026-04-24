@@ -13,10 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import type {ClassValue} from '../../types/AnyValuedAttributes'
+import type {ClassValue} from '../types/AnyValuedAttributes'
 
 defineProps<{
-  contentClass?: ClassValue
+  contentClass: ClassValue | undefined
   showEmpty: boolean
   card: boolean
 }>()

@@ -1,17 +1,10 @@
 <template>
   <component :is="props.tag" class="card" :class="computedClasses">
-    <BCardImgSlot
-      v-if="props.imgPlacement !== 'bottom'"
-      :img-src="props.imgSrc"
-      :img-alt="props.imgAlt"
-      :img-height="props.imgHeight"
-      :img-width="props.imgWidth"
-      :img-placement="props.imgPlacement"
-    >
-      <template #img>
-        <slot name="img" />
-      </template>
-    </BCardImgSlot>
+    <template v-if="props.imgPlacement !== 'bottom'">
+      <slot name="img">
+        <BCardImg v-if="props.imgSrc" v-bind="imgAttr" />
+      </slot>
+    </template>
     <BCardHeader
       v-if="props.header || hasHeaderSlot"
       :bg-variant="props.headerBgVariant"
@@ -59,18 +52,11 @@
         {{ props.footer }}
       </slot>
     </BCardFooter>
-    <BCardImgSlot
-      v-if="props.imgPlacement === 'bottom'"
-      :img-src="props.imgSrc"
-      :img-alt="props.imgAlt"
-      :img-height="props.imgHeight"
-      :img-width="props.imgWidth"
-      :img-placement="props.imgPlacement"
-    >
-      <template #img>
-        <slot name="img" />
-      </template>
-    </BCardImgSlot>
+    <template v-if="props.imgPlacement === 'bottom'">
+      <slot name="img">
+        <BCardImg v-if="props.imgSrc" v-bind="imgAttr" />
+      </slot>
+    </template>
   </component>
 </template>
 
@@ -80,7 +66,7 @@ import {isEmptySlot} from '../../utils/dom'
 import {computed} from 'vue'
 import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
 import {useDefaults} from '../../composables/useDefaults'
-import BCardImgSlot from './BCardImgSlot.vue'
+import BCardImg from './BCardImg.vue'
 import BCardHeader from './BCardHeader.vue'
 import BCardBody from './BCardBody.vue'
 import BCardFooter from './BCardFooter.vue'
@@ -142,4 +128,12 @@ const computedClasses = computed(() => [
     'flex-row-reverse': props.imgPlacement === 'end',
   },
 ])
+
+const imgAttr = computed(() => ({
+  src: props.imgSrc,
+  alt: props.imgAlt,
+  height: props.imgHeight,
+  width: props.imgWidth,
+  placement: props.imgPlacement,
+}))
 </script>
