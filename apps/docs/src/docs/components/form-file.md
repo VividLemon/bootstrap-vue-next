@@ -13,6 +13,14 @@ BFormFile provides a customized, cross-browser consistent file input control wit
 - Custom text and placeholders
 - Bootstrap validation states
 
+## Lightweight Alternative
+
+If you need a simple file picker without the advanced features of `BFormFile`, you can use [`BFormInput`](/docs/components/form-input#file-type-input) with `type="file"`. This renders the browser's built-in file control with Bootstrap styling and is sufficient for basic file selection use cases.
+
+::: tip
+When using `BFormInput` with `type="file"`, the `v-model`, `formatter`, `debounce`, and `lazy` props are non-functional. Use a `@change` event handler with `event.target.files` to access the selected `File` objects. For drag-and-drop, multiple file selection, directory mode, custom placeholders, and file name formatting, use `BFormFile`.
+:::
+
 ## Single File Mode
 
 The default behavior is single file mode. While using single file mode the `modelValue` will be a single `File` object

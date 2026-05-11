@@ -37,5 +37,6 @@ const inputTypes = [
   'datetime-local',
   'month',
   'week',
+  'file',
 ] as InputType[]
 </script>
