@@ -3,6 +3,12 @@ import Layout from './Layout.vue'
 import type { EnhanceAppContext, Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import { appInfoKey } from './keys'
+import { vBColorMode } from 'bootstrap-vue-next/directives/BColorMode'
+import { vBModal } from 'bootstrap-vue-next/directives/BModal'
+import { vBPopover } from 'bootstrap-vue-next/directives/BPopover'
+import { vBScrollspy } from 'bootstrap-vue-next/directives/BScrollspy'
+import { vBToggle } from 'bootstrap-vue-next/directives/BToggle'
+import { vBTooltip } from 'bootstrap-vue-next/directives/BTooltip'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
@@ -54,5 +60,12 @@ export default {
       discordUrl: 'https://discord.gg/j2Mtcny',
       opencollectiveUrl: 'https://opencollective.com/bootstrap-vue-next',
     })
+
+    app.directive('b-color-mode', vBColorMode)
+    app.directive('b-modal', vBModal)
+    app.directive('b-popover', vBPopover)
+    app.directive('b-scrollspy', vBScrollspy)
+    app.directive('b-toggle', vBToggle)
+    app.directive('b-tooltip', vBTooltip)
   },
 } satisfies Theme
