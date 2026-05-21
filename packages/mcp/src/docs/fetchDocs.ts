@@ -4,6 +4,7 @@ export const DEFAULT_DOCS_BASE_URL =
   'https://bootstrap-vue-next.github.io/bootstrap-vue-next/'
 
 export const CACHE_TTL = 10 * 60 * 1000
+const MAX_FETCH_ATTEMPTS = 2
 
 const DOC_PATHS = ['llms-full.txt', 'llms.txt'] as const
 
@@ -58,7 +59,7 @@ const fetchArtifact = async (url: string): Promise<string> => {
 const fetchWithRetry = async (url: string): Promise<string> => {
   let lastError: unknown
 
-  for (let attempt = 0; attempt < 2; attempt += 1) {
+  for (let attempt = 0; attempt < MAX_FETCH_ATTEMPTS; attempt += 1) {
     try {
       return await fetchArtifact(url)
     } catch (error) {

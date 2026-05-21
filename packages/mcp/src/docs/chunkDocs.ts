@@ -23,11 +23,12 @@ const splitBySize = (content: string): string[] => {
 
   while (remaining.length > MAX_CHUNK_SIZE) {
     const slice = remaining.slice(0, MAX_CHUNK_SIZE)
-    const splitIndex = Math.max(
+    const splitIndexCandidates = [
       slice.lastIndexOf('\n\n'),
       slice.lastIndexOf('\n'),
-      slice.lastIndexOf(' ')
-    )
+      slice.lastIndexOf(' '),
+    ]
+    const splitIndex = splitIndexCandidates.find((candidate) => candidate > 0) ?? -1
     const safeSplitIndex = splitIndex > 0 ? splitIndex : MAX_CHUNK_SIZE
     const chunk = remaining.slice(0, safeSplitIndex).trim()
 
