@@ -26,7 +26,7 @@ describe('LLMS snippet resolution', () => {
     )
   })
 
-  it('maps nested index pages to llm markdown output paths', () => {
+  it('maps nested index pages to LLM markdown output paths', () => {
     expect(toLLMOutputPath(path.join(docsRoot, 'components/index.md'), docsRoot)).toBe('components.md')
     expect(toLLMOutputPath(path.join(docsRoot, 'migration-guide.md'), docsRoot)).toBe('migration-guide.md')
   })

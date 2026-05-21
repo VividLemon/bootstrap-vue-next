@@ -123,8 +123,12 @@ const findRegionEnd = (lines: string[], regionName: string, regionStart: RegionR
     }
 
     const endRegion = regionStart.matcher.end.exec(line)?.[1]
-    if ((endRegion === regionName || endRegion === '') && (counter -= 1) === 0) {
-      return index
+    if (endRegion === regionName || endRegion === '') {
+      counter -= 1
+
+      if (counter === 0) {
+        return index
+      }
     }
   }
 }
@@ -203,10 +207,17 @@ const resolveDirective = (rawPath: string, sourceMarkdownPath: string): string |
     return
   }
 
-  const snippetContent = extractSnippetContent(fs.readFileSync(snippetPath, 'utf8').replaceAll('\r\n', '\n'), region)
-  const fenceLanguage = lang || extension
+  try {
+    const snippetContent = extractSnippetContent(
+      fs.readFileSync(snippetPath, 'utf8').replaceAll('\r\n', '\n'),
+      region
+    )
+    const fenceLanguage = lang || extension
 
-  return `\`\`\`${fenceLanguage}\n${snippetContent}\n\`\`\``
+    return `\`\`\`${fenceLanguage}\n${snippetContent}\n\`\`\``
+  } catch {
+    return
+  }
 }
 
 export const resolveLLMSnippetDirectives = (content: string, sourceMarkdownPath: string): string =>
