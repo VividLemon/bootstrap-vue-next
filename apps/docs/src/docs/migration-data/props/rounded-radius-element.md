@@ -61,7 +61,7 @@ Directional `rounded` prop values from BootstrapVue are replaced by edge-specifi
 [`RadiusElementExtendables`](/docs/types#radiuselementextendables) in order to support complex
 rounding behavior. The `rounded`, `rounded-top`, `rounded-bottom`, `rounded-start`, and `rounded-end`
 props each takes a [`RadiusElement`](/docs/types#radiuselement) value to specify how the component
-is rounded. The edge specific props such as`rounded-top` override the `rounded` prop for that edge.
+is rounded. The edge specific props such as `rounded-top` override the `rounded` prop for that edge.
 
 This takes the place of `top`, `bottom`, `left`, and `right` values for the `rounded` prop.
 

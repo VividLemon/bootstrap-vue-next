@@ -30,7 +30,7 @@ Migration notes for BInputGroupAppend from BootstrapVue to BootstrapVueNext.
 
 ## Breaking Change
 
-Deprecated - See [BInputGroup]
+Deprecated - See [BInputGroup](/docs/migration-data/components/binputgroup)
 
 ## Migration Notes
 

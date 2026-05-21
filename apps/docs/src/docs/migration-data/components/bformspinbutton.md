@@ -5,7 +5,7 @@ category: components
 components:
   - BFormSpinButton
 match:
-  - BFormSpinbutton
+  - BFormSpinButton
 tags:
   - migration
   - components
