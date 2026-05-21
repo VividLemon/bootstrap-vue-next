@@ -58,6 +58,19 @@ function toCamelCase(str: string): string {
   return str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())
 }
 
+function toDirectiveMigrationId(str: string): string {
+  if (str.startsWith('B')) {
+    const directiveName = str
+      .slice(1)
+      .replace(/([A-Z])/g, '-$1')
+      .toLowerCase()
+      .replace(/^-/, '')
+    return `v-b-${directiveName}`
+  }
+
+  return `v-${str.toLowerCase()}`
+}
+
 defineSlots<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   default: (props: Record<string, never>) => any
@@ -166,7 +179,7 @@ const migrationHref = computed(() => {
         ? filename.slice(1)
         : filename
     anchor = name.toLowerCase()
-    migrationId = `v-${filename.startsWith('B') ? `b-${filename.slice(1).replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '')}` : filename.toLowerCase()}`
+    migrationId = toDirectiveMigrationId(filename)
   }
 
   if (typeof fmOverride === 'string' && fmOverride) {

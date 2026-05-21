@@ -46,13 +46,13 @@ const isRouteActive = (url: string) => {
 }
 
 const headerClasses = ['py-2', 'text-primary-emphasis'] as const
-const linkClasses = ['px-2', 'ms-2', 'text-decoration-none', 'text-body', 'fs-7'] as const
+const sharedIndentClasses = ['px-2', 'ms-2'] as const
+const linkClasses = [...sharedIndentClasses, 'text-decoration-none', 'text-body', 'fs-7'] as const
 const listGroupItemClasses = ['border-0', 'px-0', 'py-0-5', 'ms-2'] as const
 const headerInsideClasses = [
   'd-inline-flex',
   'align-items-center',
-  'px-2',
-  'ms-2',
+  ...sharedIndentClasses,
   'text-decoration-none',
 ] as const
 
