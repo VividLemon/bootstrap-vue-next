@@ -78,6 +78,7 @@ jobs:
         if: ${{ steps.release.outputs.releases_created == 'true' && steps.release.outputs['packages/nuxt--release_created'] == 'true' }}
 
       - name: Publish MCP
+        # MCP publishes to its own npm dist-tag so it can release independently from the main latest channel.
         run: pnpm publish --tag mcp --filter @bootstrap-vue-next/mcp --access=public
         if: ${{ steps.release.outputs.releases_created == 'true' && steps.release.outputs['packages/mcp--release_created'] == 'true' }}
 
