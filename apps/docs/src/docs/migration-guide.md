@@ -3,7 +3,7 @@ description: >
   Guide for migrating from BootstrapVue to BootstrapVueNext. Learn about breaking changes, deprecated features, and how to update your components, directives, and configuration for Vue 3 and Bootstrap 5.
 ---
 
-> The structured [migration knowledge base](/docs/migration-data/) is now the canonical migration reference. This page is kept for historical anchor links and compatibility with existing documentation links.
+> The structured [migration knowledge base](/docs/migration-data/) is now the canonical migration reference.
 
 ## Overview
 
