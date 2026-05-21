@@ -17,7 +17,7 @@
     }
   },
   "imports": {
-    "#mcp-sdk/server": "@modelcontextprotocol/sdk/server",
+    "#mcp-sdk/server": "@modelcontextprotocol/sdk/server/index.js",
     "#mcp-sdk/stdio": "@modelcontextprotocol/sdk/server/stdio.js",
     "#mcp-sdk/types": "@modelcontextprotocol/sdk/types.js"
   },
