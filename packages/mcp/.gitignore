@@ -15,6 +15,7 @@ node_modules
 
 # Generated dirs
 dist
+.eslintcache
 
 # Env
 .env

@@ -11,7 +11,7 @@ const SERVER_INFO = {
   version: packageJson.version,
 } as const
 
-const registerTools = (_server: Server): void => {
+const registerTools = (): void => {
   // Future MCP tool registration belongs here.
 }
 
@@ -22,7 +22,7 @@ export const createServer = (): Server => {
     },
   })
 
-  registerTools(server)
+  registerTools()
 
   server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: [],
