@@ -38,7 +38,7 @@ the `inputHandlers` for the default slot's scoped properties such that one could
 [BootstrapVue](https://bootstrap-vue.github.io/bootstrap-vue/docs/components/form-tags#advanced-custom-rendering-usage) documentation
 for an example. This is no longer the case with BootstrapVueNext.
 
-In general BootstrapVueNext prefered clean APIs to enabling this kind of matching of events, so many of the advanced
+In general BootstrapVueNext preferred clean APIs to enabling this kind of matching of events, so many of the advanced
 examples in the [BFormTags docs](https://bootstrap-vue-next.github.io/bootstrap-vue-next/docs/components/form-tags.html#custom-rendering-with-default-scoped-slot) are more explicit when binding attributes from other controls. Please
 take a look at these examples for guidance when migrating.
 

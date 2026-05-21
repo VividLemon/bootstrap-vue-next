@@ -37,10 +37,6 @@ Migration notes for v-b-visible from BootstrapVue to BootstrapVueNext.
   composable instead, which provides the same functionality with better performance.
 </DeprecatedFeature>
 
-<script setup lang="ts">
-import {DeprecationReason} from '../types/deprecation'
-</script>
-
 ## Migration Notes
 
 - Extracted from the canonical BootstrapVue → BootstrapVueNext migration guide.

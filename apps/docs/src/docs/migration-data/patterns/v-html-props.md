@@ -92,7 +92,7 @@ below uses the data on the options object to create the html inline in the slot.
 <<< DEMO ../../demo/CheckboxGroupMigration.vue
 
 Or you can do a straightforward translation of a `BFormRadioGroup` passing an `HTML` string through to its children.
-If you're passing user data, this still opens your code uop to <a class="alert-link" href="https://en.wikipedia.org/wiki/Cross-site_scripting">
+If you're passing user data, this still opens your code up to <a class="alert-link" href="https://en.wikipedia.org/wiki/Cross-site_scripting">
 <abbr title="Cross Site Scripting Attacks">XSS attacks</abbr></a>, if you do not first
 <a class="alert-link" href="https://en.wikipedia.org/wiki/HTML_sanitization">sanitize</a> the
 user supplied string, but the BootstrapVueNext library isn't adding an extra layer of abstraction to this vulnerability.

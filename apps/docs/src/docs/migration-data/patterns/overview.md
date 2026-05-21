@@ -69,7 +69,7 @@ our best to note each component or directive that hasn't been through the full p
 <NotYetDocumented :help-only="true" />
 
 For section of this guide that are not marked as in progress, we're still interested in examples of migrations that you
-have found tricky or clarifcation if the details in the guide weren't sufficent.
+have found tricky or clarification if the details in the guide weren't sufficient.
 
 ### Deprecation
 

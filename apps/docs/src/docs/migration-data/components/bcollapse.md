@@ -56,7 +56,7 @@ collapse that is closed and transitions to open on the initial mount, set `visib
 The `close` scoped slot element has been replaced by `hide` for consistency with the other props and
 events on this component.
 
-`$root` instance events `bv::collapse::state` and `bv::toggle::collapse` are deprecrated.
+`$root` instance events `bv::collapse::state` and `bv::toggle::collapse` are deprecated.
 
 See [Show and Hide](/docs/migration-data/patterns/show-hide) shared properties.
 
