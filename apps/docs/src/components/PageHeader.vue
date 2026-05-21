@@ -71,10 +71,10 @@ function fileNameToDirectiveMigrationId(str: string): string {
   return `v-${str.toLowerCase()}`
 }
 
-function getFallbackMigrationUrl(target?: string | null): string {
+function getFallbackMigrationUrl(anchorName?: string | null): string {
   const baseUrl = '/docs/migration-data/patterns/overview'
 
-  if (target === 'deprecation') {
+  if (anchorName === 'deprecation') {
     return withBase(`${baseUrl}#deprecation`)
   }
 
