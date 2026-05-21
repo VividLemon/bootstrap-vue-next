@@ -61,6 +61,15 @@ jobs:
       - name: Run publint on Nuxt package
         run: pnpm --filter @bootstrap-vue-next/nuxt run publint
 
+      - name: Run publint on MCP package
+        run: pnpm --filter @bootstrap-vue-next/mcp run publint
+
+      - name: Build MCP package
+        run: pnpm --filter @bootstrap-vue-next/mcp run build
+
+      - name: Typecheck MCP package
+        run: pnpm --filter @bootstrap-vue-next/mcp run typecheck
+
       - run: pnpx pkg-pr-new publish './packages/bootstrap-vue-next' './packages/nuxt' --template './templates/vite'
 
   test-lint:
@@ -98,6 +107,9 @@ jobs:
 
       - name: Test Lint
         run: pnpm run test:lint:ci
+
+      - name: Test Lint MCP package
+        run: pnpm --filter @bootstrap-vue-next/mcp run test:lint
 
   test-unit:
     runs-on: ubuntu-latest

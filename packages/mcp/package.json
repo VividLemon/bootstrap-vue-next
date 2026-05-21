@@ -1,6 +1,6 @@
 {
   "name": "@bootstrap-vue-next/mcp",
-  "version": "0.45.3",
+  "version": "0.0.1",
   "description": "BootstrapVueNext MCP server foundation",
   "license": "MIT",
   "author": {
@@ -30,6 +30,7 @@
     "dev": "tsx watch src/index.ts",
     "lint": "pnpm run lint:eslint",
     "lint:eslint": "eslint . --fix --cache",
+    "publint": "publint",
     "test:lint": "eslint src",
     "test:lint:ci": "pnpm run test:lint",
     "typecheck": "tsc --noEmit -p tsconfig.json",
@@ -45,6 +46,7 @@
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
+    "publint": "^0.3.18",
     "tsx": "^4.22.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.1"
