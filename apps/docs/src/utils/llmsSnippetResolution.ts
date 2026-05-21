@@ -180,7 +180,7 @@ const extractSnippetContent = (rawCode: string, region: string): string => {
   )
 }
 
-const normalizeOutputPath = (outputPath: string, base: string): string => {
+export const normalizeLLMOutputPath = (outputPath: string, base: string): string => {
   const normalizedBase = base.replace(/^\/+|\/+$/g, '')
   const urlPath = (() => {
     try {
@@ -196,6 +196,26 @@ const normalizeOutputPath = (outputPath: string, base: string): string => {
   }
 
   return normalizedPath
+}
+
+export const toSourceMarkdownPath = (outputPath: string, srcDir: string): string | undefined => {
+  const directPath = path.resolve(srcDir, outputPath)
+
+  if (fs.existsSync(directPath)) {
+    return directPath
+  }
+
+  const parsedPath = path.parse(outputPath)
+
+  if (parsedPath.ext !== '.md') {
+    return
+  }
+
+  const indexPath = path.resolve(srcDir, parsedPath.dir, parsedPath.name, 'index.md')
+
+  if (fs.existsSync(indexPath)) {
+    return indexPath
+  }
 }
 
 const resolveDirective = (rawPath: string, sourceMarkdownPath: string): string | undefined => {
@@ -247,7 +267,7 @@ export const rebuildLLMSFullContent = (
 ): string | undefined => {
   const matches = [...llmsTxtContent.matchAll(/\[[^\]]+\]\(([^)]+\.md)\)/g)]
   const pages = matches
-    .map((match) => normalizeOutputPath(match[1] ?? '', base))
+    .map((match) => normalizeLLMOutputPath(match[1] ?? '', base))
     .filter((outputPath) => outputPath !== '')
     .map((outputPath) => readPage(outputPath))
     .filter((page): page is string => page !== undefined)
@@ -257,4 +277,26 @@ export const rebuildLLMSFullContent = (
   }
 
   return pages.join('\n---\n\n')
+}
+
+export const getMaterializedSourceMarkdown = (
+  outputPath: string,
+  srcDir: string
+): {content: string; sourceMarkdownPath: string} | undefined => {
+  const sourceMarkdownPath = toSourceMarkdownPath(outputPath, srcDir)
+
+  if (sourceMarkdownPath === undefined) {
+    return
+  }
+
+  try {
+    const sourceContent = fs.readFileSync(sourceMarkdownPath, 'utf8')
+
+    return {
+      content: resolveLLMSnippetDirectives(sourceContent, sourceMarkdownPath),
+      sourceMarkdownPath,
+    }
+  } catch {
+    return
+  }
 }

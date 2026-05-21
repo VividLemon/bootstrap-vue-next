@@ -1,7 +1,13 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'node:fs'
 import path from 'node:path'
-import { rebuildLLMSFullContent, resolveLLMSnippetDirectives, toLLMOutputPath } from '../../src/utils/llmsSnippetResolution'
+import {
+  getMaterializedSourceMarkdown,
+  normalizeLLMOutputPath,
+  rebuildLLMSFullContent,
+  resolveLLMSnippetDirectives,
+  toLLMOutputPath,
+} from '../../src/utils/llmsSnippetResolution'
 
 type VitePressResolvedConfig = ResolvedConfig & {
   vitepress: {
@@ -35,10 +41,36 @@ export const materializeLLMSSnippets = (): Plugin => {
 
   return {
     name: 'materialize-llms-snippets',
-    apply: 'build',
     enforce: 'post',
     configResolved(config) {
       resolvedConfig = config
+    },
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (resolvedConfig === undefined || req.url === undefined || !req.url.endsWith('.md')) {
+          next()
+          return
+        }
+
+        const vitePressConfig = resolvedConfig as VitePressResolvedConfig
+        const srcDir = path.resolve(vitePressConfig.root, vitePressConfig.vitepress.srcDir)
+        const outputPath = normalizeLLMOutputPath(req.url, vitePressConfig.base)
+
+        if (outputPath === '') {
+          next()
+          return
+        }
+
+        const materializedMarkdown = getMaterializedSourceMarkdown(outputPath, srcDir)
+
+        if (materializedMarkdown === undefined) {
+          next()
+          return
+        }
+
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+        res.end(materializedMarkdown.content)
+      })
     },
     closeBundle() {
       if (resolvedConfig === undefined) {
@@ -46,6 +78,11 @@ export const materializeLLMSSnippets = (): Plugin => {
       }
 
       const vitePressConfig = resolvedConfig as VitePressResolvedConfig
+
+      if (vitePressConfig.command !== 'build') {
+        return
+      }
+
       const srcDir = path.resolve(vitePressConfig.root, vitePressConfig.vitepress.srcDir)
       const outDir = path.resolve(vitePressConfig.root, vitePressConfig.vitepress.outDir)
 
