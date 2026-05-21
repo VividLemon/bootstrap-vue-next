@@ -1,6 +1,6 @@
 # @bootstrap-vue-next/mcp
 
-Minimal Model Context Protocol server package for future BootstrapVueNext migration tooling.
+Minimal Model Context Protocol server package for BootstrapVueNext migration tooling.
 
 ## Development
 
@@ -25,5 +25,6 @@ pnpm --filter @bootstrap-vue-next/mcp run start
 ## Notes
 
 - `src/index.ts` initializes the MCP server and stdio transport.
-- Tool registration is intentionally scaffold-only for future implementation.
-- No migration logic or codemods are included in this package yet.
+- Hosted docs are fetched lazily from `llms-full.txt` with in-memory caching and a fallback to `llms.txt`.
+- Available tools include `get_migration_help` and `search_docs`.
+- No migration logic or codemods are included in this package.
