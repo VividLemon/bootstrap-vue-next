@@ -499,11 +499,13 @@ export const createServer = (options: CreateServerOptions = {}): Server => {
         const matches = await migrationKnowledgeBase.identifyEntries(terms, {
           includeRelated: getBooleanArgument(arguments_, 'includeRelated'),
         })
-
-        return toTextResult(
+        const identifyText =
           matches.length === 0
             ? `No migration entries matched: ${terms.join(', ')}`
-            : [`Identified migration entries:`, '', ...matches.map(formatMigrationMatch)].join('\n'),
+            : ['Identified migration entries:', '', ...matches.map(formatMigrationMatch)].join('\n')
+
+        return toTextResult(
+          identifyText,
           {
             matches,
             terms,

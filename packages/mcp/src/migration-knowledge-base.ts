@@ -103,12 +103,14 @@ const isStringRecord = (value: unknown): value is Record<string, string> =>
   Object.values(value).every((item) => typeof item === 'string')
 
 const normalizeLookupKey = (value: string): string =>
-  value
-    .toLowerCase()
-    .replace(/[`'"()[\]{}]/g, ' ')
-    .replace(/[^a-z0-9]+/g, ' ')
-    .trim()
-    .replace(/\s+/g, ' ')
+  value.trim() === ''
+    ? ''
+    : value
+        .toLowerCase()
+        .replace(/[`'"()[\]{}]/g, ' ')
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim()
+        .replace(/\s+/g, ' ')
 
 const uniqueStrings = (values: Iterable<string>): string[] => [...new Set(values)]
 
@@ -149,8 +151,9 @@ const extractSummary = (content: string, fallbackTitle: string): string => {
 const normalizeMigrationMarkdown = (content: string): string =>
   content
     .replaceAll('\r\n', '\n')
-    .replace(/<BLink\s+[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/BLink>/g, (_, href: string, text: string) =>
-      `${text.trim()} (${href})`
+    .replace(
+      /<BLink\s+[^>]*href=['"]([^'"]+)['"][^>]*>([\s\S]*?)<\/BLink>/g,
+      (_, href: string, text: string) => `${text.trim()} (${href})`
     )
     .replace(/<([A-Z][A-Za-z0-9-]*)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/g, (_, _tag: string, inner: string) =>
       inner.trim()

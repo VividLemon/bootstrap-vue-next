@@ -3,7 +3,7 @@ export const DOCS_BASE_URL_ENV_VAR = 'BOOTSTRAP_VUE_NEXT_MCP_DOCS_URL'
 
 type FetchLike = typeof fetch
 
-const markdownLinkRE = /\[[^\]]+\]\(([^)]+\.md)\)/g
+const markdownLinkRegex = /\[[^\]]+\]\(([^)]+\.md)\)/g
 
 export interface DocsSourceOptions {
   docsBaseUrl?: string
@@ -51,7 +51,7 @@ export const extractMarkdownOutputPaths = (
 ): string[] => {
   const outputPaths = new Set<string>()
 
-  for (const match of llmsIndexContent.matchAll(markdownLinkRE)) {
+  for (const match of llmsIndexContent.matchAll(markdownLinkRegex)) {
     const outputPath = normalizeDocsOutputPath(match[1] ?? '', docsBaseUrl)
     if (outputPath !== '') {
       outputPaths.add(outputPath)
