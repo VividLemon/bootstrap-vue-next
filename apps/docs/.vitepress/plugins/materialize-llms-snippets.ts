@@ -3,6 +3,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { rebuildLLMSFullContent, resolveLLMSnippetDirectives, toLLMOutputPath } from '../../src/utils/llmsSnippetResolution'
 
+type VitePressResolvedConfig = ResolvedConfig & {
+  vitepress: {
+    outDir: string
+    srcDir: string
+  }
+}
+
 const findFiles = (directory: string, filename?: string): string[] => {
   if (!fs.existsSync(directory)) {
     return []
@@ -38,8 +45,9 @@ export const materializeLLMSSnippets = (): Plugin => {
         return
       }
 
-      const srcDir = path.resolve(resolvedConfig.root, resolvedConfig.vitepress.srcDir)
-      const outDir = path.resolve(resolvedConfig.root, resolvedConfig.vitepress.outDir)
+      const vitePressConfig = resolvedConfig as VitePressResolvedConfig
+      const srcDir = path.resolve(vitePressConfig.root, vitePressConfig.vitepress.srcDir)
+      const outDir = path.resolve(vitePressConfig.root, vitePressConfig.vitepress.outDir)
 
       for (const sourceMarkdownPath of findFiles(srcDir).filter((file) => file.endsWith('.md'))) {
         const outputPath = path.join(outDir, toLLMOutputPath(sourceMarkdownPath, srcDir))
@@ -69,7 +77,7 @@ export const materializeLLMSSnippets = (): Plugin => {
             const pagePath = path.join(outDir, outputPath)
             return fs.existsSync(pagePath) ? fs.readFileSync(pagePath, 'utf8') : undefined
           },
-          resolvedConfig.base
+          vitePressConfig.base
         )
 
         if (rebuiltContent !== undefined) {
