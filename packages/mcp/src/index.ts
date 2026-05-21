@@ -1,12 +1,14 @@
 import process from 'node:process'
 
-import {Server} from '@modelcontextprotocol/sdk/server/index.js'
-import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js'
-import {ListToolsRequestSchema} from '@modelcontextprotocol/sdk/types.js'
+import {Server} from '#mcp-sdk/server'
+import {StdioServerTransport} from '#mcp-sdk/stdio'
+import {ListToolsRequestSchema} from '#mcp-sdk/types'
+
+import packageJson from '../package.json' with {type: 'json'}
 
 const SERVER_INFO = {
-  name: '@bootstrap-vue-next/mcp',
-  version: '0.45.3',
+  name: packageJson.name,
+  version: packageJson.version,
 } as const
 
 const registerTools = (_server: Server): void => {

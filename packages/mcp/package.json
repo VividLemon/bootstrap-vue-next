@@ -16,6 +16,11 @@
       "import": "./dist/index.js"
     }
   },
+  "imports": {
+    "#mcp-sdk/server": "@modelcontextprotocol/sdk/server",
+    "#mcp-sdk/stdio": "@modelcontextprotocol/sdk/server/stdio.js",
+    "#mcp-sdk/types": "@modelcontextprotocol/sdk/types.js"
+  },
   "files": [
     "dist",
     "README.md"
