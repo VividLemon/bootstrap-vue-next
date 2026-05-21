@@ -407,7 +407,11 @@ export const createServer = (options: CreateServerOptions = {}): Server => {
           )
         }
 
-        return toTextResult(await formatMigrationOverview(migrationKnowledgeBase), {
+        const overviewText =
+          (await formatMigrationOverview(migrationKnowledgeBase)) ??
+          'Unable to render the migration overview from the configured docs base URL.'
+
+        return toTextResult(overviewText, {
           docsBaseUrl: migrationKnowledgeBase.docsBaseUrl,
           overview,
           primaryEntry,
@@ -446,12 +450,18 @@ export const createServer = (options: CreateServerOptions = {}): Server => {
         }
 
         return toTextResult(
-          [`Search results for "${query}":`, '', ...matches.map((entry) => formatMigrationMatch({
-            entry,
-            fromRelated: false,
-            matchedTerms: [query],
-            score: 0,
-          }))].join('\n'),
+          [
+            `Search results for "${query}":`,
+            '',
+            ...matches.map((entry) =>
+              formatMigrationMatch({
+                entry,
+                fromRelated: false,
+                matchedTerms: [query],
+                score: 0,
+              })
+            ),
+          ].join('\n'),
           {
             matches,
             query,
@@ -525,14 +535,14 @@ export const createServer = (options: CreateServerOptions = {}): Server => {
               ? checklist.safeRewriteCandidates.map(formatMigrationMatch)
               : ['- None identified']),
           ].join('\n'),
-          checklist
+          {checklist}
         )
       }
 
       default:
         return toTextResult(`Unknown tool: ${name}`, undefined, true)
     }
-  }))
+  })
 
   return server
 }
