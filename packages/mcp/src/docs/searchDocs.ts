@@ -4,6 +4,12 @@ type SearchResult = DocChunk & {
   score: number
 }
 
+const MAX_POSITION_BONUS = 250
+const EXACT_MATCH_BASE_SCORE = 3000
+const CASE_INSENSITIVE_MATCH_BASE_SCORE = 2000
+const KEYWORD_OVERLAP_BASE_SCORE = 1000
+const KEYWORD_OVERLAP_SCORE = 100
+
 const tokenize = (value: string): string[] =>
   [...new Set((value.toLowerCase().match(/[a-z0-9]+/g) ?? []).filter((token) => token.length > 1))]
 
@@ -14,7 +20,7 @@ const getPositionBonus = (content: string, query: string): number => {
     return 0
   }
 
-  return Math.max(0, 250 - index)
+  return Math.max(0, MAX_POSITION_BONUS - index)
 }
 
 const scoreChunk = (chunk: DocChunk, query: string, keywords: string[]): SearchResult | null => {
@@ -23,7 +29,7 @@ const scoreChunk = (chunk: DocChunk, query: string, keywords: string[]): SearchR
   if (content.includes(query)) {
     return {
       ...chunk,
-      score: 3000 + getPositionBonus(content, query),
+      score: EXACT_MATCH_BASE_SCORE + getPositionBonus(content, query),
     }
   }
 
@@ -33,7 +39,7 @@ const scoreChunk = (chunk: DocChunk, query: string, keywords: string[]): SearchR
   if (loweredContent.includes(loweredQuery)) {
     return {
       ...chunk,
-      score: 2000 + getPositionBonus(loweredContent, loweredQuery),
+      score: CASE_INSENSITIVE_MATCH_BASE_SCORE + getPositionBonus(loweredContent, loweredQuery),
     }
   }
 
@@ -52,7 +58,7 @@ const scoreChunk = (chunk: DocChunk, query: string, keywords: string[]): SearchR
 
   return {
     ...chunk,
-    score: 1000 + overlap * 100,
+    score: KEYWORD_OVERLAP_BASE_SCORE + overlap * KEYWORD_OVERLAP_SCORE,
   }
 }
 

@@ -3,7 +3,8 @@ import process from 'node:process'
 export const DEFAULT_DOCS_BASE_URL =
   'https://bootstrap-vue-next.github.io/bootstrap-vue-next/'
 
-export const CACHE_TTL = 10 * 60 * 1000
+const CACHE_TTL_MINUTES = 10
+export const CACHE_TTL = CACHE_TTL_MINUTES * 60 * 1000
 const MAX_FETCH_ATTEMPTS = 2
 
 const DOC_PATHS = ['llms-full.txt', 'llms.txt'] as const

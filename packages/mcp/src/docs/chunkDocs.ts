@@ -3,7 +3,7 @@ export type DocChunk = {
   content: string
 }
 
-const MAX_CHUNK_SIZE = 2000
+const SAFE_MAX_CHUNK_SIZE = 2000
 const HEADING_PATTERN = /^#{1,2}\s+.+$/gm
 
 const createChunkId = (content: string, index: number): string => {
@@ -21,15 +21,15 @@ const splitBySize = (content: string): string[] => {
   const chunks: string[] = []
   let remaining = content.trim()
 
-  while (remaining.length > MAX_CHUNK_SIZE) {
-    const slice = remaining.slice(0, MAX_CHUNK_SIZE)
+  while (remaining.length > SAFE_MAX_CHUNK_SIZE) {
+    const slice = remaining.slice(0, SAFE_MAX_CHUNK_SIZE)
     const splitIndexCandidates = [
       slice.lastIndexOf('\n\n'),
       slice.lastIndexOf('\n'),
       slice.lastIndexOf(' '),
     ]
     const splitIndex = splitIndexCandidates.find((candidate) => candidate > 0) ?? -1
-    const safeSplitIndex = splitIndex > 0 ? splitIndex : MAX_CHUNK_SIZE
+    const safeSplitIndex = splitIndex > 0 ? splitIndex : SAFE_MAX_CHUNK_SIZE
     const chunk = remaining.slice(0, safeSplitIndex).trim()
 
     if (chunk.length > 0) {

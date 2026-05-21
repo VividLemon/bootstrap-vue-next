@@ -81,9 +81,9 @@ const TOOL_DEFINITIONS = [
   },
 ] satisfies Tool[]
 
-const createToolText = (toolName: string, results: DocChunk[]): string => {
+const createToolText = (results: DocChunk[]): string => {
   if (results.length === 0) {
-    return `${toolName} returned no matching documentation chunks.`
+    return 'No matching documentation chunks were found.'
   }
 
   return results.map((result) => `## ${result.id}\n${result.content}`).join('\n\n')
@@ -141,7 +141,7 @@ const registerTools = (server: Server): void => {
           content: [
             {
               type: 'text',
-              text: createToolText(name, response.results),
+              text: createToolText(response.results),
             },
           ],
           structuredContent: response,
@@ -168,7 +168,7 @@ const registerTools = (server: Server): void => {
           content: [
             {
               type: 'text',
-              text: createToolText(name, response.results),
+              text: createToolText(response.results),
             },
           ],
           structuredContent: response,
