@@ -266,6 +266,10 @@ const headerLinks = [
     route: withBase('/docs/migration-guide'),
     label: 'Migrate',
   },
+  {
+    route: withBase('/docs/mcp'),
+    label: 'Mcp',
+  },
 ]
 
 const headerExternalLinks = [
