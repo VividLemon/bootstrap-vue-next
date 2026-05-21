@@ -1,6 +1,5 @@
 ---
 title: Directives
-title: Directives
 description: >
   Browse BootstrapVueNext directives for tooltips, popovers, modal triggers, color mode, and toggle behavior.
 ---
