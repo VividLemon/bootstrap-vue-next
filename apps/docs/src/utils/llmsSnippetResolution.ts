@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-const snippetDirectiveRE = /^<<<\s+(FRAGMENT|DEMO)\s+(.*?)$/gm
+const snippetDirectiveRE = /^<<<\s+(?:FRAGMENT|DEMO)\s+(.*?)$/gm
 
 const rawPathRegexp =
   /^(.+?(?:(?:\.([a-z0-9]+))?))(?:(#[\w-]+))?(?: ?(?:{(\d+(?:[,-]\d+)*)? ?(\S+)? ?(\S+)?}))? ?(?:\[(.+)\])?$/i
@@ -61,6 +61,10 @@ const dedent = (text: string): string => {
   let minIndentLength = Number.POSITIVE_INFINITY
 
   for (const line of lines) {
+    if (line.trim() === '') {
+      continue
+    }
+
     for (let index = 0; index < line.length; index += 1) {
       if (line[index] !== ' ' && line[index] !== '\t') {
         minIndentLength = Math.min(index, minIndentLength)
@@ -221,7 +225,7 @@ const resolveDirective = (rawPath: string, sourceMarkdownPath: string): string |
 }
 
 export const resolveLLMSnippetDirectives = (content: string, sourceMarkdownPath: string): string =>
-  content.replace(snippetDirectiveRE, (directive, _type, rawPath: string) => {
+  content.replace(snippetDirectiveRE, (directive, rawPath: string) => {
     const resolvedDirective = resolveDirective(rawPath.trim(), sourceMarkdownPath)
     return resolvedDirective ?? directive
   })

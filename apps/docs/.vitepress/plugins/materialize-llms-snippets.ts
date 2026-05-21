@@ -57,6 +57,11 @@ export const materializeLLMSSnippets = (): Plugin => {
         }
 
         const existingContent = fs.readFileSync(outputPath, 'utf8')
+
+        if (!existingContent.includes('<<< ')) {
+          continue
+        }
+
         const resolvedContent = resolveLLMSnippetDirectives(existingContent, sourceMarkdownPath)
 
         if (resolvedContent !== existingContent) {
