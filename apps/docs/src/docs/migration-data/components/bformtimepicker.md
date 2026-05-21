@@ -2,22 +2,36 @@
 id: bformtimepicker
 title: BFormTimePicker Migration
 category: components
+
 components:
   - BFormTimePicker
   - BFormTimepicker
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bformtimepicker
+
 match:
   - BFormTimePicker
   - BFormTimepicker
   - experimental
   - migration-tbd
-tags:
-  - migration
-  - components
-  - bformtimepicker
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: '`BFormTimePicker` is currently experimental and does not yet have stable migration
+  guidance.'
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: medium
 ---
 

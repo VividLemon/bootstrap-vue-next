@@ -2,22 +2,35 @@
 id: bcardgroup
 title: BCardGroup Migration
 category: components
+
 components:
   - BCardGroup
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bcardgroup
+
 match:
   - BCardGroup
   - .card-deck
   - .card-columns
   - .row-cols-*
   - <BCardGroup>
-tags:
-  - migration
-  - components
-  - bcardgroup
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BCardGroup from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

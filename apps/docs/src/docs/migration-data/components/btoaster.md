@@ -2,22 +2,35 @@
 id: btoaster
 title: BToaster Migration
 category: components
+
 components:
   - BToaster
   - BApp
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - btoaster
+
 match:
   - BToaster
   - useToast
   - BApp
   - <BToaster>
-tags:
-  - migration
-  - components
-  - btoaster
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BToaster from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

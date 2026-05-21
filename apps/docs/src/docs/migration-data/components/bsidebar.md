@@ -2,38 +2,50 @@
 id: bsidebar
 title: BSidebar to BOffcanvas Migration
 category: components
+
 components:
   - BSidebar
   - BOffcanvas
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bsidebar
+
 match:
   - BSidebar
   - BOffcanvas
-  - ":right=\"true\""
-  - ":right=\"false\""
+  - :right="true"
+  - :right="false"
   - aria-label
   - aria-labelby
   - bg-variant
   - text-variant
   - body-class
-  - "body-class=\"bg-dark text-light\""
+  - body-class="bg-dark text-light"
   - header-class
   - no-slide
   - no-animation
   - no-enforce-focus
   - no-trap
   - no-close-on-route-change
-tags:
-  - migration
-  - components
-  - bsidebar
-safeRewrite: false
-migrationType: component-migration
-introducedIn: bootstrap-vue-next
 replacement:
   <BSidebar>: <BOffcanvas>
   no-slide: no-animation
   no-enforce-focus: no-trap
+
+safeRewrite: false
 manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BSidebar from BootstrapVue to BootstrapVueNext.
+
+migrationType: component-migration
+introducedIn: bootstrap-vue-next
 deprecated:
   - <BSidebar>
   - no-slide

@@ -2,20 +2,33 @@
 id: bmedia
 title: BMedia Migration
 category: components
+
 components:
   - BMedia
   - BLink
-match:
-  - BMedia
-  - <BMedia>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bmedia
+
+match:
+  - BMedia
+  - <BMedia>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BMedia from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

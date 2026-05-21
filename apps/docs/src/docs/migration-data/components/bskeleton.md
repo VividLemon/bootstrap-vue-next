@@ -2,6 +2,7 @@
 id: bskeleton
 title: BSkeleton to BPlaceholder Migration
 category: components
+
 components:
   - BSkeleton
   - BPlaceholderButton
@@ -9,18 +10,30 @@ components:
   - BSkeletonIcon
   - BPlaceholderWrapper
   - BSkeletonImg
-match:
-  - BSkeleton
-  - BPlaceholderButton
-  - <BSkeleton>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bskeleton
+
+match:
+  - BSkeleton
+  - BPlaceholderButton
+  - <BSkeleton>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BSkeleton from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

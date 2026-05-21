@@ -2,19 +2,32 @@
 id: bbreadcrumb
 title: BBreadcrumb Migration
 category: components
+
 components:
   - BBreadcrumb
-match:
-  - BBreadcrumb
-  - <BBreadcrumb>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bbreadcrumb
+
+match:
+  - BBreadcrumb
+  - <BBreadcrumb>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BBreadcrumb from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - v-html-props
 confidence: high

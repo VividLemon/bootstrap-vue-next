@@ -2,21 +2,34 @@
 id: bnavbar
 title: BNavbar Migration
 category: components
+
 components:
   - BNavbar
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bnavbar
+
 match:
   - BNavbar
   - v-b-color-mode
   - useColorMode
   - <BNavbar>
-tags:
-  - migration
-  - components
-  - bnavbar
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BNavbar from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - show-hide
 confidence: high

@@ -2,20 +2,34 @@
 id: v-b-hover
 title: v-b-hover Migration
 category: directives
+
 components:
   - BLink
-match:
-  - Hover
+directives:
   - v-b-hover
-  - useElementHover()
+composables: []
+
 tags:
   - migration
   - directives
   - hover
+
+match:
+  - Hover
+  - v-b-hover
+  - useElementHover()
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for v-b-hover from BootstrapVue to BootstrapVueNext.
+
 migrationType: directive-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

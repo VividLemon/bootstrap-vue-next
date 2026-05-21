@@ -2,26 +2,38 @@
 id: sync-modifier
 title: Sync Modifier Migration
 category: patterns
+
 components:
   - BFormCheckbox
-match:
-  - .sync
-  - v-bind.sync
-  - indeterminate.sync
-  - v-model
+directives: []
+composables: []
+
 tags:
   - migration
   - patterns
   - sync
   - v-model
+
+match:
+  - .sync
+  - v-bind.sync
+  - indeterminate.sync
+  - v-model
+replacement:
+  '*.sync': v-model:<prop>
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Replace BootstrapVue `.sync` bindings with Vue 3 model bindings in BootstrapVueNext.
+
 migrationType: pattern-migration
 introducedIn: bootstrap-vue-next
-replacement:
-  "*.sync": "v-model:<prop>"
-manualReviewRequired: false
 deprecated:
-  - "*.sync"
+  - '*.sync'
 related:
   - show-hide
 confidence: high

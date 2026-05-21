@@ -2,8 +2,17 @@
 id: bformfile
 title: BFormFile Migration
 category: components
+
 components:
   - BFormFile
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bformfile
+
 match:
   - BFormFile
   - useFileDialog
@@ -11,14 +20,18 @@ match:
   - $path
   - drop-placeholder
   - <BFormFile>
-tags:
-  - migration
-  - components
-  - bformfile
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BFormFile from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

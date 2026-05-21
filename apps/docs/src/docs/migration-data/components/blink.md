@@ -2,25 +2,38 @@
 id: blink
 title: BLink Migration
 category: components
+
 components:
   - BLink
-match:
-  - BLink
-  - "href=\"#navbar-overview\""
-  - <router-link>
-  - exact-path
-  - exact-path-active-class
-  - "bv::link::clicked"
-  - $root
-  - <BLink>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - blink
+
+match:
+  - BLink
+  - href="#navbar-overview"
+  - <router-link>
+  - exact-path
+  - exact-path-active-class
+  - bv::link::clicked
+  - $root
+  - <BLink>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BLink from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

@@ -2,23 +2,37 @@
 id: migration-overview
 title: BootstrapVue to BootstrapVueNext Migration Overview
 category: patterns
+
 components:
   - BootstrapVueNext
+directives: []
+composables: []
+
+tags:
+  - migration
+  - overview
+  - bootstrapvue
+  - bootstrap-vue-next
+
 match:
   - BootstrapVue
   - BootstrapVueNext
   - migration guide
   - Vue 3
   - Bootstrap 5
-tags:
-  - migration
-  - overview
-  - bootstrapvue
-  - bootstrap-vue-next
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Overview of the major BootstrapVue to BootstrapVueNext migration themes, prerequisites,
+  and deprecation policy.
+
 migrationType: pattern-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 related:
   - sync-modifier
   - show-hide

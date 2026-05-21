@@ -2,10 +2,19 @@
 id: bmodal
 title: BModal Migration
 category: components
+
 components:
   - BModal
   - BLink
   - BApp
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bmodal
+
 match:
   - BModal
   - footer-tag
@@ -20,16 +29,9 @@ match:
   - useModal().create()
   - ok-only
   - this.$bvModal.msgBoxConfirm()
-  - "$root.$emit('bv::show::modal', id)"
-  - "$root.$emit('bv::hide::modal', id)"
-  - "$root.$emit('bv::toggle::modal', id)"
-tags:
-  - migration
-  - components
-  - bmodal
-safeRewrite: false
-migrationType: component-migration
-introducedIn: bootstrap-vue-next
+  - $root.$emit('bv::show::modal', id)
+  - $root.$emit('bv::hide::modal', id)
+  - $root.$emit('bv::toggle::modal', id)
 replacement:
   hide-header-close: no-header-close
   hide-footer: no-footer
@@ -37,7 +39,17 @@ replacement:
   hide-backdrop: no-backdrop
   no-enforce-focus: no-trap
   title-sr-only: title-visually-hidden
+
+safeRewrite: false
 manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BModal from BootstrapVue to BootstrapVueNext.
+
+migrationType: component-migration
+introducedIn: bootstrap-vue-next
 deprecated:
   - hide-header-close
   - hide-footer

@@ -2,9 +2,18 @@
 id: bcarousel
 title: BCarousel Migration
 category: components
+
 components:
   - BCarousel
   - BCarouselSlide
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bcarousel
+
 match:
   - BCarousel
   - sliding-start
@@ -15,14 +24,18 @@ match:
   - text-html
   - BCarouselSlide
   - <BCarousel>
-tags:
-  - migration
-  - components
-  - bcarousel
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BCarousel from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - v-html-props
 confidence: high

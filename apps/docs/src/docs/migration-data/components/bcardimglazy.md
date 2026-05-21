@@ -2,20 +2,33 @@
 id: bcardimglazy
 title: BCardImgLazy Migration
 category: components
+
 components:
   - BCardImgLazy
   - BImg
-match:
-  - BCardImgLazy
-  - <BCardImgLazy>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bcardimglazy
+
+match:
+  - BCardImgLazy
+  - <BCardImgLazy>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BCardImgLazy from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - bimg
 confidence: high

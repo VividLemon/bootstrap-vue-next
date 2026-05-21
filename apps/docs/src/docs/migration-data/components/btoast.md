@@ -2,8 +2,17 @@
 id: btoast
 title: BToast Migration
 category: components
+
 components:
   - BToast
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - btoast
+
 match:
   - BToast
   - $bvToast
@@ -21,17 +30,20 @@ match:
   - progress-props
   - no-progress
   - show-on-pause
-tags:
-  - migration
-  - components
-  - btoast
-safeRewrite: false
-migrationType: component-migration
-introducedIn: bootstrap-vue-next
 replacement:
   visible: model-value
   toast-title: title
+
+safeRewrite: false
 manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BToast from BootstrapVue to BootstrapVueNext.
+
+migrationType: component-migration
+introducedIn: bootstrap-vue-next
 deprecated:
   - visible
   - toast-title

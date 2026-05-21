@@ -2,6 +2,7 @@
 id: binputgroup
 title: BInputGroup Migration
 category: components
+
 components:
   - BInputGroup
   - BInputGroupAppend
@@ -9,6 +10,14 @@ components:
   - BInputGroupAddon
   - BLink
   - BInputGroupText
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - binputgroup
+
 match:
   - BInputGroup
   - BInputGroupAppend
@@ -19,14 +28,18 @@ match:
   - append-html
   - prepend-html
   - <BInputGroup>
-tags:
-  - migration
-  - components
-  - binputgroup
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BInputGroup from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - v-html-props
 confidence: high

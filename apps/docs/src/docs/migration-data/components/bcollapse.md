@@ -2,10 +2,19 @@
 id: bcollapse
 title: BCollapse Migration
 category: components
+
 components:
   - BCollapse
   - BAccordion
   - BLink
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bcollapse
+
 match:
   - BCollapse
   - BootstrapVue
@@ -14,17 +23,21 @@ match:
   - Bootstrap5
   - BAccordion
   - $root
-  - "bv::collapse::state"
-  - "bv::toggle::collapse"
+  - bv::collapse::state
+  - bv::toggle::collapse
   - <BCollapse>
-tags:
-  - migration
-  - components
-  - bcollapse
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BCollapse from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 related:
   - show-hide
 confidence: high

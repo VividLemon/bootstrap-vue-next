@@ -2,21 +2,35 @@
 id: component-aliases
 title: Component Alias Migration
 category: patterns
+
 components:
   - BootstrapVueNextResolver
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - aliases
+
 match:
   - b-btn
   - b-button
   - aliases
   - BootstrapVueNextResolver
-tags:
-  - migration
-  - components
-  - aliases
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: BootstrapVue component aliases are not auto-registered in BootstrapVueNext and must
+  be migrated to canonical names or resolver aliases.
+
 migrationType: pattern-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

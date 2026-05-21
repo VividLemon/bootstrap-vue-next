@@ -2,20 +2,33 @@
 id: bbutton
 title: BButton Migration
 category: components
+
 components:
   - BButton
   - BLink
-match:
-  - BButton
-  - <BButton>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bbutton
+
+match:
+  - BButton
+  - <BButton>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BButton from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

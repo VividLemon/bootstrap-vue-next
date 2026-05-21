@@ -2,19 +2,32 @@
 id: bbadge
 title: BBadge Migration
 category: components
+
 components:
   - BBadge
-match:
-  - BBadge
-  - <BBadge>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bbadge
+
+match:
+  - BBadge
+  - <BBadge>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BBadge from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

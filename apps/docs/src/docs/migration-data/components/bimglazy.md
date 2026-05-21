@@ -2,20 +2,33 @@
 id: bimglazy
 title: BImgLazy Migration
 category: components
+
 components:
   - BImgLazy
   - BImg
-match:
-  - BImgLazy
-  - <BImgLazy>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bimglazy
+
+match:
+  - BImgLazy
+  - <BImgLazy>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BImgLazy from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - bimg
 confidence: high

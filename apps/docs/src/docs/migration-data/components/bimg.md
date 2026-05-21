@@ -2,23 +2,36 @@
 id: bimg
 title: BImg Migration
 category: components
+
 components:
   - BImg
   - BImgLazy
   - BCardImgLazy
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bimg
+
 match:
   - BImg
   - BImgLazy
   - BCardImgLazy
   - <BImg>
-tags:
-  - migration
-  - components
-  - bimg
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BImg from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - rounded-radius-element
 confidence: high

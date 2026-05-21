@@ -2,22 +2,35 @@
 id: balert
 title: BAlert Migration
 category: components
+
 components:
   - BAlert
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - balert
+
 match:
   - BAlert
   - bootstrap-vue
   - v-model
   - model-value
   - <BAlert>
-tags:
-  - migration
-  - components
-  - balert
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BAlert from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - show-hide
 confidence: high

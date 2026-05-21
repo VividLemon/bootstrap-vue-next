@@ -2,20 +2,33 @@
 id: bprogressbar
 title: BProgressBar Migration
 category: components
+
 components:
   - BProgressBar
-match:
-  - BProgressBar
-  - label-html
-  - <BProgressBar>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bprogressbar
+
+match:
+  - BProgressBar
+  - label-html
+  - <BProgressBar>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BProgressBar from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - v-html-props
 confidence: high

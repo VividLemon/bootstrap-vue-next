@@ -2,21 +2,34 @@
 id: bnav
 title: BNav Migration
 category: components
+
 components:
   - BNav
   - BDropdown
-match:
-  - BNav
-  - BDropdown
-  - <BNav>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bnav
+
+match:
+  - BNav
+  - BDropdown
+  - <BNav>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BNav from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - bdropdown
   - v-html-props

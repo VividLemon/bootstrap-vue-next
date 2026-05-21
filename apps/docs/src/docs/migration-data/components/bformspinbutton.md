@@ -2,18 +2,31 @@
 id: bformspinbutton
 title: BFormSpinButton Migration
 category: components
+
 components:
   - BFormSpinButton
-match:
-  - BFormSpinButton
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bformspinbutton
+
+match:
+  - BFormSpinButton
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BFormSpinButton from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

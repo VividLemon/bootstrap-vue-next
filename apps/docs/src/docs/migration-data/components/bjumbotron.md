@@ -2,19 +2,32 @@
 id: bjumbotron
 title: BJumbotron Migration
 category: components
+
 components:
   - BJumbotron
-match:
-  - BJumbotron
-  - <BJumbotron>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bjumbotron
+
+match:
+  - BJumbotron
+  - <BJumbotron>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BJumbotron from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

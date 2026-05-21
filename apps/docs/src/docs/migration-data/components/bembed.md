@@ -2,19 +2,32 @@
 id: bembed
 title: BEmbed Migration
 category: components
+
 components:
   - BEmbed
-match:
-  - BEmbed
-  - <BEmbed>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bembed
+
+match:
+  - BEmbed
+  - <BEmbed>
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BEmbed from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

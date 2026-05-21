@@ -2,8 +2,17 @@
 id: btablesimple
 title: BTableSimple Migration
 category: components
+
 components:
   - BTableSimple
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - btablesimple
+
 match:
   - BTableSimple
   - table-attrs
@@ -11,14 +20,18 @@ match:
   - foot-variant
   - head-variant
   - <BTableSimple>
-tags:
-  - migration
-  - components
-  - btablesimple
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BTableSimple from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - v-html-props
 confidence: high

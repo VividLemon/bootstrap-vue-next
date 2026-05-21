@@ -2,11 +2,21 @@
 id: show-hide
 title: Show and Hide Prop Migration
 category: patterns
+
 components:
   - BCollapse
   - BModal
   - BPlaceholder
   - BToast
+directives: []
+composables: []
+
+tags:
+  - migration
+  - visibility
+  - props
+  - events
+
 match:
   - visible
   - show
@@ -15,15 +25,19 @@ match:
   - skipAnimation
   - noAnimation
   - v-model
-tags:
-  - migration
-  - visibility
-  - props
-  - events
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: BootstrapVueNext standardizes visibility control around `v-model` and `no*`-prefixed
+  rendering props.
+
 migrationType: pattern-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

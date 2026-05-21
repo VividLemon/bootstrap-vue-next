@@ -2,21 +2,34 @@
 id: bformtextarea
 title: BFormTextarea Migration
 category: components
+
 components:
   - BFormTextarea
   - BLink
-match:
-  - BFormTextarea
-  - $refs
-  - <BFormTextarea>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bformtextarea
+
+match:
+  - BFormTextarea
+  - $refs
+  - <BFormTextarea>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BFormTextarea from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

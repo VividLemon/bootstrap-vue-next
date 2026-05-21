@@ -2,19 +2,34 @@
 id: native-events
 title: Native Event Documentation Migration
 category: patterns
+
 components: []
-match:
-  - native events
-  - click
-  - bubbled events
+directives: []
+composables: []
+
 tags:
   - migration
   - patterns
   - events
+
+match:
+  - native events
+  - click
+  - bubbled events
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: BootstrapVueNext no longer documents bubbled native DOM events as component API events,
+  even though native Vue event bubbling may still make those events observable at
+  the component boundary.
+
 migrationType: pattern-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

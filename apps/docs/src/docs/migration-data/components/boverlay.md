@@ -2,19 +2,32 @@
 id: boverlay
 title: BOverlay Migration
 category: components
+
 components:
   - BOverlay
-match:
-  - BOverlay
-  - <BOverlay>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - boverlay
+
+match:
+  - BOverlay
+  - <BOverlay>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BOverlay from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - rounded-radius-element
 confidence: high

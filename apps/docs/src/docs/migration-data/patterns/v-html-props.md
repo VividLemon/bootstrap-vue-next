@@ -2,6 +2,7 @@
 id: v-html-props
 title: HTML Prop to Slot Migration
 category: patterns
+
 components:
   - BBreadcrumbItem
   - BCard
@@ -13,21 +14,33 @@ components:
   - BProgressBar
   - BTable
   - BTableSimple
-match:
-  - html
-  - "*-html"
-  - v-html
-  - slot replacement
-  - HTML Injection
+directives: []
+composables: []
+
 tags:
   - migration
   - slots
   - security
   - html
+
+match:
+  - html
+  - '*-html'
+  - v-html
+  - slot replacement
+  - HTML Injection
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Unsafe HTML string props are replaced by explicit slot-based rendering in BootstrapVueNext.
+
 migrationType: pattern-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

@@ -2,9 +2,18 @@
 id: bavatar
 title: BAvatar Migration
 category: components
+
 components:
   - BAvatar
   - BLink
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bavatar
+
 match:
   - BAvatar
   - .svg
@@ -15,14 +24,18 @@ match:
   - badge-right
   - badge-offset
   - <BAvatar>
-tags:
-  - migration
-  - components
-  - bavatar
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BAvatar from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 related:
   - rounded-radius-element
 confidence: high

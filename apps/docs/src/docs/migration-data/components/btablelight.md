@@ -2,20 +2,33 @@
 id: btablelight
 title: BTableLight Migration
 category: components
+
 components:
   - BTableLight
-match:
-  - BTableLight
-  - table-colgroup
-  - <BTableLight>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - btablelight
+
+match:
+  - BTableLight
+  - table-colgroup
+  - <BTableLight>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BTableLight from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - v-html-props
 confidence: high

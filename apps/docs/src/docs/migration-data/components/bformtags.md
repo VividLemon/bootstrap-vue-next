@@ -2,21 +2,34 @@
 id: bformtags
 title: BFormTags Migration
 category: components
+
 components:
   - BFormTags
   - BFormSelect
-match:
-  - BFormTags
-  - BFormSelect
-  - <BFormTags>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bformtags
+
+match:
+  - BFormTags
+  - BFormSelect
+  - <BFormTags>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BFormTags from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

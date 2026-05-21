@@ -2,19 +2,32 @@
 id: bformselect
 title: BFormSelect Migration
 category: components
+
 components:
   - BFormSelect
-match:
-  - BFormSelect
-  - <BFormSelect>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bformselect
+
+match:
+  - BFormSelect
+  - <BFormSelect>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BFormSelect from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

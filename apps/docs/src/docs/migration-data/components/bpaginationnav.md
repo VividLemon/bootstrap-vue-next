@@ -2,19 +2,32 @@
 id: bpaginationnav
 title: BPaginationNav Migration
 category: components
+
 components:
   - BPaginationNav
-match:
-  - BPaginationNav
-  - <BPaginationNav>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bpaginationnav
+
+match:
+  - BPaginationNav
+  - <BPaginationNav>
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BPaginationNav from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

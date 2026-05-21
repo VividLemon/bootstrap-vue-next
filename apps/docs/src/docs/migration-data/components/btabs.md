@@ -2,22 +2,35 @@
 id: btabs
 title: BTabs Migration
 category: components
+
 components:
   - BTabs
-match:
-  - BTabs
-  - v-model
-  - "v-model:index"
-  - activate-tab
-  - <BTabs>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - btabs
+
+match:
+  - BTabs
+  - v-model
+  - v-model:index
+  - activate-tab
+  - <BTabs>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BTabs from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

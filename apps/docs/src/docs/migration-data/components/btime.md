@@ -2,20 +2,33 @@
 id: btime
 title: BTime Migration
 category: components
+
 components:
   - BTime
-match:
-  - BTime
-  - experimental
-  - migration-tbd
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - btime
+
+match:
+  - BTime
+  - experimental
+  - migration-tbd
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: '`BTime` is currently experimental and does not yet have stable migration guidance.'
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: medium
 ---
 

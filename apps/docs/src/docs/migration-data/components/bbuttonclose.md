@@ -2,23 +2,36 @@
 id: bbuttonclose
 title: BButtonClose Migration
 category: components
+
 components:
   - BButtonClose
   - BCloseButton
   - BLink
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bbuttonclose
+
 match:
   - BButtonClose
   - BCloseButton
   - text-variant
   - <BButtonClose>
-tags:
-  - migration
-  - components
-  - bbuttonclose
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BButtonClose from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

@@ -2,8 +2,17 @@
 id: btooltip
 title: BTooltip Migration
 category: components
+
 components:
   - BTooltip
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - btooltip
+
 match:
   - BTooltip
   - custom-class
@@ -12,14 +21,18 @@ match:
   - fallback-placement
   - $root
   - <BTooltip>
-tags:
-  - migration
-  - components
-  - btooltip
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BTooltip from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 related:
   - show-hide
   - v-html-props

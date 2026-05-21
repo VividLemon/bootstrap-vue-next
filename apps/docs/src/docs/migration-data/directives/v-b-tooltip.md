@@ -2,21 +2,35 @@
 id: v-b-tooltip
 title: v-b-tooltip Migration
 category: directives
+
 components: []
+directives:
+  - v-b-tooltip
+composables: []
+
+tags:
+  - migration
+  - directives
+  - tooltip
+
 match:
   - Tooltip
   - v-b-tooltip
   - data-original-title
   - .top
   - .bottom
-tags:
-  - migration
-  - directives
-  - tooltip
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for v-b-tooltip from BootstrapVue to BootstrapVueNext.
+
 migrationType: directive-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

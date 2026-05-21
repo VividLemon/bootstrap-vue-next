@@ -2,22 +2,36 @@
 id: bformdatepicker
 title: BFormDatePicker Migration
 category: components
+
 components:
   - BFormDatePicker
   - BFormDatepicker
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bformdatepicker
+
 match:
   - BFormDatePicker
   - BFormDatepicker
   - experimental
   - migration-tbd
-tags:
-  - migration
-  - components
-  - bformdatepicker
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: '`BFormDatePicker` is currently experimental and does not yet have stable migration
+  guidance.'
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: medium
 ---
 

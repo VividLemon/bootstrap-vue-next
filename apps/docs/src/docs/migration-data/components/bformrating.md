@@ -2,21 +2,34 @@
 id: bformrating
 title: BFormRating Migration
 category: components
+
 components:
   - BFormRating
   - BLink
-match:
-  - BFormRating
-  - v-model
-  - <BFormRating>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bformrating
+
+match:
+  - BFormRating
+  - v-model
+  - <BFormRating>
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BFormRating from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

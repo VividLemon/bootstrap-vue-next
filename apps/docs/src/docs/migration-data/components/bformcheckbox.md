@@ -2,22 +2,35 @@
 id: bformcheckbox
 title: BFormCheckbox Migration
 category: components
+
 components:
   - BFormCheckbox
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bformcheckbox
+
 match:
   - BFormCheckbox
   - v-model
   - model-value
   - update:model-value
   - <BFormCheckbox>
-tags:
-  - migration
-  - components
-  - bformcheckbox
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: '`BFormCheckbox` mostly follows the shared Vue 3 form-model migration pattern.'
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

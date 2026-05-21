@@ -2,10 +2,19 @@
 id: baccordion
 title: BAccordion Migration
 category: components
+
 components:
   - BAccordion
   - BAccordionItem
   - BCollapse
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - baccordion
+
 match:
   - BAccordion
   - BAccordionItem
@@ -13,14 +22,20 @@ match:
   - accordion
   - visible
   - v-model
-tags:
-  - migration
-  - components
-  - baccordion
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: BootstrapVue did not ship a first-class accordion component, so accordion migrations
+  usually start from `BCollapse`-based patterns rather than a direct `BAccordion`
+  replacement.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 related:
   - bcollapse
   - show-hide

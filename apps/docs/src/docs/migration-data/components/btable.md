@@ -2,6 +2,7 @@
 id: btable
 title: BTable Migration
 category: components
+
 components:
   - BTable
   - BTbody
@@ -10,6 +11,14 @@ components:
   - BTr
   - BTh
   - BTd
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - btable
+
 match:
   - BTable
   - empty-filtered
@@ -21,26 +30,29 @@ match:
   - selected-variant
   - selection-variant
   - sort-changed
-  - "update:sort-by"
+  - update:sort-by
   - sort-direction
   - initial-sort-direction
   - sort-compare
   - multi-sort
   - table-variant
-tags:
-  - migration
-  - components
-  - btable
-safeRewrite: false
-migrationType: component-migration
-introducedIn: bootstrap-vue-next
 replacement:
   clearSelected(): selection.clearSelected()
   selectAll(): selection.selectAll()
   toggleSelectAll(): selection.toggleSelectAll()
   selectedItems: selection.selectedItems
   expandedItems: expansion.expandedItems
+
+safeRewrite: false
 manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BTable from BootstrapVue to BootstrapVueNext.
+
+migrationType: component-migration
+introducedIn: bootstrap-vue-next
 deprecated:
   - clearSelected()
   - selectAll()

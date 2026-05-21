@@ -2,20 +2,33 @@
 id: bforminput
 title: BFormInput Migration
 category: components
+
 components:
   - BFormInput
-match:
-  - BFormInput
-  - "@wheel.prevent"
-  - <BFormInput>
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bforminput
+
+match:
+  - BFormInput
+  - '@wheel.prevent'
+  - <BFormInput>
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BFormInput from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

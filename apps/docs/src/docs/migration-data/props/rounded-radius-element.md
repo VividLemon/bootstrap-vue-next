@@ -2,38 +2,51 @@
 id: rounded-radius-element
 title: RadiusElementExtendables Rounding Migration
 category: props
+
 components:
   - BAvatar
   - BAvatarGroup
   - BCardImg
   - BImg
   - BOverlay
-match:
-  - "rounded=\"top\""
-  - "rounded=\"bottom\""
-  - "rounded=\"left\""
-  - "rounded=\"right\""
-  - rounded-top
-  - rounded-bottom
-  - rounded-start
-  - rounded-end
+directives: []
+composables: []
+
 tags:
   - rounding
   - props
   - migration
   - radius
-safeRewrite: true
-migrationType: prop-value-migration
-introducedIn: bootstrap-vue-next
+
+match:
+  - rounded="top"
+  - rounded="bottom"
+  - rounded="left"
+  - rounded="right"
+  - rounded-top
+  - rounded-bottom
+  - rounded-start
+  - rounded-end
 replacement:
   top: rounded-top
   bottom: rounded-bottom
   left: rounded-start
   right: rounded-end
+
+safeRewrite: true
 manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Directional `rounded` prop values from BootstrapVue are replaced by edge-specific
+  RadiusElement props in BootstrapVueNext.
+
+migrationType: prop-value-migration
+introducedIn: bootstrap-vue-next
 deprecated:
-  - "rounded=\"left\""
-  - "rounded=\"right\""
+  - rounded="left"
+  - rounded="right"
 related:
   - bavatar
   - bimg

@@ -2,21 +2,34 @@
 id: bformgroup
 title: BFormGroup Migration
 category: components
+
 components:
   - BFormGroup
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bformgroup
+
 match:
   - BFormGroup
   - label-visually-hidden
   - label-sronly
   - <BFormGroup>
-tags:
-  - migration
-  - components
-  - bformgroup
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BFormGroup from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

@@ -2,11 +2,20 @@
 id: bformradio
 title: BFormRadio Migration
 category: components
+
 components:
   - BFormRadio
   - BFormRadioGroup
   - BFormCheckboxGroup
   - BFormSelect
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bformradio
+
 match:
   - BFormRadio
   - BFormRadioGroup
@@ -14,14 +23,18 @@ match:
   - BFormSelect
   - v-model
   - <BFormRadio>
-tags:
-  - migration
-  - components
-  - bformradio
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BFormRadio from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

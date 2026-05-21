@@ -2,21 +2,35 @@
 id: v-b-modal
 title: v-b-modal Migration
 category: directives
+
 components: []
+directives:
+  - v-b-modal
+composables: []
+
+tags:
+  - migration
+  - directives
+  - modal
+
 match:
   - Modal
   - v-b-modal
   - v-b-toggle
   - not-collapsed
   - this.$bvModal.show(id)
-tags:
-  - migration
-  - directives
-  - modal
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for v-b-modal from BootstrapVue to BootstrapVueNext.
+
 migrationType: directive-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

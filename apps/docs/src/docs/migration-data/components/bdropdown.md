@@ -2,6 +2,7 @@
 id: bdropdown
 title: BDropdown Migration
 category: components
+
 components:
   - BDropdown
   - BDropdownDivider
@@ -9,6 +10,14 @@ components:
   - BForm
   - BLink
   - BDropdownGroup
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bdropdown
+
 match:
   - BDropdown
   - floating-middleware
@@ -23,17 +32,21 @@ match:
   - right-end
   - button-content
   - $root
-  - "bv::dropdown::hide"
-  - "bv::dropdown::show"
+  - bv::dropdown::hide
+  - bv::dropdown::show
   - split-click
-tags:
-  - migration
-  - components
-  - bdropdown
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BDropdown from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 related:
   - show-hide
   - v-html-props

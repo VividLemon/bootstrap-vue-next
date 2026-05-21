@@ -2,8 +2,17 @@
 id: bpopover
 title: BPopover Migration
 category: components
+
 components:
   - BPopover
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bpopover
+
 match:
   - BPopover
   - top-start
@@ -19,18 +28,21 @@ match:
   - title-class
   - .sync
   - v-model
-  - "{show: 100, hide: 300}"
+  - '{show: 100, hide: 300}'
   - fallback-placement
-tags:
-  - migration
-  - components
-  - bpopover
-safeRewrite: false
-migrationType: component-migration
-introducedIn: bootstrap-vue-next
 replacement:
   custom-class: body-class
+
+safeRewrite: false
 manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BPopover from BootstrapVue to BootstrapVueNext.
+
+migrationType: component-migration
+introducedIn: bootstrap-vue-next
 deprecated:
   - custom-class
 related:

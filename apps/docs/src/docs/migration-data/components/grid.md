@@ -2,18 +2,31 @@
 id: grid
 title: Grid Migration
 category: components
+
 components:
   - BCol
-match:
-  - Grid
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - grid
+
+match:
+  - Grid
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for Grid from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 confidence: high
 ---
 

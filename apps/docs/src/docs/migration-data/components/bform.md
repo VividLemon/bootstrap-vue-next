@@ -2,6 +2,7 @@
 id: bform
 title: BForm Migration
 category: components
+
 components:
   - BForm
   - BFormRow
@@ -9,25 +10,37 @@ components:
   - BFormRadioGroup
   - BFormSelect
   - BFormSelectOptionGroup
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bform
+
 match:
   - BForm
   - BFormRow
   - v-model
   - bootstrap-vue-next
-  - "update:model-value"
+  - update:model-value
   - BFormDatalist
   - BFormRadioGroup
   - BFormSelect
   - BFormSelectOptionGroup
   - <BForm>
-tags:
-  - migration
-  - components
-  - bform
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BForm from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - v-html-props
 confidence: high

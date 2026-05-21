@@ -2,20 +2,34 @@
 id: v-b-visible
 title: v-b-visible Migration
 category: directives
+
 components:
   - BLink
-match:
-  - Visible
+directives:
   - v-b-visible
-  - useElementVisibility()
+composables: []
+
 tags:
   - migration
   - directives
   - visible
+
+match:
+  - Visible
+  - v-b-visible
+  - useElementVisibility()
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for v-b-visible from BootstrapVue to BootstrapVueNext.
+
 migrationType: directive-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: high
 ---
 

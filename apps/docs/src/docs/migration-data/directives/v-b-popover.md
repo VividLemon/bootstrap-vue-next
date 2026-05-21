@@ -2,8 +2,18 @@
 id: v-b-popover
 title: v-b-popover Migration
 category: directives
+
 components:
   - BPopover
+directives:
+  - v-b-popover
+composables: []
+
+tags:
+  - migration
+  - directives
+  - popover
+
 match:
   - Popover
   - v-b-popover
@@ -21,14 +31,18 @@ match:
   - .lazy
   - .realtime
   - .interactive
-tags:
-  - migration
-  - directives
-  - popover
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for v-b-popover from BootstrapVue to BootstrapVueNext.
+
 migrationType: directive-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 deprecated:
   - .inline
 confidence: high

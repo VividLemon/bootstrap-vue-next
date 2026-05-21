@@ -1,6 +1,27 @@
 ---
-description: >
-  Structured BootstrapVue to BootstrapVueNext migration knowledge base with machine-readable frontmatter.
+id: migration-knowledge-base
+title: Migration Knowledge Base
+category: general
+
+components: []
+directives: []
+composables: []
+
+tags:
+  - migration
+  - general
+
+match: []
+replacement: {}
+
+safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Structured BootstrapVue to BootstrapVueNext migration knowledge base with machine-readable
+  frontmatter.
 ---
 
 # Migration Knowledge Base

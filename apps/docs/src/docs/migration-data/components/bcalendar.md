@@ -2,20 +2,33 @@
 id: bcalendar
 title: BCalendar Migration
 category: components
+
 components:
   - BCalendar
-match:
-  - BCalendar
-  - experimental
-  - migration-tbd
+directives: []
+composables: []
+
 tags:
   - migration
   - components
   - bcalendar
+
+match:
+  - BCalendar
+  - experimental
+  - migration-tbd
+replacement: {}
+
 safeRewrite: false
+manualReviewRequired: true
+
+versionAdded: ""
+versionRemoved: ""
+
+description: '`BCalendar` is currently experimental and does not yet have stable migration guidance.'
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
 confidence: medium
 ---
 

@@ -2,6 +2,7 @@
 id: bcard
 title: BCard Migration
 category: components
+
 components:
   - BCard
   - BCardImg
@@ -10,6 +11,14 @@ components:
   - BCardFooter
   - BCardTitle
   - BCardText
+directives: []
+composables: []
+
+tags:
+  - migration
+  - components
+  - bcard
+
 match:
   - BCard
   - img-placement
@@ -27,14 +36,18 @@ match:
   - BCardFooter
   - BCardTitle
   - BCardText
-tags:
-  - migration
-  - components
-  - bcard
+replacement: {}
+
 safeRewrite: true
+manualReviewRequired: false
+
+versionAdded: ""
+versionRemoved: ""
+
+description: Migration notes for BCard from BootstrapVue to BootstrapVueNext.
+
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
 related:
   - v-html-props
 confidence: high
