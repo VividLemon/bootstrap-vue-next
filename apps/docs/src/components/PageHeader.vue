@@ -58,7 +58,7 @@ function toCamelCase(str: string): string {
   return str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())
 }
 
-function toDirectiveMigrationId(str: string): string {
+function fileNameToDirectiveMigrationId(str: string): string {
   if (str.startsWith('B')) {
     const directiveName = str
       .slice(1)
@@ -179,7 +179,7 @@ const migrationHref = computed(() => {
         ? filename.slice(1)
         : filename
     anchor = name.toLowerCase()
-    migrationId = toDirectiveMigrationId(filename)
+    migrationId = fileNameToDirectiveMigrationId(filename)
   }
 
   if (typeof fmOverride === 'string' && fmOverride) {

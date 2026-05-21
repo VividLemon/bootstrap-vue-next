@@ -41,8 +41,8 @@ import {data as migrationData} from '../data/migration.data'
 const route = useRoute()
 
 const isRouteActive = (url: string) => {
-  const normalizedRoute = withBase(url)
-  return route.path === normalizedRoute || route.path === `${normalizedRoute}.html`
+  const routeWithBase = withBase(url)
+  return route.path === routeWithBase || route.path === `${routeWithBase}.html`
 }
 
 const headerClasses = ['py-2', 'text-primary-emphasis'] as const
