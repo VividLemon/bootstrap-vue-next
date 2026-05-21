@@ -76,14 +76,15 @@ Most importantly any use your code makes of `v-html` will be explicit. See the [
 | `BModal`                       | `ok-title`            | `ok`             |
 | `BModal`                       | `title-html`          | `title`          |
 | `BNavItemDropdown`             | `html`                | `default`        |
-| `BPopover` [\*](#popover-html) | `html`                | `default`        |
+| `BPopover` [\*](#popover-html-note) | `html`                | `default`        |
 | `BProgressBar`                 | `label-html`          | `default`        |
 | `BTable`                       | `empty-filtered-html` | `empty-filtered` |
 | `BTable`                       | `empty-html`          | `empty`          |
 | `BTable`                       | `caption-html`        | `table-caption`  |
 | `BTableSimple`                 | `caption-html`        | `table-caption`  |
 
-<a name="popover-html">BootstrapVue `b-popover` didn't have an `html` attribute, but alpha versions of BootstrapVueNext did</a>
+<a id="popover-html-note"></a>
+Note: BootstrapVue `b-popover` didn't have an `html` attribute, but alpha versions of BootstrapVueNext did.
 
 `BFormCheckboxGroup` and `BFormRadioGroup` implement a scoped slot `option` which takes a `Record<string, unknown>` parameter. You can add
 arbitrary fields to elements of the options array that you pass in and they will be accessible to the slot. The example

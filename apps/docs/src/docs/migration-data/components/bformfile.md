@@ -46,7 +46,7 @@ When using `directory` mode, each `File` object includes the standard `webkitRel
 
 **Example:**
 
-<<< FRAGMENT ../../components/demo/FormFileDirectoryPathExample.ts
+<<< FRAGMENT ../../demo/FormFileDirectoryPathExample.ts
 
 The `webkitRelativePath` property allows you to reconstruct directory structure or group files by folder as needed.
 

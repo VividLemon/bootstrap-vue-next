@@ -9,7 +9,6 @@ match:
   - data-original-title
   - .top
   - .bottom
-  - "{show: number, hide: number}"
 tags:
   - migration
   - directives
