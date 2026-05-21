@@ -82,6 +82,7 @@ interface MigrationContext {
 const MIGRATION_OVERVIEW_OUTPUT_PATH = 'docs/migration-data.md'
 const MIGRATION_ENTRY_PREFIX = 'docs/migration-data/'
 const RESOURCE_URI_PREFIX = 'bootstrap-vue-next://migration/entry/'
+const migrationOverviewAliases = ['migration guide', 'migration knowledge base', 'migration data'] as const
 const categoryRank: Record<MigrationCategory, number> = {
   patterns: 0,
   props: 1,
@@ -282,9 +283,9 @@ const buildAliasMap = (entries: MigrationEntry[]): Map<string, string> => {
     }
   }
 
-  aliases.set('migration guide', 'migration-overview')
-  aliases.set('migration knowledge base', 'migration-overview')
-  aliases.set('migration data', 'migration-overview')
+  for (const alias of migrationOverviewAliases) {
+    aliases.set(alias, 'migration-overview')
+  }
 
   return aliases
 }
