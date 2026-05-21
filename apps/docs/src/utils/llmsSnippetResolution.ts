@@ -94,25 +94,35 @@ const findRegionStart = (
   regionName: string
 ): {matcher: RegionMatcher; start: number} | undefined => {
   for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]
+
+    if (line === undefined) {
+      continue
+    }
+
     for (const matcher of markers) {
-      if (matcher.start.exec(lines[index])?.[1] === regionName) {
+      if (matcher.start.exec(line)?.[1] === regionName) {
         return {matcher, start: index + 1}
       }
     }
   }
 }
 
-const findRegionEnd = (lines: string[], regionName: string, regionRange: RegionRange): number | undefined => {
+const findRegionEnd = (lines: string[], regionName: string, regionStart: RegionRange): number | undefined => {
   let counter = 1
 
-  for (let index = regionRange.start; index < lines.length; index += 1) {
+  for (let index = regionStart.start; index < lines.length; index += 1) {
     const line = lines[index]
 
-    if (regionRange.matcher.start.exec(line)?.[1] === regionName) {
+    if (line === undefined) {
+      continue
+    }
+
+    if (regionStart.matcher.start.exec(line)?.[1] === regionName) {
       counter += 1
     }
 
-    const endRegion = regionRange.matcher.end.exec(line)?.[1]
+    const endRegion = regionStart.matcher.end.exec(line)?.[1]
     if ((endRegion === regionName || endRegion === '') && (counter -= 1) === 0) {
       return index
     }
@@ -200,9 +210,9 @@ const resolveDirective = (rawPath: string, sourceMarkdownPath: string): string |
 }
 
 export const resolveLLMSnippetDirectives = (content: string, sourceMarkdownPath: string): string =>
-  content.replace(snippetDirectiveRE, (_directive, _type, rawPath: string) => {
+  content.replace(snippetDirectiveRE, (directive, _type, rawPath: string) => {
     const resolvedDirective = resolveDirective(rawPath.trim(), sourceMarkdownPath)
-    return resolvedDirective ?? _directive
+    return resolvedDirective ?? directive
   })
 
 export const toLLMOutputPath = (sourceMarkdownPath: string, srcDir: string): string => {
