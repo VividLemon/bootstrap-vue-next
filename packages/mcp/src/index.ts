@@ -9,7 +9,9 @@ const SERVER_INFO = {
   version: '0.45.3',
 } as const
 
-const registerTools = (_server: Server): void => {}
+const registerTools = (_server: Server): void => {
+  // Future MCP tool registration belongs here.
+}
 
 export const createServer = (): Server => {
   const server = new Server(SERVER_INFO, {
