@@ -6,17 +6,19 @@ export type DocChunk = {
 const SAFE_MAX_CHUNK_SIZE = 2000
 const HEADING_PATTERN = /^#{1,2}\s+.+$/gm
 
-const createChunkId = (content: string, index: number): string => {
+const createChunkId = (content: string, index: number, totalChunks: number): string => {
   const heading = content.match(/^#{1,2}\s+(.+)$/m)?.[1] ?? `chunk-${index + 1}`
   const slug = heading
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 64)
+  const padWidth = Math.max(3, String(totalChunks).length)
 
-  return `${String(index + 1).padStart(3, '0')}-${slug || 'section'}`
+  return `${String(index + 1).padStart(padWidth, '0')}-${slug || 'section'}`
 }
 
+// Keep chunks compact enough for predictable retrieval while preserving section context.
 const splitBySize = (content: string): string[] => {
   const chunks: string[] = []
   let remaining = content.trim()
@@ -79,7 +81,7 @@ export const chunkDocs = (docs: string): DocChunk[] => {
     sections.length > 0 ? sections.flatMap((section) => splitBySize(section)) : splitBySize(docs)
 
   return contentChunks.map((content, index) => ({
-    id: createChunkId(content, index),
+    id: createChunkId(content, index, contentChunks.length),
     content,
   }))
 }

@@ -86,7 +86,7 @@ const createToolText = (results: DocChunk[]): string => {
     return 'No matching documentation chunks were found.'
   }
 
-  return results.map((result) => `## ${result.id}\n${result.content}`).join('\n\n')
+  return results.map((result) => `Chunk: ${result.id}\n\n${result.content}`).join('\n\n---\n\n')
 }
 
 const runDocsSearch = async (query: string, limit: number): Promise<{results: DocChunk[]}> => {

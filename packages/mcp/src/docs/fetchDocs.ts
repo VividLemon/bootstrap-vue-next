@@ -40,7 +40,7 @@ export const getDocsBaseUrl = (): string => {
 const fetchArtifact = async (url: string): Promise<string> => {
   const response = await fetch(url, {
     headers: {
-      accept: 'text/markdown, text/plain;q=0.9, */*;q=0.1',
+      accept: 'text/plain, text/markdown;q=0.9, */*;q=0.1',
     },
   })
 

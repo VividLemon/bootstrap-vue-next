@@ -11,7 +11,7 @@ const KEYWORD_OVERLAP_BASE_SCORE = 1000
 const KEYWORD_OVERLAP_SCORE = 100
 
 const tokenize = (value: string): string[] =>
-  [...new Set((value.toLowerCase().match(/[a-z0-9]+/g) ?? []).filter((token) => token.length > 1))]
+  [...new Set(value.toLowerCase().match(/[a-z0-9]+/g) ?? [])]
 
 const getPositionBonus = (content: string, query: string): number => {
   const index = content.indexOf(query)
