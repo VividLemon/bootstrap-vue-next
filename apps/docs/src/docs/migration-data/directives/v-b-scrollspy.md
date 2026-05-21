@@ -28,8 +28,8 @@ Migration notes for v-b-scrollspy from BootstrapVue to BootstrapVueNext.
 - None explicitly listed
 
 ## Breaking Change
-
-
+The canonical migration guide currently does not provide directive-specific migration details for `v-b-scrollspy`.
+Treat this entry as a placeholder for future guidance and review existing usage manually when migrating.
 
 ## Migration Notes
 
