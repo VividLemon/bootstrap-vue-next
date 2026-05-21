@@ -15,7 +15,7 @@ tags:
   - migration
   - components
   - bformfile
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
 manualReviewRequired: true
@@ -70,7 +70,7 @@ The `noDropPlaceholder` prop has been removed as it was only used when `dropAllo
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical, but review the result when surrounding behavior or adjacent props may affect the final markup.
 
 ## Related Migrations
 

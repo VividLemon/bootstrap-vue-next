@@ -24,16 +24,13 @@ This page indexes the structured migration entries extracted from the canonical 
 
 - [BAccordion Migration](/docs/migration-data/components/baccordion) — `baccordion`
 - [BAlert Migration](/docs/migration-data/components/balert) — `balert`
-- [BAspect Migration](/docs/migration-data/components/baspect) — `baspect`
 - [BAvatar Migration](/docs/migration-data/components/bavatar) — `bavatar`
 - [BBadge Migration](/docs/migration-data/components/bbadge) — `bbadge`
 - [BBreadcrumb Migration](/docs/migration-data/components/bbreadcrumb) — `bbreadcrumb`
 - [BButton Migration](/docs/migration-data/components/bbutton) — `bbutton`
 - [BButtonClose Migration](/docs/migration-data/components/bbuttonclose) — `bbuttonclose`
-- [BButtonToolbar Migration](/docs/migration-data/components/bbuttontoolbar) — `bbuttontoolbar`
 - [BCalendar Migration](/docs/migration-data/components/bcalendar) — `bcalendar`
 - [BCard Migration](/docs/migration-data/components/bcard) — `bcard`
-- [BCardBody Migration](/docs/migration-data/components/bcardbody) — `bcardbody`
 - [BCardGroup Migration](/docs/migration-data/components/bcardgroup) — `bcardgroup`
 - [BCardImgLazy Migration](/docs/migration-data/components/bcardimglazy) — `bcardimglazy`
 - [BCarousel Migration](/docs/migration-data/components/bcarousel) — `bcarousel`
@@ -56,10 +53,6 @@ This page indexes the structured migration entries extracted from the canonical 
 - [BImg Migration](/docs/migration-data/components/bimg) — `bimg`
 - [BImgLazy Migration](/docs/migration-data/components/bimglazy) — `bimglazy`
 - [BInputGroup Migration](/docs/migration-data/components/binputgroup) — `binputgroup`
-- [BInputGroupAddon Migration](/docs/migration-data/components/binputgroupaddon) — `binputgroupaddon`
-- [BInputGroupAppend Migration](/docs/migration-data/components/binputgroupappend) — `binputgroupappend`
-- [BInputGroupPrepend Migration](/docs/migration-data/components/binputgroupprepend) — `binputgroupprepend`
-- [BInputGroupText Migration](/docs/migration-data/components/binputgrouptext) — `binputgrouptext`
 - [BJumbotron Migration](/docs/migration-data/components/bjumbotron) — `bjumbotron`
 - [BLink Migration](/docs/migration-data/components/blink) — `blink`
 - [BListGroup Migration](/docs/migration-data/components/blistgroup) — `blistgroup`
@@ -89,7 +82,5 @@ This page indexes the structured migration entries extracted from the canonical 
 - [v-b-hover Migration](/docs/migration-data/directives/v-b-hover) — `v-b-hover`
 - [v-b-modal Migration](/docs/migration-data/directives/v-b-modal) — `v-b-modal`
 - [v-b-popover Migration](/docs/migration-data/directives/v-b-popover) — `v-b-popover`
-- [v-b-scrollspy Migration](/docs/migration-data/directives/v-b-scrollspy) — `v-b-scrollspy`
-- [v-b-toggle Migration](/docs/migration-data/directives/v-b-toggle) — `v-b-toggle`
 - [v-b-tooltip Migration](/docs/migration-data/directives/v-b-tooltip) — `v-b-tooltip`
 - [v-b-visible Migration](/docs/migration-data/directives/v-b-visible) — `v-b-visible`

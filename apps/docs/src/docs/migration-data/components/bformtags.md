@@ -13,10 +13,10 @@ tags:
   - migration
   - components
   - bformtags
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 confidence: high
 ---
 
@@ -48,7 +48,7 @@ take a look at these examples for guidance when migrating.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

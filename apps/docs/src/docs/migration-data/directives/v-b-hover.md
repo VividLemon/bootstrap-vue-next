@@ -12,7 +12,7 @@ tags:
   - migration
   - directives
   - hover
-safeRewrite: false
+safeRewrite: true
 migrationType: directive-migration
 introducedIn: bootstrap-vue-next
 manualReviewRequired: true
@@ -34,7 +34,7 @@ Migration notes for v-b-hover from BootstrapVue to BootstrapVueNext.
 <DeprecatedFeature :reason="DeprecationReason.INSUFFICIENT_DEMAND" what="`v-b-hover` directive">
   This directive will not be implemented. Consider using VueUse's
   <BLink href="https://vueuse.org/core/useElementHover/">`useElementHover()`</BLink>
-  composable as a modern alternative.
+  composable as a modern alternative. If your project does not already use VueUse, include that dependency as part of the migration.
 </DeprecatedFeature>
 
 ## Migration Notes
@@ -43,7 +43,7 @@ Migration notes for v-b-hover from BootstrapVue to BootstrapVueNext.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical, but review the result when surrounding behavior or adjacent props may affect the final markup.
 
 ## Related Migrations
 

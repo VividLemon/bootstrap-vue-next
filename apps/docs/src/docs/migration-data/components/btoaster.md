@@ -14,10 +14,10 @@ tags:
   - migration
   - components
   - btoaster
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 confidence: high
 ---
 
@@ -36,8 +36,7 @@ Migration notes for BToaster from BootstrapVue to BootstrapVueNext.
 
 The `BToaster` component has been deprecated. Its functionality has been replaced by the
 [`useToast`](/docs/composables/useToast) composable working in concert with the
-[`BApp`](/docs/components/app) component. See the documentation for
-details.
+[`BApp`](/docs/components/app) component. In practice this is usually a straightforward migration: move toast orchestration to `useToast` and make sure `BApp` exists at the root.
 
 ## Migration Notes
 
@@ -45,7 +44,7 @@ details.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

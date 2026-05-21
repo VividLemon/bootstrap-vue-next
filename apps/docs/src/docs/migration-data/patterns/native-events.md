@@ -22,7 +22,7 @@ confidence: high
 
 ## Summary
 
-BootstrapVueNext no longer documents bubbled native DOM events as component API events.
+BootstrapVueNext no longer documents bubbled native DOM events as component API events, even though native Vue event bubbling may still make those events observable at the component boundary.
 
 ## Affected APIs
 
@@ -30,9 +30,7 @@ BootstrapVueNext no longer documents bubbled native DOM events as component API 
 
 ## Breaking Change
 
-BootstrapVue sometimes listed the native events such as `click` that were bubbled from the underlying
-HTML element. We're not currently doing that, as we would like to keep the list of events
-consistent between the documentation and the code.
+BootstrapVue sometimes listed native events such as `click` that bubbled from the underlying HTML element. BootstrapVueNext does not capture and re-document those events as part of the component API because we want the documented event list to stay consistent with the code. Depending on the component, native Vue event bubbling may still allow the event to be observed by consumers.
 
 ## Migration Notes
 

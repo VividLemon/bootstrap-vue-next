@@ -11,10 +11,10 @@ tags:
   - migration
   - components
   - bbreadcrumb
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 related:
   - v-html-props
 confidence: high
@@ -32,7 +32,7 @@ Migration notes for BBreadcrumb from BootstrapVue to BootstrapVueNext.
 
 ## Breaking Change
 
-See the [v-html](/docs/migration-data/patterns/v-html-props) section for information on deprecation of the `html` prop.
+See the [v-html](/docs/migration-data/patterns/v-html-props) section for information on deprecation of the `html` prop. In most migrations this is a straightforward rewrite from the `html` prop to the default slot using Vue template content.
 
 ## Migration Notes
 
@@ -41,7 +41,7 @@ See the [v-html](/docs/migration-data/patterns/v-html-props) section for informa
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

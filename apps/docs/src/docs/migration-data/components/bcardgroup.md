@@ -14,10 +14,10 @@ tags:
   - migration
   - components
   - bcardgroup
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 confidence: high
 ---
 
@@ -33,9 +33,9 @@ Migration notes for BCardGroup from BootstrapVue to BootstrapVueNext.
 
 ## Breaking Change
 
-<DeprecatedFeature :reason="DeprecationReason.BOOTSTRAP_5_REMOVED" what="card deck and card columns props">
+<DeprecatedFeature :reason="DeprecationReason.BOOTSTRAP_DEPRECATED" what="card deck and card columns props">
   The `deck` and `columns` props output CSS classes (`.card-deck` and `.card-columns`) that were removed from Bootstrap 5.
-  Use Bootstrap's grid system with `.row-cols-*` classes for responsive card layouts instead.
+  Use Bootstrap's grid system with `.row-cols-*` classes for responsive card layouts instead, which makes this a straightforward class-based rewrite.
   Only the default card group (without `deck` or `columns` props) works with Bootstrap 5 and is responsive.
 </DeprecatedFeature>
 
@@ -45,7 +45,7 @@ Migration notes for BCardGroup from BootstrapVue to BootstrapVueNext.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

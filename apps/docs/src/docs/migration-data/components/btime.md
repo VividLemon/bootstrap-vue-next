@@ -4,10 +4,10 @@ title: BTime Migration
 category: components
 components:
   - BTime
-  - BLink
 match:
   - BTime
-  - <BTime>
+  - experimental
+  - migration-tbd
 tags:
   - migration
   - components
@@ -16,39 +16,34 @@ safeRewrite: false
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
 manualReviewRequired: true
-confidence: high
+confidence: medium
 ---
 
 # BTime Migration
 
 ## Summary
 
-Migration notes for BTime from BootstrapVue to BootstrapVueNext.
+`BTime` is currently experimental and does not yet have stable migration guidance.
 
 ## Affected APIs
 
 - BTime
-- BLink
 
 ## Breaking Change
 
-<DeprecatedFeature :reason="DeprecationReason.INSUFFICIENT_DEMAND" what="`BTime` component">
-  This component will not be implemented for v1.
-  See <BLink href="https://github.com/bootstrap-vue-next/bootstrap-vue-next/issues/1860#event-14531487213">issue #1860</BLink> for details.
-</DeprecatedFeature>
+Treat this entry as a placeholder instead of a finalized migration recipe.
+
+This component is currently experimental, is not fully documented, and is still subject to change. Because of that, the migration path from BootstrapVue's time APIs is not yet settled.
 
 ## Migration Notes
 
-- Extracted from the canonical BootstrapVue → BootstrapVueNext migration guide.
+- Migration guidance for this experimental area is still being defined.
+- Review release notes and current component docs before attempting automated rewrites here.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+No. Migration guidance for this experimental area is not stable enough for automated transformation.
 
 ## Related Migrations
 
 - None
-
-<script setup lang="ts">
-import {DeprecationReason} from '../../types/deprecation'
-</script>

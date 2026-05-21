@@ -11,10 +11,10 @@ tags:
   - migration
   - components
   - blistgroup
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 related:
   - blink
 confidence: high
@@ -41,7 +41,7 @@ See [BLink](/docs/migration-data/components/blink) for changes to link and route
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

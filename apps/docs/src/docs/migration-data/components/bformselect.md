@@ -11,7 +11,7 @@ tags:
   - migration
   - components
   - bformselect
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
 manualReviewRequired: true
@@ -30,7 +30,7 @@ Migration notes for BFormSelect from BootstrapVue to BootstrapVueNext.
 
 ## Breaking Change
 
-[Options as an object](https://bootstrap-vue.github.io/bootstrap-vue/docs/components/form-select#options-as-an-object) was deprecated in BootstrapVue and never implemented in BootstrapVueNext
+[Options as an object](https://bootstrap-vue.github.io/bootstrap-vue/docs/components/form-select#options-as-an-object) was deprecated in BootstrapVue and never implemented in BootstrapVueNext. This is usually a direct object-to-array rewrite, but review the mapping if the original object keys carry semantic meaning in your app.
 
 ## Migration Notes
 
@@ -38,7 +38,7 @@ Migration notes for BFormSelect from BootstrapVue to BootstrapVueNext.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical, but review the result when surrounding behavior or adjacent props may affect the final markup.
 
 ## Related Migrations
 

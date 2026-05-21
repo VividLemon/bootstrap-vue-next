@@ -33,9 +33,9 @@ BootstrapVue component aliases are not auto-registered in BootstrapVueNext and m
 ## Breaking Change
 
 BootstrapVue had a number of component aliases — for instance, `<b-btn>` was an alias for `<b-button>`.
-BootstrapVueNext does not support these aliases by default, so you must use the canonical component names.
+BootstrapVueNext does not support these aliases by default, so you must either migrate to the canonical component names or opt into aliases yourself.
 
-To define aliases, you can use the [`BootstrapVueNextResolver`'s `aliases` option](/docs#aliasing).
+To define aliases, you can use the [`BootstrapVueNextResolver`'s `aliases` option](/docs#aliasing). Whether you preserve aliases or rewrite call sites is up to the consuming application.
 
 The table below lists each BootstrapVue alias and its BootstrapVueNext replacement:
 

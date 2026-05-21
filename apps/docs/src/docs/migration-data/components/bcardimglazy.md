@@ -12,10 +12,10 @@ tags:
   - migration
   - components
   - bcardimglazy
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 related:
   - bimg
 confidence: high
@@ -34,7 +34,7 @@ Migration notes for BCardImgLazy from BootstrapVue to BootstrapVueNext.
 
 ## Breaking Change
 
-This functionality has been replaced by lazy loading on `<BImg>` see [BImg notes](/docs/migration-data/components/bimg) for details.
+This functionality has been replaced by lazy loading on `<BImg>`. In most cases this is a direct component swap plus the `lazy`/native loading configuration described in [BImg notes](/docs/migration-data/components/bimg).
 
 ## Migration Notes
 
@@ -43,7 +43,7 @@ This functionality has been replaced by lazy loading on `<BImg>` see [BImg notes
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

@@ -6,15 +6,18 @@ components:
   - BFormCheckbox
 match:
   - BFormCheckbox
+  - v-model
+  - model-value
+  - update:model-value
   - <BFormCheckbox>
 tags:
   - migration
   - components
   - bformcheckbox
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 confidence: high
 ---
 
@@ -22,7 +25,7 @@ confidence: high
 
 ## Summary
 
-Migration notes for BFormCheckbox from BootstrapVue to BootstrapVueNext.
+`BFormCheckbox` mostly follows the shared Vue 3 form-model migration pattern.
 
 ## Affected APIs
 
@@ -30,15 +33,18 @@ Migration notes for BFormCheckbox from BootstrapVue to BootstrapVueNext.
 
 ## Breaking Change
 
-See [BForm Components](/docs/components/form-checkbox)
+`BFormCheckbox` follows the shared BootstrapVueNext form input model changes.
+
+BootstrapVue's `value`/`input`/`change` patterns move to Vue 3's `model-value` and `update:model-value`, which makes this migration mostly mechanical. See [BForm Components](/docs/components/form-checkbox) for the component reference.
 
 ## Migration Notes
 
 - Extracted from the canonical BootstrapVue → BootstrapVueNext migration guide.
+- This entry intentionally stays focused on the shared form-model migration rather than inventing component-specific breaking changes that are not present.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

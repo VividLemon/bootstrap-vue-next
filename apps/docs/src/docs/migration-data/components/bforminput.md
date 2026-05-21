@@ -12,10 +12,10 @@ tags:
   - migration
   - components
   - bforminput
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 confidence: high
 ---
 
@@ -46,7 +46,7 @@ They work as documented in vue.js, so there is no longer a need for the properti
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

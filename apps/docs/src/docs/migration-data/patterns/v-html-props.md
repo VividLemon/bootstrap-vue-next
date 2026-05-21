@@ -58,7 +58,7 @@ that practice further by passing down other props is ill advised in our opinion.
 that you have the ability to access the same functionality via slots. In many cases slots were already available and
 took priority over the `[*-]html` props and we've filled in the gaps where there wasn't a direct replacement.
 We believe the developer experience in these cases is as good or better than when using props.
-Most importantly any use your code makes of `v-html` will be explicit. See the [Vue Documentation](https://vuejs.org/guide/best-practices/security.html#html-injection) for their take on the `HTML Injection` attack that use of `v-html` exposes.
+Most importantly any use your code makes of `v-html` will be explicit. That means Vue ESLint rules can warn on the exact XSS-sensitive sites, and teams can audit all HTML injection points in one standardized way instead of relying on scattered `html` props. See the [Vue Documentation](https://vuejs.org/guide/best-practices/security.html#html-injection) for their take on the `HTML Injection` attack that use of `v-html` exposes.
 
 | Component                      | Prop                  | Replacement Slot |
 | ------------------------------ | --------------------- | ---------------- |

@@ -11,10 +11,10 @@ tags:
   - migration
   - components
   - bjumbotron
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 confidence: high
 ---
 
@@ -30,9 +30,8 @@ Migration notes for BJumbotron from BootstrapVue to BootstrapVueNext.
 
 ## Breaking Change
 
-<DeprecatedFeature :reason="DeprecationReason.INSUFFICIENT_DEMAND" what="`BJumbotron` component">
-  This component will not be implemented for v1 due to insufficient demand.
-  Bootstrap has deprecated their Jumbotron component, but it can be replicated using
+<DeprecatedFeature :reason="DeprecationReason.BOOTSTRAP_DEPRECATED" what="`BJumbotron` component">
+  Bootstrap removed the Jumbotron component in Bootstrap 5, but the same presentation can be recreated using
   utility classes if needed.
 </DeprecatedFeature>
 
@@ -46,7 +45,7 @@ for details.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

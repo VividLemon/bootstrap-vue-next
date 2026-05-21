@@ -17,7 +17,7 @@ tags:
   - migration
   - components
   - bskeleton
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
 manualReviewRequired: true
@@ -52,7 +52,7 @@ Migration notes for BSkeleton from BootstrapVue to BootstrapVueNext.
 `animation` values have changed from `Wave`, `Fade`, `Throb` and `None` to `wave`, `glow`,
 and `undefined` to reflect the [Bootstrap 5 animations](https://getbootstrap.com/docs/5.3/components/placeholders/#animation)
 
-`type` has been deprecated. [`BPlaceholderButton`](/docs/components/placeholder#placeholder-buttons) is a replacement for the button type.
+`type` has been deprecated. [`BPlaceholderButton`](/docs/components/placeholder#placeholder-buttons) is a replacement for the button type. Because Bootstrap 5 placeholder styling differs from the BootstrapVue skeleton styling, review the visual result even when the API mapping is straightforward.
 If you find a need for the other types (Avatar or Input), please open an issue or propose a pull request.
 
 ## Migration Notes
@@ -61,7 +61,7 @@ If you find a need for the other types (Avatar or Input), please open an issue o
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical, but review the result when surrounding behavior or adjacent props may affect the final markup.
 
 ## Related Migrations
 

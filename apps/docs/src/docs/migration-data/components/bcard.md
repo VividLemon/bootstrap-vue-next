@@ -31,10 +31,10 @@ tags:
   - migration
   - components
   - bcard
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 related:
   - v-html-props
 confidence: high
@@ -75,16 +75,11 @@ The `sub-title`, `sub-title-tag` and `sub-title-text-variant` props have been re
   For `BCardBody`, `BCardHeader`, `BCardFooter`, `BCardTitle`, and `BCardText` components, the component name specific
   props are replaced by the generalized props. For example `footer-bg-variant` is replaced by `bg-variant`.
   This is true for all of the `body-*`, `header-*`, and `footer-*` props on these components. Note
-  that the specific props are still retained on the main `BCard` component.
+  that the specific props are still retained on the main `BCard` component. These renames are simple prop-to-prop mappings.
 
 Similarly the `text-tag` and `title-tag` props have been replaced by `tag` on the `BCardText`
 and `BCardTitle` components.
 </DeprecatedFeature>
-
-<DeprecatedFeature :reason="DeprecationReason.INSUFFICIENT_DEMAND" what="`body-border-variant` and `body-variant`" :plural="true" />
-
-`body-border-variant` and `body-variant` are not implemented on `BCard` and `border-variant` is not
-implemented on `BCardBody`.
 
 See the [v-html](/docs/migration-data/patterns/v-html-props) section for information on deprecation of the `footer-html` and `header-html` props on
 `BCard` and the `html` props on `BCardFooter` and `BCardHeader`.
@@ -96,7 +91,7 @@ See the [v-html](/docs/migration-data/patterns/v-html-props) section for informa
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

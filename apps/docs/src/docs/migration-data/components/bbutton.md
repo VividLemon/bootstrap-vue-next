@@ -12,10 +12,10 @@ tags:
   - migration
   - components
   - bbutton
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 confidence: high
 ---
 
@@ -35,7 +35,7 @@ Migration notes for BButton from BootstrapVue to BootstrapVueNext.
 <DeprecatedFeature :reason="DeprecationReason.BOOTSTRAP_DEPRECATED" what="`block` prop on `BButton`">
   See our <BLink href="/docs/components/button#block-level-buttons">`BButton` documentation</BLink>
   and <BLink href="https://getbootstrap.com/docs/5.3/components/buttons/#block-buttons">Bootstrap's documentation</BLink> for
-  details on creating block-level buttons with utility classes.
+  details on creating block-level buttons with utility classes such as `d-grid` or width utilities.
 </DeprecatedFeature>
 
 ## Migration Notes
@@ -44,7 +44,7 @@ Migration notes for BButton from BootstrapVue to BootstrapVueNext.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

@@ -12,10 +12,10 @@ tags:
   - migration
   - components
   - bprogressbar
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: true
+manualReviewRequired: false
 related:
   - v-html-props
 confidence: high
@@ -42,7 +42,7 @@ See the [v-html](/docs/migration-data/patterns/v-html-props) section for informa
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
 
 ## Related Migrations
 

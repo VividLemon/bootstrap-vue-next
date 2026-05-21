@@ -4,9 +4,15 @@ title: BAccordion Migration
 category: components
 components:
   - BAccordion
+  - BAccordionItem
+  - BCollapse
 match:
   - BAccordion
-  - <BAccordion>
+  - BAccordionItem
+  - BCollapse
+  - accordion
+  - visible
+  - v-model
 tags:
   - migration
   - components
@@ -16,6 +22,7 @@ migrationType: component-migration
 introducedIn: bootstrap-vue-next
 manualReviewRequired: true
 related:
+  - bcollapse
   - show-hide
 confidence: high
 ---
@@ -24,19 +31,21 @@ confidence: high
 
 ## Summary
 
-Migration notes for BAccordion from BootstrapVue to BootstrapVueNext.
+BootstrapVue did not ship a first-class accordion component, so accordion migrations usually start from `BCollapse`-based patterns rather than a direct `BAccordion` replacement.
 
 ## Affected APIs
 
 - BAccordion
+- BAccordionItem
+- BCollapse
 
 ## Breaking Change
 
-See [Show and Hide](/docs/migration-data/patterns/show-hide) shared properties.
+BootstrapVueNext provides dedicated `BAccordion` and `BAccordionItem` components for accordion behavior.
 
-### BAccordionItem
+In BootstrapVue, similar UIs were commonly built with `BCollapse` plus the `accordion` prop. When migrating those patterns, map the grouped `BCollapse` instances to `BAccordion`/`BAccordionItem` and then review the surrounding behavior, as accordions are common but not identical to the older collapse-based implementation.
 
-See [Show and Hide](/docs/migration-data/patterns/show-hide) shared properties.
+See [BCollapse](/docs/migration-data/components/bcollapse) and [Show and Hide](/docs/migration-data/patterns/show-hide) for the underlying visibility changes.
 
 ## Migration Notes
 
@@ -45,8 +54,9 @@ See [Show and Hide](/docs/migration-data/patterns/show-hide) shared properties.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+No. Accordion migrations often begin as a mechanical `BCollapse` to `BAccordion` mapping, but the surrounding structure and behavior should still be reviewed.
 
 ## Related Migrations
 
+- [bcollapse](/docs/migration-data/components/bcollapse)
 - [show-hide](/docs/migration-data/patterns/show-hide)

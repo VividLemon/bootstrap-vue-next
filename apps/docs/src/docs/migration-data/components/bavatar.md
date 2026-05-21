@@ -19,7 +19,7 @@ tags:
   - migration
   - components
   - bavatar
-safeRewrite: false
+safeRewrite: true
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
 manualReviewRequired: true
@@ -55,7 +55,7 @@ Badge positioning has changed to using a single property `badge-placement` and o
 
 For instance, use `badge-placement='top'` in place of `badge-top` or `badge-placement='end'` in place of
 `badge-right`. For combined props, rather than using `badge-top` and `badge-right`, use
-`badge-placement='top-end'.
+`badge-placement='top-end'`. This before/after mapping is straightforward and is a good candidate for codemod-style replacement.
 
 <DeprecatedFeature :reason="DeprecationReason.INSUFFICIENT_DEMAND" what="`badge-offset`">
   This property is <BLink href="https://github.com/bootstrap-vue-next/bootstrap-vue-next/pull/2692">significantly more complex</BLink> to implement in BootstrapVueNext (due to Bootstrap 5.0's implementation).
@@ -63,7 +63,7 @@ For instance, use `badge-placement='top'` in place of `badge-top` or `badge-plac
 
 ### Rounding Sides
 
-See the [Rounding](/docs/migration-data/props/rounded-radius-element) section.
+See the [Rounding](/docs/migration-data/props/rounded-radius-element) section. The directional rounding changes are also straightforward to map automatically.
 
 ## Migration Notes
 
@@ -72,7 +72,7 @@ See the [Rounding](/docs/migration-data/props/rounded-radius-element) section.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+Yes. This entry is mostly mechanical, but review the result when surrounding behavior or adjacent props may affect the final markup.
 
 ## Related Migrations
 
