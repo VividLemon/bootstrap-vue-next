@@ -2,15 +2,29 @@ const path = require('node:path')
 
 const toPosixPath = (filename) => filename.split(path.sep).join('/')
 const toRelativePath = (filename) => toPosixPath(path.relative(process.cwd(), filename))
+const hasUnsafePathCharacters = (filename) => /[\s"'`$&|;<>]/.test(filename)
+
+const toWorkspaceRelativePath = (filename, workspacePath) => {
+  const relativePath = toRelativePath(filename)
+  const workspacePrefix = `${workspacePath}/`
+
+  if (!relativePath.startsWith(workspacePrefix)) {
+    throw new Error(`Expected ${relativePath} to be inside ${workspacePath}`)
+  }
+
+  if (hasUnsafePathCharacters(relativePath)) {
+    throw new Error(`Unsupported staged filename: ${relativePath}`)
+  }
+
+  return relativePath.slice(workspacePrefix.length)
+}
 
 const buildCommand = (workspacePath, command, filenames) => {
   if (filenames.length === 0) {
     return null
   }
 
-  const workspaceFiles = filenames
-    .map((filename) => toRelativePath(filename))
-    .map((filename) => filename.slice(`${workspacePath}/`.length))
+  const workspaceFiles = filenames.map((filename) => toWorkspaceRelativePath(filename, workspacePath))
 
   return `corepack pnpm --dir ${workspacePath} exec ${command} ${workspaceFiles.join(' ')}`
 }
