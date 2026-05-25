@@ -12,6 +12,8 @@
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
     "lint:eslint": "eslint . --fix --cache",
+    "nano-staged:eslint": "node ../../scripts/nano-staged-run.mjs eslint .js,.ts,.vue",
+    "nano-staged:oxfmt": "node ../../scripts/nano-staged-run.mjs oxfmt .js,.ts,.mts,.tsx,.vue",
     "format": "oxfmt src/"
   },
   "dependencies": {

@@ -30,6 +30,7 @@
     "dev": "tsx watch src/index.ts",
     "lint": "pnpm run lint:eslint",
     "lint:eslint": "eslint . --fix --cache",
+    "nano-staged:eslint": "node ../../scripts/nano-staged-run.mjs eslint .js,.ts,.mjs,.cjs",
     "test:lint": "eslint src",
     "test:lint:ci": "pnpm run test:lint",
     "typecheck": "tsc --noEmit -p tsconfig.json",

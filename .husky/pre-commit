@@ -1,1 +1,1 @@
-corepack pnpm exec nano-staged
+./node_modules/.bin/nano-staged

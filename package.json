@@ -46,6 +46,27 @@
     "test:unit:ci": "turbo run test:unit:ci",
     "test:ci": "turbo run test:ci"
   },
+  "nano-staged": {
+    "packages/bootstrap-vue-next/**/*": [
+      "corepack pnpm --dir packages/bootstrap-vue-next run nano-staged:eslint --",
+      "corepack pnpm --dir packages/bootstrap-vue-next run nano-staged:prettier:non-markdown --",
+      "corepack pnpm --dir packages/bootstrap-vue-next run nano-staged:prettier:markdown --"
+    ],
+    "packages/nuxt/**/*": [
+      "corepack pnpm --dir packages/nuxt run nano-staged:eslint --",
+      "corepack pnpm --dir packages/nuxt run nano-staged:prettier:non-markdown --",
+      "corepack pnpm --dir packages/nuxt run nano-staged:prettier:markdown --"
+    ],
+    "apps/docs/**/*": [
+      "corepack pnpm --dir apps/docs run nano-staged:eslint --",
+      "corepack pnpm --dir apps/docs run nano-staged:oxfmt --"
+    ],
+    "apps/playground/**/*": [
+      "corepack pnpm --dir apps/playground run nano-staged:eslint --",
+      "corepack pnpm --dir apps/playground run nano-staged:oxfmt --"
+    ],
+    "packages/mcp/**/*": "corepack pnpm --dir packages/mcp run nano-staged:eslint --"
+  },
   "devDependencies": {
     "husky": "^9.1.7",
     "nano-staged": "^1.0.2",

@@ -13,6 +13,8 @@
     "lint": "run-s lint:*",
     "lint:eslint": "eslint . --fix --cache",
     "lint:oxlint": "oxlint . --fix",
+    "nano-staged:eslint": "node ../../scripts/nano-staged-run.mjs eslint .js,.ts,.vue",
+    "nano-staged:oxfmt": "node ../../scripts/nano-staged-run.mjs oxfmt .js,.ts,.mts,.tsx,.vue",
     "test:lint:eslint": "eslint src tests",
     "test:lint:oxlint": "oxlint src tests",
     "test:lint": "run-s test:lint:eslint test:lint:oxlint",
