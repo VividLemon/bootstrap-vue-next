@@ -2,7 +2,14 @@ const path = require('node:path')
 
 const toPosixPath = (filename) => filename.split(path.sep).join('/')
 const toRelativePath = (filename) => toPosixPath(path.relative(process.cwd(), filename))
-const hasUnsafePathCharacters = (filename) => /[\s"'`$&|;<>]/.test(filename)
+const safePathPattern = /^[A-Za-z0-9._/-]+$/
+const isSafePath = (filename) => safePathPattern.test(filename)
+
+const validateSafePath = (filename, description) => {
+  if (!isSafePath(filename)) {
+    throw new Error(`Unsupported ${description}: ${filename}`)
+  }
+}
 
 const toWorkspaceRelativePath = (filename, workspacePath) => {
   const relativePath = toRelativePath(filename)
@@ -12,9 +19,7 @@ const toWorkspaceRelativePath = (filename, workspacePath) => {
     throw new Error(`Expected ${relativePath} to be inside ${workspacePath}`)
   }
 
-  if (hasUnsafePathCharacters(relativePath)) {
-    throw new Error(`Unsupported staged filename: ${relativePath}`)
-  }
+  validateSafePath(relativePath, 'staged filename')
 
   return relativePath.slice(workspacePrefix.length)
 }
@@ -23,6 +28,8 @@ const buildCommand = (workspacePath, command, filenames) => {
   if (filenames.length === 0) {
     return null
   }
+
+  validateSafePath(workspacePath, 'workspace path')
 
   const workspaceFiles = filenames.map((filename) => toWorkspaceRelativePath(filename, workspacePath))
 
