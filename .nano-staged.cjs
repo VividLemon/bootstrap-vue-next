@@ -1,5 +1,10 @@
 const path = require('node:path')
 
+const allowedCommands = new Set([
+  'eslint --cache --fix',
+  'prettier --write --ignore-unknown',
+  'oxfmt',
+])
 const toPosixPath = (filename) => filename.split(path.sep).join('/')
 const toRelativePath = (filename) => toPosixPath(path.relative(process.cwd(), filename))
 const safePathPattern = /^[A-Za-z0-9._/-]+$/
@@ -8,6 +13,12 @@ const isSafePath = (filename) => safePathPattern.test(filename)
 const validateSafePath = (filename, description) => {
   if (!isSafePath(filename)) {
     throw new Error(`Unsupported ${description}: ${filename}`)
+  }
+}
+
+const validateAllowedCommand = (command) => {
+  if (!allowedCommands.has(command)) {
+    throw new Error(`Unsupported command: ${command}`)
   }
 }
 
@@ -30,6 +41,7 @@ const buildCommand = (workspacePath, command, filenames) => {
   }
 
   validateSafePath(workspacePath, 'workspace path')
+  validateAllowedCommand(command)
 
   const workspaceFiles = filenames.map((filename) => toWorkspaceRelativePath(filename, workspacePath))
 
