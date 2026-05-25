@@ -39,7 +39,9 @@ import {
   type MarkdownAiProvider,
 } from 'vitepress-plugin-llms/vitepress-components'
 
-const aiProviders = defaultAiProviders.filter(({ name }) => name === 'ChatGPT' || name === 'Claude')
+const supportedAiProviderNames = new Set(['ChatGPT', 'Claude'])
+
+const aiProviders = defaultAiProviders.filter(({ name }) => supportedAiProviderNames.has(name))
 
 const { copied, copyAsMarkdown, downloadMarkdown, markdownPageURL, openInAI, viewAsMarkdown } =
   useCopyOrDownloadAsMarkdownButtons({
