@@ -32,6 +32,7 @@ import { useMarkdownRenderer } from '../composables/useMarkdownRenderer'
 import { data as migrationData } from '../data/migration.data'
 import { appInfoKey } from '../../.vitepress/theme/keys'
 import { kebabToTitleCase } from '../utils/dataLoaderUtils'
+import MarkdownActionsDropdown from './MarkdownActionsDropdown.vue'
 
 interface AppInfo {
   githubComponentsDirectory: string
