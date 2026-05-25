@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
+    "nano-staged": "^1.0.2",
     "turbo": "^2.8.20"
   },
   "engines": {

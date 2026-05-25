@@ -76,10 +76,5 @@
     "bootstrap",
     "typescript",
     "bootstrap-vue-next"
-  ],
-  "lint-staged": {
-    "*.{js,ts,vue}": "eslint --cache --fix",
-    "!(CHANGELOG)*.md": "prettier --write --ignore-unknown",
-    "!(*md)": "prettier --write --ignore-unknown"
-  }
+  ]
 }

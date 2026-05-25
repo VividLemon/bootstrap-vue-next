@@ -309,10 +309,5 @@
     "timepicker",
     "toast",
     "tooltip"
-  ],
-  "lint-staged": {
-    "*.{js,ts,vue}": "eslint --cache --fix",
-    "!(CHANGELOG)*.md": "prettier --write --ignore-unknown",
-    "!(*md)": "prettier --write --ignore-unknown"
-  }
+  ]
 }
