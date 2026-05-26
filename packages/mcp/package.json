@@ -1,6 +1,6 @@
 {
   "name": "@bootstrap-vue-next/mcp",
-  "version": "0.45.3",
+  "version": "0.0.1",
   "description": "BootstrapVueNext MCP server foundation",
   "license": "MIT",
   "author": {
@@ -10,6 +10,9 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "bootstrap-vue-next-mcp": "./dist/cli.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -27,7 +30,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/cli.ts",
     "lint": "pnpm run lint:eslint",
     "lint:eslint": "eslint . --fix --cache",
     "test:lint": "eslint src tests",
@@ -35,7 +38,7 @@
     "test:unit:ci": "node --import tsx --test tests/**/*.test.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "type-check": "pnpm run typecheck",
-    "start": "node dist/index.js"
+    "start": "node dist/cli.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

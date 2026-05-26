@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import {describe, it} from 'node:test'
 
+import {createServer} from '../src/index.js'
 import {DEFAULT_DOCS_BASE_URL, DocsSource, extractMarkdownOutputPaths, normalizeDocsOutputPath} from '../src/docs-source.js'
 import {MigrationKnowledgeBase} from '../src/migration-knowledge-base.js'
 
@@ -18,6 +19,10 @@ const createFetch = (responses: Record<string, Response | Error>) => async (inpu
 }
 
 describe('DocsSource', () => {
+  it('can be imported without starting the stdio server', () => {
+    assert.equal(typeof createServer, 'function')
+  })
+
   it('uses the deployed docs URL by default', () => {
     const docsSource = new DocsSource({fetch: createFetch({})})
 

@@ -1,7 +1,4 @@
-import process from 'node:process'
-
 import {Server} from '#mcp-sdk/server'
-import {StdioServerTransport} from '#mcp-sdk/stdio'
 import {
   CallToolRequestSchema,
   ListResourcesRequestSchema,
@@ -9,14 +6,9 @@ import {
   ReadResourceRequestSchema,
 } from '#mcp-sdk/types'
 
-import packageJson from '../package.json' with {type: 'json'}
 import {DEFAULT_DOCS_BASE_URL, DOCS_BASE_URL_ENV_VAR, DocsSource} from './docs-source.js'
 import {MigrationKnowledgeBase, type MigrationCategory, type MigrationMatch} from './migration-knowledge-base.js'
-
-const SERVER_INFO = {
-  name: packageJson.name,
-  version: packageJson.version,
-} as const
+import {SERVER_INFO} from './server-info.js'
 
 const SITE_INDEX_RESOURCE_URI = 'bootstrap-vue-next://docs/llms.txt'
 const FULL_CORPUS_RESOURCE_URI = 'bootstrap-vue-next://docs/llms-full.txt'
@@ -548,15 +540,3 @@ export const createServer = (options: CreateServerOptions = {}): Server => {
 
   return server
 }
-
-const startServer = async (): Promise<void> => {
-  const server = createServer()
-  const transport = new StdioServerTransport()
-
-  await server.connect(transport)
-}
-
-void startServer().catch((error: unknown) => {
-  console.error('Failed to start BootstrapVueNext MCP server.', error)
-  process.exit(1)
-})

@@ -27,6 +27,8 @@ The migration corpus is sourced from the docs build's LLM markdown output, inclu
 pnpm --filter @bootstrap-vue-next/mcp run dev
 ```
 
+This starts the stdio CLI entrypoint in watch mode.
+
 ## Build
 
 ```bash
@@ -42,8 +44,19 @@ pnpm --filter @bootstrap-vue-next/mcp run build
 pnpm --filter @bootstrap-vue-next/mcp run start
 ```
 
+The published CLI binary is `bootstrap-vue-next-mcp`.
+
+## Programmatic usage
+
+```ts
+import {createServer} from '@bootstrap-vue-next/mcp'
+
+const server = createServer()
+```
+
 ## Notes
 
-- `src/index.ts` initializes the MCP server and stdio transport.
+- `src/index.ts` exports the side-effect-free library API.
+- `src/cli.ts` initializes the MCP server stdio transport for CLI use.
 - Migration docs are consumed from the published LLM markdown endpoints instead of scraping HTML.
 - The server currently provides read-only migration resources and planning tools; it does not apply code changes or codemods.
