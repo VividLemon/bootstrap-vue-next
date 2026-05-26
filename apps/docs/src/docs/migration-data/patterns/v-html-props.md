@@ -74,7 +74,7 @@ Most importantly any use your code makes of `v-html` will be explicit. That mean
 | `BInputGroup`                  | `append-html`         | `append`         |
 | `BInputGroup`                  | `prepend-html`        | `prepend`        |
 | `BModal`                       | `cancel-title-html`   | `cancel`         |
-| `BModal`                       | `ok-title`            | `ok`             |
+| `BModal`                       | `ok-title-html`       | `ok`             |
 | `BModal`                       | `title-html`          | `title`          |
 | `BNavItemDropdown`             | `html`                | `default`        |
 | `BPopover` [\*](#popover-html-note) | `html`                | `default`        |
