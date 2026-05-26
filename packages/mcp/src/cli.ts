@@ -12,7 +12,7 @@ const startServer = async (): Promise<void> => {
   await server.connect(transport)
 }
 
-void startServer().catch((error: unknown) => {
+startServer().catch((error: unknown) => {
   console.error('Failed to start BootstrapVueNext MCP server.', error)
   process.exit(1)
 })
