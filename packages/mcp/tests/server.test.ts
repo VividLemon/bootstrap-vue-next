@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict'
 import {describe, it} from 'node:test'
 
+import {Client} from '@modelcontextprotocol/sdk/client'
+import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory'
+
 import {createServer} from '../src/index.js'
 
 const createResponse = (body: string, status: number = 200): Response => new Response(body, {status})
@@ -103,26 +106,23 @@ related:
 Manual HTML prop migration.`),
   })
 
-type RequestHandler = (request?: {method: string; params?: Record<string, unknown>}) => Promise<unknown>
+const createConnectedClient = async (fetch: typeof globalThis.fetch = createDocsFetch()) => {
+  const server = createServer({fetch})
+  const client = new Client({
+    name: 'mcp-server-test-client',
+    version: '1.0.0',
+  })
+  const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair()
 
-const getRequestHandler = (server: object, method: string): RequestHandler => {
-  const requestHandlers = (server as {_requestHandlers: Map<string, RequestHandler>})._requestHandlers
-  const handler = requestHandlers.get(method)
+  await Promise.all([server.connect(serverTransport), client.connect(clientTransport)])
 
-  assert.ok(handler, `Expected request handler for ${method}`)
-  return handler
+  return {client, server}
 }
-
-const invokeRequestHandler = (server: object, method: string, params: Record<string, unknown> = {}) =>
-  getRequestHandler(server, method)({
-    method,
-    params,
-  } as {method: string; params: Record<string, unknown>})
 
 describe('createServer', () => {
   it('lists the public tools', async () => {
-    const server = createServer({fetch: createDocsFetch()})
-    const response = (await invokeRequestHandler(server, 'tools/list')) as {tools: Array<{name: string}>}
+    const {client} = await createConnectedClient()
+    const response = await client.listTools()
 
     assert.deepEqual(response.tools.map((tool) => tool.name), [
       'fetch_migration_overview',
@@ -132,131 +132,121 @@ describe('createServer', () => {
       'identify_migration_entries',
       'generate_upgrade_checklist',
     ])
+
+    await client.close()
   })
 
   it('lists and reads the public resources', async () => {
-    const server = createServer({fetch: createDocsFetch()})
-    const listResponse = (await invokeRequestHandler(server, 'resources/list')) as {
-      resources: Array<{name: string; uri: string}>
-    }
+    const {client} = await createConnectedClient()
+    const listResponse = await client.listResources()
 
     assert.deepEqual(
       listResponse.resources.map((resource) => resource.name),
       ['llms.txt', 'llms-full.txt', 'migration-overview', 'v-html-props', 'balert', 'bmodal']
     )
 
-    const overviewResponse = (await invokeRequestHandler(server, 'resources/read', {
+    const overviewResponse = await client.readResource({
       uri: 'bootstrap-vue-next://migration/overview',
-    })) as {
-      contents: Array<{mimeType: string; text: string}>
-    }
-    const entryResponse = (await invokeRequestHandler(server, 'resources/read', {
+    })
+    const entryResponse = await client.readResource({
       uri: 'bootstrap-vue-next://migration/entry/bmodal',
-    })) as {
-      contents: Array<{mimeType: string; text: string}>
-    }
-    const unknownResponse = (await invokeRequestHandler(server, 'resources/read', {
+    })
+    const unknownResponse = await client.readResource({
       uri: 'bootstrap-vue-next://migration/unknown',
-    })) as {
-      contents: Array<{mimeType: string; text: string}>
-    }
+    })
 
     assert.equal(overviewResponse.contents[0]?.mimeType, 'text/markdown')
     assert.match(overviewResponse.contents[0]?.text ?? '', /Migration Knowledge Base/)
     assert.match(entryResponse.contents[0]?.text ?? '', /# BModal Migration/)
     assert.match(unknownResponse.contents[0]?.text ?? '', /Unknown resource URI/)
+
+    await client.close()
   })
 
   it('returns representative tool success responses', async () => {
-    const server = createServer({fetch: createDocsFetch()})
-    const overviewResponse = (await invokeRequestHandler(server, 'tools/call', {
+    const {client} = await createConnectedClient()
+    const overviewResponse = await client.callTool({
       name: 'fetch_migration_overview',
-    })) as {content: Array<{text: string}>; structuredContent: {docsBaseUrl: string}}
-    const entryResponse = (await invokeRequestHandler(server, 'tools/call', {
+    })
+    const entryResponse = await client.callTool({
       name: 'fetch_migration_entry',
       arguments: {id: 'bmodal'},
-    })) as {
-      content: Array<{text: string}>
-      structuredContent: {entry: {metadata: {id: string}}}
-    }
-    const searchResponse = (await invokeRequestHandler(server, 'tools/call', {
+    })
+    const searchResponse = await client.callTool({
       name: 'search_migration_entries',
       arguments: {query: 'html', category: 'patterns', limit: 1},
-    })) as {
-      content: Array<{text: string}>
-      structuredContent: {matches: Array<{metadata: {id: string}}>}
-    }
-    const relatedResponse = (await invokeRequestHandler(server, 'tools/call', {
+    })
+    const relatedResponse = await client.callTool({
       name: 'expand_related_migration_entries',
       arguments: {id: 'bmodal'},
-    })) as {
-      content: Array<{text: string}>
-      structuredContent: {entries: Array<{metadata: {id: string}}>}
-    }
-    const identifyResponse = (await invokeRequestHandler(server, 'tools/call', {
+    })
+    const identifyResponse = await client.callTool({
       name: 'identify_migration_entries',
       arguments: {terms: ['BModal', 'html'], includeRelated: true},
-    })) as {
-      content: Array<{text: string}>
-      structuredContent: {matches: Array<{entry: {metadata: {id: string}}}>}
-    }
-    const checklistResponse = (await invokeRequestHandler(server, 'tools/call', {
+    })
+    const checklistResponse = await client.callTool({
       name: 'generate_upgrade_checklist',
       arguments: {terms: ['alert']},
-    })) as {
-      content: Array<{text: string}>
-      structuredContent: {checklist: {safeRewriteCandidates: Array<{entry: {metadata: {id: string}}}>}}
+    })
+    const entryStructuredContent = entryResponse.structuredContent as {entry: {metadata: {id: string}}}
+    const searchStructuredContent = searchResponse.structuredContent as {
+      matches: Array<{metadata: {id: string}}>
+    }
+    const relatedStructuredContent = relatedResponse.structuredContent as {
+      entries: Array<{metadata: {id: string}}>
+    }
+    const checklistStructuredContent = checklistResponse.structuredContent as {
+      checklist: {safeRewriteCandidates: Array<{entry: {metadata: {id: string}}}>}
     }
 
     assert.match(overviewResponse.content[0]?.text ?? '', /Canonical migration overview/)
     assert.equal(
-      overviewResponse.structuredContent.docsBaseUrl,
+      (overviewResponse.structuredContent as {docsBaseUrl: string}).docsBaseUrl,
       'https://bootstrap-vue-next.github.io/bootstrap-vue-next/'
     )
-    assert.equal(entryResponse.structuredContent.entry.metadata.id, 'bmodal')
-    assert.equal(searchResponse.structuredContent.matches.length, 1)
-    assert.equal(searchResponse.structuredContent.matches[0]?.metadata.id, 'v-html-props')
-    assert.deepEqual(
-      relatedResponse.structuredContent.entries.map((entry) => entry.metadata.id),
-      ['v-html-props', 'bmodal']
-    )
+    assert.equal(entryStructuredContent.entry.metadata.id, 'bmodal')
+    assert.equal(searchStructuredContent.matches.length, 1)
+    assert.equal(searchStructuredContent.matches[0]?.metadata.id, 'v-html-props')
+    assert.deepEqual(relatedStructuredContent.entries.map((entry) => entry.metadata.id), ['v-html-props', 'bmodal'])
     assert.match(identifyResponse.content[0]?.text ?? '', /Identified migration entries:/)
-    assert.equal(checklistResponse.structuredContent.checklist.safeRewriteCandidates[0]?.entry.metadata.id, 'balert')
+    assert.equal(checklistStructuredContent.checklist.safeRewriteCandidates[0]?.entry.metadata.id, 'balert')
+
+    await client.close()
   })
 
   it('returns representative tool validation and error responses', async () => {
-    const server = createServer({fetch: createDocsFetch()})
-    const missingEntryId = (await invokeRequestHandler(server, 'tools/call', {
+    const {client} = await createConnectedClient()
+    const missingEntryId = await client.callTool({
       name: 'fetch_migration_entry',
       arguments: {},
-    })) as {content: Array<{text: string}>; isError?: boolean}
-    const missingQuery = (await invokeRequestHandler(server, 'tools/call', {
+    })
+    const missingQuery = await client.callTool({
       name: 'search_migration_entries',
       arguments: {},
-    })) as {content: Array<{text: string}>; isError?: boolean}
-    const missingTerms = (await invokeRequestHandler(server, 'tools/call', {
+    })
+    const missingTerms = await client.callTool({
       name: 'identify_migration_entries',
       arguments: {terms: []},
-    })) as {content: Array<{text: string}>; isError?: boolean}
-    const missingChecklistTerms = (await invokeRequestHandler(server, 'tools/call', {
+    })
+    const missingChecklistTerms = await client.callTool({
       name: 'generate_upgrade_checklist',
       arguments: {terms: []},
-    })) as {content: Array<{text: string}>; isError?: boolean}
-    const unknownTool = (await invokeRequestHandler(server, 'tools/call', {
+    })
+    const unknownTool = await client.callTool({
       name: 'unknown_tool',
-    })) as {content: Array<{text: string}>; isError?: boolean}
-    const missingOverviewServer = createServer({
-      fetch: createFetch({
+    })
+    const {client: missingOverviewClient} = await createConnectedClient(
+      createFetch({
         'https://bootstrap-vue-next.github.io/bootstrap-vue-next/llms.txt': createResponse('Not Found', 404),
         'https://bootstrap-vue-next.github.io/bootstrap-vue-next/docs/migration-data.md': createResponse(
           'Not Found',
           404
         ),
-      }),
-    })
-    const missingOverview = (await invokeRequestHandler(missingOverviewServer, 'tools/call', {
+      })
+    )
+    const missingOverview = await missingOverviewClient.callTool({
       name: 'fetch_migration_overview',
-    })) as {content: Array<{text: string}>; isError?: boolean}
+    })
 
     assert.equal(missingEntryId.isError, true)
     assert.match(missingEntryId.content[0]?.text ?? '', /"id" argument is required/)
@@ -270,5 +260,7 @@ describe('createServer', () => {
     assert.match(unknownTool.content[0]?.text ?? '', /Unknown tool/)
     assert.equal(missingOverview.isError, true)
     assert.match(missingOverview.content[0]?.text ?? '', /Unable to load the migration overview/)
+
+    await Promise.all([client.close(), missingOverviewClient.close()])
   })
 })
