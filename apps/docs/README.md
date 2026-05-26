@@ -19,6 +19,6 @@ It is recommended to put Vue code that is md into a real Vue file first, let it 
 
 ## Grammar checks
 
-Run `corepack pnpm --filter docs run grammar-check` to grammar check all markdown under `/tmp/workspace/VividLemon/bootstrap-vue-next/apps/docs/src/**/*.md` and all component description strings under `/tmp/workspace/VividLemon/bootstrap-vue-next/apps/docs/src/data/components/**/*.data.ts`
+Run `corepack pnpm --filter docs run grammar-check` to grammar check all markdown under `apps/docs/src/**/*.md` and all component description strings under `apps/docs/src/data/components/**/*.data.ts`
 
 Run `corepack pnpm --filter docs run grammar-check:strict` to return a failing exit code when any grammar findings are reported
