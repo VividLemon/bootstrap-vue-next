@@ -55,13 +55,13 @@ async function fetchFileContributors(
     Accept: 'application/vnd.github+json',
   }
   if (token) {
-    headers['Authorization'] = 'Bearer ' + token
+    headers['Authorization'] = `Bearer ${token}`
   }
 
   const contributors = new Map<string, { name: string; commits: number }>()
 
   try {
-    // Fetch commits for this file path (up to 100 per page, page 1 is usually enough)
+    // Fetch commits for this file path (limited to 100 most recent commits per file)
     const url = `${GITHUB_API_BASE}/repos/${REPO_OWNER}/${REPO_NAME}/commits?path=${encodeURIComponent(filePath)}&per_page=100`
     const response = await fetch(url, { headers })
 

@@ -4,9 +4,7 @@
     class="contributors-section mt-5 mb-3"
   >
     <h3 id="contributors">Contributors</h3>
-    <p class="text-muted">
-      Thank you to the contributors who have worked on this component's source code.
-    </p>
+    <p class="text-muted">Thank you to the contributors who have worked on this source code.</p>
     <div class="d-flex flex-wrap gap-2 align-items-center">
       <BLink
         v-for="contributor in pageContributors.contributors"
