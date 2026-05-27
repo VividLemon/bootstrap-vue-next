@@ -16,9 +16,3 @@ The documentation requires a specific style guide for consistency purposes. You 
 12. There should not be excess lines in markdown files. Either in `script` tags, or between elements in examples. This may affect readability, but assuming you have followed the Vue eslint rulings (read below), then it should be fine
 
 It is recommended to put Vue code that is md into a real Vue file first, let it auto lint so we keep regular styling of Vue examples
-
-## Grammar checks
-
-Run `corepack pnpm --filter docs run grammar-check` to grammar check all markdown under `apps/docs/src/**/*.md` and all component description strings under `apps/docs/src/data/components/**/*.data.ts`
-
-Run `corepack pnpm --filter docs run grammar-check:strict` to return a failing exit code when any grammar findings are reported
