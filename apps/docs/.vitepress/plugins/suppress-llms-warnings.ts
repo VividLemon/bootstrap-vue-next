@@ -13,24 +13,36 @@ export const suppressLlmsWarnings = (): Plugin => {
   const originalWarn = console.warn
   let patched = false
 
+  const suppressedPatterns = [
+    '[remark-include] Snippet file not found:',
+    '[remark-include] Include file not found:',
+  ]
+
+  const patch = () => {
+    if (patched) return
+    patched = true
+    console.warn = (...args: unknown[]) => {
+      const msg = typeof args[0] === 'string' ? args[0] : ''
+      if (suppressedPatterns.some((pattern) => msg.includes(pattern))) return
+      originalWarn.apply(console, args)
+    }
+  }
+
+  const restore = () => {
+    if (patched) {
+      console.warn = originalWarn
+      patched = false
+    }
+  }
+
   return {
     name: 'suppress-llms-warnings',
+    enforce: 'pre',
     buildStart() {
-      if (patched) return
-      patched = true
-      console.warn = (...args: unknown[]) => {
-        const msg = typeof args[0] === 'string' ? args[0] : ''
-        if (msg.includes('[remark-include] Snippet file not found:')) return
-        if (msg.includes('[remark-include] Include file not found:')) return
-        if (msg.includes('[remark-include] Region') && msg.includes('not found in')) return
-        originalWarn.apply(console, args)
-      }
+      patch()
     },
     closeBundle() {
-      if (patched) {
-        console.warn = originalWarn
-        patched = false
-      }
+      restore()
     },
   }
 }
