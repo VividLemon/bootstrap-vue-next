@@ -181,6 +181,8 @@ export function autoInjectDocComponents(md: MarkdownRenderer) {
     return `${frontmatterMatch[0]}\n\n${afterFrontmatter}`
   }
 
+  // VitePress v2 uses markdown-it-async and calls md.renderAsync internally.
+  // We wrap both render and renderAsync to ensure source injection works in all paths.
   md.render = function (src: string, env?: Record<string, unknown>) {
     const transformed = transformSource(src, env || {})
     return defaultRender(transformed ?? src, env)
