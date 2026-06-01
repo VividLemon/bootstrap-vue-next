@@ -47,7 +47,6 @@ function filenameToCamelCase(filename: string): string {
  * that have a `description` in their frontmatter.
  */
 export function autoInjectDocComponents(md: MarkdownRenderer) {
-  const defaultRender = md.render.bind(md)
   const defaultRenderAsync = md.renderAsync.bind(md)
 
   /**
@@ -182,12 +181,6 @@ export function autoInjectDocComponents(md: MarkdownRenderer) {
   }
 
   // VitePress v2 uses markdown-it-async and calls md.renderAsync internally.
-  // We wrap both render and renderAsync to ensure source injection works in all paths.
-  md.render = function (src: string, env?: Record<string, unknown>) {
-    const transformed = transformSource(src, env || {})
-    return defaultRender(transformed ?? src, env)
-  }
-
   md.renderAsync = function (src: string, env?: Record<string, unknown>) {
     const transformed = transformSource(src, env || {})
     return defaultRenderAsync(transformed ?? src, env)
