@@ -150,7 +150,7 @@
         <small v-if="isDuplicate" class="form-text text-body-secondary"
           >{{ props.duplicateTagText }}: {{ inputValue }}</small
         >
-        <small v-if="modelValue.length === props.limit" class="form-text text-body-secondary">
+        <small v-if="isLimitReached" class="form-text text-body-secondary">
           {{ props.limitTagsText }}</small
         >
       </div>
