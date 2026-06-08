@@ -176,6 +176,33 @@ export function autoInjectDocComponents(md: MarkdownRenderer) {
       }
     }
 
+    // Inject ContributorsList for components, composables, and directives pages
+    if (
+      directory === 'components' ||
+      directory === 'composables' ||
+      directory === 'directives' ||
+      directory.endsWith('/components') ||
+      directory.endsWith('/composables') ||
+      directory.endsWith('/directives')
+    ) {
+      const contributorsPattern = /<ContributorsList\s*\/?>/
+      if (!contributorsPattern.test(afterFrontmatter)) {
+        const contributorsBlock = `\n\n<ContributorsList />`
+
+        // Insert before <style> or <script> if present, otherwise append
+        const firstStyleOpen = afterFrontmatter.search(/<style[^>]*>/)
+        const firstScriptOpen = afterFrontmatter.search(/<script[^>]*>/)
+        const positions = [firstStyleOpen, firstScriptOpen].filter((p) => p !== -1)
+
+        if (positions.length > 0) {
+          const insertBefore = Math.min(...positions)
+          afterFrontmatter = `${afterFrontmatter.slice(0, insertBefore)}${contributorsBlock}\n\n${afterFrontmatter.slice(insertBefore)}`
+        } else {
+          afterFrontmatter = afterFrontmatter + contributorsBlock
+        }
+      }
+    }
+
     // Combine frontmatter with processed content
     return `${frontmatterMatch[0]}\n\n${afterFrontmatter}`
   }
