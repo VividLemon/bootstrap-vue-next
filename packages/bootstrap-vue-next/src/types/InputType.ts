@@ -14,3 +14,4 @@ export type InputType =
   | 'datetime-local'
   | 'month'
   | 'week'
+  | 'file'

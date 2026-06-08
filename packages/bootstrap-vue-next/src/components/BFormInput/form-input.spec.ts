@@ -57,6 +57,7 @@ describe('form-input', () => {
       'datetime-local',
       'month',
       'week',
+      'file',
     ] as const
 
     for (const type of types) {
@@ -71,6 +72,47 @@ describe('form-input', () => {
       expect(wrapper.attributes('type')).toBe('text')
       await wrapper.setProps({type: 'email'})
       expect(wrapper.attributes('type')).toBe('email')
+    })
+  })
+
+  describe('file type input', () => {
+    it('renders type="file"', () => {
+      const wrapper = mount(BFormInput, {props: {type: 'file'}})
+      expect(wrapper.attributes('type')).toBe('file')
+    })
+
+    it('has form-control class when type is file', () => {
+      const wrapper = mount(BFormInput, {props: {type: 'file'}})
+      expect(wrapper.classes()).toContain('form-control')
+    })
+
+    it('does not bind value attribute when type is file', () => {
+      const wrapper = mount(BFormInput, {props: {type: 'file'}})
+      expect(wrapper.attributes('value')).toBeUndefined()
+    })
+
+    it('does not update modelValue on input event when type is file', async () => {
+      const wrapper = mount(BFormInput, {props: {type: 'file'}})
+      await wrapper.trigger('input')
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    })
+
+    it('does not update modelValue on change event when type is file', async () => {
+      const wrapper = mount(BFormInput, {props: {type: 'file'}})
+      await wrapper.trigger('change')
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    })
+
+    it('still emits native change event when type is file', async () => {
+      const wrapper = mount(BFormInput, {props: {type: 'file'}})
+      await wrapper.trigger('change')
+      expect(wrapper.emitted('change')).toHaveLength(1)
+    })
+
+    it('still emits native input event when type is file', async () => {
+      const wrapper = mount(BFormInput, {props: {type: 'file'}})
+      await wrapper.trigger('input')
+      expect(wrapper.emitted('input')).toHaveLength(1)
     })
   })
 
