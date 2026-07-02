@@ -36,8 +36,4 @@ input groups and dropdowns, by setting the prop `justify`.
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'ariaLabel', description: 'Accessible label for the button toolbar'},
-  ]"
-/>
+<Internationalization />

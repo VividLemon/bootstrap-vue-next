@@ -184,13 +184,4 @@ Keyboard navigation is employed to select the rating value, and mimics the keybo
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'locale', description: 'BCP 47 locale for number formatting and RTL direction detection'},
-    {prop: 'clearLabel', description: 'The `aria-label` for the clear rating icon'},
-    {prop: 'labelValueCurrent', description: 'Function returning the `aria-valuetext` for the slider, receives the current value and maximum stars'},
-  ]"
-  :slots="[
-    {slot: 'icon-clear', description: 'Custom content for the clear rating icon'},
-  ]"
-/>
+<Internationalization />

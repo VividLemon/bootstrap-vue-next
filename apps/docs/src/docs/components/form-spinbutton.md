@@ -123,11 +123,4 @@ Note that the `repeat-delay`, `repeat-threshold` and `repeat-interval` only appl
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'labelDecrement', description: 'The `aria-label` for the decrement button'},
-    {prop: 'labelIncrement', description: 'The `aria-label` for the increment button'},
-    {prop: 'locale', description: 'BCP 47 locale for number formatting and RTL direction detection'},
-    {prop: 'formatterFn', description: 'Custom function to format the displayed value'},
-  ]"
-/>
+<Internationalization />

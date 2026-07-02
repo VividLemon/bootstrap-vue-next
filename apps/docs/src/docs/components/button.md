@@ -144,8 +144,4 @@ added, nor will the keyboard event listeners be enabled.
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'loadingText', description: 'The visually-hidden loading text shown when the button is in a loading state'},
-  ]"
-/>
+<Internationalization />

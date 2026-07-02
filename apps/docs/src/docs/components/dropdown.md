@@ -301,11 +301,4 @@ The dropdown menu is rendered with semantic `<ul>` and `<li>` elements for acces
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'toggleText', description: 'Visually-hidden text for the split dropdown toggle button (used when `split` is enabled)'},
-  ]"
-  :slots="[
-    {slot: 'toggle-text', description: 'Custom visually-hidden content for the split dropdown toggle button'},
-  ]"
-/>
+<Internationalization />

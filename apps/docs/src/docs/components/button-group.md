@@ -42,8 +42,4 @@ toolbars containing button groups and input groups.
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'ariaLabel', description: 'Accessible label for the button group'},
-  ]"
-/>
+<Internationalization />

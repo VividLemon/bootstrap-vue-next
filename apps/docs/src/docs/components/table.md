@@ -1171,16 +1171,4 @@ your app handles the various inconsistencies with events.
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'emptyText', description: 'Text shown in the empty state when there are no records'},
-    {prop: 'emptyFilteredText', description: 'Text shown in the empty state when no records match the current filter'},
-    {prop: 'labelSortAsc', description: 'Visually-hidden text indicating a column will sort ascending on next click'},
-    {prop: 'labelSortDesc', description: 'Visually-hidden text indicating a column will sort descending on next click'},
-    {prop: 'labelSortClear', description: 'Visually-hidden text indicating a column will clear sorting on next click'},
-  ]"
-  :slots="[
-    {slot: 'empty', description: 'Custom content for the empty state'},
-    {slot: 'empty-filtered', description: 'Custom content for the filtered empty state'},
-  ]"
-/>
+<Internationalization />

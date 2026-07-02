@@ -83,11 +83,4 @@ For information on managing ARIA attributes for alert triggers (when using dismi
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'closeLabel', description: 'The `aria-label` for the dismiss button'},
-  ]"
-  :slots="[
-    {slot: 'close', description: 'Custom content for the dismiss button'},
-  ]"
-/>
+<Internationalization />

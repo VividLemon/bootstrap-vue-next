@@ -103,11 +103,4 @@ As well, when no label is provided, the spinner will automatically have the attr
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'label', description: 'Visually-hidden text for screen readers describing the spinner'},
-  ]"
-  :slots="[
-    {slot: 'label', description: 'Custom visually-hidden content for screen readers'},
-  ]"
-/>
+<Internationalization />

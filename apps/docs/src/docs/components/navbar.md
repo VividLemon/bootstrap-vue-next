@@ -168,8 +168,4 @@ Navbars are hidden by default when printing. Force them to be printed by setting
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'label', description: 'The `aria-label` for the navbar toggler button (`BNavbarToggle`)'},
-  ]"
-/>
+<Internationalization />

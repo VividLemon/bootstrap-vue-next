@@ -228,8 +228,4 @@ controlling the background and font color via the `body-class` and `header-class
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'headerCloseLabel', description: 'The `aria-label` for the header close button'},
-  ]"
-/>
+<Internationalization />

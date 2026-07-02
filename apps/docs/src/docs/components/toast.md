@@ -121,11 +121,4 @@ provides general guidelines when using toasts.
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'closeLabel', description: 'The `aria-label` for the dismiss button'},
-  ]"
-  :slots="[
-    {slot: 'close', description: 'Custom content for the dismiss button'},
-  ]"
-/>
+<Internationalization />

@@ -201,11 +201,4 @@ For more details see:
 
 ## Internationalization
 
-<Internationalization
-  :props="[
-    {prop: 'toggleText', description: 'Visually-hidden text for the `BNavItemDropdown` toggle button'},
-  ]"
-  :slots="[
-    {slot: 'toggle-text', description: 'Custom visually-hidden content for the `BNavItemDropdown` toggle button'},
-  ]"
-/>
+<Internationalization />
