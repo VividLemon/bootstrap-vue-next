@@ -96,7 +96,7 @@ import {useRtl} from '../../composables/useRtl'
 import type {BFormRatingProps, BFormRatingSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BFormRatingProps, 'modelValue'>>(), {
-  clearLabel: 'x',
+  clearLabel: 'Clear rating',
   color: '',
   id: undefined,
   inline: false,
