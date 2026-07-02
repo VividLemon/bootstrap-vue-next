@@ -10,7 +10,7 @@ export default {
         ...pick(buildCommonProps(), ['id', 'variant']),
         clearLabel: {
           type: 'string',
-          default: "'x'",
+          default: "Clear rating",
           description:
             'The `aria-label` for the clear button icon. Override this for non-English applications',
         },
