@@ -181,3 +181,16 @@ Keyboard navigation is employed to select the rating value, and mimics the keybo
 - <kbd>Right</kbd> or <kbd>Up</kbd> will increment the rating value by `1`
 - When the [`locale`](#internationalization) resolves to a right-to-left language, the
   <kbd>Left</kbd> and <kbd>Right</kbd> behaviour is reversed.
+
+## Internationalization
+
+<Internationalization
+  :props="[
+    {prop: 'locale', description: 'BCP 47 locale for number formatting and RTL direction detection'},
+    {prop: 'clearLabel', description: 'The `aria-label` for the clear rating icon'},
+    {prop: 'labelValueCurrent', description: 'Function returning the `aria-valuetext` for the slider, receives the current value and maximum stars'},
+  ]"
+  :slots="[
+    {slot: 'icon-clear', description: 'Custom content for the clear rating icon'},
+  ]"
+/>

@@ -157,3 +157,29 @@ pattern.
 - <kbd>Enter</kbd> or <kbd>Space</kbd> keys will select (click) the currently focused page button
 - Pressing <kbd>Tab</kbd> will move to the next control or link on the page, while pressing
   <kbd>Shift</kbd>+<kbd>Tab</kbd> will move to the previous control or link on the page.
+
+## Internationalization
+
+<Internationalization
+  :props="[
+    {prop: 'ariaLabel', description: 'The `aria-label` for the pagination container'},
+    {prop: 'labelPage', description: 'Prefix for the `aria-label` on each page button (appended with the page number)'},
+    {prop: 'labelFirstPage', description: 'The `aria-label` for the Go to first page button'},
+    {prop: 'labelPrevPage', description: 'The `aria-label` for the Go to previous page button'},
+    {prop: 'labelNextPage', description: 'The `aria-label` for the Go to next page button'},
+    {prop: 'labelLastPage', description: 'The `aria-label` for the Go to last page button'},
+    {prop: 'firstText', description: 'Content for the Go to first page button'},
+    {prop: 'prevText', description: 'Content for the Go to previous page button'},
+    {prop: 'nextText', description: 'Content for the Go to next page button'},
+    {prop: 'lastText', description: 'Content for the Go to last page button'},
+    {prop: 'ellipsisText', description: 'Content for the ellipsis element between page buttons'},
+  ]"
+  :slots="[
+    {slot: 'first-text', description: 'Custom content for the Go to first page button'},
+    {slot: 'prev-text', description: 'Custom content for the Go to previous page button'},
+    {slot: 'next-text', description: 'Custom content for the Go to next page button'},
+    {slot: 'last-text', description: 'Custom content for the Go to last page button'},
+    {slot: 'ellipsis-text', description: 'Custom content for the ellipsis element'},
+    {slot: 'page', description: 'Custom content for each page button'},
+  ]"
+/>

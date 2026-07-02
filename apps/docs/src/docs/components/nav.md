@@ -198,3 +198,14 @@ For more details see:
 
 - [Vue Router `<router-view>`](https://router.vuejs.org/api/#router-view)
 - [Nuxt.JS `<nuxt-child>`](https://nuxtjs.org/api/components-nuxt-child)
+
+## Internationalization
+
+<Internationalization
+  :props="[
+    {prop: 'toggleText', description: 'Visually-hidden text for the `BNavItemDropdown` toggle button'},
+  ]"
+  :slots="[
+    {slot: 'toggle-text', description: 'Custom visually-hidden content for the `BNavItemDropdown` toggle button'},
+  ]"
+/>

@@ -80,3 +80,14 @@ For information on managing ARIA attributes for alert triggers (when using dismi
 
 - `Immediate`: Setting this property to `false` will cause a timer to not start immediately upon render. A timer that is not started is not rendered. It must manually be started with `resume()` or `restart()`. Default is `true`.
 - `showOnPause`: Setting this property to `false` will override the behavior of showing the Alert when the timer is paused. Default is `true`.
+
+## Internationalization
+
+<Internationalization
+  :props="[
+    {prop: 'closeLabel', description: 'The `aria-label` for the dismiss button'},
+  ]"
+  :slots="[
+    {slot: 'close', description: 'Custom content for the dismiss button'},
+  ]"
+/>

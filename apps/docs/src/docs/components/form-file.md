@@ -138,3 +138,20 @@ With inputs that are of type `file`, the value is strictly `uni-directional`. Me
 ## Exposed functions
 
 `BFormFile` exposes functions through template refs. See the [Component Reference Exposed section](#comp-reference-bformfile-exposed) for details.
+
+## Internationalization
+
+<Internationalization
+  :props="[
+    {prop: 'placeholder', description: 'Text shown when no file has been selected'},
+    {prop: 'browseText', description: 'Text for the browse button (custom mode only)'},
+    {prop: 'dropPlaceholder', description: 'Text shown in the drag-and-drop overlay'},
+    {prop: 'fileNameFormatter', description: 'Function to format how selected file names are displayed'},
+    {prop: 'ariaLiveFormatter', description: 'Function to format the screen reader announcement when files are selected'},
+  ]"
+  :slots="[
+    {slot: 'placeholder', description: 'Custom content shown when no file is selected'},
+    {slot: 'drop-placeholder', description: 'Custom content for the drag-and-drop overlay'},
+    {slot: 'file-name', description: 'Custom rendering of selected file names'},
+  ]"
+/>

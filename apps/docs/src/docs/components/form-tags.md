@@ -208,3 +208,20 @@ The remove event is emitted when the `<BFormTag>` remove button is clicked.
 Tags that are too wide for their parent container will automatically have their text content truncated with an ellipsis. For this reason, it is always good practice to supply a title via the title prop when using the default slot of `<BFormTag>` for the tag content.
 
 Note `<BFormTag>` requires BootstrapVueNext's custom CSS/SCSS for proper styling.
+
+## Internationalization
+
+<Internationalization
+  :props="[
+    {prop: 'placeholder', description: 'Placeholder text for the tag input field'},
+    {prop: 'addButtonText', description: 'Text for the add tag button'},
+    {prop: 'duplicateTagText', description: 'Message shown when a duplicate tag is entered'},
+    {prop: 'invalidTagText', description: 'Message shown when an invalid tag is entered'},
+    {prop: 'limitTagsText', description: 'Message shown when the tag limit is reached'},
+    {prop: 'tagRemovedLabel', description: 'Visually-hidden label announced to screen readers when a tag is removed'},
+    {prop: 'tagRemoveLabel', description: 'The `aria-label` for the remove button on each tag (`BFormTag`)'},
+  ]"
+  :slots="[
+    {slot: 'add-button-text', description: 'Custom content for the add tag button'},
+  ]"
+/>

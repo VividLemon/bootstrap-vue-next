@@ -143,3 +143,14 @@ You can control the carousel programmatically using template ref methods. See th
 ## Full Example
 
 <<< DEMO ./demo/CarouselFull.vue#template{vue-html}
+
+## Internationalization
+
+<Internationalization
+  :props="[
+    {prop: 'controlsPrevText', description: 'Visually-hidden text for the previous slide button'},
+    {prop: 'controlsNextText', description: 'Visually-hidden text for the next slide button'},
+    {prop: 'indicatorsButtonLabel', description: 'Prefix for the `aria-label` on each indicator button (appended with the slide index)'},
+    {prop: 'labelIndicators', description: 'The `aria-label` for the indicators container'},
+  ]"
+/>
