@@ -12,6 +12,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 defineOptions({ name: 'NuxtColorModePage' })
 
 const mode = useColorMode()
