@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useHead } from '#imports'
-import { useColorMode as useNuxtColorMode } from '@nuxtjs/color-mode/dist/runtime/composables'
+import { useColorMode as useNuxtColorMode } from '#bootstrap-vue-next-nuxt-color-mode'
 import type { ColorModeOptions } from 'bootstrap-vue-next/composables/useColorMode'
 
 const resolveTheme = (value: string | undefined, fallback: string | undefined) => {
@@ -16,7 +16,10 @@ const resolveTheme = (value: string | undefined, fallback: string | undefined) =
 export const useColorMode = (_opts: Readonly<ColorModeOptions> = {}) => {
   const nuxtColorMode = useNuxtColorMode()
   const resolvedTheme = computed(() =>
-    resolveTheme(nuxtColorMode.value, nuxtColorMode.preference)
+    resolveTheme(
+      nuxtColorMode.value,
+      nuxtColorMode.preference,
+    )
   )
 
   useHead({
