@@ -7,33 +7,22 @@ interface NuxtColorModeState {
   value?: string
 }
 
-const resolveTheme = (value: string | undefined, fallback: string | undefined) => {
-  if (value === 'system' || value === 'auto') {
-    if (fallback === 'system' || fallback === undefined) {
-      return 'auto'
-    }
-    return fallback
-  }
-  return value ?? 'auto'
-}
-
+// This wraps @nuxtjs/color-mode's own shared state (the same state its composable
+// and plugins read from/write to) and only adds bootstrap-vue-next's defaults on
+// top of it, mirroring how the core `useColorMode` wraps `@vueuse/core`'s
+// `useColorMode`: it does not re-derive or duplicate the resolved theme logic that
+// `@nuxtjs/color-mode` already computes (`nuxtColorMode.value`).
 export const useColorMode = (_opts: Readonly<ColorModeOptions> = {}) => {
   const nuxtColorMode = useState<NuxtColorModeState>('color-mode').value
-  const resolvedTheme = computed(() =>
-    resolveTheme(
-      nuxtColorMode.value,
-      nuxtColorMode.preference,
-    ),
-  )
 
   useHead({
     htmlAttrs: {
-      'data-bs-theme': resolvedTheme,
+      'data-bs-theme': computed(() => nuxtColorMode.value ?? 'light'),
     },
   })
 
   return computed({
-    get: () => resolvedTheme.value,
+    get: () => (nuxtColorMode.preference === 'system' ? 'auto' : nuxtColorMode.preference) ?? 'auto',
     set: (val) => {
       nuxtColorMode.preference = val === 'auto' ? 'system' : val
     },
