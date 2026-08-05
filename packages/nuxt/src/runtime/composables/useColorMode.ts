@@ -15,7 +15,7 @@ export const useColorMode = (_opts: Readonly<ColorModeOptions> = {}) => {
   useHead({
     htmlAttrs: {
       'data-bs-theme': computed(() =>
-        resolveTheme(nuxtColorMode.value, nuxtColorMode.preference)
+        resolveTheme(nuxtColorMode.value, nuxtColorMode.preference),
       ),
     },
   })
