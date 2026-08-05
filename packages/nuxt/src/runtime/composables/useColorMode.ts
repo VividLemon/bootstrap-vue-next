@@ -1,29 +1,34 @@
 import { computed } from 'vue'
-import { useColorMode as useNuxtColorMode, useHead } from '#imports'
+import { useHead } from '#imports'
+import { useColorMode as useNuxtColorMode } from '@nuxtjs/color-mode/dist/runtime/composables'
 import type { ColorModeOptions } from 'bootstrap-vue-next/composables/useColorMode'
 
-const resolveTheme = (value: string, fallback: string) => {
+const resolveTheme = (value: string | undefined, fallback: string | undefined) => {
   if (value === 'system' || value === 'auto') {
-    return fallback === 'system' ? 'auto' : fallback
+    if (fallback === 'system' || fallback === undefined) {
+      return 'auto'
+    }
+    return fallback
   }
-  return value
+  return value ?? 'auto'
 }
 
 export const useColorMode = (_opts: Readonly<ColorModeOptions> = {}) => {
   const nuxtColorMode = useNuxtColorMode()
+  const resolvedTheme = computed(() =>
+    resolveTheme(nuxtColorMode.value, nuxtColorMode.preference)
+  )
 
   useHead({
     htmlAttrs: {
-      'data-bs-theme': computed(() =>
-        resolveTheme(nuxtColorMode.value, nuxtColorMode.preference),
-      ),
+      'data-bs-theme': resolvedTheme,
     },
   })
 
   return computed({
-    get: () => resolveTheme(nuxtColorMode.value, nuxtColorMode.preference),
+    get: () => resolvedTheme.value,
     set: (val) => {
-      nuxtColorMode.preference = val
+      nuxtColorMode.preference = val === 'auto' ? 'system' : val
     },
   })
 }
