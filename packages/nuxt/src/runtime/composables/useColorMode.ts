@@ -23,7 +23,7 @@ export const useColorMode = (_opts: Readonly<ColorModeOptions> = {}) => {
     resolveTheme(
       nuxtColorMode.value,
       nuxtColorMode.preference,
-    )
+    ),
   )
 
   useHead({
