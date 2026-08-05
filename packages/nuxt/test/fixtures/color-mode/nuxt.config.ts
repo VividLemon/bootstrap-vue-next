@@ -1,11 +1,11 @@
 import BootstrapVueNext from '../../../src/module'
 
 export default defineNuxtConfig({
+  modules: ['@nuxtjs/color-mode', BootstrapVueNext],
   colorMode: {
     preference: 'light',
     fallback: 'light',
   },
-  modules: ['@nuxtjs/color-mode', BootstrapVueNext],
   compatibilityDate: 'latest',
   bootstrapVueNext: {
     composables: true,

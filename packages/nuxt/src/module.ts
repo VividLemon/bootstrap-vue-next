@@ -119,6 +119,7 @@ export default defineNuxtModule<ModuleOptions>({
       addImports({
         from: resolve('./runtime/composables/useColorMode'),
         name: 'useColorMode',
+        priority: 1,
       })
     }
   },
