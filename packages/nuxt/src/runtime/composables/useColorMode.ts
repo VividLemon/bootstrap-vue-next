@@ -1,7 +1,11 @@
 import { computed } from 'vue'
-import { useHead } from '#imports'
-import { useColorMode as useNuxtColorMode } from '#bootstrap-vue-next-nuxt-color-mode'
+import { useHead, useState } from '#imports'
 import type { ColorModeOptions } from 'bootstrap-vue-next/composables/useColorMode'
+
+interface NuxtColorModeState {
+  preference?: string
+  value?: string
+}
 
 const resolveTheme = (value: string | undefined, fallback: string | undefined) => {
   if (value === 'system' || value === 'auto') {
@@ -14,7 +18,7 @@ const resolveTheme = (value: string | undefined, fallback: string | undefined) =
 }
 
 export const useColorMode = (_opts: Readonly<ColorModeOptions> = {}) => {
-  const nuxtColorMode = useNuxtColorMode()
+  const nuxtColorMode = useState<NuxtColorModeState>('color-mode').value
   const resolvedTheme = computed(() =>
     resolveTheme(
       nuxtColorMode.value,

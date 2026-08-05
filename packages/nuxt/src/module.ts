@@ -23,7 +23,6 @@ export default defineNuxtModule<ModuleOptions>({
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
     nuxt.options.build.transpile.push(resolve('./runtime'))
-    nuxt.options.alias['#bootstrap-vue-next-nuxt-color-mode'] = '@nuxtjs/color-mode/dist/runtime/composables.js'
 
     if (options.css === true) {
       nuxt.options.css.push('bootstrap-vue-next/dist/bootstrap-vue-next.css')
