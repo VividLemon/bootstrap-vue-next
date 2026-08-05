@@ -7,5 +7,5 @@
 <script setup lang="ts">
 defineOptions({ name: 'ColorModePage' })
 const colorMode = useColorMode()
-const mode = colorMode.value
+const mode = computed(() => colorMode.value)
 </script>

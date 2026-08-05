@@ -99,14 +99,26 @@ export default defineNuxtModule<ModuleOptions>({
       addPlugin(resolve('./runtime/useDirectives'))
     }
 
+    const hasNuxtColorMode = hasNuxtModule('@nuxtjs/color-mode')
+
     // Add composables
     if (Object.values(normalizedComposableOptions).includes(true)) {
       parseActiveImports(normalizedComposableOptions, composableNames).forEach((name) => {
+        if (hasNuxtColorMode && name === 'useColorMode') {
+          return
+        }
         const from = `bootstrap-vue-next${composablesWithExternalPath[name]}`
         addImports({
           from,
           name,
         })
+      })
+    }
+
+    if (hasNuxtColorMode) {
+      addImports({
+        from: resolve('./runtime/composables/useColorMode'),
+        name: 'useColorMode',
       })
     }
   },

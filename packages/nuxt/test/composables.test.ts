@@ -24,5 +24,6 @@ describe('composables auto-imports', async () => {
     const html = await $fetch('/colormode')
     expect(html).toContain('colormode-page')
     expect(html).toContain('theme-mode')
+    expect(html).toContain('light')
   })
 })
