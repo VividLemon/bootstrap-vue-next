@@ -13,18 +13,18 @@ export default defineNuxtPlugin((nuxtApp) => {
           required: true,
         },
       },
-      setup(props, {attrs, slots}) {
+      setup(props, { attrs, slots }) {
         return () =>
           h(
             'a',
             {
               ...attrs,
-              href: typeof props.to === 'string' ? props.to : '#',
+              'href': typeof props.to === 'string' ? props.to : '#',
               'data-router-component': 'NuxtLink',
             },
-            slots.default?.()
+            slots.default?.(),
           )
       },
-    })
+    }),
   )
 })

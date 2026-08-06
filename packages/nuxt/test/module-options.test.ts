@@ -38,9 +38,9 @@ describe('module-options', async () => {
 
     await page.click('#configured-modal-trigger')
     await page.waitForSelector('#custom-teleport #configured-modal.show')
-    expect(await page.locator('#custom-teleport #configured-modal .modal-body').textContent()).toContain(
-      'Configured modal body'
-    )
+    expect(
+      await page.locator('#custom-teleport #configured-modal .modal-body').textContent(),
+    ).toContain('Configured modal body')
 
     await page.close()
   })
@@ -48,7 +48,9 @@ describe('module-options', async () => {
   it('configured BLink.routerComponentName is applied at runtime', async () => {
     const page = await createPage('/')
 
-    expect(await page.locator('#configured-link').getAttribute('data-router-component')).toBe('NuxtLink')
+    expect(await page.locator('#configured-link').getAttribute('data-router-component')).toBe(
+      'NuxtLink',
+    )
 
     await page.close()
   })

@@ -16,6 +16,6 @@
 <script setup lang="ts">
 defineOptions({ name: 'TogglePage' })
 
-const {toggle, value} = useToggle('fixture-toggle')
+const { toggle, value } = useToggle('fixture-toggle')
 const toggleLabel = computed(() => (value.value ? 'shown' : 'hidden'))
 </script>
