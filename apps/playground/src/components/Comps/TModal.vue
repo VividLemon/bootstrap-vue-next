@@ -56,15 +56,15 @@
     </BRow>
     <BRow>
       <BCol>
-        {{ store.modal }}
+        {{ modalStore }}
       </BCol>
     </BRow>
   </BContainer>
 </template>
 
 <script setup lang="ts">
-import {computed, h, onMounted, ref} from 'vue'
-import type {ColorVariant, OrchestratedModal} from 'bootstrap-vue-next'
+import {computed, h, onMounted, ref, watchEffect} from 'vue'
+import type {ColorVariant, ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {BModal} from 'bootstrap-vue-next/components/BModal'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
 
@@ -75,7 +75,7 @@ const showModal3 = ref(false)
 const noClose = ref(true)
 const isModalVisible = ref(false)
 
-const firstRef = ref<OrchestratedModal>({
+const firstRef = ref<ModalOrchestratorCreateParamBase<{body?: string}>>({
   body: `${Math.random()}`,
   title: 'foobar',
 })
@@ -87,6 +87,23 @@ onMounted(() => {
 })
 
 const {create, store} = useModal()
+const modalStore = computed(() => store.value.modal)
+const dynamicModalModelValue = ref(false)
+const dynamicModal = ref<ModalOrchestratorCreateParamBase<{body?: string}>>({
+  ...firstRef.value,
+  modelValue: dynamicModalModelValue.value,
+  okVariant: 'danger',
+})
+
+watchEffect(() => {
+  dynamicModal.value = {
+    ...firstRef.value,
+    modelValue: dynamicModalModelValue.value,
+    okVariant: (Number.parseInt((firstRef.value.body ?? '').charAt(2) ?? '0') % 2 === 0
+      ? 'danger'
+      : 'info') as ColorVariant,
+  }
+})
 
 const showFns = {
   basicNoReactive: async () => {
@@ -106,23 +123,7 @@ const showFns = {
     await using _ = await create(firstRef).show()
   },
   dynamicRefProps: async () => {
-    const modelValue = ref(false)
-      await using _ = await create(
-      // You would need to use a writable computed to be able to set modelValue
-      // Any v-modelable values would require a similar way to set the value. Refer to the component reference for which v-models it has
-      // You don't need to bind them all, if you don't care about the two-way communication. But modelValue is required for showing and hiding, naturally
-        computed({
-          get: () => ({
-            ...firstRef.value,
-            modelValue: modelValue.value,
-            okVariant: (Number.parseInt((firstRef.value.body ?? '').charAt(2) ?? '0') % 2 === 0
-              ? 'danger'
-              : 'info') as ColorVariant,
-          }),
-          set(v) {
-            modelValue.value = !!v.modelValue
-          }
-        })).show()
+    await using _ = await create(dynamicModal).show()
   },
   // Demonstration psuedocode, you can import a component and use it
   // importedComponent: () => {

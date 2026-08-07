@@ -107,7 +107,7 @@
             <b-col cols="4">
               <b-list-group>
                 <b-list-group-item
-                  v-for="(e, idx) in list"
+                  v-for="(e, idx) in currentListItems"
                   :key="idx"
                   :href="'#' + e.id"
                   :class="currentList === e.id && 'active'"
@@ -163,7 +163,7 @@
 
           <b-list-group>
             <b-list-group-item
-              v-for="(e, idx) in tocList"
+              v-for="(e, idx) in tocListItems"
               :key="idx"
               :href="'#' + e.id"
               :class="e.id === tocCurrent && 'active'"
@@ -188,20 +188,22 @@
 </template>
 
 <script setup lang="ts">
-import {type ComponentPublicInstance, ref} from 'vue'
+import {type ComponentPublicInstance, computed, ref} from 'vue'
 import {useScrollspy} from 'bootstrap-vue-next/composables/useScrollspy'
 // import {useScrollspy} from './BootstrapVue'
-const content = ref<HTMLElement | ComponentPublicInstance<HTMLElement> | null>(null)
-const target = ref<HTMLElement | ComponentPublicInstance<HTMLElement> | null>(null)
-const contentNested = ref<HTMLElement | ComponentPublicInstance<HTMLElement> | null>(null)
-const targetNested = ref<HTMLElement | ComponentPublicInstance<HTMLElement> | null>(null)
-const contentList = ref<HTMLElement | ComponentPublicInstance<HTMLElement> | null>(null)
+const content = ref<HTMLElement | ComponentPublicInstance | null>(null)
+const target = ref<HTMLElement | ComponentPublicInstance | null>(null)
+const contentNested = ref<HTMLElement | ComponentPublicInstance | null>(null)
+const targetNested = ref<HTMLElement | ComponentPublicInstance | null>(null)
+const contentList = ref<HTMLElement | ComponentPublicInstance | null>(null)
 
 const tocContent = ref('root-element')
 const {current, scrollIntoView} = useScrollspy(content, target)
-const {current: currentList, list} = useScrollspy(contentList, null, {manual: true})
+const {current: currentList, list: currentListItemsRef} = useScrollspy(contentList, null, {manual: true})
 const {current: nestedCurrent} = useScrollspy(contentNested, targetNested)
-const {current: tocCurrent, list: tocList} = useScrollspy(tocContent, null, {manual: true})
+const {current: tocCurrent, list: tocListItemsRef} = useScrollspy(tocContent, null, {manual: true})
+const currentListItems = computed(() => currentListItemsRef.value)
+const tocListItems = computed(() => tocListItemsRef.value)
 
 const text = ref(`
           Quis magna Lorem anim amet ipsum do mollit sit cillum voluptate ex nulla
