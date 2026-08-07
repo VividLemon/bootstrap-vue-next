@@ -3,8 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import {h, onMounted, onUnmounted, ref} from 'vue'
-import {BButton, useToast} from 'bootstrap-vue-next'
+import {h, markRaw, onMounted, onUnmounted, ref, watchEffect} from 'vue'
+import {BButton, type ToastOrchestratorCreateParamBase, useToast} from 'bootstrap-vue-next'
 
 const {create} = useToast()
 
@@ -24,11 +24,21 @@ onUnmounted(() => {
   }
 })
 
-const showMe = () => {
-  create({
+const item = ref<ToastOrchestratorCreateParamBase>({
+  body: body.value,
+  slots: {default: markRaw(() => h('div', null, `custom! ${body.value}`))},
+})
+
+watchEffect(() => {
+  item.value = {
+    ...item.value,
     body: body.value,
-    slots: {default: () => h('div', null, `custom! ${body.value}`)},
-  }).show()
+    slots: {default: markRaw(() => h('div', null, `custom! ${body.value}`))},
+  }
+})
+
+const showMe = async () => {
+  await using _ = await create(item).show()
   // Demonstration pseudocode, you can also import a component and use it
   // const importedComponent = () => {
   //   create({
