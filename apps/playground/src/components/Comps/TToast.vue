@@ -8,7 +8,7 @@
     </BRow>
     <BRow>
       <BCol>
-        {{ toastStore }}
+        {{ toastCount }}
       </BCol>
     </BRow>
   </BContainer>
@@ -17,12 +17,12 @@
 <script setup lang="ts">
 // You can use this file as a development spot to test your changes
 // Please do not commit this file
-import {computed, h, onMounted, ref, watchEffect} from 'vue'
+import {computed, h, onMounted, ref} from 'vue'
 import type {ColorVariant, ToastOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {useToast} from 'bootstrap-vue-next/composables/useToast'
 
 const {create, store} = useToast()
-const toastStore = computed(() => store.value.toast)
+const toastCount = computed(() => store.value.toast.size)
 
 const firstRef = ref<ToastOrchestratorCreateParamBase<{body?: string}>>({
   body: `${Math.random()}`,
@@ -32,20 +32,6 @@ onMounted(() => {
   setInterval(() => {
     firstRef.value.body = `${Math.random()}`
   }, 1000)
-})
-
-const dynamicToast = ref<ToastOrchestratorCreateParamBase<{body?: string}>>({
-  ...firstRef.value,
-  variant: 'danger',
-})
-
-watchEffect(() => {
-  dynamicToast.value = {
-    ...firstRef.value,
-    variant: (Number.parseInt(firstRef.value.body?.charAt(2) ?? '0') % 2 === 0
-      ? 'danger'
-      : 'info') as ColorVariant,
-  }
 })
 
 const showFns = {
@@ -65,10 +51,15 @@ const showFns = {
     })
   },
   simpleRefProps: () => {
-    create(firstRef)
+    create({...firstRef.value})
   },
   dynamicRefProps: () => {
-    create(dynamicToast)
+    create({
+      ...firstRef.value,
+      variant: (Number.parseInt(firstRef.value.body?.charAt(2) ?? '0') % 2 === 0
+        ? 'danger'
+        : 'info') as ColorVariant,
+    })
   },
   // Demonstration psuedocode, you can import a component and use it
   // importedComponent: () => {

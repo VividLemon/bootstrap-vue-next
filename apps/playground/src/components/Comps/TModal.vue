@@ -56,15 +56,15 @@
     </BRow>
     <BRow>
       <BCol>
-        {{ modalStore }}
+        {{ modalCount }}
       </BCol>
     </BRow>
   </BContainer>
 </template>
 
 <script setup lang="ts">
-import {computed, h, onMounted, ref, watchEffect} from 'vue'
-import type {ColorVariant, ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
+import {computed, h, onMounted, ref} from 'vue'
+import type {ColorVariant} from 'bootstrap-vue-next'
 import {BModal} from 'bootstrap-vue-next/components/BModal'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
 
@@ -75,35 +75,16 @@ const showModal3 = ref(false)
 const noClose = ref(true)
 const isModalVisible = ref(false)
 
-const firstRef = ref<ModalOrchestratorCreateParamBase<{body?: string}>>({
-  body: `${Math.random()}`,
-  title: 'foobar',
-})
+const firstRef = ref({title: `${Math.random()}`})
 
 onMounted(() => {
   setInterval(() => {
-    firstRef.value.body = `${Math.random()}`
+    firstRef.value.title = `${Math.random()}`
   }, 1000)
 })
 
 const {create, store} = useModal()
-const modalStore = computed(() => store.value.modal)
-const dynamicModalModelValue = ref(false)
-const dynamicModal = ref<ModalOrchestratorCreateParamBase<{body?: string}>>({
-  ...firstRef.value,
-  modelValue: dynamicModalModelValue.value,
-  okVariant: 'danger',
-})
-
-watchEffect(() => {
-  dynamicModal.value = {
-    ...firstRef.value,
-    modelValue: dynamicModalModelValue.value,
-    okVariant: (Number.parseInt((firstRef.value.body ?? '').charAt(2) ?? '0') % 2 === 0
-      ? 'danger'
-      : 'info') as ColorVariant,
-  }
-})
+const modalCount = computed(() => store.value.modal.size)
 
 const showFns = {
   basicNoReactive: async () => {
@@ -120,10 +101,16 @@ const showFns = {
     }).show()
   },
   simpleRefProps: async () => {
-    await using _ = await create(firstRef).show()
+    await using _ = await create({...firstRef.value}).show()
   },
   dynamicRefProps: async () => {
-    await using _ = await create(dynamicModal).show()
+    await using _ = await create({
+      ...firstRef.value,
+      modelValue: false,
+      okVariant: (Number.parseInt(firstRef.value.title.charAt(2) ?? '0') % 2 === 0
+        ? 'danger'
+        : 'info') as ColorVariant,
+    }).show()
   },
   // Demonstration psuedocode, you can import a component and use it
   // importedComponent: () => {

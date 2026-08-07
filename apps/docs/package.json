@@ -52,7 +52,7 @@
     "vitepress": "2.0.0-alpha.17",
     "vitepress-plugin-llms": "^1.13.3",
     "vitest": "^4.1.10",
-    "vue": "^3.5.40",
+    "vue": "3.5.41",
     "yaml": "^2.9.0"
   },
   "lint-staged": {
