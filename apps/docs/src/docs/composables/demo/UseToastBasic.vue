@@ -1,5 +1,5 @@
 <template>
-  <BButton @click="create({title: 'Hello', body: 'World'})">Show</BButton>
+  <BButton @click="create({title: 'Hello', body: 'World'}).show()">Show</BButton>
 </template>
 
 <script setup lang="ts">
