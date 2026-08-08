@@ -41,7 +41,7 @@
           </b-card-body>
         </b-card>
         <div class="split" />
-        <p>curren: {{ nestedCurrent }}</p>
+        <p>current: {{ nestedCurrent }}</p>
         <b-card id="nested">
           <b-row>
             <b-col cols="4">
