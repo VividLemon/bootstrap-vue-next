@@ -17,7 +17,7 @@
 <script setup lang="ts">
 // You can use this file as a development spot to test your changes
 // Please do not commit this file
-import {computed, h, onMounted, ref} from 'vue'
+import {computed, h, onMounted, ref, watchEffect} from 'vue'
 import type {ColorVariant, ToastOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {useToast} from 'bootstrap-vue-next/composables/useToast'
 
@@ -32,6 +32,22 @@ onMounted(() => {
   setInterval(() => {
     firstRef.value.body = `${Math.random()}`
   }, 1000)
+})
+
+const derivedVariant = computed(
+  () =>
+    (Number.parseInt(firstRef.value.body?.charAt(2) ?? '0') % 2 === 0
+      ? 'danger'
+      : 'info') as ColorVariant
+)
+const dynamicToast = ref<ToastOrchestratorCreateParamBase<{body?: string}>>({
+  body: firstRef.value.body,
+  variant: derivedVariant.value,
+})
+
+watchEffect(() => {
+  dynamicToast.value.body = firstRef.value.body
+  dynamicToast.value.variant = derivedVariant.value
 })
 
 const showFns = {
@@ -51,15 +67,10 @@ const showFns = {
     })
   },
   simpleRefProps: () => {
-    create({...firstRef.value})
+    create(firstRef)
   },
   dynamicRefProps: () => {
-    create({
-      ...firstRef.value,
-      variant: (Number.parseInt(firstRef.value.body?.charAt(2) ?? '0') % 2 === 0
-        ? 'danger'
-        : 'info') as ColorVariant,
-    })
+    create(dynamicToast)
   },
   // Demonstration psuedocode, you can import a component and use it
   // importedComponent: () => {

@@ -63,8 +63,8 @@
 </template>
 
 <script setup lang="ts">
-import {computed, h, onMounted, ref} from 'vue'
-import type {ColorVariant} from 'bootstrap-vue-next'
+import {computed, h, onMounted, ref, watchEffect} from 'vue'
+import type {ColorVariant, ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {BModal} from 'bootstrap-vue-next/components/BModal'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
 
@@ -75,16 +75,39 @@ const showModal3 = ref(false)
 const noClose = ref(true)
 const isModalVisible = ref(false)
 
-const firstRef = ref({title: `${Math.random()}`})
+const firstRef = ref<ModalOrchestratorCreateParamBase<{body?: string}>>({
+  body: `${Math.random()}`,
+  title: 'foobar',
+})
 
 onMounted(() => {
   setInterval(() => {
-    firstRef.value.title = `${Math.random()}`
+    firstRef.value.body = `${Math.random()}`
   }, 1000)
 })
 
 const {create, store} = useModal()
 const modalCount = computed(() => store.value.modal.size)
+const dynamicModalModelValue = ref(false)
+const derivedOkVariant = computed(
+  () =>
+    (Number.parseInt((firstRef.value.body ?? '').charAt(2) ?? '0') % 2 === 0
+      ? 'danger'
+      : 'info') as ColorVariant
+)
+const dynamicModal = ref<ModalOrchestratorCreateParamBase<{body?: string}>>({
+  body: firstRef.value.body,
+  title: firstRef.value.title,
+  modelValue: dynamicModalModelValue.value,
+  okVariant: derivedOkVariant.value,
+})
+
+watchEffect(() => {
+  dynamicModal.value.body = firstRef.value.body
+  dynamicModal.value.title = firstRef.value.title
+  dynamicModal.value.modelValue = dynamicModalModelValue.value
+  dynamicModal.value.okVariant = derivedOkVariant.value
+})
 
 const showFns = {
   basicNoReactive: async () => {
@@ -101,16 +124,10 @@ const showFns = {
     }).show()
   },
   simpleRefProps: async () => {
-    await using _ = await create({...firstRef.value}).show()
+    await using _ = await create(firstRef).show()
   },
   dynamicRefProps: async () => {
-    await using _ = await create({
-      ...firstRef.value,
-      modelValue: false,
-      okVariant: (Number.parseInt(firstRef.value.title.charAt(2) ?? '0') % 2 === 0
-        ? 'danger'
-        : 'info') as ColorVariant,
-    }).show()
+    await using _ = await create(dynamicModal).show()
   },
   // Demonstration psuedocode, you can import a component and use it
   // importedComponent: () => {

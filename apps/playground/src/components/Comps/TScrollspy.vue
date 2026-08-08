@@ -3,11 +3,11 @@
     <div class="row">
       <div id="root-element" class="col-8">
         <div class="my-3">
-          <p>current: {{ currentId }}</p>
+          <p>current: {{ current }}</p>
         </div>
         <b-card id="basic" no-body>
           <b-card-header>
-            <b-nav id="basic-nav" pills card-header>
+            <b-nav ref="target" pills card-header>
               <b-nav-item href="#fat" @click="scrollIntoView">@fat</b-nav-item>
               <b-nav-item href="#mdo" @click="scrollIntoView">@mdo</b-nav-item>
               <b-nav-item-dropdown text="Dropdown 1,2,3" right-alignment>
@@ -41,11 +41,11 @@
           </b-card-body>
         </b-card>
         <div class="split" />
-        <p>curren: {{ nestedCurrentId }}</p>
+        <p>curren: {{ nestedCurrent }}</p>
         <b-card id="nested">
           <b-row>
             <b-col cols="4">
-              <b-navbar id="nested-nav" tag="b-navbar" class="flex-column">
+              <b-navbar ref="targetNested" tag="b-navbar" class="flex-column">
                 <b-navbar-brand href="#">Navbar</b-navbar-brand>
                 <b-nav pills vertical>
                   <b-nav-item href="#item-1">Item 1</b-nav-item>
@@ -110,7 +110,7 @@
                   v-for="(e, idx) in currentListItems"
                   :key="idx"
                   :href="'#' + e.id"
-                  :class="currentListId === e.id && 'active'"
+                  :class="currentList === e.id && 'active'"
                 >
                   {{ e.text }}
                 </b-list-group-item>
@@ -166,7 +166,7 @@
               v-for="(e, idx) in tocListItems"
               :key="idx"
               :href="'#' + e.id"
-              :class="e.id === tocCurrentId && 'active'"
+              :class="e.id === tocCurrent && 'active'"
             >
               {{ e.id }}
             </b-list-group-item>
@@ -188,24 +188,24 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {ref, useTemplateRef} from 'vue'
 import {useScrollspy} from 'bootstrap-vue-next/composables/useScrollspy'
 // import {useScrollspy} from './BootstrapVue'
+const content = useTemplateRef('content')
+const target = useTemplateRef('target')
+const contentNested = useTemplateRef('contentNested')
+const targetNested = useTemplateRef('targetNested')
+const contentList = useTemplateRef('contentList')
+
 const tocContent = ref('root-element')
-const {current, scrollIntoView} = useScrollspy('nav-scroller', 'basic-nav')
-const {current: currentList, list: currentListItemsRef} = useScrollspy('listgroup-ex', null, {
+const {current, scrollIntoView} = useScrollspy(content, target)
+const {current: currentList, list: currentListItems} = useScrollspy(contentList, null, {
   manual: true,
 })
-const {current: nestedCurrent} = useScrollspy('scrollspy-nested', 'nested-nav')
-const {current: tocCurrent, list: tocListItemsRef} = useScrollspy(() => tocContent.value, null, {
+const {current: nestedCurrent} = useScrollspy(contentNested, targetNested)
+const {current: tocCurrent, list: tocListItems} = useScrollspy(() => tocContent.value, null, {
   manual: true,
 })
-const currentId = computed(() => current.value)
-const currentListId = computed(() => currentList.value)
-const nestedCurrentId = computed(() => nestedCurrent.value)
-const tocCurrentId = computed(() => tocCurrent.value)
-const currentListItems = computed(() => currentListItemsRef.value)
-const tocListItems = computed(() => tocListItemsRef.value)
 
 const text = ref(`
           Quis magna Lorem anim amet ipsum do mollit sit cillum voluptate ex nulla
