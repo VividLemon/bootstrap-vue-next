@@ -127,7 +127,7 @@ const showFns = {
   dynamicRefProps: async () => {
     await using _ = await create<{body?: string}>(dynamicModal).show()
   },
-  // Demonstration psuedocode, you can import a component and use it
+  // Demonstration pseudocode, you can import a component and use it
   // importedComponent: () => {
   //   show?.({
   //     component: import('./MyModalComponent.vue'),
