@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, h, onMounted, ref, watchEffect} from 'vue'
+import {computed, h, onMounted, ref} from 'vue'
 import type {ColorVariant, ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {BModal} from 'bootstrap-vue-next/components/BModal'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
@@ -95,18 +95,16 @@ const derivedOkVariant = computed(
       ? 'danger'
       : 'info') as ColorVariant
 )
-const dynamicModal = ref<ModalOrchestratorCreateParamBase<{body?: string}>>({
-  body: firstRef.value.body,
-  title: firstRef.value.title,
-  modelValue: dynamicModalModelValue.value,
-  okVariant: derivedOkVariant.value,
-})
-
-watchEffect(() => {
-  dynamicModal.value.body = firstRef.value.body
-  dynamicModal.value.title = firstRef.value.title
-  dynamicModal.value.modelValue = dynamicModalModelValue.value
-  dynamicModal.value.okVariant = derivedOkVariant.value
+const dynamicModal = computed<ModalOrchestratorCreateParamBase<{body?: string}>>({
+  get: () => ({
+    body: firstRef.value.body,
+    title: firstRef.value.title,
+    modelValue: dynamicModalModelValue.value,
+    okVariant: derivedOkVariant.value,
+  }),
+  set: (value) => {
+    dynamicModalModelValue.value = value.modelValue ?? dynamicModalModelValue.value
+  },
 })
 
 const showFns = {
@@ -127,7 +125,7 @@ const showFns = {
     await using _ = await create(firstRef).show()
   },
   dynamicRefProps: async () => {
-    await using _ = await create(dynamicModal).show()
+    await using _ = await create<{body?: string}>(dynamicModal).show()
   },
   // Demonstration psuedocode, you can import a component and use it
   // importedComponent: () => {
