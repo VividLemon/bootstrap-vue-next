@@ -17,65 +17,76 @@
 <script setup lang="ts">
 // You can use this file as a development spot to test your changes
 // Please do not commit this file
-import {computed, h, onMounted, ref, watchEffect} from 'vue'
+import {computed, h, onMounted, onUnmounted, ref, watchEffect} from 'vue'
 import type {ColorVariant, ToastOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {useToast} from 'bootstrap-vue-next/composables/useToast'
 
 const {create, store} = useToast()
 const toastCount = computed(() => store.value.toast.size)
 
-const firstRef = ref<ToastOrchestratorCreateParamBase<{body?: string}>>({
-  body: `${Math.random()}`,
+const body = ref<ToastOrchestratorCreateParamBase['body']>(`${Math.random()}`)
+const firstRef = ref<ToastOrchestratorCreateParamBase>({
+  body: body.value,
 })
-
+let interval: ReturnType<typeof setInterval> | null = null
 onMounted(() => {
-  setInterval(() => {
-    firstRef.value.body = `${Math.random()}`
+  interval = setInterval(() => {
+    body.value = `${Math.random()}`
   }, 1000)
 })
-
-const derivedVariant = computed(
-  () =>
-    (Number.parseInt(firstRef.value.body?.charAt(2) ?? '0') % 2 === 0
-      ? 'danger'
-      : 'info') as ColorVariant
-)
-const dynamicToast = ref<ToastOrchestratorCreateParamBase<{body?: string}>>({
-  body: firstRef.value.body,
-  variant: derivedVariant.value,
+onUnmounted(() => {
+  if (interval) {
+    clearInterval(interval)
+  }
+})
+watchEffect(() => {
+  firstRef.value.body = body.value
 })
 
-watchEffect(() => {
-  dynamicToast.value.body = firstRef.value.body
-  dynamicToast.value.variant = derivedVariant.value
+const dynamicModelValue = ref<ToastOrchestratorCreateParamBase['modelValue']>(false)
+const dynamicToast = computed<ToastOrchestratorCreateParamBase>({
+  get: () => ({
+    modelValue: dynamicModelValue.value,
+    body: firstRef.value.body,
+    variant: (Number.parseInt(firstRef.value.body?.charAt(2) ?? '0') % 2 === 0
+      ? 'danger'
+      : 'info') as ColorVariant,
+  }),
+  set: (value) => {
+    dynamicModelValue.value = value.modelValue
+  },
 })
 
 const showFns = {
-  basicNoReactive: () => {
-    create({
+  basicNoReactive: async () => {
+    await using _  = await create({
       modelValue: true,
       active: true,
       title: 'foobar',
-    })
+    }).show()
+    return _
   },
-  basicCustomComponent: () => {
-    create({
+  basicCustomComponent: async () => {
+    await using _ = await create({
       slots: {default: () => h('div', null, 'foobar!')},
       modelValue: true,
       active: true,
       variant: 'primary',
-    })
+    }).show()
+    return _
   },
-  simpleRefProps: () => {
-    create(firstRef)
+  simpleRefProps: async () => {
+    await using _ = await create(firstRef).show()
+    return _
   },
-  dynamicRefProps: () => {
-    create(dynamicToast)
+  dynamicRefProps: async () => {
+    await using _ = await create(dynamicToast).show()
+    return _
   },
   // Demonstration psuedocode, you can import a component and use it
   // importedComponent: () => {
   //   show({
-  //     component: import('./MyToastComponent.vue'),
+  //     component: markRaw(import('./MyToastComponent.vue')),
   //   })
   // },
 }
