@@ -43,16 +43,14 @@ For more control, you can use the `component` property to render a custom compon
 
 ### Return Value
 
-The `popover` and `tooltip` methods return a split API object:
+The `popover` and `tooltip` methods return a controller object with instance methods:
 
-- `promise: Promise<BvTriggerableEvent>` - Resolves when the popover/tooltip is hidden.
-- `controller` - Methods for instance control:
-  - `show: () => Promise<BvTriggerableEvent & AsyncDisposable>`
-  - `hide: (trigger?: string) => controller`
-  - `toggle: () => controller`
-  - `get: () => PopoverOrchestratorParam | undefined`
-  - `set: (props: Partial<PopoverOrchestratorParam>) => controller`
-  - `destroy: () => Promise<void>`
+- `show: () => Promise<BvTriggerableEvent & AsyncDisposable>`
+- `hide: (trigger?: string) => void`
+- `toggle: () => void`
+- `get: () => PopoverOrchestratorParam | undefined`
+- `set: (props: Partial<PopoverOrchestratorParam>) => void`
+- `destroy: () => Promise<void>`
 
 ### Lifecycle
 

@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, h, onMounted, onUnmounted, ref, watchEffect} from 'vue'
+import {computed, h, markRaw, onMounted, onUnmounted, ref, watchEffect} from 'vue'
 import type {ColorVariant, ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {BModal} from 'bootstrap-vue-next/components/BModal'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
@@ -78,7 +78,7 @@ const showModal3 = ref(false)
 const noClose = ref(true)
 const isModalVisible = ref(false)
 
-const body = ref<ModalOrchestratorCreateParamBase['body']>(`${Math.random()}`)
+const body = ref<ModalOrchestratorCreateParamBase['body']>('foo')
 const firstRef = ref<ModalOrchestratorCreateParamBase>({
   // If we want to sync this, we will need a watcher
   body: body.value,
@@ -87,7 +87,7 @@ const firstRef = ref<ModalOrchestratorCreateParamBase>({
 let interval: ReturnType<typeof setInterval> | null = null
 onMounted(() => {
   interval = setInterval(() => {
-    body.value = `${Math.random()}`
+    body.value = body.value === 'foo' ? 'bar' : 'foo'
   }, 1000)
 })
 onUnmounted(() => {
@@ -107,9 +107,7 @@ const dynamicModal = computed<ModalOrchestratorCreateParamBase>({
 
     body: 'my body',
     title: 'my title',
-    okVariant: (Number.parseInt((firstRef.value.body ?? '').charAt(2) ?? '0') % 2 === 0
-      ? 'danger'
-      : 'info') as ColorVariant,
+    okVariant: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ColorVariant,
   }),
   set: (value) => {
     dynamicModalModelValue.value = value.modelValue ?? dynamicModalModelValue.value
@@ -126,7 +124,7 @@ const showFns = {
   },
   basicCustomComponent: async () => {
     await using _ = await create({
-      slots: {default: h('div', null, {default: () => 'foobar!'})},
+      slots: {default: () => markRaw(h('div', null, {default: () => 'foobar!'}))},
       okVariant: 'info',
     }).show()
     return _
@@ -142,7 +140,7 @@ const showFns = {
   // Demonstration pseudocode, you can import a component and use it
   // importedComponent: () => {
   //   show?.({
-  //     component: markRaw(import('./MyModalComponent.vue')),
+  //     component: markRaw((await import('./MyModalComponent.vue')).default),
   //   })
   // },
 }
