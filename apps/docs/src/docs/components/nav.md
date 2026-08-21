@@ -174,7 +174,7 @@ The `card-header` prop has no styling effect if the `<BNav>` is in `vertical` mo
 
 ### Using with Vue Router
 
-Have your card `<BNav>` control vue router nested routes via `<RouterView>` or `<nuxt-child>`
+Have your card `<BNav>` control vue router nested routes via `<RouterView>` or `<NuxtPage>`
 components, to created tabbed content that changes with route URL:
 
 <<< FRAGMENT ./demo/NavRouter.vue#template{vue-html}
@@ -197,7 +197,7 @@ route params instead of path based routes.
 For more details see:
 
 - [Vue Router `<RouterView>`](https://router.vuejs.org/api/#router-view)
-- [Nuxt.JS `<nuxt-child>`](https://nuxtjs.org/api/components-nuxt-child)
+- [Nuxt `<NuxtPage>`](https://nuxt.com/docs/api/components/nuxt-page)
 
 ## Internationalization
 
