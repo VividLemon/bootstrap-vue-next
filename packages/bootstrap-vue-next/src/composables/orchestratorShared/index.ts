@@ -39,7 +39,10 @@ export const buildController = <
       ) {
         refWithMethods.show()
       } else {
-        controller.set({modelValue: true})
+        const currentModelValue = controller.get()?.value.props.modelValue
+        controller.set({
+          modelValue: typeof currentModelValue === 'number' ? currentModelValue : true,
+        })
       }
       const event = await basePromise
       return Object.assign(Object.create(event), {
