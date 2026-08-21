@@ -32,21 +32,17 @@ export const buildController = <
     ref: null as RefWithMethods | null,
     async show() {
       const currentModelValue = controller.get()?.value.props.modelValue
-      if (currentModelValue) {
-        const event = await basePromise
-        return Object.assign(Object.create(event), {
-          [Symbol.asyncDispose]: controller.destroy,
-        })
-      }
-      const refWithMethods = controller.ref
-      if (
-        refWithMethods !== null &&
-        'show' in refWithMethods &&
-        typeof refWithMethods.show === 'function'
-      ) {
-        refWithMethods.show()
-      } else {
-        controller.set({modelValue: true})
+      if (!currentModelValue) {
+        const refWithMethods = controller.ref
+        if (
+          refWithMethods !== null &&
+          'show' in refWithMethods &&
+          typeof refWithMethods.show === 'function'
+        ) {
+          refWithMethods.show()
+        } else {
+          controller.set({modelValue: true})
+        }
       }
       const event = await basePromise
       return Object.assign(Object.create(event), {
