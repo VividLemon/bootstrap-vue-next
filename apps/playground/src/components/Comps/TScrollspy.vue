@@ -45,7 +45,7 @@
         <BCard id="nested">
           <BRow>
             <BCol cols="4">
-              <BNavbar ref="targetNested" tag="b-navbar" class="flex-column">
+              <BNavbar ref="targetNested" class="flex-column">
                 <BNavbarBrand href="#">Navbar</BNavbarBrand>
                 <BNav pills vertical>
                   <BNavItem href="#item-1">Item 1</BNavItem>
