@@ -3,7 +3,6 @@
     <!-- Tabs with card integration -->
     <BCard no-body>
       <BTabs
-        v-model:index="tabIndex"
         v-model="tabId"
         small
         card
@@ -50,7 +49,7 @@
         <BButton @click="tabInfo?.activate()">Info</BButton>
       </BButtonGroup>
 
-      <div class="text-muted mt-2">Current Tab: index = {{ tabIndex }}, id = {{ tabId }}</div>
+      <div class="text-muted mt-2">Current Tab ID: {{ tabId }}</div>
     </div>
   </div>
 </template>
@@ -61,11 +60,10 @@ import {ref, useTemplateRef} from 'vue'
 //  and use the full path to improve tree shaking
 import {BTab} from 'bootstrap-vue-next/components/BTabs'
 
-const tabIndex = ref(0)
-const tabId = ref(undefined)
+const tabId = ref<string | undefined>('tab-general')
 
-const tabGeneral = useTemplateRef('tabGeneral')
-const tabEditProfile = useTemplateRef('tabEditProfile')
-const tabPremium = useTemplateRef('tabPremium')
-const tabInfo = useTemplateRef('tabInfo')
+const tabGeneral = useTemplateRef<InstanceType<typeof BTab>>('tabGeneral')
+const tabEditProfile = useTemplateRef<InstanceType<typeof BTab>>('tabEditProfile')
+const tabPremium = useTemplateRef<InstanceType<typeof BTab>>('tabPremium')
+const tabInfo = useTemplateRef<InstanceType<typeof BTab>>('tabInfo')
 </script>

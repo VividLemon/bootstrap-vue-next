@@ -3,7 +3,6 @@
     <!-- Tabs with card integration -->
     <BCard no-body>
       <BTabs
-        v-model:index="tabIndex"
         v-model="tabId"
         small
         card
@@ -37,11 +36,11 @@
     <!-- Control buttons-->
     <div class="text-center">
       <BButtonGroup class="mt-2">
-        <BButton @click="tabIndex--">Previous</BButton>
-        <BButton @click="tabIndex++">Next</BButton>
+        <BButton @click="setPrevious">Previous</BButton>
+        <BButton @click="setNext">Next</BButton>
       </BButtonGroup>
 
-      <div class="text-muted mt-2">Current Tab: index = {{ tabIndex }}, id = {{ tabId }}</div>
+      <div class="text-muted mt-2">Current Tab ID: {{ tabId }}</div>
     </div>
   </div>
 </template>
@@ -49,6 +48,16 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 
-const tabIndex = ref(0)
-const tabId = ref<string | undefined>(undefined)
+const enabledTabIds = ['tab-general', 'tab-edit-profile', 'tab-info'] as const
+const tabId = ref<string | undefined>(enabledTabIds[0])
+
+const setNext = () => {
+  const current = enabledTabIds.indexOf((tabId.value ?? enabledTabIds[0]) as (typeof enabledTabIds)[number])
+  tabId.value = enabledTabIds[Math.min(current + 1, enabledTabIds.length - 1)]
+}
+
+const setPrevious = () => {
+  const current = enabledTabIds.indexOf((tabId.value ?? enabledTabIds[0]) as (typeof enabledTabIds)[number])
+  tabId.value = enabledTabIds[Math.max(current - 1, 0)]
+}
 </script>

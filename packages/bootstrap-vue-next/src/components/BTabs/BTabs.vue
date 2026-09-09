@@ -1,75 +1,78 @@
 <template>
-  <component :is="props.tag" :id="props.id" class="tabs" :class="computedClasses">
-    <BTabsTabContent v-if="props.end" v-bind="tabContentProps">
-      <slot />
-      <template #empty>
-        <slot name="empty" />
-      </template>
-    </BTabsTabContent>
-    <div
-      :class="[
-        props.navWrapperClass,
-        {'card-header': props.card, 'ms-auto': vertical && props.end},
-      ]"
-    >
-      <ul
-        class="nav"
-        :class="[navTabsClasses, props.navClass]"
-        role="tablist"
-        :aria-orientation="props.vertical ? 'vertical' : 'horizontal'"
+  <TabsRoot
+    v-model="activeId"
+    as-child
+    :orientation="props.vertical ? 'vertical' : 'horizontal'"
+  >
+    <component :is="props.tag" :id="props.id" class="tabs" :class="computedClasses">
+      <BTabsTabContent v-if="props.end" v-bind="tabContentProps">
+        <slot />
+        <template #empty>
+          <slot name="empty" />
+        </template>
+      </BTabsTabContent>
+      <div
+        :class="[
+          props.navWrapperClass,
+          {'card-header': props.card, 'ms-auto': props.vertical && props.end},
+        ]"
       >
-        <slot name="tabs-start" />
-        <li
-          v-for="(tab, idx) in tabs"
-          :key="tab.id ?? tab.internalId"
-          class="nav-item"
-          :class="tab.titleItemClass"
-          role="presentation"
-        >
-          <button
-            :id="tab.buttonId"
-            class="nav-link"
-            :class="[tab.navItemClasses, tab.titleLinkClass, tab.active ? props.activeNavLinkClass : props.inactiveNavLinkClass]"
-            role="tab"
-            :aria-controls="tab.id"
-            :aria-selected="tab.active"
-            :disabled="tab.disabled"
-            :tabindex="props.noKeyNav ? undefined : tab.active ? undefined : -1"
-            type="button"
-            v-bind="tab.titleLinkAttrs"
-            @keydown.left.exact="!props.vertical && keynav($event, -1)"
-            @keydown.left.shift="!props.vertical && keynav($event, -999)"
-            @keydown.up.exact="props.vertical && keynav($event, -1)"
-            @keydown.up.shift="props.vertical && keynav($event, -999)"
-            @keydown.right.exact="!props.vertical && keynav($event, 1)"
-            @keydown.right.shift="!props.vertical && keynav($event, 999)"
-            @keydown.down.exact="props.vertical && keynav($event, 1)"
-            @keydown.down.shift="props.vertical && keynav($event, 999)"
-            @keydown.page-up="keynav($event, -999)"
-            @keydown.page-down="keynav($event, 999)"
-            @keydown.home="keynav($event, -999)"
-            @keydown.end="keynav($event, 999)"
-            @click.stop="(e) => handleClick(e, idx)"
+        <TabsList as-child>
+          <ul
+            class="nav"
+            :class="[navTabsClasses, props.navClass]"
+            role="tablist"
+            :aria-orientation="props.vertical ? 'vertical' : 'horizontal'"
           >
-            <component :is="tab.titleComponent" v-if="tab.titleComponent" />
-            <template v-else>
-              {{ tab.title }}
-            </template>
-          </button>
-        </li>
-        <slot name="tabs-end" />
-      </ul>
-    </div>
-    <BTabsTabContent v-if="!props.end" v-bind="tabContentProps">
-      <slot />
-      <template #empty>
-        <slot name="empty" />
-      </template>
-    </BTabsTabContent>
-  </component>
+            <slot name="tabs-start" />
+            <li
+              v-for="tab in tabs"
+              :key="tab.id ?? tab.internalId"
+              class="nav-item"
+              :class="tab.titleItemClass"
+              role="presentation"
+            >
+              <TabsTrigger :value="tab.id" :disabled="tab.disabled" as-child>
+                <button
+                  :id="tab.buttonId"
+                  class="nav-link"
+                  :class="[
+                    tab.navItemClasses,
+                    tab.titleLinkClass,
+                    tab.active ? props.activeNavLinkClass : props.inactiveNavLinkClass,
+                  ]"
+                  role="tab"
+                  :aria-controls="tab.id"
+                  :aria-selected="tab.active"
+                  :disabled="tab.disabled"
+                  :tabindex="props.noKeyNav ? undefined : tab.active ? undefined : -1"
+                  type="button"
+                  v-bind="tab.titleLinkAttrs"
+                  @click.capture="(e) => handleClick(e, tab.id)"
+                >
+                  <component :is="tab.titleComponent" v-if="tab.titleComponent" />
+                  <template v-else>
+                    {{ tab.title }}
+                  </template>
+                </button>
+              </TabsTrigger>
+            </li>
+            <slot name="tabs-end" />
+          </ul>
+        </TabsList>
+      </div>
+      <BTabsTabContent v-if="!props.end" v-bind="tabContentProps">
+        <slot />
+        <template #empty>
+          <slot name="empty" />
+        </template>
+      </BTabsTabContent>
+    </component>
+  </TabsRoot>
 </template>
 
 <script setup lang="ts">
+import {TabsList, TabsRoot, TabsTrigger} from 'reka-ui'
 import {
   computed,
   nextTick,
@@ -93,7 +96,7 @@ import {flattenFragments} from '../../utils/flattenFragments'
 import BTab from './BTab.vue'
 import BTabsTabContent from '../BTabsTabContent.vue'
 
-const _props = withDefaults(defineProps<Omit<BTabsProps, 'modelValue' | 'activeIndex'>>(), {
+const _props = withDefaults(defineProps<Omit<BTabsProps, 'modelValue'>>(), {
   activeNavItemClass: undefined,
   activeNavLinkClass: undefined,
   activeTabClass: undefined,
@@ -125,45 +128,24 @@ const props = useDefaults(_props, 'BTabs')
 const emit = defineEmits<BTabsEmits>()
 const slots = defineSlots<BTabsSlots>()
 
-const activeIndex = defineModel<Exclude<BTabsProps['index'], undefined>>('index', {
-  default: -1,
-})
 const activeId = defineModel<BTabsProps['modelValue']>({
   default: undefined,
 })
 
 const tabsInternal = ref<Ref<TabType>[]>([])
-
 const tabElementsArray = ref<VNode[]>([])
-
-const isChildActive = ref(false)
+const initialized = ref(false)
+const isReverting = ref(false)
 const initialIds = ref<string[]>([])
-const selectedTabHasExplicitId = ref(false)
 
 const updateTabElementsArray = () => {
   const tabElements = flattenFragments(slots.default?.({}) ?? [])
   tabElementsArray.value = (Array.isArray(tabElements) ? tabElements : [tabElements]).filter(
     (tab) => tab.type === BTab
   )
-  // only get the ids once in setup context
-  if (initialIds.value.length === 0) {
-    // we need to get the ids of the tabs before they are registered. After that we use the internalId for the tabpane
-    initialIds.value = tabElementsArray.value.map((tab) =>
-      unref(useId(() => tab.props?.id, 'tabpane'))
-    )
-    // Whether the *initially selected* tab carries an explicit ID.
-    //
-    // Only that tab matters. The delayed-selection path below exists because
-    // a generated ID is not final until the child registers; an explicit ID
-    // is final immediately. Asking `.some()` across every tab got this wrong
-    // for a mixed list — a single ID-bearing sibling made an ID-less target
-    // look safe, so the ID was read pre-mount, failed to match after
-    // registration, and the selection fell back to the first tab (#2773).
-    selectedTabHasExplicitId.value =
-      activeIndex.value > -1 && tabElementsArray.value[activeIndex.value]?.props?.id !== undefined
-  }
-  isChildActive.value = tabElementsArray.value.some(
-    (tab) => tab.props?.active !== undefined && tab.props?.active !== false
+
+  initialIds.value = tabElementsArray.value.map(
+    (tab, index) => initialIds.value[index] ?? unref(useId(() => tab.props?.id, 'tabpane'))
   )
 }
 updateTabElementsArray()
@@ -174,31 +156,43 @@ watch(
     updateTabElementsArray()
     nextTick(() => {
       sortTabs()
+      normalizeActiveId()
     })
   }
 )
 
+const getActiveFallbackId = (nextTabs: TabType[]) => {
+  const explicitActive = nextTabs.find(
+    (tab) => tab.active !== undefined && tab.active !== false && !tab.disabled
+  )?.id
+
+  return explicitActive ?? nextTabs.find((tab) => !tab.disabled)?.id
+}
+
 const tabs = computed(() => {
   if (tabsInternal.value.length === 0) {
-    // fail back on the slot elements, the children haven't been registered yet
-    const _activeIndex = tabElementsArray.value.findIndex(
-      (tab) =>
-        (tab.props?.active !== undefined &&
-          (tab.props.disabled === false || tab.props.disabled === undefined)) ||
-        (activeId.value && tab.props?.id === activeId.value)
+    const fallbackActiveIndex = tabElementsArray.value.findIndex(
+      (tab) => tab.props?.active !== undefined && tab.props.active !== false && tab.props.disabled !== true
     )
+
+    const firstEnabledIndex = tabElementsArray.value.findIndex((tab) => tab.props?.disabled !== true)
+
     return tabElementsArray.value.map((tab, index) => {
+      const id = tab.props?.id ?? initialIds.value[index] ?? `premount-${index}`
       const active =
-        _activeIndex !== -1
-          ? index === _activeIndex
-          : activeIndex.value > -1
-            ? index === activeIndex.value
-            : index === 0
+        activeId.value !== undefined
+          ? id === activeId.value
+          : fallbackActiveIndex !== -1
+            ? index === fallbackActiveIndex
+            : firstEnabledIndex !== -1
+              ? index === firstEnabledIndex
+              : index === 0
+
       return {
-        id: tab.props?.id ?? initialIds.value[index],
-        internalId: `premount-${index}`, // temporary id for the tab
+        id,
+        internalId: `premount-${index}`,
         buttonId: tab.props?.buttonId,
-        disabled: tab.props?.disabled,
+        disabled: tab.props?.disabled === true,
         title: tab.props?.title,
         titleComponent: (tab.children as {title: unknown})?.title,
         titleItemClass: tab.props?.titleItemClass,
@@ -209,7 +203,7 @@ const tabs = computed(() => {
         navItemClasses: [
           {
             active,
-            disabled: !(tab.props?.disabled === false || tab.props?.disabled === undefined),
+            disabled: tab.props?.disabled === true,
           },
           active ? props.activeNavItemClass : props.inactiveNavItemClass,
           props.navItemClass,
@@ -217,6 +211,7 @@ const tabs = computed(() => {
       }
     })
   }
+
   return tabsInternal.value.map((_tab) => {
     const tab = unref(_tab)
     const active = tab.id === activeId.value
@@ -236,78 +231,34 @@ const tabs = computed(() => {
   })
 })
 
-let initialized = false
-let updateInitialActiveIndex = false
-let updateInitialActiveId = false
-let delayedTabSelection = false
-
-// Check if we need to delay tab selection:
-// - We have v-model:index (activeIndex) but no v-model (activeId)
-// - AND the selected tab has no explicit ID (so it will use a generated one)
-// - AND we have tabs to select from
-const needsDelayedSelection =
-  activeIndex.value > -1 &&
-  !activeId.value &&
-  !selectedTabHasExplicitId.value &&
-  tabElementsArray.value.length > 0
-
-if (needsDelayedSelection) {
-  // Delay tab selection until children register with their generated IDs
-  delayedTabSelection = true
-  updateInitialActiveId = true
-} else if (activeIndex.value === -1 && activeId.value) {
-  if (tabs.value.findIndex((t) => t.id === activeId.value) !== -1) {
-    activeIndex.value = tabs.value.findIndex((t) => t.id === activeId.value)
-  } else {
-    updateInitialActiveIndex = true
-  }
-} else if (activeIndex.value > -1 && !activeId.value) {
-  if (tabs.value[activeIndex.value]?.id) {
-    activeId.value = tabs.value[activeIndex.value]?.id
-  } else {
-    updateInitialActiveId = true
-  }
-} else if (activeIndex.value === -1 && !activeId.value && !isChildActive.value) {
-  activeIndex.value = tabs.value.findIndex((t) => t.disabled === undefined || t.disabled === false)
-  activeId.value = tabs.value[activeIndex.value]?.id
-} else if (activeIndex.value === -1 && !activeId.value && isChildActive.value) {
-  activeIndex.value = tabs.value.findIndex(
-    (t) =>
-      t.active !== undefined &&
-      t.active !== false &&
-      (t.disabled === undefined || t.disabled === false)
-  )
-  activeId.value = tabs.value[activeIndex.value]?.id
-}
-
-function updateInitialIndexAndId() {
-  // we get the computedIds after registering the tabs
-  if (updateInitialActiveIndex) {
-    const index = tabs.value.findIndex((t) => t.id === activeId.value)
-    if (index !== -1) {
-      nextTick(() => {
-        activeIndex.value = index
-        updateInitialActiveIndex = false
-      })
+const normalizeActiveId = () => {
+  if (tabs.value.length === 0) {
+    if (activeId.value !== undefined) {
+      isReverting.value = true
+      activeId.value = undefined
     }
+    return
   }
-  if (updateInitialActiveId) {
-    // Wait for tabs to be registered if we're doing delayed selection
-    if (delayedTabSelection && tabsInternal.value.length === 0) {
-      // Children haven't registered yet, wait
-      return
-    }
-    if (activeIndex.value > -1 && tabs.value[activeIndex.value]?.id) {
-      nextTick(() => {
-        activeId.value = tabs.value[activeIndex.value]?.id
-        updateInitialActiveId = false
-        delayedTabSelection = false
-      })
-    }
+
+  if (activeId.value !== undefined) {
+    const activeTab = tabs.value.find((tab) => tab.id === activeId.value)
+    if (activeTab && !activeTab.disabled) return
+  }
+
+  const fallbackId = getActiveFallbackId(tabs.value)
+  if (fallbackId !== activeId.value) {
+    isReverting.value = true
+    activeId.value = fallbackId
   }
 }
 
-updateInitialIndexAndId()
+watch(
+  tabs,
+  () => {
+    normalizeActiveId()
+  },
+  {deep: true, immediate: true}
+)
 
 const showEmpty = computed(() => !(tabs?.value && tabs.value.length > 0))
 
@@ -337,184 +288,98 @@ const navTabsClasses = computed(() => ({
   'small': props.small,
 }))
 
-const handleClick = (event: Readonly<MouseEvent>, index: number) => {
-  if (
-    index >= 0 &&
-    !tabs.value[index]?.disabled &&
-    tabs.value[index]?.onClick &&
-    typeof tabs.value[index].onClick === 'function'
-  ) {
-    tabs.value[index].onClick?.(event)
+const handleClick = (event: Readonly<MouseEvent>, id: string) => {
+  const tab = tabs.value.find((value) => value.id === id)
+  if (!tab || tab.disabled) return
+
+  if (tab.onClick && typeof tab.onClick === 'function') {
+    tab.onClick(event)
     if (event.defaultPrevented) {
-      getSafeDocument()?.getElementById(tabs.value[index].buttonId)?.blur()
+      event.preventDefault()
+      getSafeDocument()?.getElementById(tab.buttonId)?.blur()
+      event.stopPropagation()
       return
     }
   }
-  activeIndex.value = index
 }
 
-const keynav = (e: Event, direction: number) => {
-  if (tabs.value.length <= 0 || props.noKeyNav) return
-  e.preventDefault()
-  e.stopPropagation()
-  activeIndex.value = nextIndex(activeIndex.value + direction, direction)
-  nextTick(() => {
-    if (activeIndex.value >= 0) {
-      getSafeDocument()?.getElementById(tabs.value[activeIndex.value]?.buttonId)?.focus()
+watch(activeId, (newValue, oldValue) => {
+  if (isReverting.value) {
+    isReverting.value = false
+    return
+  }
+
+  if (tabs.value.length <= 0 || tabs.value.filter((t) => !t.disabled).length <= 0) return
+
+  const index = tabs.value.findIndex((t) => t.id === newValue)
+  if (index === -1 || tabs.value[index]?.disabled) {
+    const fallback = getActiveFallbackId(tabs.value)
+    if (fallback !== activeId.value) {
+      isReverting.value = true
+      activeId.value = fallback
     }
-  })
-}
-
-const nextIndex = (start: number, direction: number) => {
-  let index = start
-  let minIdx = -1
-  let maxIdx = -1
-
-  for (let i = 0; i < tabs.value.length; i++) {
-    if (!tabs.value[i]?.disabled) {
-      if (minIdx === -1) minIdx = i
-      maxIdx = i
-    }
-  }
-
-  while (index >= minIdx && index <= maxIdx && tabs.value[index]?.disabled) {
-    index += direction
-  }
-
-  if (index < minIdx) index = minIdx
-  if (index > maxIdx) index = maxIdx
-
-  return index
-}
-
-let previousIndex: number | undefined
-let isReverting = false
-watch(activeIndex, (newValue, oldValue) => {
-  // Early exit if there are no tabs or all tabs are disabled
-  if (tabs.value.length <= 0 || tabs.value.filter((t) => !t.disabled).length <= 0) {
     return
   }
 
-  // If we're reverting due to a prevented event, don't process further
-  if (isReverting) {
-    isReverting = false
-    return
-  }
-  // Calculate the next valid index
-  const index = nextIndex(newValue, newValue > oldValue ? 1 : -1)
-  if (index !== newValue) {
-    // If the index is not the same as the new value, set the previous index to the old value
-    // this is to prevent the event from being emitted twice
-    previousIndex = oldValue
-    activeIndex.value = index
-    return
-  }
-  // Emit the activate-tab event
+  if (!initialized.value || newValue === oldValue) return
+
+  const oldIndex = tabs.value.findIndex((t) => t.id === oldValue)
   const tabEvent = new BvEvent('activate-tab', {cancelable: true})
   emit('activate-tab', {
     newTabId: tabs.value[index]?.id,
-    prevTabId: tabs.value[previousIndex ?? oldValue]?.id,
+    prevTabId: oldIndex === -1 ? '' : tabs.value[oldIndex]?.id,
     newTabIndex: index,
-    prevTabIndex: previousIndex ?? oldValue,
+    prevTabIndex: oldIndex,
     event: tabEvent,
   })
-  // If the event is prevented, revert to the previous index
+
   if (tabEvent.defaultPrevented) {
-    isReverting = true
-    const prev = previousIndex ?? oldValue ?? nextIndex(0, 1)
-    previousIndex = undefined
-    // Update the active id this will also trigger the activeId watch which will update the activeIndex
-    // this is to make sure we handle case that starts with id change.
-    if (activeId.value !== tabs.value[prev]?.id) {
-      activeId.value = tabs.value[prev]?.id
-    }
+    const fallback = oldValue ?? getActiveFallbackId(tabs.value)
+    isReverting.value = true
+    activeId.value = fallback
+
     nextTick(() => {
-      if (prev >= 0) {
-        getSafeDocument()?.getElementById(tabs.value[prev]?.buttonId)?.focus()
+      const fallbackTab = tabs.value.find((tab) => tab.id === fallback)
+      if (fallbackTab) {
+        getSafeDocument()?.getElementById(fallbackTab.buttonId)?.focus()
       }
     })
-    return
   }
-
-  // Update the active id
-  if (activeId.value !== tabs.value[index]?.id) {
-    activeId.value = tabs.value[index]?.id
-  }
-  previousIndex = undefined
-})
-
-watch(activeId, (newValue, oldValue) => {
-  if (tabs.value.length <= 0 || tabs.value.filter((t) => !t.disabled).length <= 0) {
-    return
-  }
-  const index = tabs.value.findIndex((t) => t.id === newValue)
-  // If the new tab is the same as the current tab, do nothing
-  if (index === activeIndex.value) return
-  const oldIndex = tabs.value.findIndex((t) => t.id === oldValue)
-  // If the new tab is disabled, find the next enabled tab
-  if (tabs.value[index]?.disabled) {
-    // activeIndex watcher will update the activeId to the next enabled tab
-    activeIndex.value = nextIndex(index, index > oldIndex ? 1 : -1)
-    return
-  }
-  // If the new tab is not found, find the first enabled tab
-  if (index === -1) {
-    // activeIndex watcher will update the activeId to the first enabled tab
-    activeIndex.value = nextIndex(0, 1)
-    nextTick(() => {
-      activeId.value = tabs.value[activeIndex.value]?.id
-    })
-    return
-  }
-  // change to the next tab
-  activeIndex.value = index
 })
 
 const registerTab = (tab: Ref<TabType>) => {
   const idx = tabsInternal.value.findIndex((t) => t.value.internalId === tab.value.internalId)
   if (idx === -1) {
     tabsInternal.value.push(tab)
-    if (initialized) {
+    if (initialized.value) {
       nextTick(() => {
         sortTabs()
       })
-    } else {
-      // If we're doing delayed tab selection, try to update now that a tab has registered
-      if (delayedTabSelection) {
-        nextTick(() => {
-          updateInitialIndexAndId()
-        })
-      }
     }
   } else {
     tabsInternal.value[idx] = tab
-    if (initialized) {
-      // sort just in case the tab was moved
+    if (initialized.value) {
       sortTabs()
     }
   }
+
   const idx2 = tabsInternal.value.findIndex((t) => t.value.internalId === tab.value.internalId)
-  return tab.value.id ?? (!initialized ? initialIds.value[idx2] : tab.value.internalId)
+  return tab.value.id ?? (!initialized.value ? initialIds.value[idx2] : tab.value.internalId)
 }
 
 onMounted(() => {
-  updateInitialIndexAndId()
   sortTabs()
-  initialized = true
+  normalizeActiveId()
+  initialized.value = true
 })
 
 const sortTabs = () => {
   tabsInternal.value.sort((a, b) => sortSlotElementsByPosition(a.value.el.value, b.value.el.value))
-  if (
-    activeId.value &&
-    activeIndex.value !== tabs.value.findIndex((t) => t.id === activeId.value)
-  ) {
-    activeIndex.value = tabs.value.findIndex((t) => t.id === activeId.value)
-  }
 }
 
 const unregisterTab = (id: string) => {
   tabsInternal.value = tabsInternal.value.filter((t) => t.value.internalId !== id)
+  normalizeActiveId()
 }
 
 provide(tabsInjectionKey, {
@@ -529,11 +394,16 @@ provide(tabsInjectionKey, {
   activeId,
   activateTab: (internalId) => {
     const idx = tabs.value.findIndex((t) => t.internalId === internalId)
-    if (internalId === undefined || idx === -1) {
-      activeIndex.value = nextIndex(0, 1)
+    if (internalId === undefined || idx === -1 || tabs.value[idx]?.disabled) {
+      const fallback = getActiveFallbackId(tabs.value)
+      if (fallback !== activeId.value) {
+        activeId.value = fallback
+      }
       return
     }
-    activeIndex.value = idx
+    if (tabs.value[idx]?.id !== activeId.value) {
+      activeId.value = tabs.value[idx]?.id
+    }
   },
 })
 </script>
