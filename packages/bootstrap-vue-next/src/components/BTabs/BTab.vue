@@ -1,26 +1,19 @@
 <template>
-  <TabsContent
-    :value="computedId"
-    :force-mount="forceMount"
-    as-child
+  <component
+    :is="props.tag"
+    :id="computedId"
+    ref="_el"
+    class="tab-pane"
+    :class="computedClasses"
+    role="tabpanel"
+    :aria-labelledby="computedButtonId"
+    v-bind="processedAttrs"
   >
-    <component
-      :is="props.tag"
-      :id="computedId"
-      ref="_el"
-      class="tab-pane"
-      :class="computedClasses"
-      role="tabpanel"
-      :aria-labelledby="computedButtonId"
-      v-bind="processedAttrs"
-    >
-      <slot v-if="showSlot" />
-    </component>
-  </TabsContent>
+    <slot v-if="showSlot" />
+  </component>
 </template>
 
 <script setup lang="ts">
-import {TabsContent} from 'reka-ui'
 import {computed, inject, onUnmounted, ref, useAttrs, useTemplateRef, watch} from 'vue'
 import {useId} from '../../composables/useId'
 import {useDefaults} from '../../composables/useDefaults'
@@ -119,10 +112,6 @@ const showSlot = computed(
     computedActive.value ||
     !computedLazy.value ||
     (computedLazy.value && !props.unmountLazy && lazyRenderCompleted.value)
-)
-
-const forceMount = computed(
-  () => !computedLazy.value || (computedLazy.value && !props.unmountLazy && lazyRenderCompleted.value)
 )
 
 watch(showSlot, (shown) => {

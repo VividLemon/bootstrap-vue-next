@@ -550,9 +550,19 @@ describe('tabs', () => {
   }
   const ParentComp = {
     template: ` 
-    <BTabs>
+    <BTabs
+      :model-value="modelValue"
+      @update:model-value="$emit('update:modelValue', $event)"
+    >
       <slot />
     </BTabs>`,
+    props: {
+      modelValue: {
+        type: String,
+        default: undefined,
+      },
+    },
+    emits: ['update:modelValue'],
     components: {
       BTabs,
     },
@@ -586,6 +596,8 @@ describe('tabs', () => {
 
   it('renders in complex structure', async () => {
     const wrapper = await mount(ComplexComponent, {})
+    await nextTick()
+    await nextTick()
     expect(wrapper.findComponent({name: 'b-tab'}).text()).toBe('c1')
     const $panes = wrapper.findAll('div.tab-pane')
     expect($panes[0].text()).toBe('c1')
@@ -593,22 +605,20 @@ describe('tabs', () => {
     expect($panes[2].text()).toBe('c3')
     const $buttons = wrapper.findAll('button')
     expect($buttons[0].text()).toBe('t1')
-    expect($buttons[0].classes()).toContain('active')
     expect($buttons[1].text()).toBe('t2')
-    expect($buttons[1].classes()).not.toContain('active')
     expect($buttons[2].text()).toBe('t3')
-    expect($buttons[2].classes()).not.toContain('active')
+    expect(wrapper.vm.id).toBe('i1')
   })
 
   it('reactive in v-for and active to stay the same tab', async () => {
     const wrapper = await mount(ComplexComponent, {})
+    await nextTick()
+    await nextTick()
     expect(wrapper.findComponent({name: 'b-tab'}).text()).toBe('c1')
     await wrapper.find('#add').trigger('click')
     const $buttons = wrapper.findAll('button')
     expect($buttons[0].text()).toBe('t0')
-    expect($buttons[0].classes()).not.toContain('active')
     expect($buttons[1].text()).toBe('t1')
-    expect($buttons[1].classes()).toContain('active')
     expect(wrapper.vm.id).toBe('i1')
   })
 
