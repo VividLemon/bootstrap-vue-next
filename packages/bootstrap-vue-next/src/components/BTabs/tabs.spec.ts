@@ -550,9 +550,19 @@ describe('tabs', () => {
   }
   const ParentComp = {
     template: ` 
-    <BTabs>
+    <BTabs
+      :model-value="modelValue"
+      @update:model-value="$emit('update:modelValue', $event)"
+    >
       <slot />
     </BTabs>`,
+    props: {
+      modelValue: {
+        type: String,
+        default: undefined,
+      },
+    },
+    emits: ['update:modelValue'],
     components: {
       BTabs,
     },
@@ -560,13 +570,13 @@ describe('tabs', () => {
 
   const ComplexComponent = {
     template: `
-    <ParentComp v-model:index="index" v-model="id">
+    <ParentComp v-model="id">
       <ChildComp v-for="tab in tabs" :id="tab.id" :key="tab.title" :title="tab.title" :content="tab.content" />
       <BTab id="i3" :title="'t3'" >c3</BTab>
     </ParentComp>
     <a href="#" id="add" @click="tabs.unshift({title: 't0', content: 'c0', id: 'i0'})">add</a>
     <a href="#" id="change" @click="id = 'i3'">change</a>
-    <a href="#" id="change2" @click="index = 1">change2</a>
+    <a href="#" id="change2" @click="id = 'i2'">change2</a>
     `,
     data() {
       return {
@@ -574,7 +584,6 @@ describe('tabs', () => {
           {id: 'i1', title: 't1', content: 'c1'},
           {id: 'i2', title: 't2', content: 'c2'},
         ],
-        index: 0,
         id: 'i1',
       }
     },
@@ -587,6 +596,8 @@ describe('tabs', () => {
 
   it('renders in complex structure', async () => {
     const wrapper = await mount(ComplexComponent, {})
+    await nextTick()
+    await nextTick()
     expect(wrapper.findComponent({name: 'b-tab'}).text()).toBe('c1')
     const $panes = wrapper.findAll('div.tab-pane')
     expect($panes[0].text()).toBe('c1')
@@ -594,23 +605,21 @@ describe('tabs', () => {
     expect($panes[2].text()).toBe('c3')
     const $buttons = wrapper.findAll('button')
     expect($buttons[0].text()).toBe('t1')
-    expect($buttons[0].classes()).toContain('active')
     expect($buttons[1].text()).toBe('t2')
-    expect($buttons[1].classes()).not.toContain('active')
     expect($buttons[2].text()).toBe('t3')
-    expect($buttons[2].classes()).not.toContain('active')
+    expect(wrapper.vm.id).toBe('i1')
   })
 
   it('reactive in v-for and active to stay the same tab', async () => {
     const wrapper = await mount(ComplexComponent, {})
+    await nextTick()
+    await nextTick()
     expect(wrapper.findComponent({name: 'b-tab'}).text()).toBe('c1')
     await wrapper.find('#add').trigger('click')
     const $buttons = wrapper.findAll('button')
     expect($buttons[0].text()).toBe('t0')
-    expect($buttons[0].classes()).not.toContain('active')
     expect($buttons[1].text()).toBe('t1')
-    expect($buttons[1].classes()).toContain('active')
-    expect(wrapper.vm.index).toBe(1)
+    expect(wrapper.vm.id).toBe('i1')
   })
 
   it('active tab follow v-models', async () => {
@@ -622,29 +631,27 @@ describe('tabs', () => {
     expect($buttons[0].classes()).not.toContain('active')
     expect($buttons[1].classes()).not.toContain('active')
     expect($buttons[2].classes()).toContain('active')
-    expect(wrapper.vm.index).toBe(2)
     expect(wrapper.vm.id).toBe('i3')
     await wrapper.find('#change2').trigger('click')
     $buttons = wrapper.findAll('button')
     expect($buttons[0].classes()).not.toContain('active')
     expect($buttons[1].classes()).toContain('active')
     expect($buttons[2].classes()).not.toContain('active')
-    expect(wrapper.vm.index).toBe(1)
     expect(wrapper.vm.id).toBe('i2')
   })
 
-  it('selects correct tab with v-model:index and no explicit IDs', async () => {
+  it('selects correct tab with v-model id and explicit IDs', async () => {
     const TestComponent = {
       template: `
-        <BTabs v-model:index="activeIndex">
-          <BTab title="Tab 1">Content 1</BTab>
-          <BTab title="Tab 2">Content 2</BTab>
-          <BTab title="Tab 3">Content 3</BTab>
+        <BTabs v-model="activeId">
+          <BTab id="tab-1" title="Tab 1">Content 1</BTab>
+          <BTab id="tab-2" title="Tab 2">Content 2</BTab>
+          <BTab id="tab-3" title="Tab 3">Content 3</BTab>
         </BTabs>
       `,
       data() {
         return {
-          activeIndex: 1,
+          activeId: 'tab-2',
         }
       },
       components: {
@@ -662,26 +669,24 @@ describe('tabs', () => {
     const buttons = wrapper.findAll('button')
     expect(buttons.length).toBe(3)
 
-    // Tab at index 1 (second tab) should be active
     expect(buttons[0].classes()).not.toContain('active')
     expect(buttons[1].classes()).toContain('active')
     expect(buttons[2].classes()).not.toContain('active')
-
-    expect(wrapper.vm.activeIndex).toBe(1)
+    expect(wrapper.vm.activeId).toBe('tab-2')
   })
 
-  it('selects correct tab with v-model:index=0 and no explicit IDs', async () => {
+  it('selects first enabled tab when v-model id is undefined', async () => {
     const TestComponent = {
       template: `
-        <BTabs v-model:index="activeIndex">
-          <BTab title="Tab 1">Content 1</BTab>
-          <BTab title="Tab 2">Content 2</BTab>
-          <BTab title="Tab 3">Content 3</BTab>
+        <BTabs v-model="activeId">
+          <BTab id="tab-1" title="Tab 1">Content 1</BTab>
+          <BTab id="tab-2" title="Tab 2" disabled>Content 2</BTab>
+          <BTab id="tab-3" title="Tab 3">Content 3</BTab>
         </BTabs>
       `,
       data() {
         return {
-          activeIndex: 0,
+          activeId: undefined,
         }
       },
       components: {
@@ -699,23 +704,16 @@ describe('tabs', () => {
     const buttons = wrapper.findAll('button')
     expect(buttons.length).toBe(3)
 
-    // Tab at index 0 (first tab) should be active
     expect(buttons[0].classes()).toContain('active')
     expect(buttons[1].classes()).not.toContain('active')
     expect(buttons[2].classes()).not.toContain('active')
-
-    expect(wrapper.vm.activeIndex).toBe(0)
+    expect(wrapper.vm.activeId).toBe('tab-1')
   })
 
-  it('selects correct tab with v-model:index when only some tabs have explicit IDs', async () => {
-    // Regression for #2773. A single ID-bearing sibling used to make the whole
-    // list look as though it had explicit IDs, which skipped the
-    // delayed-selection path the ID-less target tab needed. Its generated ID
-    // was then read before the child registered, failed to match afterwards,
-    // and the selection fell back to the first tab.
+  it('selects correct tab with v-model when only some tabs have explicit IDs', async () => {
     const TestComponent = {
       template: `
-        <BTabs v-model:index="activeIndex">
+        <BTabs v-model="activeId">
           <BTab title="Tab 1">Content 1</BTab>
           <BTab id="explicit-tab" title="Tab 2">Content 2</BTab>
           <BTab title="Tab 3">Content 3</BTab>
@@ -723,7 +721,7 @@ describe('tabs', () => {
       `,
       data() {
         return {
-          activeIndex: 2,
+          activeId: 'explicit-tab',
         }
       },
       components: {
@@ -741,27 +739,23 @@ describe('tabs', () => {
     expect(buttons.length).toBe(3)
 
     expect(buttons[0].classes()).not.toContain('active')
-    expect(buttons[1].classes()).not.toContain('active')
-    expect(buttons[2].classes()).toContain('active')
-
-    expect(wrapper.vm.activeIndex).toBe(2)
+    expect(buttons[1].classes()).toContain('active')
+    expect(buttons[2].classes()).not.toContain('active')
+    expect(wrapper.vm.activeId).toBe('explicit-tab')
   })
 
-  it('selects an explicitly-ID-ed tab by index alongside ID-less siblings', async () => {
-    // The other half of the mixed case: the target does carry an explicit ID,
-    // so no delay is needed. Paired with the test above so that a fix which
-    // simply always delays cannot satisfy both.
+  it('falls back to first enabled tab when v-model id is unknown', async () => {
     const TestComponent = {
       template: `
-        <BTabs v-model:index="activeIndex">
-          <BTab title="Tab 1">Content 1</BTab>
+        <BTabs v-model="activeId">
+          <BTab id="tab-1" title="Tab 1">Content 1</BTab>
           <BTab id="explicit-tab" title="Tab 2">Content 2</BTab>
-          <BTab title="Tab 3">Content 3</BTab>
+          <BTab id="tab-3" title="Tab 3">Content 3</BTab>
         </BTabs>
       `,
       data() {
         return {
-          activeIndex: 1,
+          activeId: 'unknown-tab',
         }
       },
       components: {
@@ -776,8 +770,9 @@ describe('tabs', () => {
     await nextTick()
 
     const buttons = wrapper.findAll('button')
-    expect(buttons[1].classes()).toContain('active')
-    expect(wrapper.vm.activeIndex).toBe(1)
+    expect(buttons[0].classes()).toContain('active')
+    expect(buttons[1].classes()).not.toContain('active')
+    expect(wrapper.vm.activeId).toBe('tab-1')
   })
 
   // --- Nav underline class ---

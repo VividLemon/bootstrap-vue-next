@@ -1031,7 +1031,6 @@ export interface BTabsProps {
   end?: boolean
   fill?: boolean
   id?: string
-  index?: number
   inactiveNavItemClass?: ClassValue
   inactiveNavLinkClass?: ClassValue
   inactiveTabClass?: ClassValue
