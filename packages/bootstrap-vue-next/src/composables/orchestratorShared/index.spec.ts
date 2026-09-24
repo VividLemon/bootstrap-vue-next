@@ -187,7 +187,10 @@ describe('buildController', () => {
     const showPromise = controller.show()
     expect(typeof showPromise[Symbol.asyncDispose]).toBe('function')
 
-    await showPromise[Symbol.asyncDispose]()
+    const disposePromise = showPromise[Symbol.asyncDispose]()
+    const resolved = await showPromise
+    expect(typeof resolved[Symbol.asyncDispose]).toBe('function')
+    await disposePromise
 
     expect(hideMock).toHaveBeenCalledWith('destroy', true)
     expect(store.value.size).toBe(0)
