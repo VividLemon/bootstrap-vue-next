@@ -38,7 +38,7 @@ export const buildController = <
           })
         )
       const attachAsyncDispose = <T>(promise: Promise<T>): Promise<T> & AsyncDisposable =>
-        Object.assign(promise, {
+        Object.assign(promise.then((value) => value), {
           [Symbol.asyncDispose]: () => controller.destroy(),
         })
       const currentModelValue = controller.get()?.value.props.modelValue
