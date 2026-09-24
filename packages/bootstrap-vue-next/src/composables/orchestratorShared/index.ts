@@ -34,12 +34,12 @@ export const buildController = <
       const createShowPromise = () =>
         basePromise.then((event) =>
           Object.assign(Object.create(event), {
-            [Symbol.asyncDispose]: controller.destroy,
+            [Symbol.asyncDispose]: () => controller.destroy(),
           })
         )
       const attachAsyncDispose = <T>(promise: Promise<T>): Promise<T> & AsyncDisposable =>
         Object.assign(promise, {
-          [Symbol.asyncDispose]: controller.destroy,
+          [Symbol.asyncDispose]: () => controller.destroy(),
         })
       const currentModelValue = controller.get()?.value.props.modelValue
       if (currentModelValue) {
