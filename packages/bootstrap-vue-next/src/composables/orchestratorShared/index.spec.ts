@@ -170,6 +170,32 @@ describe('buildController', () => {
     expect(store.value.size).toBe(0)
   })
 
+  it('show promise has Symbol.asyncDispose that calls destroy without awaiting show result', async () => {
+    const store = newStore()
+    const _self = Symbol('test-modal')
+    const hiddenEvent = new BvTriggerableEvent('hidden')
+
+    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>(() => resolve(hiddenEvent))
+    pushItem(store, _self, {modelValue: false})
+    controller.ref = {hide: hideMock} as ComponentPublicInstance<unknown> & {
+      show?: () => void
+      hide?: (trigger?: string, noEmit?: boolean) => void
+      toggle?: () => void
+    }
+
+    const showPromise = controller.show()
+    expect(typeof showPromise[Symbol.asyncDispose]).toBe('function')
+
+    const disposePromise = showPromise[Symbol.asyncDispose]()
+    const resolved = await showPromise
+    expect(typeof resolved[Symbol.asyncDispose]).toBe('function')
+    await disposePromise
+
+    expect(hideMock).toHaveBeenCalledWith('destroy', true)
+    expect(store.value.size).toBe(0)
+  })
+
   it('hide sets modelValue to false in the store', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
