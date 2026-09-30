@@ -3,7 +3,6 @@
     <!-- Tabs with card integration -->
     <BCard no-body>
       <BTabs
-        v-model:index="tabIndex"
         v-model="tabId"
         small
         card
@@ -47,7 +46,7 @@
         <BButton @click="info = true">Info</BButton>
       </BButtonGroup>
 
-      <div class="text-muted mt-2">Current Tab: index = {{ tabIndex }}, id = {{ tabId }}</div>
+      <div class="text-muted mt-2">Current Tab ID: {{ tabId }}</div>
     </div>
   </div>
 </template>
@@ -55,8 +54,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 
-const tabIndex = ref(0)
-const tabId = ref(undefined)
+const tabId = ref<string | undefined>('tab-general')
 
 const general = ref(true)
 const editProfile = ref(false)
