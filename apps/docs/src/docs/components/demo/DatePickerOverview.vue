@@ -4,8 +4,8 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import {shallowRef} from 'vue'
 import type {DateValue} from '@internationalized/date'
 
-const value = ref<DateValue | null>(null)
+const value = shallowRef<DateValue | null>(null)
 </script>

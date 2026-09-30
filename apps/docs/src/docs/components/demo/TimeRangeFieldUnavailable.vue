@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import type {Time} from '@internationalized/date'
+import type {DateValue} from '@internationalized/date'
 
-const isTimeUnavailable = (time: Time) => time.hour === 12
+const isTimeUnavailable = (date: DateValue) => date.toDate('UTC').getUTCHours() === 12
 </script>

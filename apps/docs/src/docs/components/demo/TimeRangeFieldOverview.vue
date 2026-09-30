@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import {shallowRef} from 'vue'
 import type {Time} from '@internationalized/date'
 
-const value = ref<{start: Time | undefined; end: Time | undefined} | null>(null)
+const value = shallowRef<{start: Time | undefined; end: Time | undefined} | null>(null)
 </script>
