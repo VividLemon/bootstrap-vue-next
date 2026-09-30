@@ -641,6 +641,29 @@ describe('link', () => {
     expect(wrapper.element.tagName).toBe('A')
   })
 
+  it('is a single-root (non-fragment) component when rendering the real RouterLink', () => {
+    const wrapper = mount(BLink, {
+      props: {to: '/', activeClass: 'my-active'},
+      global: {plugins: [router]},
+    })
+    expect(wrapper.element.tagName).toBe('A')
+    expect(wrapper.attributes('href')).toBe('/')
+  })
+
+  it('does not leak RouterLink default active classes when a custom activeClass/exactActiveClass is used', async () => {
+    await router.push('/about')
+    await router.isReady()
+    const wrapper = mount(BLink, {
+      props: {to: '/about', activeClass: 'my-active', exactActiveClass: 'my-exact-active'},
+      global: {plugins: [router]},
+    })
+    expect(wrapper.classes()).toContain('my-active')
+    expect(wrapper.classes()).toContain('my-exact-active')
+    expect(wrapper.classes()).not.toContain('router-link-active')
+    expect(wrapper.classes()).not.toContain('router-link-exact-active')
+    await router.push('/')
+  })
+
   // --- activeClass / exactActiveClass ---
 
   it('has default activeClass of router-link-active', () => {
