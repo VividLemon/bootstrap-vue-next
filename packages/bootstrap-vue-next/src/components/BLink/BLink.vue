@@ -81,7 +81,29 @@ const routerName = computed(() =>
     ? toPascalCase(props.routerComponentName)
     : props.routerComponentName
 )
-const isRouterLinkName = computed(() => routerName.value === 'RouterLink')
+
+// Matches by name only -- used to preserve legacy `to`/`replace` attribute-forwarding behavior for
+// the non-router fallback branch (see `computedSpecificProps`), independent of whether the real
+// RouterLink component is actually resolvable/installed.
+const routerNameIsRouterLink = computed(() => routerName.value === 'RouterLink')
+
+// Resolves the component registered (globally or locally) under `routerName`, when it is a string.
+const resolvedRouterComponent = computed(() =>
+  typeof routerName.value === 'string'
+    ? instance?.appContext?.app?.component(routerName.value)
+    : routerName.value
+)
+
+// Duck-type check that the resolved 'RouterLink' component is really vue-router's RouterLink (it
+// exposes a static `useLink`), rather than an unrelated component a consumer happens to register
+// under the same name -- only the real component supports `custom` + the default scoped slot API.
+const isRouterLinkName = computed(
+  () =>
+    routerNameIsRouterLink.value &&
+    typeof resolvedRouterComponent.value === 'object' &&
+    resolvedRouterComponent.value !== null &&
+    'useLink' in resolvedRouterComponent.value
+)
 const isNuxtLinkName = computed(() => routerName.value === 'NuxtLink' && isNuxtEnvironment.value)
 
 const tag = computed(() => {
@@ -97,7 +119,7 @@ const tag = computed(() => {
 
   // routerName is a string, so we need to look it up in the app's registered components.
   // Fall back to a plain `<a>` tag if it can't be resolved (e.g. vue-router/Nuxt isn't installed).
-  return instance?.appContext?.app?.component(routerName.value) || 'a'
+  return resolvedRouterComponent.value || 'a'
 })
 
 // True only when `tag` is the real vue-router RouterLink, or the real Nuxt NuxtLink -- both of which
@@ -204,7 +226,8 @@ const computedHref = computed(() => {
 })
 
 const computedSpecificProps = computed(() => ({
-  ...(isNonStandardTag.value || (isRouterLinkName.value && resolvedTo.value)
+  ...(isNonStandardTag.value ||
+  (routerNameIsRouterLink.value && !isRouterLinkName.value && resolvedTo.value && !props.disabled)
     ? nuxtSpecificProps.value
     : {}),
   class: computedClasses(),

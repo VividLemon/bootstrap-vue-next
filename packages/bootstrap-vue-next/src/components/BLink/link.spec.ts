@@ -88,6 +88,14 @@ describe('link', () => {
     expect(wrapper.element.tagName).toBe('A')
   })
 
+  it('does not forward the to prop as an attribute when disabled', () => {
+    const wrapper = mount(BLink, {
+      props: {to: '/', disabled: true},
+      global: {plugins: [router]},
+    })
+    expect(wrapper.attributes('to')).toBeUndefined()
+  })
+
   // --- disabled state ---
 
   it('has class disabled when disabled prop is true', () => {
