@@ -78,6 +78,7 @@
         class="btn btn-outline-secondary b-date-range-picker-trigger ms-auto"
         :class="[props.size ? `btn-${props.size}` : '']"
         :disabled="props.disabled"
+        :aria-label="props.labelTrigger"
       >
         <slot name="trigger-icon">
           <svg
@@ -102,7 +103,10 @@
       <DateRangePickerCalendar v-slot="{weekDays, grid}">
         <slot name="calendar" :week-days="weekDays" :grid="grid">
           <DateRangePickerHeader class="d-flex align-items-center justify-content-between mb-2">
-            <DateRangePickerPrev class="btn btn-sm btn-outline-secondary">
+            <DateRangePickerPrev
+              class="btn btn-sm btn-outline-secondary"
+              :aria-label="props.labelPrev"
+            >
               <slot name="prev-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +123,10 @@
               </slot>
             </DateRangePickerPrev>
             <DateRangePickerHeading class="fw-semibold" />
-            <DateRangePickerNext class="btn btn-sm btn-outline-secondary">
+            <DateRangePickerNext
+              class="btn btn-sm btn-outline-secondary"
+              :aria-label="props.labelNext"
+            >
               <slot name="next-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -222,6 +229,9 @@ const _props = withDefaults(
     isDateDisabled: undefined,
     isDateHighlightable: undefined,
     isDateUnavailable: undefined,
+    labelNext: 'Next month',
+    labelPrev: 'Previous month',
+    labelTrigger: 'Toggle date picker',
     locale: undefined,
     maxValue: undefined,
     maximumDays: undefined,

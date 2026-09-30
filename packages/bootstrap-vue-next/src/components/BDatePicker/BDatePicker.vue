@@ -49,6 +49,7 @@
         class="btn btn-outline-secondary b-date-picker-trigger ms-auto"
         :class="[props.size ? `btn-${props.size}` : '']"
         :disabled="props.disabled"
+        :aria-label="props.labelTrigger"
       >
         <slot name="trigger-icon">
           <svg
@@ -70,7 +71,10 @@
       <DatePickerCalendar v-slot="{weekDays, grid}">
         <slot name="calendar" :week-days="weekDays" :grid="grid">
           <DatePickerHeader class="d-flex align-items-center justify-content-between mb-2">
-            <DatePickerPrev class="btn btn-sm btn-outline-secondary">
+            <DatePickerPrev
+              class="btn btn-sm btn-outline-secondary"
+              :aria-label="props.labelPrev"
+            >
               <slot name="prev-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +91,10 @@
               </slot>
             </DatePickerPrev>
             <DatePickerHeading class="fw-semibold" />
-            <DatePickerNext class="btn btn-sm btn-outline-secondary">
+            <DatePickerNext
+              class="btn btn-sm btn-outline-secondary"
+              :aria-label="props.labelNext"
+            >
               <slot name="next-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -186,6 +193,9 @@ const _props = withDefaults(
     id: undefined,
     isDateDisabled: undefined,
     isDateUnavailable: undefined,
+    labelNext: 'Next month',
+    labelPrev: 'Previous month',
+    labelTrigger: 'Toggle date picker',
     locale: undefined,
     maxValue: undefined,
     minValue: undefined,

@@ -1866,6 +1866,9 @@ export interface BDatePickerProps {
   id?: string
   isDateDisabled?: Matcher
   isDateUnavailable?: Matcher
+  labelNext?: string
+  labelPrev?: string
+  labelTrigger?: string
   locale?: string
   maxValue?: DateValue
   minValue?: DateValue
@@ -1911,6 +1914,9 @@ export interface BDateRangePickerProps {
   isDateDisabled?: Matcher
   isDateHighlightable?: Matcher
   isDateUnavailable?: Matcher
+  labelNext?: string
+  labelPrev?: string
+  labelTrigger?: string
   locale?: string
   maxValue?: DateValue
   maximumDays?: number
