@@ -93,6 +93,21 @@ export default {
           default: undefined,
           description: 'The locale to use for formatting dates',
         },
+        labelNext: {
+          type: 'string',
+          default: "'Next month'",
+          description: 'The aria-label for the next month navigation button',
+        },
+        labelPrev: {
+          type: 'string',
+          default: "'Previous month'",
+          description: 'The aria-label for the previous month navigation button',
+        },
+        labelTrigger: {
+          type: 'string',
+          default: "'Toggle date picker'",
+          description: 'The aria-label for the popover trigger button',
+        },
         maxValue: {
           type: 'DateValue',
           default: undefined,
@@ -306,6 +321,21 @@ export default {
           type: 'Matcher',
           default: undefined,
           description: 'A function that returns whether or not a date is unavailable',
+        },
+        labelNext: {
+          type: 'string',
+          default: "'Next month'",
+          description: 'The aria-label for the next month navigation button',
+        },
+        labelPrev: {
+          type: 'string',
+          default: "'Previous month'",
+          description: 'The aria-label for the previous month navigation button',
+        },
+        labelTrigger: {
+          type: 'string',
+          default: "'Toggle date picker'",
+          description: 'The aria-label for the popover trigger button',
         },
         locale: {
           type: 'string',
