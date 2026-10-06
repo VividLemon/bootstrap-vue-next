@@ -66,6 +66,7 @@
               <BFormInput
                 ref="_input"
                 :model-value="searchTerm"
+                :data-testid="props.inputTestid"
                 v-bind="comboboxInputProps"
                 :class="{'b-autocomplete-input-clearable': showClearButton}"
               />
@@ -82,7 +83,11 @@
         <template #append>
           <ComboboxTrigger v-if="!props.noToggle" as-child :disabled="props.disabled">
             <slot name="toggle" :is-open :disabled="props.disabled">
-              <BButton class="b-autocomplete-trigger" :disabled="props.disabled">
+              <BButton
+                class="b-autocomplete-trigger"
+                :disabled="props.disabled"
+                :data-testid="props.toggleTestid"
+              >
                 <slot name="toggle-icon" :is-open>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -112,6 +117,7 @@
         :side-offset="4"
         :align="'start'"
         :class="['b-autocomplete-content', 'dropdown-menu', 'show']"
+        :data-testid="props.contentTestid"
         :body-lock="false"
         :style="{width: 'var(--reka-combobox-trigger-width)'}"
       >
@@ -185,6 +191,9 @@ import {useFormSelect} from '../../composables/useFormSelect'
 import {useAriaInvalid} from '../../composables/useAriaInvalid'
 
 const _props = withDefaults(defineProps<Omit<BAutocompleteProps, 'modelValue' | 'search'>>(), {
+  inputTestid: undefined,
+  toggleTestid: undefined,
+  contentTestid: undefined,
   ariaInvalid: undefined,
   autocomplete: undefined,
   autofocus: false,

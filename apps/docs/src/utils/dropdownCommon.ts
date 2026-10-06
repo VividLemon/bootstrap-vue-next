@@ -158,6 +158,27 @@ export const dropdownProps = {
     }),
     ['ariaLabel', 'disabled', 'id', 'placement', 'role', 'size', 'variant', 'wrapperClass']
   ),
+  wrapperTestid: {
+    type: 'string',
+    default: undefined,
+    description:
+      'Value for the `data-testid` attribute on the wrapper element (not rendered with `noWrapper` or inside an input group)',
+  },
+  toggleTestid: {
+    type: 'string',
+    default: undefined,
+    description: 'Value for the `data-testid` attribute on the toggle button',
+  },
+  splitTestid: {
+    type: 'string',
+    default: undefined,
+    description: 'Value for the `data-testid` attribute on the main button when `split` is set',
+  },
+  menuTestid: {
+    type: 'string',
+    default: undefined,
+    description: 'Value for the `data-testid` attribute on the `.dropdown-menu` element',
+  },
 } as const satisfies PropRecord<keyof BDropdownProps>
 
 export const dropdownEmits = {

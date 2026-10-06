@@ -119,6 +119,31 @@ export default {
           default: undefined,
           description: 'Width of the offcanvas (e.g., "320px", "20rem")',
         },
+        dataTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the root `.offcanvas`',
+        },
+        headerTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the `.offcanvas-header`',
+        },
+        bodyTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the `.offcanvas-body`',
+        },
+        footerTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the footer',
+        },
+        backdropTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the `.offcanvas-backdrop`',
+        },
       } satisfies PropRecord<keyof BOffcanvasProps>,
       emits: {
         ...showHideEmits,

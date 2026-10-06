@@ -1058,4 +1058,25 @@ describe('offcanvas', () => {
       expect(wrapper.vm.isOpenByBreakpoint).toBeDefined()
     })
   })
+
+  describe('testid props', () => {
+    it('applies testids to each part', () => {
+      const wrapper = mount(BOffcanvas, {
+        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
+        props: {
+          visible: true,
+          title: 't',
+          dataTestid: 'root',
+          headerTestid: 'header',
+          bodyTestid: 'body',
+          backdropTestid: 'backdrop',
+        },
+        slots: {footer: 'f'},
+      })
+      expect(wrapper.find('.offcanvas').attributes('data-testid')).toBe('root')
+      expect(wrapper.find('.offcanvas-header').attributes('data-testid')).toBe('header')
+      expect(wrapper.find('.offcanvas-body').attributes('data-testid')).toBe('body')
+      expect(wrapper.find('.offcanvas-backdrop').attributes('data-testid')).toBe('backdrop')
+    })
+  })
 })

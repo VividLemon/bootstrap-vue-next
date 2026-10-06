@@ -22,6 +22,7 @@
         tabindex="-1"
         :aria-labelledby="`${computedId}-offcanvas-label`"
         data-bs-backdrop="false"
+        :data-testid="props.dataTestid"
         v-bind="$attrs"
       >
         <template v-if="contentShowing || isOpenByBreakpoint">
@@ -29,6 +30,7 @@
             v-if="!props.noHeader"
             class="offcanvas-header"
             :class="props.headerClass"
+            :data-testid="props.headerTestid"
             v-bind="props.headerAttrs"
           >
             <slot name="header" v-bind="sharedSlots">
@@ -56,10 +58,15 @@
               </template>
             </slot>
           </div>
-          <div class="offcanvas-body" :class="props.bodyClass" v-bind="props.bodyAttrs">
+          <div
+            class="offcanvas-body"
+            :class="props.bodyClass"
+            :data-testid="props.bodyTestid"
+            v-bind="props.bodyAttrs"
+          >
             <slot v-bind="sharedSlots" />
           </div>
-          <div v-if="hasFooterSlot" :class="props.footerClass">
+          <div v-if="hasFooterSlot" :class="props.footerClass" :data-testid="props.footerTestid">
             <slot name="footer" v-bind="sharedSlots" />
           </div>
         </template>
@@ -77,6 +84,7 @@
         <div
           v-show="showBackdrop"
           class="offcanvas-backdrop"
+          :data-testid="props.backdropTestid"
           :class="{
             fade: !computedNoAnimation,
             show: backdropVisible || computedNoAnimation,
@@ -121,6 +129,11 @@ defineOptions({
 })
 
 const _props = withDefaults(defineProps<Omit<BOffcanvasProps, 'modelValue'>>(), {
+  dataTestid: undefined,
+  headerTestid: undefined,
+  bodyTestid: undefined,
+  footerTestid: undefined,
+  backdropTestid: undefined,
   backdropFirst: false,
   bodyAttrs: undefined,
   bodyClass: undefined,

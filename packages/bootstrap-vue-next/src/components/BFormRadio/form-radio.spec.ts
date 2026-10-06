@@ -1155,4 +1155,12 @@ describe('form-radio', () => {
       expect($input.attributes('data-custom')).toBe('test')
     })
   })
+
+  describe('testid props', () => {
+    it('applies dataTestid to input and wrapperTestid to wrapper', () => {
+      const wrapper = mount(BFormRadio, {props: {dataTestid: 'i', wrapperTestid: 'w'}})
+      expect(wrapper.find('input').attributes('data-testid')).toBe('i')
+      expect(wrapper.find('[data-testid="w"]').element.tagName).toBe('DIV')
+    })
+  })
 })

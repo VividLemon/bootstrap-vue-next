@@ -879,4 +879,14 @@ describe('toast', () => {
     const $div = wrapper.get('div')
     expect($div.attributes('style')).toContain('display: block')
   })
+
+  describe('testid props', () => {
+    it('applies headerTestid and bodyTestid', () => {
+      const wrapper = mount(BToast, {
+        props: {modelValue: true, title: 't', body: 'b', headerTestid: 'h', bodyTestid: 'b'},
+      })
+      expect(wrapper.find('.toast-header').attributes('data-testid')).toBe('h')
+      expect(wrapper.find('.toast-body').attributes('data-testid')).toBe('b')
+    })
+  })
 })

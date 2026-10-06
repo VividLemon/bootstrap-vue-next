@@ -122,6 +122,7 @@ defineOptions({
 const INPUTS = ['input', 'select', 'textarea']
 
 const _props = withDefaults(defineProps<BFormGroupProps>(), {
+  labelTestid: undefined,
   ariaInvalid: undefined,
   contentCols: undefined,
   contentColsLg: undefined,
@@ -294,6 +295,7 @@ const labelComponentProps = computed(() => ({
   labelColProps: labelColProps.value,
   labelAlignClasses: labelAlignClasses.value,
   labelClasses: labelClasses.value,
+  'data-testid': props.labelTestid,
 }))
 
 const contentComponentProps = computed(() => ({

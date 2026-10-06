@@ -1,10 +1,15 @@
 <template>
-  <ConditionalWrapper :skip="isButtonGroup" :class="computedClasses">
+  <ConditionalWrapper
+    :skip="isButtonGroup"
+    :class="computedClasses"
+    :data-testid="props.wrapperTestid"
+  >
     <input
       :id="computedId"
       v-bind="$attrs"
       ref="_input"
       v-model="localValue"
+      :data-testid="props.dataTestid"
       :class="inputClasses"
       type="radio"
       :disabled="props.disabled || parentData?.disabled.value || formGroupData?.disabled.value"
@@ -38,6 +43,8 @@ defineOptions({
 })
 
 const _props = withDefaults(defineProps<Omit<BFormRadioProps, 'modelValue'>>(), {
+  dataTestid: undefined,
+  wrapperTestid: undefined,
   ariaLabel: undefined,
   ariaLabelledby: undefined,
   autofocus: false,

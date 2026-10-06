@@ -1875,4 +1875,11 @@ describe('form-group', () => {
       expect(wrapper.find('input').exists()).toBe(true)
     })
   })
+
+  describe('testid props', () => {
+    it('applies labelTestid to the label', () => {
+      const wrapper = mount(BFormGroup, {props: {label: 'L', labelTestid: 'l'}})
+      expect(wrapper.find('legend, label').attributes('data-testid')).toBe('l')
+    })
+  })
 })

@@ -1,16 +1,16 @@
-import type { BAutocompleteProps, BAutocompleteSlots } from 'bootstrap-vue-next'
-import { type ComponentReference, type PropRecord, type SlotRecord, StyleKind } from '../../types'
-import { pick } from '../../utils/objectUtils'
-import { buildCommonProps } from '../../utils/commonProps'
+import type {BAutocompleteProps, BAutocompleteSlots} from 'bootstrap-vue-next'
+import {type ComponentReference, type PropRecord, type SlotRecord, StyleKind} from '../../types'
+import {pick} from '../../utils/objectUtils'
+import {buildCommonProps} from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BAutocomplete: {
-      styleSpec: { kind: StyleKind.BsvnClass },
+      styleSpec: {kind: StyleKind.BsvnClass},
       props: {
         ...pick(
           buildCommonProps({
-            options: { type: 'readonly (object | string | number | boolean)[]' },
+            options: {type: 'readonly (object | string | number | boolean)[]'},
           }),
           [
             'ariaInvalid',
@@ -32,7 +32,7 @@ export default {
             'options',
             'textField',
             'valueField',
-          ],
+          ]
         ),
         by: {
           type: 'string | ((a: unknown, b: unknown) => boolean)',
@@ -113,9 +113,25 @@ export default {
           description:
             'Teleports the dropdown content to the specified element. Accepts a CSS selector string or an HTMLElement reference',
         },
+        inputTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the search `<input>` element',
+        },
+        toggleTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the toggle button',
+        },
+        contentTestid: {
+          type: 'string',
+          default: undefined,
+          description:
+            'Value for the `data-testid` attribute on the teleported dropdown content element',
+        },
       } satisfies PropRecord<keyof BAutocompleteProps>,
       emits: {
-        blur: {
+        'blur': {
           description: 'Emitted when the autocomplete input loses focus',
           args: {
             event: {
@@ -124,7 +140,7 @@ export default {
             },
           },
         },
-        change: {
+        'change': {
           description:
             'Emitted when the selected value changes due to user interaction (option selected, selection cleared, or tag removed)',
           args: {
@@ -134,10 +150,10 @@ export default {
             },
           },
         },
-        clear: {
+        'clear': {
           description: 'Emitted when the clear button is clicked and the selection is cleared',
         },
-        focus: {
+        'focus': {
           description: 'Emitted when the autocomplete input gains focus',
           args: {
             event: {
@@ -176,14 +192,14 @@ export default {
         },
       },
       slots: {
-        default: {
+        'default': {
           description: 'Default slot for custom content inside the autocomplete',
         },
-        empty: {
+        'empty': {
           description:
             'Content to display when no options match the current search. Defaults to "No results found"',
         },
-        option: {
+        'option': {
           description: 'Custom rendering for each option item in the dropdown list',
           scope: {
             value: {
@@ -204,7 +220,7 @@ export default {
           description:
             'Custom rendering for the check indicator shown on selected options. Defaults to a checkmark SVG',
         },
-        tags: {
+        'tags': {
           description:
             'Custom rendering for tags in multiple+tags mode. Receives the selected options, a remove function, and whether backspace-to-delete is pending',
           scope: {
@@ -233,7 +249,7 @@ export default {
             },
           },
         },
-        toggle: {
+        'toggle': {
           description:
             'Custom rendering for the dropdown toggle button. Replaces the default chevron button',
           scope: {
@@ -247,51 +263,51 @@ export default {
             },
           },
         },
-        input: {
+        'input': {
           description:
             'Custom rendering for the search input. Receives all props needed to wire up the input to the combobox. Note: using this slot replaces the internal fallback input ref, so built-in focus restore (`clearSelection`, option select) and exposed `focus`/`blur`/`element` helpers do not target your slotted input; manage focus yourself from component events.',
           scope: {
-            id: {
+            'id': {
               type: 'string',
               description: 'Computed input id',
             },
-            disabled: {
+            'disabled': {
               type: 'boolean',
               description: 'Whether the input is disabled',
             },
-            form: {
+            'form': {
               type: 'string | undefined',
               description: 'Associated form id',
             },
-            placeholder: {
+            'placeholder': {
               type: 'string | undefined',
               description: 'Placeholder text',
             },
-            readonly: {
+            'readonly': {
               type: 'boolean',
               description: 'Whether the input is read-only',
             },
-            required: {
+            'required': {
               type: 'true | undefined',
               description: 'Whether the input is required',
             },
-            autocomplete: {
+            'autocomplete': {
               type: 'string | undefined',
               description: 'Autocomplete attribute value',
             },
-            searchTerm: {
+            'searchTerm': {
               type: 'string',
               description: 'The current search term entered by the user',
             },
-            plaintext: {
+            'plaintext': {
               type: 'boolean',
               description: 'Whether the input renders as plaintext',
             },
-            size: {
+            'size': {
               type: 'Size | undefined',
               description: 'Input size variant',
             },
-            state: {
+            'state': {
               type: 'ValidationState | undefined',
               description: 'Validation state of the input',
             },
@@ -305,17 +321,17 @@ export default {
               description:
                 'ARIA required state to forward/spread to the input so required accessibility state is preserved',
             },
-            onBlur: {
+            'onBlur': {
               type: '(event: FocusEvent) => void',
               description:
                 'Blur handler to forward/spread to the input so component blur behavior is preserved',
             },
-            onFocus: {
+            'onFocus': {
               type: '(event: FocusEvent) => void',
               description:
                 'Focus handler to forward/spread to the input so component focus behavior is preserved',
             },
-            onKeydown: {
+            'onKeydown': {
               type: '(event: KeyboardEvent) => void',
               description:
                 'Keydown handler to forward/spread to the input so keyboard behavior (including backspace-delete flow) is preserved',

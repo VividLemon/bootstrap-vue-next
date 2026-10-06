@@ -1,5 +1,10 @@
 <template>
-  <div ref="rootRef" v-bind="processedAttrs.rootAttrs" class="b-form-file-root">
+  <div
+    ref="rootRef"
+    :data-testid="props.rootTestid"
+    v-bind="processedAttrs.rootAttrs"
+    class="b-form-file-root"
+  >
     <!-- Optional label -->
     <label
       v-if="hasLabelSlot || props.label"
@@ -16,6 +21,7 @@
     <div
       v-if="!props.plain"
       ref="dropZoneRef"
+      :data-testid="props.dropZoneTestid"
       v-bind="processedAttrs.dropZoneAttrs"
       class="b-form-file-wrapper"
       :class="{
@@ -37,6 +43,7 @@
           ref="browseButtonRef"
           type="button"
           class="b-form-file-button"
+          :data-testid="props.buttonTestid"
           :disabled="props.disabled"
           :aria-label="props.ariaLabel"
           :aria-labelledby="props.ariaLabelledby"
@@ -68,6 +75,7 @@
       <!-- Hidden input for form submission (positioned behind UI with z-index) -->
       <input
         ref="customInputRef"
+        :data-testid="props.inputTestid"
         v-bind="processedAttrs.inputAttrs"
         type="file"
         :name="props.name"
@@ -98,6 +106,7 @@
       v-else
       :id="computedId"
       ref="plainInputRef"
+      :data-testid="props.inputTestid"
       v-bind="processedAttrs.inputAttrs"
       type="file"
       :class="computedPlainClasses"
@@ -152,6 +161,10 @@ defineOptions({
 })
 
 const _props = withDefaults(defineProps<Omit<BFormFileProps, 'modelValue'>>(), {
+  rootTestid: undefined,
+  dropZoneTestid: undefined,
+  buttonTestid: undefined,
+  inputTestid: undefined,
   ariaLabel: undefined,
   ariaLabelledby: undefined,
   accept: '',

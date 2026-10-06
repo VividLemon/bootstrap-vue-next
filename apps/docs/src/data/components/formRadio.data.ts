@@ -70,6 +70,17 @@ export default {
           default: true, // TODO item not in string format
           description: 'Value returned when this radio button is selected',
         },
+        dataTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the radio input element',
+        },
+        wrapperTestid: {
+          type: 'string',
+          default: undefined,
+          description:
+            'Value for the `data-testid` attribute on the wrapper element (not rendered in a button group)',
+        },
       } satisfies PropRecord<keyof BFormRadioProps>,
       emits: {
         'update:model-value': {

@@ -33,6 +33,7 @@
     <DatePickerField
       v-slot="{segments}"
       class="b-date-picker-field form-control d-inline-flex align-items-center gap-0"
+      :data-testid="props.fieldTestid"
       :class="computedFieldClasses"
     >
       <slot name="field" :segments="segments">
@@ -47,6 +48,7 @@
       </slot>
       <DatePickerTrigger
         class="btn btn-outline-secondary b-date-picker-trigger ms-auto"
+        :data-testid="props.triggerTestid"
         :class="[props.size ? `btn-${props.size}` : '']"
         :disabled="props.disabled"
       >
@@ -66,7 +68,11 @@
       </DatePickerTrigger>
     </DatePickerField>
 
-    <DatePickerContent :side-offset="4" class="b-date-picker-content dropdown-menu show p-2">
+    <DatePickerContent
+      :side-offset="4"
+      class="b-date-picker-content dropdown-menu show p-2"
+      :data-testid="props.contentTestid"
+    >
       <DatePickerCalendar v-slot="{weekDays, grid}">
         <slot name="calendar" :week-days="weekDays" :grid="grid">
           <DatePickerHeader class="d-flex align-items-center justify-content-between mb-2">
@@ -173,6 +179,9 @@ import type {BDatePickerProps, BDatePickerSlots} from '../../types'
 const _props = withDefaults(
   defineProps<Omit<BDatePickerProps, 'modelValue' | 'open' | 'placeholder'>>(),
   {
+  fieldTestid: undefined,
+  triggerTestid: undefined,
+  contentTestid: undefined,
     closeOnSelect: true,
     defaultOpen: false,
     defaultPlaceholder: undefined,

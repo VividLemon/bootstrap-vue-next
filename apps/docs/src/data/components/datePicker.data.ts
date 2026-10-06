@@ -13,13 +13,13 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import { pick } from '../../utils/objectUtils'
-import { buildCommonProps } from '../../utils/commonProps'
+import {pick} from '../../utils/objectUtils'
+import {buildCommonProps} from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BDatePicker: {
-      styleSpec: { kind: StyleKind.BsvnClass },
+      styleSpec: {kind: StyleKind.BsvnClass},
       props: {
         ...pick(buildCommonProps(), [
           'disabled',
@@ -155,6 +155,22 @@ export default {
           default: undefined,
           description: 'The format to use for the weekday headers in the calendar',
         },
+        fieldTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the field element',
+        },
+        triggerTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the calendar trigger button',
+        },
+        contentTestid: {
+          type: 'string',
+          default: undefined,
+          description:
+            'Value for the `data-testid` attribute on the teleported popover content element',
+        },
       } satisfies PropRecord<keyof BDatePickerProps>,
       emits: {
         'update:placeholder': {
@@ -186,7 +202,7 @@ export default {
         },
       } satisfies EmitRecord<keyof BDatePickerEmits | 'update:model-value' | 'update:open'>,
       slots: {
-        field: {
+        'field': {
           description: 'Custom content for the date field area',
           scope: {
             segments: {
@@ -195,7 +211,7 @@ export default {
             },
           },
         },
-        calendar: {
+        'calendar': {
           description: 'Custom content for the calendar dropdown',
           scope: {
             weekDays: {
@@ -221,7 +237,7 @@ export default {
     },
     BDateRangePicker: {
       sourcePath: '/BDatePicker/BDateRangePicker.vue',
-      styleSpec: { kind: StyleKind.BsvnClass },
+      styleSpec: {kind: StyleKind.BsvnClass},
       props: {
         ...pick(buildCommonProps(), [
           'disabled',
@@ -419,7 +435,7 @@ export default {
         },
       } satisfies EmitRecord<keyof BDateRangePickerEmits | 'update:model-value' | 'update:open'>,
       slots: {
-        field: {
+        'field': {
           description: 'Custom content for the date range field area',
           scope: {
             segments: {
@@ -428,7 +444,7 @@ export default {
             },
           },
         },
-        calendar: {
+        'calendar': {
           description: 'Custom content for the calendar dropdown',
           scope: {
             weekDays: {

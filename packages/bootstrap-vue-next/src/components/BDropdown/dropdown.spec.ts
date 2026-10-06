@@ -979,4 +979,21 @@ describe('dropdown', () => {
       expect($bbutton.props('size')).toBeUndefined()
     })
   })
+
+  describe('testid props', () => {
+    it('applies testids to wrapper, toggle and menu', () => {
+      const wrapper = mount(BDropdown, {
+        props: {wrapperTestid: 'w', toggleTestid: 't', menuTestid: 'm'},
+      })
+      expect(wrapper.find('.dropdown').attributes('data-testid')).toBe('w')
+      expect(wrapper.find('button.dropdown-toggle').attributes('data-testid')).toBe('t')
+      expect(wrapper.find('.dropdown-menu').attributes('data-testid')).toBe('m')
+    })
+    it('applies splitTestid to the main button when split', () => {
+      const wrapper = mount(BDropdown, {props: {split: true, splitTestid: 's', toggleTestid: 't'}})
+      const $buttons = wrapper.findAll('button')
+      expect($buttons[0].attributes('data-testid')).toBe('s')
+      expect($buttons[1].attributes('data-testid')).toBe('t')
+    })
+  })
 })

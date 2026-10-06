@@ -184,6 +184,9 @@ export type LinkIconProps = Pick<BLinkProps, 'icon'>
 export type LinkVariantProps = Pick<BLinkProps, 'variant'>
 
 export interface BAutocompleteProps {
+  inputTestid?: string
+  toggleTestid?: string
+  contentTestid?: string
   ariaInvalid?: AriaInvalid
   autocomplete?: string
   autofocus?: boolean
@@ -464,6 +467,10 @@ export interface BFormDatalistProps<
 }
 
 export interface BFormFileProps {
+  rootTestid?: string
+  dropZoneTestid?: string
+  buttonTestid?: string
+  inputTestid?: string
   ariaLabel?: string
   ariaLabelledby?: string
   /**
@@ -506,6 +513,8 @@ export interface BFormInputProps extends CommonInputProps {
 }
 
 export interface BFormRadioProps {
+  dataTestid?: string
+  wrapperTestid?: string
   ariaLabel?: string
   ariaLabelledby?: string
   autofocus?: boolean
@@ -733,6 +742,7 @@ export interface BFormTagProps {
 }
 
 export interface BFormTagsProps {
+  inputTestid?: string
   addButtonText?: string
   addButtonVariant?: ButtonVariant | null
   addOnChange?: boolean
@@ -860,6 +870,11 @@ export interface BNavbarToggleProps {
 }
 
 export interface BOffcanvasProps extends TeleporterProps, ShowHideProps {
+  dataTestid?: string
+  headerTestid?: string
+  bodyTestid?: string
+  footerTestid?: string
+  backdropTestid?: string
   noBackdrop?: boolean
   backdropFirst?: boolean
   bodyAttrs?: Readonly<AttrsValue>
@@ -1491,6 +1506,10 @@ export type BFormInvalidFeedbackProps = BFormFeedbackSharedProps
 export type BFormValidFeedbackProps = BFormFeedbackSharedProps
 
 export interface BDropdownProps extends TeleporterProps, ShowHideProps {
+  wrapperTestid?: string
+  toggleTestid?: string
+  splitTestid?: string
+  menuTestid?: string
   ariaLabel?: string
   autoClose?: boolean | 'inside' | 'outside'
   boundary?: Boundary | RootBoundary
@@ -1532,6 +1551,8 @@ export interface BDropdownProps extends TeleporterProps, ShowHideProps {
 
 export interface BToastProps
   extends ColorExtendables, Omit<BLinkProps, 'routerTag'>, ShowHideProps {
+  headerTestid?: string
+  bodyTestid?: string
   body?: string
   bodyClass?: ClassValue
   closeClass?: ClassValue
@@ -1718,6 +1739,7 @@ export interface BColProps extends OffsetBreakpointProps, OrderBreakpointProps, 
 
 export interface BFormGroupProps
   extends ContentColsBreakpointProps, LabelColsBreakpointProps, LabelAlignBreakpointProps {
+  labelTestid?: string
   contentCols?: boolean | Numberish
   labelCols?: boolean | Numberish
   labelAlign?: string
@@ -1865,6 +1887,9 @@ export interface BTimeRangeFieldProps {
 }
 
 export interface BDatePickerProps {
+  fieldTestid?: string
+  triggerTestid?: string
+  contentTestid?: string
   closeOnSelect?: boolean
   defaultOpen?: boolean
   defaultPlaceholder?: DateValue

@@ -21,6 +21,7 @@
         v-if="contentShowing && (slots.title || props.title)"
         class="toast-header"
         :class="props.headerClass"
+        :data-testid="props.headerTestid"
       >
         <slot name="title" v-bind="sharedSlots">
           <strong>
@@ -55,6 +56,7 @@
             :is="computedTag"
             class="toast-body"
             :class="props.bodyClass"
+            :data-testid="props.bodyTestid"
             v-bind="computedLinkProps"
             @click="computedLink ? hide() : () => {}"
           >
@@ -117,6 +119,8 @@ import {useShowHide} from '../../composables/useShowHide'
 import BButton from '../BButton/BButton.vue'
 
 const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
+  headerTestid: undefined,
+  bodyTestid: undefined,
   bgVariant: null,
   body: undefined,
   bodyClass: undefined,

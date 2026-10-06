@@ -3,6 +3,7 @@
     :skip="inInputGroup || props.noWrapper"
     :class="computedClasses"
     :role="inButtonGroupAttributes?.role"
+    :data-testid="props.wrapperTestid"
   >
     <BButton
       :id="computedId"
@@ -18,6 +19,7 @@
       :href="props.split ? props.splitHref : undefined"
       :icon="props.icon"
       :to="props.split && props.splitTo ? props.splitTo : undefined"
+      :data-testid="props.split ? props.splitTestid : props.toggleTestid"
       v-bind="!props.split ? props.toggleAttrs : undefined"
       @click="onSplitClick"
     >
@@ -34,6 +36,7 @@
       class="dropdown-toggle-split dropdown-toggle"
       :aria-expanded="showRef"
       aria-haspopup="menu"
+      :data-testid="props.toggleTestid"
       v-bind="props.toggleAttrs"
       @click="onButtonClick"
     >
@@ -61,6 +64,7 @@
           :class="[props.menuClass, computedMenuClasses]"
           :aria-labelledby="computedId"
           :role="props.role"
+          :data-testid="props.menuTestid"
           @click="onClickInside"
         >
           <slot
@@ -120,6 +124,10 @@ import type {BDropdownEmits, BDropdownProps, BDropdownSlots} from '../../types'
 import {getSafeDocument} from '../../utils/dom'
 
 const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
+  wrapperTestid: undefined,
+  toggleTestid: undefined,
+  splitTestid: undefined,
+  menuTestid: undefined,
   ariaLabel: undefined,
   autoClose: true,
   boundary: 'clippingAncestors',

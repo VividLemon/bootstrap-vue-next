@@ -150,6 +150,11 @@ export default {
           description:
             "When set, adds the Bootstrap validation trigger class 'was-validated' on the component",
         },
+        labelTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the label (or legend) element',
+        },
       } satisfies PropRecord<keyof BFormGroupProps>,
       emits: {},
       slots: {

@@ -84,37 +84,37 @@ export default {
         backdropTestid: {
           type: 'string',
           default: undefined,
-          description: 'Value for the `data-testid` attribute on the '.modal-backdrop' element',
+          description: "Value for the `data-testid` attribute on the '.modal-backdrop' element",
         },
         bodyTestid: {
           type: 'string',
           default: undefined,
-          description: 'Value for the `data-testid` attribute on the '.modal-body' element',
+          description: "Value for the `data-testid` attribute on the '.modal-body' element",
         },
         contentTestid: {
           type: 'string',
           default: undefined,
-          description: 'Value for the `data-testid` attribute on the '.modal-content' element',
+          description: "Value for the `data-testid` attribute on the '.modal-content' element",
         },
         dataTestid: {
           type: 'string',
           default: undefined,
-          description: 'Value for the `data-testid` attribute on the root '.modal' element',
+          description: "Value for the `data-testid` attribute on the root '.modal' element",
         },
         dialogTestid: {
           type: 'string',
           default: undefined,
-          description: 'Value for the `data-testid` attribute on the '.modal-dialog' element',
+          description: "Value for the `data-testid` attribute on the '.modal-dialog' element",
         },
         footerTestid: {
           type: 'string',
           default: undefined,
-          description: 'Value for the `data-testid` attribute on the '.modal-footer' element',
+          description: "Value for the `data-testid` attribute on the '.modal-footer' element",
         },
         headerTestid: {
           type: 'string',
           default: undefined,
-          description: 'Value for the `data-testid` attribute on the '.modal-header' element',
+          description: "Value for the `data-testid` attribute on the '.modal-header' element",
         },
         backdropFirst: {
           type: 'boolean',

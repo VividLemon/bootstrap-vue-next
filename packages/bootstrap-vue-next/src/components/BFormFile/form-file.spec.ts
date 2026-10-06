@@ -2008,4 +2008,20 @@ describe('form-file', () => {
       expect($liveRegion.text()).toBe('')
     })
   })
+
+  describe('testid props', () => {
+    it('applies testids in custom mode', () => {
+      const wrapper = mount(BFormFile, {
+        props: {rootTestid: 'r', dropZoneTestid: 'd', buttonTestid: 'b', inputTestid: 'i'},
+      })
+      expect(wrapper.find('.b-form-file-root').attributes('data-testid')).toBe('r')
+      expect(wrapper.find('.b-form-file-wrapper').attributes('data-testid')).toBe('d')
+      expect(wrapper.find('.b-form-file-button').attributes('data-testid')).toBe('b')
+      expect(wrapper.find('input[type="file"]').attributes('data-testid')).toBe('i')
+    })
+    it('applies inputTestid in plain mode', () => {
+      const wrapper = mount(BFormFile, {props: {plain: true, inputTestid: 'i'}})
+      expect(wrapper.find('input[type="file"]').attributes('data-testid')).toBe('i')
+    })
+  })
 })

@@ -997,4 +997,11 @@ describe('form-tags', () => {
       expect(input.attributes('maxlength')).toBe('10')
     })
   })
+
+  describe('testid props', () => {
+    it('applies inputTestid to the text input', () => {
+      const wrapper = mount(BFormTags, {props: {inputTestid: 'i'}})
+      expect(wrapper.find('input.b-form-tags-input').attributes('data-testid')).toBe('i')
+    })
+  })
 })

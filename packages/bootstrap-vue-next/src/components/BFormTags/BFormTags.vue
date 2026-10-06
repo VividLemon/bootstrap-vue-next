@@ -113,6 +113,7 @@
               :type="props.inputType"
               :placeholder="props.placeholder"
               class="b-form-tags-input w-100 flex-grow-1 p-0 m-0 bg-transparent border-0"
+              :data-testid="props.inputTestid"
               style="outline: currentcolor none 0; min-width: 5rem"
               v-bind="props.inputAttrs"
               :form="props.form"
@@ -178,6 +179,7 @@ import {useStateClass} from '../../composables/useStateClass'
 import type {BFormTagsEmits, BFormTagsProps, BFormTagsSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
+  inputTestid: undefined,
   addButtonText: 'Add',
   addButtonVariant: 'outline-secondary',
   addOnChange: false,

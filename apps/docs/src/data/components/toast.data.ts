@@ -65,6 +65,16 @@ export default {
             default: undefined,
             description: 'Sets the CSS class(es) for the toast wrapper element.',
           },
+          headerTestid: {
+            type: 'string',
+            default: undefined,
+            description: 'Value for the `data-testid` attribute on the `.toast-header`',
+          },
+          bodyTestid: {
+            type: 'string',
+            default: undefined,
+            description: 'Value for the `data-testid` attribute on the `.toast-body`',
+          },
         } satisfies PropRecord<Exclude<keyof BToastProps, keyof typeof linkProps>>,
         'BLink props': linkedBLinkSection,
       },

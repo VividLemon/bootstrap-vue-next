@@ -1,7 +1,7 @@
-import type { BFormFileProps, BFormFileSlots } from 'bootstrap-vue-next'
-import type { ComponentReference, ExposedRecord, PropRecord, SlotRecord } from '../../types'
-import { pick } from '../../utils/objectUtils'
-import { buildCommonProps } from '../../utils/commonProps'
+import type {BFormFileProps, BFormFileSlots} from 'bootstrap-vue-next'
+import type {ComponentReference, ExposedRecord, PropRecord, SlotRecord} from '../../types'
+import {pick} from '../../utils/objectUtils'
+import {buildCommonProps} from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
@@ -25,7 +25,7 @@ export default {
             'required',
             'size',
             'state',
-          ],
+          ]
         ),
         accept: {
           type: 'string | readonly string[]',
@@ -109,9 +109,31 @@ export default {
           default: false,
           description: 'Display selected file names in custom mode',
         },
+        rootTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the root wrapper element',
+        },
+        dropZoneTestid: {
+          type: 'string',
+          default: undefined,
+          description:
+            'Value for the `data-testid` attribute on the drop zone element (not rendered when `plain`)',
+        },
+        buttonTestid: {
+          type: 'string',
+          default: undefined,
+          description:
+            'Value for the `data-testid` attribute on the browse button (not rendered when `plain` or `noButton`)',
+        },
+        inputTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the file `<input>` element',
+        },
       } satisfies PropRecord<keyof BFormFileProps>,
       emits: {
-        change: {
+        'change': {
           description:
             'Emitted when the file selection changes. In plain mode, receives the native Event from the file input. In custom mode, receives a CustomEvent with `detail.files` (File[]), `detail.target.files` (FileList-like), and a `files` property for convenience.',
           args: {
@@ -133,7 +155,7 @@ export default {
         },
       },
       slots: {
-        label: {
+        'label': {
           description: 'Slot to customize the label content',
           scope: {},
         },
@@ -150,7 +172,7 @@ export default {
             },
           },
         },
-        placeholder: {
+        'placeholder': {
           description: 'Slot to customize the placeholder text shown when no files are selected',
           scope: {},
         },

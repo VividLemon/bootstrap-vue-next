@@ -220,6 +220,12 @@ export default {
           default: 'secondary',
           description: 'Applies one of the Bootstrap theme color variants to the tags',
         },
+        inputTestid: {
+          type: 'string',
+          default: undefined,
+          description:
+            'Value for the `data-testid` attribute on the tag text `<input>` element (use `inputAttrs` when using the default slot)',
+        },
       } satisfies PropRecord<keyof BFormTagsProps>,
       emits: {
         'blur': {
