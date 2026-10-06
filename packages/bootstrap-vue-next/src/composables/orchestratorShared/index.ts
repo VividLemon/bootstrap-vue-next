@@ -30,13 +30,20 @@ export const buildController = <
   const controller = {
     id,
     ref: null as RefWithMethods | null,
-    async show() {
+    show() {
+      const createShowPromise = () =>
+        basePromise.then((event) =>
+          Object.assign(Object.create(event), {
+            [Symbol.asyncDispose]: () => controller.destroy(),
+          })
+        )
+      const attachAsyncDispose = <T>(promise: Promise<T>): Promise<T> & AsyncDisposable =>
+        Object.assign(promise.then((value) => value), {
+          [Symbol.asyncDispose]: () => controller.destroy(),
+        })
       const currentModelValue = controller.get()?.value.props.modelValue
       if (currentModelValue) {
-        const event = await basePromise
-        return Object.assign(Object.create(event), {
-          [Symbol.asyncDispose]: controller.destroy,
-        })
+        return attachAsyncDispose(createShowPromise())
       }
       const refWithMethods = controller.ref
       if (
@@ -48,10 +55,7 @@ export const buildController = <
       } else {
         controller.set({modelValue: true})
       }
-      const event = await basePromise
-      return Object.assign(Object.create(event), {
-        [Symbol.asyncDispose]: controller.destroy,
-      })
+      return attachAsyncDispose(createShowPromise())
     },
     hide(trigger?: string) {
       const refWithMethods = controller.ref
