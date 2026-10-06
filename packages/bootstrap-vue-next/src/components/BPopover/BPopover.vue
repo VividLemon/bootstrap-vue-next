@@ -15,6 +15,7 @@
         :id="computedId"
         v-bind="attrs"
         ref="_element"
+        :data-testid="props.dataTestid"
         :class="computedClasses"
         role="tooltip"
         tabindex="-1"
@@ -31,6 +32,7 @@
             <div
               class="position-sticky top-0"
               :class="[props.tooltip ? 'tooltip-inner' : 'popover-header', props.titleClass]"
+              :data-testid="props.titleTestid"
             >
               <slot name="title" v-bind="sharedSlots">
                 {{ props.title }}
@@ -38,7 +40,10 @@
             </div>
           </template>
           <template v-if="(props.tooltip && !slots.title && !props.title) || !props.tooltip">
-            <div :class="[props.tooltip ? 'tooltip-inner' : 'popover-body', props.bodyClass]">
+            <div
+              :class="[props.tooltip ? 'tooltip-inner' : 'popover-body', props.bodyClass]"
+              :data-testid="props.bodyTestid"
+            >
               <slot v-bind="sharedSlots">{{ props.body }}{{ attrs.content }}</slot>
             </div>
           </template>
@@ -101,6 +106,9 @@ const _props = withDefaults(defineProps<Omit<BPopoverProps, 'modelValue'>>(), {
   boundary: 'clippingAncestors',
   boundaryPadding: undefined,
   bodyClass: undefined,
+  bodyTestid: undefined,
+  dataTestid: undefined,
+  titleTestid: undefined,
   click: undefined,
   closeOnHide: false,
   focus: undefined,

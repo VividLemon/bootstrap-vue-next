@@ -540,4 +540,20 @@ describe('popover', () => {
       expect($div.attributes('id')).toBe('second-id')
     })
   })
+
+  it('applies testid props', () => {
+    const wrapper = mount(BPopover, {
+      props: {
+        modelValue: true,
+        title: 't',
+        body: 'b',
+        dataTestid: 'root',
+        titleTestid: 'title',
+        bodyTestid: 'body',
+      },
+    })
+    expect(wrapper.find('[role="tooltip"]').attributes('data-testid')).toBe('root')
+    expect(wrapper.find('.popover-header').attributes('data-testid')).toBe('title')
+    expect(wrapper.find('.popover-body').attributes('data-testid')).toBe('body')
+  })
 })

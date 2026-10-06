@@ -167,6 +167,23 @@ const sharedProps = {
     }),
     ['bodyClass', 'id', 'placement', 'title', 'titleClass']
   ),
+  ...{
+    bodyTestid: {
+      type: 'string',
+      default: undefined,
+      description: 'Value for the `data-testid` attribute on the body element',
+    },
+    dataTestid: {
+      type: 'string',
+      default: undefined,
+      description: 'Value for the `data-testid` attribute on the floating (teleported) element',
+    },
+    titleTestid: {
+      type: 'string',
+      default: undefined,
+      description: 'Value for the `data-testid` attribute on the title element',
+    },
+  },
 } satisfies PropRecord<keyof BPopoverProps>
 
 export const popoverSharedEmits = (

@@ -1,6 +1,7 @@
 <template>
   <ConditionalWrapper
     :skip="isButtonGroup"
+    :data-testid="props.wrapperTestid"
     v-bind="props.wrapperAttrs"
     :class="computedWrapperClasses"
   >
@@ -21,6 +22,7 @@
       :true-value="props.value"
       :false-value="props.uncheckedValue"
       :indeterminate="indeterminate || undefined"
+      :data-testid="props.dataTestid"
       v-bind="processedAttrs.inputAttrs"
     />
     <label v-if="hasOwnLabel" :for="computedId" :class="labelClasses">
@@ -48,6 +50,8 @@ const _props = withDefaults(
   defineProps<Omit<BFormCheckboxProps, 'modelValue' | 'indeterminate'>>(),
   {
     wrapperAttrs: undefined,
+    wrapperTestid: undefined,
+    dataTestid: undefined,
     inputClass: undefined,
     ariaLabel: undefined,
     ariaLabelledby: undefined,

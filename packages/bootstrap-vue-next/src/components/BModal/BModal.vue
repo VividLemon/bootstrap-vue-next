@@ -22,17 +22,24 @@
         :aria-labelledby="!props.noHeader ? `${computedId}-label` : undefined"
         :aria-describedby="`${computedId}-body`"
         tabindex="-1"
+        :data-testid="props.dataTestid"
         v-bind="$attrs"
         :style="computedZIndex"
         style="display: block"
         @mousedown.left.self="hide('backdrop')"
       >
-        <div class="modal-dialog" :class="modalDialogClasses">
-          <div v-if="contentShowing" class="modal-content" :class="props.contentClass">
+        <div class="modal-dialog" :class="modalDialogClasses" :data-testid="props.dialogTestid">
+          <div
+            v-if="contentShowing"
+            class="modal-content"
+            :class="props.contentClass"
+            :data-testid="props.contentTestid"
+          >
             <div
               v-if="!props.noHeader"
               class="modal-header"
               :class="headerClasses"
+              :data-testid="props.headerTestid"
               v-bind="props.headerAttrs"
             >
               <slot name="header" v-bind="sharedSlots">
@@ -69,13 +76,19 @@
               :id="`${computedId}-body`"
               class="modal-body"
               :class="bodyClasses"
+              :data-testid="props.bodyTestid"
               v-bind="props.bodyAttrs"
             >
               <slot v-bind="sharedSlots">
                 {{ props.body }}
               </slot>
             </div>
-            <div v-if="!props.noFooter" class="modal-footer" :class="footerClasses">
+            <div
+              v-if="!props.noFooter"
+              class="modal-footer"
+              :class="footerClasses"
+              :data-testid="props.footerTestid"
+            >
               <slot name="footer" v-bind="sharedSlots">
                 <slot name="cancel" v-bind="sharedSlots">
                   <BButton
@@ -121,6 +134,7 @@
           v-show="showRef || (isLeaving && props.backdropFirst && !computedNoAnimation)"
           class="modal-backdrop"
           :style="computedZIndexBackdrop"
+          :data-testid="props.backdropTestid"
           :class="{
             fade: !computedNoAnimation,
             show: backdropVisible || computedNoAnimation,
@@ -182,6 +196,13 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   cancelVariant: 'secondary',
   centered: false,
   contentClass: undefined,
+  contentTestid: undefined,
+  dataTestid: undefined,
+  dialogTestid: undefined,
+  backdropTestid: undefined,
+  bodyTestid: undefined,
+  footerTestid: undefined,
+  headerTestid: undefined,
   dialogClass: undefined,
   footerBgVariant: null,
   footerBorderVariant: null,

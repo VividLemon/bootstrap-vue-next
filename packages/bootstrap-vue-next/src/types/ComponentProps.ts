@@ -346,6 +346,8 @@ export interface BFormTextProps {
 }
 
 export interface BFormCheckboxProps {
+  dataTestid?: string
+  wrapperTestid?: string
   ariaLabel?: string
   ariaLabelledby?: string
   autofocus?: boolean
@@ -1554,6 +1556,9 @@ export interface BToastProps
 }
 
 export interface BPopoverProps extends TeleporterProps, ShowHideProps {
+  dataTestid?: string
+  titleTestid?: string
+  bodyTestid?: string
   body?: string
   bodyClass?: ClassValue
   boundary?: Boundary | RootBoundary
@@ -1608,6 +1613,13 @@ export type BCardFooterProps = BCardHeadFootProps
 export type BCardHeaderProps = BCardHeadFootProps
 
 export interface BModalProps extends TeleporterProps, ShowHideProps {
+  dataTestid?: string
+  dialogTestid?: string
+  contentTestid?: string
+  headerTestid?: string
+  bodyTestid?: string
+  footerTestid?: string
+  backdropTestid?: string
   focus?:
     | 'ok'
     | 'cancel'

@@ -26,6 +26,16 @@ export default {
           'state',
           'wrapperAttrs',
         ]),
+        dataTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the checkbox input element',
+        },
+        wrapperTestid: {
+          type: 'string',
+          default: undefined,
+          description: 'Value for the `data-testid` attribute on the wrapper element (not rendered when in a button group)',
+        },
         button: {
           type: 'boolean',
           default: false, // TODO item not in string format

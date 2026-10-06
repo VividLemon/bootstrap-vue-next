@@ -1745,4 +1745,14 @@ describe('form-checkbox', () => {
       expect($label.exists()).toBe(false)
     })
   })
+
+  describe('testid props', () => {
+    it('applies dataTestid to input and wrapperTestid to wrapper', () => {
+      const wrapper = mount(BFormCheckbox, {
+        props: {dataTestid: 'input-id', wrapperTestid: 'wrapper-id'},
+      })
+      expect(wrapper.find('input').attributes('data-testid')).toBe('input-id')
+      expect(wrapper.find('[data-testid="wrapper-id"]').exists()).toBe(true)
+    })
+  })
 })

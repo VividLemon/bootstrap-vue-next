@@ -1519,4 +1519,29 @@ describe('modal', () => {
       expect($modal.attributes('data-testid')).toBe('my-modal')
     })
   })
+
+  describe('testid props', () => {
+    it('applies testids to each part', () => {
+      const wrapper = mount(BModal, {
+        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
+        props: {
+          visible: true,
+          dataTestid: 'root',
+          dialogTestid: 'dialog',
+          contentTestid: 'content',
+          headerTestid: 'header',
+          bodyTestid: 'body',
+          footerTestid: 'footer',
+          backdropTestid: 'backdrop',
+        },
+      })
+      expect(wrapper.find('.modal').attributes('data-testid')).toBe('root')
+      expect(wrapper.find('.modal-dialog').attributes('data-testid')).toBe('dialog')
+      expect(wrapper.find('.modal-content').attributes('data-testid')).toBe('content')
+      expect(wrapper.find('.modal-header').attributes('data-testid')).toBe('header')
+      expect(wrapper.find('.modal-body').attributes('data-testid')).toBe('body')
+      expect(wrapper.find('.modal-footer').attributes('data-testid')).toBe('footer')
+      expect(wrapper.find('.modal-backdrop').attributes('data-testid')).toBe('backdrop')
+    })
+  })
 })
