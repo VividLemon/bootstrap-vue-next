@@ -1,21 +1,25 @@
 <template>
-  <component
-    :is="tag"
-    :class="computedClasses"
-    :target="props.target"
-    :href="computedHref"
-    :rel="computedRel"
-    :tabindex="computedTabIndex"
-    :aria-disabled="props.disabled ? true : null"
-    v-bind="computedSpecificProps"
-    @click="
-      (e: MouseEvent) => {
-        clicked(e)
-        link?.navigate(e)
-      }
-    "
-  >
-    <slot />
+  <component :is="tag" v-bind="isOfRouterType ? routerLinkProps : computedSpecificProps">
+    <template #default="scope">
+      <a
+        v-if="isOfRouterType"
+        :class="computedClasses(scope?.isActive, scope?.isExactActive)"
+        :target="props.target"
+        :href="scope?.href"
+        :rel="computedRel"
+        :tabindex="computedTabIndex"
+        :aria-disabled="props.disabled ? true : undefined"
+        @click="
+          (e: MouseEvent) => {
+            clicked(e)
+            scope?.navigate?.(e)
+          }
+        "
+      >
+        <slot />
+      </a>
+      <slot v-else />
+    </template>
   </component>
 </template>
 
@@ -23,8 +27,8 @@
 import {useDefaults} from '../../composables/useDefaults'
 import {useLinkClasses} from '../../composables/useLinkClasses'
 import {collapseInjectionKey, navbarInjectionKey} from '../../utils/keys'
-import {computed, inject, useAttrs} from 'vue'
-import {useBLinkTagResolver} from '../../composables/useBLinkHelper'
+import {computed, getCurrentInstance, inject, useAttrs} from 'vue'
+import {toPascalCase} from '../../utils/stringUtils'
 import type {BLinkEmits, BLinkProps, BLinkSlots} from '../../types'
 
 const defaultActiveClass = 'active'
@@ -62,14 +66,74 @@ const emit = defineEmits<BLinkEmits>()
 defineSlots<BLinkSlots>()
 const attrs = useAttrs()
 
-const {computedHref, tag, link, isNuxtLink, isRouterLink, linkProps, isNonStandardTag} =
-  useBLinkTagResolver({
-    routerComponentName: () => props.routerComponentName,
-    disabled: () => props.disabled,
-    to: () => props.to,
-    replace: () => props.replace,
-    href: () => props.href,
-  })
+const instance = getCurrentInstance()
+// Explicit check for a real Nuxt runtime -- used to avoid treating an unrelated, user-registered
+// "NuxtLink" component (e.g. in tests, or non-Nuxt apps) as if it supports the custom/v-slot API.
+const isNuxtEnvironment = computed(
+  // @ts-expect-error we're doing an explicit check for Nuxt, so we can safely ignore this
+  () => typeof instance?.appContext?.app?.$nuxt !== 'undefined'
+)
+
+const resolvedTo = computed(() => props.to || '')
+
+const routerName = computed(() =>
+  typeof props.routerComponentName === 'string'
+    ? toPascalCase(props.routerComponentName)
+    : props.routerComponentName
+)
+
+// Matches by name only -- used to preserve legacy `to`/`replace` attribute-forwarding behavior for
+// the non-router fallback branch (see `computedSpecificProps`), independent of whether the real
+// RouterLink component is actually resolvable/installed.
+const routerNameIsRouterLink = computed(() => routerName.value === 'RouterLink')
+
+// Resolves the component registered (globally or locally) under `routerName`, when it is a string.
+const resolvedRouterComponent = computed(() =>
+  typeof routerName.value === 'string'
+    ? instance?.appContext?.app?.component(routerName.value)
+    : routerName.value
+)
+
+// Duck-type check that the resolved 'RouterLink' component is really vue-router's RouterLink (it
+// exposes a static `useLink`), rather than an unrelated component a consumer happens to register
+// under the same name -- only the real component supports `custom` + the default scoped slot API.
+const isRouterLinkName = computed(
+  () =>
+    routerNameIsRouterLink.value &&
+    typeof resolvedRouterComponent.value === 'object' &&
+    resolvedRouterComponent.value !== null &&
+    'useLink' in resolvedRouterComponent.value
+)
+const isNuxtLinkName = computed(() => routerName.value === 'NuxtLink' && isNuxtEnvironment.value)
+
+const tag = computed(() => {
+  // If is disabled or there is no `to` prop, render a simple `<a>` tag
+  if (props.disabled || !resolvedTo.value) {
+    return 'a'
+  }
+
+  // Is it actually a component? Use that
+  if (typeof routerName.value !== 'string') {
+    return routerName.value
+  }
+
+  // routerName is a string, so we need to look it up in the app's registered components.
+  // Fall back to a plain `<a>` tag if it can't be resolved (e.g. vue-router/Nuxt isn't installed).
+  return resolvedRouterComponent.value || 'a'
+})
+
+// True only when `tag` is the real vue-router RouterLink, or the real Nuxt NuxtLink -- both of which
+// support the `custom` prop and expose `{href, navigate, isActive, isExactActive}` through their
+// default scoped slot. Any other component/tag is rendered directly instead (see `isNonStandardTag`).
+const isOfRouterType = computed(
+  () => tag.value !== 'a' && (isRouterLinkName.value || isNuxtLinkName.value)
+)
+const isNonStandardTag = computed(() => tag.value !== 'a' && !isOfRouterType.value)
+const routerLinkProps = computed(() => ({
+  to: resolvedTo.value,
+  replace: props.replace,
+  custom: true,
+}))
 
 const collapseData = inject(collapseInjectionKey, null)
 const navbarData = inject(navbarInjectionKey, null)
@@ -78,17 +142,17 @@ const navbarData = inject(navbarInjectionKey, null)
  * Not to be confused with computedLinkClasses
  */
 const linkValueClasses = useLinkClasses(props)
-const computedClasses = computed(() => [
+const computedClasses = (isActive = false, isExactActive = false) => [
   linkValueClasses.value,
   attrs.class,
   computedLinkClasses.value,
   {
     [defaultActiveClass]: props.active,
-    [props.activeClass]: link.value?.isActive.value || false,
-    [props.exactActiveClass]: link.value?.isExactActive.value || false,
+    [props.activeClass]: isActive,
+    [props.exactActiveClass]: isExactActive,
     'stretched-link': props.stretched,
   },
-])
+]
 const computedLinkClasses = computed(() => ({
   [defaultActiveClass]: props.active,
   disabled: props.disabled,
@@ -115,19 +179,63 @@ const computedRel = computed(() =>
   props.target === '_blank' ? (!props.rel && props.noRel ? 'noopener' : props.rel) : undefined
 )
 const computedTabIndex = computed(() =>
-  props.disabled ? '-1' : typeof attrs.tabindex === 'undefined' ? null : attrs.tabindex
+  props.disabled
+    ? '-1'
+    : typeof attrs.tabindex === 'undefined'
+      ? undefined
+      : (attrs.tabindex as string | number)
 )
 
+// Only used outside of the real RouterLink/NuxtLink case (e.g. non-standard/custom
+// `routerComponentName` components), so that they can still resolve their own href from `to`.
 const nuxtSpecificProps = computed(() => ({
   ...(props.noPrefetch ? {noPrefetch: props.noPrefetch} : {prefetch: props.prefetch}),
   prefetchOn: props.prefetchOn,
   prefetchedClass: props.prefetchedClass,
-  ...linkProps.value,
+  to: resolvedTo.value,
+  replace: props.replace,
 }))
+
+// computedHref is only used for the non-router-type fallback rendering (plain `<a>`, disabled links,
+// or arbitrary custom `routerComponentName` components), since real RouterLink/NuxtLink provide their
+// own `href` through their scoped slot.
+const computedHref = computed(() => {
+  const toFallback = '#'
+  const resolvedHref = props.href
+  if (resolvedHref) return resolvedHref
+
+  if (typeof resolvedTo.value === 'string') return resolvedTo.value || toFallback
+
+  // Stabilize the `to` prop for the callback functions
+  const stableTo = resolvedTo.value
+
+  if (stableTo !== undefined && 'path' in stableTo) {
+    const path = stableTo.path || ''
+    const query = stableTo.query
+      ? `?${Object.keys(stableTo.query)
+          .map((e) => `${e}=${stableTo.query?.[e]}`)
+          .join('=')}`
+      : ''
+    const hash =
+      !stableTo.hash || stableTo.hash.charAt(0) === '#' ? stableTo.hash || '' : `#${stableTo.hash}`
+    return `${path}${query}${hash}` || toFallback
+  }
+  // There is no resolver for `RouteLocationNamedRaw`. Which, I'm not sure there can be one in this context.
+
+  return toFallback
+})
+
 const computedSpecificProps = computed(() => ({
-  ...(isRouterLink.value ? linkProps.value : undefined),
-  // In addition to being Nuxt specific, we add these values if it's some non-standard tag. We don't know what it is,
-  // So we just add it anyways. It will be made as an attr if it's unused so it's fine
-  ...(isNuxtLink.value || isNonStandardTag.value ? nuxtSpecificProps.value : undefined),
+  ...(isNonStandardTag.value ||
+  (routerNameIsRouterLink.value && !isRouterLinkName.value && resolvedTo.value && !props.disabled)
+    ? nuxtSpecificProps.value
+    : {}),
+  class: computedClasses(),
+  target: props.target,
+  href: computedHref.value,
+  rel: computedRel.value,
+  tabindex: computedTabIndex.value,
+  'aria-disabled': props.disabled ? true : undefined,
+  onClick: clicked,
 }))
 </script>
