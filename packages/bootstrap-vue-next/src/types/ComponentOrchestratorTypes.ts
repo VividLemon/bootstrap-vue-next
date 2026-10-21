@@ -26,7 +26,7 @@ export interface ComponentController<
 > extends AsyncDisposable {
   id: ControllerKey
   ref: ComponentPublicInstance<Component> | null
-  show: () => Promise<BvTriggerableEvent & AsyncDisposable>
+  show: () => Promise<BvTriggerableEvent & AsyncDisposable> & AsyncDisposable
   hide: (trigger?: string) => void
   toggle: () => void
   set: (val: Partial<Props['value']['props']>) => void
