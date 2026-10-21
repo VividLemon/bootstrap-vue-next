@@ -246,33 +246,17 @@ export interface BAccordionProps {
   flush?: boolean
   free?: boolean
   id?: string
-  index?: number | readonly number[]
-  initialAnimation?: boolean
-  lazy?: boolean
   modelValue?: string | readonly string[]
-  unmountLazy?: boolean
 }
 
 export interface BAccordionItemProps {
   bodyAttrs?: Readonly<AttrsValue>
   bodyClass?: ClassValue
-  buttonAttrs?: Readonly<AttrsValue>
-  buttonClass?: ClassValue
-  collapseClass?: ClassValue
   headerAttrs?: Readonly<AttrsValue>
   headerClass?: ClassValue
-  headerTag?: string
-  horizontal?: boolean
   id?: string
-  isNav?: boolean
   modelValue?: boolean
-  lazy?: boolean
-  unmountLazy?: boolean
-  tag?: string
   title?: string
-  show?: boolean
-  visible?: boolean
-  wrapperAttrs?: Readonly<AttrsValue>
 }
 
 export interface BDropdownDividerProps {

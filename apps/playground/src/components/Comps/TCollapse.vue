@@ -68,7 +68,7 @@
       </BCol>
       <BCol>
         <BAccordion flush free>
-          <BAccordionItem id="iddddd" title="Accordion Item #1" visible>
+          <BAccordionItem id="iddddd" title="Accordion Item #1" :model-value="true">
             Accordion is also using collapse. Openned by visible prop
           </BAccordionItem>
 

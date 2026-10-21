@@ -13,7 +13,7 @@
       </BCol>
       <BCol>
         <BAccordion flush v-model="openId">
-          <BAccordionItem id="id1" title="Accordion Item #1" :visible="open === 0" @show="open = 0">
+          <BAccordionItem id="id1" title="Accordion Item #1" :model-value="open === 0" @update:model-value="$event && (open = 0)">
             <strong>This is the first item's accordion body.</strong> It is shown by default, until
             the collapse plugin adds the appropriate classes that we use to style each element.
             These classes control the overall appearance, as well as the showing and hiding via CSS
@@ -22,7 +22,7 @@
             <code>.accordion-body</code>, though the transition does limit overflow.
           </BAccordionItem>
 
-          <BAccordionItem  id="id2" title="Accordion Item #2" :visible="open === 1" @show="open = 1">
+          <BAccordionItem  id="id2" title="Accordion Item #2" :model-value="open === 1" @update:model-value="$event && (open = 1)">
             <strong>This is the second item's accordion body.</strong> It is hidden by default,
             until the collapse plugin adds the appropriate classes that we use to style each
             element. These classes control the overall appearance, as well as the showing and hiding
@@ -31,7 +31,7 @@
             <code>.accordion-body</code>, though the transition does limit overflow.
           </BAccordionItem>
 
-          <BAccordionItem  id="id3" title="Accordion Item #3" :visible="open === 2" @show="open = 2">
+          <BAccordionItem  id="id3" title="Accordion Item #3" :model-value="open === 2" @update:model-value="$event && (open = 2)">
             <strong>This is the third item's accordion body.</strong> It is hidden by default, until
             the collapse plugin adds the appropriate classes that we use to style each element.
             These classes control the overall appearance, as well as the showing and hiding via CSS

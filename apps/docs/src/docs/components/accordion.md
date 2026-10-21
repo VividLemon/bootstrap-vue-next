@@ -1,15 +1,15 @@
 ---
 title: Accordion
-description: 'Build vertically collapsing accordions in combination with `BCollapse` component.'
+description: 'Build vertically collapsing accordions with native HTML `<details>` and `<summary>` elements.'
 ---
 
 ## How it works
 
-The `BAccordionItem` uses the `BCollapse` component internally to make it collapsible. To render an accordion that’s expanded, add the `visible` property on the `BAccordionItem` component.
+`BAccordionItem` renders a native `<details>` element with a `<summary>` header, following Bootstrap v6. No JavaScript is needed for the core show/hide behavior. When `free` is not set, the items share the accordion `id` as their `name`, so the browser closes other items when one opens. Use `v-model` on `BAccordion` (item ids) or on `BAccordionItem` (boolean) to control the open state.
 
 <BAlert variant="info" :model-value="true" class="my-5">
 
-The animation effect of this component is dependent on the prefers-reduced-motion media query. See the [reduced motion section of bootstrap's accessibility documentation](https://getbootstrap.com/docs/5.3/getting-started/accessibility/#reduced-motion).
+The height animation requires [`interpolate-size`](https://developer.mozilla.org/en-US/docs/Web/CSS/interpolate-size) support, and respects the prefers-reduced-motion media query.
 
 </BAlert>
 

@@ -76,7 +76,9 @@ export interface BTableLiteEmits<Item> {
 
 export type BAlertEmits = BToastEmits
 
-export type BAccordionItemEmits = BCollapseEmits
+export interface BAccordionItemEmits {
+  toggle: [event: ToggleEvent]
+}
 
 export type BAvatarEmits = {
   'click': [value: MouseEvent]
