@@ -2,44 +2,42 @@
   <BContainer fluid>
     <BRow>
       <BCol>
-        <BTabs v-model:index="tabIndex" small>
-          <BTab title="First" disabled>
+        <BTabs v-model="tabId" small>
+          <BTab id="main-1" title="First" disabled>
             <p>I'm the first tab</p>
           </BTab>
-          <BTab title="Second">
+          <BTab id="main-2" title="Second">
             <p>I'm the second tab</p>
           </BTab>
-          <BTab title="Third" disabled>
+          <BTab id="main-3" title="Third" disabled>
             <p>I'm a disabled tab!</p>
           </BTab>
-          <BTab title="Fourth" disabled>
+          <BTab id="main-4" title="Fourth" disabled>
             <p>I'm a disabled tab!</p>
           </BTab>
-          <BTab title="Fifth">
+          <BTab id="main-5" title="Fifth">
             <p>I'm the fifth tab</p>
           </BTab>
-          <BTab title="Sixth" :disabled="true">
+          <BTab id="main-6" title="Sixth" :disabled="true">
             <p>I'm a disabled tab!</p>
           </BTab>
         </BTabs>
 
         <div class="text-center">
           <BButtonGroup class="mt-2">
-            <BButton @click="tabIndex--">Previous</BButton>
-            <BButton @click="tabIndex++">Next</BButton>
+            <BButton @click="setMainPrevious">Previous</BButton>
+            <BButton @click="setMainNext">Next</BButton>
           </BButtonGroup>
           <BButtonGroup class="mt-2">
-            <BButton @click="tabIndex = 0">0</BButton>
-            <BButton @click="tabIndex = 1">1</BButton>
-            <BButton @click="tabIndex = 2">2</BButton>
-            <BButton @click="tabIndex = 3">3</BButton>
-            <BButton @click="tabIndex = 4">4</BButton>
-            <BButton @click="tabIndex = 5">5</BButton>
-            <BButton @click="tabIndex = 6">6</BButton>
-            <BButton @click="tabIndex = 7">7</BButton>
+            <BButton @click="tabId = 'main-1'">1</BButton>
+            <BButton @click="tabId = 'main-2'">2</BButton>
+            <BButton @click="tabId = 'main-3'">3</BButton>
+            <BButton @click="tabId = 'main-4'">4</BButton>
+            <BButton @click="tabId = 'main-5'">5</BButton>
+            <BButton @click="tabId = 'main-6'">6</BButton>
           </BButtonGroup>
 
-          <div class="text-body-secondary">Current Tab: {{ tabIndex }}</div>
+          <div class="text-body-secondary">Current Tab: {{ tabId }}</div>
         </div>
       </BCol>
     </BRow>
@@ -89,7 +87,7 @@
     </BRow>
     <BRow>
       <BCol>
-        <BTabs v-model:active-id="activeId" v-model:index="tabIndex2">
+        <BTabs v-model="activeId">
           <BTab id="a1" title="a1">a1</BTab>
           <BTab id="a2" title="a2">a2</BTab>
           <BTab id="a3" title="a3">a3</BTab>
@@ -106,11 +104,7 @@
         <BButton @click="activeId = 'a4'">a4</BButton>
       </BCol>
       <BCol cols="auto">
-        index: {{ tabIndex2 }}
-        <BButton @click="tabIndex2 = 0">0</BButton>
-        <BButton @click="tabIndex2 = 1">1</BButton>
-        <BButton @click="tabIndex2 = 2">2</BButton>
-        <BButton @click="tabIndex2 = 3">3</BButton>
+        activeId: {{ activeId }}
       </BCol>
     </BRow>
     <BRow>
@@ -123,7 +117,7 @@
         </BTabs>
       </BCol>
       <BCol>
-        <BTabs v-model:active-id="tab3Id" v-model:index="tab3Index">
+        <BTabs v-model="tab3Id">
           <BTab v-for="t in tab3" :key="t.title" :title="t.title">{{ t.content }}</BTab>
         </BTabs>
         <BButton
@@ -135,7 +129,7 @@
           @click="tab3.push({title: 't' + (tab3.length + 1), content: 't' + (tab3.length + 1)})"
           >+</BButton
         >
-        {{ tab3Index }} {{ tab3Id }}
+        {{ tab3Id }}
       </BCol>
     </BRow>
   </BContainer>
@@ -186,8 +180,8 @@ const LoggerComp = defineComponent({
   },
 })
 
-const tabIndex = ref(1)
-const tabIndex2 = ref(2)
+const mainTabOrder = ['main-2', 'main-5'] as const
+const tabId = ref<string>(mainTabOrder[0])
 const activeId = ref('a4')
 const tabs = ref([
   {uuid: 1, title: '1', content: '1', attrs: {}},
@@ -195,7 +189,6 @@ const tabs = ref([
 ])
 const test = ref('test')
 const activeBool = ref(false)
-const tab3Index = ref(0)
 const tab3Id = ref()
 const tab3 = ref([
   {title: 't1', content: 't1'},
@@ -207,6 +200,16 @@ const tab3 = ref([
 function log(e: any) {
    
   console.log('click', e)
+}
+
+const setMainNext = () => {
+  const current = mainTabOrder.indexOf(tabId.value as (typeof mainTabOrder)[number])
+  tabId.value = mainTabOrder[Math.min(current + 1, mainTabOrder.length - 1)]
+}
+
+const setMainPrevious = () => {
+  const current = mainTabOrder.indexOf(tabId.value as (typeof mainTabOrder)[number])
+  tabId.value = mainTabOrder[Math.max(current - 1, 0)]
 }
 
 setTimeout(() => {

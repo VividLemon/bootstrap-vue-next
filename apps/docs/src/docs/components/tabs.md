@@ -214,8 +214,7 @@ browser navigation with TAB key.
 
 ## Programmatically activating and deactivating tabs
 
-Use the `<BTabs>` `v-model` to control which tab is active by setting the `v-model` to the index
-(zero-based) of the tab to be shown (see example below).
+Use the `<BTabs>` `v-model` to control which tab is active by setting the `v-model` to the tab `id` to be shown (see example below).
 
 Alternatively, you can use the boolean model named `active` on each `<BTab>` to activate
 the tab, or to detect if a particular tab is active.

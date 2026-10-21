@@ -17,12 +17,6 @@ export default {
       sourcePath: '/BTabs/BTabs.vue',
       props: {
         ...pick(buildCommonProps(), ['id', 'tag']),
-        index: {
-          type: 'number',
-          default: -1, // TODO item not in string format
-          description:
-            'Sets the zero-based index of the active tab. The `modelValue` (tab ID) takes priority over `index`.',
-        },
         activeNavItemClass: {
           type: 'ClassValue',
           default: undefined,
@@ -162,16 +156,6 @@ export default {
             },
           },
         },
-        'update:index': {
-          description:
-            'Emitted when the active tab changes, providing the zero-based index of the active tab.',
-          args: {
-            value: {
-              type: 'number',
-              description: 'The zero-based index of the currently active tab.',
-            },
-          },
-        },
         'activate-tab': {
           description: 'Emitted before a tab is shown or activated. Cancelable.',
           args: {
@@ -182,7 +166,7 @@ export default {
             },
           },
         },
-      } satisfies EmitRecord<keyof BTabsEmits | 'update:index' | 'update:model-value'>,
+      } satisfies EmitRecord<keyof BTabsEmits | 'update:model-value'>,
       slots: {
         'default': {
           description: 'Content (tabs) for the tabs element.',
