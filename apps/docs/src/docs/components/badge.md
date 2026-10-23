@@ -5,7 +5,7 @@ description: 'Documentation and examples for badges, our small count and labelin
 
 ## Examples
 
-Badges scale to match the size of the immediate parent element by using relative font sizing and em units. As of v5, badges no longer have focus or hover styles for links.
+Badges are static display components that scale to match the size of the immediate parent element by using relative font sizing and `em` units.
 
 ### Headings
 
@@ -23,17 +23,15 @@ text.
 
 ### Positioned
 
-Use the `placement` property to position it relative to a parent [link](/docs/components/link) or [button](/docs/components/button).
-Note that for links of buttons, you haveto manually apply the `postition-relative` class to the badge's parent,
-unlike with [`Avatars`](/docs/components/avatar) where that is hanlded automatically.
+Use Bootstrap's position utilities to place a badge relative to a parent [link](/docs/components/link) or [button](/docs/components/button).
+Remember to apply `position-relative` to the badge's parent.
 
 <<< DEMO ./demo/BadgePositioned.vue#template{vue-html}
 
 ### Dot Indicator
 
-The `Badge` component also implements a `dot-indicator` property to transform the badge into
-a more generic indicator. Please note that you have to manually apply the `position-relative`
-class to the parent button.
+For a generic dot indicator, compose Bootstrap utility classes directly instead of rendering a badge.
+Remember to apply `position-relative` to the parent button.
 
 <<< DEMO ./demo/BadgeDotIndicator.vue#template{vue-html}
 
@@ -54,7 +52,7 @@ precedence over the `variant` prop. See the
 
 ## Pill badges
 
-Use the `pill` prop to make badges more rounded with a larger border-radius.
+Use the `rounded-pill` utility class to make badges more rounded with a larger border-radius.
 <<< DEMO ./demo/BadgePill.vue#template{vue-html}
 
 ## Actionable badges

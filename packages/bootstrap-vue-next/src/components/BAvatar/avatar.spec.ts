@@ -336,14 +336,13 @@ describe('avatar', () => {
 
   it('shows badge when prop badge is true', () => {
     const wrapper = mount(BAvatar, {props: {badge: true}})
-    const $badge = wrapper.findComponent(BBadge)
-    expect($badge.exists()).toBe(true)
+    expect(wrapper.find('.b-avatar-badge-dot').exists()).toBe(true)
+    expect(wrapper.findComponent(BBadge).exists()).toBe(false)
   })
 
   it('shows badge when prop badge is empty string', () => {
     const wrapper = mount(BAvatar, {props: {badge: ''}})
-    const $badge = wrapper.findComponent(BBadge)
-    expect($badge.exists()).toBe(true)
+    expect(wrapper.find('.b-avatar-badge-dot').exists()).toBe(true)
   })
 
   it('shows badge with text when prop badge is a string', () => {
@@ -354,61 +353,87 @@ describe('avatar', () => {
   })
 
   it('passes badgeVariant to BBadge variant prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeVariant: 'danger'}})
+    const wrapper = mount(BAvatar, {props: {badge: '5', badgeVariant: 'danger'}})
     const $badge = wrapper.getComponent(BBadge)
     expect($badge.props('variant')).toBe('danger')
   })
 
   it('passes default badgeVariant of primary to BBadge', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true}})
+    const wrapper = mount(BAvatar, {props: {badge: '5'}})
     const $badge = wrapper.getComponent(BBadge)
     expect($badge.props('variant')).toBe('primary')
   })
 
-  it('passes badgePill to BBadge pill prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgePill: true}})
+  it('applies rounded-pill utility for badgePill', () => {
+    const wrapper = mount(BAvatar, {props: {badge: '5', badgePill: true}})
     const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('pill')).toBe(true)
+    expect($badge.classes()).toContain('rounded-pill')
   })
 
-  it('passes badgeDotIndicator to BBadge dotIndicator prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeDotIndicator: true}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('dotIndicator')).toBe(true)
+  it('renders a generic dot when badgeDotIndicator is true', () => {
+    const wrapper = mount(BAvatar, {props: {badge: '5', badgeDotIndicator: true}})
+    const dot = wrapper.find('.b-avatar-badge-dot')
+    expect(dot.exists()).toBe(true)
+    expect(dot.classes()).toEqual(
+      expect.arrayContaining(['p-2', 'border', 'border-bg', 'rounded-circle', 'bg-primary'])
+    )
+    expect(dot.find('.visually-hidden').text()).toBe('5')
+    expect(wrapper.findComponent(BBadge).exists()).toBe(false)
   })
 
-  it('badge is implicitly dot when badge is true and no badge text or slot', () => {
+  it('badge is implicitly a dot when badge is true and has no text or slot', () => {
     const wrapper = mount(BAvatar, {props: {badge: true}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('dotIndicator')).toBe(true)
+    expect(wrapper.find('.b-avatar-badge-dot').exists()).toBe(true)
   })
 
   it('badge is not implicitly dot when badge has text', () => {
     const wrapper = mount(BAvatar, {props: {badge: 'N'}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('dotIndicator')).toBe(false)
+    expect(wrapper.find('.b-avatar-badge-dot').exists()).toBe(false)
+    expect(wrapper.findComponent(BBadge).exists()).toBe(true)
   })
 
-  it('passes badgePlacement to BBadge placement prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgePlacement: 'top-start'}})
+  it('applies badgePlacement utilities to badge content', () => {
+    const wrapper = mount(BAvatar, {props: {badge: '5', badgePlacement: 'top-start'}})
     const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('placement')).toBe('top-start')
+    expect($badge.classes()).toEqual(
+      expect.arrayContaining(['position-absolute', 'start-0', 'top-0'])
+    )
   })
 
-  it('passes default badgePlacement of bottom-end to BBadge', () => {
+  it.each([
+    ['top-start', 'start-0', 'top-0'],
+    ['start', 'start-0', 'top-50'],
+    ['bottom-start', 'start-0', 'top-100'],
+    ['top', 'start-50', 'top-0'],
+    ['bottom', 'start-50', 'top-100'],
+    ['top-end', 'start-100', 'top-0'],
+    ['end', 'start-100', 'top-50'],
+    ['bottom-end', 'start-100', 'top-100'],
+  ] as const)(
+    'maps badgePlacement %s to positioning utilities',
+    (placement, horizontal, vertical) => {
+      const wrapper = mount(BAvatar, {props: {badge: '5', badgePlacement: placement}})
+      expect(wrapper.getComponent(BBadge).classes()).toEqual(
+        expect.arrayContaining([horizontal, vertical])
+      )
+    }
+  )
+
+  it('applies bottom-end utilities to the default dot badge', () => {
     const wrapper = mount(BAvatar, {props: {badge: true}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('placement')).toBe('bottom-end')
+    expect(wrapper.find('.b-avatar-badge-dot').classes()).toEqual(
+      expect.arrayContaining(['position-absolute', 'start-100', 'top-100'])
+    )
   })
 
   it('passes badgeBgVariant to BBadge bgVariant prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeBgVariant: 'success'}})
+    const wrapper = mount(BAvatar, {props: {badge: '5', badgeBgVariant: 'success'}})
     const $badge = wrapper.getComponent(BBadge)
     expect($badge.props('bgVariant')).toBe('success')
   })
 
   it('passes badgeTextVariant to BBadge textVariant prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeTextVariant: 'dark'}})
+    const wrapper = mount(BAvatar, {props: {badge: '5', badgeTextVariant: 'dark'}})
     const $badge = wrapper.getComponent(BBadge)
     expect($badge.props('textVariant')).toBe('dark')
   })
@@ -433,7 +458,7 @@ describe('avatar', () => {
 
   it('applies badge font-size style for custom sizes', () => {
     const wrapper = mount(BAvatar, {props: {badge: true, size: '4em'}})
-    const $badge = wrapper.getComponent(BBadge)
+    const $badge = wrapper.find('.b-avatar-badge-dot')
     expect($badge.attributes('style')).toContain('font-size')
     expect($badge.attributes('style')).toContain('calc(4em * 0.27999999999999997)')
   })

@@ -31,15 +31,25 @@
         <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
       </svg>
     </span>
+    <span
+      v-if="showBadge && badgeIsDot"
+      class="b-avatar-badge-dot p-2 border border-bg rounded-circle"
+      :class="[badgePositionClasses, badgeDotColorClass]"
+      :style="badgeStyle"
+    >
+      <span class="visually-hidden">
+        <slot name="badge">
+          {{ badgeText }}
+        </slot>
+      </span>
+    </span>
     <BBadge
-      v-if="showBadge"
-      :pill="props.badgePill"
-      :dot-indicator="props.badgeDotIndicator || badgeImplicitlyDot"
+      v-else-if="showBadge"
+      :class="[badgePositionClasses, {'rounded-pill': props.badgePill}]"
       :variant="props.badgeVariant"
       :bg-variant="props.badgeBgVariant"
       :text-variant="props.badgeTextVariant"
       :style="badgeStyle"
-      :placement="props.badgePlacement"
     >
       <slot name="badge">
         {{ badgeText }}
@@ -58,7 +68,7 @@ import {isEmptySlot} from '../../utils/dom'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
 import {useRadiusElementClasses} from '../../composables/useRadiusElementClasses'
 import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
-import type {BAvatarEmits, BAvatarProps, BAvatarSlots, Size} from '../../types'
+import type {BAvatarEmits, BAvatarProps, BAvatarSlots, CombinedPlacement, Size} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 
 const _props = withDefaults(defineProps<BAvatarProps>(), {
@@ -126,13 +136,15 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props)
 
 const parentData = inject(avatarGroupInjectionKey, null)
 
-const SIZES: ReadonlySet<string | null> = new Set(Object.freeze([
-  null,
-  ...Object.keys({
-    lg: null,
-    sm: null,
-  } satisfies Record<Size, null>),
-] as (string | null)[]))
+const SIZES: ReadonlySet<string | null> = new Set(
+  Object.freeze([
+    null,
+    ...Object.keys({
+      lg: null,
+      sm: null,
+    } satisfies Record<Size, null>),
+  ] as (string | null)[])
+)
 const FONT_SIZE_SCALE = 0.4
 const BADGE_FONT_SIZE_SCALE = FONT_SIZE_SCALE * 0.7
 
@@ -171,6 +183,27 @@ const radiusElementClasses = useRadiusElementClasses(() => ({
 
 const badgeText = computed(() => (props.badge === true ? '' : props.badge))
 const badgeImplicitlyDot = computed(() => !badgeText.value && !hasBadgeSlot.value)
+const badgeIsDot = computed(() => props.badgeDotIndicator || badgeImplicitlyDot.value)
+
+const badgePlacements: Record<CombinedPlacement, string> = {
+  'top-start': 'start-0 top-0',
+  'start': 'start-0 top-50',
+  'bottom-start': 'start-0 top-100',
+  'top': 'start-50 top-0',
+  'bottom': 'start-50 top-100',
+  'top-end': 'start-100 top-0',
+  'end': 'start-100 top-50',
+  'bottom-end': 'start-100 top-100',
+}
+const badgePositionClasses = computed(() => [
+  'position-absolute',
+  'translate-middle',
+  badgePlacements[props.badgePlacement],
+])
+const badgeDotColorClass = computed(() => {
+  const variant = props.badgeBgVariant ?? props.badgeVariant
+  return variant === null ? undefined : `bg-${variant}`
+})
 
 const colorClasses = useColorVariantClasses(() => ({
   bgVariant: parentData?.bgVariant.value ?? props.bgVariant,

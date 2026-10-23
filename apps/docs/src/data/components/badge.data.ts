@@ -22,26 +22,10 @@ export default {
             }),
             ['bgVariant', 'variant', 'textVariant'],
           ),
-          dotIndicator: {
-            type: 'boolean',
-            default: 'false', // TODO item not in string format
-            description: 'Indication position and dot styling applied',
-          },
-          pill: {
-            type: 'boolean',
-            default: 'false', // TODO item not in string format
-            description: "When set to 'true', renders the badge in pill style",
-          },
           tag: {
             type: 'string',
             default: 'span',
             description: 'Specify the HTML tag to render instead of the default tag',
-          },
-          placement: {
-            type: 'CombinedPlacement',
-            default: undefined,
-            description:
-              'Placement of the badge relative to its parent. One of the values of `CombinedPlacement`',
           },
         } satisfies PropRecord<Exclude<keyof BBadgeProps, keyof typeof linkProps>>,
         'BLink props': linkedBLinkSection,

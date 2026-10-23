@@ -13,14 +13,14 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {linkedBLinkSection, type linkProps} from '../../utils/linkProps'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { linkedBLinkSection, type linkProps } from '../../utils/linkProps'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BAvatar: {
-      styleSpec: {kind: StyleKind.BsvnClass},
+      styleSpec: { kind: StyleKind.BsvnClass },
       props: {
         [defaultPropSectionSymbol]: {
           ...pick(
@@ -52,13 +52,13 @@ export default {
               'src',
               'textVariant',
               'variant',
-            ]
+            ],
           ),
           badge: {
             type: 'boolean | string',
             default: false,
             description:
-              'When `true` shows an empty badge on the avatar, alternatively set to a string for content in the badge',
+              'When `true` shows a dot indicator on the avatar; alternatively, set a string for text badge content',
           },
           badgeBgVariant: {
             type: 'ColorVariant | null',
@@ -70,12 +70,12 @@ export default {
             type: 'boolean',
             default: false,
             description:
-              'When `true` shows a small dot indicator on the Avatar. All of the badge props are applied to the dot. `badge-dot-indicator` takes precedence over `badge`',
+              'When `true`, renders the badge as a generic dot indicator. Badge text, when present, is retained as visually hidden content.',
           },
           badgeTextVariant: {
             type: 'TextColorVariant | null',
             default: null,
-            description: 'Applies one of the Bootstrap theme color variants to the text',
+            description: 'Applies one of the Bootstrap theme color variants to text badges',
           },
           badgeVariant: {
             type: 'ColorVariant | null',
@@ -91,7 +91,7 @@ export default {
           badgePill: {
             type: 'boolean',
             default: false,
-            description: 'Renders the badge with pill styling',
+            description: 'Renders text badges with pill styling; has no effect on dot indicators',
           },
           button: {
             type: 'boolean',
@@ -124,7 +124,7 @@ export default {
         'BLink props': linkedBLinkSection,
       },
       emits: {
-        'click': {
+        click: {
           description: '', // TODO missing description
           args: {
             click: {
@@ -154,7 +154,7 @@ export default {
       } satisfies SlotRecord<keyof BAvatarSlots>,
     },
     BAvatarGroup: {
-      styleSpec: {kind: StyleKind.BsvnClass},
+      styleSpec: { kind: StyleKind.BsvnClass },
       props: {
         ...pick(
           buildCommonProps({
@@ -177,7 +177,7 @@ export default {
             'tag',
             'textVariant',
             'variant',
-          ]
+          ],
         ),
         overlap: {
           type: 'Numberish',

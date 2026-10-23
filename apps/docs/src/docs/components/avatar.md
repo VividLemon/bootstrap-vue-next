@@ -234,5 +234,5 @@ the `to` or `href` props when changing routes or changing URLs) for accessibilit
 ## Implementation notes
 
 Avatars are based upon `BBadge` and `BButton` components, and as such, rely upon Bootstrap's
-`badge-*` and `btn-*` variant classes, as well as the `rounded-*`
+`badge`, `btn-*`, and `rounded-*`
 [utility classes](/docs/reference/utility-classes).

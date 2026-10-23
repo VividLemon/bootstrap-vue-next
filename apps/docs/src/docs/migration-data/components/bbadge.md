@@ -45,3 +45,17 @@ Yes. This entry is mostly mechanical and can usually be rewritten automatically 
 ## Related Migrations
 
 - None
+
+## BootstrapVueNext v1 → v100 (Bootstrap 6)
+
+The following BBadge changes apply when migrating this component to Bootstrap 6:
+
+| Previous BBadge API | Bootstrap 6 approach                                                                                                                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pill`              | Remove the prop and add `class="rounded-pill"` when needed.                                                                                                                                          |
+| `placement`         | Remove the prop and compose position utilities such as `position-absolute top-0 start-100 translate-middle`. Set `position-relative` on the containing element.                                      |
+| `dot-indicator`     | Remove the prop and use a utility-only element, for example `p-2 bg-danger border border-bg rounded-circle`, with a `.visually-hidden` description when appropriate. Do not add `.badge` to the dot. |
+
+`tag`, the default slot, link rendering, and active/disabled behavior remain unchanged. BBadge does not emit component-specific events. `BAvatar` retains its own `badge-pill`, `badge-placement`, and `badge-dot-indicator` convenience props; internally it now uses utility classes and renders a generic utility-only element for dots.
+
+Color `variant`, `bg-variant`, and `text-variant` API changes are intentionally deferred; see the repository-root `v6-todos.md` before changing those props or their mappings.
