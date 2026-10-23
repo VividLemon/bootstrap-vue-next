@@ -35,10 +35,17 @@ Migration notes for BCardGroup from BootstrapVue to BootstrapVueNext.
 ## Breaking Change
 
 <DeprecatedFeature :reason="DeprecationReason.BOOTSTRAP_DEPRECATED" what="card deck and card columns props">
-  The `deck` and `columns` props output CSS classes (`.card-deck` and `.card-columns`) that were removed from Bootstrap 5.
-  Use Bootstrap's grid system with `.row-cols-*` classes for responsive card layouts instead, which makes this a straightforward class-based rewrite.
-  Only the default card group (without `deck` or `columns` props) works with Bootstrap 5 and is responsive.
+  The `deck` and `columns` props output CSS classes (`.card-deck` and `.card-columns`) that were removed from Bootstrap 5 and remain absent in Bootstrap 6.
+  Use Bootstrap's grid system with `.row-cols-*` (`.md:row-cols-3` in Bootstrap 6) for responsive card layouts instead.
 </DeprecatedFeature>
+
+## Bootstrap 5 → 6 (v1 → v100)
+
+| Before | After |
+| --- | --- |
+| `<BCardGroup deck>` | `<div class="contains-inline"><BCardGroup>…</BCardGroup></div>` |
+| `<BCardGroup columns>` | Grid with `BRow` / `BCol`, or `.row.row-cols-*` |
+| `BCardGroup` as a bare element | Needs a parent with `.contains-inline`; card groups now use a container query and stay stacked otherwise |
 
 ## Migration Notes
 

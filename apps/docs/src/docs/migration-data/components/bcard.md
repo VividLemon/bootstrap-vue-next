@@ -65,9 +65,26 @@ Image placement is accomplished by the single `img-placement` prop, which takes 
 
 <DeprecatedFeature :reason="DeprecationReason.BOOTSTRAP_DEPRECATED" what="`top`, `bottom`, `left`, and `right` props on `BCardImg`" :plural="true">
   Use a single `placement` prop that takes the values `top` or `bottom` instead.
-  Note that `end` and `start` placements are not yet fully implemented as Bootstrap 5 does not provide the necessary CSS classes (`card-img-end` and `card-img-start`).
-  If these placements are needed, custom CSS will be required.
 </DeprecatedFeature>
+
+## Bootstrap 5 → 6 (v1 → v100)
+
+| Before (Bootstrap 5) | After (Bootstrap 6) |
+| --- | --- |
+| `BCard` with `img-placement="start"` rendered `.flex-row` | Renders `.card-row`; the image gets `.card-img-start` |
+| `BCard` with `img-placement="end"` rendered `.flex-row-reverse` | Renders `.card-row`; the image gets `.card-img-end` |
+| `BCardSubtitle` rendered `.card-subtitle.mb-2` | Renders `.card-subtitle` only; Bootstrap 6 handles the spacing |
+| `BCardGroup deck` / `columns` (`.card-deck`, `.card-columns`) | Removed. Use `BCardGroup` inside a `.contains-inline` parent, or `BRow`/`BCol` for grids |
+| `.card-link` | Removed from Bootstrap 6. Use a plain link with flex/gap utilities |
+| `BPlaceholderCard` forwarded `img-placement` to `BCardImg` as a stray attribute | Now passes `placement`, so the image class matches the card |
+
+The `.card-deck` and `.card-columns` styles previously shipped by BootstrapVueNext have been removed.
+`BCardFooter` now correctly uses `BCardFooterProps` (an alias of the header props, so there is no type change).
+
+Card color variant props (`variant`, `bg-variant`, `text-variant`, `border-variant`) still emit the
+Bootstrap 5 style `text-bg-*`, `bg-*`, `text-*` and `border-*` classes. Moving them to Bootstrap 6
+`theme-*` / `fg-*` classes is part of the library-wide color migration rather than the card
+migration. Until then, apply `theme-*` or `fg-*` through the `class` attribute.
 
 The `sub-title`, `sub-title-tag` and `sub-title-text-variant` props have been renamed to
 `subtitle`, `subtitle-tag` and `subtitle-text-variant`, respectively.

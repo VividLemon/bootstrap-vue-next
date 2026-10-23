@@ -7,7 +7,7 @@
           :blank-color="props.imgBlankColor"
           :height="!props.imgSrc ? props.imgHeight : undefined"
           :src="props.imgSrc"
-          :img-placement="props.imgPlacement"
+          :placement="props.imgPlacement"
           :style="{cursor: 'wait'}"
         />
       </slot>

@@ -1,5 +1,5 @@
 <template>
-  <component :is="props.tag" class="card-subtitle mb-2" :class="computedClasses">
+  <component :is="props.tag" class="card-subtitle" :class="computedClasses">
     <slot>
       {{ props.text }}
     </slot>
