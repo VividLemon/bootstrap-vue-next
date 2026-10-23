@@ -1,12 +1,6 @@
 <template>
   <!-- #region template -->
-  <BCard
-    no-body
-    style="max-width: 20rem"
-    img-src="https://picsum.photos/380/200"
-    img-alt="Image"
-    img-top
-  >
+  <BCard no-body style="max-width: 20rem" img-src="https://picsum.photos/380/200" img-alt="Image">
     <template #header>
       <h4 class="mb-0">Hello World</h4>
     </template>
@@ -24,23 +18,11 @@
       <BListGroupItem>Vestibulum at eros</BListGroupItem>
     </BListGroup>
     <BCardBody>
-      <a
-        href="#card-kitchen-sink"
-        class="card-link"
-        >Card link</a
-      >
-      <a
-        href="#card-kitchen-sink"
-        class="card-link"
-        >Another link</a
-      >
+      <a href="#card-kitchen-sink">Card link</a>
+      <a href="#card-kitchen-sink">Another link</a>
     </BCardBody>
     <BCardFooter>This is a footer</BCardFooter>
-    <BCardImg
-      src="https://picsum.photos/480/210"
-      alt="Image"
-      bottom
-    />
+    <BCardImg src="https://picsum.photos/480/210" alt="Image" bottom />
   </BCard>
   <!-- #endregion template -->
 </template>

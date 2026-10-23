@@ -15,9 +15,9 @@ describe('card-subtitle', () => {
     expect(wrapper.classes()).toContain('card-subtitle')
   })
 
-  it('has static class mb-2', () => {
+  it('does not have legacy class mb-2', () => {
     const wrapper = mount(BCardSubtitle)
-    expect(wrapper.classes()).toContain('mb-2')
+    expect(wrapper.classes()).not.toContain('mb-2')
   })
 
   it('tag is prop tag', () => {

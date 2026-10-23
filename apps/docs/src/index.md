@@ -5,7 +5,7 @@ description: With BootstrapVueNext you can build fast, responsive, and ARIA acce
 
 <BRow>
   <BCol class="text-center" cols="12" sm="6">
-    <BLink class="card-link" href="https://getbootstrap.com" target="_blank" rel="noopener">
+    <BLink href="https://getbootstrap.com" target="_blank" rel="noopener">
       <BCard class="p-3">
         <BootstrapIcon aria-hidden class="icon-lg" />
         <BCardText class="mt-4">
@@ -15,7 +15,7 @@ description: With BootstrapVueNext you can build fast, responsive, and ARIA acce
     </BLink>
   </BCol>
   <BCol class="text-center">
-    <BLink class="card-link" href="https://vuejs.org" target="_blank" rel="noopener">
+    <BLink href="https://vuejs.org" target="_blank" rel="noopener">
       <BCard class="p-3">
         <VueIcon aria-hidden class="icon-lg" />
         <BCardText class="mt-4">
