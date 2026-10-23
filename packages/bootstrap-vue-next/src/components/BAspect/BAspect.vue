@@ -1,7 +1,7 @@
 <template>
   <component :is="props.tag" class="b-aspect d-flex">
     <div :style="{paddingBottom: computedPadding, height: 0}" class="b-aspect-sizer flex-grow-1" />
-    <div class="b-aspect-content flex-grow-1 w-100 mw-100" style="margin-left: -100%">
+    <div class="b-aspect-content flex-grow-1 w-100 max-w-100" style="margin-left: -100%">
       <slot />
     </div>
   </component>

@@ -48,7 +48,7 @@ describe('aspect', () => {
     expect($content.element.tagName).toBe('DIV')
     expect($content.classes()).toContain('flex-grow-1')
     expect($content.classes()).toContain('w-100')
-    expect($content.classes()).toContain('mw-100')
+    expect($content.classes()).toContain('max-w-100')
     expect($content.attributes('style')).toContain('margin-left: -100%;')
   })
 
@@ -74,7 +74,7 @@ describe('aspect', () => {
     expect($content.element.tagName).toBe('DIV')
     expect($content.classes()).toContain('flex-grow-1')
     expect($content.classes()).toContain('w-100')
-    expect($content.classes()).toContain('mw-100')
+    expect($content.classes()).toContain('max-w-100')
     expect($content.attributes('style')).toContain('margin-left: -100%;')
   })
 
@@ -100,7 +100,7 @@ describe('aspect', () => {
     expect($content.element.tagName).toBe('DIV')
     expect($content.classes()).toContain('flex-grow-1')
     expect($content.classes()).toContain('w-100')
-    expect($content.classes()).toContain('mw-100')
+    expect($content.classes()).toContain('max-w-100')
     expect($content.attributes('style')).toContain('margin-left: -100%;')
   })
 
@@ -126,7 +126,7 @@ describe('aspect', () => {
     expect($content.element.tagName).toBe('DIV')
     expect($content.classes()).toContain('flex-grow-1')
     expect($content.classes()).toContain('w-100')
-    expect($content.classes()).toContain('mw-100')
+    expect($content.classes()).toContain('max-w-100')
     expect($content.attributes('style')).toContain('margin-left: -100%;')
   })
 })
