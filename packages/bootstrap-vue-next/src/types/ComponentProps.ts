@@ -26,6 +26,7 @@ import type {
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
 import type {CheckboxOptionRaw, CheckboxValue} from './CheckboxTypes'
 import type {Size} from './Size'
+import type {AvatarStatus} from './AvatarStatus'
 import type {AriaInvalid} from './AriaInvalid'
 import type {Numberish, TeleporterProps, ValidationState, ValueOrCallBack} from './CommonTypes'
 import type {CommonInputProps, FormDebounceOptions} from './FormCommonInputProps'
@@ -64,7 +65,6 @@ import type {SpinnerType} from './SpinnerType'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {ButtonType} from './ButtonType'
 import type {LinkOpacity, UnderlineOffset, UnderlineOpacity} from './LinkDecorators'
-import type {LiteralUnion} from './LiteralUnion'
 import type {BreadcrumbItemRaw} from './BreadcrumbTypes'
 import type {TransitionMode} from './TransitionMode'
 import type {
@@ -1099,29 +1099,18 @@ export interface BAlertProps
   title?: string
 }
 
-export interface BAvatarProps
-  extends Omit<BLinkProps, 'routerTag' | 'icon'>, ColorExtendables, RadiusElementExtendables {
-  alt?: string
-  badge?: boolean | string
-  badgeBgVariant?: BgColorVariant | null
-  badgePlacement?: CombinedPlacement
-  badgeTextVariant?: TextColorVariant | null
-  badgeVariant?: ColorVariant | null
-  badgePill?: boolean
-  badgeDotIndicator?: boolean
-  button?: boolean
-  buttonType?: ButtonType
-  size?: LiteralUnion<Size, Numberish>
-  square?: boolean
-  src?: string
-  text?: string
+export interface BAvatarProps {
+  img?: string
+  imgAlt?: string
+  size?: Size | 'xs' | 'xl'
+  status?: AvatarStatus
+  statusLabel?: string
+  subtle?: boolean
+  variant?: ColorVariant | null
 }
 
-export interface BAvatarGroupProps extends ColorExtendables, RadiusElementExtendables {
-  overlap?: Numberish
-  size?: LiteralUnion<Size, Numberish>
-  square?: boolean
-  tag?: string
+export interface BAvatarGroupProps {
+  size?: Size | 'xs' | 'xl'
 }
 
 export interface BBadgeProps extends Omit<BLinkProps, 'routerTag'>, ColorExtendables {

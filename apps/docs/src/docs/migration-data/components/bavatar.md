@@ -1,11 +1,11 @@
 ---
 id: bavatar
 title: BAvatar Migration
-description: 'Migration notes for BAvatar from BootstrapVue to BootstrapVueNext.'
+description: 'Migration notes for the BAvatar and BAvatarGroup rewrite on top of the Bootstrap 6 avatar (v1 to v100).'
 category: components
 components:
   - BAvatar
-  - BLink
+  - BAvatarGroup
 match:
   - BAvatar
   - .svg
@@ -20,65 +20,73 @@ tags:
   - migration
   - components
   - bavatar
-safeRewrite: true
+safeRewrite: false
 migrationType: component-migration
 introducedIn: bootstrap-vue-next
 manualReviewRequired: true
-related:
-  - rounded-radius-element
 confidence: high
 ---
 
-# BAvatar Migration
+# BAvatar Migration (v1 → v100)
 
 ## Summary
 
-Migration notes for BAvatar from BootstrapVue to BootstrapVueNext.
+`BAvatar` and `BAvatarGroup` were rewritten as thin wrappers over Bootstrap 6's CSS-only
+[avatar component](https://getbootstrap.com/docs/6.0/components/avatar/). The custom `.b-avatar*`
+styles and the legacy BootstrapVue API were removed with no backward compatibility.
 
 ## Affected APIs
 
 - BAvatar
-- BLink
+- BAvatarGroup
 
 ## Breaking Change
 
-<DeprecatedFeature :reason="DeprecationReason.MODERN_ALTERNATIVE" what="Icon support on `BAvatar`">
-  Icons can be implemented using the default slot with either <BLink href="/docs/icons">unplugin-icons</BLink>
-  or by embedding an `.svg`. See the <BLink href="/docs/icons">Icons</BLink> guide for the recommended approach.
-</DeprecatedFeature>
+### Markup
 
-<<< DEMO ../../demo/AvatarIcon.vue#template{vue-html}
+| Old | New |
+| --- | --- |
+| `.b-avatar` | `.avatar` |
+| `.b-avatar-img` / inner `img` | `.avatar-img` |
+| `.b-avatar-group` + `.b-avatar-group-inner` | `.avatar-stack` (no inner wrapper, no `role="group"`) |
+| badge (`.b-avatar-custom` / `BBadge`) | `.avatar-status.status-*` |
 
-### Badge Positioning
+### `BAvatar` props
 
-Badge positioning has changed to using a single property `badge-placement` and our
-[`CombinedPlacement` utility](/docs/types#combinedplacement) rather than individual properties.
+| Old | New |
+| --- | --- |
+| `src` | `img` |
+| `alt` | `img-alt` |
+| `text` | Default slot (for example initials) |
+| `size` (`sm`, `lg`, number, CSS unit) | `size`: `xs`, `sm`, `lg`, `xl` (unset is the default size). Use `style="--bs-avatar-size: 8rem"` for custom sizes |
+| `variant`, `bg-variant`, `text-variant` | `variant` (maps to `theme-*`), plus `subtle`. `light` and `dark` do not exist in Bootstrap 6 |
+| `badge`, `badge-*` | `status`: `online`, `offline`, `busy`, `away` (with optional `status-label`), or a separate `BBadge` |
+| `button`, `button-type`, `@click` | Wrap the avatar in `BButton` or a native `button` |
+| `href`, `to`, `target`, other `BLink` props | Wrap the avatar in `BLink` |
+| `rounded*`, `square` | Removed. Override the `--bs-avatar-border-radius` token |
+| `@img-error` | Removed |
+| default person icon | Removed. Provide content with the default slot |
 
-For instance, use `badge-placement='top'` in place of `badge-top` or `badge-placement='end'` in place of
-`badge-right`. For combined props, rather than using `badge-top` and `badge-right`, use
-`badge-placement='top-end'`. This before/after mapping is straightforward and is a good candidate for codemod-style replacement.
+The `badge` slot was removed. The `default` slot is now only rendered when `img` is not set.
 
-<DeprecatedFeature :reason="DeprecationReason.INSUFFICIENT_DEMAND" what="`badge-offset`">
-  This property is <BLink href="https://github.com/bootstrap-vue-next/bootstrap-vue-next/pull/2692">significantly more complex</BLink> to implement in BootstrapVueNext (due to Bootstrap 5.0's implementation).
-</DeprecatedFeature>
+### `BAvatarGroup`
 
-### Rounding Sides
+| Old | New |
+| --- | --- |
+| `overlap`, `tag` | Removed |
+| `variant`, `bg-variant`, `text-variant`, `rounded*`, `square` | Removed. Set them on each `BAvatar` |
+| `size` (`sm`, `lg`, number, CSS unit) | `size`: `xs`, `sm`, `lg`, `xl`; passed down to every child |
+| default slot (no scope) | Default slot scope `{count}`: the number of avatars in the group |
 
-See the [Rounding](/docs/migration-data/props/rounded-radius-element) section. The directional rounding changes are also straightforward to map automatically.
+## Before and After
+
+<<< FRAGMENT ../../demo/AvatarMigration.vue#template{vue-html}
 
 ## Migration Notes
 
-- Extracted from the canonical BootstrapVue → BootstrapVueNext migration guide.
-- Review related migrations for shared prop, event, and slot changes.
+- Icons are no longer built in. Use the default slot with [unplugin-icons](/docs/icons) or an `.svg`.
+- Bootstrap 6 is required for the avatar styles.
 
 ## Safe Automatic Rewrite
 
-Yes. This entry is mostly mechanical, but review the result when surrounding behavior or adjacent props may affect the final markup.
-
-## Related Migrations
-
-- [rounded-radius-element](/docs/migration-data/props/rounded-radius-element)
-
-<script setup lang="ts">
-import {DeprecationReason} from '../../../types/deprecation'
-</script>
+No. The prop removals need manual review.

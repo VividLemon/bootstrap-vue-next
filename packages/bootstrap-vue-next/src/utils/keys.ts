@@ -2,15 +2,8 @@ import type {ComponentInternalInstance, ComputedRef, InjectionKey, Ref, ShallowR
 import type {TabType} from '../types/Tab'
 import type {ClassValue} from '../types/AnyValuedAttributes'
 import type {Numberish, ValidationState} from '../types/CommonTypes'
-import type {LiteralUnion} from '../types/LiteralUnion'
 import type {Size} from '../types/Size'
-import type {RadiusElement} from '../types/RadiusElement'
-import type {
-  BgColorVariant,
-  ButtonVariant,
-  ColorVariant,
-  TextColorVariant,
-} from '../types/ColorTypes'
+import type {ButtonVariant} from '../types/ColorTypes'
 import type {CheckboxValue} from '../types/CheckboxTypes'
 import type {RadioValue} from '../types/RadioTypes'
 import type {BreadcrumbItemRaw} from '../types/BreadcrumbTypes'
@@ -70,17 +63,10 @@ export const listGroupInjectionKey: InjectionKey<{
 
 // BAvatarGroup
 export const avatarGroupInjectionKey: InjectionKey<{
-  overlapScale: Readonly<Ref<number>>
-  size: Readonly<Ref<LiteralUnion<Size, Numberish> | undefined>>
-  square: Readonly<Ref<boolean>>
-  rounded: Readonly<Ref<RadiusElement | boolean>>
-  roundedTop: Readonly<Ref<RadiusElement | boolean | undefined>>
-  roundedBottom: Readonly<Ref<RadiusElement | boolean | undefined>>
-  roundedStart: Readonly<Ref<RadiusElement | boolean | undefined>>
-  roundedEnd: Readonly<Ref<RadiusElement | boolean | undefined>>
-  variant: Readonly<Ref<ColorVariant | null>>
-  bgVariant: Readonly<Ref<BgColorVariant | null>>
-  textVariant: Readonly<Ref<TextColorVariant | null>>
+  register: () => {
+    unregister: () => void
+    size: Readonly<Ref<Size | 'xs' | 'xl' | undefined>>
+  }
 }> = createBvnInjectionKey('avatarGroup')
 
 // BAccordion

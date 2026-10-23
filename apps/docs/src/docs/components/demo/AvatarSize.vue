@@ -1,15 +1,11 @@
 <template>
   <!-- #region template -->
-  <div
-    class="d-flex"
-    style="column-gap: 1%"
-  >
-    <BAvatar />
-    <BAvatar size="sm" />
-    <BAvatar size="lg" />
-    <BAvatar :size="24" />
-    <BAvatar size="3em" />
-    <BAvatar size="72px" />
+  <div class="d-flex gap-2 align-items-center">
+    <BAvatar size="xs">XS</BAvatar>
+    <BAvatar size="sm">SM</BAvatar>
+    <BAvatar>MD</BAvatar>
+    <BAvatar size="lg">LG</BAvatar>
+    <BAvatar size="xl">XL</BAvatar>
   </div>
   <!-- #endregion template -->
 </template>

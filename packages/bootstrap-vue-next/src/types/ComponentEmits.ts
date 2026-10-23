@@ -1,5 +1,10 @@
 import {BvCarouselEvent, BvEvent, BvTriggerableEvent} from '../utils'
-import type {BTableProviderContext, BTableSortBy, TableHeadClickedEventObject, TableRowEvent} from './TableTypes'
+import type {
+  BTableProviderContext,
+  BTableSortBy,
+  TableHeadClickedEventObject,
+  TableRowEvent,
+} from './TableTypes'
 import type {AcceptableValue, DateValue, TimeValue} from 'reka-ui'
 
 export interface showHideEmits {
@@ -77,11 +82,6 @@ export interface BTableLiteEmits<Item> {
 export type BAlertEmits = BToastEmits
 
 export type BAccordionItemEmits = BCollapseEmits
-
-export type BAvatarEmits = {
-  'click': [value: MouseEvent]
-  'img-error': [value: Event]
-}
 
 export type BBreadcrumbItemEmits = {
   click: [value: MouseEvent]

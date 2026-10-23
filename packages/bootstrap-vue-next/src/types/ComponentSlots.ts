@@ -138,12 +138,10 @@ export type BAccordionSlots = {
 }
 
 export type BAvatarSlots = {
-  badge?: (props: Record<string, never>) => any
-
   default?: (props: Record<string, never>) => any
 }
 export type BAvatarGroupSlots = {
-  default?: (props: Record<string, never>) => any
+  default?: (props: {count: number}) => any
 }
 
 export type BBreadcrumbItemSlots = {

@@ -75,8 +75,6 @@ corners, you can use the [RadiusElementExtendables](/docs/types#radiuselementext
 `rounded`, `rounded-top`, `rounded-bottom`, `rounded-start` and `rounded-end` to apply rounding to
 the overlay's corners to match the obscured content's rounded corners. Possible values for these
 props are the values of [RadiusElementExtendables](/docs/types#radiuselement).
-See the [BAvatar documentation](/docs/components/avatar#rounding) for a detailed explanation of how these
-props work.
 
 <<< DEMO ./demo/OverlayRounding.vue
 

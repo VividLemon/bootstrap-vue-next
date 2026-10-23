@@ -4,8 +4,6 @@ title: RadiusElementExtendables Rounding Migration
 description: 'Directional `rounded` prop values from BootstrapVue are replaced by edge-specific RadiusElement props in BootstrapVueNext.'
 category: props
 components:
-  - BAvatar
-  - BAvatarGroup
   - BCardImg
   - BImg
   - BOverlay
@@ -36,7 +34,6 @@ deprecated:
   - "rounded=\"left\""
   - "rounded=\"right\""
 related:
-  - bavatar
   - bimg
   - boverlay
 confidence: high
@@ -50,15 +47,13 @@ Directional `rounded` prop values from BootstrapVue are replaced by edge-specifi
 
 ## Affected APIs
 
-- BAvatar
-- BAvatarGroup
 - BCardImg
 - BImg
 - BOverlay
 
 ## Breaking Change
 
-`BAvatar`, `BAvatarGroup`, `BCardImg`, `BImg` and `BOverlay` all implement
+`BCardImg`, `BImg` and `BOverlay` all implement
 [`RadiusElementExtendables`](/docs/types#radiuselementextendables) in order to support complex
 rounding behavior. The `rounded`, `rounded-top`, `rounded-bottom`, `rounded-start`, and `rounded-end`
 props each takes a [`RadiusElement`](/docs/types#radiuselement) value to specify how the component
@@ -77,6 +72,5 @@ Yes. This entry is mostly mechanical and can usually be rewritten automatically 
 
 ## Related Migrations
 
-- [bavatar](/docs/migration-data/components/bavatar)
 - [bimg](/docs/migration-data/components/bimg)
 - [boverlay](/docs/migration-data/components/boverlay)

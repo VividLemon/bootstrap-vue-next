@@ -50,6 +50,7 @@ export type {
   TextColorVariant,
 } from './ColorTypes'
 export type {BaseSize, Size} from './Size'
+export type {AvatarStatus} from './AvatarStatus'
 export type {BootstrapVueOptions, showHide} from './BootstrapVueOptions'
 export type * from './ComponentEmits'
 export type {BreadcrumbItem, BreadcrumbItemRaw} from './BreadcrumbTypes'
