@@ -12,7 +12,7 @@ import {
   type PropRecord,
   type SlotRecord,
 } from '../../types'
-import {linkedBLinkSection, linkProps} from '../../utils/linkProps'
+import { linkedBLinkSection, linkProps } from '../../utils/linkProps'
 
 export default {
   load: (): ComponentReference => ({
@@ -43,7 +43,8 @@ export default {
       emits: {},
       slots: {
         default: {
-          description: 'Content (breadcrumb items) to place in the breadcrumb',
+          description:
+            'Content (breadcrumb items) to place in the breadcrumb. Place a `<li class="breadcrumb-divider" />` between manually placed items.',
         },
         append: {
           description: 'Content to append to the breadcrumb',
@@ -58,9 +59,9 @@ export default {
         [defaultPropSectionSymbol]: {
           ariaCurrent: {
             type: 'string',
-            default: 'location',
+            default: 'page',
             description:
-              "Sets the value of the 'aria-current' attribute (when the item is the active item). Supported string values are 'location', 'page', or 'true'",
+              "Sets the value of the 'aria-current' attribute on the `.breadcrumb-item` (when the item is the active item). Supported string values are 'page', 'location', or 'true'",
           },
           text: {
             type: 'string',
