@@ -1,8 +1,9 @@
 <template>
-  <li class="breadcrumb-item" :class="computedClasses">
+  <li class="breadcrumb-item" :aria-current="computedAriaCurrent">
     <component
       :is="computedTag"
-      :aria-current="computedAriaCurrent"
+      class="breadcrumb-link"
+      :class="{active: props.active}"
       v-bind="computedLinkProps"
       @click="clicked"
     >
@@ -21,7 +22,7 @@ import {useDefaults} from '../../composables/useDefaults'
 import type {BBreadcrumbItemEmits, BBreadcrumbItemProps, BBreadcrumbItemSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BBreadcrumbItemProps>(), {
-  ariaCurrent: 'location',
+  ariaCurrent: 'page',
   text: undefined,
   // Link props
   active: false, // Why is this active: false?
@@ -52,13 +53,11 @@ const props = useDefaults(_props, 'BBreadcrumbItem')
 const emit = defineEmits<BBreadcrumbItemEmits>()
 defineSlots<BBreadcrumbItemSlots>()
 
-const computedClasses = computed(() => ({
-  active: props.active,
-}))
-
 const computedTag = computed(() => (props.active ? 'span' : BLink))
 
-const computedAriaCurrent = computed(() => (props.active ? props.ariaCurrent : undefined))
+const computedAriaCurrent = computed(() =>
+  props.active ? (props.ariaCurrent as never) : undefined
+)
 
 const computedLinkProps = computed(() =>
   computedTag.value !== 'span'

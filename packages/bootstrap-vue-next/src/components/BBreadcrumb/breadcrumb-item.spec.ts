@@ -16,18 +16,26 @@ describe('breadcrumb-item', () => {
     expect(wrapper.element.tagName).toBe('LI')
   })
 
-  it('has class active when prop active', async () => {
+  it('child has class active when prop active', async () => {
     const wrapper = mount(BBreadcrumbItem, {
       props: {active: true},
     })
-    expect(wrapper.classes()).toContain('active')
+    expect(wrapper.get('span').classes()).toContain('active')
     await wrapper.setProps({active: false})
-    expect(wrapper.classes()).not.toContain('active')
+    expect(wrapper.getComponent(BLink).classes()).not.toContain('active')
   })
 
   it('does not have class active by default', () => {
     const wrapper = mount(BBreadcrumbItem)
     expect(wrapper.classes()).not.toContain('active')
+    expect(wrapper.getComponent(BLink).classes()).not.toContain('active')
+  })
+
+  it('child has static class breadcrumb-link', async () => {
+    const wrapper = mount(BBreadcrumbItem)
+    expect(wrapper.getComponent(BLink).classes()).toContain('breadcrumb-link')
+    await wrapper.setProps({active: true})
+    expect(wrapper.get('span').classes()).toContain('breadcrumb-link')
   })
 
   it('contains a span child when prop active', () => {
@@ -80,45 +88,41 @@ describe('breadcrumb-item', () => {
     expect(wrapper.findComponent(BLink).exists()).toBe(true)
   })
 
-  it('child contains attr aria-current when prop active', async () => {
+  it('root contains attr aria-current when prop active', async () => {
     const wrapper = mount(BBreadcrumbItem, {
       props: {active: true, ariaCurrent: 'foobar'},
     })
-    const $span = wrapper.get('span')
-    expect($span.attributes('aria-current')).toBe('foobar')
+    expect(wrapper.attributes('aria-current')).toBe('foobar')
+    expect(wrapper.get('span').attributes('aria-current')).toBeUndefined()
     await wrapper.setProps({active: false})
-    const $blink = wrapper.getComponent(BLink)
-    expect($blink.attributes('aria-current')).toBeUndefined()
+    expect(wrapper.attributes('aria-current')).toBeUndefined()
+    expect(wrapper.getComponent(BLink).attributes('aria-current')).toBeUndefined()
   })
 
-  it('has default aria-current of location when active', () => {
+  it('has default aria-current of page when active', () => {
     const wrapper = mount(BBreadcrumbItem, {
       props: {active: true},
     })
-    const $span = wrapper.get('span')
-    expect($span.attributes('aria-current')).toBe('location')
+    expect(wrapper.attributes('aria-current')).toBe('page')
   })
 
   it('does not have aria-current when not active', () => {
     const wrapper = mount(BBreadcrumbItem)
-    const $blink = wrapper.getComponent(BLink)
-    expect($blink.attributes('aria-current')).toBeUndefined()
+    expect(wrapper.attributes('aria-current')).toBeUndefined()
   })
 
-  it('supports aria-current value page', () => {
+  it('supports aria-current value location', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {active: true, ariaCurrent: 'page'},
+      props: {active: true, ariaCurrent: 'location'},
     })
-    const $span = wrapper.get('span')
-    expect($span.attributes('aria-current')).toBe('page')
+    expect(wrapper.attributes('aria-current')).toBe('location')
   })
 
   it('supports aria-current value true', () => {
     const wrapper = mount(BBreadcrumbItem, {
       props: {active: true, ariaCurrent: 'true'},
     })
-    const $span = wrapper.get('span')
-    expect($span.attributes('aria-current')).toBe('true')
+    expect(wrapper.attributes('aria-current')).toBe('true')
   })
 
   it('emits click event', async () => {

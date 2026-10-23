@@ -480,4 +480,54 @@ describe('breadcrumb', () => {
     expect(items[1].props('href')).toBe('/library')
     expect(items[2].props('href')).toBeUndefined()
   })
+
+  it('renders a breadcrumb-divider between items but not before the first or after the last', () => {
+    const wrapper = mount(BBreadcrumb, {
+      props: {items: ['Home', 'Library', 'Data']},
+      global: {
+        plugins: [createBootstrap()],
+      },
+    })
+    const children = wrapper.get('ol').element.children
+    expect(Array.from(children).map((el) => el.classList[0])).toEqual([
+      'breadcrumb-item',
+      'breadcrumb-divider',
+      'breadcrumb-item',
+      'breadcrumb-divider',
+      'breadcrumb-item',
+    ])
+    expect(wrapper.findAll('.breadcrumb-divider')).toHaveLength(2)
+  })
+
+  it('renders no breadcrumb-divider for a single item', () => {
+    const wrapper = mount(BBreadcrumb, {
+      props: {items: ['Home']},
+      global: {
+        plugins: [createBootstrap()],
+      },
+    })
+    expect(wrapper.find('.breadcrumb-divider').exists()).toBe(false)
+  })
+
+  it('marks only the active item with aria-current page', () => {
+    const wrapper = mount(BBreadcrumb, {
+      props: {items: ['Home', 'Library']},
+      global: {
+        plugins: [createBootstrap()],
+      },
+    })
+    const items = wrapper.findAll('.breadcrumb-item')
+    expect(items[0].attributes('aria-current')).toBeUndefined()
+    expect(items[1].attributes('aria-current')).toBe('page')
+  })
+
+  it('does not add dividers around manually slotted items', () => {
+    const wrapper = mount(BBreadcrumb, {
+      slots: {default: '<li class="breadcrumb-item">a</li><li class="breadcrumb-divider"></li>'},
+      global: {
+        plugins: [createBootstrap()],
+      },
+    })
+    expect(wrapper.findAll('.breadcrumb-divider')).toHaveLength(1)
+  })
 })
