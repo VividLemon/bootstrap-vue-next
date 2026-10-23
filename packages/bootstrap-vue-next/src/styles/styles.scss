@@ -1,27 +1,27 @@
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/mixins";
-@import "../components/BAvatar/avatar";
-@import "../components/BCard/card";
-@import "../components/BFormRating/form-rating";
-@import "../components/BFormTags/form-tags";
-@import "../components/BInputGroup/input-group";
-@import "../components/BPagination/pagination";
-@import "../components/BTable/table";
-@import "../components/BFormInput/form-input";
-@import "../components/BFormFile/form-file";
-@import "../components/BFormSpinbutton/spinbutton";
-@import "../components/BAlert/alert";
-@import "../components/BAutocomplete/autocomplete";
-@import "../components/BFormOtp/form-otp";
-@import "../components/BPopover/popover";
-@import "../components/BToast/toast";
-@import "../components/BTimeField/time-field";
-@import "../components/BDateField/date-field";
-@import "../components/BDateField/date-range-field";
-@import "../components/BDateField/time-range-field";
-@import "../components/BDatePicker/date-picker";
-@import "../components/BDatePicker/date-range-picker";
+@use "sass:map";
+@use "bootstrap/scss/config" as *;
+@use "./breakpoints" as bp;
+@use "../components/BAvatar/avatar";
+@use "../components/BCard/card";
+@use "../components/BFormRating/form-rating";
+@use "../components/BFormTags/form-tags";
+@use "../components/BInputGroup/input-group";
+@use "../components/BPagination/pagination";
+@use "../components/BTable/table";
+@use "../components/BFormInput/form-input";
+@use "../components/BFormFile/form-file";
+@use "../components/BFormSpinbutton/spinbutton";
+@use "../components/BAlert/alert";
+@use "../components/BAutocomplete/autocomplete";
+@use "../components/BFormOtp/form-otp";
+@use "../components/BPopover/popover";
+@use "../components/BToast/toast";
+@use "../components/BTimeField/time-field";
+@use "../components/BDateField/date-field";
+@use "../components/BDateField/date-range-field";
+@use "../components/BDateField/time-range-field";
+@use "../components/BDatePicker/date-picker";
+@use "../components/BDatePicker/date-range-picker";
 
 .container,
 .container-fluid {
@@ -56,8 +56,8 @@
 }
 
 // Create `.bv-d-<bp>-down-none` helper classes
-@each $breakpoint in (map-keys(map-remove($grid-breakpoints, "xs"))) {
-  @include media-breakpoint-down($breakpoint) {
+@each $breakpoint in map.keys(map.remove($breakpoints, "xs")) {
+  @include bp.down($breakpoint) {
     .bv-d-#{$breakpoint}-down-none {
       display: none !important;
     }
@@ -81,9 +81,4 @@
 .b-floating-size {
   max-height: var(--bv-floating-max-height, none);
   max-width: var(--bv-floating-max-width, none);
-}
-
-:root {
-  --bs-modal-zindex: #{$zindex-modal};
-  --bs-toast-max-width: #{$toast-max-width};
 }

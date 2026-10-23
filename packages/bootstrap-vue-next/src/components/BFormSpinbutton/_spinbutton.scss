@@ -28,7 +28,7 @@
       display: block;
       min-width: 2.25em;
       // We set a height to ensure an empty value isn't collapsed
-      height: 1em * $input-line-height;
+      height: calc(1em * var(--bs-btn-input-line-height));
     }
   }
 
@@ -67,7 +67,7 @@
 
   &.disabled,
   &.readonly {
-    background-color: $input-disabled-bg;
+    background-color: var(--bs-bg-2);
   }
 
   &.disabled {

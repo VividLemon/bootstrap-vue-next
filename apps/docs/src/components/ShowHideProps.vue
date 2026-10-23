@@ -58,7 +58,6 @@ const migrationMap: MigrationMap = {
   noHeaderClose: { oldProp: 'hide-header-close', components: ['BModal', 'BOffcanvas'] },
   noWrapper: { oldProp: 'skip-wrapper', components: ['dropdownCommon'] },
   show: { oldProp: '', components: ['showHideProps'] },
-  transProps: { oldProp: '', components: ['showHideProps'] },
   unmountLazy: {
     oldProp: 'lazy',
     components: ['BAccordion', 'BAccordionItem', 'showHideProps'],

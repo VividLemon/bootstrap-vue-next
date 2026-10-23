@@ -16,7 +16,7 @@ You can use the `v-model` directive to create two-way data bindings as in `v-mod
 
 ## Contextual Variants
 
-For proper styling of `BAlert`, use one of the four required contextual variants by setting the `variant` prop to one of the following: `info`, `success`, `warning`, or `danger`. The default is `info`.
+Set the `variant` prop to one of Bootstrap's theme keys (`primary`, `accent`, `success`, `danger`, `warning`, `info`, `inverse`, or `secondary`). The default is `info`. `BAlert` applies the Bootstrap 6 `.theme-{variant}` class next to `.alert`. Bootstrap 6 has no `light` or `dark` themes, so use a neutral surface, a color mode, or `inverse` instead. Set `variant` to `null` for the neutral alert.
 
 <<< DEMO ./demo/AlertVariants.vue#template{vue-html}
 
@@ -58,13 +58,20 @@ The **interval** prop determines how frequently the timer updates. While the def
 
 <<< DEMO ./demo/AlertAutoDismissible.vue
 
-## Fading alerts
+## Transitions
 
-Use the `fade` prop to enable animation. By default alerts are not animated.
+An alert is visible as soon as it renders, so only the exit is animated. This follows Bootstrap's [transition model](https://getbootstrap.com/docs/6.0/customize/transitions/): CSS owns the motion and Vue only toggles state classes.
 
-Note that `bootstrap-vue-next` uses Vue's transitions for this animation rather than bootstrap's `.fade` class.
+- While the alert leaves, `BAlert` adds `.hiding`. The `hidden` event fires and the promises returned by `hide()` and `toggle()` resolve after the CSS transition ends.
+- The `noAnimation` prop (alias `noFade`) adds `.alert-instant` and skips the exit.
+- Retune the motion with the `--bs-alert-transition-property`, `--bs-alert-transition-duration` and `--bs-alert-transition-timing` custom properties, or set the duration to `0s` to remove it. When the computed duration is `0s`, events resolve immediately.
+- Bootstrap wraps its transitions in `prefers-reduced-motion: no-preference`, so users who ask for less motion get instant state changes.
 
-<<< DEMO ./demo/AlertFade.vue
+::: warning Breaking change
+Vue's `<Transition>` is no longer used, so the `transProps` prop is removed. Use the CSS options above instead. `BAlert` no longer adds the `.fade`, `.show` or `.alert-dismissible` classes.
+:::
+
+<<< DEMO ./demo/AlertTransitions.vue
 
 ## Exposed functions
 

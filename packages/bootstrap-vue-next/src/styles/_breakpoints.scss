@@ -1,0 +1,16 @@
+@use "sass:list";
+@use "sass:map";
+@use "bootstrap/scss/config" as *;
+
+// Bootstrap 6 has no `media-breakpoint-down()`, so the max-width query is built here
+@mixin down($name) {
+  $keys: map.keys($breakpoints);
+  $index: list.index($keys, $name);
+  @if $index == list.length($keys) {
+    @content;
+  } @else {
+    @media (max-width: map.get($breakpoints, list.nth($keys, $index + 1)) - 0.02px) {
+      @content;
+    }
+  }
+}

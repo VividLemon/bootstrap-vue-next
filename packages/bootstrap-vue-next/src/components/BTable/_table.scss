@@ -1,12 +1,20 @@
+@use "sass:map";
+@use "sass:string";
+@use "bootstrap/scss/config" as *;
+@use "../../styles/breakpoints" as bp;
+
 .b-table-stacked-label {
   display: none;
   font-weight: bold;
 }
 
-@each $breakpoint in map-keys($grid-breakpoints) {
-  $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+@each $breakpoint in map.keys($breakpoints) {
+  $infix: "-#{$breakpoint}";
+  @if $breakpoint == "xs" {
+    $infix: "";
+  }
 
-  @include media-breakpoint-down($breakpoint, $grid-breakpoints) {
+  @include bp.down($breakpoint) {
     .table.b-table.b-table-stacked#{$infix} {
       display: block;
       width: 100%;
@@ -64,7 +72,7 @@
 .table-responsive,
 [class*="table-responsive-"] {
   // Move the table bottom margin to the wrapper
-  margin-bottom: $spacer;
+  margin-bottom: var(--bs-spacer, #{$spacer});
 
   > .table {
     // Reset `margin-bottom` to we don't get a space after
@@ -150,17 +158,17 @@
 // --- Header sort styling ---
 
 @function str-replace($string, $search, $replace: "") {
-  $index: str-index($string, $search);
+  $index: string.index($string, $search);
   @if $index {
-    @return str-slice($string, 1, $index - 1) + $replace +
-      str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+    @return string.slice($string, 1, $index - 1) + $replace +
+      str-replace(string.slice($string, $index + string.length($search)), $search, $replace);
   }
   @return $string;
 }
 
 // SVG background image escape function
 @function bv-escape-svg($string) {
-  @if str-index($string, "data:image/svg+xml") {
+  @if string.index($string, "data:image/svg+xml") {
     $escaped-characters: (("<", "%3c"), (">", "%3e"), ("#", "%23"));
     @each $char, $encoded in $escaped-characters {
       $string: str-replace($string, $char, $encoded);
@@ -236,14 +244,18 @@ $b-table-sort-icon-bg-descending-dark: url("data:image/svg+xml,<svg xmlns='http:
 
         &:not(.b-table-sort-icon-left) {
           // Default is icon on the right edge of the cell
-          background-position: right calc(#{$table-cell-padding-x} / 2) center;
-          padding-right: calc(#{$table-cell-padding-x} + #{$b-table-sort-icon-bg-width});
+          background-position: right calc(var(--bs-table-cell-padding-x, 0.5rem) / 2) center;
+          padding-right: calc(
+            var(--bs-table-cell-padding-x, 0.5rem) + #{$b-table-sort-icon-bg-width}
+          );
         }
 
         &.b-table-sort-icon-left {
           // Left aligned sort icon (at left edge of cell)
-          background-position: left calc(#{$table-cell-padding-x} / 2) center;
-          padding-left: calc(#{$table-cell-padding-x} + #{$b-table-sort-icon-bg-width});
+          background-position: left calc(var(--bs-table-cell-padding-x, 0.5rem) / 2) center;
+          padding-left: calc(
+            var(--bs-table-cell-padding-x, 0.5rem) + #{$b-table-sort-icon-bg-width}
+          );
         }
       }
 
@@ -292,14 +304,18 @@ $b-table-sort-icon-bg-descending-dark: url("data:image/svg+xml,<svg xmlns='http:
       > tr > [aria-sort] {
         &:not(.b-table-sort-icon-left) {
           // Default is icon on the right edge of the cell
-          background-position: right calc(#{$table-cell-padding-x-sm} / 2) center;
-          padding-right: calc(#{$table-cell-padding-x-sm} + #{$b-table-sort-icon-bg-width});
+          background-position: right calc(var(--bs-table-cell-padding-x, 0.25rem) / 2) center;
+          padding-right: calc(
+            var(--bs-table-cell-padding-x, 0.25rem) + #{$b-table-sort-icon-bg-width}
+          );
         }
 
         &.b-table-sort-icon-left {
           // Left aligned sort icon (at left edge of cell)
-          background-position: left calc(#{$table-cell-padding-x-sm} / 2) center;
-          padding-left: calc(#{$table-cell-padding-x-sm} + #{$b-table-sort-icon-bg-width});
+          background-position: left calc(var(--bs-table-cell-padding-x, 0.25rem) / 2) center;
+          padding-left: calc(
+            var(--bs-table-cell-padding-x, 0.25rem) + #{$b-table-sort-icon-bg-width}
+          );
         }
       }
     }

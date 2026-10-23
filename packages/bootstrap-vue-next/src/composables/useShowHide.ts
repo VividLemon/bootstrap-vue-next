@@ -11,24 +11,56 @@ import {
   readonly,
   ref,
   type Ref,
-  type TransitionProps,
   watch,
 } from 'vue'
 import {showHideRegistryKey} from '../utils/keys'
 import {BvTriggerableEvent} from '../utils'
+import {getSafeWindow} from '../utils/dom'
 import {useEventListener, useThrottleFn} from '@vueuse/core'
-import {noop} from '../utils/functions'
 
-export const fadeBaseTransitionProps = {
-  name: 'fade',
-  enterActiveClass: '',
-  enterFromClass: 'showing',
-  enterToClass: '',
-  leaveActiveClass: '',
-  leaveFromClass: '',
-  leaveToClass: 'showing',
-  css: true,
-} as const satisfies TransitionProps
+/**
+ * NOTE FOR FUTURE AGENTS (Bootstrap 6 transition migration, temporary)
+ *
+ * What changed:
+ * - This composable no longer uses Vue's `<Transition>`. The `onBeforeEnter`/`onEnter`/`onAfterEnter`/
+ *   `onBeforeLeave`/`onLeave`/`onAfterLeave` hook arrays are gone, and so are the `transitionProps`
+ *   and `backdropTransitionProps` returns, the `transitionProps` option, and the `transProps` prop.
+ * - It now follows Bootstrap 6's model: CSS owns the motion, JS only toggles state and waits for it.
+ *   The watcher on `showRef` runs `runEnter()`/`runLeave()`, which flip the refs below and then wait for
+ *   the element's `transitionend` (see `waitForTransitionEnd`) before running the code that used to live
+ *   in the `onAfter*` hooks (`shown`/`hidden` events, promise resolution, `renderRef` teardown).
+ *
+ * State a component renders from (instead of `<Transition>` classes):
+ * - `isVisible`: the shown state (`.show`, or `.active` for tab panes). Set true on enter, false when leaving starts.
+ * - `isLeaving`: true while the exit plays (`.hiding`, for alert/dialog/drawer, which must survive their own exit).
+ * - `computedNoAnimation`: render the `.{component}-instant` class (e.g. `.alert-instant`). `noAnimation`/`noFade` are shorthands for it.
+ * - `isActive`: stays true from enter start until the exit finishes. Use it to keep the element displayed during the exit.
+ *
+ * Timing: `waitForTransitionEnd` reads the computed `transition-duration`/`transition-delay` first. If the
+ * total is `0s` (instant class, `--*-transition-duration: 0s`, reduced motion, or no CSS) it resolves immediately.
+ *
+ * Why: v6 removed `.fade`/`.collapsing`, and users restyle motion with CSS alone (token trio, `-instant`).
+ * Reimplementing motion in Vue could not follow those customizations.
+ *
+ * Status: only BAlert has been migrated. BModal, BOffcanvas, BToast, BPopover, BDropdown and BCollapse still bind
+ * `transitionProps`/`backdropTransitionProps` and are intentionally broken until they are migrated.
+ * `backdropVisible`/`backdropReady`/`renderBackdropRef` are still driven here for those migrations.
+ * This note should be removed once every consumer has moved over.
+ */
+
+const toMs = (value: string): number => {
+  const n = Number.parseFloat(value)
+  if (Number.isNaN(n)) return 0
+  return value.trim().endsWith('ms') ? n : n * 1000
+}
+
+const getTransitionTimeMs = (el: Element): number => {
+  const style = getSafeWindow()?.getComputedStyle(el)
+  if (!style) return 0
+  const durations = style.transitionDuration.split(',').map(toMs)
+  const delays = style.transitionDelay.split(',').map(toMs)
+  return Math.max(0, ...durations.map((d, i) => d + (delays[i % delays.length] ?? 0)))
+}
 
 export const useShowHide = (
   {
@@ -46,7 +78,6 @@ export const useShowHide = (
       noFade?: boolean
       noCloseOnBackdrop?: boolean
       noCloseOnEsc?: boolean
-      transitionProps?: TransitionProps
       lazy?: boolean
       initialAnimation?: boolean
       delay?:
@@ -61,11 +92,9 @@ export const useShowHide = (
     id: Ref<string>
   },
   options: {
-    transitionProps?: TransitionProps
     showFn?: () => void
     hideFn?: () => void
   } = {
-    transitionProps: {},
     showFn: () => {},
     hideFn: () => {},
   }
@@ -118,7 +147,9 @@ export const useShowHide = (
       isVisible.value = true
       backdropVisible.value = true
       backdropReady.value = true
+      // showRef starts true here, so its watcher does not run
       showRef.value = true
+      runEnter()
       options.showFn?.()
     } else if (props.show || (!!modelValue.value && props.initialAnimation)) {
       show()
@@ -390,6 +421,8 @@ export const useShowHide = (
   })
   onUnmounted(() => {
     isMounted = false
+    transitionToken++
+    cancelWait?.()
     clearTimeout(showTimeout)
     clearTimeout(hideTimeout)
     showTimeout = undefined
@@ -405,101 +438,115 @@ export const useShowHide = (
   const isActive = ref(initialShow)
   const isVisible = ref(initialShow)
 
-  const onBeforeEnter: TransitionProps['onBeforeEnter'] = [
-    ...[
-      options.transitionProps?.onBeforeEnter ?? noop,
-      props.transitionProps?.onBeforeEnter ?? noop,
-    ].flat(),
-    () => {
-      isActive.value = true
-    },
-  ]
+  let transitionToken = 0
+  let cancelWait: (() => void) | undefined
 
-  const onEnter: TransitionProps['onEnter'] = [
-    () => {
+  const waitForTransitionEnd = (): Promise<void> =>
+    new Promise<void>((resolve) => {
+      cancelWait?.()
+      const el = element.value
+      const duration = el && !computedNoAnimation.value ? getTransitionTimeMs(el) : 0
+      if (!el || duration === 0) {
+        resolve()
+        return
+      }
+      const cleanup = () => {
+        el.removeEventListener('transitionend', onEnd)
+        clearTimeout(timeout)
+        cancelWait = undefined
+      }
+      const onEnd = (e: Event) => {
+        if (e.target !== el) return
+        cleanup()
+        resolve()
+      }
+      // transitionend never fires if the transition is cancelled or the element is hidden
+      const timeout = setTimeout(() => {
+        cleanup()
+        resolve()
+      }, duration + 50)
+      el.addEventListener('transitionend', onEnd)
+      cancelWait = cleanup
+    })
+
+  const runEnter = async () => {
+    const token = ++transitionToken
+    isLeaving.value = false
+    isActive.value = true
+    backdropReady.value = false
+    await nextTick()
+    if (token !== transitionToken) return
+    // Commit the hidden state so the browser has a style to transition from
+    void element.value?.offsetHeight
+    isVisible.value = true
+    backdropVisible.value = true
+    await waitForTransitionEnd()
+    if (token !== transitionToken) return
+
+    markLazyLoadCompleted()
+    backdropReady.value = true
+    if (localNoAnimation.value) {
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          // sometimes one just isn't enough (offcanvas on the first load after refresh)
-          isVisible.value = true
-        })
+        localNoAnimation.value = false
       })
-    },
-    ...[options.transitionProps?.onEnter ?? noop, props.transitionProps?.onEnter ?? noop].flat(),
-  ]
-  const onAfterEnter: TransitionProps['onAfterEnter'] = [
-    markLazyLoadCompleted,
-    ...[
-      options.transitionProps?.onAfterEnter ?? noop,
-      props.transitionProps?.onAfterEnter ?? noop,
-    ].flat(),
-    () => {
-      if (localNoAnimation.value) {
-        requestAnimationFrame(() => {
-          localNoAnimation.value = false
-        })
-      }
-      if (localTemporaryHide.value) {
-        localTemporaryHide.value = false
-      }
-      requestAnimationFrame(() => {
-        trapActive.value = true
-        nextTick(() => {
-          emit('shown', buildTriggerableEvent('shown', {cancelable: false}))
-        })
+    }
+    if (localTemporaryHide.value) {
+      localTemporaryHide.value = false
+    }
+    requestAnimationFrame(() => {
+      trapActive.value = true
+      nextTick(() => {
+        emit('shown', buildTriggerableEvent('shown', {cancelable: false}))
       })
-      if (!_resolveOnHide) {
-        _Resolve?.(true)
-        _Promise = undefined
-        _Resolve = undefined
-      }
-    },
-  ]
-
-  const onBeforeLeave: TransitionProps['onBeforeLeave'] = [
-    () => {
-      if (!isLeaving.value) isLeaving.value = true
-    },
-    ...[
-      options.transitionProps?.onBeforeLeave ?? noop,
-      props.transitionProps?.onBeforeLeave ?? noop,
-    ].flat(),
-    () => {
-      trapActive.value = false
-    },
-  ]
-
-  const onLeave: TransitionProps['onLeave'] = [
-    () => {
-      isVisible.value = false
-    },
-    ...[options.transitionProps?.onLeave ?? noop, props.transitionProps?.onLeave ?? noop].flat(),
-  ]
-
-  const onAfterLeave: TransitionProps['onAfterLeave'] = [
-    () => {
-      emit('hidden', buildTriggerableEvent('hidden', {trigger: leaveTrigger, cancelable: false}))
-    },
-    ...[
-      options.transitionProps?.onAfterLeave ?? noop,
-      props.transitionProps?.onAfterLeave ?? noop,
-    ].flat(),
-    () => {
-      isLeaving.value = false
-      isActive.value = false
-      if (localNoAnimation.value) {
-        requestAnimationFrame(() => {
-          localNoAnimation.value = false
-        })
-      }
-      requestAnimationFrame(() => {
-        if (!localTemporaryHide.value) renderRef.value = false
-      })
-      _Resolve?.(leaveTrigger || '')
+    })
+    if (!_resolveOnHide) {
+      _Resolve?.(true)
       _Promise = undefined
       _Resolve = undefined
-      leaveTrigger = undefined
+    }
+  }
+
+  const runLeave = async () => {
+    const token = ++transitionToken
+    isLeaving.value = true
+    trapActive.value = false
+    isVisible.value = false
+    backdropVisible.value = false
+    await nextTick()
+    if (token !== transitionToken) return
+    await waitForTransitionEnd()
+    if (token !== transitionToken) return
+
+    emit('hidden', buildTriggerableEvent('hidden', {trigger: leaveTrigger, cancelable: false}))
+    isLeaving.value = false
+    isActive.value = false
+    backdropReady.value = false
+    if (localNoAnimation.value) {
+      requestAnimationFrame(() => {
+        localNoAnimation.value = false
+      })
+    }
+    requestAnimationFrame(() => {
+      if (!localTemporaryHide.value) renderRef.value = false
+      renderBackdropRef.value = false
+    })
+    _Resolve?.(leaveTrigger || '')
+    _Promise = undefined
+    _Resolve = undefined
+    leaveTrigger = undefined
+  }
+
+  watch(
+    showRef,
+    (value) => {
+      if (value) {
+        runEnter()
+      } else {
+        runLeave()
+      }
     },
-  ]
+    {flush: 'post'}
+  )
 
   const contentShowing = computed(
     () =>
@@ -512,15 +559,6 @@ export const useShowHide = (
   const backdropVisible = ref(false)
   const backdropReady = ref(false)
 
-  const transitionFunctions = {
-    ...options.transitionProps,
-    onBeforeEnter,
-    onEnter,
-    onAfterEnter,
-    onBeforeLeave,
-    onLeave,
-    onAfterLeave,
-  } satisfies TransitionProps
   return {
     showRef: readonly(showRef),
     renderRef: readonly(renderRef),
@@ -544,39 +582,10 @@ export const useShowHide = (
       localTemporaryHide.value = value
     },
     isLeaving: readonly(isLeaving),
-    transitionProps: {
-      ...fadeBaseTransitionProps,
-      ...props.transitionProps,
-      ...transitionFunctions,
-    } satisfies TransitionProps,
-
     lazyLoadCompleted: readonly(lazyLoadCompleted),
     markLazyLoadCompleted,
     contentShowing,
     backdropReady: readonly(backdropReady),
     backdropVisible: readonly(backdropVisible),
-    backdropTransitionProps: {
-      ...fadeBaseTransitionProps,
-      onBeforeEnter: () => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            backdropVisible.value = true
-          })
-        })
-        backdropReady.value = false
-      },
-      onAfterEnter: () => {
-        backdropReady.value = true
-      },
-      onBeforeLeave: () => {
-        backdropVisible.value = false
-      },
-      onAfterLeave: () => {
-        backdropReady.value = false
-        requestAnimationFrame(() => {
-          renderBackdropRef.value = false
-        })
-      },
-    } satisfies TransitionProps,
   }
 }

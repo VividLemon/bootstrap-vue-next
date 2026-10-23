@@ -1680,7 +1680,6 @@ export interface ShowHideProps {
   lazy?: boolean
   unmountLazy?: boolean
   show?: boolean
-  transProps?: Readonly<TransitionProps>
   visible?: boolean
 }
 

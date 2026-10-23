@@ -1,24 +1,21 @@
 <template>
-  <Transition
+  <div
     v-if="renderRef || contentShowing"
-    v-bind="transitionProps"
-    :appear="!!modelValue || props.visible"
+    v-show="isAlertVisible"
+    :id="props.id"
+    ref="_element"
+    class="alert"
+    :class="[props.alertClass, computedClasses]"
+    tabindex="0"
+    :role="!isAlertVisible ? undefined : props.isStatus ? 'status' : 'alert'"
+    :aria-live="!isAlertVisible ? undefined : props.isStatus ? 'polite' : 'assertive'"
+    :aria-atomic="!isAlertVisible ? undefined : true"
   >
-    <div
-      v-show="isAlertVisible"
-      :id="props.id"
-      ref="_element"
-      class="alert"
-      :class="[props.alertClass, computedClasses]"
-      tabindex="0"
-      :role="!isAlertVisible ? undefined : props.isStatus ? 'status' : 'alert'"
-      :aria-live="!isAlertVisible ? undefined : props.isStatus ? 'polite' : 'assertive'"
-      :aria-atomic="!isAlertVisible ? undefined : true"
-    >
+    <div v-if="contentShowing" class="d-flex flex-column flex-grow-1 gap-2">
       <component
         :is="props.headerTag"
-        v-if="contentShowing && (slots.title || props.title)"
-        class="alert-heading d-flex gap-2"
+        v-if="slots.title || props.title"
+        class="alert-heading"
         :class="props.headerClass"
       >
         <slot name="title" v-bind="sharedSlots">
@@ -26,61 +23,19 @@
             {{ props.title }}
           </span>
         </slot>
-        <template v-if="props.dismissible">
-          <BButton
-            v-if="slots.close || props.closeContent"
-            :class="[props.closeClass]"
-            class="ms-auto ps-1 btn-close-custom"
-            :variant="props.closeVariant"
-            @click.stop.prevent="hide('close')"
-          >
-            <slot name="close" v-bind="sharedSlots">
-              {{ props.closeContent }}
-            </slot>
-          </BButton>
-          <BCloseButton
-            v-else
-            :aria-label="props.closeLabel"
-            :class="[props.closeClass]"
-            @click.stop.prevent="hide('close')"
-          />
-        </template>
       </component>
-      <template v-if="contentShowing && (slots.default || props.body)">
-        <div class="d-flex gap-2">
-          <component
-            :is="computedTag"
-            class="alert-body"
-            :class="props.bodyClass"
-            v-bind="computedLinkProps"
-            @click="computedLink && props.dismissible ? hide() : () => {}"
-          >
-            <slot v-bind="sharedSlots">
-              {{ props.body }}
-            </slot>
-          </component>
-
-          <template v-if="props.dismissible && !(slots.title || props.title)">
-            <BButton
-              v-if="slots.close || props.closeContent"
-              :class="[props.closeClass]"
-              class="ms-auto btn-close-custom"
-              :variant="props.closeVariant"
-              @click.stop.prevent="hide('close')"
-            >
-              <slot name="close" v-bind="sharedSlots">
-                {{ props.closeContent }}
-              </slot>
-            </BButton>
-            <BCloseButton
-              v-else
-              :aria-label="props.closeLabel"
-              :class="[props.closeClass]"
-              @click.stop.prevent="hide('close')"
-            />
-          </template>
-        </div>
-      </template>
+      <component
+        :is="computedTag"
+        v-if="slots.default || props.body"
+        class="alert-body"
+        :class="props.bodyClass"
+        v-bind="computedLinkProps"
+        @click="computedLink && props.dismissible ? hide() : () => {}"
+      >
+        <slot v-bind="sharedSlots">
+          {{ props.body }}
+        </slot>
+      </component>
       <BProgress
         v-if="typeof modelValue === 'number' && props.progressProps !== undefined"
         :animated="props.progressProps.animated"
@@ -94,7 +49,27 @@
         height="4px"
       />
     </div>
-  </Transition>
+    <template v-if="contentShowing && props.dismissible">
+      <BButton
+        v-if="slots.close || props.closeContent"
+        :class="[props.closeClass]"
+        class="ms-auto btn-close-custom"
+        :variant="props.closeVariant"
+        @click.stop.prevent="hide('close')"
+      >
+        <slot name="close" v-bind="sharedSlots">
+          {{ props.closeContent }}
+        </slot>
+      </BButton>
+      <BCloseButton
+        v-else
+        :aria-label="props.closeLabel"
+        :class="[props.closeClass]"
+        class="ms-auto"
+        @click.stop.prevent="hide('close')"
+      />
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -138,7 +113,6 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   textVariant: null,
   title: undefined,
   alertClass: undefined,
-  transProps: undefined,
   visible: false,
   // Link props
   // All others use defaults
@@ -184,8 +158,7 @@ const {
   show,
   buildTriggerableEvent,
   computedNoAnimation,
-  isVisible,
-  transitionProps,
+  isLeaving,
   contentShowing,
 } = useShowHide({modelValue, props, emit: emit as EmitFn, element, id: computedId})
 
@@ -229,10 +202,9 @@ const isAlertVisible = computed(
 const computedClasses = computed(() => [
   // colorClasses.value,
   {
-    [`alert-${props.variant}`]: props.variant !== null,
-    'alert-dismissible': props.dismissible && !(slots.close || props.closeContent),
-    'show': isVisible.value,
-    'fade': !computedNoAnimation.value,
+    [`theme-${props.variant}`]: props.variant !== null,
+    'alert-instant': computedNoAnimation.value,
+    'hiding': isLeaving.value,
   },
 ])
 

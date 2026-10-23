@@ -1,5 +1,5 @@
-import type {showHide} from 'bootstrap-vue-next'
-import type {PropRecord, SlotScopeReference} from '../types'
+import type { showHide } from 'bootstrap-vue-next'
+import type { PropRecord, SlotScopeReference } from '../types'
 
 /**
  * Shared argument definition for BvTriggerableEvent event args.
@@ -12,7 +12,7 @@ export const bvTriggerableEventArg = {
 } as const
 
 export const showHideEmits = {
-  'hide': {
+  hide: {
     description:
       "Always emits just before the component has hidden. Cancelable (as long as component wasn't forcibly hidden)",
     args: {
@@ -26,13 +26,13 @@ export const showHideEmits = {
     description:
       'Emitted when the component tried to close, but was prevented from closing.  This occurs when preventDefault() is called on the event, the user clicks escape and no-close-onbackdrop is set to true, or the user clicks on the backdrop and no-close-onbackdrop is set to true.',
   },
-  'hidden': {
+  hidden: {
     args: {
       value: bvTriggerableEventArg,
     },
     description: 'Always emits after the component is hidden',
   },
-  'show': {
+  show: {
     args: {
       value: bvTriggerableEventArg,
     },
@@ -45,13 +45,13 @@ export const showHideEmits = {
     description:
       'Emitted when the component tried to open, but was prevented from opening. This occurs when preventDefault() is called on the event',
   },
-  'shown': {
+  shown: {
     args: {
       value: bvTriggerableEventArg,
     },
     description: 'Always emits just after component is shown.',
   },
-  'toggle': {
+  toggle: {
     description:
       "Always emits just before the component is toggled via the exposed 'toggle()' function or useToggle composable . Cancelable (as long as component wasn't forcibly hidden)",
     args: {
@@ -91,18 +91,14 @@ export const showHideProps = {
   noAnimation: {
     type: 'boolean',
     default: false,
-    description: 'When set, disables the animation',
+    description:
+      "When set, the component skips its transition. Adds the component's `-instant` class, e.g. `alert-instant`",
   },
   show: {
     type: 'boolean',
     default: false,
     description:
       "When set, and prop 'visible' is false on mount, will animate from closed to open on initial mount. Mainly to help with template show. Use model-value for reactive show/hide",
-  },
-  transProps: {
-    type: 'TransitionProps',
-    default: undefined,
-    description: 'Transition properties',
   },
   unmountLazy: {
     type: 'boolean',
@@ -160,7 +156,7 @@ export const buildDismissibleEmits = () =>
         },
       },
     },
-    'close': {
+    close: {
       description: 'Emitted when the close button is clicked.',
       args: {
         value: bvTriggerableEventArg,
