@@ -34,6 +34,8 @@
             class="ms-auto"
             :variant="props.closeVariant"
             :theme="props.closeTheme"
+            :bg="props.closeBg"
+            :fg="props.closeFg"
             @click.stop.prevent="hide('close')"
           >
             <slot name="close" v-bind="sharedSlots">
@@ -71,6 +73,8 @@
               class="ms-auto btn-close-custom"
               :variant="props.closeVariant"
               :theme="props.closeTheme"
+              :bg="props.closeBg"
+              :fg="props.closeFg"
               @click.stop.prevent="hide('close')"
             >
               <slot name="close" v-bind="sharedSlots">
@@ -126,6 +130,8 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   closeContent: undefined,
   closeLabel: 'Close',
   closeTheme: 'secondary',
+  closeBg: null,
+  closeFg: null,
   closeVariant: 'solid',
   headerClass: undefined,
   headerTag: 'div',

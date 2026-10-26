@@ -14,6 +14,11 @@ export const linkProps = {
     default: 'router-link-active',
     description: 'Configure the active CSS class applied when the link is active.',
   },
+  bg: {
+    type: 'BgColor | null',
+    default: null,
+    description: 'Applies a background color (`bg-*` class) to the link',
+  },
   disabled: {
     type: 'boolean',
     default: false,
@@ -24,6 +29,11 @@ export const linkProps = {
     type: 'string',
     default: 'router-link-exact-active',
     description: 'Configure the active CSS class applied when the link is active with exact match.',
+  },
+  fg: {
+    type: 'FgColor | null',
+    default: null,
+    description: 'Applies a foreground (text) color (`fg-*` class) to the link',
   },
   href: {
     type: 'string',
@@ -127,6 +137,16 @@ export const linkProps = {
     type: "0 | 10 | 25 | 50 | 75 | 100 | '0' | '10' | '25' | '50' | '75' | '100'",
     default: undefined,
     description: "Set's the opacity of the link's underline on hover",
+  },
+  underlineBg: {
+    type: 'BgColor | null',
+    default: null,
+    description: 'Applies a background color to the link underline',
+  },
+  underlineFg: {
+    type: 'FgColor | null',
+    default: null,
+    description: 'Applies a foreground color to the link underline',
   },
   underlineTheme: {
     type: 'ThemeColor | null',

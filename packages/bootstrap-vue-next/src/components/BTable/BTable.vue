@@ -399,6 +399,18 @@ const getRowClasses = (item: Item | null, type: TableRowType): TableStrictClassV
   {
     [`selected theme-${props.selectionTheme}`]:
       props.selectable && !!item && selectedItemsController.has(item),
+    [`bg-${props.selectionBg}`]:
+      props.selectable &&
+      !!item &&
+      selectedItemsController.has(item) &&
+      props.selectionBg !== null &&
+      props.selectionBg !== undefined,
+    [`fg-${props.selectionFg}`]:
+      props.selectable &&
+      !!item &&
+      selectedItemsController.has(item) &&
+      props.selectionFg !== null &&
+      props.selectionFg !== undefined,
   },
   props.tbodyTrClass
     ? typeof props.tbodyTrClass === 'function'

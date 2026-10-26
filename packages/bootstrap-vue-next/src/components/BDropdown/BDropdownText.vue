@@ -28,6 +28,8 @@ const _props = withDefaults(defineProps<BDropdownTextProps>(), {
   tag: 'span',
   text: undefined,
   theme: null,
+  bg: null,
+  fg: null,
   wrapperAttrs: undefined,
 })
 const props = useDefaults(_props, 'BDropdownText')
@@ -39,5 +41,5 @@ const processedAttrs = computed(() => {
   return {wrapperClass, textAttrs}
 })
 
-const colorClasses = useThemeClasses(() => ({theme: props.theme}))
+const colorClasses = useThemeClasses(() => ({theme: props.theme, bg: props.bg, fg: props.fg}))
 </script>

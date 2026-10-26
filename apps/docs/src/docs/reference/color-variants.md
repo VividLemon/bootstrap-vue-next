@@ -109,7 +109,8 @@ prop and then override `fg` or `bg` as needed.
 
 Buttons separate **style** from **color**:
 
-- `variant` is the style: `solid` (default), `outline`, `subtle`, `text`, `styled` or `link`. It renders `.btn-<variant>`.
+- `variant` is the style: `solid` (default), `outline`, `subtle`, `text` or `link`. It renders `.btn-<variant>`.
+- `BButton`'s `styled` prop independently applies the `.btn-styled` modifier.
 - `theme` is the color. It renders `.theme-<theme>`.
 
 For example `<BButton variant="outline" theme="danger">` renders `.btn.btn-outline.theme-danger`

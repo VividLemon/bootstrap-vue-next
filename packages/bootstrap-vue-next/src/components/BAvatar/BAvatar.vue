@@ -157,11 +157,19 @@ const computedSizeIsLiteralSize = computed(
 )
 
 const computedTheme = computed(() => parentData?.theme.value ?? props.theme)
-const computedRounded = computed(() => parentData?.rounded.value ?? props.rounded)
-const computedRoundedTop = computed(() => parentData?.roundedTop.value ?? props.roundedTop)
-const computedRoundedBottom = computed(() => parentData?.roundedBottom.value ?? props.roundedBottom)
-const computedRoundedStart = computed(() => parentData?.roundedStart.value ?? props.roundedStart)
-const computedRoundedEnd = computed(() => parentData?.roundedEnd.value ?? props.roundedEnd)
+const computedRounded = computed(() => parentData?.roundedProps.value.rounded ?? props.rounded)
+const computedRoundedTop = computed(
+  () => parentData?.roundedProps.value.roundedTop ?? props.roundedTop
+)
+const computedRoundedBottom = computed(
+  () => parentData?.roundedProps.value.roundedBottom ?? props.roundedBottom
+)
+const computedRoundedStart = computed(
+  () => parentData?.roundedProps.value.roundedStart ?? props.roundedStart
+)
+const computedRoundedEnd = computed(
+  () => parentData?.roundedProps.value.roundedEnd ?? props.roundedEnd
+)
 
 const radiusElementClasses = useRadiusElementClasses(() => ({
   rounded: computedRounded.value,

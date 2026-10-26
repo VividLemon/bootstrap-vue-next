@@ -49,6 +49,7 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   loadingText: 'Loading...',
   pill: false,
   size: undefined,
+  styled: false,
   squared: false,
   tag: 'button',
   type: 'button',
@@ -76,6 +77,10 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
   underlineTheme: null,
+  underlineBg: null,
+  underlineFg: null,
+  bg: null,
+  fg: null,
   // End link props
 })
 const props = useDefaults(_props, 'BButton')
@@ -125,7 +130,11 @@ const linkValueClasses = useLinkClasses(
           underlineOpacity: props.underlineOpacity,
           underlineOpacityHover: props.underlineOpacityHover,
           underlineTheme: props.underlineTheme,
+          underlineBg: props.underlineBg,
+          underlineFg: props.underlineFg,
           theme: null,
+          bg: props.bg,
+          fg: props.fg,
         }
       : undefined),
   }))
@@ -134,7 +143,7 @@ const computedClasses = computed(() => [
   variantIsLinkType.value === true && computedLink.value === false
     ? linkValueClasses.value
     : undefined,
-  getButtonThemeClasses(props.variant, props.theme),
+  getButtonThemeClasses(props.variant, props.theme, props.bg, props.fg, props.styled),
   {
     [`btn-${props.size}`]: props.size !== undefined,
     'active': props.active || pressedValue.value,

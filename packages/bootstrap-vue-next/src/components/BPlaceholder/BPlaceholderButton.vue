@@ -22,9 +22,13 @@ const _props = withDefaults(defineProps<BPlaceholderButtonProps>(), {
   cols: undefined,
   tag: 'div',
   theme: 'primary',
+  bg: null,
+  fg: null,
   width: undefined,
 })
 const props = useDefaults(_props, 'BPlaceholderButton')
 
-const computedClasses = computed(() => getButtonThemeClasses('solid', props.theme))
+const computedClasses = computed(() =>
+  getButtonThemeClasses('solid', props.theme, props.bg, props.fg)
+)
 </script>

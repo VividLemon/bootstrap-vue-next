@@ -24,6 +24,8 @@ const _props = withDefaults(defineProps<BThProps>(), {
   stackedHeading: undefined,
   stickyColumn: false,
   theme: null,
+  bg: null,
+  fg: null,
   scope: undefined,
 })
 const props = useDefaults(_props, 'BTh')
@@ -31,6 +33,8 @@ defineSlots<BThSlots>()
 
 const computedClasses = computed(() => ({
   [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
+  [`bg-${props.bg}`]: props.bg !== null && props.bg !== undefined,
+  [`fg-${props.fg}`]: props.fg !== null && props.fg !== undefined,
   'b-table-sticky-column': props.stickyColumn,
   'table-b-table-default': props.stickyColumn && props.theme === null,
 }))

@@ -51,11 +51,26 @@ describe('getButtonThemeClasses', () => {
     expect(getButtonThemeClasses('outline', 'danger')).toEqual({
       'btn-outline': true,
       'theme-danger': true,
+      'bg-undefined': false,
+      'fg-undefined': false,
+      'btn-styled': false,
     })
   })
 
   it('omits null values', () => {
     const result = getButtonThemeClasses(null, null)
     expect(Object.values(result).every((v) => v === false)).toBe(true)
+  })
+
+  it('returns background, foreground, and styled button classes', () => {
+    expect(
+      getButtonThemeClasses('solid', 'primary', 'subtle-primary', 'emphasis-primary', true)
+    ).toEqual({
+      'btn-solid': true,
+      'theme-primary': true,
+      'bg-subtle-primary': true,
+      'fg-emphasis-primary': true,
+      'btn-styled': true,
+    })
   })
 })

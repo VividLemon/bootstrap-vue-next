@@ -25,6 +25,8 @@ const _props = withDefaults(defineProps<BSpinnerProps>(), {
   tag: 'span',
   type: 'border',
   theme: null,
+  bg: null,
+  fg: null,
 })
 const props = useDefaults(_props, 'BSpinner')
 const slots = defineSlots<BSpinnerSlots>()
@@ -32,7 +34,8 @@ const slots = defineSlots<BSpinnerSlots>()
 const colorClasses = useThemeClasses(
   computed(() => ({
     theme: props.theme,
-    fg: props.theme,
+    bg: props.bg,
+    fg: props.fg ?? props.theme,
   }))
 )
 const computedClasses = computed(() => [

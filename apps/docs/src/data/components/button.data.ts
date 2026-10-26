@@ -47,6 +47,11 @@ export default {
             default: 'Loading...',
             description: 'The text to display when the button is in a loading state',
           },
+          styled: {
+            type: 'boolean',
+            default: false,
+            description: 'Applies the `btn-styled` modifier in addition to the selected variant',
+          },
           pill: {
             type: 'boolean',
             default: false, // TODO item not in string format

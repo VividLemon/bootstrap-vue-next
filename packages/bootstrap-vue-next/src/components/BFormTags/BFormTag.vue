@@ -39,6 +39,8 @@ const _props = withDefaults(defineProps<BFormTagProps>(), {
   tag: 'span',
   title: undefined,
   theme: 'secondary',
+  bg: null,
+  fg: null,
 })
 const props = useDefaults(_props, 'BFormTag')
 const emit = defineEmits<BFormTagEmits>()
@@ -51,7 +53,7 @@ const tagText = computed(
 )
 const taglabelId = computed(() => `${computedId.value}taglabel__`)
 
-const colorClasses = useThemeClasses(() => ({theme: props.theme}))
+const colorClasses = useThemeClasses(() => ({theme: props.theme, bg: props.bg, fg: props.fg}))
 const computedClasses = computed(() => [
   colorClasses.value,
   {

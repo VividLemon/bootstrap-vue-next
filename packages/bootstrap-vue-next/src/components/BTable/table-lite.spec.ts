@@ -237,6 +237,19 @@ describe('btablelite', () => {
     expect($thead.classes()).toContain('theme-inverse')
   })
 
+  it('Sets head background and foreground colors', () => {
+    const wrapper = mount(BTableLite, {
+      props: {
+        items: [{a: 1}],
+        headBg: 'subtle-primary',
+        headFg: 'emphasis-primary',
+      },
+    })
+    const $thead = wrapper.get('thead')
+    expect($thead.classes()).toContain('bg-subtle-primary')
+    expect($thead.classes()).toContain('fg-emphasis-primary')
+  })
+
   it('Sets the foot theme correctly', () => {
     const wrapper = mount(BTableLite, {
       props: {
@@ -1087,9 +1100,21 @@ describe('btablelite', () => {
           items: [{a: 1, _rowTheme: 'danger'}],
         },
       })
+
       const $tr = wrapper.get('tbody tr')
       expect($tr.classes()).toContain('theme-danger')
     })
+  })
+
+  it('applies row background and foreground colors', () => {
+    const wrapper = mount(BTableLite, {
+      props: {
+        items: [{a: 1, _rowBg: 'subtle-danger', _rowFg: 'contrast-danger'}],
+      },
+    })
+    const $tr = wrapper.get('tbody tr')
+    expect($tr.classes()).toContain('bg-subtle-danger')
+    expect($tr.classes()).toContain('fg-contrast-danger')
   })
 
   describe('_cellThemes', () => {

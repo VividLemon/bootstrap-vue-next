@@ -8,16 +8,66 @@ const commonProps = () =>
       description:
         'When set to `true`, places the component in the active state with active styling',
     },
+    buttonBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to the button',
+    },
+    buttonFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to the button',
+    },
+    cancelBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to the cancel button',
+    },
+    cancelFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to the cancel button',
+    },
     activeClass: {
       type: 'ClassValue',
       default: 'active',
       description:
         "Configure the active CSS class applied when the link is active. Typically you will want to set this to class name 'active'",
     },
+    closeBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to the close button',
+    },
+    closeFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to the close button',
+    },
     alt: {
       type: 'string',
       default: 'undefined',
       description: 'Value to set for the `alt` attribute',
+    },
+    footBg: {
+      type: 'BgColor | null',
+      default: undefined,
+      description: 'Applies a background color to the table footer',
+    },
+    footFg: {
+      type: 'FgColor | null',
+      default: undefined,
+      description: 'Applies a foreground color to the table footer',
+    },
+    footRowBg: {
+      type: 'BgColor | null',
+      default: undefined,
+      description: 'Applies a background color to the footer row',
+    },
+    footRowFg: {
+      type: 'FgColor | null',
+      default: undefined,
+      description: 'Applies a foreground color to the footer row',
     },
     ariaControls: {
       type: 'AriaInvalid',
@@ -25,11 +75,51 @@ const commonProps = () =>
       description:
         'If this component controls another component or element, set this to the ID of the controlled component or element',
     },
+    headerCloseBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to the header close button',
+    },
+    headerCloseFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to the header close button',
+    },
+    headBg: {
+      type: 'BgColor | null',
+      default: undefined,
+      description: 'Applies a background color to the table header',
+    },
+    headFg: {
+      type: 'FgColor | null',
+      default: undefined,
+      description: 'Applies a foreground color to the table header',
+    },
+    headRowBg: {
+      type: 'BgColor | null',
+      default: undefined,
+      description: 'Applies a background color to the header row',
+    },
+    headRowFg: {
+      type: 'FgColor | null',
+      default: undefined,
+      description: 'Applies a foreground color to the header row',
+    },
     ariaDescribedby: {
       type: 'string',
       default: undefined,
       description:
         'The ID of the element that provides a description for this component. Used as the value for the `aria-describedby` attribute',
+    },
+    okBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to the confirmation button',
+    },
+    okFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to the confirmation button',
     },
     ariaInvalid: {
       type: 'AriaInvalid',
@@ -37,11 +127,61 @@ const commonProps = () =>
       description:
         'Sets the `aria-invalid` attribute value on the wrapper element. When not provided, the `state` prop will control the attribute',
     },
+    selectionBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to selected table rows',
+    },
+    selectionFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to selected table rows',
+    },
+    splitBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to the split dropdown button',
+    },
+    splitFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to the split dropdown button',
+    },
+    spinnerBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to the overlay spinner',
+    },
+    spinnerFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to the overlay spinner',
+    },
     autoClose: {
       type: "boolean | 'inside' | 'outside'",
       default: true,
       description:
         'Controls the automatic closing of the component when clicking. See above for details.',
+    },
+    tagBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to form tags',
+    },
+    tagFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to form tags',
+    },
+    addButtonBg: {
+      type: 'BgColor | null',
+      default: null,
+      description: 'Applies a background color to the add-tag button',
+    },
+    addButtonFg: {
+      type: 'FgColor | null',
+      default: null,
+      description: 'Applies a foreground color to the add-tag button',
     },
     autocomplete: {
       type: 'string',
@@ -453,7 +593,7 @@ const commonProps = () =>
       type: 'ButtonVariant | null',
       default: 'solid',
       description:
-        "Sets the button style: 'solid', 'outline', 'subtle', 'text', 'styled' or 'link'. Combine with `theme` to set the color",
+        "Sets the button style: 'solid', 'outline', 'subtle', 'text' or 'link'. Combine with `theme` to set the color",
     },
     wrapperAttrs: {
       type: 'Readonly<AttrsValue>',

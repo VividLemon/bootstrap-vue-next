@@ -39,6 +39,8 @@ const _props = withDefaults(defineProps<BDropdownGroupProps>(), {
   headerClass: undefined,
   headerTag: 'header',
   headerTheme: null,
+  headerBg: null,
+  headerFg: null,
   id: undefined,
 })
 const props = useDefaults(_props, 'BDropdownGroup')
@@ -47,6 +49,10 @@ defineSlots<BDropdownGroupSlots>()
 const headerId = computed(() => (props.id ? `${props.id}_group_dd_header` : undefined))
 const headerRole = computed(() => (props.headerTag === 'header' ? undefined : 'heading'))
 
-const colorClasses = useThemeClasses(() => ({theme: props.headerTheme}))
+const colorClasses = useThemeClasses(() => ({
+  theme: props.headerTheme,
+  bg: props.headerBg,
+  fg: props.headerFg,
+}))
 const computedClasses = computed(() => [props.headerClass, colorClasses.value])
 </script>

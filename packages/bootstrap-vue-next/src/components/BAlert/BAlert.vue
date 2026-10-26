@@ -32,6 +32,8 @@
             :class="[props.closeClass]"
             class="ms-auto ps-1 btn-close-custom"
             :theme="props.closeTheme"
+            :bg="props.closeBg"
+            :fg="props.closeFg"
             :variant="props.closeVariant"
             @click.stop.prevent="hide('close')"
           >
@@ -67,6 +69,8 @@
               :class="[props.closeClass]"
               class="ms-auto btn-close-custom"
               :theme="props.closeTheme"
+              :bg="props.closeBg"
+              :fg="props.closeFg"
               :variant="props.closeVariant"
               @click.stop.prevent="hide('close')"
             >
@@ -122,6 +126,8 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   closeContent: undefined,
   closeLabel: 'Close',
   closeTheme: 'secondary',
+  closeBg: null,
+  closeFg: null,
   closeVariant: 'solid',
   dismissible: false,
   headerClass: undefined,

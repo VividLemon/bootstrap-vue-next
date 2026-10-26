@@ -105,6 +105,8 @@ export default {
             'Z-index value to apply to the overlay. You may need to increase this value to suit your content or placement',
         },
         ...pick(buildCommonProps({}), [
+          'spinnerBg',
+          'spinnerFg',
           'rounded',
           'roundedTop',
           'roundedBottom',

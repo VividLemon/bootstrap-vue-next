@@ -94,6 +94,14 @@ describe('button', () => {
     expect(wrapper.classes()).toContain('btn-subtle')
   })
 
+  it('applies styled as a modifier separately from the variant', () => {
+    const wrapper = mount(BButton, {
+      props: {variant: 'outline', styled: true},
+    })
+    expect(wrapper.classes()).toContain('btn-outline')
+    expect(wrapper.classes()).toContain('btn-styled')
+  })
+
   it('has class theme-{theme} when prop theme', async () => {
     const wrapper = mount(BButton, {
       props: {theme: 'primary'},

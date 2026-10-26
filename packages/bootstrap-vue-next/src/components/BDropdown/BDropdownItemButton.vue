@@ -34,6 +34,8 @@ const _props = withDefaults(defineProps<BDropdownItemButtonProps>(), {
   buttonClass: undefined,
   disabled: false,
   theme: null,
+  bg: null,
+  fg: null,
   wrapperAttrs: undefined,
 })
 const props = useDefaults(_props, 'BDropdownItemButton')
@@ -46,7 +48,7 @@ const processedAttrs = computed(() => {
   return {wrapperClass, buttonAttrs}
 })
 
-const colorClasses = useThemeClasses(() => ({theme: props.theme}))
+const colorClasses = useThemeClasses(() => ({theme: props.theme, bg: props.bg, fg: props.fg}))
 const computedClasses = computed(() => [
   props.buttonClass,
   colorClasses.value,

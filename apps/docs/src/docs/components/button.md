@@ -35,7 +35,8 @@ Fancy larger or smaller buttons? Specify `lg` or `sm` via the `size` prop.
 Bootstrap v6 separates a button's **color** from its **style**:
 
 - The `theme` prop picks the color. It adds the Bootstrap class `.theme-<theme>`. The default is `secondary`.
-- The `variant` prop picks the style: `solid` (default), `outline`, `subtle`, `text`, `styled` or `link`. It adds the class `.btn-<variant>`.
+- The `variant` prop picks the style: `solid` (default), `outline`, `subtle`, `text` or `link`. It adds the class `.btn-<variant>`.
+- The `styled` prop independently adds the `.btn-styled` modifier.
 
 For example, `<BButton variant="outline" theme="danger">` renders `class="btn btn-outline theme-danger"`.
 See the [Color Themes](/docs/reference/color-variants) page for details.

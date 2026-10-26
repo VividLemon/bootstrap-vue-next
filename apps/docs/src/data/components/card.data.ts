@@ -48,6 +48,7 @@ export default {
             'bodyClass',
             'bodyFg',
             'bodyTag',
+            'bodyTheme',
             'border',
             'fg',
             'footer',

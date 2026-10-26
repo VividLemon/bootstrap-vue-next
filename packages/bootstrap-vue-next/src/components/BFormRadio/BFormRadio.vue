@@ -45,6 +45,8 @@ const _props = withDefaults(defineProps<Omit<BFormRadioProps, 'modelValue'>>(), 
   buttonGroup: false,
   buttonVariant: undefined,
   buttonTheme: undefined,
+  buttonBg: undefined,
+  buttonFg: undefined,
   disabled: false,
   form: undefined,
   id: undefined,
@@ -85,6 +87,8 @@ const propDefaults = {
   size: undefined,
   buttonVariant: 'solid' as const,
   buttonTheme: 'secondary' as const,
+  buttonBg: null,
+  buttonFg: null,
   state: null,
 }
 
@@ -98,7 +102,9 @@ const resolvedProps = computed(() => ({
   size: props.size ?? parentData?.size.value ?? propDefaults.size,
   buttonVariant:
     props.buttonVariant ?? parentData?.buttonVariant.value ?? propDefaults.buttonVariant,
-  buttonTheme: props.buttonTheme ?? parentData?.buttonTheme.value ?? propDefaults.buttonTheme,
+  buttonTheme: props.buttonTheme ?? parentData?.buttonTheme.value.theme ?? propDefaults.buttonTheme,
+  buttonBg: props.buttonBg ?? parentData?.buttonTheme.value.bg ?? propDefaults.buttonBg,
+  buttonFg: props.buttonFg ?? parentData?.buttonTheme.value.fg ?? propDefaults.buttonFg,
 }))
 
 // Shorthand for template usage

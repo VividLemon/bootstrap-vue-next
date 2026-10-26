@@ -1,5 +1,5 @@
 import type {ComputedRef, StyleValue} from 'vue'
-import type {ThemeColor} from './ColorTypes'
+import type {BgColor, FgColor, ThemeColor} from './ColorTypes'
 import type {MaybePromise} from './MaybePromise'
 import type {LiteralUnion} from './LiteralUnion'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
@@ -20,7 +20,11 @@ export type TableRowEvent<T, E extends UIEvent = Readonly<MouseEvent>> = [
 ]
 
 export type TableItem<T = Record<string, unknown>> = T & {
+  _rowBg?: BgColor | null
+  _rowFg?: FgColor | null
   _rowTheme?: ThemeColor | null
+  _cellBgs?: Partial<Record<keyof T, BgColor>>
+  _cellFgs?: Partial<Record<keyof T, FgColor>>
   _cellThemes?: Partial<Record<keyof T, ThemeColor>>
   _showDetails?: boolean
 }
@@ -73,7 +77,9 @@ export type TableStrictClassValue = string | readonly unknown[] | Record<string,
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TableField<T = any> = {
+  bg?: BgColor | null
   class?: ClassValue
+  fg?: FgColor | null
   filterByFormatted?: boolean | TableFieldFormatter<T>
   formatter?: TableFieldFormatter<T>
   isRowHeader?: boolean

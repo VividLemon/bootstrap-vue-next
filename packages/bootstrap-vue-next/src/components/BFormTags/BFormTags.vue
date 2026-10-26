@@ -32,6 +32,8 @@
       :add-button-text="props.addButtonText"
       :add-button-variant="props.addButtonVariant"
       :add-button-theme="props.addButtonTheme"
+      :add-button-bg="props.addButtonBg"
+      :add-button-fg="props.addButtonFg"
       :add-tag
       :disable-add-button="disableAddButton"
       :disabled="props.disabled"
@@ -71,6 +73,8 @@
       :tag-pills="props.tagPills"
       :tag-remove-label="props.tagRemoveLabel"
       :tag-theme="props.tagTheme"
+      :tag-bg="props.tagBg"
+      :tag-fg="props.tagFg"
       :tags="[...modelValue]"
     >
       <ul
@@ -83,6 +87,8 @@
             :tag="tag"
             :tag-class="props.tagClass"
             :tag-theme="props.tagTheme"
+            :tag-bg="props.tagBg"
+            :tag-fg="props.tagFg"
             :tag-pills="props.tagPills"
             :remove-tag="removeTag"
           >
@@ -91,6 +97,8 @@
               :class="props.tagClass"
               tag="li"
               :theme="props.tagTheme"
+              :bg="props.tagBg"
+              :fg="props.tagFg"
               :pill="props.tagPills"
               :no-remove="props.noTagRemove"
               :disabled="props.disabled"
@@ -130,7 +138,12 @@
               class="btn b-form-tags-button py-0"
               :class="[
                 inputClass,
-                getButtonThemeClasses(props.addButtonVariant, props.addButtonTheme),
+                getButtonThemeClasses(
+                  props.addButtonVariant,
+                  props.addButtonTheme,
+                  props.addButtonBg,
+                  props.addButtonFg
+                ),
                 {
                   'disabled invisible': inputValue.length === 0,
                 },
@@ -183,6 +196,8 @@ const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
   addButtonText: 'Add',
   addButtonVariant: 'outline',
   addButtonTheme: 'secondary',
+  addButtonBg: null,
+  addButtonFg: null,
   addOnChange: false,
   autofocus: false,
   disabled: false,
@@ -213,6 +228,8 @@ const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
   tagRemovedLabel: 'Tag removed',
   tagValidator: () => true,
   tagTheme: 'secondary',
+  tagBg: null,
+  tagFg: null,
 })
 const props = useDefaults(_props, 'BFormTags')
 const emit = defineEmits<BFormTagsEmits>()

@@ -24,6 +24,8 @@ export default {
             'closeClass',
             'closeContent',
             'closeLabel',
+            'closeBg',
+            'closeFg',
             'closeTheme',
             'closeVariant',
             'fg',
