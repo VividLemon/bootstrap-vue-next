@@ -25,6 +25,13 @@ describe('useThemeClasses', () => {
     expect(result.value['border-emphasized']).toBe(true)
   })
 
+  it('returns color opacity utilities', () => {
+    const result = useThemeClasses({bg: 70, fg: '50', border: 30})
+    expect(result.value['bg-70']).toBe(true)
+    expect(result.value['fg-50']).toBe(true)
+    expect(result.value['border-30']).toBe(true)
+  })
+
   it('returns all false classes when all values are null', () => {
     const result = useThemeClasses({theme: null, bg: null, fg: null, border: null})
     expect(Object.values(result.value).every((v) => v === false)).toBe(true)

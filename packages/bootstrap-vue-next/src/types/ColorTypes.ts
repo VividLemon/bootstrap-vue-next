@@ -27,14 +27,27 @@ export type BgLayerColor = 'body' | '1' | '2' | '3' | '4' | 'fg' | 'white' | 'bl
 export type FgLayerColor = 'body' | '1' | '2' | '3' | '4' | 'bg' | 'white' | 'black' | 'reset'
 /** Neutral layer borders from `$theme-borders`, rendered as `.border-<value>` */
 export type BorderLayerColor = 'bg' | 'body' | 'muted' | 'subtle' | 'emphasized' | 'white' | 'black'
+/** Opacity utilities for theme-aware backgrounds, foregrounds, and borders */
+export type ColorOpacity =
+  | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100
+  | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'
 
 /** `.bg-<theme>`, `.bg-subtle-<theme>`, `.bg-muted-<theme>` or a layer color */
-export type BgColor = ThemeColor | `subtle-${ThemeColor}` | `muted-${ThemeColor}` | BgLayerColor
+export type BgColor =
+  | ThemeColor
+  | `subtle-${ThemeColor}`
+  | `muted-${ThemeColor}`
+  | BgLayerColor
+  | ColorOpacity
 /** `.fg-<theme>`, `.fg-emphasis-<theme>`, `.fg-contrast-<theme>` or a layer color */
 export type FgColor =
-  ThemeColor | `emphasis-${ThemeColor}` | `contrast-${ThemeColor}` | FgLayerColor
+  | ThemeColor
+  | `emphasis-${ThemeColor}`
+  | `contrast-${ThemeColor}`
+  | FgLayerColor
+  | ColorOpacity
 /** `.border-<theme>`, `.border-subtle-<theme>` or a layer color */
-export type BorderColor = ThemeColor | `subtle-${ThemeColor}` | BorderLayerColor
+export type BorderColor = ThemeColor | `subtle-${ThemeColor}` | BorderLayerColor | ColorOpacity
 
 /** Button styles, rendered as `.btn-<style>` and combined with `.theme-<theme>` */
 export interface BaseButtonVariant {
