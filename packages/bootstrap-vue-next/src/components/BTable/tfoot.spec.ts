@@ -30,60 +30,60 @@ describe('tfoot', () => {
     expect(wrapper.text()).toBe('')
   })
 
-  it('has class table-{type} when prop variant is set', () => {
+  it('has class theme-{type} when prop theme is set', () => {
     const wrapper = mount(BTfoot, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('table-primary')
+    expect(wrapper.classes()).toContain('theme-primary')
   })
 
-  it('does not have variant class when variant is null', () => {
+  it('does not have theme class when theme is null', () => {
     const wrapper = mount(BTfoot, {
-      props: {variant: null},
+      props: {theme: null},
     })
-    expect(wrapper.classes().join(' ')).not.toMatch(/table-/)
+    expect(wrapper.classes().join(' ')).not.toMatch(/theme-/)
   })
 
-  it('does not have variant class by default', () => {
+  it('does not have theme class by default', () => {
     const wrapper = mount(BTfoot)
-    expect(wrapper.classes().join(' ')).not.toMatch(/table-/)
+    expect(wrapper.classes().join(' ')).not.toMatch(/theme-/)
   })
 
-  it('variant class is reactive', async () => {
+  it('theme class is reactive', async () => {
     const wrapper = mount(BTfoot, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('table-primary')
-    await wrapper.setProps({variant: 'secondary'})
-    expect(wrapper.classes()).not.toContain('table-primary')
-    expect(wrapper.classes()).toContain('table-secondary')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: 'secondary'})
+    expect(wrapper.classes()).not.toContain('theme-primary')
+    expect(wrapper.classes()).toContain('theme-secondary')
   })
 
-  it('variant class is removed when variant is set to undefined', async () => {
+  it('theme class is removed when theme is set to undefined', async () => {
     const wrapper = mount(BTfoot, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('table-primary')
-    await wrapper.setProps({variant: undefined})
-    expect(wrapper.classes()).not.toContain('table-primary')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: undefined})
+    expect(wrapper.classes()).not.toContain('theme-primary')
   })
 
-  it('supports different variant values', () => {
-    const variants = [
+  it('supports different theme values', () => {
+    const themes = [
       'primary',
       'secondary',
       'success',
       'danger',
       'warning',
       'info',
-      'light',
-      'dark',
+      'accent',
+      'inverse',
     ] as const
-    variants.forEach((variant) => {
+    themes.forEach((theme) => {
       const wrapper = mount(BTfoot, {
-        props: {variant},
+        props: {theme},
       })
-      expect(wrapper.classes()).toContain(`table-${variant}`)
+      expect(wrapper.classes()).toContain(`theme-${theme}`)
     })
   })
 })

@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
-import { type ColorVariant, type ToastOrchestratorCreateParamBase } from 'bootstrap-vue-next'
+import { type ThemeColor, type ToastOrchestratorCreateParamBase } from 'bootstrap-vue-next'
 import { BButton } from 'bootstrap-vue-next/components/BButton'
 import { useToast } from 'bootstrap-vue-next/composables/useToast'
 
@@ -29,14 +29,14 @@ onUnmounted(() => {
 // `create()` needs a writable ref/plain object (it needs to control its own state),
 // so `reactive()` is not used here. Instead, derive the reactive pieces with `computed()`,
 // then sync them onto a plain ref via `watchEffect()`.
-const derivedVariant = computed(() => (body.value === 'foo' ? 'danger' : 'info') as ColorVariant)
+const derivedTheme = computed(() => (body.value === 'foo' ? 'danger' : 'info') as ThemeColor)
 const myToast = ref<ToastOrchestratorCreateParamBase>({
   body: body.value,
-  variant: derivedVariant.value,
+  theme: derivedTheme.value,
 })
 watchEffect(() => {
   myToast.value.body = body.value
-  myToast.value.variant = derivedVariant.value
+  myToast.value.theme = derivedTheme.value
 })
 
 const showMe = async () => {

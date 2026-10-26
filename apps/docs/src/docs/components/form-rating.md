@@ -23,9 +23,9 @@ Readonly mode is used for displaying an aggregated rating, and supports `half` i
 
 ## Styling
 
-### Variant and color
+### Theme and color
 
-Easily apply one of the Bootstrap theme color variants to the rating icon via the `variant` prop.
+Easily apply one of the Bootstrap theme colors to the rating icon via the `theme` prop (rendered as `.fg-<theme>`).
 The default is to use the default form control text color.
 
 <<< DEMO ./demo/RatingVariant.vue
@@ -37,8 +37,8 @@ value (`#...`) or RGB/RGBA (`rgb(...)`/`rgba(...)`) color value:
 
 **Notes:**
 
-- The prop `color` takes precedence over the `variant` prop
-- Variants translate to the `text-{variant}` utility class on the icon
+- The prop `color` takes precedence over the `theme` prop
+- Themes translate to the `fg-{theme}` utility class on the icon
 
 ### Number of items
 
@@ -129,7 +129,7 @@ By default, `BFormRating` uses built-in star-shaped SVG icons:
 
 #### Default icons styling
 
-When using the default icons, you can style them with the `variant`, `color`, and `size` props. These props apply Bootstrap classes and styles to the built-in SVG icons.
+When using the default icons, you can style them with the `theme`, `color`, and `size` props. These props apply Bootstrap classes and styles to the built-in SVG icons.
 
 #### Custom icons
 
@@ -139,7 +139,7 @@ To use completely custom icons, use the default scoped slot which provides acces
 
 **Important notes for custom icons:**
 
-- The `variant`, `color`, and `size` props **do not apply** to custom icons provided via scoped slots
+- The `theme`, `color`, and `size` props **do not apply** to custom icons provided via scoped slots
 - You must handle all styling (colors, sizes, hover effects) yourself in your custom CSS
 - You're responsible for implementing click handlers if needed: `@click="rating = itemIndex"`
 - Custom icons completely replace the default icon rendering
@@ -167,8 +167,8 @@ The root element of `BFormRating` is an `<output>` element, which is a form-asso
 
 ## Implementation notes
 
-The ratings control uses the Bootstrap v5 `form-control*`, `d-*` (display), and
-`text-{variant}` classes, as well as BootstrapVue's custom CSS for proper styling.
+The ratings control uses the Bootstrap v6 `form-control*`, `d-*` (display), and
+`fg-{theme}` classes, as well as BootstrapVue's custom CSS for proper styling.
 
 ## Accessibility
 

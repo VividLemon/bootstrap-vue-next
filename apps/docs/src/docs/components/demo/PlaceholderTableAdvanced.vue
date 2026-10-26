@@ -3,7 +3,7 @@
     columns="3"
     rows="2"
     show-footer
-    footer-variant="info"
+    footer-theme="info"
     header-size="lg"
     footer-size="xs"
     footer-columns="1"
@@ -13,31 +13,16 @@
       <tbody>
         <tr>
           <td>
-            <BPlaceholder
-              size="lg"
-              variant="secondary"
-            />
-            <BPlaceholder
-              size="sm"
-              variant="secondary"
-            />
-            <BPlaceholder
-              size="xs"
-              variant="secondary"
-            />
+            <BPlaceholder size="lg" bg="secondary" />
+            <BPlaceholder size="sm" bg="secondary" />
+            <BPlaceholder size="xs" bg="secondary" />
           </td>
           <td>
-            <BPlaceholder variant="warning" />
-            <BPlaceholder
-              animation="wave"
-              variant="warning"
-            />
+            <BPlaceholder bg="warning" />
+            <BPlaceholder animation="wave" bg="warning" />
           </td>
           <td>
-            <BPlaceholder
-              animation="glow"
-              variant="danger"
-            />
+            <BPlaceholder animation="glow" bg="danger" />
           </td>
         </tr>
       </tbody>

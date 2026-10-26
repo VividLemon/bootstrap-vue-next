@@ -1,16 +1,8 @@
 <template>
   <div>
     <div class="mb-2">
-      <BFormCheckbox
-        v-model="stickyHeader"
-        inline
-        >Sticky header</BFormCheckbox
-      >
-      <BFormCheckbox
-        v-model="noCollapse"
-        inline
-        >No border collapse</BFormCheckbox
-      >
+      <BFormCheckbox v-model="stickyHeader" inline>Sticky header</BFormCheckbox>
+      <BFormCheckbox v-model="noCollapse" inline>No border collapse</BFormCheckbox>
     </div>
     <BTable
       :sticky-header="stickyHeader"
@@ -31,14 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import type {TableFieldRaw} from 'bootstrap-vue-next'
-import {ref} from 'vue'
+import type { TableFieldRaw } from 'bootstrap-vue-next'
+import { ref } from 'vue'
 
 const fields: TableFieldRaw[] = [
-  {key: 'id', stickyColumn: true, isRowHeader: true, variant: 'primary'},
+  { key: 'id', stickyColumn: true, isRowHeader: true, theme: 'primary' },
   'a',
   'b',
-  {key: 'c', stickyColumn: true, variant: 'info'},
+  { key: 'c', stickyColumn: true, theme: 'info' },
   'd',
   'e',
   'f',
@@ -50,16 +42,16 @@ const fields: TableFieldRaw[] = [
   'l',
 ]
 const items = [
-  {id: 1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
-  {id: 2, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
-  {id: 3, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
-  {id: 4, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
-  {id: 5, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
-  {id: 6, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
-  {id: 7, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
-  {id: 8, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
-  {id: 9, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
-  {id: 10, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11},
+  { id: 1, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
+  { id: 2, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
+  { id: 3, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
+  { id: 4, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
+  { id: 5, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
+  { id: 6, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
+  { id: 7, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
+  { id: 8, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
+  { id: 9, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
+  { id: 10, a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7, i: 8, j: 9, k: 10, l: 11 },
 ]
 
 const stickyHeader = ref(true)

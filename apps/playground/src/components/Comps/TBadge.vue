@@ -40,14 +40,14 @@
     </BRow>
     <BRow>
       <BCol>
-        <BBadge pill variant="primary">Primary</BBadge>
-        <BBadge pill variant="secondary">Secondary</BBadge>
-        <BBadge pill variant="success">Success</BBadge>
-        <BBadge pill variant="danger">Danger</BBadge>
-        <BBadge pill variant="warning">Warning</BBadge>
-        <BBadge pill variant="info">Info</BBadge>
-        <BBadge pill variant="light">Light</BBadge>
-        <BBadge pill variant="dark">Dark</BBadge>
+        <BBadge pill theme="primary">Primary</BBadge>
+        <BBadge pill theme="secondary">Secondary</BBadge>
+        <BBadge pill theme="success">Success</BBadge>
+        <BBadge pill theme="danger">Danger</BBadge>
+        <BBadge pill theme="warning">Warning</BBadge>
+        <BBadge pill theme="info">Info</BBadge>
+        <BBadge pill theme="accent">Accent</BBadge>
+        <BBadge pill theme="inverse">Inverse</BBadge>
       </BCol>
     </BRow>
     <BRow>
@@ -55,14 +55,14 @@
     </BRow>
     <BRow>
       <BCol>
-        <BBadge href="#" variant="primary">Primary</BBadge>
-        <BBadge href="#" variant="secondary">Secondary</BBadge>
-        <BBadge href="#" variant="success">Success</BBadge>
-        <BBadge href="#" variant="danger">Danger</BBadge>
-        <BBadge href="#" variant="warning">Warning</BBadge>
-        <BBadge href="#" variant="info">Info</BBadge>
-        <BBadge href="#" variant="light">Light</BBadge>
-        <BBadge href="#" variant="dark">Dark</BBadge>
+        <BBadge href="#" theme="primary">Primary</BBadge>
+        <BBadge href="#" theme="secondary">Secondary</BBadge>
+        <BBadge href="#" theme="success">Success</BBadge>
+        <BBadge href="#" theme="danger">Danger</BBadge>
+        <BBadge href="#" theme="warning">Warning</BBadge>
+        <BBadge href="#" theme="info">Info</BBadge>
+        <BBadge href="#" theme="accent">Accent</BBadge>
+        <BBadge href="#" theme="inverse">Inverse</BBadge>
       </BCol>
     </BRow>
   </BContainer>

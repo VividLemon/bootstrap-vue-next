@@ -1,20 +1,16 @@
 <template>
   <div>
-    <BButton
-      variant="primary"
-      @click="show = true"
-      >Show Modal</BButton
-    >
+    <BButton theme="primary" @click="show = true">Show Modal</BButton>
 
     <BModal
       v-model="show"
       title="Modal Variants"
-      :header-bg-variant="headerBgVariant"
-      :header-text-variant="headerTextVariant"
-      :body-bg-variant="bodyBgVariant"
-      :body-text-variant="bodyTextVariant"
-      :footer-bg-variant="footerBgVariant"
-      :footer-text-variant="footerTextVariant"
+      :header-bg="headerBg"
+      :header-fg="headerFg"
+      :body-bg="bodyBg"
+      :body-fg="bodyFg"
+      :footer-bg="footerBg"
+      :footer-fg="footerFg"
     >
       <BContainer fluid>
         <BRow class="mb-1 text-center">
@@ -26,48 +22,30 @@
         <BRow class="mb-1">
           <BCol cols="3">Header</BCol>
           <BCol>
-            <BFormSelect
-              v-model="headerBgVariant"
-              :options="bgVariants"
-            />
+            <BFormSelect v-model="headerBg" :options="bgColors" />
           </BCol>
           <BCol>
-            <BFormSelect
-              v-model="headerTextVariant"
-              :options="textVariants"
-            />
+            <BFormSelect v-model="headerFg" :options="fgColors" />
           </BCol>
         </BRow>
 
         <BRow class="mb-1">
           <BCol cols="3">Body</BCol>
           <BCol>
-            <BFormSelect
-              v-model="bodyBgVariant"
-              :options="bgVariants"
-            />
+            <BFormSelect v-model="bodyBg" :options="bgColors" />
           </BCol>
           <BCol>
-            <BFormSelect
-              v-model="bodyTextVariant"
-              :options="textVariants"
-            />
+            <BFormSelect v-model="bodyFg" :options="fgColors" />
           </BCol>
         </BRow>
 
         <BRow>
           <BCol cols="3">Footer</BCol>
           <BCol>
-            <BFormSelect
-              v-model="footerBgVariant"
-              :options="bgVariants"
-            />
+            <BFormSelect v-model="footerBg" :options="bgColors" />
           </BCol>
           <BCol>
-            <BFormSelect
-              v-model="footerTextVariant"
-              :options="textVariants"
-            />
+            <BFormSelect v-model="footerFg" :options="fgColors" />
           </BCol>
         </BRow>
       </BContainer>
@@ -75,12 +53,7 @@
       <template #footer>
         <div class="w-100">
           <p class="float-start">Modal Footer Content</p>
-          <BButton
-            variant="primary"
-            size="sm"
-            class="float-end"
-            @click="show = false"
-          >
+          <BButton theme="primary" size="sm" class="float-end" @click="show = false">
             Close
           </BButton>
         </div>
@@ -90,42 +63,42 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 const show = ref(false)
 
-const bgVariants = [
-  {value: null, text: 'None'},
-  {value: 'primary', text: 'Primary'},
-  {value: 'secondary', text: 'Secondary'},
-  {value: 'success', text: 'Success'},
-  {value: 'warning', text: 'Warning'},
-  {value: 'danger', text: 'Danger'},
-  {value: 'info', text: 'Info'},
-  {value: 'light', text: 'Light'},
-  {value: 'dark', text: 'Dark'},
+const bgColors = [
+  { value: null, text: 'None' },
+  { value: 'primary', text: 'Primary' },
+  { value: 'secondary', text: 'Secondary' },
+  { value: 'success', text: 'Success' },
+  { value: 'warning', text: 'Warning' },
+  { value: 'danger', text: 'Danger' },
+  { value: 'info', text: 'Info' },
+  { value: 'inverse', text: 'Inverse' },
+  { value: '1', text: 'Layer 1' },
+  { value: '2', text: 'Layer 2' },
 ] as const
 
-const textVariants = [
-  {value: null, text: 'None'},
-  {value: 'primary', text: 'Primary'},
-  {value: 'secondary', text: 'Secondary'},
-  {value: 'success', text: 'Success'},
-  {value: 'warning', text: 'Warning'},
-  {value: 'danger', text: 'Danger'},
-  {value: 'info', text: 'Info'},
-  {value: 'light', text: 'Light'},
-  {value: 'dark', text: 'Dark'},
-  {value: 'white', text: 'White'},
-  {value: 'body', text: 'Body'},
+const fgColors = [
+  { value: null, text: 'None' },
+  { value: 'primary', text: 'Primary' },
+  { value: 'secondary', text: 'Secondary' },
+  { value: 'success', text: 'Success' },
+  { value: 'warning', text: 'Warning' },
+  { value: 'danger', text: 'Danger' },
+  { value: 'info', text: 'Info' },
+  { value: 'inverse', text: 'Inverse' },
+  { value: 'white', text: 'White' },
+  { value: 'body', text: 'Body' },
 ] as const
 
-type BgVariant = (typeof bgVariants)[number]['value']
-type TextVariant = (typeof textVariants)[number]['value']
+type BgColorOption = (typeof bgColors)[number]['value']
+type FgColorOption = (typeof fgColors)[number]['value']
 
-const headerBgVariant = ref<BgVariant>('dark')
-const headerTextVariant = ref<TextVariant>('white')
-const bodyBgVariant = ref<BgVariant>('light')
-const bodyTextVariant = ref<TextVariant>('dark')
-const footerBgVariant = ref<BgVariant>('warning')
-const footerTextVariant = ref<TextVariant>('dark')
+const headerBg = ref<BgColorOption>('inverse')
+const headerFg = ref<FgColorOption>('white')
+const bodyBg = ref<BgColorOption>('2')
+const bodyFg = ref<FgColorOption>('body')
+const footerBg = ref<BgColorOption>('warning')
+const footerFg = ref<FgColorOption>('body')
 </script>

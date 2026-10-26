@@ -10,12 +10,12 @@ import type {BTfootProps, BTfootSlots} from '../../types'
 import {computed} from 'vue'
 
 const _props = withDefaults(defineProps<BTfootProps>(), {
-  variant: null,
+  theme: null,
 })
 const props = useDefaults(_props, 'BTfoot')
 defineSlots<BTfootSlots>()
 
 const computedClasses = computed(() => ({
-  [`table-${props.variant}`]: props.variant !== null,
+  [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
 }))
 </script>

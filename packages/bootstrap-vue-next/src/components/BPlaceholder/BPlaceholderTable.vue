@@ -6,7 +6,7 @@
           <th v-for="(_, i) in computedHeaderColumnsLength" :key="i">
             <BPlaceholder
               :size="props.headerSize"
-              :variant="props.headerVariant"
+              :bg="props.headerTheme"
               :animation="props.headerAnimation"
               :width="props.headerCellWidth"
             />
@@ -20,7 +20,7 @@
           <td v-for="(__, k) in columnsNumber" :key="k">
             <BPlaceholder
               :size="props.size"
-              :variant="props.variant"
+              :bg="props.theme"
               :animation="props.animation"
               :width="props.cellWidth"
             />
@@ -34,7 +34,7 @@
           <th v-for="(_, l) in computedFooterColumnsLength" :key="l">
             <BPlaceholder
               :size="props.footerSize"
-              :variant="props.footerVariant"
+              :bg="props.footerTheme"
               :animation="props.footerAnimation"
               :width="props.footerCellWidth"
             />
@@ -61,17 +61,17 @@ const _props = withDefaults(defineProps<BPlaceholderTableProps>(), {
   footerCellWidth: 100,
   footerColumns: undefined,
   footerSize: undefined,
-  footerVariant: undefined,
+  footerTheme: undefined,
   headerAnimation: undefined,
   headerCellWidth: 100,
   headerColumns: undefined,
   headerSize: undefined,
-  headerVariant: undefined,
+  headerTheme: undefined,
   noHeader: false,
   rows: 3,
   showFooter: false,
   size: undefined,
-  variant: undefined,
+  theme: undefined,
 })
 const props = useDefaults(_props, 'BPlaceholderTable')
 defineSlots<BPlaceholderTableSlots>()

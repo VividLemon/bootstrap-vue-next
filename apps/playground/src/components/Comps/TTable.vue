@@ -128,8 +128,8 @@
           <!-- TODO: We shouldn't have to cast the slot properties, bug in BTable definition? -->
           <template #thead-sub="data">
             <tr class="my">
-              <th variant="danger" />
-              <th variant="danger">
+              <th theme="danger" />
+              <th theme="danger">
                 <BFormSelect
                   :model-value="(data as unknown as TableField<any>).label ?? ''"
                   :options="
@@ -357,7 +357,7 @@ import {computed, reactive, ref} from 'vue'
 import type {
   BTable,
   BTableSortBy,
-  ColorVariant,
+  ThemeColor,
   TableField,
   TableFieldRaw,
   TableItem,
@@ -384,8 +384,8 @@ const items: TableItem[] = [
     age: 89,
     first_name: 'Michael',
     last_name: 'Jordan',
-    _rowVariant: 'primary',
-    _cellVariants: {last_name: 'danger'},
+    _rowTheme: 'primary',
+    _cellThemes: {last_name: 'danger'},
   },
   {age: 38, first_name: 'Jami', last_name: 'Carney'},
 ]
@@ -442,7 +442,7 @@ const itemsTyped: TableItem<Person>[] = [
     isActive: false,
     age: 9,
     name: {first: 'Mini', last: 'Navarro'},
-    _rowVariant: 'success' as ColorVariant,
+    _rowTheme: 'success' as ThemeColor,
   },
   {isActive: false, age: 89, name: {first: 'Geneva', last: 'Wilson'}},
   {isActive: true, age: 38, name: {first: 'Jami', last: 'Carney'}},
@@ -452,7 +452,7 @@ const itemsTyped: TableItem<Person>[] = [
     isActive: true,
     age: 87,
     name: {first: 'Larsen', last: 'Shaw'},
-    _cellVariants: {age: 'danger', isActive: 'warning'},
+    _cellThemes: {age: 'danger', isActive: 'warning'},
   },
   {isActive: false, age: 26, name: {first: 'Mitzi', last: 'Navarro'}},
   {isActive: false, age: 22, name: {first: 'Genevieve', last: 'Wilson'}},

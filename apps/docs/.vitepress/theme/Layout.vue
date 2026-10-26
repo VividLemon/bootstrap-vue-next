@@ -3,7 +3,8 @@
   <BApp>
     <BNavbar
       v-b-color-mode="'dark'"
-      variant="primary"
+      theme="primary"
+      bg="primary"
       sticky="top"
       toggleable="lg"
       :container="isLargeScreen ? true : 'fluid'"
@@ -183,11 +184,19 @@
 </template>
 
 <script setup lang="ts">
-import {useColorMode} from 'bootstrap-vue-next/composables/useColorMode'
-import {useScrollspy} from 'bootstrap-vue-next/composables/useScrollspy'
-import {vBColorMode} from 'bootstrap-vue-next/directives/BColorMode'
-import {vBToggle} from 'bootstrap-vue-next/directives/BToggle'
-import {type ComponentPublicInstance, computed, inject, onMounted, ref, useTemplateRef, watch} from 'vue'
+import { useColorMode } from 'bootstrap-vue-next/composables/useColorMode'
+import { useScrollspy } from 'bootstrap-vue-next/composables/useScrollspy'
+import { vBColorMode } from 'bootstrap-vue-next/directives/BColorMode'
+import { vBToggle } from 'bootstrap-vue-next/directives/BToggle'
+import {
+  type ComponentPublicInstance,
+  computed,
+  inject,
+  onMounted,
+  ref,
+  useTemplateRef,
+  watch,
+} from 'vue'
 import GithubIcon from '~icons/bi/github'
 import OpencollectiveIcon from '~icons/logos/opencollective'
 import DiscordIcon from '~icons/bi/discord'
@@ -197,13 +206,13 @@ import ChevronRight from '~icons/bi/chevron-right'
 import ChevronLeft from '~icons/bi/chevron-left'
 import CircleHalf from '~icons/bi/circle-half'
 import List from '~icons/bi/list'
-import {useData, useRoute, withBase} from 'vitepress'
-import {VPNavBarSearch} from 'vitepress/theme'
-import {appInfoKey} from './keys'
-import {useMediaQuery} from '@vueuse/core'
+import { useData, useRoute, withBase } from 'vitepress'
+import { VPNavBarSearch } from 'vitepress/theme'
+import { appInfoKey } from './keys'
+import { useMediaQuery } from '@vueuse/core'
 import PageContents from '../../src/components/PageContents.vue'
 import MigrationNav from '../../src/components/MigrationNav.vue'
-import {type ContentsItem, type HeaderItem} from '../../src/types'
+import { type ContentsItem, type HeaderItem } from '../../src/types'
 import TableOfContentsNav from '../../src/components/TableOfContentsNav.vue'
 
 // https://vitepress.dev/reference/runtime-api#usedata
@@ -300,7 +309,7 @@ const headerExternalLinks = [
   },
 ]
 
-const {store: colorMode} = useColorMode({
+const { store: colorMode } = useColorMode({
   persist: true,
 })
 

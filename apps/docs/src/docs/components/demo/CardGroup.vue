@@ -8,7 +8,7 @@
           content. This content is a little bit longer.
         </BCardText>
         <template #footer>
-          <small class="text-body-secondary">Last updated 3 mins ago</small>
+          <small class="fg-2">Last updated 3 mins ago</small>
         </template>
       </BCard>
       <BCard title="Title" img-src="https://picsum.photos/g/300/450" img-alt="Image">
@@ -16,7 +16,7 @@
           This card has supporting text below as a natural lead-in to additional content.
         </BCardText>
         <template #footer>
-          <small class="text-body-secondary">Last updated 3 mins ago</small>
+          <small class="fg-2">Last updated 3 mins ago</small>
         </template>
       </BCard>
       <BCard title="Title" img-src="https://picsum.photos/g/300/450" img-alt="Image">
@@ -26,7 +26,7 @@
           action.
         </BCardText>
         <template #footer>
-          <small class="text-body-secondary">Last updated 3 mins ago</small>
+          <small class="fg-2">Last updated 3 mins ago</small>
         </template>
       </BCard>
     </BCardGroup>

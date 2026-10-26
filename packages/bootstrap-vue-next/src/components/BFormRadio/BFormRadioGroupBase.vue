@@ -41,7 +41,8 @@ import type {
 const _props = withDefaults(defineProps<Omit<BFormRadioGroupBaseProps, 'modelValue'>>(), {
   ariaInvalid: undefined,
   autofocus: false,
-  buttonVariant: 'secondary',
+  buttonVariant: 'solid',
+  buttonTheme: 'secondary',
   buttons: false,
   disabled: false,
   form: undefined,
@@ -94,6 +95,7 @@ const normalizedOptions = computed(() =>
 provide(radioGroupKey, {
   modelValue: modelValue as import('vue').Ref<import('../../types/RadioTypes').RadioValue>,
   buttonVariant: toRef(() => props.buttonVariant),
+  buttonTheme: toRef(() => props.buttonTheme),
   form: toRef(() => props.form),
   name: computedName,
   buttons: toRef(() => props.buttons),

@@ -511,13 +511,13 @@ describe('form-checkbox-group-base', () => {
       const wrapper = mount(BFormCheckboxGroupBase, {
         props: {
           buttons: true,
-          buttonVariant: 'primary',
+          buttonTheme: 'primary',
           options: [{text: 'A', value: 'a', disabled: false}],
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
       const label = checkbox.get('label')
-      expect(label.classes()).toContain('btn-primary')
+      expect(label.classes()).toContain('theme-primary')
     })
   })
 

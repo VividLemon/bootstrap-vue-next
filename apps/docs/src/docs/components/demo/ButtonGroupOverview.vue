@@ -9,9 +9,9 @@
   </div>
   <div class="mt-3">
     <BButtonGroup>
-      <BButton variant="success">Success</BButton>
-      <BButton variant="info">Info</BButton>
-      <BButton variant="warning">Warning</BButton>
+      <BButton theme="success">Success</BButton>
+      <BButton theme="info">Info</BButton>
+      <BButton theme="warning">Warning</BButton>
     </BButtonGroup>
   </div>
   <!-- #endregion template -->

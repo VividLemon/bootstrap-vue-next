@@ -1,27 +1,17 @@
 <template>
   <!-- #region template -->
   <div>
-    <BFormCheckbox
-      id="table-fixed-checkbox"
-      v-model="useFixed"
-      class="mb-3"
-    >
+    <BFormCheckbox id="table-fixed-checkbox" v-model="useFixed" class="mb-3">
       Use fixed table layout (<code>table-layout: fixed</code>)
     </BFormCheckbox>
 
-    <BTable
-      id="table-fixed-table"
-      :items="items"
-      :fields="fields"
-      :fixed="useFixed"
-      bordered
-    >
+    <BTable id="table-fixed-table" :items="items" :fields="fields" :fixed="useFixed" bordered>
       <template #cell(longText)="data">
         {{ data.value }}
       </template>
     </BTable>
 
-    <p class="text-muted mt-3">
+    <p class="fg-2 mt-3">
       <strong>Fixed layout:</strong> All columns have equal width regardless of content length. This
       is useful when you want predictable column widths. Notice how the "Long Text" column doesn't
       expand to fit its content when fixed layout is enabled.
@@ -31,15 +21,15 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const useFixed = ref(false)
 
 const fields = [
-  {key: 'id', label: 'ID'},
-  {key: 'name', label: 'Name'},
-  {key: 'status', label: 'Status'},
-  {key: 'longText', label: 'Long Text'},
+  { key: 'id', label: 'ID' },
+  { key: 'name', label: 'Name' },
+  { key: 'status', label: 'Status' },
+  { key: 'longText', label: 'Long Text' },
 ]
 
 const items = [

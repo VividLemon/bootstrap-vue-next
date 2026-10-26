@@ -13,14 +13,14 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {linkedBLinkSection, type linkProps} from '../../utils/linkProps'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { linkedBLinkSection, type linkProps } from '../../utils/linkProps'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BAvatar: {
-      styleSpec: {kind: StyleKind.BsvnClass},
+      styleSpec: { kind: StyleKind.BsvnClass },
       props: {
         [defaultPropSectionSymbol]: {
           ...pick(
@@ -36,23 +36,23 @@ export default {
               src: {
                 description: 'Image URL to use for the avatar',
               },
-              variant: {
+              theme: {
                 default: 'secondary',
               },
             }),
             [
               'ariaLabel',
               'alt',
-              'bgVariant',
+              'bg',
+              'fg',
               'rounded',
               'roundedBottom',
               'roundedEnd',
               'roundedStart',
               'roundedTop',
               'src',
-              'textVariant',
-              'variant',
-            ]
+              'theme',
+            ],
           ),
           badge: {
             type: 'boolean | string',
@@ -60,11 +60,10 @@ export default {
             description:
               'When `true` shows an empty badge on the avatar, alternatively set to a string for content in the badge',
           },
-          badgeBgVariant: {
-            type: 'ColorVariant | null',
+          badgeBg: {
+            type: 'BgColor | null',
             default: null,
-            description:
-              'Applies one of the Bootstrap theme color variants to the background of the badge',
+            description: 'Applies a background color (`BgColor`) to the badge',
           },
           badgeDotIndicator: {
             type: 'boolean',
@@ -72,15 +71,15 @@ export default {
             description:
               'When `true` shows a small dot indicator on the Avatar. All of the badge props are applied to the dot. `badge-dot-indicator` takes precedence over `badge`',
           },
-          badgeTextVariant: {
-            type: 'TextColorVariant | null',
+          badgeFg: {
+            type: 'FgColor | null',
             default: null,
-            description: 'Applies one of the Bootstrap theme color variants to the text',
+            description: 'Applies a foreground (text) color (`FgColor`) to the badge',
           },
-          badgeVariant: {
-            type: 'ColorVariant | null',
+          badgeTheme: {
+            type: 'ThemeColor | null',
             default: 'primary',
-            description: 'Applies one of the Bootstrap theme color variants to the badge',
+            description: 'Applies one of the theme colors to the badge',
           },
           badgePlacement: {
             type: 'CombinedPlacement',
@@ -124,7 +123,7 @@ export default {
         'BLink props': linkedBLinkSection,
       },
       emits: {
-        'click': {
+        click: {
           description: '', // TODO missing description
           args: {
             click: {
@@ -154,7 +153,7 @@ export default {
       } satisfies SlotRecord<keyof BAvatarSlots>,
     },
     BAvatarGroup: {
-      styleSpec: {kind: StyleKind.BsvnClass},
+      styleSpec: { kind: StyleKind.BsvnClass },
       props: {
         ...pick(
           buildCommonProps({
@@ -163,21 +162,21 @@ export default {
               description:
                 'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence. Refer to the documentation for details.',
             },
-            variant: {
-              default: 'secondary',
+            theme: {
+              default: null,
             },
           }),
           [
-            'bgVariant',
+            'bg',
+            'fg',
             'rounded',
             'roundedBottom',
             'roundedEnd',
             'roundedStart',
             'roundedTop',
             'tag',
-            'textVariant',
-            'variant',
-          ]
+            'theme',
+          ],
         ),
         overlap: {
           type: 'Numberish',

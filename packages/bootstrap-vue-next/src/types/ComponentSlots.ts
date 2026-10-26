@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {Placement} from './Alignment'
 import type {ClassValue} from './AnyValuedAttributes'
-import type {ButtonVariant, ColorVariant} from './ColorTypes'
+import type {ButtonVariant, ThemeColor} from './ColorTypes'
 import type {ValidationState} from './CommonTypes'
 import type {LiteralUnion} from './LiteralUnion'
 import type {SelectOption} from './SelectTypes'
@@ -471,6 +471,7 @@ export type BFormTagsSlots = {
   'default'?: (props: {
     addButtonText: string
     addButtonVariant: ButtonVariant | null
+    addButtonTheme: ThemeColor | null
     addTag: (tag?: string) => void
     disableAddButton: boolean
     disabled: boolean
@@ -503,13 +504,13 @@ export type BFormTagsSlots = {
     tagClass: ClassValue
     tagPills: boolean
     tagRemoveLabel: string | undefined
-    tagVariant: ColorVariant | null
+    tagTheme: ThemeColor | null
     tags: string[]
   }) => any
   'tag'?: (props: {
     tag: string
     tagClass: ClassValue
-    tagVariant: ColorVariant | null
+    tagTheme: ThemeColor | null
     tagPills: boolean
     removeTag: (tag?: string) => void
   }) => any
@@ -546,7 +547,7 @@ export type BOverlaySlots = {
 
   overlay?: (props: {
     type: SpinnerType
-    variant: ColorVariant | null | undefined
+    theme: ThemeColor | null | undefined
     small: boolean
   }) => any
 }

@@ -509,18 +509,18 @@ describe('form-checkbox', () => {
 
     it('child label has class btn-{type} when prop button and prop buttonVariant', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {button: true, buttonVariant: 'danger', plain: false},
+        props: {button: true, buttonTheme: 'danger', plain: false},
       })
       const $label = wrapper.get('label')
-      expect($label.classes()).toContain('btn-danger')
+      expect($label.classes()).toContain('theme-danger')
     })
 
     it('child label does not have class btn-{type} when prop button false and prop buttonVariant', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {button: false, buttonVariant: 'danger', plain: false},
+        props: {button: false, buttonTheme: 'danger', plain: false},
       })
       const $label = wrapper.get('label')
-      expect($label.classes()).not.toContain('btn-danger')
+      expect($label.classes()).not.toContain('theme-danger')
     })
 
     it('child label does not have class btn-{type} when prop button true and prop buttonVariant undefined', () => {
@@ -706,7 +706,7 @@ describe('form-checkbox', () => {
     it('inherits buttonVariant from parent when not explicitly set', () => {
       const wrapper = mount(BFormCheckboxGroup, {
         props: {
-          buttonVariant: 'primary',
+          buttonTheme: 'primary',
           buttons: true,
         },
         slots: {
@@ -719,18 +719,18 @@ describe('form-checkbox', () => {
       })
       const $checkbox = wrapper.findComponent(BFormCheckbox)
       const $label = $checkbox.get('label')
-      expect($label.classes()).toContain('btn-primary')
-      expect($label.classes()).not.toContain('btn-secondary')
+      expect($label.classes()).toContain('theme-primary')
+      expect($label.classes()).not.toContain('theme-secondary')
     })
 
     it('child buttonVariant overrides parent buttonVariant when explicitly set', () => {
       const wrapper = mount(BFormCheckboxGroup, {
         props: {
-          buttonVariant: 'primary',
+          buttonTheme: 'primary',
           buttons: true,
         },
         slots: {
-          default: '<BFormCheckbox value="1" button-variant="danger">Checkbox 1</BFormCheckbox>',
+          default: '<BFormCheckbox value="1" button-theme="danger">Checkbox 1</BFormCheckbox>',
           option: () => {},
         },
         global: {
@@ -739,8 +739,8 @@ describe('form-checkbox', () => {
       })
       const $checkbox = wrapper.findComponent(BFormCheckbox)
       const $label = $checkbox.get('label')
-      expect($label.classes()).toContain('btn-danger')
-      expect($label.classes()).not.toContain('btn-primary')
+      expect($label.classes()).toContain('theme-danger')
+      expect($label.classes()).not.toContain('theme-primary')
     })
 
     it('inherits size from parent when not explicitly set', () => {
@@ -952,7 +952,7 @@ describe('form-checkbox', () => {
       const $checkbox = wrapper.findComponent(BFormCheckbox)
       const $label = $checkbox.get('label')
       // Default buttonVariant should be 'secondary'
-      expect($label.classes()).toContain('btn-secondary')
+      expect($label.classes()).toContain('theme-secondary')
       // Default size is undefined which doesn't add a class
       expect($checkbox.classes()).not.toContain('form-control-sm')
       expect($checkbox.classes()).not.toContain('form-control-lg')
@@ -1094,7 +1094,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1122,7 +1123,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('parent-name'),
               state: ref(undefined),
@@ -1150,7 +1152,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref('parent-form'),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1178,7 +1181,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1206,7 +1210,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('parent-name'),
               state: ref(undefined),
@@ -1234,7 +1239,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref('parent-form'),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1263,7 +1269,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: parentModelValue,
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1292,7 +1299,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: parentModelValue,
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1394,7 +1402,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1433,7 +1442,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1456,8 +1466,7 @@ describe('form-checkbox', () => {
       const disabled = ref(true)
       const state = ref<boolean | undefined>(undefined)
       const wrapper = mount(BFormCheckbox, {
-        global: {provide: provideFormGroupStub(state, disabled),
-        },
+        global: {provide: provideFormGroupStub(state, disabled)},
       })
       const $input = wrapper.get('input')
       expect($input.attributes('disabled')).toBe('')
@@ -1618,7 +1627,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: parentModelValue,
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1648,7 +1658,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: parentModelValue,
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1678,7 +1689,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref('group-name'),
               state: ref(undefined),
@@ -1707,7 +1719,8 @@ describe('form-checkbox', () => {
             [checkboxGroupKey as symbol]: {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
-              buttonVariant: ref('secondary'),
+              buttonVariant: ref('solid'),
+              buttonTheme: ref('secondary'),
               form: ref(undefined),
               name: ref(''),
               state: ref(undefined),

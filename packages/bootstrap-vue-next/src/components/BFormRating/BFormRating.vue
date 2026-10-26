@@ -101,7 +101,7 @@ const _props = withDefaults(defineProps<Omit<BFormRatingProps, 'modelValue'>>(),
   showValueMax: false,
   size: undefined,
   length: lengthDefault,
-  variant: undefined,
+  theme: undefined,
 })
 const props = useDefaults(_props, 'BFormRating')
 defineSlots<BFormRatingSlots>()
@@ -218,8 +218,8 @@ const iconColors = computed(() =>
     if (props.disabled) {
       return {class: 'is-disabled', style: {}}
     }
-    if (props.variant) {
-      return {class: `text-${props.variant}`, style: {}}
+    if (props.theme) {
+      return {class: `fg-${props.theme}`, style: {}}
     }
     if (props.color) {
       return {class: '', style: {color: props.color}}

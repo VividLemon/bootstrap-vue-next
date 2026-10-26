@@ -461,13 +461,23 @@ describe('toast', () => {
   })
 
   // closeVariant prop
-  it('BButton has variant class from closeVariant prop', () => {
+  it('BButton has theme class from closeTheme prop', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeVariant: 'warning', closeContent: 'X'},
+      props: {modelValue: true, closeTheme: 'warning', closeContent: 'X'},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)
-    expect($bbutton.classes()).toContain('btn-warning')
+    expect($bbutton.classes()).toContain('theme-warning')
+    expect($bbutton.classes()).toContain('btn-solid')
+  })
+
+  it('BButton has variant class from closeVariant prop', () => {
+    const wrapper = mount(BToast, {
+      props: {modelValue: true, closeVariant: 'outline', closeContent: 'X'},
+      slots: {default: 'content'},
+    })
+    const $bbutton = wrapper.getComponent(BButton)
+    expect($bbutton.classes()).toContain('btn-outline')
   })
 
   // Close button click events
@@ -813,31 +823,31 @@ describe('toast', () => {
   })
 
   // Color variant classes
-  it('nested div has text-bg-{variant} class when variant prop is set', () => {
+  it('nested div has theme-{theme} class when theme prop is set', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, variant: 'success'},
+      props: {modelValue: true, theme: 'success'},
       slots: {default: 'content'},
     })
     const $div = wrapper.get('div')
-    expect($div.classes()).toContain('text-bg-success')
+    expect($div.classes()).toContain('theme-success')
   })
 
-  it('nested div has bg-{bgVariant} class when bgVariant prop is set', () => {
+  it('nested div has bg-{bg} class when bg prop is set', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, bgVariant: 'primary'},
+      props: {modelValue: true, bg: 'primary'},
       slots: {default: 'content'},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('bg-primary')
   })
 
-  it('nested div has text-{textVariant} class when textVariant prop is set', () => {
+  it('nested div has fg-{fg} class when fg prop is set', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, textVariant: 'white'},
+      props: {modelValue: true, fg: 'white'},
       slots: {default: 'content'},
     })
     const $div = wrapper.get('div')
-    expect($div.classes()).toContain('text-white')
+    expect($div.classes()).toContain('fg-white')
   })
 
   // Default slot renders content

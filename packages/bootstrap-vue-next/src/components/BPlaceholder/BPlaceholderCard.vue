@@ -17,7 +17,7 @@
       <slot name="header">
         <BPlaceholder
           :width="props.headerWidth"
-          :variant="props.headerVariant"
+          :bg="props.headerTheme"
           :animation="props.headerAnimation"
           :size="props.headerSize"
         />
@@ -37,7 +37,7 @@
           :width="props.footerWidth"
           :animation="props.footerAnimation"
           :size="props.noButton ? props.footerSize : undefined"
-          :variant="props.footerVariant"
+          v-bind="footerColorAttrs"
         />
       </slot>
     </template>
@@ -57,11 +57,11 @@ const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   animation: undefined,
   footerAnimation: undefined,
   footerSize: undefined,
-  footerVariant: undefined,
+  footerTheme: undefined,
   footerWidth: 100,
   headerAnimation: undefined,
   headerSize: undefined,
-  headerVariant: undefined,
+  headerTheme: undefined,
   headerWidth: 100,
   imgBlankColor: '#868e96',
   imgPlacement: 'top',
@@ -72,7 +72,7 @@ const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   noHeader: false,
   noImg: false,
   size: undefined,
-  variant: undefined,
+  theme: undefined,
 })
 const props = useDefaults(_props, 'BPlaceholderCard')
 defineSlots<BPlaceholderCardSlots>()
@@ -80,8 +80,11 @@ defineSlots<BPlaceholderCardSlots>()
 const defaultAttrs = computed(() => ({
   animation: props.animation,
   size: props.size,
-  variant: props.variant,
+  bg: props.theme,
 }))
 
 const footerComponent = computed(() => (!props.noButton ? BPlaceholderButton : BPlaceholder))
+const footerColorAttrs = computed(() =>
+  props.noButton ? {bg: props.footerTheme} : {theme: props.footerTheme}
+)
 </script>

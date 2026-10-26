@@ -12,17 +12,8 @@
       );
     "
   >
-    <BButton
-      class="mb-2"
-      @click="showToast"
-    >
-      Show Toast
-    </BButton>
-    <BToast
-      v-model="show"
-      variant="info"
-      solid
-    >
+    <BButton class="mb-2" @click="showToast"> Show Toast </BButton>
+    <BToast v-model="show" theme="info" solid>
       <template #title> Example toast </template>
       This is a toast with a title.
     </BToast>
@@ -30,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const show = ref(false)
 

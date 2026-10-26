@@ -61,12 +61,12 @@ describe('placeholder', () => {
     expect(wrapper.find('.placeholder').attributes('style')).toContain('width: 6%;')
   })
 
-  it('has class bg-{type} when prop variant', async () => {
+  it('has class bg-{type} when prop bg', async () => {
     const wrapper = mount(BPlaceholder, {
-      props: {variant: 'info'},
+      props: {bg: 'info'},
     })
     expect(wrapper.find('.placeholder').classes()).toContain('bg-info')
-    await wrapper.setProps({variant: undefined})
+    await wrapper.setProps({bg: undefined})
     expect(wrapper.find('.placeholder').classes()).not.toContain('bg-info')
   })
 

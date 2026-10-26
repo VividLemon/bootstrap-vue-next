@@ -44,13 +44,13 @@ The height of the progress bar can be controlled with the height prop. The heigh
 
 ## Backgrounds
 
-Use background variants to change the appearance of individual progress bars. The default variant is `primary`.
+Use the `theme` prop to change the color of individual progress bars (it renders Bootstrap v6's `.theme-<theme>` class, which the progress styles read; this replaces v5 `bg-<variant>`). The default theme is `primary`. Use `bg` and `fg` for finer control, for example `bg="subtle-primary"`; see [Color Themes](/docs/reference/color-variants) and [registering custom themes](/docs/components/button#custom-themes).
 
 <<< DEMO ./demo/ProgressBackgrounds.vue
 
 ## Striped Background
 
-Set `striped` to apply a stripe via CSS gradient over the progress bar's background variant.
+Set `striped` to apply a stripe via CSS gradient over the progress bar's background color.
 
 <<< DEMO ./demo/ProgressStriped.vue
 

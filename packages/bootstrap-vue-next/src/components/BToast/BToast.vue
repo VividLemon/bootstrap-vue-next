@@ -33,6 +33,7 @@
             :class="[props.closeClass]"
             class="ms-auto"
             :variant="props.closeVariant"
+            :theme="props.closeTheme"
             @click.stop.prevent="hide('close')"
           >
             <slot name="close" v-bind="sharedSlots">
@@ -69,6 +70,7 @@
               :class="[props.closeClass]"
               class="ms-auto btn-close-custom"
               :variant="props.closeVariant"
+              :theme="props.closeTheme"
               @click.stop.prevent="hide('close')"
             >
               <slot name="close" v-bind="sharedSlots">
@@ -92,7 +94,7 @@
         :show-progress="props.progressProps?.showProgress"
         :show-value="props.progressProps?.showValue"
         :striped="props.progressProps?.striped"
-        :variant="props.progressProps?.variant"
+        :theme="props.progressProps?.theme"
         :max="modelValue"
         :value="remainingMs"
         height="4px"
@@ -109,7 +111,7 @@ import BCloseButton from '../BButton/BCloseButton.vue'
 import BLink from '../BLink/BLink.vue'
 import BProgress from '../BProgress/BProgress.vue'
 import {useCountdown} from '../../composables/useCountdown'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {useCountdownHover} from '../../composables/useCountdownHover'
 import {useId} from '../../composables/useId'
@@ -117,13 +119,14 @@ import {useShowHide} from '../../composables/useShowHide'
 import BButton from '../BButton/BButton.vue'
 
 const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
-  bgVariant: null,
+  bg: null,
   body: undefined,
   bodyClass: undefined,
   closeClass: undefined,
   closeContent: undefined,
   closeLabel: 'Close',
-  closeVariant: 'secondary',
+  closeTheme: 'secondary',
+  closeVariant: 'solid',
   headerClass: undefined,
   headerTag: 'div',
   id: undefined,
@@ -141,7 +144,7 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   showOnPause: true,
   show: false,
   solid: false,
-  textVariant: null,
+  fg: null,
   title: undefined,
   toastClass: undefined,
   transProps: undefined,
@@ -167,8 +170,8 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   underlineOffsetHover: undefined,
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
-  underlineVariant: undefined,
-  variant: undefined,
+  underlineTheme: undefined,
+  theme: undefined,
   // End link props
 })
 const props = useDefaults(_props, 'BToast')
@@ -231,7 +234,7 @@ const isToastVisible = computed(
   () => showRef.value || isActive.value || (props.showOnPause && isPaused.value)
 )
 
-const colorClasses = useColorVariantClasses(props)
+const colorClasses = useThemeClasses(() => ({theme: props.theme, bg: props.bg, fg: props.fg}))
 const computedClasses = computed(() => [
   colorClasses.value,
   {

@@ -9,12 +9,7 @@
       @hidden="onHidden"
     >
       <template #target>
-        <BButton
-          ref="targetButton"
-          variant="primary"
-        >
-          Interactive Popover
-        </BButton>
+        <BButton ref="targetButton" theme="primary"> Interactive Popover </BButton>
       </template>
 
       <template #title>
@@ -22,7 +17,7 @@
           <span>Interactive Content</span>
           <BButton
             variant="link"
-            class="text-decoration-none p-0 text-white"
+            class="text-decoration-none p-0 fg-white"
             aria-label="Close"
             @click="onClose"
           >
@@ -66,11 +61,7 @@
           />
         </BFormGroup>
 
-        <BAlert
-          v-if="input1 || input2"
-          variant="info"
-          class="small mb-2"
-        >
+        <BAlert v-if="input1 || input2" theme="info" class="small mb-2">
           <strong>Current Values:</strong><br />
           Name: <strong>{{ input1 || '(empty)' }}</strong
           ><br />
@@ -78,27 +69,13 @@
         </BAlert>
 
         <div class="d-flex gap-2">
-          <BButton
-            size="sm"
-            variant="secondary"
-            @click="onClose"
-            >Cancel</BButton
-          >
-          <BButton
-            size="sm"
-            variant="primary"
-            @click="onOk"
-            >Ok</BButton
-          >
+          <BButton size="sm" theme="secondary" @click="onClose">Cancel</BButton>
+          <BButton size="sm" theme="primary" @click="onOk">Ok</BButton>
         </div>
       </div>
     </BPopover>
 
-    <BCard
-      v-if="input1Return && input2Return"
-      title="Returned values:"
-      class="mt-3"
-    >
+    <BCard v-if="input1Return && input2Return" title="Returned values:" class="mt-3">
       <BCardText>
         Name: <strong>{{ input1Return }}</strong
         ><br />
@@ -109,8 +86,8 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, ref} from 'vue'
-import {BButton} from 'bootstrap-vue-next/components/BButton'
+import { nextTick, ref } from 'vue'
+import { BButton } from 'bootstrap-vue-next/components/BButton'
 
 interface SelectOption {
   text: string
@@ -129,10 +106,10 @@ const input1Ref = ref<HTMLInputElement>()
 const targetButton = ref<InstanceType<typeof BButton>>()
 
 const options: SelectOption[] = [
-  {text: '- Choose 1 -', value: ''},
-  {text: 'Red', value: 'Red'},
-  {text: 'Green', value: 'Green'},
-  {text: 'Blue', value: 'Blue'},
+  { text: '- Choose 1 -', value: '' },
+  { text: 'Red', value: 'Red' },
+  { text: 'Green', value: 'Green' },
+  { text: 'Blue', value: 'Blue' },
 ]
 
 const onClose = () => {

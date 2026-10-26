@@ -27,9 +27,9 @@ const _props = withDefaults(defineProps<BAvatarGroupProps>(), {
   roundedTop: undefined,
   // End RadiusElementExtendables props
   // ColorExtendables props
-  bgVariant: null,
-  textVariant: null,
-  variant: null,
+  bg: null,
+  fg: null,
+  theme: null,
   // End ColorExtendables props
 })
 const props = useDefaults(_props, 'BAvatarGroup')
@@ -54,8 +54,8 @@ provide(avatarGroupInjectionKey, {
   roundedBottom: toRef(() => props.roundedBottom),
   roundedStart: toRef(() => props.roundedStart),
   roundedEnd: toRef(() => props.roundedEnd),
-  variant: toRef(() => props.variant),
-  bgVariant: toRef(() => props.bgVariant),
-  textVariant: toRef(() => props.textVariant),
+  theme: toRef(() => props.theme),
+  bg: toRef(() => props.bg),
+  fg: toRef(() => props.fg),
 })
 </script>

@@ -58,7 +58,7 @@ You can use the `fade` prop to animate slides with a fade transition instead of 
 
 You can make your Carousels autoplay on a page load by setting the `ride` prop to `carousel`. Autoplaying Carousels are automatically paused when hovering with a mouse. You can disable pausing during hover by using the `noHoverPause` prop.
 
-<BAlert :model-value="true" variant="info">
+<BAlert :model-value="true" theme="info">
 For accessibility reasons, we recommend avoiding the use of autoplaying carousels. If your page does include an autoplaying carousel, we recommend providing an additional button or control to explicitly pause/stop the carousel.
 
 See [WCAG 2.1 Success Criterion 2.2.2 Pause, Stop, Hide.](https://www.w3.org/TR/WCAG21/#pause-stop-hide),
@@ -96,7 +96,7 @@ There can come situations where you need to manually pause/resume the state of a
 
 BCarousel comes with automatic support for touch swiping devices. You can disable touch swiping by using the `no-touch` prop.
 
-<BAlert :model-value="true" variant="info">
+<BAlert :model-value="true" theme="info">
   Due to touch swiping not being available to everyone, such as a user that is using a mouse, you will likely want to include multiple ways to transition the slides. Otherwise, transitioning can be impossible to those users.
 </BAlert>
 

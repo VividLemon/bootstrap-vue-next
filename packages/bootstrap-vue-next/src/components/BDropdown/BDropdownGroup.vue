@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
 import type {BDropdownGroupProps, BDropdownGroupSlots} from '../../types'
@@ -38,7 +38,7 @@ const _props = withDefaults(defineProps<BDropdownGroupProps>(), {
   header: undefined,
   headerClass: undefined,
   headerTag: 'header',
-  headerVariant: null,
+  headerTheme: null,
   id: undefined,
 })
 const props = useDefaults(_props, 'BDropdownGroup')
@@ -47,10 +47,6 @@ defineSlots<BDropdownGroupSlots>()
 const headerId = computed(() => (props.id ? `${props.id}_group_dd_header` : undefined))
 const headerRole = computed(() => (props.headerTag === 'header' ? undefined : 'heading'))
 
-const colorClasses = useColorVariantClasses(
-  computed(() => ({
-    textVariant: props.headerVariant,
-  }))
-)
+const colorClasses = useThemeClasses(() => ({theme: props.headerTheme}))
 const computedClasses = computed(() => [props.headerClass, colorClasses.value])
 </script>

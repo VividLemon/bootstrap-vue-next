@@ -40,8 +40,8 @@ distortion will occur. The image will be scaled up or down to fit within the ava
   fall back to the value of the `text` prop. If the `text` props is not
   provided, then the default avatar image will be shown. Also, when the image fails to load, the
   `img-error` event will be emitted
-- [Variant colors](#variants) when using images not normally visible, unless the image fails load.
-  The variant will affect the focus styling when the image avatar is also an
+- [Theme colors](#themes) when using images not normally visible, unless the image fails load.
+  The theme will affect the focus styling when the image avatar is also an
   [actionable avatar](#actionable-avatars)
 - If neither the `text` or `src` prop is provided _and_ the [default slot](#custom-content)
   has no content, then the `person-fill` image will be used
@@ -70,16 +70,16 @@ appearance, or if using custom icons or SVGs e.g.:
 
 ## Styling
 
-### Variants
+### Themes
 
-Use the `variant` prop to specify one of Bootstrap theme variant colors. The default variant is
+Use the `theme` prop to specify one of the Bootstrap theme colors. The default theme is
 `secondary`.
 
 <<< DEMO ./demo/AvatarVariants.vue#template{vue-html}
 
-When displaying text inside the avatar, text colors are calculated based on the `variant` prop. The result is either `light` or `dark`. You can override the calculated text color by manually specifying the `bg-variant` and `text-variant` props. Note that
-`bg-variant` and `text-variant` take precedence over `variant`. See the
-[Color Variant Reference](/docs/reference/color-variants#variant-interactions) for details.
+When displaying text inside the avatar, text colors come from the `theme` (class `.theme-<theme>`). You can override the colors by manually specifying the `bg` and `fg` props (for example `bg="subtle-primary"` and `fg="emphasis-primary"`). Note that
+`bg` and `fg` take precedence over `theme`. See the
+[Color Themes Reference](/docs/reference/color-variants#prop-interactions) for details.
 
 <<< DEMO ./demo/AvatarVariantOverride.vue#template{vue-html}
 
@@ -159,8 +159,8 @@ For additional details on the `RouterLink` compatible props, please refer to the
 
 ## Badge avatars
 
-Easily add a badge to your avatar via the `badge` prop or `'badge'` slot, and the badge variant can
-be set via the `badge-variant` prop. The badge will scale with the size of the avatar.
+Easily add a badge to your avatar via the `badge` prop or `'badge'` slot, and the badge theme can
+be set via the `badge-theme` prop. The badge will scale with the size of the avatar.
 
 <<< DEMO ./demo/AvatarBadge.vue#template{vue-html}
 
@@ -184,7 +184,7 @@ Badge positioning properties have changed from `bootstrap-vue`. See the [migrati
 
 **Notes:**
 
-- The `variant`, `square` and `rounded` props on `BAvatarGroup` will take precedence over the
+- The `theme`, `square` and `rounded` props on `BAvatarGroup` will take precedence over the
   respective props on individual avatars.
 
 ### Group size
@@ -195,16 +195,16 @@ individual avatars when they are placed inside a `BAvatarGroup`.
 
 <<< DEMO ./demo/AvatarGroupSize.vue#template{vue-html}
 
-### Group variant
+### Group theme
 
-Use the `variant` prop to color all child avatars in the `BAvatarGroup`. Note that the `variant`
-prop, when set, will override the the `variant` specified on individual avatars.
+Use the `theme` prop to color all child avatars in the `BAvatarGroup`. Note that the `theme`
+prop, when set, will override the the `theme` specified on individual avatars.
 
 <<< DEMO ./demo/AvatarGroupVariant.vue#template{vue-html}
 
 ### Group rounding
 
-Similar to the `variant` prop, the `BAvatarGroup` props `square` and `rounded` take precedence
+Similar to the `theme` prop, the `BAvatarGroup` props `square` and `rounded` take precedence
 over the respective props on individual child avatars.
 
 <<< DEMO ./demo/AvatarGroupRounding.vue#template{vue-html}
@@ -234,5 +234,5 @@ the `to` or `href` props when changing routes or changing URLs) for accessibilit
 ## Implementation notes
 
 Avatars are based upon `BBadge` and `BButton` components, and as such, rely upon Bootstrap's
-`badge-*` and `btn-*` variant classes, as well as the `rounded-*`
+`badge` and `btn-*` classes combined with `theme-*` classes, as well as the `rounded-*`
 [utility classes](/docs/reference/utility-classes).

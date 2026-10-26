@@ -247,110 +247,94 @@ describe('link', () => {
     expect(wrapper.classes()).toContain('stretched-link')
   })
 
-  // --- variant ---
+  // --- theme ---
 
-  it('has class link-{variant} when variant prop is set', () => {
+  it('has class theme-{theme} when theme prop is set', () => {
     const wrapper = mount(BLink, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-primary')
+    expect(wrapper.classes()).toContain('theme-primary')
   })
 
-  it('does not have link-{variant} class when variant is null', () => {
+  it('does not have theme class when theme is null', () => {
     const wrapper = mount(BLink, {
-      props: {variant: null},
+      props: {theme: null},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes().some((c) => c.startsWith('link-'))).toBe(false)
+    expect(wrapper.classes().some((c) => c.startsWith('theme-'))).toBe(false)
   })
 
-  it('changes variant class reactively', async () => {
+  it('changes theme class reactively', async () => {
     const wrapper = mount(BLink, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-primary')
-    await wrapper.setProps({variant: 'danger'})
-    expect(wrapper.classes()).toContain('link-danger')
-    expect(wrapper.classes()).not.toContain('link-primary')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: 'danger'})
+    expect(wrapper.classes()).toContain('theme-danger')
+    expect(wrapper.classes()).not.toContain('theme-primary')
   })
 
   // --- opacity ---
 
-  it('has class link-opacity-{value} when opacity is set', () => {
+  it('has class link-{value} when opacity is set', () => {
     const wrapper = mount(BLink, {
       props: {opacity: 75 as const},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-opacity-75')
+    expect(wrapper.classes()).toContain('link-75')
   })
 
-  it('has class link-opacity-{value}-hover when opacityHover is set', () => {
+  it('has class hover:link-{value} when opacityHover is set', () => {
     const wrapper = mount(BLink, {
       props: {opacityHover: 100 as const},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-opacity-100-hover')
+    expect(wrapper.classes()).toContain('hover:link-100')
   })
 
   // --- underline classes ---
 
-  it('has class link-underline-{variant} when underlineVariant is set', () => {
+  it('has class underline-{theme} when underlineTheme is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineVariant: 'primary'},
+      props: {underlineTheme: 'primary'},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-underline-primary')
+    expect(wrapper.classes()).toContain('underline-primary')
   })
 
-  it('has class link-offset-{value} when underlineOffset is set', () => {
+  it('has class underline-offset-{value} when underlineOffset is set', () => {
     const wrapper = mount(BLink, {
       props: {underlineOffset: 3 as const},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-offset-3')
+    expect(wrapper.classes()).toContain('underline-offset-3')
   })
 
-  it('has class link-offset-{value}-hover when underlineOffsetHover is set', () => {
+  it('has class hover:underline-offset-{value} when underlineOffsetHover is set', () => {
     const wrapper = mount(BLink, {
       props: {underlineOffsetHover: 2 as const},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-offset-2-hover')
+    expect(wrapper.classes()).toContain('hover:underline-offset-2')
   })
 
-  it('has class link-underline-opacity-{value} when underlineOpacity is set', () => {
+  it('has class underline-{value} when underlineOpacity is set', () => {
     const wrapper = mount(BLink, {
       props: {underlineOpacity: 50 as const},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-underline-opacity-50')
-    expect(wrapper.classes()).toContain('link-underline')
+    expect(wrapper.classes()).toContain('underline-50')
+    expect(wrapper.classes()).not.toContain('link-underline')
   })
 
-  it('has class link-underline-opacity-{value}-hover when underlineOpacityHover is set', () => {
+  it('has class hover:underline-{value} when underlineOpacityHover is set', () => {
     const wrapper = mount(BLink, {
       props: {underlineOpacityHover: 75 as const},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-underline-opacity-75-hover')
-    expect(wrapper.classes()).toContain('link-underline')
-  })
-
-  it('has link-underline class when underlineOpacity is set without underlineVariant', () => {
-    const wrapper = mount(BLink, {
-      props: {underlineOpacity: 25 as const, underlineVariant: null},
-      global: {plugins: [router]},
-    })
-    expect(wrapper.classes()).toContain('link-underline')
-  })
-
-  it('does not have link-underline class when underlineVariant is set', () => {
-    const wrapper = mount(BLink, {
-      props: {underlineVariant: 'primary'},
-      global: {plugins: [router]},
-    })
+    expect(wrapper.classes()).toContain('hover:underline-75')
     expect(wrapper.classes()).not.toContain('link-underline')
   })
 
@@ -669,7 +653,7 @@ describe('link', () => {
         active: true,
         disabled: true,
         stretched: true,
-        variant: 'primary',
+        theme: 'primary',
         icon: true,
       },
       global: {plugins: [router]},
@@ -677,7 +661,7 @@ describe('link', () => {
     expect(wrapper.classes()).toContain('active')
     expect(wrapper.classes()).toContain('disabled')
     expect(wrapper.classes()).toContain('stretched-link')
-    expect(wrapper.classes()).toContain('link-primary')
+    expect(wrapper.classes()).toContain('theme-primary')
     expect(wrapper.classes()).toContain('icon-link')
   })
 

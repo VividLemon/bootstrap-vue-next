@@ -112,19 +112,19 @@ may be needed depending on your card content.
 
 <<< DEMO ./demo/CardHorizontal.vue#template{vue-html}
 
-## Text variants
+## Foreground colors
 
-By default, cards use dark text and assume a light background. You can reverse that by toggling the
-color of text within, as well as that of the card's sub-components, via the prop `text-variant`.
-Then, specify a dark background variant.
+Cards read their colors from Bootstrap v6's theme variables. Set the `theme` prop (class `.theme-<theme>`) to color the whole card, or use the `fg` prop (for example `fg="white"` or `fg="contrast-primary"`) to change the color of text within, as well as that of the card's sub-components.
 
 <<< DEMO ./demo/CardTextVariants.vue#template{vue-html}
 
-## Background and border variants
+## Theme, background and border colors
 
-Cards include their own variant style for quickly changing the background-color and of a card via
-the `bg-variant` and `border-variant` props. Darker solid variants may require setting the prop
-`text-variant` to adjust the text color.
+Cards include their own style for quickly changing the background color and border of a card via
+the `theme`, `bg` and `border` props. Solid backgrounds may require setting the prop
+`fg` to adjust the text color. `bg` accepts values like `primary`, `subtle-primary`, `muted-primary` or a neutral layer such as `1`; `border` accepts values like `primary`, `subtle-primary` or `muted`.
+See [Color Themes](/docs/reference/color-variants) for all values and
+[registering custom themes](/docs/components/button#custom-themes).
 
 ### Solid
 
@@ -134,16 +134,16 @@ the `bg-variant` and `border-variant` props. Darker solid variants may require s
 
 <<< DEMO ./demo/CardBorderedVariants.vue#template{vue-html}
 
-#### Variant to class mapping
+#### Value to class mapping
 
-bootstrap-vue-next `BCard` variants are directly mapped to Bootstrap v5 card classes by pre-pending
-`bg-` (for solid) or `border-` (for bordered) to the above variant names.
+bootstrap-vue-next `BCard` values are directly mapped to Bootstrap v6 classes: `theme` to
+`theme-<theme>`, `bg` to `bg-<value>`, `fg` to `fg-<value>` and `border` to `border-<value>`.
 
-### Header and footer variants
+### Header and footer colors
 
-You can also apply the solid and border variants individually to card headers and footers via the
-`header-bg-variant`, `header-border-variant`, `header-text-variant`, `footer-bg-variant`,
-`footer-border-variant`, and `footer-text-variant` props.
+You can also apply the theme, background, border and foreground colors individually to card headers and footers via the
+`header-theme`, `header-bg`, `header-border`, `header-fg`, `footer-theme`, `footer-bg`,
+`footer-border`, and `footer-fg` props.
 
 <<< DEMO ./demo/CardHeaderFooterVariants.vue#template{vue-html}
 

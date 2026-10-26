@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BAlert :model-value="true" variant="warning" dismissible>
+  <BAlert :model-value="true" theme="warning" dismissible>
     <template #title>
       <span class="fw-bold">⚠️ Heads up!</span>
     </template>

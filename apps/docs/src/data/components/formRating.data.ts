@@ -7,7 +7,14 @@ export default {
   load: (): ComponentReference => ({
     BFormRating: {
       props: {
-        ...pick(buildCommonProps(), ['id', 'variant']),
+        ...pick(
+          buildCommonProps({
+            theme: {
+              default: undefined,
+            },
+          }),
+          ['id', 'theme'],
+        ),
         clearLabel: {
           type: 'string',
           default: 'Clear rating',
@@ -17,8 +24,7 @@ export default {
         color: {
           type: 'string',
           default: undefined,
-          description:
-            'CSS color to use instead of variant. Accepts either a HEX or RGB/RGBA string',
+          description: 'CSS color to use instead of theme. Accepts either a HEX or RGB/RGBA string',
         },
         disabled: {
           type: 'boolean',

@@ -6,27 +6,17 @@
     name="radio-validation"
   />
 
-  <div
-    v-if="!state"
-    class="text-danger"
-  >
-    Please select one
-  </div>
-  <div
-    v-if="state"
-    class="text-success"
-  >
-    Thank you
-  </div>
+  <div v-if="!state" class="fg-danger">Please select one</div>
+  <div v-if="state" class="fg-success">Thank you</div>
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import { computed, ref } from 'vue'
 
 const contextualOptions = [
-  {text: 'First radio', value: 'first'},
-  {text: 'Second radio', value: 'second'},
-  {text: 'Third radio', value: 'third'},
+  { text: 'First radio', value: 'first' },
+  { text: 'Second radio', value: 'second' },
+  { text: 'Third radio', value: 'third' },
 ]
 
 const selected = ref()

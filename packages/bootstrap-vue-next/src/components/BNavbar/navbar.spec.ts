@@ -99,16 +99,16 @@ describe('navbar', () => {
     expect(wrapper.classes()).not.toContain('sticky-bottom')
   })
 
-  it('contains class bg when prop variant is set', async () => {
+  it('contains class theme when prop theme is set', async () => {
     const wrapper = mount(BNavbar, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('bg-primary')
-    await wrapper.setProps({variant: 'danger'})
-    expect(wrapper.classes()).toContain('bg-danger')
-    expect(wrapper.classes()).not.toContain('bg-primary')
-    await wrapper.setProps({variant: undefined})
-    expect(wrapper.classes()).not.toContain('bg-danger')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: 'danger'})
+    expect(wrapper.classes()).toContain('theme-danger')
+    expect(wrapper.classes()).not.toContain('theme-primary')
+    await wrapper.setProps({theme: undefined})
+    expect(wrapper.classes()).not.toContain('theme-danger')
   })
 
   it('contains class fixed when prop fixed is set', async () => {

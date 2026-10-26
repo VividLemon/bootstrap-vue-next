@@ -85,29 +85,29 @@ describe('spinner', () => {
     expect(wrapper.classes()).not.toContain('spinner-border-sm')
   })
 
-  it('has class text-{type} when prop variant', async () => {
+  it('has class theme-{type} when prop theme', async () => {
     const wrapper = mount(BSpinner, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('text-primary')
-    await wrapper.setProps({variant: 'secondary'})
-    expect(wrapper.classes()).toContain('text-secondary')
-    expect(wrapper.classes()).not.toContain('text-primary')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: 'secondary'})
+    expect(wrapper.classes()).toContain('theme-secondary')
+    expect(wrapper.classes()).not.toContain('theme-primary')
   })
 
-  it('does not have text-* variant class when variant is null', () => {
+  it('does not have theme class when theme is null', () => {
     const wrapper = mount(BSpinner)
     const classes = wrapper.classes()
-    expect(classes.some((c) => c.startsWith('text-'))).toBe(false)
+    expect(classes.some((c) => c.startsWith('theme-'))).toBe(false)
   })
 
-  it('variant can be removed', async () => {
+  it('theme can be removed', async () => {
     const wrapper = mount(BSpinner, {
-      props: {variant: 'danger'},
+      props: {theme: 'danger'},
     })
-    expect(wrapper.classes()).toContain('text-danger')
-    await wrapper.setProps({variant: null})
-    expect(wrapper.classes()).not.toContain('text-danger')
+    expect(wrapper.classes()).toContain('theme-danger')
+    await wrapper.setProps({theme: null})
+    expect(wrapper.classes()).not.toContain('theme-danger')
   })
 
   it('does not have role when prop role, but has no label', () => {
@@ -275,12 +275,12 @@ describe('spinner', () => {
     expect(wrapper.classes()).not.toContain('spinner-border-sm')
   })
 
-  it('multiple variants - all classes correct', () => {
+  it('multiple props - all classes correct', () => {
     const wrapper = mount(BSpinner, {
-      props: {variant: 'warning', type: 'grow', small: true},
+      props: {theme: 'warning', type: 'grow', small: true},
     })
     expect(wrapper.classes()).toContain('spinner-grow')
     expect(wrapper.classes()).toContain('spinner-grow-sm')
-    expect(wrapper.classes()).toContain('text-warning')
+    expect(wrapper.classes()).toContain('theme-warning')
   })
 })

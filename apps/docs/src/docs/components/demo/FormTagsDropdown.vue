@@ -1,38 +1,20 @@
 <template>
   <div>
-    <BFormGroup
-      label="Tagged input using dropdown"
-      label-for="tags-with-dropdown"
-    >
-      <BFormTags
-        id="tags-with-dropdown"
-        v-model="value"
-        no-outer-focus
-        class="mb-2"
-      >
-        <template #default="{tags, disabled, addTag, removeTag}">
-          <ul
-            v-if="tags.length > 0"
-            class="list-inline d-inline-block mb-2"
-          >
-            <li
-              v-for="tag in tags"
-              :key="tag"
-              class="list-inline-item"
-            >
-              <BFormTag
-                :title="tag"
-                :disabled="disabled"
-                variant="info"
-                @remove="removeTag(tag)"
-                >{{ tag }}</BFormTag
-              >
+    <BFormGroup label="Tagged input using dropdown" label-for="tags-with-dropdown">
+      <BFormTags id="tags-with-dropdown" v-model="value" no-outer-focus class="mb-2">
+        <template #default="{ tags, disabled, addTag, removeTag }">
+          <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
+            <li v-for="tag in tags" :key="tag" class="list-inline-item">
+              <BFormTag :title="tag" :disabled="disabled" theme="info" @remove="removeTag(tag)">{{
+                tag
+              }}</BFormTag>
             </li>
           </ul>
 
           <BDropdown
             size="sm"
-            variant="outline-secondary"
+            variant="outline"
+            theme="secondary"
             block
             menu-class="w-100"
             no-caret
@@ -61,7 +43,7 @@
             <BDropdownItemButton
               v-for="option in availableOptions"
               :key="option"
-              @click="onOptionClick({option, addTag})"
+              @click="onOptionClick({ option, addTag })"
             >
               {{ option }}
             </BDropdownItemButton>
@@ -76,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import { computed, ref } from 'vue'
 
 const options = ref<string[]>([
   'Apple',
@@ -112,7 +94,7 @@ const searchDesc = computed(() => {
   return ''
 })
 
-const onOptionClick = ({option, addTag}: {option: string; addTag: (tag: string) => void}) => {
+const onOptionClick = ({ option, addTag }: { option: string; addTag: (tag: string) => void }) => {
   addTag(option)
   search.value = ''
 }

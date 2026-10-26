@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed, inject} from 'vue'
 import {progressInjectionKey} from '../../utils/keys'
@@ -16,23 +16,23 @@ import type {BProgressBarProps, BProgressBarSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BProgressBarProps>(), {
   animated: false,
-  bgVariant: null,
+  bg: null,
   label: undefined,
   max: undefined,
   precision: 0,
   showProgress: false,
   showValue: false,
   striped: false,
-  textVariant: null,
+  fg: null,
   value: 0,
-  variant: null,
+  theme: null,
 })
 const props = useDefaults(_props, 'BProgressBar')
 defineSlots<BProgressBarSlots>()
 
 const parentData = inject(progressInjectionKey, null)
 
-const colorClasses = useColorVariantClasses(props)
+const colorClasses = useThemeClasses(() => ({theme: props.theme, bg: props.bg, fg: props.fg}))
 const computedClasses = computed(() => [
   colorClasses.value,
   {

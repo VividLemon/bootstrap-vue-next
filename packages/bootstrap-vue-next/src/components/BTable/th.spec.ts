@@ -119,36 +119,36 @@ describe('th', () => {
     })
   })
 
-  describe('variant prop', () => {
-    it('has class table-{type} when variant is set', () => {
+  describe('theme prop', () => {
+    it('has class theme-{type} when theme is set', () => {
       const wrapper = mount(BTh, {
-        props: {variant: 'primary'},
+        props: {theme: 'primary'},
       })
-      expect(wrapper.classes()).toContain('table-primary')
+      expect(wrapper.classes()).toContain('theme-primary')
     })
 
-    it('does not have variant class by default', () => {
+    it('does not have theme class by default', () => {
       const wrapper = mount(BTh)
-      expect(wrapper.classes().join(' ')).not.toMatch(/table-/)
+      expect(wrapper.classes().join(' ')).not.toMatch(/theme-/)
     })
 
-    it('variant class is reactive', async () => {
+    it('theme class is reactive', async () => {
       const wrapper = mount(BTh, {
-        props: {variant: 'primary'},
+        props: {theme: 'primary'},
       })
-      expect(wrapper.classes()).toContain('table-primary')
-      await wrapper.setProps({variant: 'danger'})
-      expect(wrapper.classes()).not.toContain('table-primary')
-      expect(wrapper.classes()).toContain('table-danger')
+      expect(wrapper.classes()).toContain('theme-primary')
+      await wrapper.setProps({theme: 'danger'})
+      expect(wrapper.classes()).not.toContain('theme-primary')
+      expect(wrapper.classes()).toContain('theme-danger')
     })
 
-    it('variant class is removed when variant is set to undefined', async () => {
+    it('theme class is removed when theme is set to undefined', async () => {
       const wrapper = mount(BTh, {
-        props: {variant: 'primary'},
+        props: {theme: 'primary'},
       })
-      expect(wrapper.classes()).toContain('table-primary')
-      await wrapper.setProps({variant: undefined})
-      expect(wrapper.classes()).not.toContain('table-primary')
+      expect(wrapper.classes()).toContain('theme-primary')
+      await wrapper.setProps({theme: undefined})
+      expect(wrapper.classes()).not.toContain('theme-primary')
     })
   })
 
@@ -181,7 +181,7 @@ describe('th', () => {
       expect(wrapper.classes()).not.toContain('b-table-sticky-column')
     })
 
-    it('has class table-b-table-default when stickyColumn is true and no variant', () => {
+    it('has class table-b-table-default when stickyColumn is true and no theme', () => {
       const wrapper = mount(BTh, {
         props: {stickyColumn: true},
       })
@@ -195,21 +195,21 @@ describe('th', () => {
       expect(wrapper.classes()).not.toContain('table-b-table-default')
     })
 
-    it('does not have table-b-table-default when stickyColumn is true but variant is set', () => {
+    it('does not have table-b-table-default when stickyColumn is true but theme is set', () => {
       const wrapper = mount(BTh, {
-        props: {stickyColumn: true, variant: 'secondary'},
+        props: {stickyColumn: true, theme: 'secondary'},
       })
       expect(wrapper.classes()).not.toContain('table-b-table-default')
-      expect(wrapper.classes()).toContain('table-secondary')
+      expect(wrapper.classes()).toContain('theme-secondary')
       expect(wrapper.classes()).toContain('b-table-sticky-column')
     })
 
-    it('table-b-table-default appears when variant is removed from sticky column', async () => {
+    it('table-b-table-default appears when theme is removed from sticky column', async () => {
       const wrapper = mount(BTh, {
-        props: {stickyColumn: true, variant: 'primary'},
+        props: {stickyColumn: true, theme: 'primary'},
       })
       expect(wrapper.classes()).not.toContain('table-b-table-default')
-      await wrapper.setProps({variant: undefined})
+      await wrapper.setProps({theme: undefined})
       expect(wrapper.classes()).toContain('table-b-table-default')
     })
   })
@@ -287,24 +287,24 @@ describe('th', () => {
   })
 
   describe('multiple props combined', () => {
-    it('supports colspan, rowspan, and variant together', () => {
+    it('supports colspan, rowspan, and theme together', () => {
       const wrapper = mount(BTh, {
-        props: {colspan: 3, rowspan: 2, variant: 'success'},
+        props: {colspan: 3, rowspan: 2, theme: 'success'},
       })
       expect(wrapper.attributes('colspan')).toBe('3')
       expect(wrapper.attributes('rowspan')).toBe('2')
-      expect(wrapper.classes()).toContain('table-success')
+      expect(wrapper.classes()).toContain('theme-success')
       expect(wrapper.attributes('scope')).toBe('colgroup')
     })
 
-    it('supports stackedHeading with stickyColumn and variant', () => {
+    it('supports stackedHeading with stickyColumn and theme', () => {
       const wrapper = mount(BTh, {
-        props: {stackedHeading: 'Label', stickyColumn: true, variant: 'info'},
+        props: {stackedHeading: 'Label', stickyColumn: true, theme: 'info'},
         slots: {default: 'value'},
       })
       expect(wrapper.attributes('data-label')).toBe('Label')
       expect(wrapper.classes()).toContain('b-table-sticky-column')
-      expect(wrapper.classes()).toContain('table-info')
+      expect(wrapper.classes()).toContain('theme-info')
       expect(wrapper.classes()).not.toContain('table-b-table-default')
       expect(wrapper.find('div').text()).toBe('value')
     })

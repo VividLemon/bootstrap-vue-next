@@ -3,28 +3,13 @@
   <div>
     <div class="contains-inline">
       <BCardGroup>
-        <BCard bg-variant="primary" text-variant="white" header="Primary" class="text-center">
+        <BCard bg="primary" fg="contrast-primary" header="Primary" class="text-center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard bg-variant="secondary" text-variant="white" header="Secondary" class="text-center">
+        <BCard bg="secondary" fg="contrast-secondary" header="Secondary" class="text-center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard bg-variant="success" text-variant="white" header="Success" class="text-center">
-          <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
-        </BCard>
-      </BCardGroup>
-    </div>
-  </div>
-  <div class="mt-3">
-    <div class="contains-inline">
-      <BCardGroup>
-        <BCard bg-variant="info" text-variant="white" header="Info" class="text-center">
-          <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
-        </BCard>
-        <BCard bg-variant="warning" text-variant="white" header="Warning" class="text-center">
-          <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
-        </BCard>
-        <BCard bg-variant="danger" text-variant="white" header="Danger" class="text-center">
+        <BCard bg="success" fg="contrast-success" header="Success" class="text-center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
       </BCardGroup>
@@ -33,10 +18,25 @@
   <div class="mt-3">
     <div class="contains-inline">
       <BCardGroup>
-        <BCard bg-variant="light" header="Light" class="text-center">
+        <BCard bg="info" fg="contrast-info" header="Info" class="text-center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard bg-variant="dark" header="Dark" text-variant="white" class="text-center">
+        <BCard bg="warning" fg="contrast-warning" header="Warning" class="text-center">
+          <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
+        </BCard>
+        <BCard bg="danger" fg="contrast-danger" header="Danger" class="text-center">
+          <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
+        </BCard>
+      </BCardGroup>
+    </div>
+  </div>
+  <div class="mt-3">
+    <div class="contains-inline">
+      <BCardGroup>
+        <BCard bg="accent" fg="contrast-accent" header="Accent" class="text-center">
+          <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
+        </BCard>
+        <BCard bg="inverse" fg="contrast-inverse" header="Inverse" class="text-center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
         <BCard header="Default" class="text-center">

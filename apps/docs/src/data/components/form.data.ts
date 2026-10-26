@@ -21,13 +21,13 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BForm: {
-      styleSpec: {kind: StyleKind.Tag, value: 'form'},
+      styleSpec: { kind: StyleKind.Tag, value: 'form' },
       props: pick(buildCommonProps(), [
         'floating',
         'id',
@@ -48,7 +48,7 @@ export default {
       } satisfies ExposedRecord,
     },
     BFormDatalist: {
-      styleSpec: {kind: StyleKind.Tag, value: 'datalist'},
+      styleSpec: { kind: StyleKind.Tag, value: 'datalist' },
       props: pick(
         buildCommonProps({
           options: {
@@ -57,7 +57,7 @@ export default {
               'Array of items to render in the component. Note that BFormDatalist only supports Options, not OptionsGroups',
           },
         }),
-        ['disabled', 'disabledField', 'id', 'options', 'textField', 'valueField']
+        ['disabled', 'disabledField', 'id', 'options', 'textField', 'valueField'],
       ) satisfies PropRecord<keyof BFormDatalistProps>,
       emits: {},
       slots: {
@@ -88,7 +88,7 @@ export default {
       } satisfies SlotRecord<keyof BFormDatalistSlots<unknown>>,
     },
     BFormFloatingLabel: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: 'floating-label'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: 'floating-label' },
       props: {
         label: {
           type: 'string',
@@ -112,7 +112,7 @@ export default {
       } satisfies SlotRecord<keyof BFormFloatingLabelSlots>,
     },
     BFormInvalidFeedback: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: 'invalid-feedback, invalid-tooltip'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: 'invalid-feedback, invalid-tooltip' },
       props: {
         ...pick(buildCommonProps(), ['ariaLive', 'id', 'role', 'state', 'tag', 'tooltip']),
         forceShow: {
@@ -134,7 +134,7 @@ export default {
       } satisfies SlotRecord<keyof BFormInvalidFeedbackSlots>,
     },
     BFormRow: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: 'row'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: 'row' },
       props: pick(buildCommonProps(), ['tag']) satisfies PropRecord<keyof BFormRowProps>,
       emits: {},
       slots: {
@@ -145,7 +145,14 @@ export default {
     },
     BFormText: {
       props: {
-        ...pick(buildCommonProps(), ['id', 'tag', 'textVariant']),
+        ...pick(
+          buildCommonProps({
+            fg: {
+              default: '2',
+            },
+          }),
+          ['fg', 'id', 'tag'],
+        ),
         inline: {
           type: 'boolean',
           default: false, // TODO item not in string format
@@ -166,7 +173,7 @@ export default {
       } satisfies SlotRecord<keyof BFormTextSlots>,
     },
     BFormValidFeedback: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: 'valid-feedback, valid-tooltip'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: 'valid-feedback, valid-tooltip' },
       props: {
         ...pick(buildCommonProps(), ['ariaLive', 'id', 'role', 'state', 'tag', 'tooltip']),
         forceShow: {

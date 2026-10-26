@@ -10,11 +10,11 @@ const { create } = useToast()
 const showToast = async () => {
   await using _ = await create({
     title: 'Counting down!',
-    variant: 'info',
+    theme: 'info',
     position: 'middle-center',
     modelValue: 10000,
     progressProps: {
-      variant: 'danger',
+      theme: 'danger',
     },
     body: 'Watch me!',
   }).show()

@@ -2,8 +2,9 @@
   <!-- #region template -->
   <BDropdown
     split
-    split-variant="outline-primary"
-    variant="primary"
+    split-variant="outline"
+    split-theme="primary"
+    theme="primary"
     text="Split Variant Dropdown"
     class="me-2"
   >

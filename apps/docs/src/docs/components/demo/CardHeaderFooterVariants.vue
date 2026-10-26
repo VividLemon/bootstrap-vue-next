@@ -2,13 +2,13 @@
   <!-- #region template -->
   <BCard
     header="Card Header"
-    header-text-variant="white"
+    header-fg="white"
     header-tag="header"
-    header-bg-variant="dark"
+    header-bg="inverse"
     footer="Card Footer"
     footer-tag="footer"
-    footer-bg-variant="success"
-    footer-border-variant="dark"
+    footer-bg="success"
+    footer-border="inverse"
     title="Title"
     style="max-width: 20rem"
   >

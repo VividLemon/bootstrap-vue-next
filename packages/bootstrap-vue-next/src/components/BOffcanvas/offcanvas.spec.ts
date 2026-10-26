@@ -368,23 +368,24 @@ describe('offcanvas', () => {
       expect($button.classes()).toContain('custom-close')
     })
 
-    it('BButton from header-close slot has headerCloseVariant', () => {
+    it('BButton from header-close slot has headerCloseTheme and headerCloseVariant', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseVariant: 'warning'},
+        props: {headerCloseTheme: 'warning', headerCloseVariant: 'outline'},
         slots: {'header-close': 'X'},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $button = wrapper.findComponent(BButton)
-      expect($button.classes()).toContain('btn-warning')
+      expect($button.classes()).toContain('theme-warning')
+      expect($button.classes()).toContain('btn-outline')
     })
 
-    it('BCloseButton does not have variant class when headerCloseVariant is set', () => {
+    it('BCloseButton does not have theme class when headerCloseTheme is set', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseVariant: 'warning'},
+        props: {headerCloseTheme: 'warning'},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $close = wrapper.findComponent(BCloseButton)
-      expect($close.classes()).not.toContain('btn-warning')
+      expect($close.classes()).not.toContain('theme-warning')
     })
   })
 

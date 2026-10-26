@@ -31,6 +31,7 @@
     <slot
       :add-button-text="props.addButtonText"
       :add-button-variant="props.addButtonVariant"
+      :add-button-theme="props.addButtonTheme"
       :add-tag
       :disable-add-button="disableAddButton"
       :disabled="props.disabled"
@@ -69,7 +70,7 @@
       :tag-class="props.tagClass"
       :tag-pills="props.tagPills"
       :tag-remove-label="props.tagRemoveLabel"
-      :tag-variant="props.tagVariant"
+      :tag-theme="props.tagTheme"
       :tags="[...modelValue]"
     >
       <ul
@@ -81,7 +82,7 @@
             name="tag"
             :tag="tag"
             :tag-class="props.tagClass"
-            :tag-variant="props.tagVariant"
+            :tag-theme="props.tagTheme"
             :tag-pills="props.tagPills"
             :remove-tag="removeTag"
           >
@@ -89,7 +90,7 @@
               :key="tag"
               :class="props.tagClass"
               tag="li"
-              :variant="props.tagVariant"
+              :theme="props.tagTheme"
               :pill="props.tagPills"
               :no-remove="props.noTagRemove"
               :disabled="props.disabled"
@@ -129,8 +130,8 @@
               class="btn b-form-tags-button py-0"
               :class="[
                 inputClass,
+                getButtonThemeClasses(props.addButtonVariant, props.addButtonTheme),
                 {
-                  [`btn-${props.addButtonVariant}`]: props.addButtonVariant !== null,
                   'disabled invisible': inputValue.length === 0,
                 },
               ]"
@@ -175,11 +176,13 @@ import {escapeRegExpChars} from '../../utils/stringUtils'
 import BFormTag from './BFormTag.vue'
 import {useId} from '../../composables/useId'
 import {useStateClass} from '../../composables/useStateClass'
+import {getButtonThemeClasses} from '../../composables/useThemeClasses'
 import type {BFormTagsEmits, BFormTagsProps, BFormTagsSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
   addButtonText: 'Add',
-  addButtonVariant: 'outline-secondary',
+  addButtonVariant: 'outline',
+  addButtonTheme: 'secondary',
   addOnChange: false,
   autofocus: false,
   disabled: false,
@@ -209,7 +212,7 @@ const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
   tagRemoveLabel: undefined,
   tagRemovedLabel: 'Tag removed',
   tagValidator: () => true,
-  tagVariant: 'secondary',
+  tagTheme: 'secondary',
 })
 const props = useDefaults(_props, 'BFormTags')
 const emit = defineEmits<BFormTagsEmits>()

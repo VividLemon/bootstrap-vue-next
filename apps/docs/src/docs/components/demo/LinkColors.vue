@@ -1,23 +1,20 @@
 <template>
-  <p
-    v-for="color in variants"
-    :key="color"
-  >
-    <BLink :variant="color"> {{ color }} link </BLink>
+  <p v-for="color in colors" :key="color">
+    <BLink :theme="color"> {{ color }} link </BLink>
   </p>
 </template>
 
 <script setup lang="ts">
-import type {BaseColorVariant} from 'bootstrap-vue-next'
+import type { ThemeColor } from 'bootstrap-vue-next'
 
-const variants: (keyof BaseColorVariant)[] = [
+const colors: ThemeColor[] = [
   'primary',
+  'accent',
   'secondary',
   'success',
   'danger',
   'warning',
   'info',
-  'light',
-  'dark',
+  'inverse',
 ]
 </script>

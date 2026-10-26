@@ -208,86 +208,72 @@ describe('badge', () => {
     })
   })
 
-  describe('variant classes', () => {
-    it('has class text-bg-secondary by default', () => {
+  describe('theme classes', () => {
+    it('has class theme-secondary by default', () => {
       const wrapper = mount(BBadge)
-      expect(wrapper.classes()).toContain('text-bg-secondary')
+      expect(wrapper.classes()).toContain('theme-secondary')
     })
 
-    it('has class text-bg-{type} when prop variant is set', async () => {
+    it('has class theme-{type} when prop theme is set', async () => {
       const wrapper = mount(BBadge, {
-        props: {variant: 'primary'},
+        props: {theme: 'primary'},
       })
-      expect(wrapper.classes()).toContain('text-bg-primary')
-      await wrapper.setProps({variant: 'danger'})
-      expect(wrapper.classes()).toContain('text-bg-danger')
-      expect(wrapper.classes()).not.toContain('text-bg-primary')
+      expect(wrapper.classes()).toContain('theme-primary')
+      await wrapper.setProps({theme: 'danger'})
+      expect(wrapper.classes()).toContain('theme-danger')
+      expect(wrapper.classes()).not.toContain('theme-primary')
     })
 
-    it('does not have text-bg-{type} class when variant is null', () => {
+    it('does not have theme-{type} class when theme is null', () => {
       const wrapper = mount(BBadge, {
-        props: {variant: null},
+        props: {theme: null},
       })
-      expect(wrapper.classes().some((c) => c.startsWith('text-bg-'))).toBe(false)
+      expect(wrapper.classes().some((c) => c.startsWith('theme-'))).toBe(false)
     })
 
-    it('has class text-{type} when prop textVariant is set', async () => {
+    it('has class fg-{type} when prop fg is set', async () => {
       const wrapper = mount(BBadge, {
-        props: {textVariant: 'white'},
+        props: {fg: 'white'},
       })
-      expect(wrapper.classes()).toContain('text-white')
-      await wrapper.setProps({textVariant: 'dark'})
-      expect(wrapper.classes()).toContain('text-dark')
-      expect(wrapper.classes()).not.toContain('text-white')
+      expect(wrapper.classes()).toContain('fg-white')
+      await wrapper.setProps({fg: 'black'})
+      expect(wrapper.classes()).toContain('fg-black')
+      expect(wrapper.classes()).not.toContain('fg-white')
     })
 
-    it('does not have text-{type} class when textVariant is null', () => {
+    it('does not have fg-{type} class when fg is null', () => {
       const wrapper = mount(BBadge)
-      const textColorClasses = [
-        'text-primary',
-        'text-secondary',
-        'text-success',
-        'text-danger',
-        'text-warning',
-        'text-info',
-        'text-light',
-        'text-dark',
-        'text-white',
-        'text-body',
-      ]
-      for (const cls of textColorClasses) {
-        expect(wrapper.classes()).not.toContain(cls)
-      }
+      expect(wrapper.classes().some((c) => c.startsWith('fg-'))).toBe(false)
     })
 
-    it('has class bg-{type} when prop bgVariant is set', async () => {
+    it('has class bg-{type} when prop bg is set', async () => {
       const wrapper = mount(BBadge, {
-        props: {bgVariant: 'primary'},
+        props: {bg: 'primary'},
       })
       expect(wrapper.classes()).toContain('bg-primary')
-      await wrapper.setProps({bgVariant: 'warning'})
-      expect(wrapper.classes()).toContain('bg-warning')
+      await wrapper.setProps({bg: 'subtle-warning'})
+      expect(wrapper.classes()).toContain('bg-subtle-warning')
       expect(wrapper.classes()).not.toContain('bg-primary')
     })
 
-    it('does not have bg-{type} class when bgVariant is null', () => {
+    it('does not have bg-{type} class when bg is null', () => {
       const wrapper = mount(BBadge)
       expect(wrapper.classes().some((c) => c.startsWith('bg-'))).toBe(false)
     })
 
     // Tests that all color classes are applied; CSS precedence is handled by Bootstrap
-    it('can combine variant with textVariant and bgVariant', () => {
+    it('can combine theme with fg and bg', () => {
       const wrapper = mount(BBadge, {
-        props: {variant: 'primary', textVariant: 'white', bgVariant: 'dark'},
+        props: {theme: 'primary', fg: 'white', bg: 'black'},
       })
-      expect(wrapper.classes()).toContain('text-bg-primary')
-      expect(wrapper.classes()).toContain('text-white')
-      expect(wrapper.classes()).toContain('bg-dark')
+      expect(wrapper.classes()).toContain('theme-primary')
+      expect(wrapper.classes()).toContain('fg-white')
+      expect(wrapper.classes()).toContain('bg-black')
     })
 
-    it('retains badge class with all variant combinations', () => {
+    it('retains badge class with all color combinations', () => {
       const wrapper = mount(BBadge, {
-        props: {variant: 'primary', textVariant: 'white', bgVariant: 'dark'},
+        props: {theme: 'primary', fg: 'white', bg: 'black'},
       })
       expect(wrapper.classes()).toContain('badge')
     })
@@ -346,7 +332,7 @@ describe('badge', () => {
       })
       expect(wrapper.classes()).toContain('p-2')
       expect(wrapper.classes()).toContain('border')
-      expect(wrapper.classes()).toContain('border-light')
+      expect(wrapper.classes()).toContain('border-bg')
       expect(wrapper.classes()).toContain('rounded-circle')
     })
 
@@ -358,7 +344,7 @@ describe('badge', () => {
       await wrapper.setProps({dotIndicator: false})
       expect(wrapper.classes()).not.toContain('p-2')
       expect(wrapper.classes()).not.toContain('border')
-      expect(wrapper.classes()).not.toContain('border-light')
+      expect(wrapper.classes()).not.toContain('border-bg')
       expect(wrapper.classes()).not.toContain('rounded-circle')
     })
 
@@ -523,46 +509,46 @@ describe('badge', () => {
   })
 
   describe('combined props', () => {
-    it('supports pill and variant together', () => {
+    it('supports pill and theme together', () => {
       const wrapper = mount(BBadge, {
-        props: {pill: true, variant: 'danger'},
+        props: {pill: true, theme: 'danger'},
       })
       expect(wrapper.classes()).toContain('rounded-pill')
-      expect(wrapper.classes()).toContain('text-bg-danger')
+      expect(wrapper.classes()).toContain('theme-danger')
       expect(wrapper.classes()).toContain('badge')
     })
 
-    it('supports dotIndicator with variant', () => {
+    it('supports dotIndicator with theme', () => {
       const wrapper = mount(BBadge, {
-        props: {dotIndicator: true, variant: 'danger'},
+        props: {dotIndicator: true, theme: 'danger'},
       })
       expect(wrapper.classes()).toContain('p-2')
       expect(wrapper.classes()).toContain('rounded-circle')
-      expect(wrapper.classes()).toContain('text-bg-danger')
+      expect(wrapper.classes()).toContain('theme-danger')
       expect(wrapper.classes()).toContain('position-absolute')
     })
 
-    it('supports link with pill and variant', () => {
+    it('supports link with pill and theme', () => {
       const wrapper = mount(BBadge, {
-        props: {href: '/abc', pill: true, variant: 'info'},
+        props: {href: '/abc', pill: true, theme: 'info'},
       })
       expect(wrapper.classes()).toContain('rounded-pill')
-      expect(wrapper.classes()).toContain('text-bg-info')
+      expect(wrapper.classes()).toContain('theme-info')
       expect(wrapper.classes()).toContain('text-decoration-none')
       expect(wrapper.classes()).toContain('badge')
       const $blink = wrapper.findComponent(BLink)
       expect($blink.exists()).toBe(true)
     })
 
-    it('supports placement with variant and pill', () => {
+    it('supports placement with theme and pill', () => {
       const wrapper = mount(BBadge, {
-        props: {placement: 'top-end', variant: 'primary', pill: true},
+        props: {placement: 'top-end', theme: 'primary', pill: true},
       })
       expect(wrapper.classes()).toContain('position-absolute')
       expect(wrapper.classes()).toContain('translate-middle')
       expect(wrapper.classes()).toContain('start-100')
       expect(wrapper.classes()).toContain('top-0')
-      expect(wrapper.classes()).toContain('text-bg-primary')
+      expect(wrapper.classes()).toContain('theme-primary')
       expect(wrapper.classes()).toContain('rounded-pill')
       expect(wrapper.classes()).toContain('badge')
     })

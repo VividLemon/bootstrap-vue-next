@@ -1,5 +1,5 @@
-import type {BLinkProps} from 'bootstrap-vue-next'
-import type {PropRecord, PropRecordWithOptions} from '../types'
+import type { BLinkProps } from 'bootstrap-vue-next'
+import type { PropRecord, PropRecordWithOptions } from '../types'
 
 export const linkTo = '/docs/components/link'
 
@@ -128,15 +128,15 @@ export const linkProps = {
     default: undefined,
     description: "Set's the opacity of the link's underline on hover",
   },
-  underlineVariant: {
-    type: 'ColorVariant | null',
+  underlineTheme: {
+    type: 'ThemeColor | null',
     default: null,
-    description: 'Set the color variant for the link underline independently of the link text',
+    description: 'Set the theme color for the link underline independently of the link text',
   },
-  variant: {
-    type: 'ColorVariant | null',
+  theme: {
+    type: 'ThemeColor | null',
     default: null,
-    description: 'Set the color variant for the link',
+    description: 'Set the theme color for the link',
   },
   // TODO: remove the hard-coded NYI props below when they are implemented
 } as const satisfies PropRecord<keyof BLinkProps | 'noPrefetch' | 'prefetch' | 'prefetchedClass'>

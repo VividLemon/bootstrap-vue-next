@@ -24,9 +24,9 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {omit, pick} from '../../utils/objectUtils'
-import {imageProps, linkTo} from '../../utils/imageProps'
-import {buildCommonProps} from '../../utils/commonProps'
+import { omit, pick } from '../../utils/objectUtils'
+import { imageProps, linkTo } from '../../utils/imageProps'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
@@ -34,41 +34,44 @@ export default {
       props: {
         ...pick(
           buildCommonProps({
-            bodyBorderVariant: {
-              description: 'Applies one of the Bootstrap theme color variants to the body border',
+            border: {
+              default: null,
+            },
+            theme: {
+              default: null,
             },
           }),
           [
-            'bgVariant',
-            'bodyBgVariant',
-            'bodyBorderVariant',
+            'bg',
+            'bodyBg',
+            'bodyBorder',
             'bodyClass',
+            'bodyFg',
             'bodyTag',
-            'bodyTextVariant',
-            'borderVariant',
+            'border',
+            'fg',
             'footer',
-            'footerBgVariant',
-            'footerBorderVariant',
+            'footerBg',
+            'footerBorder',
             'footerClass',
+            'footerFg',
             'footerTag',
-            'footerTextVariant',
-            'footerVariant',
+            'footerTheme',
             'header',
-            'headerBgVariant',
-            'headerBorderVariant',
+            'headerBg',
+            'headerBorder',
             'headerClass',
+            'headerFg',
             'headerTag',
-            'headerTextVariant',
-            'headerVariant',
+            'headerTheme',
             'subtitle',
+            'subtitleFg',
             'subtitleTag',
-            'subtitleTextVariant',
             'tag',
-            'textVariant',
+            'theme',
             'title',
             'titleTag',
-            'variant',
-          ]
+          ],
         ),
         align: {
           type: 'AlignmentTextHorizontal',
@@ -134,19 +137,19 @@ export default {
       } satisfies PropRecord<keyof BCardSlots>,
     },
     BCardBody: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.card-body, .card-img-overlay'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.card-body, .card-img-overlay' },
       props: {
         ...pick(buildCommonProps(), [
-          'bgVariant',
-          'borderVariant',
+          'bg',
+          'border',
+          'fg',
           'subtitle',
+          'subtitleFg',
           'subtitleTag',
-          'subtitleTextVariant',
           'tag',
-          'textVariant',
+          'theme',
           'title',
           'titleTag',
-          'variant',
         ]),
         overlay: {
           type: 'boolean',
@@ -174,13 +177,7 @@ export default {
     },
     BCardFooter: {
       props: {
-        ...pick(buildCommonProps(), [
-          'bgVariant',
-          'borderVariant',
-          'tag',
-          'textVariant',
-          'variant',
-        ]),
+        ...pick(buildCommonProps(), ['bg', 'border', 'fg', 'tag', 'theme']),
         text: {
           type: 'string',
           default: undefined,
@@ -195,7 +192,7 @@ export default {
       } satisfies SlotRecord<keyof BCardFooterSlots>,
     },
     BCardGroup: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.card-group'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.card-group' },
       props: {
         ...pick(buildCommonProps(), ['tag']),
       } satisfies PropRecord<keyof BCardGroupProps>,
@@ -208,13 +205,7 @@ export default {
     },
     BCardHeader: {
       props: {
-        ...pick(buildCommonProps(), [
-          'bgVariant',
-          'borderVariant',
-          'tag',
-          'textVariant',
-          'variant',
-        ]),
+        ...pick(buildCommonProps(), ['bg', 'border', 'fg', 'tag', 'theme']),
         text: {
           type: 'string',
           default: undefined,
@@ -254,11 +245,11 @@ export default {
             tag: {
               default: 'h6',
             },
-            textVariant: {
-              default: 'body-secondary',
+            fg: {
+              default: '2',
             },
           }),
-          ['tag', 'textVariant']
+          ['fg', 'tag'],
         ),
         text: {
           type: 'string',
@@ -281,7 +272,7 @@ export default {
               default: 'p',
             },
           }),
-          ['tag']
+          ['tag'],
         ),
         text: {
           type: 'string',
@@ -304,7 +295,7 @@ export default {
               default: 'h4',
             },
           }),
-          ['tag']
+          ['tag'],
         ),
         text: {
           type: 'string',

@@ -3,16 +3,16 @@
     <colgroup v-if="slots['table-colgroup']">
       <slot name="table-colgroup" :fields="computedFields" />
     </colgroup>
-    <BThead v-show="showComputedHeaders" :variant="props.headVariant" :class="props.theadClass">
+    <BThead v-show="showComputedHeaders" :theme="props.headTheme" :class="props.theadClass">
       <slot name="thead-top" :columns="computedFieldsTotal" :fields="computedFields" />
-      <BTr :variant="props.headRowVariant" :class="props.theadTrClass">
+      <BTr :theme="props.headRowTheme" :class="props.theadTrClass">
         <BTh
           v-for="field in computedFields"
           :key="field.key"
           :scope="field.scope"
           :class="getFieldColumnClasses(field)"
           :title="field.headerTitle"
-          :variant="field.variant"
+          :theme="field.theme"
           :abbr="field.headerAbbr"
           :style="field.thStyle"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
@@ -38,7 +38,7 @@
           v-for="field in computedFields"
           :key="field.key"
           scope="col"
-          :variant="field.variant"
+          :theme="field.theme"
           :class="[field.class, field.thClass]"
         >
           <slot name="thead-sub" :items="props.items" :fields="computedFields" :field>
@@ -77,7 +77,7 @@
                 : undefined
             "
             :class="getRowClasses(item, 'row')"
-            :variant="isTableItem(item) ? item._rowVariant : undefined"
+            :theme="isTableItem(item) ? item._rowTheme : undefined"
             :tabindex="keyboardController.shouldRowBeFocusable.value ? '0' : undefined"
             v-bind="callTbodyTrAttrs(item, 'row')"
             @click="
@@ -104,8 +104,8 @@
               :is="getCellComponent(field)"
               v-for="field in computedFields"
               :key="field.key"
-              :variant="
-                (isTableItem(item) ? item._cellVariants?.[field.key] : false) ? null : field.variant
+              :theme="
+                (isTableItem(item) ? item._cellThemes?.[field.key] : false) ? null : field.theme
               "
               :class="getFieldRowClasses(field, item)"
               v-bind="{
@@ -138,7 +138,7 @@
             <BTr aria-hidden="true" role="presentation" class="d-none" />
             <BTr
               :class="getRowClasses(item, 'row-expansion')"
-              :variant="isTableItem(item) ? item._rowVariant : undefined"
+              :theme="isTableItem(item) ? item._rowTheme : undefined"
               v-bind="callTbodyTrAttrs(item, 'row-expansion')"
             >
               <BTd :colspan="computedFieldsTotal" :class="detailsTdClass">
@@ -166,7 +166,7 @@
     </BTbody>
     <BTfoot v-if="props.footClone" v-bind="footerProps">
       <BTr
-        :variant="props.footRowVariant ?? props.headRowVariant"
+        :theme="props.footRowTheme ?? props.headRowTheme"
         :class="props.tfootTrClass ?? props.theadTrClass"
       >
         <BTh
@@ -177,7 +177,7 @@
           :title="field.headerTitle"
           :abbr="field.headerAbbr"
           :style="field.thStyle"
-          :variant="field.variant"
+          :theme="field.theme"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
           v-bind="callThAttr(null, field, 'bottom')"
           @click="keyboardController.headerClicked(field, $event, true)"
@@ -262,10 +262,10 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   fieldColumnClass: undefined,
   tbodyTrClass: undefined,
   detailsTdClass: undefined,
-  headVariant: undefined,
-  headRowVariant: undefined,
-  footRowVariant: undefined,
-  footVariant: undefined,
+  headTheme: undefined,
+  headRowTheme: undefined,
+  footRowTheme: undefined,
+  footTheme: undefined,
   modelValue: undefined,
   primaryKey: undefined,
   tbodyClass: undefined,
@@ -275,9 +275,9 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   theadClass: undefined,
   theadTrClass: undefined,
   // BTableSimpleProps props
-  borderVariant: undefined,
+  border: undefined,
   tableClass: undefined,
-  variant: undefined,
+  theme: undefined,
   bordered: undefined,
   borderless: undefined,
   captionTop: undefined,
@@ -374,8 +374,8 @@ const getFieldRowClasses = (field: Readonly<TableField>, tr: Item) => [
   typeof field.tdClass === 'function'
     ? field.tdClass(getByFieldKey(tr, field), field.key, tr)
     : field.tdClass,
-  (isTableItem(tr) ? tr._cellVariants?.[field.key] : false)
-    ? `table-${(tr as TableItem)._cellVariants?.[field.key]}`
+  (isTableItem(tr) ? tr._cellThemes?.[field.key] : false)
+    ? `theme-${(tr as TableItem)._cellThemes?.[field.key]}`
     : null,
   {
     'b-table-sticky-column': field.stickyColumn,
@@ -414,7 +414,7 @@ const getCellComponent = (field: Readonly<TableField>) => {
 }
 
 const footerProps = computed(() => ({
-  variant: props.footVariant ?? props.headVariant,
+  theme: props.footTheme ?? props.headTheme,
   class: props.tfootClass ?? props.theadClass,
 }))
 

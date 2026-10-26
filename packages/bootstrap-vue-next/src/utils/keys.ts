@@ -5,12 +5,7 @@ import type {Numberish, ValidationState} from '../types/CommonTypes'
 import type {LiteralUnion} from '../types/LiteralUnion'
 import type {Size} from '../types/Size'
 import type {RadiusElement} from '../types/RadiusElement'
-import type {
-  BgColorVariant,
-  ButtonVariant,
-  ColorVariant,
-  TextColorVariant,
-} from '../types/ColorTypes'
+import type {BgColor, ButtonVariant, FgColor, ThemeColor} from '../types/ColorTypes'
 import type {CheckboxValue} from '../types/CheckboxTypes'
 import type {RadioValue} from '../types/RadioTypes'
 import type {BreadcrumbItemRaw} from '../types/BreadcrumbTypes'
@@ -78,9 +73,9 @@ export const avatarGroupInjectionKey: InjectionKey<{
   roundedBottom: Readonly<Ref<RadiusElement | boolean | undefined>>
   roundedStart: Readonly<Ref<RadiusElement | boolean | undefined>>
   roundedEnd: Readonly<Ref<RadiusElement | boolean | undefined>>
-  variant: Readonly<Ref<ColorVariant | null>>
-  bgVariant: Readonly<Ref<BgColorVariant | null>>
-  textVariant: Readonly<Ref<TextColorVariant | null>>
+  theme: Readonly<Ref<ThemeColor | null>>
+  bg: Readonly<Ref<BgColor | null>>
+  fg: Readonly<Ref<FgColor | null>>
 }> = createBvnInjectionKey('avatarGroup')
 
 // BAccordion
@@ -101,6 +96,7 @@ export const checkboxGroupKey: InjectionKey<{
   modelValue: Ref<readonly CheckboxValue[]>
   switch: Readonly<Ref<boolean>>
   buttonVariant: Readonly<Ref<ButtonVariant | null>>
+  buttonTheme: Readonly<Ref<ThemeColor | null>>
   form: Readonly<Ref<string | undefined>>
   name: Readonly<Ref<string>>
   state: Readonly<Ref<ValidationState | undefined>>
@@ -116,6 +112,7 @@ export const checkboxGroupKey: InjectionKey<{
 export const radioGroupKey: InjectionKey<{
   modelValue: Ref<RadioValue>
   buttonVariant: Readonly<Ref<ButtonVariant | null>>
+  buttonTheme: Readonly<Ref<ThemeColor | null>>
   form: Readonly<Ref<string | undefined>>
   name: Readonly<Ref<string>>
   buttons: Readonly<Ref<boolean>>

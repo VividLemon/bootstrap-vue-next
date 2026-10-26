@@ -127,14 +127,14 @@ describe('dropdown-group', () => {
     expect($header.classes()).toContain('foo')
   })
 
-  it('dynamic header tag has class text-{type} when prop headerVariant', async () => {
+  it('dynamic header tag has class theme-{type} when prop headerTheme', async () => {
     const wrapper = mount(BDropdownGroup, {
-      props: {headerVariant: 'danger'},
+      props: {headerTheme: 'danger'},
     })
     const $header = wrapper.get('header')
-    expect($header.classes()).toContain('text-danger')
-    await wrapper.setProps({headerVariant: undefined})
-    expect($header.classes()).not.toContain('text-danger')
+    expect($header.classes()).toContain('theme-danger')
+    await wrapper.setProps({headerTheme: undefined})
+    expect($header.classes()).not.toContain('theme-danger')
   })
 
   it('dynamic header tag has role to be undefined when tag is header', () => {

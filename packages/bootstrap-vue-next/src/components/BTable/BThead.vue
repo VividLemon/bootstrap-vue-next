@@ -10,12 +10,12 @@ import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
 
 const _props = withDefaults(defineProps<BTheadProps>(), {
-  variant: null,
+  theme: null,
 })
 const props = useDefaults(_props, 'BThead')
 defineSlots<BTheadSlots>()
 
 const computedClasses = computed(() => ({
-  [`table-${props.variant}`]: props.variant !== null,
+  [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
 }))
 </script>

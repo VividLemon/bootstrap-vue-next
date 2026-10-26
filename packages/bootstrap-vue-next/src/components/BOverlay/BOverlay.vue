@@ -39,8 +39,7 @@ import {useDefaults} from '../../composables/useDefaults'
 import BSpinner from '../BSpinner/BSpinner.vue'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
 import {useRadiusElementClasses} from '../../composables/useRadiusElementClasses'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
-import type {BgColorVariant} from '../../types/ColorTypes'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useFadeTransition} from '../../composables/useTransitions'
 import type {BOverlayEmits, BOverlayProps, BOverlaySlots} from '../../types'
 
@@ -57,8 +56,8 @@ const _props = withDefaults(defineProps<BOverlayProps>(), {
   show: false,
   spinnerSmall: false,
   spinnerType: 'border',
-  spinnerVariant: undefined,
-  variant: 'light',
+  spinnerTheme: undefined,
+  bg: 'body',
   wrapTag: 'div',
   zIndex: 10,
   // RadiusElementExtendables props
@@ -89,7 +88,7 @@ const computedAriaBusy = computed(() => (props.show ? true : null))
 
 const spinnerAttrs = computed(() => ({
   type: props.spinnerType,
-  variant: props.spinnerVariant,
+  theme: props.spinnerTheme,
   small: props.spinnerSmall,
 }))
 
@@ -103,9 +102,9 @@ const overlayClasses = computed(() => ({
   'position-fixed': props.noWrap && props.fixed,
 }))
 
-const colorClasses = useColorVariantClasses(
+const colorClasses = useThemeClasses(
   computed(() => ({
-    bgVariant: props.variant !== null && !props.bgColor ? (props.variant as BgColorVariant) : null,
+    bg: props.bg !== null && !props.bgColor ? props.bg : null,
   }))
 )
 const blurClasses = computed(() => [colorClasses.value, radiusElementClasses.value])
@@ -115,7 +114,7 @@ const blurStyles = computed(() => ({
   opacity: props.opacity,
   backgroundColor: props.bgColor || undefined,
   backdropFilter:
-    props.blur && !props.bgColor && (props.variant === 'white' || props.variant === 'transparent')
+    props.blur && !props.bgColor && (props.bg === 'white' || props.bg === 'transparent')
       ? `blur(${props.blur})`
       : undefined,
 }))

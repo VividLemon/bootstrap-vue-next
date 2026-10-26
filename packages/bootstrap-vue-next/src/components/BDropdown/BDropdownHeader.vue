@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import {computed, useAttrs} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BDropdownHeaderProps, BDropdownHeaderSlots} from '../../types'
 
 defineOptions({
@@ -27,7 +27,7 @@ const _props = withDefaults(defineProps<BDropdownHeaderProps>(), {
   headerClass: undefined,
   tag: 'h6',
   text: undefined,
-  variant: null,
+  theme: null,
   wrapperAttrs: undefined,
 })
 const props = useDefaults(_props, 'BDropdownHeader')
@@ -39,9 +39,5 @@ const processedAttrs = computed(() => {
   return {wrapperClass, headerAttrs}
 })
 
-const colorClasses = useColorVariantClasses(
-  computed(() => ({
-    textVariant: props.variant,
-  }))
-)
+const colorClasses = useThemeClasses(() => ({theme: props.theme}))
 </script>

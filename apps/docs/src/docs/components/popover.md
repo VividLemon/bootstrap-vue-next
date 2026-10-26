@@ -97,15 +97,16 @@ and `default` slots. Slots allow you to include HTML markup and Vue components.
 For reactive or complex content, always use slots instead of props. Slots provide greater control and support for HTML markup and interactive components.
 :::
 
-## Custom Classes and Variants
+## Custom Classes and Colors
 
 Custom classes can be applied to the popover's title `<div>` by using the `title-class` prop and to
 the popover's body `<div>` by using the `body-class` prop:
 
 <<< FRAGMENT ./demo/PopoverCustomClass.vue#template{vue-html}
 
-Similarly, use [Bootstrap's Color and background](https://getbootstrap.com/docs/5.3/helpers/color-background/)
-utilities to change the variant of the popover.
+Similarly, use Bootstrap v6's `.theme-*` classes and the `.bg-*` / `.fg-*` utilities
+(for example `bg-subtle-primary fg-emphasis-primary`) to change the color of the popover.
+See [Color Themes](/docs/reference/color-variants) for the available values.
 
 <<< DEMO ./demo/PopoverVariant.vue#template{vue-html}
 

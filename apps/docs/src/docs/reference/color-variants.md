@@ -1,250 +1,155 @@
 ---
-title: Color Variants
+title: Color Themes
 description: >
-  Color variants are available when using the default Bootstrap v5 CSS and their mappings to CSS classes.
-  Below are the variants available when using the default Bootstrap v5 CSS. When using BootstrapVueNext components,
-  the variants are referred to by their variant name, rather than by the underlying CSS classname.
+  Bootstrap v6 colors are driven by theme classes (`.theme-*`) plus `bg`, `fg` and `border` utilities.
+  Learn how BootstrapVueNext's `theme`, `bg`, `fg` and `border` props (and the button `variant` style) map to those classes.
 ---
 
-## Base variants
+Bootstrap v6 replaced v5's per-component color classes (`.btn-primary`, `.alert-danger`, `.text-bg-success`, `.list-group-item-info`, ...)
+with a single **theme** concept. A `.theme-<name>` class sets a handful of CSS variables (such as `--theme-bg` and `--theme-fg`)
+and components that read those variables are colored automatically. BootstrapVueNext exposes this through four kinds of props.
+
+| Prop                                          | Purpose                          | Rendered class   |
+| --------------------------------------------- | -------------------------------- | ---------------- |
+| `theme` (and `*-theme`, e.g. `header-theme`)  | Colors the component by a theme  | `theme-<theme>`  |
+| `bg` (and `*-bg`, e.g. `body-bg`)             | Background color                 | `bg-<value>`     |
+| `fg` (and `*-fg`, e.g. `footer-fg`)           | Foreground (text) color          | `fg-<value>`     |
+| `border` (and `*-border`, e.g. `header-border`) | Border color                   | `border-<value>` |
+| `variant` on buttons (and `*-variant` button props) | Button style               | `btn-<variant>`  |
+
+## Themes
+
+The built-in themes (type `ThemeColor`) are:
+
+- `primary`
+- `accent`
+- `success`
+- `danger`
+- `warning`
+- `info`
+- `inverse`
+- `secondary`
+
+The v5 `light` and `dark` colors no longer exist. Use `secondary` or `inverse`, or a neutral layer value (see below) such as `bg="1"` and `fg="body"`.
 
 <BCard class="bg-body-tertiary">
-
-<p class="text-primary">.text-primary</p>
-<p class="text-secondary">.text-secondary</p>
-<p class="text-success">.text-success</p>
-<p class="text-danger">.text-danger</p>
-<p class="text-warning bg-dark">.text-warning</p>
-<p class="text-info bg-dark">.text-info</p>
-<p class="text-light bg-dark">.text-light</p>
-<p class="text-dark bg-white">.text-dark</p>
-
-</BCard>
-
-The base variants will translate to various Bootstrap v5 contextual class names based on the component (and variant purpose) where they are used. See the sections below for details.
-
-## Background and border variants
-
-<BCard class="bg-body-tertiary">
-
-  <div class="gap-2">
-    <span class="border border-primary" />
-    <span class="border border-primary-subtle" />
-    <span class="border border-secondary" />
-    <span class="border border-secondary-subtle" />
-    <span class="border border-success" />
-    <span class="border border-success-subtle" />
-    <span class="border border-danger" />
-    <span class="border border-danger-subtle" />
-    <span class="border border-warning" />
-    <span class="border border-warning-subtle" />
-    <span class="border border-info" />
-    <span class="border border-info-subtle" />
-    <span class="border border-light" />
-    <span class="border border-light-subtle" />
-    <span class="border border-dark" />
-    <span class="border border-dark-subtle" />
-    <span class="border border-black" />
-    <span class="border border-white" />
+  <div class="d-flex flex-wrap gap-2">
+    <span class="theme-primary badge">primary</span>
+    <span class="theme-accent badge">accent</span>
+    <span class="theme-success badge">success</span>
+    <span class="theme-danger badge">danger</span>
+    <span class="theme-warning badge">warning</span>
+    <span class="theme-info badge">info</span>
+    <span class="theme-inverse badge">inverse</span>
+    <span class="theme-secondary badge">secondary</span>
   </div>
-
 </BCard>
 
-All the base variants plus:
+Components such as `BAlert`, `BBadge`, `BAvatar`, `BButton`, `BCard`, `BListGroupItem`, `BNav`, `BNavbar`, `BPagination`, `BProgress`, `BToast`,
+`BTable` (and its rows and cells), checks, radios and switches, and menus read the theme variables, so a `theme` prop alone is enough.
 
-- `white`
-- `transparent`
+Components whose styles do not read the theme variables (for example `BOverlay`, tooltips, popovers and `BSpinner`) are colored
+through the `bg` and `fg` values instead (the spinner `theme` becomes `fg-<theme>`).
 
-These translate to class names `bg-{variant}` for backgrounds and `border-{variant}` for borders.
+## Background, foreground and border values
 
-These variants are used by components (such as `BCard`, `BModal`, etc.) that provide `bg-variant`, `_-bg-variant`, `border-variant` and `_-border-variant` props.
+The `bg`, `fg` and `border` props accept a theme name or a more specific value. A leading prefix is part of the value, not a separate prop.
 
-## Text variants
+### Background (`bg`)
 
-All the base variants plus:
+Renders `.bg-<value>`. Values are one of:
 
-- `muted`
-- `white`
-- `black`
+- Any theme (`primary`, `danger`, ...)
+- `subtle-<theme>` (e.g. `subtle-primary`)
+- `muted-<theme>` (e.g. `muted-primary`)
+- Neutral layers: `body`, `1`, `2`, `3`, `4`, `fg`, `white`, `black`, `transparent`
 
-<BCard class="bg-body-tertiary">
+### Foreground (`fg`)
 
-<p class="text-primary">.text-primary</p>
-<p class="text-primary-emphasis">.text-primary-emphasis</p>
-<p class="text-secondary">.text-secondary</p>
-<p class="text-secondary-emphasis">.text-secondary-emphasis</p>
-<p class="text-success">.text-success</p>
-<p class="text-success-emphasis">.text-success-emphasis</p>
-<p class="text-danger">.text-danger</p>
-<p class="text-danger-emphasis">.text-danger-emphasis</p>
-<p class="text-warning bg-dark">.text-warning</p>
-<p class="text-warning-emphasis">.text-warning-emphasis</p>
-<p class="text-info bg-dark">.text-info</p>
-<p class="text-info-emphasis">.text-info-emphasis</p>
-<p class="text-light bg-dark">.text-light</p>
-<p class="text-light-emphasis">.text-light-emphasis</p>
-<p class="text-dark bg-white">.text-dark</p>
-<p class="text-dark-emphasis">.text-dark-emphasis</p>
+Renders `.fg-<value>`. Values are one of:
 
-<p class="text-body">.text-body</p>
-<p class="text-body-emphasis">.text-body-emphasis</p>
-<p class="text-body-secondary">.text-body-secondary</p>
-<p class="text-body-tertiary">.text-body-tertiary</p>
+- Any theme (`primary`, `danger`, ...)
+- `emphasis-<theme>` (e.g. `emphasis-danger`)
+- `contrast-<theme>` (e.g. `contrast-primary`, readable text on top of `bg="primary"`)
+- Neutral layers: `body`, `1`, `2`, `3`, `4`, `bg`, `white`, `black`, `reset`
 
-<p class="text-black bg-white">.text-black</p>
-<p class="text-white bg-dark">.text-white</p>
-<p class="text-black-50 bg-white">.text-black-50</p>
-<p class="text-white-50 bg-dark">.text-white-50</p>
+### Border (`border`)
 
-</BCard>
+Renders `.border-<value>`. Values are one of:
 
-These translate to class names `text-{variant}`
+- Any theme (`primary`, `danger`, ...)
+- `subtle-<theme>` (e.g. `subtle-primary`)
+- `bg`, `body`, `muted`, `subtle`, `emphasized`, `white`, `black`
 
-These variants are used by components (such as `BCard`, `BModal`, etc.) that provide `text-variant` and `*-text-variant` props.
+### Migrating from v5 values
 
-## Variant Interactions
+| v5 prop and value                  | New prop and value  |
+| ---------------------------------- | ------------------- |
+| `variant="primary"` (non-button)   | `theme="primary"`   |
+| `bg-variant="primary-subtle"`      | `bg="subtle-primary"` |
+| `text-variant="danger-emphasis"`   | `fg="emphasis-danger"` |
+| `text-variant="body-secondary"`    | `fg="2"`            |
+| `text-variant="body"`              | `fg="body"`         |
+| `border-variant="primary-subtle"`  | `border="subtle-primary"` |
+| `text-variant="white-50"` / `black-50` | removed, use `fg="white"` / `fg="black"` with an opacity utility |
 
-The `bg-variant` and `text-variant` props take precedence over the `variant` prop. It is more
-straightforward to set **either** `variant` **or** `bg-variant` and `text-variant`, but not a
-combination of `variant` with the other two. But the more specific props effectively override
-the `text` or `bg` portion of the `variant` prop, so an alternative is to use the `variant`
-prop and then override the `text` or `bg` as needed.
+## Prop interactions
+
+The `bg` and `fg` props take precedence over the `theme` prop. It is more
+straightforward to set **either** `theme` **or** `bg` and `fg`, but not a
+combination of `theme` with the other two. But the more specific props effectively override
+the foreground or background portion of the `theme` prop, so an alternative is to use the `theme`
+prop and then override `fg` or `bg` as needed.
 
 <<< DEMO ./demo/VariantInteractions.vue#template{vue-html}
 
-## Component specific variants
+## Component specific notes
 
-Some Bootstrap v5 components require additional CSS styling, or additional pseudo selector styling (i.e buttons), and hence have their own underlying variant CSS classes.
+### Buttons
 
-### Alert variants
+Buttons separate **style** from **color**:
 
-All the base variants
+- `variant` is the style: `solid` (default), `outline`, `subtle`, `text`, `styled` or `link`. It renders `.btn-<variant>`.
+- `theme` is the color. It renders `.theme-<theme>`.
 
-These translate to class names `alert-{variant}`.
+For example `<BButton variant="outline" theme="danger">` renders `.btn.btn-outline.theme-danger`
+(v5 `.btn-outline-danger`), and `<BButton variant="link" theme="info">` renders a link-styled info button.
+Components that render a button for you expose the same pair, for example `ok-variant` / `ok-theme`,
+`cancel-variant` / `cancel-theme`, `button-variant` / `button-theme`, `split-variant` / `split-theme` and `close-variant` / `close-theme`.
 
-See [Variant Interactions](#variant-interactions) for details on interactions between `variant`, `bg-variant`, and `text-variant`.
+### Alerts, badges, list groups, progress, toasts
 
-### Badge variants
+Use `theme`. This replaces `.alert-<x>`, `.badge`/`.text-bg-<x>`, `.list-group-item-<x>`, progress `.bg-<x>` and toast variants with `.theme-<x>`.
 
-All the base variants
+### Tables
 
-These translate to class names `badge-{variant}`.
+Use `theme` on tables, columns (field `theme`), and the helper components `BThead`, `BTfoot`, `BTr`, `BTd` and `BTh`.
+Per-item overrides use the item properties `_rowTheme` and `_cellThemes`. All map to `.theme-<theme>` (replacing `.table-<x>`).
+Table-level props are `theme`, `head-theme`, `head-row-theme`, `foot-theme`, `foot-row-theme` and `selection-theme`.
+The `dark` prop still adds `.table-dark`.
 
-See [Variant Interactions](#variant-interactions) for details on interactions between `variant`, `bg-variant`, and `text-variant`.
+### Links
 
-### Button variants
+`BLink` uses `theme` (`.theme-<theme>`, since v6 anchors read `--theme-fg`). The underline color uses `underline-theme` (`.underline-<theme>`).
+The v5 `link-<color>` classes no longer exist.
 
-All the base variants plus:
+### Overlay and spinner
 
-- `outline-{base variant}` which generates an outline button version of the base variant
-- `link` which renders the button with the look of a link but retains button padding and margins
+`BOverlay` uses `bg` for the backdrop color and `spinner-theme` for its spinner. `BSpinner` uses `theme` to render `.fg-<theme>`.
 
-These translate to class names `btn-{variant}` and `btn-outline-{variant}`.
+## Using classes directly
 
-Note the `link` variant does not have an outline version.
+You may also use the underlying class names directly on elements (and some components) via the standard HTML `class="..."` attribute,
+for example `class="theme-danger"`, `class="bg-subtle-primary fg-emphasis-primary"` or `class="border border-muted"`.
 
-See [Variant Interactions](#variant-interactions) for details on interactions between `variant`, `bg-variant`, and `text-variant`.
+## Creating custom themes
 
-### Table variants
+Add your own theme in Sass or CSS by following Bootstrap v6's theme conventions: define the `.theme-<name>` class
+(plus matching `bg-`, `fg-` and `border-` utilities if you intend to use them with `bg`, `fg` and `border` props).
+Every component that reads the theme variables will then support it.
 
-All the base variants plus:
-
-- `active`
-
-These variants translate to class names `table-{variant}`.
-
-When the table has the `dark` prop set, the variants translate to the `bg-{variant}` classes.
-
-Note that the `active` variant is only applicable to `<tr>` elements within the `<tbody>`, and can not be applied to individual table cells or used as the `table-variant`.
-
-### Popover variants
-
-All the base variants
-
-These translate to BootstrapVueNext custom class names `b-popover-{variant}`.
-
-### Tooltip variants
-
-All the base variants
-
-These translate to BootstrapVueNext custom class names `b-tooltip-{variant}`.
-
-### Toast variants
-
-All the base variants
-
-These translate to BootstrapVueNext custom class names `b-toast-{variant}`.
-
-## Using variant classes
-
-You may also use the underlying class names directly on elements (and some components) via the standard HTML `class="..."` attribute.
-
-## Creating custom variants
-
-When creating custom variants, follow the Bootstrap v5 variant CSS class naming scheme and they will become available to the various components that use that scheme (i.e. create a custom CSS class `btn-purple` and `purple` becomes a valid variant to use on `BButton`).
-
-To make TypeScript recognize your custom variants, you also need to augment the type interfaces. See the [Extending types](/docs/types#extending-types) section for details.
-
-Alternatively, you can create new variant theme colors by supplying custom Bootstrap SCSS theme color maps. The default theme color map is (from `bootstrap/scss/\_variables.scss`):
-
-<HighlightCard>
-  Base grayscale colors definitions
-  <template #html>
-
-```scss
-$white: #fff;
-$gray-100: #f8f9fa;
-$gray-200: #e9ecef;
-$gray-300: #dee2e6;
-$gray-400: #ced4da;
-$gray-500: #adb5bd;
-$gray-600: #6c757d;
-$gray-700: #495057;
-$gray-800: #343a40;
-$gray-900: #212529;
-$black: #000;
-```
-
-  </template>
-</HighlightCard>
-
-<HighlightCard>
-  Base colors definitions
-  <template #html>
-
-```scss
-$blue: #0d6efd;
-$indigo: #6610f2;
-$purple: #6f42c1;
-$pink: #d63384;
-$red: #dc3545;
-$orange: #fd7e14;
-$yellow: #ffc107;
-$green: #198754;
-$teal: #20c997;
-$cyan: #0dcaf0;
-```
-
-  </template>
-</HighlightCard>
-
-<HighlightCard>
-  Theme color default definitions
-  <template #html>
-
-```scss
-$primary: $blue;
-$secondary: $gray-600;
-$success: $green;
-$info: $cyan;
-$warning: $yellow;
-$danger: $red;
-$light: $gray-100;
-$dark: $gray-900;
-```
-
-  </template>
-</HighlightCard>
+To make TypeScript accept the new name in `theme` props, augment the `ThemeColors` interface. See
+[Registering custom themes](/docs/components/button#custom-themes) for the full example.
 
 <style lang="scss">
 .bg-body-tertiary [class^="border"] {

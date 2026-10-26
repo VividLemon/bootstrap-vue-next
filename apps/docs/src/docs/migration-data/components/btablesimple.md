@@ -49,11 +49,11 @@ See the [v-html](/docs/migration-data/patterns/v-html-props) section for informa
 
 ### BTFoot
 
-`foot-variant` has been replaced with `variant`, which can used on other table elements.
+`foot-variant` has been replaced with `theme`, which can used on other table elements.
 
 ### BTHead
 
-`head-variant` has been replaced with `variant`, which can used on other table elements.
+`head-variant` has been replaced with `theme`, which can used on other table elements.
 
 ## Migration Notes
 

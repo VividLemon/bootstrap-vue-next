@@ -22,14 +22,14 @@ const _props = withDefaults(defineProps<BTdProps>(), {
   rowspan: undefined,
   stackedHeading: undefined,
   stickyColumn: false,
-  variant: null,
+  theme: null,
 })
 const props = useDefaults(_props, 'BTd')
 defineSlots<BTdSlots>()
 
 const computedClasses = computed(() => ({
-  [`table-${props.variant}`]: props.variant !== null,
+  [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
   'b-table-sticky-column': props.stickyColumn,
-  'table-b-table-default': props.stickyColumn && props.variant === null,
+  'table-b-table-default': props.stickyColumn && props.theme === null,
 }))
 </script>

@@ -38,14 +38,14 @@ Or if you prefer `<button>` elements over links, set the `button` prop to `true`
 Refer to the [Router support](/docs/reference/router-links) reference page for router-link specific
 props.
 
-## Contextual variants
+## Contextual themes
 
-Use contextual variants to style list items with a stateful background and color, via the `variant`
-prop.
+Use contextual themes to style list items with a stateful background and color, via the `theme`
+prop. It renders the Bootstrap v6 class `.theme-<theme>` on the item (replacing v5 `list-group-item-<variant>`). See [Color Themes](/docs/reference/color-variants).
 
 <<< DEMO ./demo/ListGroupVariants.vue#template{vue-html}
 
-Contextual variants also work with action items. Note the addition of the hover styling here not
+Contextual themes also work with action items. Note the addition of the hover styling here not
 present in the previous example. Also supported is the `active` state; set it to indicate an active
 selection on a contextual list group item.
 

@@ -5,7 +5,7 @@
         modelValue: tooltipVisible,
         title: 'Manually controlled tooltip',
       }"
-      variant="primary"
+      theme="primary"
       @click="tooltipVisible = !tooltipVisible"
     >
       {{ tooltipVisible ? 'Hide' : 'Show' }} tooltip
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const tooltipVisible = ref(false)
 </script>

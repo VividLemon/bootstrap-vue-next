@@ -143,19 +143,19 @@ describe('placeholder-table', () => {
     expect($placeholder.props('size')).toBeUndefined()
   })
 
-  it('child thead child tr has child th child BPlaceholder has prop variant to be prop headerVariant', () => {
+  it('child thead child tr has child th child BPlaceholder has prop theme to be prop headerTheme', () => {
     const wrapper = mount(BPlaceholderTable, {
-      props: {headerColumns: 1, headerVariant: 'danger'},
+      props: {headerColumns: 1, headerTheme: 'danger'},
     })
     const $tablesimple = wrapper.getComponent(BTableSimple)
     const $thead = $tablesimple.get('thead')
     const $tr = $thead.get('tr')
     const $th = $tr.get('th')
     const $placeholder = $th.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBe('danger')
+    expect($placeholder.props('bg')).toBe('danger')
   })
 
-  it('child thead child tr has child th child BPlaceholder has prop variant to be null by default', () => {
+  it('child thead child tr has child th child BPlaceholder has prop theme to be null by default', () => {
     const wrapper = mount(BPlaceholderTable, {
       props: {headerColumns: 1},
     })
@@ -164,7 +164,7 @@ describe('placeholder-table', () => {
     const $tr = $thead.get('tr')
     const $th = $tr.get('th')
     const $placeholder = $th.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBeNull()
+    expect($placeholder.props('bg')).toBeNull()
   })
 
   it('child thead child tr has child th child BPlaceholder has prop animation to be prop headerAnimation', () => {
@@ -345,26 +345,26 @@ describe('placeholder-table', () => {
     expect($placeholder.props('size')).toBe('xs')
   })
 
-  it('child tbody child tr child td child BPlaceholder has prop variant to be null by default', () => {
+  it('child tbody child tr child td child BPlaceholder has prop theme to be null by default', () => {
     const wrapper = mount(BPlaceholderTable)
     const $tablesimple = wrapper.getComponent(BTableSimple)
     const $tbody = $tablesimple.get('tbody')
     const $tr = $tbody.get('tr')
     const $td = $tr.get('td')
     const $placeholder = $td.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBeNull()
+    expect($placeholder.props('bg')).toBeNull()
   })
 
-  it('child tbody child tr child td child BPlaceholder has prop variant to be prop variant', () => {
+  it('child tbody child tr child td child BPlaceholder has prop theme to be prop theme', () => {
     const wrapper = mount(BPlaceholderTable, {
-      props: {variant: 'danger'},
+      props: {theme: 'danger'},
     })
     const $tablesimple = wrapper.getComponent(BTableSimple)
     const $tbody = $tablesimple.get('tbody')
     const $tr = $tbody.get('tr')
     const $td = $tr.get('td')
     const $placeholder = $td.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBe('danger')
+    expect($placeholder.props('bg')).toBe('danger')
   })
 
   it('child tbody child tr child td child BPlaceholder has prop animation to be undefined by default', () => {
@@ -645,19 +645,19 @@ describe('placeholder-table', () => {
     expect($placeholder.props('size')).toBeUndefined()
   })
 
-  it('child tfoot child tr child th child BPlaceholder has prop variant to be prop footerVariant', () => {
+  it('child tfoot child tr child th child BPlaceholder has prop theme to be prop footerTheme', () => {
     const wrapper = mount(BPlaceholderTable, {
-      props: {showFooter: true, footerVariant: 'danger'},
+      props: {showFooter: true, footerTheme: 'danger'},
     })
     const $tablesimple = wrapper.getComponent(BTableSimple)
     const $tfoot = $tablesimple.get('tfoot')
     const $tr = $tfoot.get('tr')
     const $th = $tr.get('th')
     const $placeholder = $th.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBe('danger')
+    expect($placeholder.props('bg')).toBe('danger')
   })
 
-  it('child tfoot child tr child th child BPlaceholder has prop variant to be null by default', () => {
+  it('child tfoot child tr child th child BPlaceholder has prop theme to be null by default', () => {
     const wrapper = mount(BPlaceholderTable, {
       props: {showFooter: true},
     })
@@ -666,7 +666,7 @@ describe('placeholder-table', () => {
     const $tr = $tfoot.get('tr')
     const $th = $tr.get('th')
     const $placeholder = $th.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBeNull()
+    expect($placeholder.props('bg')).toBeNull()
   })
 
   it('child tfoot child tr child th child BPlaceholder has prop animation to be prop footerAnimation', () => {

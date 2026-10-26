@@ -12,13 +12,13 @@ import {useDefaults} from '../../composables/useDefaults'
 import BCardHeadFoot from '../BCardHeadFoot.vue'
 
 const _props = withDefaults(defineProps<BCardFooterProps>(), {
-  borderVariant: undefined,
+  border: undefined,
   tag: 'div',
   text: undefined,
   // ColorExtendables props
-  bgVariant: undefined,
-  textVariant: undefined,
-  variant: undefined,
+  bg: undefined,
+  fg: undefined,
+  theme: undefined,
   // End ColorExtendables props
 })
 const props = useDefaults(_props, 'BCardFooter')

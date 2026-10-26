@@ -34,7 +34,7 @@ Several props are available to alter the basic styling of the default tagged int
 | Prop          | Description                                                                                           |
 | ------------- | ----------------------------------------------------------------------------------------------------- |
 | `tag-pills`   | Renders the tags with the appearance of pills                                                         |
-| `tag-variant` | Applies one of the Bootstrap contextual variant theme colors to the tags                              |
+| `tag-theme`   | Applies one of the Bootstrap theme colors to the tags                                                 |
 | `size`        | Set the size of the component's appearance. `sm`, `md` (default), or `lg`                             |
 | `placeholder` | The placeholder text for the new tag input element                                                    |
 | `state`       | Sets the contextual state of the control. Set to `true` (for valid), `false` (for invalid), or `null` |
@@ -99,7 +99,8 @@ The default slot scope properties are as follows:
 | Property           | Type                          | Description                                                                                                                                            |
 | ------------------ | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `addButtonText`    | `string`                      | The value of the `add-button-text` prop                                                                                                                |
-| `addButtonVariant` | `ButtonVariant \| null`       | The value of the `add-button-variant` prop                                                                                                             |
+| `addButtonTheme`   | `ThemeColor \| null`          | The value of the `add-button-theme` prop                                                                                                               |
+| `addButtonVariant` | `ButtonVariant \| null`       | The value of the `add-button-variant` prop (button style)                                                                                              |
 | `addTag`           | `(tag?: string) => void`      | Method to add a new tag. Assumes the tag is the value of the input, but optionally accepts one argument which is the tag value to be added             |
 | `disableAddButton` | `boolean`                     | Will be `true` if the tag(s) in the input cannot be added (all invalid and/or duplicates)                                                              |
 | `disabled`         | `boolean`                     | `true` if the component is in the disabled state. Value of the `disabled` prop                                                                         |
@@ -124,10 +125,10 @@ The default slot scope properties are as follows:
 | `separator`        | `string \| readonly string[]` | The value of the `separator` prop                                                                                                                      |
 | `size`             | `Size`                        | The value of the `size` prop                                                                                                                           |
 | `state`            | `ValidationState`             | The contextual state of the component. Value of the `state` prop. Possible values are `true`, `false`, or `null`                                       |
-| `tagClass`         | `ClassValue`                  | The value of the `tag-variant` prop. Class (or classes) to apply to the tag elements                                                                   |
+| `tagClass`         | `ClassValue`                  | The value of the `tag-class` prop. Class (or classes) to apply to the tag elements                                                                   |
 | `tagPills`         | `boolean`                     | The value of the `tag-pills` prop                                                                                                                      |
 | `tagRemoveLabel`   | `string`                      | Value of the `tag-remove-label` prop. Used as the `aria-label` attribute on the remove button of tags                                                  |
-| `tagVariant`       | `ColorVariant \| null`        | Value of the `tag-variant` prop                                                                                                                        |
+| `tagTheme`         | `ThemeColor \| null`          | Value of the `tag-theme` prop                                                                                                                          |
 | `tags`             | `string[]`                    | Array of current tag strings                                                                                                                           |
 
 #### `inputAttrs` object properties
@@ -201,7 +202,7 @@ You can easily create a custom wrapper component with your preferred rendering s
 
 BootstrapVueNext provides the helper component `<BFormTag>`, for use with the default scoped slot of `<BFormTags>`. The component is based upon [`<BBadge>`](/docs/components/badge) and [`<BButton>`](/docs/components/button).
 
-`<BFormTag>` supports the same variants as `<BBadge>` and also supports pill styling. Sizing is based on the containing element's font-size.
+`<BFormTag>` supports the same themes as `<BBadge>` and also supports pill styling. Sizing is based on the containing element's font-size.
 
 The remove event is emitted when the `<BFormTag>` remove button is clicked.
 

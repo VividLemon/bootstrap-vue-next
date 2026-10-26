@@ -6,11 +6,11 @@
 </template>
 
 <script setup lang="ts">
-import {BApp, type BAppProps} from 'bootstrap-vue-next'
+import { BApp, type BAppProps } from 'bootstrap-vue-next'
 
 const appDefaults: BAppProps['defaults'] = {
   BButton: {
-    variant: 'info',
+    theme: 'info',
     size: 'lg',
   },
   BModal: {
@@ -18,7 +18,7 @@ const appDefaults: BAppProps['defaults'] = {
     noCloseOnBackdrop: true,
   },
   BToast: {
-    variant: 'success',
+    theme: 'success',
     solid: true,
   },
 }

@@ -67,7 +67,6 @@ const _props = withDefaults(defineProps<Omit<BTooltipProps, 'modelValue'>>(), {
   unmountLazy: undefined,
   title: undefined,
   titleClass: undefined,
-  variant: undefined,
   visible: undefined,
 })
 const props = useDefaults(_props, 'BTooltip')

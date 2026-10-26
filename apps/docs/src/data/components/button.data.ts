@@ -13,23 +13,23 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {linkProps, linkTo} from '../../utils/linkProps'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { linkProps, linkTo } from '../../utils/linkProps'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BButton: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.btn'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.btn' },
       props: {
         [defaultPropSectionSymbol]: {
           ...pick(
             buildCommonProps({
-              variant: {
+              theme: {
                 default: 'secondary',
               },
             }),
-            ['size', 'tag', 'variant']
+            ['size', 'tag', 'theme', 'variant'],
           ),
           loading: {
             type: 'boolean',
@@ -84,7 +84,7 @@ export default {
         },
       },
       emits: {
-        'click': {
+        click: {
           description: 'On click event',
           args: {
             click: {
@@ -104,10 +104,10 @@ export default {
         },
       } satisfies EmitRecord<keyof BButtonEmits | 'update:pressed'>,
       slots: {
-        'default': {
+        default: {
           description: 'Content to place in the button',
         },
-        'loading': {
+        loading: {
           description: 'The content to replace the default loader',
         },
         'loading-spinner': {
@@ -116,7 +116,7 @@ export default {
       } satisfies SlotRecord<keyof BButtonSlots>,
     },
     BCloseButton: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.btn-close'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.btn-close' },
       props: {
         ...pick(
           buildCommonProps({
@@ -124,7 +124,7 @@ export default {
               default: 'Close',
             },
           }),
-          ['ariaLabel', 'disabled']
+          ['ariaLabel', 'disabled'],
         ),
         type: {
           type: 'ButtonType',

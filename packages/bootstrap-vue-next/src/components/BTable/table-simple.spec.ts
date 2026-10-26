@@ -294,14 +294,21 @@ describe('BTableSimple', () => {
       expect(table.classes()).not.toContain('table-sm')
     })
 
-    it('has class table-variant when variant prop set', async () => {
+    it('has class theme-x when theme prop set', async () => {
       const wrapper = mount(BTableSimple, {
-        props: {variant: 'primary'},
+        props: {theme: 'primary'},
       })
       const table = wrapper.get('table')
-      expect(table.classes()).toContain('table-primary')
-      await wrapper.setProps({variant: 'secondary'})
-      expect(table.classes()).toContain('table-secondary')
+      expect(table.classes()).toContain('theme-primary')
+      await wrapper.setProps({theme: 'secondary'})
+      expect(table.classes()).toContain('theme-secondary')
+    })
+
+    it('has class border-x when border prop set', () => {
+      const wrapper = mount(BTableSimple, {
+        props: {border: 'danger'},
+      })
+      expect(wrapper.get('table').classes()).toContain('border-danger')
     })
 
     it('has class table-striped-columns when striped-columns prop set', async () => {

@@ -14,16 +14,16 @@
 import {computed, type StyleValue} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useId} from '../../composables/useId'
 import type {BTableSimpleProps, BTableSimpleSlots} from '../../types'
 
 const defaultStickyHeaderHeight = '300px'
 
 const _props = withDefaults(defineProps<BTableSimpleProps>(), {
-  borderVariant: null,
+  border: null,
   tableClass: undefined,
-  variant: null,
+  theme: null,
   bordered: false,
   borderless: false,
   captionTop: false,
@@ -46,9 +46,9 @@ defineSlots<BTableSimpleSlots>()
 
 const computedId = useId(() => props.id)
 
-const colorClasses = useColorVariantClasses(
+const colorClasses = useThemeClasses(
   computed(() => ({
-    borderVariant: props.borderVariant,
+    border: props.border,
   }))
 )
 const computedClasses = computed(() => [
@@ -67,7 +67,7 @@ const computedClasses = computed(() => [
     [`b-table-stacked-${props.stacked}`]: typeof props.stacked === 'string',
     'table-striped': props.striped,
     'table-sm': props.small,
-    [`table-${props.variant}`]: props.variant !== null,
+    [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
     'table-striped-columns': props.stripedColumns,
     'b-table-fixed': props.fixed,
     'b-table-no-border-collapse': props.noBorderCollapse,

@@ -51,7 +51,8 @@ import BFormRadioGroupBase from './BFormRadioGroupBase.vue'
 const props = withDefaults(defineProps<Omit<BFormRadioGroupProps<Options>, 'modelValue'>>(), {
   ariaInvalid: undefined,
   autofocus: false,
-  buttonVariant: 'secondary',
+  buttonVariant: 'solid',
+  buttonTheme: 'secondary',
   buttons: false,
   disabled: false,
   disabledField: 'disabled',
@@ -109,6 +110,7 @@ const forwardedProps = computed(() => ({
   size: props.size,
   state: props.state,
   buttonVariant: props.buttonVariant,
+  buttonTheme: props.buttonTheme,
   buttons: props.buttons,
   stacked: props.stacked,
   disabled: props.disabled,

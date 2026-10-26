@@ -38,67 +38,67 @@ describe('card-body', () => {
     expect(wrapper.text()).toBe('')
   })
 
-  it('has class text-bg-{type} when prop variant', async () => {
+  it('has class theme-{type} when prop theme', async () => {
     const wrapper = mount(BCardBody, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('text-bg-primary')
-    await wrapper.setProps({variant: 'danger'})
-    expect(wrapper.classes()).toContain('text-bg-danger')
-    expect(wrapper.classes()).not.toContain('text-bg-primary')
-    await wrapper.setProps({variant: null})
-    expect(wrapper.classes()).not.toContain('text-bg-danger')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: 'danger'})
+    expect(wrapper.classes()).toContain('theme-danger')
+    expect(wrapper.classes()).not.toContain('theme-primary')
+    await wrapper.setProps({theme: null})
+    expect(wrapper.classes()).not.toContain('theme-danger')
   })
 
-  it('has class text-{type} when prop textVariant', async () => {
+  it('has class fg-{type} when prop fg', async () => {
     const wrapper = mount(BCardBody, {
-      props: {textVariant: 'primary'},
+      props: {fg: 'primary'},
     })
-    expect(wrapper.classes()).toContain('text-primary')
-    await wrapper.setProps({textVariant: 'danger'})
-    expect(wrapper.classes()).toContain('text-danger')
-    expect(wrapper.classes()).not.toContain('text-primary')
-    await wrapper.setProps({textVariant: null})
-    expect(wrapper.classes()).not.toContain('text-danger')
+    expect(wrapper.classes()).toContain('fg-primary')
+    await wrapper.setProps({fg: 'danger'})
+    expect(wrapper.classes()).toContain('fg-danger')
+    expect(wrapper.classes()).not.toContain('fg-primary')
+    await wrapper.setProps({fg: null})
+    expect(wrapper.classes()).not.toContain('fg-danger')
   })
 
-  it('has class bg-{type} when prop bgVariant', async () => {
+  it('has class bg-{type} when prop bg', async () => {
     const wrapper = mount(BCardBody, {
-      props: {bgVariant: 'primary'},
+      props: {bg: 'primary'},
     })
     expect(wrapper.classes()).toContain('bg-primary')
-    await wrapper.setProps({bgVariant: 'danger'})
+    await wrapper.setProps({bg: 'danger'})
     expect(wrapper.classes()).toContain('bg-danger')
     expect(wrapper.classes()).not.toContain('bg-primary')
-    await wrapper.setProps({bgVariant: null})
+    await wrapper.setProps({bg: null})
     expect(wrapper.classes()).not.toContain('bg-danger')
   })
 
-  it('has class border-{type} when prop borderVariant', async () => {
+  it('has class border-{type} when prop border', async () => {
     const wrapper = mount(BCardBody, {
-      props: {borderVariant: 'primary'},
+      props: {border: 'primary'},
     })
     expect(wrapper.classes()).toContain('border-primary')
-    await wrapper.setProps({borderVariant: 'danger'})
+    await wrapper.setProps({border: 'danger'})
     expect(wrapper.classes()).toContain('border-danger')
     expect(wrapper.classes()).not.toContain('border-primary')
-    await wrapper.setProps({borderVariant: null})
+    await wrapper.setProps({border: null})
     expect(wrapper.classes()).not.toContain('border-danger')
   })
 
-  it('card-body class persists when variant classes are applied', () => {
+  it('card-body class persists when color classes are applied', () => {
     const wrapper = mount(BCardBody, {
       props: {
-        variant: 'primary',
-        textVariant: 'white',
-        bgVariant: 'dark',
-        borderVariant: 'info',
+        theme: 'primary',
+        fg: 'white',
+        bg: 'black',
+        border: 'info',
       },
     })
     expect(wrapper.classes()).toContain('card-body')
-    expect(wrapper.classes()).toContain('text-bg-primary')
-    expect(wrapper.classes()).toContain('text-white')
-    expect(wrapper.classes()).toContain('bg-dark')
+    expect(wrapper.classes()).toContain('theme-primary')
+    expect(wrapper.classes()).toContain('fg-white')
+    expect(wrapper.classes()).toContain('bg-black')
     expect(wrapper.classes()).toContain('border-info')
   })
 
@@ -323,21 +323,21 @@ describe('card-body', () => {
     expect(wrapper.getComponent(BCardSubtitle).props('tag')).toBe('h3')
   })
 
-  it('BCardSubtitle has prop textVariant as prop subtitleTextVariant', () => {
+  it('BCardSubtitle has prop fg as prop subtitleFg', () => {
     const wrapper = mount(BCardBody, {
-      props: {subtitle: 'foobar', subtitleTextVariant: 'primary'},
+      props: {subtitle: 'foobar', subtitleFg: 'primary'},
     })
     const $cardsubtitle = wrapper.getComponent(BCardSubtitle)
-    expect($cardsubtitle.props('textVariant')).toBe('primary')
+    expect($cardsubtitle.props('fg')).toBe('primary')
   })
 
-  it('subtitleTextVariant is reactive', async () => {
+  it('subtitleFg is reactive', async () => {
     const wrapper = mount(BCardBody, {
-      props: {subtitle: 'foobar', subtitleTextVariant: 'primary'},
+      props: {subtitle: 'foobar', subtitleFg: 'primary'},
     })
-    expect(wrapper.getComponent(BCardSubtitle).props('textVariant')).toBe('primary')
-    await wrapper.setProps({subtitleTextVariant: 'danger'})
-    expect(wrapper.getComponent(BCardSubtitle).props('textVariant')).toBe('danger')
+    expect(wrapper.getComponent(BCardSubtitle).props('fg')).toBe('primary')
+    await wrapper.setProps({subtitleFg: 'danger'})
+    expect(wrapper.getComponent(BCardSubtitle).props('fg')).toBe('danger')
   })
 
   it('renders default slot', () => {

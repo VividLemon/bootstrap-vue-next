@@ -16,9 +16,9 @@
         :show-value="props.showValue"
         :striped="props.striped"
         :value="props.value"
-        :variant="props.variant"
-        :text-variant="props.textVariant"
-        :bg-variant="props.bgVariant"
+        :theme="props.theme"
+        :fg="props.fg"
+        :bg="props.bg"
       />
     </slot>
   </div>
@@ -35,15 +35,15 @@ const _props = withDefaults(defineProps<BProgressProps>(), {
   height: undefined,
   // BProgressBar props
   animated: undefined,
-  bgVariant: undefined,
+  bg: undefined,
   max: 100,
   precision: undefined,
   showProgress: undefined,
   showValue: undefined,
   striped: undefined,
-  textVariant: undefined,
+  fg: undefined,
   value: undefined,
-  variant: undefined,
+  theme: undefined,
   // End BProgressBar props
 })
 const props = useDefaults(_props, 'BProgress')

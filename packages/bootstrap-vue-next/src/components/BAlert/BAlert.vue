@@ -31,6 +31,7 @@
             v-if="slots.close || props.closeContent"
             :class="[props.closeClass]"
             class="ms-auto ps-1 btn-close-custom"
+            :theme="props.closeTheme"
             :variant="props.closeVariant"
             @click.stop.prevent="hide('close')"
           >
@@ -65,6 +66,7 @@
               v-if="slots.close || props.closeContent"
               :class="[props.closeClass]"
               class="ms-auto btn-close-custom"
+              :theme="props.closeTheme"
               :variant="props.closeVariant"
               @click.stop.prevent="hide('close')"
             >
@@ -88,7 +90,7 @@
         :show-progress="props.progressProps.showProgress"
         :show-value="props.progressProps.showValue"
         :striped="props.progressProps.striped"
-        :variant="props.progressProps.variant"
+        :theme="props.progressProps.theme"
         :max="modelValue"
         :value="remainingMs"
         height="4px"
@@ -110,15 +112,17 @@ import {useCountdownHover} from '../../composables/useCountdownHover'
 import {useId} from '../../composables/useId'
 import {useShowHide} from '../../composables/useShowHide'
 import BButton from '../BButton/BButton.vue'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 
 const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
-  bgVariant: null,
+  bg: null,
   body: undefined,
   bodyClass: undefined,
   closeClass: undefined,
   closeContent: undefined,
   closeLabel: 'Close',
-  closeVariant: 'secondary',
+  closeTheme: 'secondary',
+  closeVariant: 'solid',
   dismissible: false,
   headerClass: undefined,
   headerTag: 'div',
@@ -135,7 +139,7 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   showOnPause: true,
   show: false,
   solid: false,
-  textVariant: null,
+  fg: null,
   title: undefined,
   alertClass: undefined,
   transProps: undefined,
@@ -161,9 +165,9 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   underlineOffsetHover: undefined,
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
-  underlineVariant: undefined,
+  underlineTheme: undefined,
   // End link props
-  variant: 'info',
+  theme: 'info',
 })
 const props = useDefaults(_props, 'BAlert')
 const emit = defineEmits<BAlertEmits>()
@@ -225,11 +229,10 @@ const isAlertVisible = computed(
   () => showRef.value || isActive.value || (props.showOnPause && isPaused.value)
 )
 
-// const colorClasses = useColorVariantClasses(props)
+const colorClasses = useThemeClasses(() => ({theme: props.theme, bg: props.bg, fg: props.fg}))
 const computedClasses = computed(() => [
-  // colorClasses.value,
+  colorClasses.value,
   {
-    [`alert-${props.variant}`]: props.variant !== null,
     'alert-dismissible': props.dismissible && !(slots.close || props.closeContent),
     'show': isVisible.value,
     'fade': !computedNoAnimation.value,

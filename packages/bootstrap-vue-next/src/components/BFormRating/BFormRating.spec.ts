@@ -301,17 +301,17 @@ describe('form-rating', () => {
       expect(wrapper.find('.b-form-rating-item svg').attributes('style')).toContain('color: blue')
     })
 
-    it('applies text-{variant} class when variant prop is set', () => {
-      const wrapper = mount(BFormRating, {props: {variant: 'danger'}})
-      expect(wrapper.find('.b-form-rating-item svg').classes()).toContain('text-danger')
+    it('applies fg-{theme} class when theme prop is set', () => {
+      const wrapper = mount(BFormRating, {props: {theme: 'danger'}})
+      expect(wrapper.find('.b-form-rating-item svg').classes()).toContain('fg-danger')
     })
 
-    it('updates variant class reactively', async () => {
-      const wrapper = mount(BFormRating, {props: {variant: 'danger'}})
-      expect(wrapper.find('.b-form-rating-item svg').classes()).toContain('text-danger')
-      await wrapper.setProps({variant: 'success'})
-      expect(wrapper.find('.b-form-rating-item svg').classes()).toContain('text-success')
-      expect(wrapper.find('.b-form-rating-item svg').classes()).not.toContain('text-danger')
+    it('updates theme class reactively', async () => {
+      const wrapper = mount(BFormRating, {props: {theme: 'danger'}})
+      expect(wrapper.find('.b-form-rating-item svg').classes()).toContain('fg-danger')
+      await wrapper.setProps({theme: 'success'})
+      expect(wrapper.find('.b-form-rating-item svg').classes()).toContain('fg-success')
+      expect(wrapper.find('.b-form-rating-item svg').classes()).not.toContain('fg-danger')
     })
 
     it('applies is-disabled class to SVG icons when disabled', () => {
@@ -326,11 +326,11 @@ describe('form-rating', () => {
       expect(svg.attributes('style') ?? '').not.toContain('color: pink')
     })
 
-    it('does not apply variant class when disabled', () => {
-      const wrapper = mount(BFormRating, {props: {disabled: true, variant: 'danger'}})
+    it('does not apply theme class when disabled', () => {
+      const wrapper = mount(BFormRating, {props: {disabled: true, theme: 'danger'}})
       const svg = wrapper.find('.b-form-rating-item svg')
       expect(svg.classes()).toContain('is-disabled')
-      expect(svg.classes()).not.toContain('text-danger')
+      expect(svg.classes()).not.toContain('fg-danger')
     })
   })
 

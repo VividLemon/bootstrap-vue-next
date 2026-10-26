@@ -79,7 +79,7 @@ Sometimes we want `RouterLink` to render as another tag, e.g `<li>`. Then we can
 
 </HighlightCard>
 
-<BAlert variant="info" :model-value="true" class="my-5">
+<BAlert theme="info" :model-value="true" class="my-5">
 
 Note: Changing the tag from anything other than `<a>` is discouraged, as it hinders accessibility of keyboard and/or screen-reader users, and is also not very SEO friendly.
 

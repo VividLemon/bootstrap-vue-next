@@ -12,7 +12,7 @@ import {computed, provide, toRef} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useContainerClasses} from '../../composables/useContainerClasses'
 import {navbarInjectionKey} from '../../utils/keys'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BNavbarProps, BNavbarSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BNavbarProps>(), {
@@ -23,7 +23,7 @@ const _props = withDefaults(defineProps<BNavbarProps>(), {
   sticky: undefined,
   tag: 'nav',
   toggleable: false,
-  variant: null,
+  theme: null,
 })
 const props = useDefaults(_props, 'BNavbar')
 defineSlots<BNavbarSlots>()
@@ -32,9 +32,9 @@ const computedRole = computed(() => (props.tag === 'nav' ? undefined : 'navigati
 
 const containerClass = useContainerClasses(() => props.container)
 
-const colorClasses = useColorVariantClasses(
+const colorClasses = useThemeClasses(
   computed(() => ({
-    bgVariant: props.variant,
+    theme: props.theme,
   }))
 )
 const computedClasses = computed(() => [

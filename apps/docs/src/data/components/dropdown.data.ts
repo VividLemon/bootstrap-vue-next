@@ -57,7 +57,7 @@ export default {
               default: 'hr',
             },
           }),
-          ['tag', 'variant', 'wrapperAttrs'],
+          ['tag', 'theme', 'wrapperAttrs'],
         ),
         dividerClass: {
           type: 'ClassValue',
@@ -89,7 +89,7 @@ export default {
               default: 'header',
             },
           }),
-          ['ariaDescribedby', 'headerClass', 'headerTag', 'headerVariant', 'id'],
+          ['ariaDescribedby', 'headerClass', 'headerTag', 'headerTheme', 'id'],
         ),
         header: {
           type: 'string',
@@ -109,7 +109,7 @@ export default {
     },
     BDropdownHeader: {
       props: {
-        ...pick(buildCommonProps(), ['headerClass', 'tag', 'variant', 'wrapperAttrs']),
+        ...pick(buildCommonProps(), ['headerClass', 'tag', 'theme', 'wrapperAttrs']),
         text: {
           type: 'string',
           default: undefined,
@@ -155,13 +155,7 @@ export default {
     },
     BDropdownItemButton: {
       props: {
-        ...pick(buildCommonProps(), [
-          'active',
-          'activeClass',
-          'disabled',
-          'variant',
-          'wrapperAttrs',
-        ]),
+        ...pick(buildCommonProps(), ['active', 'activeClass', 'disabled', 'theme', 'wrapperAttrs']),
         buttonClass: {
           type: 'ClassValue',
           default: undefined,
@@ -193,7 +187,7 @@ export default {
               default: 'span',
             },
           }),
-          ['tag', 'variant', 'wrapperAttrs'],
+          ['tag', 'theme', 'wrapperAttrs'],
         ),
         text: {
           type: 'string',

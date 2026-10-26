@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import {computed, h, markRaw, onMounted, onUnmounted, ref, watchEffect} from 'vue'
-import type {ColorVariant, ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
+import type {ThemeColor, ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {BModal} from 'bootstrap-vue-next/components/BModal'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
 
@@ -107,7 +107,7 @@ const dynamicModal = computed<ModalOrchestratorCreateParamBase>({
 
     body: 'my body',
     title: 'my title',
-    okVariant: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ColorVariant,
+    okTheme: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ThemeColor,
   }),
   set: (value) => {
     dynamicModalModelValue.value = value.modelValue ?? dynamicModalModelValue.value
@@ -118,14 +118,14 @@ const showFns = {
   basicNoReactive: async () => {
     await using _ = await create({
       title: 'foobar',
-      okVariant: 'danger',
+      okTheme: 'danger',
     }).show()
     return _
   },
   basicCustomComponent: async () => {
     await using _ = await create({
       slots: {default: () => markRaw(h('div', null, {default: () => 'foobar!'}))},
-      okVariant: 'info',
+      okTheme: 'info',
     }).show()
     return _
   },

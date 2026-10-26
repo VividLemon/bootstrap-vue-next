@@ -35,7 +35,7 @@ Migration notes for BOverlay from BootstrapVue to BootstrapVueNext.
 
 See the [Rounding](/docs/migration-data/props/rounded-radius-element) section.
 
-prop `blur` does not work when the prop `bgColor` is defined. It also will not work if the prop `variant` is anything other than `white` or `transparent`. This overcomes a browser change.
+prop `blur` does not work when the prop `bgColor` is defined. It also will not work if the prop `bg` is anything other than `white` or `transparent`. This overcomes a browser change.
 
 ## Migration Notes
 

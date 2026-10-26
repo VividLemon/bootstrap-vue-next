@@ -295,21 +295,21 @@ describe('form-tags', () => {
     })
   })
 
-  describe('tagVariant prop', () => {
-    it('passes tagVariant to BFormTag children', () => {
+  describe('tagTheme prop', () => {
+    it('passes tagTheme to BFormTag children', () => {
       const wrapper = mount(BFormTags, {
-        props: {modelValue: ['apple'], tagVariant: 'primary'},
+        props: {modelValue: ['apple'], tagTheme: 'primary'},
       })
       const tag = wrapper.findComponent(BFormTag)
-      expect(tag.props('variant')).toBe('primary')
+      expect(tag.props('theme')).toBe('primary')
     })
 
-    it('defaults to secondary variant', () => {
+    it('defaults to secondary theme', () => {
       const wrapper = mount(BFormTags, {
         props: {modelValue: ['apple']},
       })
       const tag = wrapper.findComponent(BFormTag)
-      expect(tag.props('variant')).toBe('secondary')
+      expect(tag.props('theme')).toBe('secondary')
     })
   })
 
@@ -943,8 +943,8 @@ describe('form-tags', () => {
     })
   })
 
-  describe('addButtonVariant prop', () => {
-    it('uses default add button variant outline-secondary', async () => {
+  describe('addButtonVariant and addButtonTheme props', () => {
+    it('uses default add button variant outline and theme secondary', async () => {
       const wrapper = mount(BFormTags)
       const input = wrapper.find('.b-form-tags-input')
       const inputEl = input.element as HTMLInputElement
@@ -954,7 +954,8 @@ describe('form-tags', () => {
       await nextTick()
 
       const addButton = wrapper.find('.b-form-tags-button')
-      expect(addButton.classes()).toContain('btn-outline-secondary')
+      expect(addButton.classes()).toContain('btn-outline')
+      expect(addButton.classes()).toContain('theme-secondary')
     })
   })
 

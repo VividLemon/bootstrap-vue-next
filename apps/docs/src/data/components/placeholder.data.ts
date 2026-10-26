@@ -8,7 +8,7 @@ import type {
   BPlaceholderWrapperProps,
   BPlaceholderWrapperSlots,
 } from 'bootstrap-vue-next'
-import {type ComponentReference, type PropRecord, type SlotRecord, StyleKind} from '../../types'
+import { type ComponentReference, type PropRecord, type SlotRecord, StyleKind } from '../../types'
 
 export default {
   load: (): ComponentReference => ({
@@ -30,8 +30,8 @@ export default {
           type: 'string',
           default: 'span',
         },
-        variant: {
-          type: 'BgColorVariant | null',
+        bg: {
+          type: 'BgColor | null',
           default: null,
         },
         width: {
@@ -47,7 +47,7 @@ export default {
       slots: {},
     },
     BPlaceholderCard: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.card'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.card' },
       props: {
         animation: {
           type: 'PlaceholderAnimation',
@@ -61,8 +61,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        footerVariant: {
-          type: 'ColorVariant | null',
+        footerTheme: {
+          type: 'ThemeColor | null',
           default: undefined,
         },
         footerWidth: {
@@ -77,8 +77,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        headerVariant: {
-          type: 'ColorVariant | null',
+        headerTheme: {
+          type: 'ThemeColor | null',
           default: undefined,
         },
         headerWidth: {
@@ -121,8 +121,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        variant: {
-          type: 'ColorVariant | null',
+        theme: {
+          type: 'ThemeColor | null',
           default: undefined,
         },
       } satisfies PropRecord<keyof BPlaceholderCardProps>,
@@ -147,7 +147,7 @@ export default {
       } satisfies SlotRecord<keyof BPlaceholderCardSlots>,
     },
     BPlaceholderWrapper: {
-      styleSpec: {kind: StyleKind.None},
+      styleSpec: { kind: StyleKind.None },
       props: {
         loading: {
           description: 'Determines whether the loading slot is displayed',
@@ -168,7 +168,7 @@ export default {
       } satisfies SlotRecord<keyof BPlaceholderWrapperSlots>,
     },
     BPlaceholderTable: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.table'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.table' },
       props: {
         animation: {
           type: 'PlaceholderAnimation',
@@ -198,8 +198,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        footerVariant: {
-          type: 'ColorVariant | null',
+        footerTheme: {
+          type: 'ThemeColor | null',
           default: undefined,
         },
         headerAnimation: {
@@ -218,8 +218,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        headerVariant: {
-          type: 'ColorVariant | null',
+        headerTheme: {
+          type: 'ThemeColor | null',
           default: undefined,
         },
         noHeader: {
@@ -238,8 +238,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        variant: {
-          type: 'ColorVariant | null',
+        theme: {
+          type: 'ThemeColor | null',
           default: undefined,
         },
       } satisfies PropRecord<keyof BPlaceholderTableProps>,
@@ -260,7 +260,7 @@ export default {
       } satisfies SlotRecord<keyof BPlaceholderTableSlots>,
     },
     BPlaceholderButton: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.placeholder.btn'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.placeholder.btn' },
       props: {
         animation: {
           type: 'PlaceholderAnimation',
@@ -274,8 +274,8 @@ export default {
           type: 'string',
           default: 'div',
         },
-        variant: {
-          type: 'ColorVariant | null',
+        theme: {
+          type: 'ThemeColor | null',
           default: 'primary',
         },
         width: {

@@ -1,11 +1,6 @@
 <template>
   <!-- #region template -->
-  <BTableSimple
-    hover
-    small
-    caption-top
-    responsive
-  >
+  <BTableSimple hover small caption-top responsive>
     <caption>
       Items sold in August, grouped by Country and City:
     </caption>
@@ -22,7 +17,7 @@
       <col />
       <col />
     </colgroup>
-    <BThead variant="dark">
+    <BThead theme="inverse">
       <BTr>
         <BTh colspan="2">Region</BTh>
         <BTh colspan="3">Clothes</BTh>
@@ -45,16 +40,16 @@
         <BTd>56</BTd>
         <BTd>22</BTd>
         <BTd>43</BTd>
-        <BTd variant="success">72</BTd>
+        <BTd theme="success">72</BTd>
         <BTd>23</BTd>
       </BTr>
       <BTr>
         <BTh class="text-end">Gent</BTh>
         <BTd>46</BTd>
-        <BTd variant="warning">18</BTd>
+        <BTd theme="warning">18</BTd>
         <BTd>50</BTd>
         <BTd>61</BTd>
-        <BTd variant="danger">15</BTd>
+        <BTd theme="danger">15</BTd>
       </BTr>
       <BTr>
         <BTh class="text-end">Brussels</BTh>
@@ -67,7 +62,7 @@
       <BTr>
         <BTh rowspan="2">The Netherlands</BTh>
         <BTh class="text-end">Amsterdam</BTh>
-        <BTd variant="success">89</BTd>
+        <BTd theme="success">89</BTd>
         <BTd>34</BTd>
         <BTd>69</BTd>
         <BTd>85</BTd>
@@ -76,21 +71,15 @@
       <BTr>
         <BTh class="text-end">Utrecht</BTh>
         <BTd>80</BTd>
-        <BTd variant="danger">12</BTd>
+        <BTd theme="danger">12</BTd>
         <BTd>43</BTd>
         <BTd>36</BTd>
-        <BTd variant="warning">19</BTd>
+        <BTd theme="warning">19</BTd>
       </BTr>
     </BTbody>
     <BTfoot>
       <BTr>
-        <BTd
-          colspan="7"
-          variant="secondary"
-          class="text-end"
-        >
-          Total Rows: <b>5</b>
-        </BTd>
+        <BTd colspan="7" theme="secondary" class="text-end"> Total Rows: <b>5</b> </BTd>
       </BTr>
     </BTfoot>
   </BTableSimple>

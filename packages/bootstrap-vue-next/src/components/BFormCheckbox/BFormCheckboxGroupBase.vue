@@ -35,7 +35,8 @@ import {useDefaults} from '../../composables/useDefaults'
 const _props = withDefaults(defineProps<Omit<BFormCheckboxGroupBaseProps, 'modelValue'>>(), {
   ariaInvalid: undefined,
   autofocus: false,
-  buttonVariant: 'secondary',
+  buttonVariant: 'solid',
+  buttonTheme: 'secondary',
   buttons: false,
   disabled: false,
   form: undefined,
@@ -72,6 +73,7 @@ provide(checkboxGroupKey, {
   >,
   switch: toRef(() => props.switches),
   buttonVariant: toRef(() => props.buttonVariant),
+  buttonTheme: toRef(() => props.buttonTheme),
   form: toRef(() => props.form),
   name: computedName,
   state: toRef(() => props.state),

@@ -1,11 +1,7 @@
 <template>
   <div>
-    <BFormTags
-      v-model="value"
-      no-outer-focus
-      class="mb-2"
-    >
-      <template #default="{tags, inputAttrs, inputHandlers, addTag, removeTag}">
+    <BFormTags v-model="value" no-outer-focus class="mb-2">
+      <template #default="{ tags, inputAttrs, inputHandlers, addTag, removeTag }">
         <BInputGroup aria-controls="my-custom-tags-list">
           <input
             v-bind="inputAttrs"
@@ -14,11 +10,7 @@
             v-on="inputHandlers"
           />
           <BInputGroupText>
-            <BButton
-              variant="primary"
-              @click="addTag()"
-              >Add</BButton
-            >
+            <BButton theme="primary" @click="addTag()">Add</BButton>
           </BInputGroupText>
         </BInputGroup>
         <ul
@@ -54,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const value = ref<string[]>(['apple', 'orange', 'banana', 'pear', 'peach'])
 </script>

@@ -1,4 +1,4 @@
-import type {BModalEmits, BModalProps, BModalSlots} from 'bootstrap-vue-next'
+import type { BModalEmits, BModalProps, BModalSlots } from 'bootstrap-vue-next'
 import type {
   ComponentReference,
   EmitRecord,
@@ -7,9 +7,9 @@ import type {
   SlotRecord,
   SlotScopeReference,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
-import {bvTriggerableEventArg, showHideEmits, showHideProps} from '../../utils/showHideData'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
+import { bvTriggerableEventArg, showHideEmits, showHideProps } from '../../utils/showHideData'
 
 const sharedSlots: SlotScopeReference = {
   cancel: {
@@ -57,20 +57,20 @@ export default {
           [
             'body',
             'bodyAttrs',
-            'bodyBgVariant',
+            'bodyBg',
             'bodyClass',
-            'bodyTextVariant',
-            'bodyVariant',
-            'footerBgVariant',
-            'footerBorderVariant',
+            'bodyFg',
+            'bodyTheme',
+            'footerBg',
+            'footerBorder',
             'footerClass',
-            'footerTextVariant',
-            'footerVariant',
-            'headerBgVariant',
-            'headerBorderVariant',
+            'footerFg',
+            'footerTheme',
+            'headerBg',
+            'headerBorder',
             'headerClass',
-            'headerTextVariant',
-            'headerVariant',
+            'headerFg',
+            'headerTheme',
             'id',
             'noBackdrop',
             'noHeader',
@@ -79,7 +79,7 @@ export default {
             'title',
             'titleClass',
             'titleTag',
-          ]
+          ],
         ),
         backdropFirst: {
           type: 'boolean',
@@ -118,10 +118,15 @@ export default {
           default: 'Cancel',
           description: 'Text to place in the default footer Cancel button',
         },
+        cancelTheme: {
+          type: 'ThemeColor | null',
+          default: 'secondary',
+          description: 'Theme color for the default footer Cancel button',
+        },
         cancelVariant: {
           type: 'ButtonVariant | null',
-          default: 'secondary',
-          description: 'Variant for the default footer Cancel button',
+          default: 'solid',
+          description: 'Button style (variant) for the default footer Cancel button',
         },
         centered: {
           type: 'boolean',
@@ -165,10 +170,16 @@ export default {
           default: 'Close',
           description: 'Accessibility label for the header close button',
         },
+        headerCloseTheme: {
+          type: 'ThemeColor | null',
+          default: 'secondary',
+          description: 'Theme color for the header close button when using the header-close slot',
+        },
         headerCloseVariant: {
           type: 'ButtonVariant | null',
-          default: 'secondary',
-          description: 'Variant for the header close button when using the header-close slot',
+          default: 'solid',
+          description:
+            'Button style (variant) for the header close button when using the header-close slot',
         },
         modalClass: {
           type: 'ClassValue',
@@ -221,10 +232,15 @@ export default {
           default: 'OK',
           description: 'Text to place in the default footer OK button',
         },
+        okTheme: {
+          type: 'ThemeColor | null',
+          default: 'primary',
+          description: 'Theme color for the default footer OK button',
+        },
         okVariant: {
           type: 'ButtonVariant | null',
-          default: 'primary',
-          description: 'Button color theme variant for the default footer OK button',
+          default: 'solid',
+          description: 'Button style (variant) for the default footer OK button',
         },
         scrollable: {
           type: 'boolean',
@@ -258,31 +274,31 @@ export default {
             },
           },
         },
-        'ok': {
+        ok: {
           description: 'Emitted when the default footer OK button is clicked. Cancelable',
           args: {
             value: bvTriggerableEventArg,
           },
         },
-        'cancel': {
+        cancel: {
           description: 'Emitted when the default footer Cancel button is clicked. Cancelable',
           args: {
             value: bvTriggerableEventArg,
           },
         },
-        'close': {
+        close: {
           description: 'Emitted when the default header close button is clicked. Cancelable',
           args: {
             value: bvTriggerableEventArg,
           },
         },
-        'backdrop': {
+        backdrop: {
           description: 'Emitted when the backdrop is clicked. Cancelable',
           args: {
             value: bvTriggerableEventArg,
           },
         },
-        'esc': {
+        esc: {
           description: 'Emitted when the Esc key is pressed. Cancelable',
           args: {
             value: bvTriggerableEventArg,
@@ -290,24 +306,24 @@ export default {
         },
       } satisfies EmitRecord<keyof BModalEmits | 'update:model-value'>,
       slots: {
-        'backdrop': {
+        backdrop: {
           description: 'Content for the modal backdrop',
           scope: {},
         },
-        'cancel': {
+        cancel: {
           description: 'Content for the modal Cancel button. Optionally scoped',
           scope: sharedSlots,
         },
-        'default': {
+        default: {
           description: 'Content for the modal body. Optionally scoped',
           scope: sharedSlots,
         },
-        'footer': {
+        footer: {
           description:
             'Content for the modal footer. Removes default OK and Cancel buttons. Optionally scoped',
           scope: sharedSlots,
         },
-        'header': {
+        header: {
           description:
             'Content for the modal header. Removes the top-right close button. Optionally scoped',
           scope: sharedSlots,
@@ -317,11 +333,11 @@ export default {
             "Content for the modal header close button. Not shown if the 'header' slot is used",
           scope: {},
         },
-        'ok': {
+        ok: {
           description: 'Content for the modal OK button. Optionally scoped',
           scope: sharedSlots,
         },
-        'title': {
+        title: {
           description:
             "Content for the modal title. Not shown if the 'header' slot is used. Optionally scoped",
           scope: sharedSlots,

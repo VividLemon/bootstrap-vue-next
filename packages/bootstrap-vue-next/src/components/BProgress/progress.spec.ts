@@ -175,34 +175,34 @@ describe('progress', () => {
     expect($progressbar.props('value')).toBe('20')
   })
 
-  it('BProgressBar has prop variant to be prop variant', async () => {
+  it('BProgressBar has prop theme to be prop theme', async () => {
     const wrapper = mount(BProgress, {
-      props: {variant: 'danger'},
+      props: {theme: 'danger'},
     })
     const $progressbar = wrapper.getComponent(BProgressBar)
-    expect($progressbar.props('variant')).toBe('danger')
-    await wrapper.setProps({variant: 'secondary'})
-    expect($progressbar.props('variant')).toBe('secondary')
+    expect($progressbar.props('theme')).toBe('danger')
+    await wrapper.setProps({theme: 'secondary'})
+    expect($progressbar.props('theme')).toBe('secondary')
   })
 
-  it('BProgressBar has prop bgVariant to be prop bgVariant', async () => {
+  it('BProgressBar has prop bg to be prop bg', async () => {
     const wrapper = mount(BProgress, {
-      props: {bgVariant: 'danger'},
+      props: {bg: 'danger'},
     })
     const $progressbar = wrapper.getComponent(BProgressBar)
-    expect($progressbar.props('bgVariant')).toBe('danger')
-    await wrapper.setProps({bgVariant: 'success'})
-    expect($progressbar.props('bgVariant')).toBe('success')
+    expect($progressbar.props('bg')).toBe('danger')
+    await wrapper.setProps({bg: 'success'})
+    expect($progressbar.props('bg')).toBe('success')
   })
 
-  it('BProgressBar has prop textVariant to be prop textVariant', async () => {
+  it('BProgressBar has prop fg to be prop fg', async () => {
     const wrapper = mount(BProgress, {
-      props: {textVariant: 'primary'},
+      props: {fg: 'primary'},
     })
     const $progressbar = wrapper.getComponent(BProgressBar)
-    expect($progressbar.props('textVariant')).toBe('primary')
-    await wrapper.setProps({textVariant: 'warning'})
-    expect($progressbar.props('textVariant')).toBe('warning')
+    expect($progressbar.props('fg')).toBe('primary')
+    await wrapper.setProps({fg: 'warning'})
+    expect($progressbar.props('fg')).toBe('warning')
   })
 
   it('provides progressInjectionKey with animated', () => {

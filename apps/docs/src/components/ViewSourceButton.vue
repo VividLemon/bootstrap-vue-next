@@ -1,9 +1,9 @@
 <template>
-  <BButton variant="outline-info" :target :href> <slot> View Source </slot> </BButton>
+  <BButton variant="outline" theme="info" :target :href> <slot> View Source </slot> </BButton>
 </template>
 
 <script setup lang="ts">
-import type {LinkTarget} from 'bootstrap-vue-next/types'
+import type { LinkTarget } from 'bootstrap-vue-next/types'
 
 defineSlots<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

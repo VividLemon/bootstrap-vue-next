@@ -1,22 +1,9 @@
 <template>
-  <BOverlay
-    no-fade
-    :show="show"
-    rounded="sm"
-  >
-    <BCard
-      title="Card with overlay"
-      :aria-hidden="show ? 'true' : null"
-    >
+  <BOverlay no-fade :show="show" rounded="sm">
+    <BCard title="Card with overlay" :aria-hidden="show ? 'true' : null">
       <BCardText>Laborum consequat non elit enim exercitation cillum.</BCardText>
       <BCardText>Click the button to toggle the overlay:</BCardText>
-      <BButton
-        :disabled="show"
-        variant="primary"
-        @click="show = true"
-      >
-        Show overlay
-      </BButton>
+      <BButton :disabled="show" theme="primary" @click="show = true"> Show overlay </BButton>
     </BCard>
   </BOverlay>
 
@@ -24,6 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 const show = ref(false)
 </script>

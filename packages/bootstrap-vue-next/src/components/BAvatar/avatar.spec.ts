@@ -219,25 +219,25 @@ describe('avatar', () => {
     expect(wrapper.find('img').attributes('src')).toBe('https://example.com/b.png')
   })
 
-  // Variant classes
-  it('has text-bg-secondary class by default', () => {
+  // Theme classes
+  it('has theme-secondary class by default', () => {
     const wrapper = mount(BAvatar)
-    expect(wrapper.classes()).toContain('text-bg-secondary')
+    expect(wrapper.classes()).toContain('theme-secondary')
   })
 
-  it('has text-bg-{variant} class when prop variant is set', () => {
-    const wrapper = mount(BAvatar, {props: {variant: 'primary'}})
-    expect(wrapper.classes()).toContain('text-bg-primary')
+  it('has theme-{theme} class when prop theme is set', () => {
+    const wrapper = mount(BAvatar, {props: {theme: 'primary'}})
+    expect(wrapper.classes()).toContain('theme-primary')
   })
 
-  it('has bg-{bgVariant} class when prop bgVariant is set', () => {
-    const wrapper = mount(BAvatar, {props: {bgVariant: 'danger'}})
+  it('has bg-{bg} class when prop bg is set', () => {
+    const wrapper = mount(BAvatar, {props: {bg: 'danger'}})
     expect(wrapper.classes()).toContain('bg-danger')
   })
 
-  it('has text-{textVariant} class when prop textVariant is set', () => {
-    const wrapper = mount(BAvatar, {props: {textVariant: 'white'}})
-    expect(wrapper.classes()).toContain('text-white')
+  it('has fg-{fg} class when prop fg is set', () => {
+    const wrapper = mount(BAvatar, {props: {fg: 'white'}})
+    expect(wrapper.classes()).toContain('fg-white')
   })
 
   // Square prop
@@ -262,9 +262,10 @@ describe('avatar', () => {
     expect(wrapper.classes()).toContain('btn')
   })
 
-  it('has btn-{variant} class when prop button is true', () => {
-    const wrapper = mount(BAvatar, {props: {button: true, variant: 'primary'}})
-    expect(wrapper.classes()).toContain('btn-primary')
+  it('has btn-solid and theme class when prop button is true', () => {
+    const wrapper = mount(BAvatar, {props: {button: true, theme: 'primary'}})
+    expect(wrapper.classes()).toContain('btn-solid')
+    expect(wrapper.classes()).toContain('theme-primary')
   })
 
   it('does not have btn class when prop button is false', () => {
@@ -353,16 +354,16 @@ describe('avatar', () => {
     expect($badge.text()).toBe('5')
   })
 
-  it('passes badgeVariant to BBadge variant prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeVariant: 'danger'}})
+  it('passes badgeTheme to BBadge theme prop', () => {
+    const wrapper = mount(BAvatar, {props: {badge: true, badgeTheme: 'danger'}})
     const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('variant')).toBe('danger')
+    expect($badge.props('theme')).toBe('danger')
   })
 
-  it('passes default badgeVariant of primary to BBadge', () => {
+  it('passes default badgeTheme of primary to BBadge', () => {
     const wrapper = mount(BAvatar, {props: {badge: true}})
     const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('variant')).toBe('primary')
+    expect($badge.props('theme')).toBe('primary')
   })
 
   it('passes badgePill to BBadge pill prop', () => {
@@ -401,16 +402,16 @@ describe('avatar', () => {
     expect($badge.props('placement')).toBe('bottom-end')
   })
 
-  it('passes badgeBgVariant to BBadge bgVariant prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeBgVariant: 'success'}})
+  it('passes badgeBg to BBadge bg prop', () => {
+    const wrapper = mount(BAvatar, {props: {badge: true, badgeBg: 'success'}})
     const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('bgVariant')).toBe('success')
+    expect($badge.props('bg')).toBe('success')
   })
 
-  it('passes badgeTextVariant to BBadge textVariant prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeTextVariant: 'dark'}})
+  it('passes badgeFg to BBadge fg prop', () => {
+    const wrapper = mount(BAvatar, {props: {badge: true, badgeFg: 'white'}})
     const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('textVariant')).toBe('dark')
+    expect($badge.props('fg')).toBe('white')
   })
 
   it('renders badge slot content', () => {
@@ -439,9 +440,9 @@ describe('avatar', () => {
   })
 
   // badge class with default slot
-  it('has badge class when variant is set and has default slot', () => {
+  it('has badge class when theme is set and has default slot', () => {
     const wrapper = mount(BAvatar, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
       slots: {default: 'Custom'},
     })
     expect(wrapper.classes()).toContain('badge')
@@ -449,7 +450,7 @@ describe('avatar', () => {
 
   it('does not have badge class when button is true even with default slot', () => {
     const wrapper = mount(BAvatar, {
-      props: {button: true, variant: 'primary'},
+      props: {button: true, theme: 'primary'},
       slots: {default: 'Custom'},
     })
     expect(wrapper.classes()).not.toContain('badge')
@@ -469,9 +470,9 @@ describe('avatar', () => {
             roundedBottom: ref(undefined),
             roundedStart: ref(undefined),
             roundedEnd: ref(undefined),
-            variant: ref(null),
-            bgVariant: ref(null),
-            textVariant: ref(null),
+            theme: ref(null),
+            bg: ref(null),
+            fg: ref(null),
           },
         },
       },
@@ -493,14 +494,14 @@ describe('avatar', () => {
             roundedBottom: ref(undefined),
             roundedStart: ref(undefined),
             roundedEnd: ref(undefined),
-            variant: ref('danger'),
-            bgVariant: ref(null),
-            textVariant: ref(null),
+            theme: ref('danger'),
+            bg: ref(null),
+            fg: ref(null),
           },
         },
       },
     })
-    expect(wrapper.classes()).toContain('text-bg-danger')
+    expect(wrapper.classes()).toContain('theme-danger')
   })
 
   it('uses square from parent group', () => {
@@ -516,9 +517,9 @@ describe('avatar', () => {
             roundedBottom: ref(undefined),
             roundedStart: ref(undefined),
             roundedEnd: ref(undefined),
-            variant: ref(null),
-            bgVariant: ref(null),
-            textVariant: ref(null),
+            theme: ref(null),
+            bg: ref(null),
+            fg: ref(null),
           },
         },
       },
@@ -539,9 +540,9 @@ describe('avatar', () => {
             roundedBottom: ref(undefined),
             roundedStart: ref(undefined),
             roundedEnd: ref(undefined),
-            variant: ref(null),
-            bgVariant: ref(null),
-            textVariant: ref(null),
+            theme: ref(null),
+            bg: ref(null),
+            fg: ref(null),
           },
         },
       },
@@ -550,7 +551,7 @@ describe('avatar', () => {
     expect(wrapper.attributes('style')).toContain('margin-right: calc(40px * -0.15)')
   })
 
-  it('uses bgVariant from parent group', () => {
+  it('uses bg from parent group', () => {
     const wrapper = mount(BAvatar, {
       global: {
         provide: {
@@ -563,17 +564,17 @@ describe('avatar', () => {
             roundedBottom: ref(undefined),
             roundedStart: ref(undefined),
             roundedEnd: ref(undefined),
-            variant: ref(null),
-            bgVariant: ref('warning'),
-            textVariant: ref(null),
+            theme: ref(null),
+            bg: ref('subtle-warning'),
+            fg: ref(null),
           },
         },
       },
     })
-    expect(wrapper.classes()).toContain('bg-warning')
+    expect(wrapper.classes()).toContain('bg-subtle-warning')
   })
 
-  it('uses textVariant from parent group', () => {
+  it('uses fg from parent group', () => {
     const wrapper = mount(BAvatar, {
       global: {
         provide: {
@@ -586,13 +587,13 @@ describe('avatar', () => {
             roundedBottom: ref(undefined),
             roundedStart: ref(undefined),
             roundedEnd: ref(undefined),
-            variant: ref(null),
-            bgVariant: ref(null),
-            textVariant: ref('dark'),
+            theme: ref(null),
+            bg: ref(null),
+            fg: ref('emphasis-danger'),
           },
         },
       },
     })
-    expect(wrapper.classes()).toContain('text-dark')
+    expect(wrapper.classes()).toContain('fg-emphasis-danger')
   })
 })

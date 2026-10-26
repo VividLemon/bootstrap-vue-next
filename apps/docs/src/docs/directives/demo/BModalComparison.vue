@@ -1,87 +1,47 @@
 <template>
   <div>
     <h5>Using v-b-modal Directive</h5>
-    <BButton
-      v-b-modal.modal-directive
-      variant="primary"
-      class="mb-3"
-    >
-      Open with Directive
-    </BButton>
-    <BModal
-      id="modal-directive"
-      title="Directive Approach"
-    >
+    <BButton v-b-modal.modal-directive theme="primary" class="mb-3"> Open with Directive </BButton>
+    <BModal id="modal-directive" title="Directive Approach">
       <p class="card-text">Simple, declarative approach for triggering modals.</p>
     </BModal>
 
     <h5>Using v-model</h5>
-    <BButton
-      variant="success"
-      class="mb-3"
-      @click="showVModel = true"
-    >
-      Open with v-model
-    </BButton>
-    <BModal
-      v-model="showVModel"
-      title="v-model Approach"
-    >
+    <BButton theme="success" class="mb-3" @click="showVModel = true"> Open with v-model </BButton>
+    <BModal v-model="showVModel" title="v-model Approach">
       <p class="card-text">Direct control via reactive state binding.</p>
       <p class="mb-0">Current state: {{ showVModel ? 'Visible' : 'Hidden' }}</p>
     </BModal>
 
     <h5>Using Template Refs</h5>
-    <BButton
-      variant="info"
-      class="mb-3"
-      @click="modalRef?.show()"
-    >
-      Open with Template Ref
-    </BButton>
-    <BModal
-      ref="modalRef"
-      title="Template Ref Approach"
-    >
+    <BButton theme="info" class="mb-3" @click="modalRef?.show()"> Open with Template Ref </BButton>
+    <BModal ref="modalRef" title="Template Ref Approach">
       <p class="card-text">Programmatic control using component methods.</p>
       <div class="d-flex gap-2 mt-3">
-        <BButton
-          size="sm"
-          variant="outline-primary"
-          @click="modalRef?.show()"
+        <BButton size="sm" variant="outline" theme="primary" @click="modalRef?.show()"
           >Show</BButton
         >
-        <BButton
-          size="sm"
-          variant="outline-secondary"
-          @click="modalRef?.hide()"
+        <BButton size="sm" variant="outline" theme="secondary" @click="modalRef?.hide()"
           >Hide</BButton
         >
-        <BButton
-          size="sm"
-          variant="outline-info"
-          @click="modalRef?.toggle()"
+        <BButton size="sm" variant="outline" theme="info" @click="modalRef?.toggle()"
           >Toggle</BButton
         >
       </div>
     </BModal>
 
     <h5>Using useModal Composable</h5>
-    <BButton
-      variant="warning"
-      class="mb-3"
-      @click="openComposableModal"
-    >
+    <BButton theme="warning" class="mb-3" @click="openComposableModal">
       Open with Composable
     </BButton>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref, useTemplateRef} from 'vue'
-import {useModal} from 'bootstrap-vue-next/composables/useModal'
-import {BModal} from 'bootstrap-vue-next/components/BModal'
-import {type ComponentExposed} from 'vue-component-type-helpers'
+import { ref, useTemplateRef } from 'vue'
+import { useModal } from 'bootstrap-vue-next/composables/useModal'
+import { BModal } from 'bootstrap-vue-next/components/BModal'
+import { type ComponentExposed } from 'vue-component-type-helpers'
 
 // v-model approach
 const showVModel = ref(false)

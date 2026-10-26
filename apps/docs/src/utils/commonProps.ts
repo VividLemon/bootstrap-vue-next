@@ -1,4 +1,4 @@
-import type {PropReference} from '../types'
+import type { PropReference } from '../types'
 
 const commonProps = () =>
   ({
@@ -71,11 +71,11 @@ const commonProps = () =>
       description:
         'When set to `true`, attempts to auto-focus the control when it is mounted, or re-activated when in a keep-alive. Does not set the `autofocus` attribute on the control',
     },
-    bgVariant: {
-      type: 'ColorVariant | null',
+    bg: {
+      type: 'BgColor | null',
       default: null,
       description:
-        'Applies one of the Bootstrap theme color variants to background of the component',
+        'Applies a background color to the component (`bg-*` class). Accepts a theme color, `subtle-{theme}`, `muted-{theme}`, or a neutral layer value such as `body`, `1`-`4`, `white`, `black` or `transparent`',
     },
     body: {
       type: 'string',
@@ -87,15 +87,15 @@ const commonProps = () =>
       default: undefined,
       description: 'Attributes to be applied to the body of the component',
     },
-    bodyBgVariant: {
-      type: 'ColorVariant | null',
+    bodyBg: {
+      type: 'BgColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the body background',
+      description: 'Applies a background color (`BgColor`) to the body',
     },
-    bodyBorderVariant: {
-      type: 'ColorVariant | null',
+    bodyBorder: {
+      type: 'BorderColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the body border',
+      description: 'Applies a border color (`BorderColor`) to the body',
     },
     bodyClass: {
       type: 'ClassValue',
@@ -107,20 +107,20 @@ const commonProps = () =>
       default: 'div',
       description: 'Specify the HTML tag to render instead of the default tag for the body',
     },
-    bodyTextVariant: {
-      type: 'TextColorVariant | null',
+    bodyFg: {
+      type: 'FgColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the body text',
+      description: 'Applies a foreground (text) color (`FgColor`) to the body',
     },
-    bodyVariant: {
-      type: 'ColorVariant | null',
+    bodyTheme: {
+      type: 'ThemeColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the body',
+      description: 'Applies one of the theme colors (`theme-*` class) to the body',
     },
-    borderVariant: {
-      type: 'ColorVariant | null',
+    border: {
+      type: 'BorderColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the border',
+      description: 'Applies a border color (`BorderColor`) to the component',
     },
     debounce: {
       type: 'Numberish',
@@ -155,15 +155,15 @@ const commonProps = () =>
       default: undefined,
       description: 'Text content to place in the footer',
     },
-    footerBgVariant: {
-      type: 'ColorVariant | null',
+    footerBg: {
+      type: 'BgColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the footer background',
+      description: 'Applies a background color (`BgColor`) to the footer',
     },
-    footerBorderVariant: {
-      type: 'ColorVariant | null',
+    footerBorder: {
+      type: 'BorderColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the footer border',
+      description: 'Applies a border color (`BorderColor`) to the footer',
     },
     footerClass: {
       type: 'ClassValue',
@@ -175,15 +175,15 @@ const commonProps = () =>
       default: 'div',
       description: 'Specify the HTML tag to render instead of the default tag for the footer',
     },
-    footerTextVariant: {
-      type: 'TextColorVariant | null',
+    footerFg: {
+      type: 'FgColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the footer text',
+      description: 'Applies a foreground (text) color (`FgColor`) to the footer',
     },
-    footerVariant: {
-      type: 'ColorVariant | null',
+    footerTheme: {
+      type: 'ThemeColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the footer',
+      description: 'Applies one of the theme colors (`theme-*` class) to the footer',
     },
     form: {
       type: 'string',
@@ -201,15 +201,15 @@ const commonProps = () =>
       default: undefined,
       description: 'Text content to place in the header',
     },
-    headerBgVariant: {
-      type: 'ColorVariant | null',
+    headerBg: {
+      type: 'BgColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the header background',
+      description: 'Applies a background color (`BgColor`) to the header',
     },
-    headerBorderVariant: {
-      type: 'ColorVariant | null',
+    headerBorder: {
+      type: 'BorderColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the header border',
+      description: 'Applies a border color (`BorderColor`) to the header',
     },
     headerClass: {
       type: 'ClassValue',
@@ -221,15 +221,15 @@ const commonProps = () =>
       default: 'div',
       description: 'Specify the HTML tag to render instead of the default tag for the header',
     },
-    headerTextVariant: {
-      type: 'TextColorVariant | null',
+    headerFg: {
+      type: 'FgColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the header text',
+      description: 'Applies a foreground (text) color (`FgColor`) to the header',
     },
-    headerVariant: {
-      type: 'ColorVariant | null',
+    headerTheme: {
+      type: 'ThemeColor | null',
       default: undefined,
-      description: 'Applies one of the Bootstrap theme color variants to the header',
+      description: 'Applies one of the theme colors (`theme-*` class) to the header',
     },
     id: {
       type: 'string',
@@ -391,10 +391,10 @@ const commonProps = () =>
       default: 'h6',
       description: 'Specify the HTML tag to render instead of the default tag for the subtitle',
     },
-    subtitleTextVariant: {
-      type: 'TextColorVariant | null',
-      default: 'body-secondary',
-      description: 'Applies one of the Bootstrap theme color variants to the subtitle text',
+    subtitleFg: {
+      type: 'FgColor | null',
+      default: '2',
+      description: 'Applies a foreground (text) color (`FgColor`) to the subtitle text',
     },
     tag: {
       type: 'string',
@@ -406,10 +406,11 @@ const commonProps = () =>
       default: 'text',
       description: 'Field name in the `options` array that should be used for the text label',
     },
-    textVariant: {
-      type: 'TextColorVariant | null',
+    fg: {
+      type: 'FgColor | null',
       default: null,
-      description: 'Applies one of the Bootstrap theme color variants to the text',
+      description:
+        'Applies a foreground (text) color to the component (`fg-*` class). Accepts a theme color, `emphasis-{theme}`, `contrast-{theme}`, or a neutral layer value such as `body`, `1`-`4`, `white`, `black` or `reset`',
     },
     title: {
       type: 'string',
@@ -442,11 +443,17 @@ const commonProps = () =>
       default: 'value',
       description: 'Field name in the `options` array that should be used for the value',
     },
-    variant: {
-      type: 'ColorVariant | null',
+    theme: {
+      type: 'ThemeColor | null',
       default: null,
       description:
-        'Applies one of the Bootstrap theme color variants to the component. When implemented `bg-variant` and `text-variant` will take precedence',
+        'Applies one of the theme colors (`theme-*` class) to the component. Custom themes can be registered by augmenting `ThemeColors`. When implemented `bg` and `fg` take precedence',
+    },
+    variant: {
+      type: 'ButtonVariant | null',
+      default: 'solid',
+      description:
+        "Sets the button style: 'solid', 'outline', 'subtle', 'text', 'styled' or 'link'. Combine with `theme` to set the color",
     },
     wrapperAttrs: {
       type: 'Readonly<AttrsValue>',
@@ -473,10 +480,15 @@ const commonProps = () =>
       default: 'Close',
       description: 'Sets the `aria-label` attribute for the close button',
     },
+    closeTheme: {
+      type: 'ThemeColor | null',
+      default: 'secondary',
+      description: 'Sets the theme color for the close button',
+    },
     closeVariant: {
       type: 'ButtonVariant | null',
-      default: null,
-      description: 'Sets the color variant for the close button',
+      default: 'solid',
+      description: 'Sets the button style (variant) for the close button',
     },
     interval: {
       type: 'number | "requestAnimationFrame"',
@@ -509,7 +521,7 @@ const commonProps = () =>
 const singletonProps = Object.freeze(commonProps())
 
 export const buildCommonProps = (
-  obj?: Partial<Record<keyof typeof singletonProps, Partial<PropReference>>>
+  obj?: Partial<Record<keyof typeof singletonProps, Partial<PropReference>>>,
 ): Readonly<typeof singletonProps> => {
   if (!obj) return singletonProps
 

@@ -16,12 +16,12 @@ import type {
 import type {RouteLocationRaw} from 'vue-router'
 import type {LinkTarget} from './LinkTarget'
 import type {
-  BgColorVariant,
-  BorderColorVariant,
+  BgColor,
+  BorderColor,
   ButtonVariant,
   ColorExtendables,
-  ColorVariant,
-  TextColorVariant,
+  FgColor,
+  ThemeColor,
 } from './ColorTypes'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
 import type {CheckboxOptionRaw, CheckboxValue} from './CheckboxTypes'
@@ -167,8 +167,8 @@ export interface BLinkProps {
   underlineOffsetHover?: UnderlineOffset
   underlineOpacity?: UnderlineOpacity
   underlineOpacityHover?: UnderlineOpacity
-  underlineVariant?: ColorVariant | null
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
+  underlineTheme?: ThemeColor | null
 }
 
 export type LinkUnderlineProps = Pick<
@@ -177,11 +177,11 @@ export type LinkUnderlineProps = Pick<
   | 'underlineOffsetHover'
   | 'underlineOpacity'
   | 'underlineOpacityHover'
-  | 'underlineVariant'
+  | 'underlineTheme'
 >
 export type LinkOpacityProps = Pick<BLinkProps, 'opacity' | 'opacityHover'>
 export type LinkIconProps = Pick<BLinkProps, 'icon'>
-export type LinkVariantProps = Pick<BLinkProps, 'variant'>
+export type LinkThemeProps = Pick<BLinkProps, 'theme'>
 
 export interface BAutocompleteProps {
   ariaInvalid?: AriaInvalid
@@ -278,7 +278,7 @@ export interface BAccordionItemProps {
 export interface BDropdownDividerProps {
   dividerClass?: ClassValue
   tag?: string
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
@@ -294,7 +294,7 @@ export interface BDropdownGroupProps {
   header?: string
   headerClass?: ClassValue
   headerTag?: string
-  headerVariant?: ColorVariant | null
+  headerTheme?: ThemeColor | null
   id?: string
 }
 
@@ -302,7 +302,7 @@ export interface BDropdownHeaderProps {
   headerClass?: ClassValue
   tag?: string
   text?: string
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
@@ -317,14 +317,14 @@ export interface BDropdownItemButtonProps {
   buttonClass?: ClassValue
   wrapperAttrs?: Readonly<AttrsValue>
   disabled?: boolean
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BDropdownTextProps {
   textClass?: ClassValue
   tag?: string
   text?: string
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
@@ -342,7 +342,7 @@ export interface BFormTextProps {
   inline?: boolean
   tag?: string
   text?: string
-  textVariant?: TextColorVariant | null
+  fg?: FgColor | null
 }
 
 export interface BFormCheckboxProps {
@@ -352,6 +352,7 @@ export interface BFormCheckboxProps {
   button?: boolean
   buttonGroup?: boolean
   buttonVariant?: ButtonVariant | null
+  buttonTheme?: ThemeColor | null
   disabled?: boolean
   form?: string
   id?: string
@@ -382,6 +383,7 @@ export interface BFormCheckboxGroupBaseProps {
   size?: Size
   state?: ValidationState
   buttonVariant?: ButtonVariant | null
+  buttonTheme?: ThemeColor | null
   buttons?: boolean
   stacked?: boolean
   disabled?: boolean
@@ -424,6 +426,7 @@ export interface BFormCheckboxGroupProps<
   size?: Size
   state?: ValidationState
   buttonVariant?: ButtonVariant | null
+  buttonTheme?: ThemeColor | null
   buttons?: boolean
   stacked?: boolean
   disabled?: boolean
@@ -510,6 +513,7 @@ export interface BFormRadioProps {
   button?: boolean
   buttonGroup?: boolean
   buttonVariant?: ButtonVariant | null
+  buttonTheme?: ThemeColor | null
   disabled?: boolean
   form?: string
   id?: string
@@ -534,6 +538,7 @@ export interface BFormRadioGroupBaseProps {
   ariaInvalid?: AriaInvalid
   autofocus?: boolean
   buttonVariant?: ButtonVariant | null
+  buttonTheme?: ThemeColor | null
   buttons?: boolean
   disabled?: boolean
   form?: string
@@ -571,6 +576,7 @@ export interface BFormRadioGroupProps<
   ariaInvalid?: AriaInvalid
   autofocus?: boolean
   buttonVariant?: ButtonVariant | null
+  buttonTheme?: ThemeColor | null
   buttons?: boolean
   disabled?: boolean
   disabledField?: string
@@ -610,8 +616,7 @@ export interface BFormRatingProps {
   showValueMax?: boolean
   size?: Size
   length?: Numberish
-  variant?:
-    'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'light' | 'dark' | string
+  theme?: ThemeColor | null
 }
 
 // BFormSelect base props (non-generic, uses raw options)
@@ -727,12 +732,13 @@ export interface BFormTagProps {
   removeLabel?: string
   tag?: string
   title?: string
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BFormTagsProps {
   addButtonText?: string
   addButtonVariant?: ButtonVariant | null
+  addButtonTheme?: ThemeColor | null
   addOnChange?: boolean
   autofocus?: boolean
   disabled?: boolean
@@ -763,7 +769,7 @@ export interface BFormTagsProps {
   tagRemoveLabel?: string
   tagRemovedLabel?: string
   tagValidator?: (t: string) => boolean
-  tagVariant?: ColorVariant | null
+  tagTheme?: ThemeColor | null
 }
 
 export interface BFormTextareaProps extends CommonInputProps {
@@ -836,7 +842,8 @@ export interface BNavbarProps {
   sticky?: Extract<Placement, 'top' | 'bottom'>
   tag?: string
   toggleable?: boolean | Breakpoint
-  variant?: BgColorVariant | null
+  bg?: BgColor | null
+  theme?: ThemeColor | null
 }
 
 export interface BNavbarBrandProps extends Omit<BLinkProps, 'routerTag'> {
@@ -871,6 +878,7 @@ export interface BOffcanvasProps extends TeleporterProps, ShowHideProps {
   headerCloseClass?: ClassValue
   headerCloseLabel?: string
   headerCloseVariant?: ButtonVariant | null
+  headerCloseTheme?: ThemeColor | null
   id?: string
   modelValue?: boolean
   noCloseOnBackdrop?: boolean
@@ -898,8 +906,8 @@ export interface BOverlayProps extends RadiusElementExtendables {
   show?: boolean
   spinnerSmall?: boolean
   spinnerType?: SpinnerType
-  spinnerVariant?: ColorVariant | null
-  variant?: BgColorVariant | 'white' | 'transparent' | null
+  spinnerTheme?: ThemeColor | null
+  bg?: BgColor | null
   wrapTag?: string
   zIndex?: Numberish
 }
@@ -942,7 +950,7 @@ export interface BPlaceholderProps {
   cols?: Numberish
   size?: PlaceholderSize
   tag?: string
-  variant?: BgColorVariant | null
+  bg?: BgColor | null
   width?: Numberish
   wrapperTag?: string
 }
@@ -951,7 +959,7 @@ export interface BPlaceholderButtonProps {
   animation?: PlaceholderAnimation
   cols?: Numberish
   tag?: string
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
   width?: Numberish
 }
 
@@ -959,11 +967,11 @@ export interface BPlaceholderCardProps {
   animation?: PlaceholderAnimation
   footerAnimation?: PlaceholderAnimation
   footerSize?: PlaceholderSize
-  footerVariant?: ColorVariant | null
+  footerTheme?: ThemeColor | null
   footerWidth?: Numberish
   headerAnimation?: PlaceholderAnimation
   headerSize?: PlaceholderSize
-  headerVariant?: ColorVariant | null
+  headerTheme?: ThemeColor | null
   headerWidth?: Numberish
   imgBlankColor?: string
   imgPlacement?: Extract<Placement, 'top' | 'bottom'>
@@ -974,7 +982,7 @@ export interface BPlaceholderCardProps {
   noHeader?: boolean
   noImg?: boolean
   size?: PlaceholderSize
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BPlaceholderTableProps {
@@ -985,17 +993,17 @@ export interface BPlaceholderTableProps {
   footerCellWidth?: Numberish
   footerColumns?: Numberish
   footerSize?: PlaceholderSize
-  footerVariant?: ColorVariant | null
+  footerTheme?: ThemeColor | null
   headerAnimation?: PlaceholderAnimation
   headerCellWidth?: Numberish
   headerColumns?: Numberish
   headerSize?: PlaceholderSize
-  headerVariant?: ColorVariant | null
+  headerTheme?: ThemeColor | null
   noHeader?: boolean
   rows?: Numberish
   showFooter?: boolean
   size?: PlaceholderSize
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BPlaceholderWrapperProps {
@@ -1073,7 +1081,7 @@ export interface BSpinnerProps {
   small?: boolean
   tag?: string
   type?: SpinnerType
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BAlertProps
@@ -1085,6 +1093,7 @@ export interface BAlertProps
   closeContent?: string
   closeLabel?: string
   closeVariant?: ButtonVariant | null
+  closeTheme?: ThemeColor | null
   dismissible?: boolean
   headerClass?: ClassValue
   headerTag?: string
@@ -1103,10 +1112,10 @@ export interface BAvatarProps
   extends Omit<BLinkProps, 'routerTag' | 'icon'>, ColorExtendables, RadiusElementExtendables {
   alt?: string
   badge?: boolean | string
-  badgeBgVariant?: BgColorVariant | null
+  badgeBg?: BgColor | null
   badgePlacement?: CombinedPlacement
-  badgeTextVariant?: TextColorVariant | null
-  badgeVariant?: ColorVariant | null
+  badgeFg?: FgColor | null
+  badgeTheme?: ThemeColor | null
   badgePill?: boolean
   badgeDotIndicator?: boolean
   button?: boolean
@@ -1143,11 +1152,7 @@ export interface BBreadcrumbItemProps extends Omit<BLinkProps, 'routerTag'> {
   text?: string
 }
 
-type CustomLinkVariant = {
-  [K in ColorVariant as `link-${K}`]: unknown
-}
-
-export interface BButtonProps extends Omit<BLinkProps, 'variant'> {
+export interface BButtonProps extends BLinkProps {
   loading?: boolean
   loadingFill?: boolean
   loadingText?: string
@@ -1157,7 +1162,7 @@ export interface BButtonProps extends Omit<BLinkProps, 'variant'> {
   squared?: boolean
   tag?: string
   type?: ButtonType
-  variant?: (ButtonVariant | keyof CustomLinkVariant) | null
+  variant?: ButtonVariant | null
 }
 
 export interface BButtonGroupProps {
@@ -1182,27 +1187,27 @@ export interface BCloseButtonProps {
 
 export interface BCardProps extends ColorExtendables {
   align?: AlignmentTextHorizontal
-  bodyBgVariant?: BgColorVariant | null
-  bodyBorderVariant?: BorderColorVariant | null
+  bodyBg?: BgColor | null
+  bodyBorder?: BorderColor | null
   bodyClass?: ClassValue
   bodyTag?: string
   bodyText?: string
-  bodyTextVariant?: TextColorVariant | null
-  borderVariant?: BorderColorVariant | null
+  bodyFg?: FgColor | null
+  border?: BorderColor | null
   footer?: string
-  footerBgVariant?: BgColorVariant | null
-  footerBorderVariant?: BorderColorVariant | null
+  footerBg?: BgColor | null
+  footerBorder?: BorderColor | null
   footerClass?: ClassValue
   footerTag?: string
-  footerTextVariant?: TextColorVariant | null
-  footerVariant?: ColorVariant | null
+  footerFg?: FgColor | null
+  footerTheme?: ThemeColor | null
   header?: string
-  headerBgVariant?: BgColorVariant | null
-  headerBorderVariant?: BorderColorVariant | null
+  headerBg?: BgColor | null
+  headerBorder?: BorderColor | null
   headerClass?: ClassValue
   headerTag?: string
-  headerTextVariant?: TextColorVariant | null
-  headerVariant?: ColorVariant | null
+  headerFg?: FgColor | null
+  headerTheme?: ThemeColor | null
   imgAlt?: string
   imgAttrs?: Readonly<AttrsValue>
   imgPlacement?: Placement | 'overlay'
@@ -1212,18 +1217,18 @@ export interface BCardProps extends ColorExtendables {
   noBody?: boolean
   subtitle?: string
   subtitleTag?: string
-  subtitleTextVariant?: TextColorVariant | null
+  subtitleFg?: FgColor | null
   tag?: string
   title?: string
   titleTag?: string
 }
 
 export interface BCardBodyProps extends ColorExtendables {
-  borderVariant?: BorderColorVariant | null
+  border?: BorderColor | null
   overlay?: boolean
   subtitle?: string
   subtitleTag?: string
-  subtitleTextVariant?: TextColorVariant | null
+  subtitleFg?: FgColor | null
   tag?: string
   text?: string
   title?: string
@@ -1241,7 +1246,7 @@ export interface BCardImgProps extends Omit<BImgProps, 'placement'> {
 export interface BCardSubtitleProps {
   text?: string
   tag?: string
-  textVariant?: TextColorVariant | null
+  fg?: FgColor | null
 }
 
 export interface BCardTextProps {
@@ -1331,7 +1336,7 @@ export interface BFormProps {
 export interface BTableSimpleProps {
   bordered?: boolean
   borderless?: boolean
-  borderVariant?: BorderColorVariant | null
+  border?: BorderColor | null
   captionTop?: boolean
   dark?: boolean
   fixed?: boolean
@@ -1345,7 +1350,7 @@ export interface BTableSimpleProps {
   stickyHeader?: boolean | Numberish
   striped?: boolean
   stripedColumns?: boolean
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
   tableAttrs?: Readonly<AttrsValue>
   tableClass?: ClassValue
 }
@@ -1364,10 +1369,10 @@ export interface BTableLiteProps<Item> extends BTableSimpleProps {
     | readonly any[]
   fields?: readonly TableFieldRaw<Item>[]
   footClone?: boolean
-  footRowVariant?: ColorVariant | null
-  footVariant?: ColorVariant | null
-  headRowVariant?: ColorVariant | null
-  headVariant?: ColorVariant | null
+  footRowTheme?: ThemeColor | null
+  footTheme?: ThemeColor | null
+  headRowTheme?: ThemeColor | null
+  headTheme?: ThemeColor | null
   items?: readonly Item[]
   labelStacked?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1403,7 +1408,7 @@ export interface BTableProps<Item>
   stickySelect?: boolean
   selectHead?: boolean | string
   selectMode?: BTableSelectMode
-  selectionVariant?: ColorVariant | null
+  selectionTheme?: ThemeColor | null
   busy?: boolean
   perPage?: Numberish
   currentPage?: Numberish
@@ -1428,15 +1433,15 @@ export interface BTableProps<Item>
 }
 
 export interface BTrProps {
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BTheadProps {
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BTfootProps {
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BTdProps {
@@ -1444,11 +1449,11 @@ export interface BTdProps {
   rowspan?: Numberish
   stackedHeading?: string
   stickyColumn?: boolean
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BTbodyProps {
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
 }
 
 export interface BThProps {
@@ -1456,7 +1461,7 @@ export interface BThProps {
   rowspan?: Numberish
   stackedHeading?: string
   stickyColumn?: boolean
-  variant?: ColorVariant | null
+  theme?: ThemeColor | null
   scope?: TableThScope
 }
 
@@ -1518,11 +1523,13 @@ export interface BDropdownProps extends TeleporterProps, ShowHideProps {
   splitHref?: string
   splitTo?: RouteLocationRaw
   splitVariant?: ButtonVariant | null
+  splitTheme?: ThemeColor | null
   strategy?: Strategy
   text?: string
   toggleAttrs?: Readonly<AttrsValue>
   toggleClass?: ClassValue
   toggleText?: string
+  theme?: ThemeColor | null
   variant?: ButtonVariant | null
   wrapperClass?: ClassValue
   placement?: FloatingPlacement
@@ -1536,6 +1543,7 @@ export interface BToastProps
   closeContent?: string
   closeLabel?: string
   closeVariant?: ButtonVariant | null
+  closeTheme?: ThemeColor | null
   headerClass?: ClassValue
   headerTag?: string
   id?: string
@@ -1600,7 +1608,7 @@ export interface BTooltipProps extends Omit<BPopoverProps, 'tooltip'> {
 }
 
 export interface BCardHeadFootProps extends ColorExtendables {
-  borderVariant?: BorderColorVariant | null
+  border?: BorderColor | null
   tag?: string
   text?: string
 }
@@ -1620,35 +1628,37 @@ export interface BModalProps extends TeleporterProps, ShowHideProps {
   backdropFirst?: boolean
   body?: string
   bodyAttrs?: Readonly<AttrsValue>
-  bodyBgVariant?: BgColorVariant | null
+  bodyBg?: BgColor | null
   bodyClass?: ClassValue
   bodyScrolling?: boolean
-  bodyTextVariant?: TextColorVariant | null
-  bodyVariant?: ColorVariant | null
+  bodyFg?: FgColor | null
+  bodyTheme?: ThemeColor | null
   busy?: boolean
   buttonSize?: Size
   cancelClass?: ClassValue
   cancelDisabled?: boolean
   cancelTitle?: string
   cancelVariant?: ButtonVariant | null
+  cancelTheme?: ThemeColor | null
   centered?: boolean
   contentClass?: ClassValue
   dialogClass?: ClassValue
-  footerBgVariant?: BgColorVariant | null
-  footerBorderVariant?: BorderColorVariant | null
+  footerBg?: BgColor | null
+  footerBorder?: BorderColor | null
   footerClass?: ClassValue
-  footerTextVariant?: TextColorVariant | null
-  footerVariant?: ColorVariant | null
+  footerFg?: FgColor | null
+  footerTheme?: ThemeColor | null
   fullscreen?: boolean | Breakpoint
   headerAttrs?: Readonly<AttrsValue>
-  headerBgVariant?: BgColorVariant | null
-  headerBorderVariant?: BorderColorVariant | null
+  headerBg?: BgColor | null
+  headerBorder?: BorderColor | null
   headerClass?: ClassValue
   headerCloseClass?: ClassValue
   headerCloseLabel?: string
   headerCloseVariant?: ButtonVariant | null
-  headerTextVariant?: TextColorVariant | null
-  headerVariant?: ColorVariant | null
+  headerCloseTheme?: ThemeColor | null
+  headerFg?: FgColor | null
+  headerTheme?: ThemeColor | null
   noBackdrop?: boolean
   noFooter?: boolean
   noHeader?: boolean
@@ -1665,6 +1675,7 @@ export interface BModalProps extends TeleporterProps, ShowHideProps {
   okOnly?: boolean
   okTitle?: string
   okVariant?: ButtonVariant | null
+  okTheme?: ThemeColor | null
   scrollable?: boolean
   size?: Size | 'xl'
   title?: string

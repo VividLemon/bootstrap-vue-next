@@ -3,13 +3,14 @@
     <BCard title="Card with custom overlay content" :aria-hidden="show ? 'true' : null">
       <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
       <BCardText>Click the button to toggle the overlay:</BCardText>
-      <BButton :disabled="show" variant="primary" @click="show = true"> Show overlay </BButton>
+      <BButton :disabled="show" theme="primary" @click="show = true"> Show overlay </BButton>
     </BCard>
     <template #overlay>
       <div class="text-center">
         <p id="cancel-label">Please wait...</p>
         <BButton
-          variant="outline-danger"
+          variant="outline"
+          theme="danger"
           size="sm"
           aria-describedby="cancel-label"
           @click="show = false"

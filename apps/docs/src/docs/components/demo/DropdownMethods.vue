@@ -1,24 +1,11 @@
 <template>
   <div class="d-flex gap-2 mb-2">
-    <BButton
-      variant="danger"
-      @click="show"
-      >Show</BButton
-    >
-    <BButton
-      variant="success"
-      @click="hide"
-      >Hide</BButton
-    >
+    <BButton theme="danger" @click="show">Show</BButton>
+    <BButton theme="success" @click="hide">Hide</BButton>
     <BButton @click="toggle">Toggle</BButton>
   </div>
 
-  <BDropdown
-    ref="myDropdown"
-    text="Dropdown Button"
-    :auto-close="false"
-    class="me-2"
-  >
+  <BDropdown ref="myDropdown" text="Dropdown Button" :auto-close="false" class="me-2">
     <BDropdownItem>First Action</BDropdownItem>
     <BDropdownItem>Second Action</BDropdownItem>
     <BDropdownItem>Third Action</BDropdownItem>
@@ -29,8 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import {BDropdown} from 'bootstrap-vue-next/components/BDropdown'
-import {useTemplateRef} from 'vue'
+import { BDropdown } from 'bootstrap-vue-next/components/BDropdown'
+import { useTemplateRef } from 'vue'
 
 const myDropdown = useTemplateRef('myDropdown')
 

@@ -10,14 +10,14 @@
         title="Title"
       >
         <BCardText>Header and footers using props.</BCardText>
-        <BButton href="#card-header-footer" variant="primary">Go somewhere</BButton>
+        <BButton href="#card-header-footer" theme="primary">Go somewhere</BButton>
       </BCard>
       <BCard title="Title" header-tag="header" footer-tag="footer">
         <template #header>
           <h6 class="mb-0">Header Slot</h6>
         </template>
         <BCardText>Header and footers using slots.</BCardText>
-        <BButton href="#card-header-footer" variant="primary">Go somewhere</BButton>
+        <BButton href="#card-header-footer" theme="primary">Go somewhere</BButton>
         <template #footer>
           <em>Footer Slot</em>
         </template>

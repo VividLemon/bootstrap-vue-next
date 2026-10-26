@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import {useBLinkHelper} from '../../composables/useBLinkHelper'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
 import BLink from '../BLink/BLink.vue'
@@ -25,7 +25,7 @@ const _props = withDefaults(defineProps<BBadgeProps>(), {
   tag: 'span',
   placement: undefined,
   // Link props
-  variant: 'secondary',
+  theme: 'secondary',
   // All others use defaults
   active: undefined,
   activeClass: undefined,
@@ -45,12 +45,12 @@ const _props = withDefaults(defineProps<BBadgeProps>(), {
   underlineOffsetHover: undefined,
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
-  underlineVariant: undefined,
+  underlineTheme: undefined,
   // End link props
   // ColorExtendables props
-  // Variant is here as well
-  textVariant: null,
-  bgVariant: null,
+  // Theme is here as well
+  fg: null,
+  bg: null,
   // End ColorExtendables props
 })
 const props = useDefaults(_props, 'BBadge')
@@ -80,7 +80,7 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props, [
   'underlineOffsetHover',
   'underlineOpacity',
   'underlineOpacityHover',
-  'underlineVariant',
+  'underlineTheme',
 ])
 
 const computedTag = computed(() => (computedLink.value ? BLink : props.tag))
@@ -104,7 +104,7 @@ const placementClasses = computed(() => {
   ]
 })
 
-const colorClasses = useColorVariantClasses(props)
+const colorClasses = useThemeClasses(() => ({theme: props.theme, bg: props.bg, fg: props.fg}))
 const computedClasses = computed(() => [
   colorClasses.value,
   props.placement !== undefined || props.dotIndicator ? placementClasses.value : undefined,
@@ -112,7 +112,7 @@ const computedClasses = computed(() => [
     'active': props.active,
     'disabled': props.disabled,
     'rounded-pill': props.pill,
-    'p-2 border border-light rounded-circle': props.dotIndicator,
+    'p-2 border border-bg rounded-circle': props.dotIndicator,
     'text-decoration-none': computedLink.value,
   },
 ])

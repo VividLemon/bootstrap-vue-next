@@ -127,28 +127,38 @@ describe('dropdown', () => {
     expect($bbutton.attributes('id')).toContain('foobar')
   })
 
+  it('first child BButton prop theme to be prop splitTheme', () => {
+    const wrapper = mount(BDropdown, {
+      props: {splitTheme: 'danger'},
+    })
+    const $bbutton = wrapper.getComponent(BButton)
+    expect($bbutton.props('theme')).toBe('danger')
+  })
+
   it('first child BButton prop variant to be prop splitVariant', () => {
     const wrapper = mount(BDropdown, {
-      props: {splitVariant: 'danger'},
+      props: {splitVariant: 'outline'},
     })
     const $bbutton = wrapper.getComponent(BButton)
-    expect($bbutton.props('variant')).toBe('danger')
+    expect($bbutton.props('variant')).toBe('outline')
   })
 
-  it('first child BButton prop variant to be prop variant', () => {
+  it('first child BButton props to be props variant and theme', () => {
     const wrapper = mount(BDropdown, {
-      props: {variant: 'danger'},
+      props: {variant: 'outline', theme: 'danger'},
     })
     const $bbutton = wrapper.getComponent(BButton)
-    expect($bbutton.props('variant')).toBe('danger')
+    expect($bbutton.props('variant')).toBe('outline')
+    expect($bbutton.props('theme')).toBe('danger')
   })
 
-  it('first child BButton prop variant prefers splitVariant over variant', () => {
+  it('first child BButton props prefer splitVariant/splitTheme over variant/theme', () => {
     const wrapper = mount(BDropdown, {
-      props: {splitVariant: 'danger', variant: 'secondary'},
+      props: {splitVariant: 'outline', splitTheme: 'danger', variant: 'solid', theme: 'secondary'},
     })
     const $bbutton = wrapper.getComponent(BButton)
-    expect($bbutton.props('variant')).toBe('danger')
+    expect($bbutton.props('variant')).toBe('outline')
+    expect($bbutton.props('theme')).toBe('danger')
   })
 
   it('first child BButton prop size is prop size', () => {
@@ -387,14 +397,16 @@ describe('dropdown', () => {
     expect($bbutton.classes()).toContain('dropdown-toggle')
   })
 
-  it('second child BButton has prop variant to be prop variant', async () => {
+  it('second child BButton has props variant and theme to be props variant and theme', async () => {
     const wrapper = mount(BDropdown, {
-      props: {split: true, variant: 'danger'},
+      props: {split: true, variant: 'outline', theme: 'danger'},
     })
     const [, $bbutton] = wrapper.findAllComponents(BButton)
-    expect($bbutton.props('variant')).toBe('danger')
-    await wrapper.setProps({variant: 'secondary'})
-    expect($bbutton.props('variant')).toBe('secondary')
+    expect($bbutton.props('variant')).toBe('outline')
+    expect($bbutton.props('theme')).toBe('danger')
+    await wrapper.setProps({variant: 'solid', theme: 'secondary'})
+    expect($bbutton.props('variant')).toBe('solid')
+    expect($bbutton.props('theme')).toBe('secondary')
   })
 
   it('second child BButton has prop size to be prop size', async () => {
@@ -824,14 +836,16 @@ describe('dropdown', () => {
   })
 
   describe('variant reactivity', () => {
-    it('first child BButton variant reacts to prop change', async () => {
+    it('first child BButton variant and theme react to prop change', async () => {
       const wrapper = mount(BDropdown, {
-        props: {variant: 'danger'},
+        props: {variant: 'outline', theme: 'danger'},
       })
       const $bbutton = wrapper.getComponent(BButton)
-      expect($bbutton.props('variant')).toBe('danger')
-      await wrapper.setProps({variant: 'primary'})
-      expect($bbutton.props('variant')).toBe('primary')
+      expect($bbutton.props('variant')).toBe('outline')
+      expect($bbutton.props('theme')).toBe('danger')
+      await wrapper.setProps({variant: 'subtle', theme: 'primary'})
+      expect($bbutton.props('variant')).toBe('subtle')
+      expect($bbutton.props('theme')).toBe('primary')
     })
 
     it('first child BButton size reacts to prop change', async () => {
@@ -965,10 +979,11 @@ describe('dropdown', () => {
   })
 
   describe('default variant', () => {
-    it('first child BButton has default variant secondary', () => {
+    it('first child BButton has default variant solid and theme secondary', () => {
       const wrapper = mount(BDropdown)
       const $bbutton = wrapper.getComponent(BButton)
-      expect($bbutton.props('variant')).toBe('secondary')
+      expect($bbutton.props('variant')).toBe('solid')
+      expect($bbutton.props('theme')).toBe('secondary')
     })
   })
 

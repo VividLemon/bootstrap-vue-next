@@ -1,30 +1,16 @@
 <template>
   <!-- #region template -->
-  <BNavbar
-    v-b-color-mode="'dark'"
-    toggleable="lg"
-    variant="primary"
-  >
+  <BNavbar v-b-color-mode="'dark'" toggleable="lg" theme="primary">
     <BNavbarBrand href="#navbar-overview">NavBar</BNavbarBrand>
     <BNavbarToggle target="nav-collapse" />
-    <BCollapse
-      id="nav-collapse"
-      is-nav
-    >
+    <BCollapse id="nav-collapse" is-nav>
       <BNavbarNav>
         <BNavItem href="#navbar-overview">Link</BNavItem>
-        <BNavItem
-          href="#navbar-overview"
-          disabled
-          >Disabled</BNavItem
-        >
+        <BNavItem href="#navbar-overview" disabled>Disabled</BNavItem>
       </BNavbarNav>
       <!-- Right aligned nav items -->
       <BNavbarNav class="ms-auto mb-2 mb-lg-0">
-        <BNavItemDropdown
-          text="Lang"
-          right
-        >
+        <BNavItemDropdown text="Lang" right>
           <BDropdownItem>EN</BDropdownItem>
           <BDropdownItem>ES</BDropdownItem>
           <BDropdownItem>RU</BDropdownItem>
@@ -40,15 +26,8 @@
         </BNavItemDropdown>
       </BNavbarNav>
       <BNavForm class="d-flex">
-        <BFormInput
-          class="me-2"
-          placeholder="Search"
-        />
-        <BButton
-          type="submit"
-          variant="outline-success"
-          >Search</BButton
-        >
+        <BFormInput class="me-2" placeholder="Search" />
+        <BButton type="submit" variant="outline" theme="success">Search</BButton>
       </BNavForm>
     </BCollapse>
   </BNavbar>

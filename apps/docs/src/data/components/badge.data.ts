@@ -16,11 +16,11 @@ export default {
         [defaultPropSectionSymbol]: {
           ...pick(
             buildCommonProps({
-              variant: {
+              theme: {
                 default: 'secondary',
               },
             }),
-            ['bgVariant', 'variant', 'textVariant'],
+            ['bg', 'fg', 'theme'],
           ),
           dotIndicator: {
             type: 'boolean',

@@ -500,13 +500,13 @@ describe('form-checkbox-group', () => {
       const wrapper = mount(BFormCheckboxGroup, {
         props: {
           buttons: true,
-          buttonVariant: 'danger',
+          buttonTheme: 'danger',
           options: ['a'],
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
       const label = checkbox.get('label')
-      expect(label.classes()).toContain('btn-danger')
+      expect(label.classes()).toContain('theme-danger')
     })
 
     it('forwards id prop to group container', () => {

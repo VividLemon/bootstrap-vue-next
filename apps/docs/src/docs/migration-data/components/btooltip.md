@@ -50,7 +50,7 @@ The `container` prop has been deprecated. Use the `teleportTo` prop instead to s
 should be mounted. See [Vue Teleport documentation](https://vuejs.org/guide/built-ins/teleport.html).
 
 `custom-class` has been changed to `body-class` and a `title-class` has been added for completeness -
-see [custom classes documentation](/docs/components/tooltip#custom-classes-and-variants) for details.
+see [custom classes documentation](/docs/components/tooltip#custom-classes-and-colors) for details.
 
 `fallback-placement` has been deprecated. Use the various options provided by [Floating UI](https://floating-ui.com/)
 to handle placement.
@@ -61,8 +61,8 @@ Trigger behavior differs because the underlying library used to manage tooltips 
 [our documentation](/docs/components/tooltip#triggers) and [Floating UI](https://floating-ui.com/)
 for details.
 
-The `variant` prop has been deprecated. Use Bootstrap’s color and background utility classes to style
-tooltips instead. See [Tooltip custom classes and variants](/docs/components/tooltip#custom-classes-and-variants)
+The `variant` prop has been deprecated. Use Bootstrap’s `theme-*` classes and `bg-*` / `fg-*` utilities to style
+tooltips instead. See [Tooltip custom classes and colors](/docs/components/tooltip#custom-classes-and-colors)
 for details.
 
 The `disabled` prop and

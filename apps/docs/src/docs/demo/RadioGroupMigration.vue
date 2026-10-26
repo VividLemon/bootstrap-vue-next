@@ -1,17 +1,13 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
   <div>
-    <BFormGroup
-      class="form-group"
-      label="Color"
-      label-for="color-group"
-      label-class="mb-1"
-    >
+    <BFormGroup class="form-group" label="Color" label-for="color-group" label-class="mb-1">
       <BFormRadioGroup
         id="color-group"
         v-model="model"
         name="color-group"
-        button-variant="outline-secondary"
+        button-variant="outline"
+        button-theme="secondary"
         :options="options"
         buttons
       >
@@ -22,7 +18,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const myColors = ['Black', 'Red', 'Green', 'Blue', 'Purple']
 

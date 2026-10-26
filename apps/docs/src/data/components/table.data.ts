@@ -75,7 +75,7 @@ export default {
         },
       } satisfies SlotRecord<keyof BTableSimpleSlots>,
       props: {
-        ...pick(buildCommonProps(buildCommonProps()), ['id', 'variant']),
+        ...pick(buildCommonProps(buildCommonProps()), ['id', 'theme']),
         bordered: {
           type: 'boolean',
           default: false,
@@ -86,10 +86,10 @@ export default {
           default: false,
           description: 'Removes all borders from cells',
         },
-        borderVariant: {
-          type: 'ColorVariant | null',
+        border: {
+          type: 'BorderColor | null',
           default: null,
-          description: 'Applies one of the Bootstrap theme color variants to the table border',
+          description: 'Applies a border color (`BorderColor`) to the table',
         },
         captionTop: {
           type: 'boolean',
@@ -199,28 +199,27 @@ export default {
           default: false,
           description: 'Enable the footer of the table, and clone the header content by default',
         },
-        footRowVariant: {
-          type: 'ColorVariant | null',
+        footRowTheme: {
+          type: 'ThemeColor | null',
           default: undefined,
           description:
-            'Apply a Bootstrap theme color variant to the tr element in the tfoot. Falls back to head-row-variant',
+            'Apply a theme color to the tr element in the tfoot. Falls back to head-row-theme',
         },
-        footVariant: {
-          type: 'ColorVariant | null',
+        footTheme: {
+          type: 'ThemeColor | null',
           default: undefined,
           description:
-            'Apply a Bootstrap theme color variant to the foot, falls back to head-variant if that prop is specified. May take precedence over foot-row-variant',
+            'Apply a theme color to the foot, falls back to head-theme if that prop is specified. May take precedence over foot-row-theme',
         },
-        headRowVariant: {
-          type: 'ColorVariant | null',
+        headRowTheme: {
+          type: 'ThemeColor | null',
           default: undefined,
-          description: 'Apply a Bootstrap theme color variant to the tr element in the thead',
+          description: 'Apply a theme color to the tr element in the thead',
         },
-        headVariant: {
-          type: 'ColorVariant | null',
+        headTheme: {
+          type: 'ThemeColor | null',
           default: undefined,
-          description:
-            'Apply a Bootstrap theme color variant to the head. May take precedence over head-row-variant',
+          description: 'Apply a theme color to the head. May take precedence over head-row-theme',
         },
         items: {
           type: 'readonly Item[]',
@@ -743,11 +742,11 @@ export default {
           type: 'boolean | string',
           default: true,
         },
-        selectionVariant: {
-          type: 'ColorVariant | null',
+        selectionTheme: {
+          type: 'ThemeColor | null',
           default: 'primary',
           description:
-            "Bootstrap color theme variant to set selected rows to. Use any of the standard Bootstrap theme color variants, or the special table row variant 'active' (default). Set to an empty string to not use a variant",
+            'Theme color to set selected rows to. Use any of the registered theme colors. Set to `null` to not apply a theme',
         },
         selectMode: {
           type: "'multi' | 'single' | 'range'",
@@ -1074,7 +1073,7 @@ export default {
       },
       BTbody: {
         styleSpec: { kind: StyleKind.Tag, value: 'tbody' },
-        props: pick(buildCommonProps(), ['variant']) satisfies PropRecord<keyof BTbodyProps>,
+        props: pick(buildCommonProps(), ['theme']) satisfies PropRecord<keyof BTbodyProps>,
         slots: {
           default: {
             description: 'Content to place in the tbody',
@@ -1084,7 +1083,7 @@ export default {
       BTd: {
         styleSpec: { kind: StyleKind.Tag, value: 'td' },
         props: {
-          ...pick(buildCommonProps(), ['variant']),
+          ...pick(buildCommonProps(), ['theme']),
           colspan: {
             type: 'Numberish',
             default: undefined,
@@ -1116,7 +1115,7 @@ export default {
       },
       BTfoot: {
         styleSpec: { kind: StyleKind.Tag, value: 'tfoot' },
-        props: pick(buildCommonProps(), ['variant']) satisfies PropRecord<keyof BTfootProps>,
+        props: pick(buildCommonProps(), ['theme']) satisfies PropRecord<keyof BTfootProps>,
         slots: {
           default: {
             description: 'Content to place in the tfoot',
@@ -1126,7 +1125,7 @@ export default {
       BTh: {
         styleSpec: { kind: StyleKind.Tag, value: 'th' },
         props: {
-          ...pick(buildCommonProps(), ['variant']),
+          ...pick(buildCommonProps(), ['theme']),
           colspan: {
             type: 'Numberish',
             default: undefined,
@@ -1162,8 +1161,8 @@ export default {
       BThead: {
         styleSpec: { kind: StyleKind.Tag, value: 'thead' },
         props: {
-          variant: {
-            type: 'ColorVariant',
+          theme: {
+            type: 'ThemeColor | null',
             default: null,
           },
         } satisfies PropRecord<keyof BTheadProps>,
@@ -1178,8 +1177,8 @@ export default {
       BTr: {
         styleSpec: { kind: StyleKind.Tag, value: 'tr' },
         props: {
-          variant: {
-            type: 'ColorVariant',
+          theme: {
+            type: 'ThemeColor | null',
             default: null,
           },
         } satisfies PropRecord<keyof BTrProps>,

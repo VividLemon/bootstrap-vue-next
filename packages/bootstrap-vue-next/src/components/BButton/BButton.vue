@@ -40,7 +40,8 @@ import BLink from '../BLink/BLink.vue'
 import {useLinkClasses} from '../../composables/useLinkClasses'
 import {onKeyStroke} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
-import type {BButtonEmits, BButtonProps, BButtonSlots, ColorVariant} from '../../types'
+import {getButtonThemeClasses} from '../../composables/useThemeClasses'
+import type {BButtonEmits, BButtonProps, BButtonSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   loading: false,
@@ -53,7 +54,8 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   type: 'button',
   // Link props
   active: false, // Why is this active: false?
-  variant: 'secondary',
+  variant: 'solid',
+  theme: 'secondary',
   // All others use defaults
   activeClass: undefined,
   disabled: undefined,
@@ -73,7 +75,7 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   underlineOffsetHover: undefined,
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
-  underlineVariant: null,
+  underlineTheme: null,
   // End link props
 })
 const props = useDefaults(_props, 'BButton')
@@ -110,8 +112,7 @@ const computedAriaDisabled = computed(() => {
   return nonStandardTag.value ? props.disabled : null
 })
 
-const variantIsLinkType = computed(() => props.variant?.startsWith('link') || false)
-const variantIsLinkTypeSubset = computed(() => props.variant?.startsWith('link-') || false)
+const variantIsLinkType = computed(() => props.variant === 'link')
 const linkValueClasses = useLinkClasses(
   computed(() => ({
     ...(variantIsLinkType.value
@@ -123,11 +124,8 @@ const linkValueClasses = useLinkClasses(
           underlineOffsetHover: props.underlineOffsetHover,
           underlineOpacity: props.underlineOpacity,
           underlineOpacityHover: props.underlineOpacityHover,
-          underlineVariant: props.underlineVariant,
-          variant:
-            variantIsLinkTypeSubset.value === true
-              ? (props.variant?.slice(5) as ColorVariant)
-              : null,
+          underlineTheme: props.underlineTheme,
+          theme: null,
         }
       : undefined),
   }))
@@ -136,9 +134,9 @@ const computedClasses = computed(() => [
   variantIsLinkType.value === true && computedLink.value === false
     ? linkValueClasses.value
     : undefined,
+  getButtonThemeClasses(props.variant, props.theme),
   {
     [`btn-${props.size}`]: props.size !== undefined,
-    [`btn-${props.variant}`]: props.variant !== null && variantIsLinkTypeSubset.value === false,
     'active': props.active || pressedValue.value,
     'rounded-pill': props.pill,
     'rounded-0': props.squared,

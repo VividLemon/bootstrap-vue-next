@@ -76,13 +76,13 @@ The `right` prop has been replaced with a more flexible `placement` prop:
 `aria-label` and `aria-labelledby` aren't explicitly defined as props, but setting them
 on `<BOffcanvas>` will bind correctly to the main `<div>`.
 
-### Variant Props Deprecated
+### Color Props Deprecated
 
-The `bg-variant` and `text-variant` props have been **deprecated**. Bootstrap 5 offcanvas components don't support these props directly.
+The `bg-variant` and `text-variant` props have been **deprecated**. Bootstrap offcanvas components don't support these props directly.
 
 Instead, use utility classes:
 
-- Apply background classes via `body-class` prop: `body-class="bg-dark text-light"`
+- Apply background classes via `body-class` prop: `body-class="bg-inverse fg-contrast-inverse"` (or `bg-1 fg-body`)
 - Apply classes to content wrapper elements within the default slot
 - Use the `header-class` prop for header styling
 

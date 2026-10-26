@@ -131,7 +131,8 @@ const _props = withDefaults(defineProps<Omit<BOffcanvasProps, 'modelValue'>>(), 
   headerClass: undefined,
   headerCloseClass: undefined,
   headerCloseLabel: 'Close',
-  headerCloseVariant: 'secondary',
+  headerCloseTheme: 'secondary',
+  headerCloseVariant: 'solid',
   id: undefined,
   initialAnimation: false,
   lazy: false,
@@ -273,6 +274,7 @@ const headerCloseClasses = computed(() => [
 ])
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
+  theme: hasHeaderCloseSlot.value ? props.headerCloseTheme : undefined,
   class: headerCloseClasses.value,
 }))
 

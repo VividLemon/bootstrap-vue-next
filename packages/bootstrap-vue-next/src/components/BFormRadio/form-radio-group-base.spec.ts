@@ -488,13 +488,13 @@ describe('form-radio-group-base', () => {
       const wrapper = mount(BFormRadioGroupBase, {
         props: {
           buttons: true,
-          buttonVariant: 'primary',
+          buttonTheme: 'primary',
           options: [{text: 'A', value: 'a', disabled: false}],
         },
       })
       const radio = wrapper.findComponent(BFormRadio)
       const label = radio.get('label')
-      expect(label.classes()).toContain('btn-primary')
+      expect(label.classes()).toContain('theme-primary')
     })
   })
 

@@ -15,17 +15,16 @@ import BPlaceholder from './BPlaceholder.vue'
 import type {BPlaceholderButtonProps} from '../../types'
 import {computed} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
+import {getButtonThemeClasses} from '../../composables/useThemeClasses'
 
 const _props = withDefaults(defineProps<BPlaceholderButtonProps>(), {
   animation: undefined,
   cols: undefined,
   tag: 'div',
-  variant: 'primary',
+  theme: 'primary',
   width: undefined,
 })
 const props = useDefaults(_props, 'BPlaceholderButton')
 
-const computedClasses = computed(() => ({
-  [`btn-${props.variant}`]: props.variant !== null,
-}))
+const computedClasses = computed(() => getButtonThemeClasses('solid', props.theme))
 </script>

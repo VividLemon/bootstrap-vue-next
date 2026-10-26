@@ -2,11 +2,7 @@
   <!-- #region template -->
   <div class="d-flex gap-2 flex-wrap">
     <!-- Correct: div element with title attribute -->
-    <div
-      v-b-popover.hover.top
-      title="Title from attribute"
-      class="btn btn-primary"
-    >
+    <div v-b-popover.hover.top title="Title from attribute" class="btn btn-solid theme-primary">
       Using title attribute
     </div>
 
@@ -15,7 +11,7 @@
 
     <!-- Both title and body -->
     <BButton
-      v-b-popover.hover.top="{title: 'Custom Title', body: 'Custom body'}"
+      v-b-popover.hover.top="{ title: 'Custom Title', body: 'Custom body' }"
       title="This will be overridden"
     >
       Title + Body

@@ -46,8 +46,8 @@ const _props = withDefaults(defineProps<BListGroupItemProps>(), {
   underlineOffsetHover: undefined,
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
-  underlineVariant: undefined,
-  variant: undefined,
+  underlineTheme: undefined,
+  theme: undefined,
   // End link props
 })
 const props = useDefaults(_props, 'BListGroupItem')
@@ -65,15 +65,11 @@ const tagComputed = computed(() =>
 
 const actionableTags = new Set(['a', 'button', 'router-link', 'RouterLink', 'b-link', 'BLink'])
 const isAction = computed(
-  () =>
-    props.action ||
-    isLink.value ||
-    props.button ||
-    actionableTags.has(props.tag)
+  () => props.action || isLink.value || props.button || actionableTags.has(props.tag)
 )
 
 const computedClasses = computed(() => ({
-  [`list-group-item-${props.variant}`]: props.variant !== null && props.variant !== undefined,
+  [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
   'list-group-item-action': isAction.value,
   'active': props.active,
   'disabled': props.disabled,

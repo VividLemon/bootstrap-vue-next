@@ -15,7 +15,7 @@
             in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
           </p>
           <BImg src="https://picsum.photos/500/500/?image=54" fluid thumbnail />
-          <BButton variant="primary" block @click="() => scope.hide()">Close Offcanvas</BButton>
+          <BButton theme="primary" block @click="() => scope.hide()">Close Offcanvas</BButton>
         </div>
       </template>
     </BOffcanvas>

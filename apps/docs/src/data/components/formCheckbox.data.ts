@@ -1,12 +1,12 @@
-import {pick} from '../../utils/objectUtils'
-import type {ComponentReference, ExposedRecord, PropRecord, SlotRecord} from '../../types'
+import { pick } from '../../utils/objectUtils'
+import type { ComponentReference, ExposedRecord, PropRecord, SlotRecord } from '../../types'
 import type {
   BFormCheckboxGroupProps,
   BFormCheckboxGroupSlots,
   BFormCheckboxProps,
   BFormCheckboxSlots,
 } from 'bootstrap-vue-next'
-import {buildCommonProps} from '../../utils/commonProps'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
@@ -37,10 +37,16 @@ export default {
           description:
             "When set, renders the checkbox as part of a button group (it doesn't enclose the checkbox and label with a div). It is not necessary to set this to true if this is part of a CheckboxGroup as it is handled internally",
         },
+        buttonTheme: {
+          type: 'ThemeColor | null',
+          default: 'secondary',
+          description: 'Applies one of the theme colors when in `button` mode',
+        },
         buttonVariant: {
           type: 'ButtonVariant | null',
-          default: 'secondary',
-          description: "Applies one of Bootstrap's theme colors when in `button` mode",
+          default: 'solid',
+          description:
+            "Sets the button style ('solid', 'outline', 'subtle', 'text', 'styled' or 'link') when in `button` mode",
         },
         indeterminate: {
           type: 'boolean',
@@ -146,11 +152,16 @@ export default {
           'textField',
           'valueField',
         ]),
+        buttonTheme: {
+          type: 'ThemeColor | null',
+          default: 'secondary',
+          description: 'Specifies the theme color to apply to the button style checkboxes',
+        },
         buttonVariant: {
           type: 'ButtonVariant | null',
-          default: 'secondary',
+          default: 'solid',
           description:
-            'Specifies the Bootstrap contextual color theme variant to apply to the button style checkboxes',
+            "Specifies the button style ('solid', 'outline', 'subtle', 'text', 'styled' or 'link') to apply to the button style checkboxes",
         },
         buttons: {
           type: 'boolean',

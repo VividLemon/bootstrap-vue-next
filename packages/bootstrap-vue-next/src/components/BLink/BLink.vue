@@ -54,8 +54,8 @@ const _props = withDefaults(defineProps<BLinkProps>(), {
   underlineOffsetHover: undefined,
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
-  underlineVariant: null,
-  variant: null,
+  underlineTheme: null,
+  theme: null,
 })
 const props = useDefaults(_props, 'BLink')
 const emit = defineEmits<BLinkEmits>()

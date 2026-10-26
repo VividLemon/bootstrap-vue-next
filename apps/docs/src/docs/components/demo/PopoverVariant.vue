@@ -2,8 +2,8 @@
   <!-- #region template -->
   <div class="d-flex gap-2">
     <BPopover
-      title-class="text-bg-danger"
-      class="text-bg-danger"
+      title-class="bg-danger fg-contrast-danger"
+      class="bg-danger fg-contrast-danger"
       title="Danger!"
       body="Danger variant popover"
     >

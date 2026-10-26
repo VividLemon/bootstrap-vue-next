@@ -26,65 +26,65 @@ describe('card-head-foot', () => {
     expect(wrapper.element.tagName).toBe('SECTION')
   })
 
-  it('has class text-bg-{type} when prop variant', async () => {
+  it('has class theme-{type} when prop theme', async () => {
     const wrapper = mount(BCardHeadFoot, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('text-bg-primary')
-    await wrapper.setProps({variant: 'danger'})
-    expect(wrapper.classes()).toContain('text-bg-danger')
-    expect(wrapper.classes()).not.toContain('text-bg-primary')
-    await wrapper.setProps({variant: undefined})
-    expect(wrapper.classes()).not.toContain('text-bg-danger')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: 'danger'})
+    expect(wrapper.classes()).toContain('theme-danger')
+    expect(wrapper.classes()).not.toContain('theme-primary')
+    await wrapper.setProps({theme: undefined})
+    expect(wrapper.classes()).not.toContain('theme-danger')
   })
 
-  it('has class text-{type} when prop textVariant', async () => {
+  it('has class fg-{type} when prop fg', async () => {
     const wrapper = mount(BCardHeadFoot, {
-      props: {textVariant: 'primary'},
+      props: {fg: 'primary'},
     })
-    expect(wrapper.classes()).toContain('text-primary')
-    await wrapper.setProps({textVariant: 'danger'})
-    expect(wrapper.classes()).toContain('text-danger')
-    expect(wrapper.classes()).not.toContain('text-primary')
-    await wrapper.setProps({textVariant: undefined})
-    expect(wrapper.classes()).not.toContain('text-danger')
+    expect(wrapper.classes()).toContain('fg-primary')
+    await wrapper.setProps({fg: 'emphasis-danger'})
+    expect(wrapper.classes()).toContain('fg-emphasis-danger')
+    expect(wrapper.classes()).not.toContain('fg-primary')
+    await wrapper.setProps({fg: undefined})
+    expect(wrapper.classes()).not.toContain('fg-emphasis-danger')
   })
 
-  it('has class bg-{type} when prop bgVariant', async () => {
+  it('has class bg-{type} when prop bg', async () => {
     const wrapper = mount(BCardHeadFoot, {
-      props: {bgVariant: 'primary'},
+      props: {bg: 'primary'},
     })
     expect(wrapper.classes()).toContain('bg-primary')
-    await wrapper.setProps({bgVariant: 'danger'})
-    expect(wrapper.classes()).toContain('bg-danger')
+    await wrapper.setProps({bg: 'subtle-danger'})
+    expect(wrapper.classes()).toContain('bg-subtle-danger')
     expect(wrapper.classes()).not.toContain('bg-primary')
-    await wrapper.setProps({bgVariant: undefined})
-    expect(wrapper.classes()).not.toContain('bg-danger')
+    await wrapper.setProps({bg: undefined})
+    expect(wrapper.classes()).not.toContain('bg-subtle-danger')
   })
 
-  it('has class border-{type} when prop borderVariant', async () => {
+  it('has class border-{type} when prop border', async () => {
     const wrapper = mount(BCardHeadFoot, {
-      props: {borderVariant: 'primary'},
+      props: {border: 'primary'},
     })
     expect(wrapper.classes()).toContain('border-primary')
-    await wrapper.setProps({borderVariant: 'danger'})
+    await wrapper.setProps({border: 'danger'})
     expect(wrapper.classes()).toContain('border-danger')
     expect(wrapper.classes()).not.toContain('border-primary')
-    await wrapper.setProps({borderVariant: undefined})
+    await wrapper.setProps({border: undefined})
     expect(wrapper.classes()).not.toContain('border-danger')
   })
 
-  it('all variant classes can coexist', () => {
+  it('all color classes can coexist', () => {
     const wrapper = mount(BCardHeadFoot, {
       props: {
-        variant: 'primary',
-        textVariant: 'danger',
-        bgVariant: 'success',
-        borderVariant: 'warning',
+        theme: 'primary',
+        fg: 'danger',
+        bg: 'success',
+        border: 'warning',
       },
     })
-    expect(wrapper.classes()).toContain('text-bg-primary')
-    expect(wrapper.classes()).toContain('text-danger')
+    expect(wrapper.classes()).toContain('theme-primary')
+    expect(wrapper.classes()).toContain('fg-danger')
     expect(wrapper.classes()).toContain('bg-success')
     expect(wrapper.classes()).toContain('border-warning')
   })

@@ -37,7 +37,7 @@
               :key="optionKey(opt, i)"
               :title="String(opt.text)"
               :disabled="props.disabled"
-              :variant="'secondary'"
+              :theme="'secondary'"
               :class="{
                 'b-autocomplete-tag-muted': pendingDelete && !isLastSelectedOption(opt, i),
                 'b-autocomplete-tag-pending-delete': pendingDelete && isLastSelectedOption(opt, i),
