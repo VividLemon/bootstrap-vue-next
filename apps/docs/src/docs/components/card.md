@@ -10,7 +10,7 @@ control and customization. Built with flexbox, they offer easy alignment and mix
 components.
 
 `BCard` has no fixed width to start, so they'll naturally fill the full width of its parent
-element. This is easily customized via styles or standard Bootstrap 5 sizing classes.
+element. This is easily customized via styles or standard Bootstrap 6 sizing classes.
 
 Change the default `div` root tag to any other HTML element by specifying via the `tag` prop.
 
@@ -51,8 +51,8 @@ With sub-component `BCardText`, paragraph text can be added to the card. The las
 `BCardText` in the card body will have its bottom margin automatically removed (via CSS). Text
 within `BCardText` can also be styled with the standard HTML tags.
 
-Links can be added and placed next to each other by adding the `.card-link` class to a `<a>` tag (or
-`BLink` component).
+Links can be added with a normal `<a>` tag (or `BLink` component). Bootstrap 6 removed `.card-link`;
+use flex or gap utilities when you need a row of links.
 
 <<< DEMO ./demo/CardParts.vue#template{vue-html}
 
@@ -67,9 +67,9 @@ Alternatively you can manually place images inside `BCard` using the sub-compone
 
 <<< DEMO ./demo/CardImages.vue#template{vue-html}
 
-**Note:** For left and right images, you may need to apply additional styles to classes
-`.card-img-start` and `.card-img-end`, as images will "stretch" in height if you have content that
-is taller than your image. Note headers and footers are not supported when images are left or right
+**Note:** Setting `img-placement` to `start` or `end` adds `.card-row` to the card and uses
+`.card-img-start` / `.card-img-end` on the image, as in Bootstrap 6. You may need to apply
+additional styles, as images will "stretch" in height if you have content that is taller than your image. Note headers and footers are not supported when images are left or right
 aligned. You may find the [Horizontal Card Layout](#horizontal-card-layout) example to be more
 flexible when creating a responsive horizontal card.
 
@@ -177,7 +177,9 @@ for laying out series of cards.
 ### Default card group
 
 Use card groups to render cards as a single, attached element with equal width and height columns.
-Card groups use display: flex; to achieve their uniform sizing.
+Bootstrap 6 card groups use a container query, so place `BCardGroup` inside a parent with the
+`.contains-inline` class or the cards will remain stacked. For grid-style layouts of cards (the
+replacement for the removed `deck` and `columns` modes), use `BRow`/`BCol`.
 
 When using card groups with footers, their content will automatically line up.
 

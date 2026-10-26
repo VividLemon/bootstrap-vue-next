@@ -33,15 +33,9 @@ const _props = withDefaults(defineProps<BCardImgProps>(), {
 })
 const props = useDefaults(_props, 'BCardImg')
 
-const baseAlignmentClasses = computed(() => ({
-  'card-img-top': props.placement === 'top',
-  // TODO implement this class
-  'card-img-end': props.placement === 'end',
-  'card-img-bottom': props.placement === 'bottom',
-  // TODO implement this class
-  'card-img-start': props.placement === 'start',
-  'card-img': props.placement === 'overlay',
-}))
+const baseAlignmentClasses = computed(() =>
+  props.placement === 'overlay' ? 'card-img' : `card-img-${props.placement}`
+)
 
 const computedImgProps = computed(() => omit(props, ['placement']))
 </script>

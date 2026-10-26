@@ -124,8 +124,7 @@ const computedClasses = computed(() => [
   colorClasses.value,
   {
     [`text-${props.align}`]: props.align !== undefined,
-    'flex-row': props.imgPlacement === 'start',
-    'flex-row-reverse': props.imgPlacement === 'end',
+    'card-row': props.imgPlacement === 'start' || props.imgPlacement === 'end',
   },
 ])
 

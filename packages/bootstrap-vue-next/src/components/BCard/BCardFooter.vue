@@ -7,11 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import type {BCardFooterSlots, BCardHeaderProps} from '../../types'
+import type {BCardFooterSlots, BCardFooterProps} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import BCardHeadFoot from '../BCardHeadFoot.vue'
 
-const _props = withDefaults(defineProps<BCardHeaderProps>(), {
+const _props = withDefaults(defineProps<BCardFooterProps>(), {
   borderVariant: undefined,
   tag: 'div',
   text: undefined,

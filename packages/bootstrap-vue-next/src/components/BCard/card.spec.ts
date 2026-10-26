@@ -62,18 +62,43 @@ describe('card', () => {
     expect(wrapper.classes()).not.toContain('border-primary')
   })
 
-  it('has class flex-row when prop imgStart', async () => {
+  it.each(['start', 'end'] as const)(
+    'has class card-row and card-img-%s when imgPlacement',
+    (placement) => {
+      const wrapper = mount(BCard, {
+        props: {imgPlacement: placement, imgSrc: '/a.png'},
+      })
+      expect(wrapper.classes()).toContain('card-row')
+      expect(wrapper.find('img').classes()).toContain(`card-img-${placement}`)
+      expect(wrapper.classes()).not.toContain('flex-row')
+      expect(wrapper.classes()).not.toContain('flex-row-reverse')
+    }
+  )
+
+  it.each(['top', 'bottom', 'overlay'] as const)(
+    'does not have card-row when imgPlacement %s',
+    (placement) => {
+      const wrapper = mount(BCard, {props: {imgPlacement: placement, imgSrc: '/a.png'}})
+      expect(wrapper.classes()).not.toContain('card-row')
+    }
+  )
+
+  it('renders image, header, body and footer in order within the card', () => {
     const wrapper = mount(BCard, {
-      props: {imgPlacement: 'start'},
+      props: {imgSrc: '/a.png', header: 'H', title: 'T', footer: 'F'},
+      slots: {default: 'Body'},
     })
-    expect(wrapper.classes()).toContain('flex-row')
+    const children = Array.from(wrapper.element.children).map((e) => e.className)
+    expect(children[0]).toContain('card-img-top')
+    expect(children[1]).toContain('card-header')
+    expect(children[2]).toContain('card-body')
+    expect(children[3]).toContain('card-footer')
   })
 
-  it('has class flex-row-reverse when prop imgEnd', async () => {
-    const wrapper = mount(BCard, {
-      props: {imgPlacement: 'end'},
-    })
-    expect(wrapper.classes()).toContain('flex-row-reverse')
+  it('renders overlay image with card-img and card-img-overlay body', () => {
+    const wrapper = mount(BCard, {props: {imgPlacement: 'overlay', imgSrc: '/a.png'}})
+    expect(wrapper.find('img').classes()).toContain('card-img')
+    expect(wrapper.find('.card-img-overlay').exists()).toBe(true)
   })
 
   it('renders img slot', () => {
