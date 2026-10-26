@@ -65,16 +65,9 @@ describe('form-invalid-feedback', () => {
     expect(wrapper.classes()).not.toContain('d-block')
   })
 
-  it('does not have class d-block when state is null', () => {
+  it.each([null, true])('does not have class d-block when state is %s', (state) => {
     const wrapper = mount(BFormInvalidFeedback, {
-      props: {state: null},
-    })
-    expect(wrapper.classes()).not.toContain('d-block')
-  })
-
-  it('does not have class d-block when state is true', () => {
-    const wrapper = mount(BFormInvalidFeedback, {
-      props: {state: true},
+      props: {state},
     })
     expect(wrapper.classes()).not.toContain('d-block')
   })
@@ -97,16 +90,9 @@ describe('form-invalid-feedback', () => {
     expect(wrapper.classes()).not.toContain('d-block')
   })
 
-  it('has class d-block when forceShow is true even if state is true', () => {
+  it.each([true, null])('has class d-block when forceShow is true even if state is %s', (state) => {
     const wrapper = mount(BFormInvalidFeedback, {
-      props: {forceShow: true, state: true},
-    })
-    expect(wrapper.classes()).toContain('d-block')
-  })
-
-  it('has class d-block when forceShow is true even if state is null', () => {
-    const wrapper = mount(BFormInvalidFeedback, {
-      props: {forceShow: true, state: null},
+      props: {forceShow: true, state},
     })
     expect(wrapper.classes()).toContain('d-block')
   })

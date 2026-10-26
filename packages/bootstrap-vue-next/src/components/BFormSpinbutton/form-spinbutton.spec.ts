@@ -143,20 +143,30 @@ describe('form-spinbutton', () => {
       expect(wrapper.classes()).not.toContain('align-items-stretch')
     })
 
-    it('has form-control-sm class when size is sm', () => {
-      const wrapper = mount(BFormSpinbutton, {props: {size: 'sm'}})
-      expect(wrapper.classes()).toContain('form-control-sm')
-    })
-
-    it('has form-control-lg class when size is lg', () => {
-      const wrapper = mount(BFormSpinbutton, {props: {size: 'lg'}})
-      expect(wrapper.classes()).toContain('form-control-lg')
-    })
-
-    it('does not have form-control-{size} class when size is not set', () => {
-      const wrapper = mount(BFormSpinbutton)
-      expect(wrapper.classes().some((c) => c.startsWith('form-control-'))).toBe(false)
-    })
+    it.each([
+      {
+        name: 'small',
+        props: {size: 'sm'},
+        expectedClasses: ['form-control-sm'],
+        hasSizeClass: true,
+      },
+      {
+        name: 'large',
+        props: {size: 'lg'},
+        expectedClasses: ['form-control-lg'],
+        hasSizeClass: true,
+      },
+      {name: 'unset', props: {}, expectedClasses: [], hasSizeClass: false},
+    ])(
+      'applies the expected size class when size is $name',
+      ({props, expectedClasses, hasSizeClass}) => {
+        const wrapper = mount(BFormSpinbutton, {props})
+        expectedClasses.forEach((className) => expect(wrapper.classes()).toContain(className))
+        expect(wrapper.classes().some((className) => className.startsWith('form-control-'))).toBe(
+          hasSizeClass
+        )
+      }
+    )
 
     it('updates size class reactively', async () => {
       const wrapper = mount(BFormSpinbutton, {props: {size: 'sm'}})

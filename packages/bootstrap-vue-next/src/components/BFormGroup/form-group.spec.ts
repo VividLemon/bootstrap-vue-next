@@ -213,206 +213,126 @@ describe('form-group', () => {
     expect(wrapper.attributes('aria-labelledby')).toBeUndefined()
   })
 
-  it('attr aria-labelledby is defined when has labelCols props but also slot label', () => {
+  it.each([
+    {column: 'labelCols', labelSource: 'slot', props: {labelCols: 3}, labelSlot: {label: 'foo'}},
+    {
+      column: 'labelCols',
+      labelSource: 'prop',
+      props: {labelCols: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+    {
+      column: 'labelColsLg',
+      labelSource: 'slot',
+      props: {labelColsLg: 3},
+      labelSlot: {label: 'foo'},
+    },
+    {
+      column: 'labelColsLg',
+      labelSource: 'prop',
+      props: {labelColsLg: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+    {
+      column: 'labelColsMd',
+      labelSource: 'slot',
+      props: {labelColsMd: 3},
+      labelSlot: {label: 'foo'},
+    },
+    {
+      column: 'labelColsMd',
+      labelSource: 'prop',
+      props: {labelColsMd: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+    {
+      column: 'labelColsSm',
+      labelSource: 'slot',
+      props: {labelColsSm: 3},
+      labelSlot: {label: 'foo'},
+    },
+    {
+      column: 'labelColsSm',
+      labelSource: 'prop',
+      props: {labelColsSm: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+    {
+      column: 'labelColsXl',
+      labelSource: 'slot',
+      props: {labelColsXl: 3},
+      labelSlot: {label: 'foo'},
+    },
+    {
+      column: 'labelColsXl',
+      labelSource: 'prop',
+      props: {labelColsXl: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+    {
+      column: 'contentCols',
+      labelSource: 'slot',
+      props: {contentCols: 3},
+      labelSlot: {label: 'foo'},
+    },
+    {
+      column: 'contentCols',
+      labelSource: 'prop',
+      props: {contentCols: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+    {
+      column: 'contentColsLg',
+      labelSource: 'slot',
+      props: {contentColsLg: 3},
+      labelSlot: {label: 'foo'},
+    },
+    {
+      column: 'contentColsLg',
+      labelSource: 'prop',
+      props: {contentColsLg: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+    {
+      column: 'contentColsMd',
+      labelSource: 'slot',
+      props: {contentColsMd: 3},
+      labelSlot: {label: 'foo'},
+    },
+    {
+      column: 'contentColsMd',
+      labelSource: 'prop',
+      props: {contentColsMd: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+    {
+      column: 'contentColsSm',
+      labelSource: 'slot',
+      props: {contentColsSm: 3},
+      labelSlot: {label: 'foo'},
+    },
+    {
+      column: 'contentColsSm',
+      labelSource: 'prop',
+      props: {contentColsSm: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+    {
+      column: 'contentColsXl',
+      labelSource: 'slot',
+      props: {contentColsXl: 3},
+      labelSlot: {label: 'foo'},
+    },
+    {
+      column: 'contentColsXl',
+      labelSource: 'prop',
+      props: {contentColsXl: 3, label: 'foo'},
+      labelSlot: undefined,
+    },
+  ])('sets aria-labelledby for $column with $labelSource label', ({props, labelSlot}) => {
     const wrapper = mount(BFormGroup, {
-      props: {
-        labelCols: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has labelColsLg props but also slot label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        labelColsLg: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has labelColsMd props but also slot label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        labelColsMd: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has labelColsSm props but also slot label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        labelColsSm: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has labelColsXl props but also slot label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        labelColsXl: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has labelCols props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        labelCols: 3,
-        label: 'foo',
-      },
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has labelColsLg props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        labelColsLg: 3,
-        label: 'foo',
-      },
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has labelColsMd props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        labelColsMd: 3,
-        label: 'foo',
-      },
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has labelColsSm props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        labelColsSm: 3,
-        label: 'foo',
-      },
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has labelColsXl props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        labelColsXl: 3,
-        label: 'foo',
-      },
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  // Start contentCols branches
-
-  it('attr aria-labelledby is defined when has contentCols props but also slot label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentCols: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has contentColsLg props but also slot label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentColsLg: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has contentColsMd props but also slot label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentColsMd: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has contentColsSm props but also slot label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentColsSm: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has contentColsXl props but also slot label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentColsXl: 3,
-      },
-      slots: {label: 'foo'},
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  // End example
-
-  it('attr aria-labelledby is defined when has contentCols props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentCols: 3,
-        label: 'foo',
-      },
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has contentColsLg props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentColsLg: 3,
-        label: 'foo',
-      },
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has contentColsMd props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentColsMd: 3,
-        label: 'foo',
-      },
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has contentColsSm props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentColsSm: 3,
-        label: 'foo',
-      },
-    })
-    expect(wrapper.attributes('aria-labelledby')).toBeDefined()
-  })
-
-  it('attr aria-labelledby is defined when has contentColsXl props but also prop label', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {
-        contentColsXl: 3,
-        label: 'foo',
-      },
+      props,
+      ...(labelSlot ? {slots: {label: labelSlot.label}} : {}),
     })
     expect(wrapper.attributes('aria-labelledby')).toBeDefined()
   })
@@ -1125,32 +1045,16 @@ describe('form-group', () => {
       expect(wrapper.find('legend').classes()).toContain('col-form-label')
     })
 
-    it('applies labelAlign classes in non-horizontal mode', () => {
+    it.each([
+      {prop: 'labelAlign', value: 'end', className: 'text-end'},
+      {prop: 'labelAlignSm', value: 'center', className: 'text-sm-center'},
+      {prop: 'labelAlignLg', value: 'start', className: 'text-lg-start'},
+      {prop: 'labelAlignXl', value: 'end', className: 'text-xl-end'},
+    ])('applies $className for $prop in non-horizontal mode', ({prop, value, className}) => {
       const wrapper = mount(BFormGroup, {
-        props: {label: 'foo', labelFor: 'bar', labelAlign: 'end'},
+        props: {label: 'foo', labelFor: 'bar', [prop]: value},
       })
-      expect(wrapper.find('label').classes()).toContain('text-end')
-    })
-
-    it('applies labelAlignSm classes in non-horizontal mode', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'foo', labelFor: 'bar', labelAlignSm: 'center'},
-      })
-      expect(wrapper.find('label').classes()).toContain('text-sm-center')
-    })
-
-    it('applies labelAlignLg classes in non-horizontal mode', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'foo', labelFor: 'bar', labelAlignLg: 'start'},
-      })
-      expect(wrapper.find('label').classes()).toContain('text-lg-start')
-    })
-
-    it('applies labelAlignXl classes in non-horizontal mode', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'foo', labelFor: 'bar', labelAlignXl: 'end'},
-      })
-      expect(wrapper.find('label').classes()).toContain('text-xl-end')
+      expect(wrapper.find('label').classes()).toContain(className)
     })
   })
 
@@ -1591,64 +1495,20 @@ describe('form-group', () => {
       expect(wrapper.find('.row').exists()).toBe(false)
     })
 
-    it('renders col-3 class on label when labelCols is 3', () => {
+    it.each([
+      {prop: 'labelCols', value: 3, className: 'col-3'},
+      {prop: 'labelColsSm', value: 4, className: 'col-sm-4'},
+      {prop: 'labelColsMd', value: 5, className: 'col-md-5'},
+      {prop: 'labelColsLg', value: 2, className: 'col-lg-2'},
+      {prop: 'labelColsXl', value: 6, className: 'col-xl-6'},
+    ])('renders $className on label for $prop', ({prop, value, className}) => {
       const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', labelCols: 3},
-        slots: {
-          default: h(BFormInput),
-        },
+        props: {label: 'Name', [prop]: value},
+        slots: {default: h(BFormInput)},
       })
       const labelCol = wrapper.findAll('[class*="col"]').find((el) => el.text().includes('Name'))
       expect(labelCol).toBeDefined()
-      expect(labelCol!.classes()).toContain('col-3')
-    })
-
-    it('renders correct labelColsSm class', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', labelColsSm: 4},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const labelCol = wrapper.findAll('[class*="col"]').find((el) => el.text().includes('Name'))
-      expect(labelCol).toBeDefined()
-      expect(labelCol!.classes()).toContain('col-sm-4')
-    })
-
-    it('renders correct labelColsMd class', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', labelColsMd: 5},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const labelCol = wrapper.findAll('[class*="col"]').find((el) => el.text().includes('Name'))
-      expect(labelCol).toBeDefined()
-      expect(labelCol!.classes()).toContain('col-md-5')
-    })
-
-    it('renders correct labelColsLg class', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', labelColsLg: 2},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const labelCol = wrapper.findAll('[class*="col"]').find((el) => el.text().includes('Name'))
-      expect(labelCol).toBeDefined()
-      expect(labelCol!.classes()).toContain('col-lg-2')
-    })
-
-    it('renders correct labelColsXl class', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', labelColsXl: 6},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const labelCol = wrapper.findAll('[class*="col"]').find((el) => el.text().includes('Name'))
-      expect(labelCol).toBeDefined()
-      expect(labelCol!.classes()).toContain('col-xl-6')
+      expect(labelCol!.classes()).toContain(className)
     })
 
     it('renders col class when labelCols is true (boolean)', () => {
@@ -1674,114 +1534,40 @@ describe('form-group', () => {
       expect(wrapper.find('.row').exists()).toBe(true)
     })
 
-    it('applies labelAlignMd to label in horizontal mode', () => {
+    it.each([
+      {
+        prop: 'labelAlignSm',
+        value: 'center',
+        columnProp: 'labelColsSm',
+        className: 'text-sm-center',
+      },
+      {prop: 'labelAlignMd', value: 'end', columnProp: 'labelColsMd', className: 'text-md-end'},
+      {prop: 'labelAlignLg', value: 'start', columnProp: 'labelColsLg', className: 'text-lg-start'},
+      {prop: 'labelAlignXl', value: 'end', columnProp: 'labelColsXl', className: 'text-xl-end'},
+    ])('applies $className in horizontal mode', ({prop, value, columnProp, className}) => {
       const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', labelColsMd: 3, labelAlignMd: 'end'},
-        slots: {
-          default: h(BFormInput),
-        },
+        props: {label: 'Name', [columnProp]: 3, [prop]: value},
+        slots: {default: h(BFormInput)},
       })
       const labelCol = wrapper.findAll('[class*="col"]').find((el) => el.text().includes('Name'))
       expect(labelCol).toBeDefined()
-      expect(labelCol!.classes()).toContain('text-md-end')
+      expect(labelCol!.classes()).toContain(className)
     })
 
-    it('applies labelAlignSm to label in horizontal mode', () => {
+    it.each([
+      {prop: 'contentCols', value: 9, className: 'col-9'},
+      {prop: 'contentColsSm', value: 8, className: 'col-sm-8'},
+      {prop: 'contentColsMd', value: 7, className: 'col-md-7'},
+      {prop: 'contentColsLg', value: 6, className: 'col-lg-6'},
+      {prop: 'contentColsXl', value: 5, className: 'col-xl-5'},
+    ])('applies $className for $prop', ({prop, value, className}) => {
       const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', labelColsSm: 3, labelAlignSm: 'center'},
-        slots: {
-          default: h(BFormInput),
-        },
+        props: {label: 'Name', [prop]: value},
+        slots: {default: h(BFormInput)},
       })
-      const labelCol = wrapper.findAll('[class*="col"]').find((el) => el.text().includes('Name'))
-      expect(labelCol).toBeDefined()
-      expect(labelCol!.classes()).toContain('text-sm-center')
-    })
-
-    it('applies labelAlignLg to label in horizontal mode', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', labelColsLg: 3, labelAlignLg: 'start'},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const labelCol = wrapper.findAll('[class*="col"]').find((el) => el.text().includes('Name'))
-      expect(labelCol).toBeDefined()
-      expect(labelCol!.classes()).toContain('text-lg-start')
-    })
-
-    it('applies labelAlignXl to label in horizontal mode', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', labelColsXl: 3, labelAlignXl: 'end'},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const labelCol = wrapper.findAll('[class*="col"]').find((el) => el.text().includes('Name'))
-      expect(labelCol).toBeDefined()
-      expect(labelCol!.classes()).toContain('text-xl-end')
-    })
-
-    it('applies content col classes with contentCols number', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', contentCols: 9},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      // Find the content column (not the label)
-      const cols = wrapper.findAll('[class*="col"]')
-      const contentCol = cols.find(
-        (el) => el.classes().includes('col-9') && !el.text().includes('Name')
-      )
-      expect(contentCol).toBeDefined()
-    })
-
-    it('applies contentColsSm classes', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', contentColsSm: 8},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const cols = wrapper.findAll('[class*="col"]')
-      const contentCol = cols.find((el) => el.classes().includes('col-sm-8'))
-      expect(contentCol).toBeDefined()
-    })
-
-    it('applies contentColsMd classes', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', contentColsMd: 7},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const cols = wrapper.findAll('[class*="col"]')
-      const contentCol = cols.find((el) => el.classes().includes('col-md-7'))
-      expect(contentCol).toBeDefined()
-    })
-
-    it('applies contentColsLg classes', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', contentColsLg: 6},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const cols = wrapper.findAll('[class*="col"]')
-      const contentCol = cols.find((el) => el.classes().includes('col-lg-6'))
-      expect(contentCol).toBeDefined()
-    })
-
-    it('applies contentColsXl classes', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'Name', contentColsXl: 5},
-        slots: {
-          default: h(BFormInput),
-        },
-      })
-      const cols = wrapper.findAll('[class*="col"]')
-      const contentCol = cols.find((el) => el.classes().includes('col-xl-5'))
+      const contentCol = wrapper
+        .findAll('[class*="col"]')
+        .find((el) => el.classes().includes(className) && !el.text().includes('Name'))
       expect(contentCol).toBeDefined()
     })
 

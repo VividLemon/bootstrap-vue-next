@@ -534,11 +534,22 @@ describe('img', () => {
 
   // --- rounded props ---
 
-  it('has rounded class when rounded is true', () => {
+  it.each([
+    {name: 'rounded is true', props: {rounded: true}, expected: 'rounded'},
+    {name: 'rounded is circle', props: {rounded: 'circle'}, expected: 'rounded-circle'},
+    {name: 'rounded is pill', props: {rounded: 'pill'}, expected: 'rounded-pill'},
+    {name: 'rounded is none', props: {rounded: 'none'}, expected: 'rounded-0'},
+    {name: 'rounded is sm', props: {rounded: 'sm'}, expected: 'rounded-1'},
+    {name: 'rounded is lg', props: {rounded: 'lg'}, expected: 'rounded-5'},
+    {name: 'roundedTop is true', props: {roundedTop: true}, expected: 'rounded-top'},
+    {name: 'roundedBottom is true', props: {roundedBottom: true}, expected: 'rounded-bottom'},
+    {name: 'roundedStart is true', props: {roundedStart: true}, expected: 'rounded-start'},
+    {name: 'roundedEnd is true', props: {roundedEnd: true}, expected: 'rounded-end'},
+  ] as const)('has $expected class when $name', ({props, expected}) => {
     const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', rounded: true},
+      props: {src: '/test.jpg', ...props},
     })
-    expect(wrapper.classes()).toContain('rounded')
+    expect(wrapper.classes()).toContain(expected)
   })
 
   it('does not have rounded class when rounded is false', () => {
@@ -548,55 +559,6 @@ describe('img', () => {
     expect(wrapper.classes()).not.toContain('rounded')
   })
 
-  it('has rounded-circle class when rounded is circle', () => {
-    const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', rounded: 'circle'},
-    })
-    expect(wrapper.classes()).toContain('rounded-circle')
-  })
-
-  it('has rounded-pill class when rounded is pill', () => {
-    const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', rounded: 'pill'},
-    })
-    expect(wrapper.classes()).toContain('rounded-pill')
-  })
-
-  it('has rounded-0 class when rounded is none', () => {
-    const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', rounded: 'none'},
-    })
-    expect(wrapper.classes()).toContain('rounded-0')
-  })
-
-  it('has rounded-top class when roundedTop is true', () => {
-    const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', roundedTop: true},
-    })
-    expect(wrapper.classes()).toContain('rounded-top')
-  })
-
-  it('has rounded-bottom class when roundedBottom is true', () => {
-    const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', roundedBottom: true},
-    })
-    expect(wrapper.classes()).toContain('rounded-bottom')
-  })
-
-  it('has rounded-start class when roundedStart is true', () => {
-    const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', roundedStart: true},
-    })
-    expect(wrapper.classes()).toContain('rounded-start')
-  })
-
-  it('has rounded-end class when roundedEnd is true', () => {
-    const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', roundedEnd: true},
-    })
-    expect(wrapper.classes()).toContain('rounded-end')
-  })
-
   it('updates rounded class reactively', async () => {
     const wrapper = mount(BImg, {
       props: {src: '/test.jpg', rounded: false},
@@ -604,20 +566,6 @@ describe('img', () => {
     expect(wrapper.classes()).not.toContain('rounded')
     await wrapper.setProps({rounded: true})
     expect(wrapper.classes()).toContain('rounded')
-  })
-
-  it('has rounded-1 class when rounded is sm', () => {
-    const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', rounded: 'sm'},
-    })
-    expect(wrapper.classes()).toContain('rounded-1')
-  })
-
-  it('has rounded-5 class when rounded is lg', () => {
-    const wrapper = mount(BImg, {
-      props: {src: '/test.jpg', rounded: 'lg'},
-    })
-    expect(wrapper.classes()).toContain('rounded-5')
   })
 
   // --- combined prop behavior ---

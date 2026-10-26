@@ -3,59 +3,27 @@ import {ref} from 'vue'
 import {useRadiusElementClasses} from './useRadiusElementClasses'
 
 describe('useRadiusElementClasses', () => {
-  it('returns rounded class when rounded is true', () => {
-    const result = useRadiusElementClasses({rounded: true})
-    expect(result.value['rounded']).toBe(true)
+  it.each([
+    {rounded: true, className: 'rounded', description: 'true'},
+    {rounded: 'circle', className: 'rounded-circle', description: 'circle'},
+    {rounded: 'pill', className: 'rounded-pill', description: 'pill'},
+    {rounded: 'none', className: 'rounded-0', description: 'none'},
+    {rounded: 'sm', className: 'rounded-1', description: 'sm'},
+    {rounded: 'lg', className: 'rounded-5', description: 'lg'},
+    {rounded: '3', className: 'rounded-3', description: 'numeric value'},
+  ])('returns $className when rounded is $description', ({rounded, className}) => {
+    const result = useRadiusElementClasses({rounded})
+    expect(result.value[className]).toBe(true)
   })
 
-  it('returns rounded-circle when rounded is "circle"', () => {
-    const result = useRadiusElementClasses({rounded: 'circle'})
-    expect(result.value['rounded-circle']).toBe(true)
-  })
-
-  it('returns rounded-pill when rounded is "pill"', () => {
-    const result = useRadiusElementClasses({rounded: 'pill'})
-    expect(result.value['rounded-pill']).toBe(true)
-  })
-
-  it('returns rounded-0 when rounded is "none"', () => {
-    const result = useRadiusElementClasses({rounded: 'none'})
-    expect(result.value['rounded-0']).toBe(true)
-  })
-
-  it('returns rounded-1 when rounded is "sm"', () => {
-    const result = useRadiusElementClasses({rounded: 'sm'})
-    expect(result.value['rounded-1']).toBe(true)
-  })
-
-  it('returns rounded-5 when rounded is "lg"', () => {
-    const result = useRadiusElementClasses({rounded: 'lg'})
-    expect(result.value['rounded-5']).toBe(true)
-  })
-
-  it('returns rounded-{n} for numeric values', () => {
-    const result = useRadiusElementClasses({rounded: '3'})
-    expect(result.value['rounded-3']).toBe(true)
-  })
-
-  it('returns directional classes for roundedTop', () => {
-    const result = useRadiusElementClasses({roundedTop: true})
-    expect(result.value['rounded-top']).toBe(true)
-  })
-
-  it('returns directional classes for roundedBottom', () => {
-    const result = useRadiusElementClasses({roundedBottom: 'circle'})
-    expect(result.value['rounded-bottom-circle']).toBe(true)
-  })
-
-  it('returns directional classes for roundedStart', () => {
-    const result = useRadiusElementClasses({roundedStart: 'pill'})
-    expect(result.value['rounded-start-pill']).toBe(true)
-  })
-
-  it('returns directional classes for roundedEnd', () => {
-    const result = useRadiusElementClasses({roundedEnd: 'lg'})
-    expect(result.value['rounded-end-5']).toBe(true)
+  it.each([
+    {prop: 'roundedTop', rounded: true, className: 'rounded-top'},
+    {prop: 'roundedBottom', rounded: 'circle', className: 'rounded-bottom-circle'},
+    {prop: 'roundedStart', rounded: 'pill', className: 'rounded-start-pill'},
+    {prop: 'roundedEnd', rounded: 'lg', className: 'rounded-end-5'},
+  ])('returns $className for $prop', ({prop, rounded, className}) => {
+    const result = useRadiusElementClasses({[prop]: rounded})
+    expect(result.value[className]).toBe(true)
   })
 
   it('returns all false when no rounded props set', () => {

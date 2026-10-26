@@ -24,43 +24,15 @@ describe('bDatePicker', () => {
     expect(trigger.exists()).toBe(true)
   })
 
-  it('applies disabled class when disabled prop is true', () => {
-    const wrapper = mount(BDatePicker, {
-      props: {disabled: true},
-    })
+  it.each([
+    {name: 'disabled', props: {disabled: true}, expectedClass: 'disabled'},
+    {name: 'valid', props: {state: true}, expectedClass: 'is-valid'},
+    {name: 'invalid', props: {state: false}, expectedClass: 'is-invalid'},
+    {name: 'small', props: {size: 'sm'}, expectedClass: 'form-control-sm'},
+    {name: 'large', props: {size: 'lg'}, expectedClass: 'form-control-lg'},
+  ])('applies $expectedClass class for $name props', ({props, expectedClass}) => {
+    const wrapper = mount(BDatePicker, {props})
     const field = wrapper.find('.b-date-picker-field')
-    expect(field.classes()).toContain('disabled')
-  })
-
-  it('applies is-valid class when state is true', () => {
-    const wrapper = mount(BDatePicker, {
-      props: {state: true},
-    })
-    const field = wrapper.find('.b-date-picker-field')
-    expect(field.classes()).toContain('is-valid')
-  })
-
-  it('applies is-invalid class when state is false', () => {
-    const wrapper = mount(BDatePicker, {
-      props: {state: false},
-    })
-    const field = wrapper.find('.b-date-picker-field')
-    expect(field.classes()).toContain('is-invalid')
-  })
-
-  it('applies form-control-sm class when size is sm', () => {
-    const wrapper = mount(BDatePicker, {
-      props: {size: 'sm'},
-    })
-    const field = wrapper.find('.b-date-picker-field')
-    expect(field.classes()).toContain('form-control-sm')
-  })
-
-  it('applies form-control-lg class when size is lg', () => {
-    const wrapper = mount(BDatePicker, {
-      props: {size: 'lg'},
-    })
-    const field = wrapper.find('.b-date-picker-field')
-    expect(field.classes()).toContain('form-control-lg')
+    expect(field.classes()).toContain(expectedClass)
   })
 })

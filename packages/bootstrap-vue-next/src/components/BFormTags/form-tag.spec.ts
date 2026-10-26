@@ -12,30 +12,13 @@ describe('form-tag', () => {
       expect(wrapper.element.tagName).toBe('SPAN')
     })
 
-    it('has static class badge', () => {
-      const wrapper = mount(BFormTag)
-      expect(wrapper.classes()).toContain('badge')
-    })
-
-    it('has static class b-form-tag', () => {
-      const wrapper = mount(BFormTag)
-      expect(wrapper.classes()).toContain('b-form-tag')
-    })
-
-    it('has static class d-inline-flex', () => {
-      const wrapper = mount(BFormTag)
-      expect(wrapper.classes()).toContain('d-inline-flex')
-    })
-
-    it('has static class align-items-center', () => {
-      const wrapper = mount(BFormTag)
-      expect(wrapper.classes()).toContain('align-items-center')
-    })
-
-    it('has static class mw-100', () => {
-      const wrapper = mount(BFormTag)
-      expect(wrapper.classes()).toContain('mw-100')
-    })
+    it.each(['badge', 'b-form-tag', 'd-inline-flex', 'align-items-center', 'mw-100'])(
+      'has static class %s',
+      (className) => {
+        const wrapper = mount(BFormTag)
+        expect(wrapper.classes()).toContain(className)
+      }
+    )
 
     it('renders content span with class b-form-tag-content', () => {
       const wrapper = mount(BFormTag)

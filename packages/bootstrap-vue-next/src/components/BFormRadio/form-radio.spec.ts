@@ -198,68 +198,39 @@ describe('form-radio', () => {
     expect($input.classes()).not.toContain('btn-check')
   })
 
-  it('input element has attr disabled when prop disabled', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {disabled: true},
-    })
-    const $input = wrapper.get('input')
-    expect($input.attributes('disabled')).toBe('')
-  })
+  it.each([
+    {name: 'true', disabled: true, expected: ''},
+    {name: 'false', disabled: false, expected: undefined},
+    {name: 'undefined', disabled: undefined, expected: undefined},
+  ])(
+    'input element attr disabled is $expected when prop disabled is $name',
+    ({disabled, expected}) => {
+      const wrapper = mount(BFormRadio, {
+        props: {disabled},
+      })
+      const $input = wrapper.get('input')
+      expect($input.attributes('disabled')).toBe(expected)
+    }
+  )
 
-  it('input element does not have attr disabled when prop disabled is false', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {disabled: false},
-    })
-    const $input = wrapper.get('input')
-    expect($input.attributes('disabled')).toBeUndefined()
-  })
-
-  it('input element does not have attr disabled when prop disabled is undefined', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {disabled: undefined},
-    })
-    const $input = wrapper.get('input')
-    expect($input.attributes('disabled')).toBeUndefined()
-  })
-
-  it('input element has attr required when prop name and prop required', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {required: true, name: 'foo'},
-    })
-    const $input = wrapper.get('input')
-    expect($input.attributes('required')).toBe('')
-  })
-
-  it('input element does not have attr required when prop name is empty string and prop required', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {required: true, name: ''},
-    })
-    const $input = wrapper.get('input')
-    expect($input.attributes('required')).toBeUndefined()
-  })
-
-  it('input element does not have attr required when prop name is undefined and prop required', () => {
-    const wrapper = mount(BFormRadio, {
+  it.each([
+    {name: 'name and required true', props: {required: true, name: 'foo'}, expected: ''},
+    {name: 'empty name and required true', props: {required: true, name: ''}, expected: undefined},
+    {
+      name: 'undefined name and required true',
       props: {required: true, name: undefined},
-    })
-    const $input = wrapper.get('input')
-    expect($input.attributes('required')).toBeUndefined()
-  })
-
-  it('input element does not have attr required when prop name and prop required false', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {required: false, name: 'foo'},
-    })
-    const $input = wrapper.get('input')
-    expect($input.attributes('required')).toBeUndefined()
-  })
-
-  it('input element does not have attr required when prop name and prop required undefined', () => {
-    const wrapper = mount(BFormRadio, {
+      expected: undefined,
+    },
+    {name: 'name and required false', props: {required: false, name: 'foo'}, expected: undefined},
+    {
+      name: 'name and required undefined',
       props: {required: undefined, name: 'foo'},
-    })
+      expected: undefined,
+    },
+  ])('input element attr required is $expected with $name', ({props, expected}) => {
+    const wrapper = mount(BFormRadio, {props})
     const $input = wrapper.get('input')
-    expect($input.attributes('required')).toBeUndefined()
+    expect($input.attributes('required')).toBe(expected)
   })
 
   it('input element has attr name to be prop name', () => {
@@ -868,38 +839,18 @@ describe('form-radio', () => {
   })
 
   describe('state validation classes on input', () => {
-    it('input has class is-valid when state is true', () => {
+    it.each([
+      {state: true, valid: true, invalid: false},
+      {state: false, valid: false, invalid: true},
+      {state: null, valid: false, invalid: false},
+      {state: undefined, valid: false, invalid: false},
+    ])('input validation classes when state is $state', ({state, valid, invalid}) => {
       const wrapper = mount(BFormRadio, {
-        props: {state: true},
+        props: {state},
       })
       const $input = wrapper.get('input')
-      expect($input.classes()).toContain('is-valid')
-    })
-
-    it('input has class is-invalid when state is false', () => {
-      const wrapper = mount(BFormRadio, {
-        props: {state: false},
-      })
-      const $input = wrapper.get('input')
-      expect($input.classes()).toContain('is-invalid')
-    })
-
-    it('input does not have is-valid or is-invalid when state is null', () => {
-      const wrapper = mount(BFormRadio, {
-        props: {state: null},
-      })
-      const $input = wrapper.get('input')
-      expect($input.classes()).not.toContain('is-valid')
-      expect($input.classes()).not.toContain('is-invalid')
-    })
-
-    it('input does not have is-valid or is-invalid when state is undefined', () => {
-      const wrapper = mount(BFormRadio, {
-        props: {state: undefined},
-      })
-      const $input = wrapper.get('input')
-      expect($input.classes()).not.toContain('is-valid')
-      expect($input.classes()).not.toContain('is-invalid')
+      expect($input.classes().includes('is-valid')).toBe(valid)
+      expect($input.classes().includes('is-invalid')).toBe(invalid)
     })
   })
 

@@ -823,31 +823,17 @@ describe('toast', () => {
   })
 
   // Color variant classes
-  it('nested div has theme-{theme} class when theme prop is set', () => {
+  it.each([
+    {prop: 'theme', value: 'success', expectedClass: 'theme-success'},
+    {prop: 'bg', value: 'primary', expectedClass: 'bg-primary'},
+    {prop: 'fg', value: 'white', expectedClass: 'fg-white'},
+  ])('applies $prop color class to toast', ({prop, value, expectedClass}) => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, theme: 'success'},
+      props: {modelValue: true, [prop]: value},
       slots: {default: 'content'},
     })
     const $div = wrapper.get('div')
-    expect($div.classes()).toContain('theme-success')
-  })
-
-  it('nested div has bg-{bg} class when bg prop is set', () => {
-    const wrapper = mount(BToast, {
-      props: {modelValue: true, bg: 'primary'},
-      slots: {default: 'content'},
-    })
-    const $div = wrapper.get('div')
-    expect($div.classes()).toContain('bg-primary')
-  })
-
-  it('nested div has fg-{fg} class when fg prop is set', () => {
-    const wrapper = mount(BToast, {
-      props: {modelValue: true, fg: 'white'},
-      slots: {default: 'content'},
-    })
-    const $div = wrapper.get('div')
-    expect($div.classes()).toContain('fg-white')
+    expect($div.classes()).toContain(expectedClass)
   })
 
   // Default slot renders content

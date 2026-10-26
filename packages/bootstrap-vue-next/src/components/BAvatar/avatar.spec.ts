@@ -354,64 +354,66 @@ describe('avatar', () => {
     expect($badge.text()).toBe('5')
   })
 
-  it('passes badgeTheme to BBadge theme prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeTheme: 'danger'}})
+  it.each([
+    {
+      name: 'badgeTheme to theme',
+      props: {badge: true, badgeTheme: 'danger'},
+      prop: 'theme',
+      expected: 'danger',
+    },
+    {
+      name: 'default badgeTheme of primary to theme',
+      props: {badge: true},
+      prop: 'theme',
+      expected: 'primary',
+    },
+    {
+      name: 'badgePill to pill',
+      props: {badge: true, badgePill: true},
+      prop: 'pill',
+      expected: true,
+    },
+    {
+      name: 'badgeDotIndicator to dotIndicator',
+      props: {badge: true, badgeDotIndicator: true},
+      prop: 'dotIndicator',
+      expected: true,
+    },
+    {
+      name: 'implicit dot when badge is true and no text or slot',
+      props: {badge: true},
+      prop: 'dotIndicator',
+      expected: true,
+    },
+    {
+      name: 'no implicit dot when badge has text',
+      props: {badge: 'N'},
+      prop: 'dotIndicator',
+      expected: false,
+    },
+    {
+      name: 'badgePlacement to placement',
+      props: {badge: true, badgePlacement: 'top-start'},
+      prop: 'placement',
+      expected: 'top-start',
+    },
+    {
+      name: 'default badgePlacement of bottom-end to placement',
+      props: {badge: true},
+      prop: 'placement',
+      expected: 'bottom-end',
+    },
+    {
+      name: 'badgeBg to bg',
+      props: {badge: true, badgeBg: 'success'},
+      prop: 'bg',
+      expected: 'success',
+    },
+    {name: 'badgeFg to fg', props: {badge: true, badgeFg: 'white'}, prop: 'fg', expected: 'white'},
+  ] as const)('passes to BBadge: $name', ({props, prop, expected}) => {
+    const wrapper = mount(BAvatar, {props: {...props}})
     const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('theme')).toBe('danger')
-  })
-
-  it('passes default badgeTheme of primary to BBadge', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('theme')).toBe('primary')
-  })
-
-  it('passes badgePill to BBadge pill prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgePill: true}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('pill')).toBe(true)
-  })
-
-  it('passes badgeDotIndicator to BBadge dotIndicator prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeDotIndicator: true}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('dotIndicator')).toBe(true)
-  })
-
-  it('badge is implicitly dot when badge is true and no badge text or slot', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('dotIndicator')).toBe(true)
-  })
-
-  it('badge is not implicitly dot when badge has text', () => {
-    const wrapper = mount(BAvatar, {props: {badge: 'N'}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('dotIndicator')).toBe(false)
-  })
-
-  it('passes badgePlacement to BBadge placement prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgePlacement: 'top-start'}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('placement')).toBe('top-start')
-  })
-
-  it('passes default badgePlacement of bottom-end to BBadge', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('placement')).toBe('bottom-end')
-  })
-
-  it('passes badgeBg to BBadge bg prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeBg: 'success'}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('bg')).toBe('success')
-  })
-
-  it('passes badgeFg to BBadge fg prop', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, badgeFg: 'white'}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props('fg')).toBe('white')
+    expect($badge.props(prop)).toBe(expected)
   })
 
   it('renders badge slot content', () => {

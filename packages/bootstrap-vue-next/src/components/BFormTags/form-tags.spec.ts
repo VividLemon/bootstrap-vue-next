@@ -95,24 +95,18 @@ describe('form-tags', () => {
   })
 
   describe('size prop', () => {
-    it('does not have size class when size is md (default)', () => {
-      const wrapper = mount(BFormTags)
-      expect(wrapper.classes()).not.toContain('form-control-md')
-    })
-
-    it('has form-control-sm class when size is sm', () => {
-      const wrapper = mount(BFormTags, {
-        props: {size: 'sm'},
-      })
-      expect(wrapper.classes()).toContain('form-control-sm')
-    })
-
-    it('has form-control-lg class when size is lg', () => {
-      const wrapper = mount(BFormTags, {
-        props: {size: 'lg'},
-      })
-      expect(wrapper.classes()).toContain('form-control-lg')
-    })
+    it.each([
+      {name: 'default', props: {}, expectedClasses: [], absentClasses: ['form-control-md']},
+      {name: 'small', props: {size: 'sm'}, expectedClasses: ['form-control-sm'], absentClasses: []},
+      {name: 'large', props: {size: 'lg'}, expectedClasses: ['form-control-lg'], absentClasses: []},
+    ])(
+      'applies the expected size class for $name size',
+      ({props, expectedClasses, absentClasses}) => {
+        const wrapper = mount(BFormTags, {props})
+        expectedClasses.forEach((className) => expect(wrapper.classes()).toContain(className))
+        absentClasses.forEach((className) => expect(wrapper.classes()).not.toContain(className))
+      }
+    )
   })
 
   describe('state prop', () => {

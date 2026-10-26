@@ -769,49 +769,19 @@ describe('modal', () => {
       expect(wrapper.find('.modal-header').exists()).toBe(false)
     })
 
-    it('applies headerClass to header element', () => {
+    it.each([
+      {prop: 'headerClass', value: 'custom-header', expectedClass: 'custom-header'},
+      {prop: 'headerBg', value: 'danger', expectedClass: 'bg-danger'},
+      {prop: 'headerFg', value: 'white', expectedClass: 'fg-white'},
+      {prop: 'headerTheme', value: 'success', expectedClass: 'theme-success'},
+      {prop: 'headerBorder', value: 'primary', expectedClass: 'border-primary'},
+    ])('applies $prop class to header element', ({prop, value, expectedClass}) => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {headerClass: 'custom-header'},
+        props: {[prop]: value},
       })
       const $header = wrapper.find('.modal-header')
-      expect($header.classes()).toContain('custom-header')
-    })
-
-    it('applies headerBg class', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {headerBg: 'danger'},
-      })
-      const $header = wrapper.find('.modal-header')
-      expect($header.classes()).toContain('bg-danger')
-    })
-
-    it('applies headerFg class', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {headerFg: 'white'},
-      })
-      const $header = wrapper.find('.modal-header')
-      expect($header.classes()).toContain('fg-white')
-    })
-
-    it('applies headerTheme class', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {headerTheme: 'success'},
-      })
-      const $header = wrapper.find('.modal-header')
-      expect($header.classes()).toContain('theme-success')
-    })
-
-    it('applies headerBorder class', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {headerBorder: 'primary'},
-      })
-      const $header = wrapper.find('.modal-header')
-      expect($header.classes()).toContain('border-primary')
+      expect($header.classes()).toContain(expectedClass)
     })
 
     it('does not render close button when noHeaderClose is true', () => {
@@ -858,49 +828,19 @@ describe('modal', () => {
       expect(wrapper.find('.modal-footer').exists()).toBe(false)
     })
 
-    it('applies footerClass to footer element', () => {
+    it.each([
+      {prop: 'footerClass', value: 'custom-footer', expectedClass: 'custom-footer'},
+      {prop: 'footerBg', value: 'info', expectedClass: 'bg-info'},
+      {prop: 'footerFg', value: 'black', expectedClass: 'fg-black'},
+      {prop: 'footerTheme', value: 'warning', expectedClass: 'theme-warning'},
+      {prop: 'footerBorder', value: 'danger', expectedClass: 'border-danger'},
+    ])('applies $prop class to footer element', ({prop, value, expectedClass}) => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {footerClass: 'custom-footer'},
+        props: {[prop]: value},
       })
       const $footer = wrapper.find('.modal-footer')
-      expect($footer.classes()).toContain('custom-footer')
-    })
-
-    it('applies footerBg class', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {footerBg: 'info'},
-      })
-      const $footer = wrapper.find('.modal-footer')
-      expect($footer.classes()).toContain('bg-info')
-    })
-
-    it('applies footerFg class', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {footerFg: 'black'},
-      })
-      const $footer = wrapper.find('.modal-footer')
-      expect($footer.classes()).toContain('fg-black')
-    })
-
-    it('applies footerTheme class', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {footerTheme: 'warning'},
-      })
-      const $footer = wrapper.find('.modal-footer')
-      expect($footer.classes()).toContain('theme-warning')
-    })
-
-    it('applies footerBorder class', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {footerBorder: 'danger'},
-      })
-      const $footer = wrapper.find('.modal-footer')
-      expect($footer.classes()).toContain('border-danger')
+      expect($footer.classes()).toContain(expectedClass)
     })
 
     it('footer slot replaces default footer content', () => {
@@ -1350,31 +1290,17 @@ describe('modal', () => {
       expect($dialog.classes()).not.toContain('modal-md')
     })
 
-    it('adds modal-sm class for size sm', () => {
+    it.each([
+      {size: 'sm', expectedClass: 'modal-sm'},
+      {size: 'lg', expectedClass: 'modal-lg'},
+      {size: 'xl', expectedClass: 'modal-xl'},
+    ])('adds $expectedClass class for size $size', ({size, expectedClass}) => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {size: 'sm'},
+        props: {size},
       })
       const $dialog = wrapper.find('.modal-dialog')
-      expect($dialog.classes()).toContain('modal-sm')
-    })
-
-    it('adds modal-lg class for size lg', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {size: 'lg'},
-      })
-      const $dialog = wrapper.find('.modal-dialog')
-      expect($dialog.classes()).toContain('modal-lg')
-    })
-
-    it('adds modal-xl class for size xl', () => {
-      const wrapper = mount(BModal, {
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {size: 'xl'},
-      })
-      const $dialog = wrapper.find('.modal-dialog')
-      expect($dialog.classes()).toContain('modal-xl')
+      expect($dialog.classes()).toContain(expectedClass)
     })
   })
 

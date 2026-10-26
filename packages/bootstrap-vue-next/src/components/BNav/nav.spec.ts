@@ -29,22 +29,21 @@ describe('nav', () => {
     expect(wrapper.element.tagName).toBe('DIV')
   })
 
-  it('has class nav-tabs when prop tabs is set', async () => {
+  it.each([
+    {prop: 'tabs', cls: 'nav-tabs'},
+    {prop: 'pills', cls: 'nav-pills'},
+    {prop: 'vertical', cls: 'flex-column'},
+    {prop: 'fill', cls: 'nav-fill'},
+    {prop: 'justified', cls: 'nav-justified'},
+    {prop: 'small', cls: 'small'},
+    {prop: 'underline', cls: 'nav-underline'},
+  ] as const)('has class $cls when prop $prop is set', async ({prop, cls}) => {
     const wrapper = mount(BNav, {
-      props: {tabs: true},
+      props: {[prop]: true},
     })
-    expect(wrapper.classes()).toContain('nav-tabs')
-    await wrapper.setProps({tabs: false})
-    expect(wrapper.classes()).not.toContain('nav-tabs')
-  })
-
-  it('has class nav-pills when prop tabs is set', async () => {
-    const wrapper = mount(BNav, {
-      props: {pills: true},
-    })
-    expect(wrapper.classes()).toContain('nav-pills')
-    await wrapper.setProps({pills: false})
-    expect(wrapper.classes()).not.toContain('nav-pills')
+    expect(wrapper.classes()).toContain(cls)
+    await wrapper.setProps({[prop]: false})
+    expect(wrapper.classes()).not.toContain(cls)
   })
 
   it('does not have class nav-pills when prop pills is set, but prop tabs is true', async () => {
@@ -97,24 +96,6 @@ describe('nav', () => {
     expect(wrapper.classes()).not.toContain('card-header-pills')
   })
 
-  it('has class flex-column when prop vertical is set', async () => {
-    const wrapper = mount(BNav, {
-      props: {vertical: true},
-    })
-    expect(wrapper.classes()).toContain('flex-column')
-    await wrapper.setProps({vertical: false})
-    expect(wrapper.classes()).not.toContain('flex-column')
-  })
-
-  it('has class nav-fill when prop fill is set', async () => {
-    const wrapper = mount(BNav, {
-      props: {fill: true},
-    })
-    expect(wrapper.classes()).toContain('nav-fill')
-    await wrapper.setProps({fill: false})
-    expect(wrapper.classes()).not.toContain('nav-fill')
-  })
-
   it('does not have nav-fill when prop fill is set, but prop vertical is also set', async () => {
     const wrapper = mount(BNav, {
       props: {fill: true, vertical: false},
@@ -122,15 +103,6 @@ describe('nav', () => {
     expect(wrapper.classes()).toContain('nav-fill')
     await wrapper.setProps({vertical: true})
     expect(wrapper.classes()).not.toContain('nav-fill')
-  })
-
-  it('has class nav-justified when prop justified is set', async () => {
-    const wrapper = mount(BNav, {
-      props: {justified: true},
-    })
-    expect(wrapper.classes()).toContain('nav-justified')
-    await wrapper.setProps({justified: false})
-    expect(wrapper.classes()).not.toContain('nav-justified')
   })
 
   it('does not have nav-justified when prop justified is set, but prop vertical is also set', async () => {
@@ -158,23 +130,5 @@ describe('nav', () => {
     expect(wrapper.classes()).toContain('justify-content-start')
     await wrapper.setProps({vertical: true})
     expect(wrapper.classes()).not.toContain('justify-content-start')
-  })
-
-  it('has class small when prop small is set', async () => {
-    const wrapper = mount(BNav, {
-      props: {small: true},
-    })
-    expect(wrapper.classes()).toContain('small')
-    await wrapper.setProps({small: false})
-    expect(wrapper.classes()).not.toContain('small')
-  })
-
-  it('has class nav-underline when prop underline is set', async () => {
-    const wrapper = mount(BNav, {
-      props: {underline: true},
-    })
-    expect(wrapper.classes()).toContain('nav-underline')
-    await wrapper.setProps({underline: false})
-    expect(wrapper.classes()).not.toContain('nav-underline')
   })
 })

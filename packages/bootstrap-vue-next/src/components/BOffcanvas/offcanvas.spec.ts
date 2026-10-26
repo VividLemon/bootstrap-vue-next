@@ -125,39 +125,18 @@ describe('offcanvas', () => {
   })
 
   describe('placement', () => {
-    it('has offcanvas-start class by default', () => {
+    it.each([
+      {placementLabel: 'default', expectedClass: 'offcanvas-start'},
+      {placement: 'end', placementLabel: 'end', expectedClass: 'offcanvas-end'},
+      {placement: 'top', placementLabel: 'top', expectedClass: 'offcanvas-top'},
+      {placement: 'bottom', placementLabel: 'bottom', expectedClass: 'offcanvas-bottom'},
+    ])('has $expectedClass class for $placementLabel placement', ({placement, expectedClass}) => {
       const wrapper = mount(BOffcanvas, {
+        props: placement ? {placement} : {},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $offcanvas = wrapper.find('.offcanvas')
-      expect($offcanvas.classes()).toContain('offcanvas-start')
-    })
-
-    it('has offcanvas-end class when placement is end', () => {
-      const wrapper = mount(BOffcanvas, {
-        props: {placement: 'end'},
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-      })
-      const $offcanvas = wrapper.find('.offcanvas')
-      expect($offcanvas.classes()).toContain('offcanvas-end')
-    })
-
-    it('has offcanvas-top class when placement is top', () => {
-      const wrapper = mount(BOffcanvas, {
-        props: {placement: 'top'},
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-      })
-      const $offcanvas = wrapper.find('.offcanvas')
-      expect($offcanvas.classes()).toContain('offcanvas-top')
-    })
-
-    it('has offcanvas-bottom class when placement is bottom', () => {
-      const wrapper = mount(BOffcanvas, {
-        props: {placement: 'bottom'},
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-      })
-      const $offcanvas = wrapper.find('.offcanvas')
-      expect($offcanvas.classes()).toContain('offcanvas-bottom')
+      expect($offcanvas.classes()).toContain(expectedClass)
     })
 
     it('placement class is reactive', async () => {
@@ -505,31 +484,17 @@ describe('offcanvas', () => {
       expect($offcanvas.classes().some((c) => c.startsWith('shadow'))).toBe(false)
     })
 
-    it('has shadow-true class when shadow is true', () => {
+    it.each([
+      {shadow: true, expectedClass: 'shadow-true'},
+      {shadow: 'sm', expectedClass: 'shadow-sm'},
+      {shadow: 'lg', expectedClass: 'shadow-lg'},
+    ])('has $expectedClass class when shadow is $shadow', ({shadow, expectedClass}) => {
       const wrapper = mount(BOffcanvas, {
-        props: {shadow: true},
+        props: {shadow},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $offcanvas = wrapper.find('.offcanvas')
-      expect($offcanvas.classes()).toContain('shadow-true')
-    })
-
-    it('has shadow-sm class when shadow is sm', () => {
-      const wrapper = mount(BOffcanvas, {
-        props: {shadow: 'sm'},
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-      })
-      const $offcanvas = wrapper.find('.offcanvas')
-      expect($offcanvas.classes()).toContain('shadow-sm')
-    })
-
-    it('has shadow-lg class when shadow is lg', () => {
-      const wrapper = mount(BOffcanvas, {
-        props: {shadow: 'lg'},
-        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-      })
-      const $offcanvas = wrapper.find('.offcanvas')
-      expect($offcanvas.classes()).toContain('shadow-lg')
+      expect($offcanvas.classes()).toContain(expectedClass)
     })
   })
 

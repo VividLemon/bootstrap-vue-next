@@ -9,19 +9,13 @@ describe('useThemeClasses', () => {
     expect(result.value['bg-undefined']).toBe(false)
   })
 
-  it('returns class for bg', () => {
-    const result = useThemeClasses({bg: 'subtle-danger'})
-    expect(result.value['bg-subtle-danger']).toBe(true)
-  })
-
-  it('returns class for fg', () => {
-    const result = useThemeClasses({fg: 'emphasis-success'})
-    expect(result.value['fg-emphasis-success']).toBe(true)
-  })
-
-  it('returns class for border', () => {
-    const result = useThemeClasses({border: 'warning'})
-    expect(result.value['border-warning']).toBe(true)
+  it.each([
+    {prop: 'bg', value: 'subtle-danger', className: 'bg-subtle-danger'},
+    {prop: 'fg', value: 'emphasis-success', className: 'fg-emphasis-success'},
+    {prop: 'border', value: 'warning', className: 'border-warning'},
+  ])('returns $className for $prop=$value', ({prop, value, className}) => {
+    const result = useThemeClasses({[prop]: value})
+    expect(result.value[className]).toBe(true)
   })
 
   it('returns layer colors', () => {

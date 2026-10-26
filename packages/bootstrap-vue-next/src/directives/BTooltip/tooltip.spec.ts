@@ -6,34 +6,24 @@ import {vBTooltip} from './index'
 describe('v-b-tooltip directive', () => {
   enableAutoUnmount(afterEach)
 
-  it('removes title attribute when directive is used with string value', async () => {
+  it.each([
+    {
+      template: `<button v-b-tooltip="'Tooltip content'" title="Native tooltip">Button</button>`,
+      description: 'string value',
+    },
+    {
+      template: `<button v-b-tooltip="{title: 'Tooltip Title', body: 'Tooltip content'}" title="Native tooltip">Button</button>`,
+      description: 'object value',
+    },
+    {
+      template: `<button v-b-tooltip.hover.top="'Tooltip content'" title="Native tooltip">Button</button>`,
+      description: 'modifiers',
+    },
+  ])('removes title attribute with $description', async ({template}) => {
     const wrapper = mount(
       {
         directives: {bTooltip: vBTooltip},
-        template:
-          '<button v-b-tooltip="\'Tooltip content\'" title="Native tooltip">Button</button>',
-      },
-      {
-        attachTo: document.body,
-      }
-    )
-
-    await flushPromises()
-    await nextTick()
-
-    const button = wrapper.find('button')
-    expect(button.attributes('title')).toBeUndefined()
-    expect(button.attributes('data-original-title')).toBe('Native tooltip')
-
-    wrapper.unmount()
-  })
-
-  it('removes title attribute when directive is used with object value', async () => {
-    const wrapper = mount(
-      {
-        directives: {bTooltip: vBTooltip},
-        template:
-          '<button v-b-tooltip="{title: \'Tooltip Title\', body: \'Tooltip content\'}" title="Native tooltip">Button</button>',
+        template,
       },
       {
         attachTo: document.body,
@@ -78,28 +68,6 @@ describe('v-b-tooltip directive', () => {
     expect(tooltip).toBeTruthy()
     const tooltipTitle = tooltip?.querySelector('.tooltip-inner')
     expect(tooltipTitle?.textContent).toBe('Tooltip Title')
-
-    wrapper.unmount()
-  })
-
-  it('removes title attribute when using modifiers', async () => {
-    const wrapper = mount(
-      {
-        directives: {bTooltip: vBTooltip},
-        template:
-          '<button v-b-tooltip.hover.top="\'Tooltip content\'" title="Native tooltip">Button</button>',
-      },
-      {
-        attachTo: document.body,
-      }
-    )
-
-    await flushPromises()
-    await nextTick()
-
-    const button = wrapper.find('button')
-    expect(button.attributes('title')).toBeUndefined()
-    expect(button.attributes('data-original-title')).toBe('Native tooltip')
 
     wrapper.unmount()
   })

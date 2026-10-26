@@ -68,22 +68,19 @@ describe('tfoot', () => {
     expect(wrapper.classes()).not.toContain('theme-primary')
   })
 
-  it('supports different theme values', () => {
-    const themes = [
-      'primary',
-      'secondary',
-      'success',
-      'danger',
-      'warning',
-      'info',
-      'accent',
-      'inverse',
-    ] as const
-    themes.forEach((theme) => {
-      const wrapper = mount(BTfoot, {
-        props: {theme},
-      })
-      expect(wrapper.classes()).toContain(`theme-${theme}`)
+  it.each([
+    'primary',
+    'secondary',
+    'success',
+    'danger',
+    'warning',
+    'info',
+    'accent',
+    'inverse',
+  ] as const)('has class theme-%s when theme is set', (theme) => {
+    const wrapper = mount(BTfoot, {
+      props: {theme},
     })
+    expect(wrapper.classes()).toContain(`theme-${theme}`)
   })
 })

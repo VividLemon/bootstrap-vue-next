@@ -159,52 +159,19 @@ describe('badge', () => {
       expect($blink.props('target')).toBe('_blank')
     })
 
-    it('passes active prop to BLink', () => {
+    it.each([
+      {name: 'active', props: {href: '/abc', active: true}, expected: true},
+      {name: 'disabled', props: {href: '/abc', disabled: true}, expected: true},
+      {name: 'replace', props: {to: '/abc', replace: true}, expected: true},
+      {name: 'stretched', props: {href: '/abc', stretched: true}, expected: true},
+      {name: 'opacity', props: {href: '/abc', opacity: '75'}, expected: '75'},
+      {name: 'opacityHover', props: {href: '/abc', opacityHover: '100'}, expected: '100'},
+    ] as const)('passes $name prop to BLink', ({name, props, expected}) => {
       const wrapper = mount(BBadge, {
-        props: {href: '/abc', active: true},
+        props: {...props},
       })
       const $blink = wrapper.findComponent(BLink)
-      expect($blink.props('active')).toBe(true)
-    })
-
-    it('passes disabled prop to BLink', () => {
-      const wrapper = mount(BBadge, {
-        props: {href: '/abc', disabled: true},
-      })
-      const $blink = wrapper.findComponent(BLink)
-      expect($blink.props('disabled')).toBe(true)
-    })
-
-    it('passes replace prop to BLink', () => {
-      const wrapper = mount(BBadge, {
-        props: {to: '/abc', replace: true},
-      })
-      const $blink = wrapper.findComponent(BLink)
-      expect($blink.props('replace')).toBe(true)
-    })
-
-    it('passes stretched prop to BLink', () => {
-      const wrapper = mount(BBadge, {
-        props: {href: '/abc', stretched: true},
-      })
-      const $blink = wrapper.findComponent(BLink)
-      expect($blink.props('stretched')).toBe(true)
-    })
-
-    it('passes opacity prop to BLink', () => {
-      const wrapper = mount(BBadge, {
-        props: {href: '/abc', opacity: '75'},
-      })
-      const $blink = wrapper.findComponent(BLink)
-      expect($blink.props('opacity')).toBe('75')
-    })
-
-    it('passes opacityHover prop to BLink', () => {
-      const wrapper = mount(BBadge, {
-        props: {href: '/abc', opacityHover: '100'},
-      })
-      const $blink = wrapper.findComponent(BLink)
-      expect($blink.props('opacityHover')).toBe('100')
+      expect($blink.props(name)).toBe(expected)
     })
   })
 
@@ -424,68 +391,21 @@ describe('badge', () => {
       expect(wrapper.classes()).toContain('translate-middle')
     })
 
-    it('has correct classes for placement top-start', () => {
+    it.each([
+      {placement: 'top-start', start: 'start-0', top: 'top-0'},
+      {placement: 'start', start: 'start-0', top: 'top-50'},
+      {placement: 'bottom-start', start: 'start-0', top: 'top-100'},
+      {placement: 'top', start: 'start-50', top: 'top-0'},
+      {placement: 'bottom', start: 'start-50', top: 'top-100'},
+      {placement: 'top-end', start: 'start-100', top: 'top-0'},
+      {placement: 'end', start: 'start-100', top: 'top-50'},
+      {placement: 'bottom-end', start: 'start-100', top: 'top-100'},
+    ] as const)('has correct classes for placement $placement', ({placement, start, top}) => {
       const wrapper = mount(BBadge, {
-        props: {placement: 'top-start'},
+        props: {placement},
       })
-      expect(wrapper.classes()).toContain('start-0')
-      expect(wrapper.classes()).toContain('top-0')
-    })
-
-    it('has correct classes for placement start', () => {
-      const wrapper = mount(BBadge, {
-        props: {placement: 'start'},
-      })
-      expect(wrapper.classes()).toContain('start-0')
-      expect(wrapper.classes()).toContain('top-50')
-    })
-
-    it('has correct classes for placement bottom-start', () => {
-      const wrapper = mount(BBadge, {
-        props: {placement: 'bottom-start'},
-      })
-      expect(wrapper.classes()).toContain('start-0')
-      expect(wrapper.classes()).toContain('top-100')
-    })
-
-    it('has correct classes for placement top', () => {
-      const wrapper = mount(BBadge, {
-        props: {placement: 'top'},
-      })
-      expect(wrapper.classes()).toContain('start-50')
-      expect(wrapper.classes()).toContain('top-0')
-    })
-
-    it('has correct classes for placement bottom', () => {
-      const wrapper = mount(BBadge, {
-        props: {placement: 'bottom'},
-      })
-      expect(wrapper.classes()).toContain('start-50')
-      expect(wrapper.classes()).toContain('top-100')
-    })
-
-    it('has correct classes for placement top-end', () => {
-      const wrapper = mount(BBadge, {
-        props: {placement: 'top-end'},
-      })
-      expect(wrapper.classes()).toContain('start-100')
-      expect(wrapper.classes()).toContain('top-0')
-    })
-
-    it('has correct classes for placement end', () => {
-      const wrapper = mount(BBadge, {
-        props: {placement: 'end'},
-      })
-      expect(wrapper.classes()).toContain('start-100')
-      expect(wrapper.classes()).toContain('top-50')
-    })
-
-    it('has correct classes for placement bottom-end', () => {
-      const wrapper = mount(BBadge, {
-        props: {placement: 'bottom-end'},
-      })
-      expect(wrapper.classes()).toContain('start-100')
-      expect(wrapper.classes()).toContain('top-100')
+      expect(wrapper.classes()).toContain(start)
+      expect(wrapper.classes()).toContain(top)
     })
 
     it('placement is reactive', async () => {
