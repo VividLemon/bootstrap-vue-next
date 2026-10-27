@@ -235,11 +235,13 @@ const isAlertVisible = computed(
   () => showRef.value || isActive.value || (props.showOnPause && isPaused.value)
 )
 
-const {classes: colorClasses} = useThemeClasses(() => ({
-  theme: props.theme,
-  bg: props.bg,
-  fg: props.fg,
-}))
+const {classes: colorClasses} = useThemeClasses(
+  computed(() => ({
+    theme: props.theme,
+    bg: props.bg,
+    fg: props.fg,
+  }))
+)
 const computedClasses = computed(() => [
   colorClasses.value,
   {

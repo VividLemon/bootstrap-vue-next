@@ -1,5 +1,5 @@
 import type {AriaInvalid} from '../types/AriaInvalid'
-import {computed, type MaybeRefOrGetter, readonly, toRef, toValue} from 'vue'
+import {computed, type MaybeRef, readonly, toRef, toValue} from 'vue'
 import {useAriaInvalid} from './useAriaInvalid'
 import {useStateClass} from './useStateClass'
 import type {Size} from '../types/Size'
@@ -17,7 +17,7 @@ interface ClassesItemsInput {
   hasDefaultSlot?: boolean
 }
 
-const useFormCheckClasses = (items: MaybeRefOrGetter<ClassesItemsInput>) => {
+const useFormCheckClasses = (items: MaybeRef<ClassesItemsInput>) => {
   const classes = computed(() => {
     const resolvedItems = toValue(items)
     return {
@@ -39,7 +39,7 @@ interface InputClassesItemsInput {
   state?: ValidationState
 }
 
-const useFormCheckInputClasses = (items: MaybeRefOrGetter<InputClassesItemsInput>) => {
+const useFormCheckInputClasses = (items: MaybeRef<InputClassesItemsInput>) => {
   const resolvedItems = readonly(toRef(items))
 
   const {stateClass} = useStateClass(() => resolvedItems.value.state ?? null)
@@ -65,16 +65,18 @@ interface LabelClasesItemsInput {
   size?: Size
 }
 
-const useFormCheckLabelClasses = (items: MaybeRefOrGetter<LabelClasesItemsInput>) => {
-  const {classes: buttonThemeClasses} = useButtonThemeClasses(() => {
-    const resolvedItems = toValue(items)
-    return {
-      variant: resolvedItems.buttonVariant,
-      theme: resolvedItems.buttonTheme,
-      bg: resolvedItems.buttonBg,
-      fg: resolvedItems.buttonFg,
-    }
-  })
+const useFormCheckLabelClasses = (items: MaybeRef<LabelClasesItemsInput>) => {
+  const {classes: buttonThemeClasses} = useButtonThemeClasses(
+    computed(() => {
+      const resolvedItems = toValue(items)
+      return {
+        variant: resolvedItems.buttonVariant,
+        theme: resolvedItems.buttonTheme,
+        bg: resolvedItems.buttonBg,
+        fg: resolvedItems.buttonFg,
+      }
+    })
+  )
 
   const classes = computed(() => {
     const resolvedItems = toValue(items)
@@ -95,7 +97,7 @@ interface GroupAttrItemsInput {
   state?: ValidationState
 }
 
-const useFormCheckGroupAttr = (items: MaybeRefOrGetter<GroupAttrItemsInput>) => {
+const useFormCheckGroupAttr = (items: MaybeRef<GroupAttrItemsInput>) => {
   const resolvedItems = readonly(toRef(items))
   const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(
     () => resolvedItems.value.ariaInvalid,
@@ -116,7 +118,7 @@ interface GroupClassesItemsInput {
   size?: Size
 }
 
-const useFormCheckGroupClasses = (items: MaybeRefOrGetter<GroupClassesItemsInput>) => {
+const useFormCheckGroupClasses = (items: MaybeRef<GroupClassesItemsInput>) => {
   const classes = computed(() => {
     const resolvedItems = toValue(items)
     return {

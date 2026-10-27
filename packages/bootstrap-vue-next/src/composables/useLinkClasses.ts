@@ -1,4 +1,4 @@
-import {computed, type MaybeRefOrGetter, toValue} from 'vue'
+import {computed, type MaybeRef, unref} from 'vue'
 import {toColorClasses, useThemeClasses} from './useThemeClasses'
 import type {
   LinkIconProps,
@@ -8,14 +8,12 @@ import type {
 } from '../types/ComponentProps'
 
 export const useLinkClasses = (
-  linkProps: MaybeRefOrGetter<
-    LinkUnderlineProps & LinkOpacityProps & LinkIconProps & LinkThemeProps
-  >
+  linkProps: MaybeRef<LinkUnderlineProps & LinkOpacityProps & LinkIconProps & LinkThemeProps>
 ) => {
   const {classes: themeClasses} = useThemeClasses(linkProps)
 
   const classes = computed(() => {
-    const props = toValue(linkProps)
+    const props = unref(linkProps)
     return {
       ...themeClasses.value,
       [`link-${props.opacity}`]: props.opacity !== undefined,

@@ -361,19 +361,23 @@ const modalDialogClasses = computed(() => [
   },
 ])
 
-const {classes: bodyColorClasses} = useThemeClasses(() => ({
-  bg: props.bodyBg,
-  fg: props.bodyFg,
-  theme: props.bodyTheme,
-}))
+const {classes: bodyColorClasses} = useThemeClasses(
+  computed(() => ({
+    bg: props.bodyBg,
+    fg: props.bodyFg,
+    theme: props.bodyTheme,
+  }))
+)
 const bodyClasses = computed(() => [props.bodyClass, bodyColorClasses.value])
 
-const {classes: headerColorClasses} = useThemeClasses(() => ({
-  bg: props.headerBg,
-  fg: props.headerFg,
-  theme: props.headerTheme,
-  border: props.headerBorder,
-}))
+const {classes: headerColorClasses} = useThemeClasses(
+  computed(() => ({
+    bg: props.headerBg,
+    fg: props.headerFg,
+    theme: props.headerTheme,
+    border: props.headerBorder,
+  }))
+)
 const headerClasses = computed(() => [props.headerClass, headerColorClasses.value])
 
 const headerCloseAttrs = computed(() => ({
@@ -384,12 +388,14 @@ const headerCloseAttrs = computed(() => ({
   class: props.headerCloseClass,
 }))
 
-const {classes: footerColorClasses} = useThemeClasses(() => ({
-  bg: props.footerBg,
-  fg: props.footerFg,
-  theme: props.footerTheme,
-  border: props.footerBorder,
-}))
+const {classes: footerColorClasses} = useThemeClasses(
+  computed(() => ({
+    bg: props.footerBg,
+    fg: props.footerFg,
+    theme: props.footerTheme,
+    border: props.footerBorder,
+  }))
+)
 const footerClasses = computed(() => [props.footerClass, footerColorClasses.value])
 
 const titleClasses = computed(() => [

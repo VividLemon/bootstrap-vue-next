@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+import {computed} from 'vue'
 import type {BCardSubtitleProps, BCardSubtitleSlots} from '../../types'
 import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
@@ -19,5 +20,5 @@ const _props = withDefaults(defineProps<BCardSubtitleProps>(), {
 const props = useDefaults(_props, 'BCardSubtitle')
 defineSlots<BCardSubtitleSlots>()
 
-const {classes: computedClasses} = useThemeClasses(() => ({fg: props.fg}))
+const {classes: computedClasses} = useThemeClasses(computed(() => ({fg: props.fg})))
 </script>

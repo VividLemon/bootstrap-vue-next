@@ -1,7 +1,7 @@
-import {computed, type MaybeRefOrGetter, toValue} from 'vue'
+import {computed, type MaybeRef, unref} from 'vue'
 import type {RadiusElement, RadiusElementExtendables} from '../types/RadiusElement'
 
-export const useRadiusElementClasses = (obj: MaybeRefOrGetter<RadiusElementExtendables>) => {
+export const useRadiusElementClasses = (obj: MaybeRef<RadiusElementExtendables>) => {
   const resolveRadiusElement = (
     value: true | RadiusElement,
     str: 'top' | 'bottom' | 'start' | 'end' | null
@@ -30,7 +30,7 @@ export const useRadiusElementClasses = (obj: MaybeRefOrGetter<RadiusElementExten
   }
 
   const classes = computed(() => {
-    const props = toValue(obj)
+    const props = unref(obj)
 
     return {
       [`${resolveRadiusElement(props.rounded as true | RadiusElement, null)}`]: !!props.rounded,

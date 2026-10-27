@@ -171,22 +171,26 @@ const computedRoundedEnd = computed(
   () => parentData?.roundedProps.value.roundedEnd ?? props.roundedEnd
 )
 
-const {classes: radiusElementClasses} = useRadiusElementClasses(() => ({
-  rounded: computedRounded.value,
-  roundedTop: computedRoundedTop.value,
-  roundedBottom: computedRoundedBottom.value,
-  roundedStart: computedRoundedStart.value,
-  roundedEnd: computedRoundedEnd.value,
-}))
+const {classes: radiusElementClasses} = useRadiusElementClasses(
+  computed(() => ({
+    rounded: computedRounded.value,
+    roundedTop: computedRoundedTop.value,
+    roundedBottom: computedRoundedBottom.value,
+    roundedStart: computedRoundedStart.value,
+    roundedEnd: computedRoundedEnd.value,
+  }))
+)
 
 const badgeText = computed(() => (props.badge === true ? '' : props.badge))
 const badgeImplicitlyDot = computed(() => !badgeText.value && !hasBadgeSlot.value)
 
-const {classes: colorClasses} = useThemeClasses(() => ({
-  bg: parentData?.bg.value ?? props.bg,
-  fg: parentData?.fg.value ?? props.fg,
-  theme: computedTheme.value,
-}))
+const {classes: colorClasses} = useThemeClasses(
+  computed(() => ({
+    bg: parentData?.bg.value ?? props.bg,
+    fg: parentData?.fg.value ?? props.fg,
+    theme: computedTheme.value,
+  }))
+)
 const computedClasses = computed(() => [
   colorClasses.value,
   // Square overwrites all else

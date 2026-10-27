@@ -48,11 +48,13 @@ const processedAttrs = computed(() => {
   return {wrapperClass, buttonAttrs}
 })
 
-const {classes: colorClasses} = useThemeClasses(() => ({
-  theme: props.theme,
-  bg: props.bg,
-  fg: props.fg,
-}))
+const {classes: colorClasses} = useThemeClasses(
+  computed(() => ({
+    theme: props.theme,
+    bg: props.bg,
+    fg: props.fg,
+  }))
+)
 const computedClasses = computed(() => [
   props.buttonClass,
   colorClasses.value,

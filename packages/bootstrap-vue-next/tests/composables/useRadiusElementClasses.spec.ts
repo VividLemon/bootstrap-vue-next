@@ -1,5 +1,10 @@
-import {useRadiusElementClasses} from '../../src/composables/useRadiusElementClasses'
+import {useRadiusElementClasses as useRadiusElementClassesBase} from '../../src/composables/useRadiusElementClasses'
+import type {RadiusElementExtendables} from '../../src/types/RadiusElement'
 import {describe, expect, it} from 'vitest'
+import {computed} from 'vue'
+
+const useRadiusElementClasses = (getter: () => RadiusElementExtendables) =>
+  useRadiusElementClassesBase(computed(getter))
 
 // Produced a string array of the rounded properties of the obj that have a truthy value
 function findRoundedProperties(obj: Record<string, boolean>, str = ''): string[] {

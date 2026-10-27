@@ -78,13 +78,15 @@ const positionStyles = {top: 0, left: 0, bottom: 0, right: 0} as const
 
 const {transitionProps: fadeTransitions} = useFadeTransition(() => !props.noFade)
 
-const {classes: radiusElementClasses} = useRadiusElementClasses(() => ({
-  rounded: props.rounded,
-  roundedTop: props.roundedTop,
-  roundedBottom: props.roundedBottom,
-  roundedStart: props.roundedStart,
-  roundedEnd: props.roundedEnd,
-}))
+const {classes: radiusElementClasses} = useRadiusElementClasses(
+  computed(() => ({
+    rounded: props.rounded,
+    roundedTop: props.roundedTop,
+    roundedBottom: props.roundedBottom,
+    roundedStart: props.roundedStart,
+    roundedEnd: props.roundedEnd,
+  }))
+)
 
 const computedAriaBusy = computed(() => (props.show ? true : null))
 

@@ -2,6 +2,7 @@ import {
   type Component,
   computed,
   getCurrentInstance,
+  type MaybeRef,
   type MaybeRefOrGetter,
   readonly,
   resolveDynamicComponent,
@@ -17,8 +18,8 @@ export const useBLinkHelper = <
   T extends Record<string, unknown>,
   const B extends ReadonlyArray<PropertyKey>,
 >(
-  props: MaybeRefOrGetter<T>,
-  pickProps?: MaybeRefOrGetter<B | (keyof T)[]>
+  props: MaybeRef<T>,
+  pickProps?: MaybeRef<B | (keyof T)[]>
 ) => {
   const pickPropsResolved = readonly(toRef(pickProps))
   const resolvedProps = readonly(toRef(props))

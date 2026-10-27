@@ -229,12 +229,14 @@ const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
 const props = useDefaults(_props, 'BFormTags')
 const emit = defineEmits<BFormTagsEmits>()
 defineSlots<BFormTagsSlots>()
-const {classes: addButtonClasses} = useButtonThemeClasses(() => ({
-  variant: props.addButtonVariant,
-  theme: props.addButtonTheme,
-  bg: props.addButtonBg,
-  fg: props.addButtonFg,
-}))
+const {classes: addButtonClasses} = useButtonThemeClasses(
+  computed(() => ({
+    variant: props.addButtonVariant,
+    theme: props.addButtonTheme,
+    bg: props.addButtonBg,
+    fg: props.addButtonFg,
+  }))
+)
 
 const modelValue = defineModel<Exclude<BFormTagsProps['modelValue'], undefined>>({
   default: () => [],

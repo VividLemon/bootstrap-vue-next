@@ -1,4 +1,4 @@
-import {computed, type MaybeRefOrGetter, toValue} from 'vue'
+import {computed, type MaybeRef, unref} from 'vue'
 import type {
   BgColor,
   BorderColor,
@@ -40,10 +40,10 @@ export const themeToBg = (
  * `.theme-<theme>`, `.bg-<bg>`, `.fg-<fg>` and `.border-<border>`
  */
 export const useThemeClasses = (
-  obj: MaybeRefOrGetter<ColorExtendables & {border?: MaybeArray<BorderColor> | null}>
+  obj: MaybeRef<ColorExtendables & {border?: MaybeArray<BorderColor> | null}>
 ) => {
   const classes = computed(() => {
-    const props = toValue(obj)
+    const props = unref(obj)
     return {
       ...toColorClasses('theme', props.theme),
       ...toColorClasses('bg', props.bg),
@@ -63,14 +63,16 @@ type ButtonThemeClassesInput = ColorExtendables & {
 /**
  * Builds `.btn-<variant>` and color utility classes for buttons
  */
-export const useButtonThemeClasses = (obj: MaybeRefOrGetter<ButtonThemeClassesInput>) => {
-  const {classes: colorClasses} = useThemeClasses(() => {
-    const props = toValue(obj)
-    return {theme: props.theme, bg: props.bg, fg: props.fg}
-  })
+export const useButtonThemeClasses = (obj: MaybeRef<ButtonThemeClassesInput>) => {
+  const {classes: colorClasses} = useThemeClasses(
+    computed(() => {
+      const props = unref(obj)
+      return {theme: props.theme, bg: props.bg, fg: props.fg}
+    })
+  )
 
   const classes = computed(() => {
-    const props = toValue(obj)
+    const props = unref(obj)
     return {
       ...colorClasses.value,
       [`btn-${props.variant}`]: props.variant !== null && props.variant !== undefined,

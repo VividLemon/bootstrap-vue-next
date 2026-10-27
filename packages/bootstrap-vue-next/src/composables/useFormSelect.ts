@@ -1,10 +1,10 @@
-import {computed, type MaybeRefOrGetter, toValue} from 'vue'
+import {computed, type MaybeRef, type MaybeRefOrGetter, toValue, unref} from 'vue'
 import {get} from '../utils/object'
 import type {ComplexSelectOptionRaw, SelectOption} from '../types'
 
 export const useFormSelect = (
   options: MaybeRefOrGetter<ReadonlyArray<unknown>>,
-  props: MaybeRefOrGetter<{
+  props: MaybeRef<{
     valueField: string
     textField: string
     disabledField: string
@@ -19,7 +19,7 @@ export const useFormSelect = (
     Array.isArray((option as Record<string, unknown>).options)
 
   const normalizeOption = (option: unknown): ComplexSelectOptionRaw | SelectOption => {
-    const propsValue = toValue(props)
+    const propsValue = unref(props)
 
     if (typeof option === 'string') {
       return {value: option, text: option} satisfies SelectOption

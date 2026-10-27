@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import {useButtonThemeClasses, useThemeClasses} from './useThemeClasses'
 
 describe('useThemeClasses', () => {
@@ -39,7 +39,7 @@ describe('useThemeClasses', () => {
 
   it('is reactive', () => {
     const theme = ref<'primary' | 'danger'>('primary')
-    const {classes} = useThemeClasses(() => ({theme: theme.value}))
+    const {classes} = useThemeClasses(computed(() => ({theme: theme.value})))
     expect(classes.value['theme-primary']).toBe(true)
     theme.value = 'danger'
     expect(classes.value['theme-danger']).toBe(true)
@@ -84,7 +84,9 @@ describe('useButtonThemeClasses', () => {
 
   it('updates when props change', () => {
     const theme = ref<'primary' | 'danger'>('primary')
-    const {classes} = useButtonThemeClasses(() => ({variant: 'solid', theme: theme.value}))
+    const {classes} = useButtonThemeClasses(
+      computed(() => ({variant: 'solid', theme: theme.value}))
+    )
 
     expect(classes.value['theme-primary']).toBe(true)
     theme.value = 'danger'
