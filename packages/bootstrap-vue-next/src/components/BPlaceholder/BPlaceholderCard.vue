@@ -17,7 +17,8 @@
       <slot name="header">
         <BPlaceholder
           :width="props.headerWidth"
-          :bg="props.headerTheme"
+          :bg="props.headerBg ?? props.headerTheme"
+          :fg="props.headerFg"
           :animation="props.headerAnimation"
           :size="props.headerSize"
         />
@@ -58,10 +59,14 @@ const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   footerAnimation: undefined,
   footerSize: undefined,
   footerTheme: undefined,
+  footerBg: null,
+  footerFg: null,
   footerWidth: 100,
   headerAnimation: undefined,
   headerSize: undefined,
   headerTheme: undefined,
+  headerBg: null,
+  headerFg: null,
   headerWidth: 100,
   imgBlankColor: '#868e96',
   imgPlacement: 'top',
@@ -73,6 +78,8 @@ const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   noImg: false,
   size: undefined,
   theme: undefined,
+  bg: null,
+  fg: null,
 })
 const props = useDefaults(_props, 'BPlaceholderCard')
 defineSlots<BPlaceholderCardSlots>()
@@ -80,11 +87,14 @@ defineSlots<BPlaceholderCardSlots>()
 const defaultAttrs = computed(() => ({
   animation: props.animation,
   size: props.size,
-  bg: props.theme,
+  bg: props.bg ?? props.theme,
+  fg: props.fg,
 }))
 
 const footerComponent = computed(() => (!props.noButton ? BPlaceholderButton : BPlaceholder))
 const footerColorAttrs = computed(() =>
-  props.noButton ? {bg: props.footerTheme} : {theme: props.footerTheme}
+  props.noButton
+    ? {bg: props.footerBg ?? props.footerTheme, fg: props.footerFg}
+    : {theme: props.footerTheme, bg: props.footerBg, fg: props.footerFg}
 )
 </script>

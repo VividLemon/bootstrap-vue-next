@@ -9,11 +9,14 @@ import type {
   BPlaceholderWrapperSlots,
 } from 'bootstrap-vue-next'
 import { type ComponentReference, type PropRecord, type SlotRecord, StyleKind } from '../../types'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BPlaceholder: {
       props: {
+        ...pick(buildCommonProps(), ['fg']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -49,6 +52,7 @@ export default {
     BPlaceholderCard: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.card' },
       props: {
+        ...pick(buildCommonProps(), ['bg', 'fg', 'footerBg', 'footerFg', 'headerBg', 'headerFg']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -149,6 +153,7 @@ export default {
     BPlaceholderWrapper: {
       styleSpec: { kind: StyleKind.None },
       props: {
+        ...pick(buildCommonProps(), ['bg', 'fg', 'footerBg', 'footerFg', 'headerBg', 'headerFg']),
         loading: {
           description: 'Determines whether the loading slot is displayed',
           type: 'boolean',
@@ -170,6 +175,7 @@ export default {
     BPlaceholderTable: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.table' },
       props: {
+        ...pick(buildCommonProps(), ['bg', 'fg', 'footerBg', 'footerFg', 'headerBg', 'headerFg']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -262,6 +268,7 @@ export default {
     BPlaceholderButton: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.placeholder.btn' },
       props: {
+        ...pick(buildCommonProps(), ['bg', 'fg']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,

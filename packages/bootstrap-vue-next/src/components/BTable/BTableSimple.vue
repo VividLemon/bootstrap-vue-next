@@ -24,6 +24,8 @@ const _props = withDefaults(defineProps<BTableSimpleProps>(), {
   border: null,
   tableClass: undefined,
   theme: null,
+  bg: null,
+  fg: null,
   bordered: false,
   borderless: false,
   captionTop: false,
@@ -49,6 +51,9 @@ const computedId = useId(() => props.id)
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
     border: props.border,
+    theme: props.theme,
+    bg: props.bg,
+    fg: props.fg,
   }))
 )
 const computedClasses = computed(() => [
@@ -67,7 +72,6 @@ const computedClasses = computed(() => [
     [`b-table-stacked-${props.stacked}`]: typeof props.stacked === 'string',
     'table-striped': props.striped,
     'table-sm': props.small,
-    [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
     'table-striped-columns': props.stripedColumns,
     'b-table-fixed': props.fixed,
     'b-table-no-border-collapse': props.noBorderCollapse,

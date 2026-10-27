@@ -32,6 +32,7 @@ export default {
           'size',
           'state',
         ]),
+        ...pick(buildCommonProps(), ['buttonBg', 'buttonFg']),
         button: {
           type: 'boolean',
           default: false, // TODO item not in string format
@@ -52,7 +53,7 @@ export default {
           type: 'ButtonVariant | null',
           default: 'solid',
           description:
-            "Sets the button style ('solid', 'outline', 'subtle', 'text', 'styled' or 'link') when in `button` mode",
+            "Sets the button style ('solid', 'outline', 'subtle', 'text' or 'link') when in `button` mode",
         },
         inline: {
           type: 'boolean',
@@ -127,6 +128,7 @@ export default {
           'textField',
           'valueField',
         ]),
+        ...pick(buildCommonProps(), ['buttonBg', 'buttonFg']),
         buttonTheme: {
           type: 'ThemeColor | null',
           default: 'secondary',
@@ -136,7 +138,7 @@ export default {
           type: 'ButtonVariant | null',
           default: 'solid',
           description:
-            "Specifies the button style ('solid', 'outline', 'subtle', 'text', 'styled' or 'link') to apply to the button style radio buttons",
+            "Specifies the button style ('solid', 'outline', 'subtle', 'text' or 'link') to apply to the button style radio buttons",
         },
         buttons: {
           type: 'boolean',

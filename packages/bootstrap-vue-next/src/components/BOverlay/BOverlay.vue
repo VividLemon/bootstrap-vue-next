@@ -57,6 +57,8 @@ const _props = withDefaults(defineProps<BOverlayProps>(), {
   spinnerSmall: false,
   spinnerType: 'border',
   spinnerTheme: undefined,
+  spinnerBg: null,
+  spinnerFg: null,
   bg: 'body',
   wrapTag: 'div',
   zIndex: 10,
@@ -89,6 +91,8 @@ const computedAriaBusy = computed(() => (props.show ? true : null))
 const spinnerAttrs = computed(() => ({
   type: props.spinnerType,
   theme: props.spinnerTheme,
+  bg: props.spinnerBg,
+  fg: props.spinnerFg,
   small: props.spinnerSmall,
 }))
 

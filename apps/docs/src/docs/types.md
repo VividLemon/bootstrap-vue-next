@@ -65,6 +65,7 @@ type BgColor =
   | 'white'
   | 'black'
   | 'transparent'
+  | ColorOpacity
 ```
 
 </BCard>
@@ -107,6 +108,7 @@ type BorderColor =
   | 'emphasized'
   | 'white'
   | 'black'
+  | ColorOpacity
 ```
 
 </BCard>
@@ -157,10 +159,12 @@ The button _style_. The color is set separately with the `theme` prop (a [`Theme
 <BCard class="bg-body-tertiary">
 
 ```ts
-type ButtonVariant = 'solid' | 'outline' | 'subtle' | 'text' | 'styled' | 'link'
+type ButtonVariant = 'solid' | 'outline' | 'subtle' | 'text' | 'link'
 ```
 
 </BCard>
+
+The `styled` button class is a separate `BButton` prop and is combined with a button variant.
 
 ## CheckboxOption
 
@@ -304,6 +308,20 @@ type FgColor =
   | 'white'
   | 'black'
   | 'reset'
+  | ColorOpacity
+```
+
+</BCard>
+
+## ColorOpacity
+
+The documented Bootstrap color opacity utilities, accepted as numbers or numeric strings.
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type ColorOpacity = 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100
+  | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'
 ```
 
 </BCard>

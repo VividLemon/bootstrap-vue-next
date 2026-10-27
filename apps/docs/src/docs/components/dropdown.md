@@ -110,7 +110,7 @@ Set the `size` prop to either `sm` for a small button, or `lg` for a large butto
 
 ### Dropdown color themes and variants
 
-The dropdown toggle button is colored with the `theme` prop (`success`, `primary`, `info`, `danger`, etc., or custom themes, if [registered](/docs/components/button#custom-themes)) and styled with the `variant` prop (`solid`, `outline`, `subtle`, `text`, `styled` or `link`). The defaults are theme `secondary` and variant `solid`.
+The dropdown toggle button is colored with the `theme` prop (`success`, `primary`, `info`, `danger`, etc., or custom themes, if [registered](/docs/components/button#custom-themes)) and styled with the `variant` prop (`solid`, `outline`, `subtle`, `text` or `link`). The defaults are theme `secondary` and variant `solid`.
 
 See the [Color Themes Reference](/docs/reference/color-variants) for a full list of built-in themes.
 

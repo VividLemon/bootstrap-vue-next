@@ -24,6 +24,8 @@ const _props = withDefaults(defineProps<BNavbarProps>(), {
   tag: 'nav',
   toggleable: false,
   theme: null,
+  bg: null,
+  fg: null,
 })
 const props = useDefaults(_props, 'BNavbar')
 defineSlots<BNavbarSlots>()
@@ -35,6 +37,8 @@ const {classes: containerClass} = useContainerClasses(() => props.container)
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
     theme: props.theme,
+    bg: props.bg,
+    fg: props.fg,
   }))
 )
 const computedClasses = computed(() => [

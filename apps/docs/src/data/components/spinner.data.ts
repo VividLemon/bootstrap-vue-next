@@ -14,7 +14,7 @@ export default {
               default: 'span',
             },
           }),
-          ['role', 'tag', 'theme'],
+          ['bg', 'fg', 'role', 'tag', 'theme'],
         ),
         label: {
           type: 'string',

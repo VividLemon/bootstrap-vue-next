@@ -26,8 +26,14 @@ export const useThemeClasses = (
  */
 export const getButtonThemeClasses = (
   variant: ButtonVariant | null | undefined,
-  theme: ColorExtendables['theme']
+  theme: ColorExtendables['theme'],
+  bg?: ColorExtendables['bg'],
+  fg?: ColorExtendables['fg'],
+  styled = false
 ) => ({
   [`btn-${variant}`]: variant !== null && variant !== undefined,
   [`theme-${theme}`]: theme !== null && theme !== undefined,
+  [`bg-${bg}`]: bg !== null && bg !== undefined,
+  [`fg-${fg}`]: fg !== null && fg !== undefined,
+  'btn-styled': styled,
 })

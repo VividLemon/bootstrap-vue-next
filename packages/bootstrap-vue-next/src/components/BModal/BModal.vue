@@ -85,6 +85,8 @@
                     :size="props.buttonSize"
                     :variant="props.cancelVariant"
                     :theme="props.cancelTheme"
+                    :bg="props.cancelBg"
+                    :fg="props.cancelFg"
                     :class="props.cancelClass"
                     @click="hide('cancel')"
                   >
@@ -98,6 +100,8 @@
                     :size="props.buttonSize"
                     :variant="props.okVariant"
                     :theme="props.okTheme"
+                    :bg="props.okBg"
+                    :fg="props.okFg"
                     :class="props.okClass"
                     @click="hide('ok')"
                   >
@@ -182,6 +186,8 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   cancelDisabled: false,
   cancelTitle: 'Cancel',
   cancelTheme: 'secondary',
+  cancelBg: null,
+  cancelFg: null,
   cancelVariant: 'solid',
   centered: false,
   contentClass: undefined,
@@ -199,6 +205,8 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   headerCloseClass: undefined,
   headerCloseLabel: 'Close',
   headerCloseTheme: 'secondary',
+  headerCloseBg: null,
+  headerCloseFg: null,
   headerCloseVariant: 'solid',
   headerFg: null,
   headerTheme: null,
@@ -219,6 +227,8 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   okOnly: false,
   okTitle: 'OK',
   okTheme: 'primary',
+  okBg: null,
+  okFg: null,
   okVariant: 'solid',
   unmountLazy: false,
   scrollable: false,
@@ -369,6 +379,8 @@ const headerClasses = computed(() => [props.headerClass, headerColorClasses.valu
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
   theme: hasHeaderCloseSlot.value ? props.headerCloseTheme : undefined,
+  bg: hasHeaderCloseSlot.value ? props.headerCloseBg : undefined,
+  fg: hasHeaderCloseSlot.value ? props.headerCloseFg : undefined,
   class: props.headerCloseClass,
 }))
 

@@ -114,7 +114,7 @@ export const dropdownProps = {
     type: 'ButtonVariant | null',
     default: undefined,
     description:
-      "Sets the button style of the split button ('solid', 'outline', 'subtle', 'text', 'styled' or 'link'). Defaults to the 'variant' prop value",
+      "Sets the button style of the split button ('solid', 'outline', 'subtle', 'text' or 'link'). Defaults to the 'variant' prop value",
   },
   strategy: {
     type: 'Strategy',
@@ -167,13 +167,17 @@ export const dropdownProps = {
     }),
     [
       'ariaLabel',
+      'bg',
       'disabled',
+      'fg',
       'id',
       'placement',
       'role',
       'size',
       'theme',
       'variant',
+      'splitBg',
+      'splitFg',
       'wrapperClass',
     ],
   ),

@@ -35,7 +35,7 @@ export default {
               default: 'secondary',
             },
           }),
-          ['disabled', 'id', 'tag', 'theme', 'title'],
+          ['bg', 'disabled', 'fg', 'id', 'tag', 'theme', 'title'],
         ),
         noRemove: {
           type: 'boolean',
@@ -85,6 +85,7 @@ export default {
           }),
           ['autofocus', 'disabled', 'form', 'name', 'placeholder', 'required', 'size', 'state'],
         ),
+        ...pick(buildCommonProps(), ['addButtonBg', 'addButtonFg', 'tagBg', 'tagFg']),
         addButtonText: {
           type: 'string',
           default: 'Add',
@@ -100,7 +101,7 @@ export default {
           type: 'ButtonVariant | null',
           default: 'outline',
           description:
-            "Sets the button style ('solid', 'outline', 'subtle', 'text', 'styled' or 'link') of the 'Add' button",
+            "Sets the button style ('solid', 'outline', 'subtle', 'text' or 'link') of the 'Add' button",
         },
         addOnChange: {
           type: 'boolean',

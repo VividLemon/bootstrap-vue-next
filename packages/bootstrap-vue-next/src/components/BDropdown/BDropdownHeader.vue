@@ -28,6 +28,8 @@ const _props = withDefaults(defineProps<BDropdownHeaderProps>(), {
   tag: 'h6',
   text: undefined,
   theme: null,
+  bg: null,
+  fg: null,
   wrapperAttrs: undefined,
 })
 const props = useDefaults(_props, 'BDropdownHeader')
@@ -39,5 +41,9 @@ const processedAttrs = computed(() => {
   return {wrapperClass, headerAttrs}
 })
 
-const {classes: colorClasses} = useThemeClasses(() => ({theme: props.theme}))
+const {classes: colorClasses} = useThemeClasses(() => ({
+  theme: props.theme,
+  bg: props.bg,
+  fg: props.fg,
+}))
 </script>

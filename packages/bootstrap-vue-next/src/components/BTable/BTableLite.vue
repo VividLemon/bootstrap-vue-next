@@ -3,9 +3,20 @@
     <colgroup v-if="slots['table-colgroup']">
       <slot name="table-colgroup" :fields="computedFields" />
     </colgroup>
-    <BThead v-show="showComputedHeaders" :theme="props.headTheme" :class="props.theadClass">
+    <BThead
+      v-show="showComputedHeaders"
+      :theme="props.headTheme"
+      :bg="props.headBg"
+      :fg="props.headFg"
+      :class="props.theadClass"
+    >
       <slot name="thead-top" :columns="computedFieldsTotal" :fields="computedFields" />
-      <BTr :theme="props.headRowTheme" :class="props.theadTrClass">
+      <BTr
+        :theme="props.headRowTheme"
+        :bg="props.headRowBg"
+        :fg="props.headRowFg"
+        :class="props.theadTrClass"
+      >
         <BTh
           v-for="field in computedFields"
           :key="field.key"
@@ -13,6 +24,8 @@
           :class="getFieldColumnClasses(field)"
           :title="field.headerTitle"
           :theme="field.theme"
+          :bg="field.bg"
+          :fg="field.fg"
           :abbr="field.headerAbbr"
           :style="field.thStyle"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
@@ -39,6 +52,8 @@
           :key="field.key"
           scope="col"
           :theme="field.theme"
+          :bg="field.bg"
+          :fg="field.fg"
           :class="[field.class, field.thClass]"
         >
           <slot name="thead-sub" :items="props.items" :fields="computedFields" :field>
@@ -78,6 +93,8 @@
             "
             :class="getRowClasses(item, 'row')"
             :theme="isTableItem(item) ? item._rowTheme : undefined"
+            :bg="isTableItem(item) ? item._rowBg : undefined"
+            :fg="isTableItem(item) ? item._rowFg : undefined"
             :tabindex="keyboardController.shouldRowBeFocusable.value ? '0' : undefined"
             v-bind="callTbodyTrAttrs(item, 'row')"
             @click="
@@ -107,6 +124,8 @@
               :theme="
                 (isTableItem(item) ? item._cellThemes?.[field.key] : false) ? null : field.theme
               "
+              :bg="(isTableItem(item) ? item._cellBgs?.[field.key] : undefined) ?? field.bg"
+              :fg="(isTableItem(item) ? item._cellFgs?.[field.key] : undefined) ?? field.fg"
               :class="getFieldRowClasses(field, item)"
               v-bind="{
                 ...(field.isRowHeader ? {scope: 'row'} : undefined),
@@ -139,6 +158,8 @@
             <BTr
               :class="getRowClasses(item, 'row-expansion')"
               :theme="isTableItem(item) ? item._rowTheme : undefined"
+              :bg="isTableItem(item) ? item._rowBg : undefined"
+              :fg="isTableItem(item) ? item._rowFg : undefined"
               v-bind="callTbodyTrAttrs(item, 'row-expansion')"
             >
               <BTd :colspan="computedFieldsTotal" :class="detailsTdClass">
@@ -167,6 +188,8 @@
     <BTfoot v-if="props.footClone" v-bind="footerProps">
       <BTr
         :theme="props.footRowTheme ?? props.headRowTheme"
+        :bg="props.footRowBg ?? props.headRowBg"
+        :fg="props.footRowFg ?? props.headRowFg"
         :class="props.tfootTrClass ?? props.theadTrClass"
       >
         <BTh
@@ -178,6 +201,8 @@
           :abbr="field.headerAbbr"
           :style="field.thStyle"
           :theme="field.theme"
+          :bg="field.bg"
+          :fg="field.fg"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
           v-bind="callThAttr(null, field, 'bottom')"
           @click="keyboardController.headerClicked(field, $event, true)"
@@ -263,9 +288,17 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   tbodyTrClass: undefined,
   detailsTdClass: undefined,
   headTheme: undefined,
+  headBg: undefined,
+  headFg: undefined,
   headRowTheme: undefined,
+  headRowBg: undefined,
+  headRowFg: undefined,
   footRowTheme: undefined,
+  footRowBg: undefined,
+  footRowFg: undefined,
   footTheme: undefined,
+  footBg: undefined,
+  footFg: undefined,
   modelValue: undefined,
   primaryKey: undefined,
   tbodyClass: undefined,
@@ -278,6 +311,8 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   border: undefined,
   tableClass: undefined,
   theme: undefined,
+  bg: undefined,
+  fg: undefined,
   bordered: undefined,
   borderless: undefined,
   captionTop: undefined,
@@ -415,6 +450,8 @@ const getCellComponent = (field: Readonly<TableField>) => {
 
 const footerProps = computed(() => ({
   theme: props.footTheme ?? props.headTheme,
+  bg: props.footBg ?? props.headBg,
+  fg: props.footFg ?? props.headFg,
   class: props.tfootClass ?? props.theadClass,
 }))
 

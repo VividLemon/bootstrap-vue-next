@@ -3,7 +3,7 @@ import {computed, type MaybeRefOrGetter, readonly, toRef, toValue} from 'vue'
 import {useAriaInvalid} from './useAriaInvalid'
 import {useStateClass} from './useStateClass'
 import type {Size} from '../types/Size'
-import type {ButtonVariant, ThemeColor} from '../types/ColorTypes'
+import type {BgColor, ButtonVariant, FgColor, ThemeColor} from '../types/ColorTypes'
 import {getButtonThemeClasses} from './useThemeClasses'
 import type {ValidationState} from '../types/CommonTypes'
 
@@ -60,6 +60,8 @@ interface LabelClasesItemsInput {
   button?: boolean
   buttonVariant?: ButtonVariant | null
   buttonTheme?: ThemeColor | null
+  buttonBg?: BgColor | null
+  buttonFg?: FgColor | null
   size?: Size
 }
 
@@ -70,7 +72,12 @@ const useFormCheckLabelClasses = (items: MaybeRefOrGetter<LabelClasesItemsInput>
       'form-check-label': !resolvedItems.plain && !resolvedItems.button,
       'btn': resolvedItems.button === true,
       ...(resolvedItems.button === true
-        ? getButtonThemeClasses(resolvedItems.buttonVariant, resolvedItems.buttonTheme)
+        ? getButtonThemeClasses(
+            resolvedItems.buttonVariant,
+            resolvedItems.buttonTheme,
+            resolvedItems.buttonBg,
+            resolvedItems.buttonFg
+          )
         : {}),
       [`btn-${resolvedItems.size}`]: resolvedItems.button && resolvedItems.size !== undefined,
     }

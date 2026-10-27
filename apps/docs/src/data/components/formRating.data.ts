@@ -13,7 +13,7 @@ export default {
               default: undefined,
             },
           }),
-          ['id', 'theme'],
+          ['bg', 'fg', 'id', 'theme'],
         ),
         clearLabel: {
           type: 'string',

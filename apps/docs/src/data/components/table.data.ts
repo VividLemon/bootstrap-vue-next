@@ -75,7 +75,7 @@ export default {
         },
       } satisfies SlotRecord<keyof BTableSimpleSlots>,
       props: {
-        ...pick(buildCommonProps(buildCommonProps()), ['id', 'theme']),
+        ...pick(buildCommonProps(), ['bg', 'fg', 'id', 'theme']),
         bordered: {
           type: 'boolean',
           default: false,
@@ -171,6 +171,16 @@ export default {
 
     const BTableLite = {
       props: {
+        ...pick(buildCommonProps(), [
+          'footBg',
+          'footFg',
+          'footRowBg',
+          'footRowFg',
+          'headBg',
+          'headFg',
+          'headRowBg',
+          'headRowFg',
+        ]),
         align: {
           type: 'VerticalAlign',
           default: undefined,
@@ -599,6 +609,7 @@ export default {
         | 'update:current-page'
       >,
       props: {
+        ...pick(buildCommonProps(), ['selectionBg', 'selectionFg']),
         busy: {
           type: 'boolean',
           default: false,
@@ -1073,7 +1084,9 @@ export default {
       },
       BTbody: {
         styleSpec: { kind: StyleKind.Tag, value: 'tbody' },
-        props: pick(buildCommonProps(), ['theme']) satisfies PropRecord<keyof BTbodyProps>,
+        props: pick(buildCommonProps(), ['bg', 'fg', 'theme']) satisfies PropRecord<
+          keyof BTbodyProps
+        >,
         slots: {
           default: {
             description: 'Content to place in the tbody',
@@ -1083,7 +1096,7 @@ export default {
       BTd: {
         styleSpec: { kind: StyleKind.Tag, value: 'td' },
         props: {
-          ...pick(buildCommonProps(), ['theme']),
+          ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
           colspan: {
             type: 'Numberish',
             default: undefined,
@@ -1115,7 +1128,9 @@ export default {
       },
       BTfoot: {
         styleSpec: { kind: StyleKind.Tag, value: 'tfoot' },
-        props: pick(buildCommonProps(), ['theme']) satisfies PropRecord<keyof BTfootProps>,
+        props: pick(buildCommonProps(), ['bg', 'fg', 'theme']) satisfies PropRecord<
+          keyof BTfootProps
+        >,
         slots: {
           default: {
             description: 'Content to place in the tfoot',
@@ -1125,7 +1140,7 @@ export default {
       BTh: {
         styleSpec: { kind: StyleKind.Tag, value: 'th' },
         props: {
-          ...pick(buildCommonProps(), ['theme']),
+          ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
           colspan: {
             type: 'Numberish',
             default: undefined,
@@ -1161,6 +1176,7 @@ export default {
       BThead: {
         styleSpec: { kind: StyleKind.Tag, value: 'thead' },
         props: {
+          ...pick(buildCommonProps(), ['bg', 'fg']),
           theme: {
             type: 'ThemeColor | null',
             default: null,
@@ -1177,6 +1193,7 @@ export default {
       BTr: {
         styleSpec: { kind: StyleKind.Tag, value: 'tr' },
         props: {
+          ...pick(buildCommonProps(), ['bg', 'fg']),
           theme: {
             type: 'ThemeColor | null',
             default: null,
