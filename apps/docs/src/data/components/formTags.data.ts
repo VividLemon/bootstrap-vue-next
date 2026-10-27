@@ -93,7 +93,7 @@ export default {
             "Text for the built-in 'Add' button. Slot `add-button-text` takes precedence",
         },
         addButtonTheme: {
-          type: 'ThemeColor | null',
+          type: 'MaybeArray<ThemeValue> | null',
           default: 'secondary',
           description: "Applies one of the theme colors to the 'Add' button",
         },
@@ -223,7 +223,7 @@ export default {
             "Optional tag validator method. Passed a single argument of tag being added. Should return 'true' if the tag passes validation, or 'false' if the tag cannot be added",
         },
         tagTheme: {
-          type: 'ThemeColor | null',
+          type: 'MaybeArray<ThemeValue> | null',
           default: 'secondary',
           description: 'Applies one of the theme colors to the tags',
         },
@@ -317,7 +317,7 @@ export default {
               description: "Value of the 'add-button-text' prop",
             },
             addButtonTheme: {
-              type: 'ThemeColor | null',
+              type: 'MaybeArray<ThemeValue> | null',
               description: "Value of the 'add-button-theme' prop",
             },
             addButtonVariant: {
@@ -456,7 +456,7 @@ export default {
               description: "Value of the 'tag-validator' prop",
             },
             tagTheme: {
-              type: 'ThemeColor | null',
+              type: 'MaybeArray<ThemeValue> | null',
               description: "Value of the 'tag-theme' prop",
             },
           },
@@ -473,7 +473,7 @@ export default {
               description: 'Class (or classes) to apply to the tag element',
             },
             tagTheme: {
-              type: 'ThemeColor | null',
+              type: 'MaybeArray<ThemeValue> | null',
               description: 'Theme color to apply to the tag',
             },
             tagPills: {

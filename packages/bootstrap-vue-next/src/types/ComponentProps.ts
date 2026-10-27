@@ -38,7 +38,9 @@ import type {
   SpinnerColorExtendables,
   SplitColorExtendables,
   TagColorExtendables,
+  MaybeArray,
   ThemeColor,
+  ThemeValue,
   UnderlineColorExtendables,
 } from './ColorTypes'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
@@ -355,7 +357,7 @@ export interface BFormTextProps {
   inline?: boolean
   tag?: string
   text?: string
-  fg?: FgColor | null
+  fg?: MaybeArray<FgColor> | null
 }
 
 export interface BFormCheckboxProps extends ButtonColorExtendables {
@@ -907,7 +909,7 @@ export interface BOverlayProps extends RadiusElementExtendables, SpinnerColorExt
   show?: boolean
   spinnerSmall?: boolean
   spinnerType?: SpinnerType
-  bg?: BgColor | null
+  bg?: MaybeArray<BgColor> | null
   wrapTag?: string
   zIndex?: Numberish
 }
@@ -950,8 +952,8 @@ export interface BPlaceholderProps {
   cols?: Numberish
   size?: PlaceholderSize
   tag?: string
-  bg?: BgColor | null
-  fg?: FgColor | null
+  bg?: MaybeArray<BgColor> | null
+  fg?: MaybeArray<FgColor> | null
   width?: Numberish
   wrapperTag?: string
 }
@@ -1107,10 +1109,10 @@ export interface BAvatarProps
   extends Omit<BLinkProps, 'routerTag' | 'icon'>, ColorExtendables, RadiusElementExtendables {
   alt?: string
   badge?: boolean | string
-  badgeBg?: BgColor | null
+  badgeBg?: MaybeArray<BgColor> | null
   badgePlacement?: CombinedPlacement
-  badgeFg?: FgColor | null
-  badgeTheme?: ThemeColor | null
+  badgeFg?: MaybeArray<FgColor> | null
+  badgeTheme?: MaybeArray<ThemeValue> | null
   badgePill?: boolean
   badgeDotIndicator?: boolean
   button?: boolean
@@ -1184,17 +1186,17 @@ export interface BCloseButtonProps {
 export interface BCardProps
   extends ColorExtendables, BodyColorExtendables, FooterColorExtendables, HeaderColorExtendables {
   align?: AlignmentTextHorizontal
-  bodyBorder?: BorderColor | null
+  bodyBorder?: MaybeArray<BorderColor> | null
   bodyClass?: ClassValue
   bodyTag?: string
   bodyText?: string
-  border?: BorderColor | null
+  border?: MaybeArray<BorderColor> | null
   footer?: string
-  footerBorder?: BorderColor | null
+  footerBorder?: MaybeArray<BorderColor> | null
   footerClass?: ClassValue
   footerTag?: string
   header?: string
-  headerBorder?: BorderColor | null
+  headerBorder?: MaybeArray<BorderColor> | null
   headerClass?: ClassValue
   headerTag?: string
   imgAlt?: string
@@ -1206,18 +1208,18 @@ export interface BCardProps
   noBody?: boolean
   subtitle?: string
   subtitleTag?: string
-  subtitleFg?: FgColor | null
+  subtitleFg?: MaybeArray<FgColor> | null
   tag?: string
   title?: string
   titleTag?: string
 }
 
 export interface BCardBodyProps extends ColorExtendables {
-  border?: BorderColor | null
+  border?: MaybeArray<BorderColor> | null
   overlay?: boolean
   subtitle?: string
   subtitleTag?: string
-  subtitleFg?: FgColor | null
+  subtitleFg?: MaybeArray<FgColor> | null
   tag?: string
   text?: string
   title?: string
@@ -1235,7 +1237,7 @@ export interface BCardImgProps extends Omit<BImgProps, 'placement'> {
 export interface BCardSubtitleProps {
   text?: string
   tag?: string
-  fg?: FgColor | null
+  fg?: MaybeArray<FgColor> | null
 }
 
 export interface BCardTextProps {
@@ -1325,7 +1327,7 @@ export interface BFormProps {
 export interface BTableSimpleProps extends ColorExtendables {
   bordered?: boolean
   borderless?: boolean
-  border?: BorderColor | null
+  border?: MaybeArray<BorderColor> | null
   captionTop?: boolean
   dark?: boolean
   fixed?: boolean
@@ -1588,7 +1590,7 @@ export interface BTooltipProps extends Omit<BPopoverProps, 'tooltip'> {
 }
 
 export interface BCardHeadFootProps extends ColorExtendables {
-  border?: BorderColor | null
+  border?: MaybeArray<BorderColor> | null
   tag?: string
   text?: string
 }
@@ -1628,11 +1630,11 @@ export interface BModalProps
   centered?: boolean
   contentClass?: ClassValue
   dialogClass?: ClassValue
-  footerBorder?: BorderColor | null
+  footerBorder?: MaybeArray<BorderColor> | null
   footerClass?: ClassValue
   fullscreen?: boolean | Breakpoint
   headerAttrs?: Readonly<AttrsValue>
-  headerBorder?: BorderColor | null
+  headerBorder?: MaybeArray<BorderColor> | null
   headerClass?: ClassValue
   headerCloseClass?: ClassValue
   headerCloseLabel?: string

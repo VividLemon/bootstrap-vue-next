@@ -244,11 +244,11 @@
 </template>
 
 <script setup lang="ts" generic="Item">
+import {toColorClasses} from '../../composables/useThemeClasses'
 import {computed, readonly, toRef} from 'vue'
 import {
   isTableItem,
   type TableField,
-  type TableItem,
   type TableRowThead,
   type TableRowType,
 } from '../../types/TableTypes'
@@ -409,9 +409,7 @@ const getFieldRowClasses = (field: Readonly<TableField>, tr: Item) => [
   typeof field.tdClass === 'function'
     ? field.tdClass(getByFieldKey(tr, field), field.key, tr)
     : field.tdClass,
-  (isTableItem(tr) ? tr._cellThemes?.[field.key] : false)
-    ? `theme-${(tr as TableItem)._cellThemes?.[field.key]}`
-    : null,
+  isTableItem(tr) ? toColorClasses('theme', tr._cellThemes?.[field.key]) : null,
   {
     'b-table-sticky-column': field.stickyColumn,
   },

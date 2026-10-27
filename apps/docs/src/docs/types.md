@@ -225,9 +225,9 @@ Shared props of components that can be themed or colored with utilities.
 
 ```ts
 type ColorExtendables = {
-  theme?: ThemeColor | null
-  bg?: BgColor | null
-  fg?: FgColor | null
+  theme?: MaybeArray<ThemeValue> | null
+  bg?: MaybeArray<BgColor> | null
+  fg?: MaybeArray<FgColor> | null
 }
 ```
 
@@ -369,6 +369,18 @@ type UnderlineOffset = 1 | 2 | 3 | '1' | '2' | '3'
 
 ```ts
 type LinkTarget = '_self' | '_blank' | '_parent' | '_top'
+```
+
+</BCard>
+
+## MaybeArray
+
+A single value or a list of values. Color props use it so utilities can be stacked, for example `bg="success"` or `:bg="['success', 90]"`.
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type MaybeArray<T> = T | readonly T[]
 ```
 
 </BCard>
@@ -770,6 +782,18 @@ New values can be used now and the type check will be successful:
 <BButton theme="purple" size="xl">Extra large purple button</BButton>
 <BButton theme="purple" variant="outline">Outline purple button</BButton>
 <BAlert :model-value="true" theme="purple" bg="subtle-purple">Purple alert</BAlert>
+```
+
+</BCard>
+
+## ThemeValue
+
+A theme color or a theme modifier. Modifiers stack with a theme, for example `:theme="['primary', 'contrast']"` renders `theme-primary theme-contrast`.
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type ThemeValue = ThemeColor | 'contrast'
 ```
 
 </BCard>

@@ -15,7 +15,7 @@ export const linkProps = {
     description: 'Configure the active CSS class applied when the link is active.',
   },
   bg: {
-    type: 'BgColor | null',
+    type: 'MaybeArray<BgColor> | null',
     default: null,
     description: 'Applies a background color (`bg-*` class) to the link',
   },
@@ -31,7 +31,7 @@ export const linkProps = {
     description: 'Configure the active CSS class applied when the link is active with exact match.',
   },
   fg: {
-    type: 'FgColor | null',
+    type: 'MaybeArray<FgColor> | null',
     default: null,
     description: 'Applies a foreground (text) color (`fg-*` class) to the link',
   },
@@ -139,12 +139,12 @@ export const linkProps = {
     description: "Set's the opacity of the link's underline on hover",
   },
   underlineBg: {
-    type: 'BgColor | null',
+    type: 'MaybeArray<BgColor> | null',
     default: null,
     description: 'Applies a background color to the link underline',
   },
   underlineFg: {
-    type: 'FgColor | null',
+    type: 'MaybeArray<FgColor> | null',
     default: null,
     description: 'Applies a foreground color to the link underline',
   },
@@ -154,7 +154,7 @@ export const linkProps = {
     description: 'Set the theme color for the link underline independently of the link text',
   },
   theme: {
-    type: 'ThemeColor | null',
+    type: 'MaybeArray<ThemeValue> | null',
     default: null,
     description: 'Set the theme color for the link',
   },

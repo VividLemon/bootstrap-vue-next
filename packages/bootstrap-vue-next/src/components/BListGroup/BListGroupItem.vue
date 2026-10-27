@@ -15,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+import {toColorClasses} from '../../composables/useThemeClasses'
 import {computed, inject, useAttrs} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import BLink from '../BLink/BLink.vue'
@@ -68,12 +69,14 @@ const isAction = computed(
   () => props.action || isLink.value || props.button || actionableTags.has(props.tag)
 )
 
-const computedClasses = computed(() => ({
-  [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
-  'list-group-item-action': isAction.value,
-  'active': props.active,
-  'disabled': props.disabled,
-}))
+const computedClasses = computed(() => [
+  toColorClasses('theme', props.theme),
+  {
+    'list-group-item-action': isAction.value,
+    'active': props.active,
+    'disabled': props.disabled,
+  },
+])
 
 const computedAttrs = computed(() => {
   const localAttrs = {} as {type?: string; disabled?: boolean}

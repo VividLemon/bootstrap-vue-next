@@ -9,22 +9,22 @@ const commonProps = () =>
         'When set to `true`, places the component in the active state with active styling',
     },
     buttonBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to the button',
     },
     buttonFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to the button',
     },
     cancelBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to the cancel button',
     },
     cancelFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to the cancel button',
     },
@@ -35,12 +35,12 @@ const commonProps = () =>
         "Configure the active CSS class applied when the link is active. Typically you will want to set this to class name 'active'",
     },
     closeBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to the close button',
     },
     closeFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to the close button',
     },
@@ -50,22 +50,22 @@ const commonProps = () =>
       description: 'Value to set for the `alt` attribute',
     },
     footBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: undefined,
       description: 'Applies a background color to the table footer',
     },
     footFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: undefined,
       description: 'Applies a foreground color to the table footer',
     },
     footRowBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: undefined,
       description: 'Applies a background color to the footer row',
     },
     footRowFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: undefined,
       description: 'Applies a foreground color to the footer row',
     },
@@ -76,32 +76,32 @@ const commonProps = () =>
         'If this component controls another component or element, set this to the ID of the controlled component or element',
     },
     headerCloseBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to the header close button',
     },
     headerCloseFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to the header close button',
     },
     headBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: undefined,
       description: 'Applies a background color to the table header',
     },
     headFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: undefined,
       description: 'Applies a foreground color to the table header',
     },
     headRowBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: undefined,
       description: 'Applies a background color to the header row',
     },
     headRowFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: undefined,
       description: 'Applies a foreground color to the header row',
     },
@@ -112,12 +112,12 @@ const commonProps = () =>
         'The ID of the element that provides a description for this component. Used as the value for the `aria-describedby` attribute',
     },
     okBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to the confirmation button',
     },
     okFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to the confirmation button',
     },
@@ -128,32 +128,32 @@ const commonProps = () =>
         'Sets the `aria-invalid` attribute value on the wrapper element. When not provided, the `state` prop will control the attribute',
     },
     selectionBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to selected table rows',
     },
     selectionFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to selected table rows',
     },
     splitBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to the split dropdown button',
     },
     splitFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to the split dropdown button',
     },
     spinnerBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to the overlay spinner',
     },
     spinnerFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to the overlay spinner',
     },
@@ -164,22 +164,22 @@ const commonProps = () =>
         'Controls the automatic closing of the component when clicking. See above for details.',
     },
     tagBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to form tags',
     },
     tagFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to form tags',
     },
     addButtonBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description: 'Applies a background color to the add-tag button',
     },
     addButtonFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description: 'Applies a foreground color to the add-tag button',
     },
@@ -212,7 +212,7 @@ const commonProps = () =>
         'When set to `true`, attempts to auto-focus the control when it is mounted, or re-activated when in a keep-alive. Does not set the `autofocus` attribute on the control',
     },
     bg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: null,
       description:
         'Applies a background color to the component (`bg-*` class). Accepts a theme color, `subtle-{theme}`, `muted-{theme}`, or a neutral layer value such as `body`, `1`-`4`, `white`, `black` or `transparent`',
@@ -228,12 +228,12 @@ const commonProps = () =>
       description: 'Attributes to be applied to the body of the component',
     },
     bodyBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: undefined,
       description: 'Applies a background color (`BgColor`) to the body',
     },
     bodyBorder: {
-      type: 'BorderColor | null',
+      type: 'MaybeArray<BorderColor> | null',
       default: undefined,
       description: 'Applies a border color (`BorderColor`) to the body',
     },
@@ -248,17 +248,17 @@ const commonProps = () =>
       description: 'Specify the HTML tag to render instead of the default tag for the body',
     },
     bodyFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: undefined,
       description: 'Applies a foreground (text) color (`FgColor`) to the body',
     },
     bodyTheme: {
-      type: 'ThemeColor | null',
+      type: 'MaybeArray<ThemeValue> | null',
       default: undefined,
       description: 'Applies one of the theme colors (`theme-*` class) to the body',
     },
     border: {
-      type: 'BorderColor | null',
+      type: 'MaybeArray<BorderColor> | null',
       default: undefined,
       description: 'Applies a border color (`BorderColor`) to the component',
     },
@@ -296,12 +296,12 @@ const commonProps = () =>
       description: 'Text content to place in the footer',
     },
     footerBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: undefined,
       description: 'Applies a background color (`BgColor`) to the footer',
     },
     footerBorder: {
-      type: 'BorderColor | null',
+      type: 'MaybeArray<BorderColor> | null',
       default: undefined,
       description: 'Applies a border color (`BorderColor`) to the footer',
     },
@@ -316,12 +316,12 @@ const commonProps = () =>
       description: 'Specify the HTML tag to render instead of the default tag for the footer',
     },
     footerFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: undefined,
       description: 'Applies a foreground (text) color (`FgColor`) to the footer',
     },
     footerTheme: {
-      type: 'ThemeColor | null',
+      type: 'MaybeArray<ThemeValue> | null',
       default: undefined,
       description: 'Applies one of the theme colors (`theme-*` class) to the footer',
     },
@@ -342,12 +342,12 @@ const commonProps = () =>
       description: 'Text content to place in the header',
     },
     headerBg: {
-      type: 'BgColor | null',
+      type: 'MaybeArray<BgColor> | null',
       default: undefined,
       description: 'Applies a background color (`BgColor`) to the header',
     },
     headerBorder: {
-      type: 'BorderColor | null',
+      type: 'MaybeArray<BorderColor> | null',
       default: undefined,
       description: 'Applies a border color (`BorderColor`) to the header',
     },
@@ -362,12 +362,12 @@ const commonProps = () =>
       description: 'Specify the HTML tag to render instead of the default tag for the header',
     },
     headerFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: undefined,
       description: 'Applies a foreground (text) color (`FgColor`) to the header',
     },
     headerTheme: {
-      type: 'ThemeColor | null',
+      type: 'MaybeArray<ThemeValue> | null',
       default: undefined,
       description: 'Applies one of the theme colors (`theme-*` class) to the header',
     },
@@ -532,7 +532,7 @@ const commonProps = () =>
       description: 'Specify the HTML tag to render instead of the default tag for the subtitle',
     },
     subtitleFg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: '2',
       description: 'Applies a foreground (text) color (`FgColor`) to the subtitle text',
     },
@@ -547,7 +547,7 @@ const commonProps = () =>
       description: 'Field name in the `options` array that should be used for the text label',
     },
     fg: {
-      type: 'FgColor | null',
+      type: 'MaybeArray<FgColor> | null',
       default: null,
       description:
         'Applies a foreground (text) color to the component (`fg-*` class). Accepts a theme color, `emphasis-{theme}`, `contrast-{theme}`, or a neutral layer value such as `body`, `1`-`4`, `white`, `black` or `reset`',
@@ -584,7 +584,7 @@ const commonProps = () =>
       description: 'Field name in the `options` array that should be used for the value',
     },
     theme: {
-      type: 'ThemeColor | null',
+      type: 'MaybeArray<ThemeValue> | null',
       default: null,
       description:
         'Applies one of the theme colors (`theme-*` class) to the component. Custom themes can be registered by augmenting `ThemeColors`. When implemented `bg` and `fg` take precedence',
@@ -621,7 +621,7 @@ const commonProps = () =>
       description: 'Sets the `aria-label` attribute for the close button',
     },
     closeTheme: {
-      type: 'ThemeColor | null',
+      type: 'MaybeArray<ThemeValue> | null',
       default: 'secondary',
       description: 'Sets the theme color for the close button',
     },

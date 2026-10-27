@@ -6,7 +6,7 @@
           <th v-for="(_, i) in computedHeaderColumnsLength" :key="i">
             <BPlaceholder
               :size="props.headerSize"
-              :bg="props.headerBg ?? props.headerTheme"
+              :bg="props.headerBg ?? themeToBg(props.headerTheme)"
               :fg="props.headerFg"
               :animation="props.headerAnimation"
               :width="props.headerCellWidth"
@@ -21,7 +21,7 @@
           <td v-for="(__, k) in columnsNumber" :key="k">
             <BPlaceholder
               :size="props.size"
-              :bg="props.bg ?? props.theme"
+              :bg="props.bg ?? themeToBg(props.theme)"
               :fg="props.fg"
               :animation="props.animation"
               :width="props.cellWidth"
@@ -36,7 +36,7 @@
           <th v-for="(_, l) in computedFooterColumnsLength" :key="l">
             <BPlaceholder
               :size="props.footerSize"
-              :bg="props.footerBg ?? props.footerTheme"
+              :bg="props.footerBg ?? themeToBg(props.footerTheme)"
               :fg="props.footerFg"
               :animation="props.footerAnimation"
               :width="props.footerCellWidth"
@@ -49,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import {themeToBg} from '../../composables/useThemeClasses'
 import BTableSimple from '../BTable/BTableSimple.vue'
 import BPlaceholder from './BPlaceholder.vue'
 import {useToNumber} from '@vueuse/core'

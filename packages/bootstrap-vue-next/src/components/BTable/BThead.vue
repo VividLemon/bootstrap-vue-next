@@ -5,6 +5,7 @@
 </template>
 
 <script setup lang="ts">
+import {toColorClasses} from '../../composables/useThemeClasses'
 import type {BTheadProps, BTheadSlots} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
@@ -17,9 +18,9 @@ const _props = withDefaults(defineProps<BTheadProps>(), {
 const props = useDefaults(_props, 'BThead')
 defineSlots<BTheadSlots>()
 
-const computedClasses = computed(() => ({
-  [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
-  [`bg-${props.bg}`]: props.bg !== null && props.bg !== undefined,
-  [`fg-${props.fg}`]: props.fg !== null && props.fg !== undefined,
-}))
+const computedClasses = computed(() => [
+  toColorClasses('theme', props.theme),
+  toColorClasses('bg', props.bg),
+  toColorClasses('fg', props.fg),
+])
 </script>

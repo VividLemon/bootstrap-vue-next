@@ -93,6 +93,16 @@ Renders `.border-<value>`. Values are one of:
 | `border-variant="primary-subtle"`  | `border="subtle-primary"` |
 | `text-variant="white-50"` / `black-50` | removed, use `fg="white"` / `fg="black"` with an opacity utility |
 
+## Combining values
+
+`theme`, `bg`, `fg` and `border` (and their prefixed variants such as `headerBg` or `buttonTheme`) accept a single value or an array of values.
+Each value renders its own class, which allows stacking opacity utilities and theme modifiers.
+A single string works exactly as before.
+
+<<< DEMO ./demo/ColorArrays.vue#template{vue-html}
+
+The `theme` prop also accepts the `contrast` modifier (type `ThemeValue`). The `underlineTheme` and spinner `theme` props accept a single theme only.
+
 ## Prop interactions
 
 The `bg` and `fg` props take precedence over the `theme` prop. It is more

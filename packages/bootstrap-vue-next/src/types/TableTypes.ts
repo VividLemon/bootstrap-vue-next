@@ -1,5 +1,5 @@
 import type {ComputedRef, StyleValue} from 'vue'
-import type {BgColor, FgColor, ThemeColor} from './ColorTypes'
+import type {BgColor, FgColor, MaybeArray, ThemeValue} from './ColorTypes'
 import type {MaybePromise} from './MaybePromise'
 import type {LiteralUnion} from './LiteralUnion'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
@@ -20,12 +20,12 @@ export type TableRowEvent<T, E extends UIEvent = Readonly<MouseEvent>> = [
 ]
 
 export type TableItem<T = Record<string, unknown>> = T & {
-  _rowBg?: BgColor | null
-  _rowFg?: FgColor | null
-  _rowTheme?: ThemeColor | null
-  _cellBgs?: Partial<Record<keyof T, BgColor>>
-  _cellFgs?: Partial<Record<keyof T, FgColor>>
-  _cellThemes?: Partial<Record<keyof T, ThemeColor>>
+  _rowBg?: MaybeArray<BgColor> | null
+  _rowFg?: MaybeArray<FgColor> | null
+  _rowTheme?: MaybeArray<ThemeValue> | null
+  _cellBgs?: Partial<Record<keyof T, MaybeArray<BgColor>>>
+  _cellFgs?: Partial<Record<keyof T, MaybeArray<FgColor>>>
+  _cellThemes?: Partial<Record<keyof T, MaybeArray<ThemeValue>>>
   _showDetails?: boolean
 }
 
@@ -77,9 +77,9 @@ export type TableStrictClassValue = string | readonly unknown[] | Record<string,
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TableField<T = any> = {
-  bg?: BgColor | null
+  bg?: MaybeArray<BgColor> | null
   class?: ClassValue
-  fg?: FgColor | null
+  fg?: MaybeArray<FgColor> | null
   filterByFormatted?: boolean | TableFieldFormatter<T>
   formatter?: TableFieldFormatter<T>
   isRowHeader?: boolean
@@ -127,7 +127,7 @@ export type TableField<T = any> = {
   thAttr?:
     | AttrsValue
     | ((obj: {value: unknown; key: string; item: T | null; type: TableRowThead}) => AttrsValue)
-  theme?: ThemeColor | null
+  theme?: MaybeArray<ThemeValue> | null
 }
 
 export type TableFieldRaw<T = unknown> = T extends object

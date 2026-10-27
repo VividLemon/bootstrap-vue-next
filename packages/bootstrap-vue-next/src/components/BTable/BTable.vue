@@ -111,6 +111,7 @@
 </template>
 
 <script setup lang="ts" generic="Item">
+import {toColorClasses} from '../../composables/useThemeClasses'
 import {useToNumber} from '@vueuse/core'
 import {computed, readonly, toRef, watch} from 'vue'
 import BTableLite from './BTableLite.vue'
@@ -397,21 +398,15 @@ const getFieldColumnClasses = (field: TableField) => [
 // Also the stuff for resolving functions could probably be made a util
 const getRowClasses = (item: Item | null, type: TableRowType): TableStrictClassValue => [
   {
-    [`selected theme-${props.selectionTheme}`]:
-      props.selectable && !!item && selectedItemsController.has(item),
-    [`bg-${props.selectionBg}`]:
-      props.selectable &&
-      !!item &&
-      selectedItemsController.has(item) &&
-      props.selectionBg !== null &&
-      props.selectionBg !== undefined,
-    [`fg-${props.selectionFg}`]:
-      props.selectable &&
-      !!item &&
-      selectedItemsController.has(item) &&
-      props.selectionFg !== null &&
-      props.selectionFg !== undefined,
+    selected: props.selectable && !!item && selectedItemsController.has(item),
   },
+  props.selectable && !!item && selectedItemsController.has(item)
+    ? [
+        toColorClasses('theme', props.selectionTheme),
+        toColorClasses('bg', props.selectionBg),
+        toColorClasses('fg', props.selectionFg),
+      ]
+    : null,
   props.tbodyTrClass
     ? typeof props.tbodyTrClass === 'function'
       ? props.tbodyTrClass(item, type)

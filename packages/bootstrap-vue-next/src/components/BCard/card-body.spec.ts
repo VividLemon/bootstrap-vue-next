@@ -38,6 +38,15 @@ describe('card-body', () => {
     expect(wrapper.text()).toBe('')
   })
 
+  it('supports arrays for theme, bg and fg', () => {
+    const wrapper = mount(BCardBody, {
+      props: {theme: ['primary', 'contrast'], bg: ['success', 90], fg: 'body'},
+    })
+    expect(wrapper.classes()).toEqual(
+      expect.arrayContaining(['theme-primary', 'theme-contrast', 'bg-success', 'bg-90', 'fg-body'])
+    )
+  })
+
   it('has class theme-{type} when prop theme', async () => {
     const wrapper = mount(BCardBody, {
       props: {theme: 'primary'},

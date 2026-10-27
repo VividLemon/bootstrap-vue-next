@@ -87,7 +87,7 @@ export default {
           description: 'Applies one of the theme colors to the default spinner.',
         },
         bg: {
-          type: 'BgColor | null',
+          type: 'MaybeArray<BgColor> | null',
           default: 'body',
           description:
             'Applies a background color (`BgColor`) to the overlay backdrop. Set to `null` to apply no background class',

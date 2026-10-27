@@ -45,7 +45,7 @@ export default {
             "When set, renders the radio button as part of a button group (it doesn't enclose the radio and label with a div). It is not necessary to set this to true if this is part of a RadioGroup as it is handled internally",
         },
         buttonTheme: {
-          type: 'ThemeColor | null',
+          type: 'MaybeArray<ThemeValue> | null',
           default: 'secondary',
           description: 'Applies one of the theme colors when in `button` mode',
         },
@@ -130,7 +130,7 @@ export default {
         ]),
         ...pick(buildCommonProps(), ['buttonBg', 'buttonFg']),
         buttonTheme: {
-          type: 'ThemeColor | null',
+          type: 'MaybeArray<ThemeValue> | null',
           default: 'secondary',
           description: 'Specifies the theme color to apply to the button style radio buttons',
         },

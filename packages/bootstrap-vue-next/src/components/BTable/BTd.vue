@@ -13,6 +13,7 @@
 </template>
 
 <script setup lang="ts">
+import {toColorClasses} from '../../composables/useThemeClasses'
 import type {BTdProps, BTdSlots} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
@@ -29,11 +30,13 @@ const _props = withDefaults(defineProps<BTdProps>(), {
 const props = useDefaults(_props, 'BTd')
 defineSlots<BTdSlots>()
 
-const computedClasses = computed(() => ({
-  [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
-  [`bg-${props.bg}`]: props.bg !== null && props.bg !== undefined,
-  [`fg-${props.fg}`]: props.fg !== null && props.fg !== undefined,
-  'b-table-sticky-column': props.stickyColumn,
-  'table-b-table-default': props.stickyColumn && props.theme === null,
-}))
+const computedClasses = computed(() => [
+  toColorClasses('theme', props.theme),
+  toColorClasses('bg', props.bg),
+  toColorClasses('fg', props.fg),
+  {
+    'b-table-sticky-column': props.stickyColumn,
+    'table-b-table-default': props.stickyColumn && props.theme === null,
+  },
+])
 </script>

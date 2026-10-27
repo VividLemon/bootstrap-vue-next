@@ -17,7 +17,7 @@
       <slot name="header">
         <BPlaceholder
           :width="props.headerWidth"
-          :bg="props.headerBg ?? props.headerTheme"
+          :bg="props.headerBg ?? themeToBg(props.headerTheme)"
           :fg="props.headerFg"
           :animation="props.headerAnimation"
           :size="props.headerSize"
@@ -53,6 +53,7 @@ import BPlaceholderButton from './BPlaceholderButton.vue'
 import {computed} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import type {BPlaceholderCardProps, BPlaceholderCardSlots} from '../../types'
+import {themeToBg} from '../../composables/useThemeClasses'
 
 const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   animation: undefined,
@@ -87,14 +88,14 @@ defineSlots<BPlaceholderCardSlots>()
 const defaultAttrs = computed(() => ({
   animation: props.animation,
   size: props.size,
-  bg: props.bg ?? props.theme,
+  bg: props.bg ?? themeToBg(props.theme),
   fg: props.fg,
 }))
 
 const footerComponent = computed(() => (!props.noButton ? BPlaceholderButton : BPlaceholder))
 const footerColorAttrs = computed(() =>
   props.noButton
-    ? {bg: props.footerBg ?? props.footerTheme, fg: props.footerFg}
+    ? {bg: props.footerBg ?? themeToBg(props.footerTheme), fg: props.footerFg}
     : {theme: props.footerTheme, bg: props.footerBg, fg: props.footerFg}
 )
 </script>

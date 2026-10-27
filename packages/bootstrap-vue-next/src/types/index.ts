@@ -51,7 +51,11 @@ export type {
   ColorExtendables,
   FgColor,
   FgLayerColor,
+  MaybeArray,
   ThemeColor,
+  ThemeModifier,
+  ThemeModifiers,
+  ThemeValue,
   ThemeColors,
 } from './ColorTypes'
 export type {BaseSize, Size} from './Size'

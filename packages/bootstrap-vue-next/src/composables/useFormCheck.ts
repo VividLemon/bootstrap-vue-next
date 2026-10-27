@@ -3,7 +3,7 @@ import {computed, type MaybeRefOrGetter, readonly, toRef, toValue} from 'vue'
 import {useAriaInvalid} from './useAriaInvalid'
 import {useStateClass} from './useStateClass'
 import type {Size} from '../types/Size'
-import type {BgColor, ButtonVariant, FgColor, ThemeColor} from '../types/ColorTypes'
+import type {BgColor, ButtonVariant, FgColor, MaybeArray, ThemeValue} from '../types/ColorTypes'
 import {getButtonThemeClasses} from './useThemeClasses'
 import type {ValidationState} from '../types/CommonTypes'
 
@@ -59,28 +59,30 @@ interface LabelClasesItemsInput {
   plain?: boolean
   button?: boolean
   buttonVariant?: ButtonVariant | null
-  buttonTheme?: ThemeColor | null
-  buttonBg?: BgColor | null
-  buttonFg?: FgColor | null
+  buttonTheme?: MaybeArray<ThemeValue> | null
+  buttonBg?: MaybeArray<BgColor> | null
+  buttonFg?: MaybeArray<FgColor> | null
   size?: Size
 }
 
 const useFormCheckLabelClasses = (items: MaybeRefOrGetter<LabelClasesItemsInput>) => {
   const classes = computed(() => {
     const resolvedItems = toValue(items)
-    return {
-      'form-check-label': !resolvedItems.plain && !resolvedItems.button,
-      'btn': resolvedItems.button === true,
-      ...(resolvedItems.button === true
+    return [
+      {
+        'form-check-label': !resolvedItems.plain && !resolvedItems.button,
+        'btn': resolvedItems.button === true,
+      },
+      resolvedItems.button === true
         ? getButtonThemeClasses(
             resolvedItems.buttonVariant,
             resolvedItems.buttonTheme,
             resolvedItems.buttonBg,
             resolvedItems.buttonFg
           )
-        : {}),
-      [`btn-${resolvedItems.size}`]: resolvedItems.button && resolvedItems.size !== undefined,
-    }
+        : undefined,
+      {[`btn-${resolvedItems.size}`]: resolvedItems.button && resolvedItems.size !== undefined},
+    ]
   })
 
   return {classes}

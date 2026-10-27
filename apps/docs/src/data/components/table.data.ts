@@ -87,7 +87,7 @@ export default {
           description: 'Removes all borders from cells',
         },
         border: {
-          type: 'BorderColor | null',
+          type: 'MaybeArray<BorderColor> | null',
           default: null,
           description: 'Applies a border color (`BorderColor`) to the table',
         },
@@ -210,24 +210,24 @@ export default {
           description: 'Enable the footer of the table, and clone the header content by default',
         },
         footRowTheme: {
-          type: 'ThemeColor | null',
+          type: 'MaybeArray<ThemeValue> | null',
           default: undefined,
           description:
             'Apply a theme color to the tr element in the tfoot. Falls back to head-row-theme',
         },
         footTheme: {
-          type: 'ThemeColor | null',
+          type: 'MaybeArray<ThemeValue> | null',
           default: undefined,
           description:
             'Apply a theme color to the foot, falls back to head-theme if that prop is specified. May take precedence over foot-row-theme',
         },
         headRowTheme: {
-          type: 'ThemeColor | null',
+          type: 'MaybeArray<ThemeValue> | null',
           default: undefined,
           description: 'Apply a theme color to the tr element in the thead',
         },
         headTheme: {
-          type: 'ThemeColor | null',
+          type: 'MaybeArray<ThemeValue> | null',
           default: undefined,
           description: 'Apply a theme color to the head. May take precedence over head-row-theme',
         },
@@ -754,7 +754,7 @@ export default {
           default: true,
         },
         selectionTheme: {
-          type: 'ThemeColor | null',
+          type: 'MaybeArray<ThemeValue> | null',
           default: 'primary',
           description:
             'Theme color to set selected rows to. Use any of the registered theme colors. Set to `null` to not apply a theme',
@@ -1178,7 +1178,7 @@ export default {
         props: {
           ...pick(buildCommonProps(), ['bg', 'fg']),
           theme: {
-            type: 'ThemeColor | null',
+            type: 'MaybeArray<ThemeValue> | null',
             default: null,
           },
         } satisfies PropRecord<keyof BTheadProps>,
@@ -1195,7 +1195,7 @@ export default {
         props: {
           ...pick(buildCommonProps(), ['bg', 'fg']),
           theme: {
-            type: 'ThemeColor | null',
+            type: 'MaybeArray<ThemeValue> | null',
             default: null,
           },
         } satisfies PropRecord<keyof BTrProps>,
