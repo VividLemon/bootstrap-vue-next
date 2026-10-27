@@ -75,7 +75,7 @@ provide(checkboxGroupKey, {
   >,
   switch: toRef(() => props.switches),
   buttonVariant: toRef(() => props.buttonVariant),
-  buttonTheme: toRef(() => ({
+  buttonTheme: computed(() => ({
     theme: props.buttonTheme,
     bg: props.buttonBg,
     fg: props.buttonFg,

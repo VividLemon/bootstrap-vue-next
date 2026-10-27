@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 import {ref} from 'vue'
-import {getButtonThemeClasses, useThemeClasses} from './useThemeClasses'
+import {useButtonThemeClasses, useThemeClasses} from './useThemeClasses'
 
 describe('useThemeClasses', () => {
   it('returns class for theme', () => {
@@ -46,31 +46,49 @@ describe('useThemeClasses', () => {
   })
 })
 
-describe('getButtonThemeClasses', () => {
+describe('useButtonThemeClasses', () => {
   it('returns variant and theme classes', () => {
-    expect(getButtonThemeClasses('outline', 'danger')).toEqual({
+    const {classes} = useButtonThemeClasses({variant: 'outline', theme: 'danger'})
+    expect(classes.value).toEqual({
       'btn-outline': true,
       'theme-danger': true,
       'bg-undefined': false,
       'fg-undefined': false,
+      'border-undefined': false,
       'btn-styled': false,
     })
   })
 
   it('omits null values', () => {
-    const result = getButtonThemeClasses(null, null)
-    expect(Object.values(result).every((v) => v === false)).toBe(true)
+    const {classes} = useButtonThemeClasses({variant: null, theme: null})
+    expect(Object.values(classes.value).every((v) => v === false)).toBe(true)
   })
 
   it('returns background, foreground, and styled button classes', () => {
-    expect(
-      getButtonThemeClasses('solid', 'primary', 'subtle-primary', 'emphasis-primary', true)
-    ).toEqual({
+    const {classes} = useButtonThemeClasses({
+      variant: 'solid',
+      theme: 'primary',
+      bg: 'subtle-primary',
+      fg: 'emphasis-primary',
+      styled: true,
+    })
+    expect(classes.value).toEqual({
       'btn-solid': true,
       'theme-primary': true,
       'bg-subtle-primary': true,
       'fg-emphasis-primary': true,
+      'border-undefined': false,
       'btn-styled': true,
     })
+  })
+
+  it('updates when props change', () => {
+    const theme = ref<'primary' | 'danger'>('primary')
+    const {classes} = useButtonThemeClasses(() => ({variant: 'solid', theme: theme.value}))
+
+    expect(classes.value['theme-primary']).toBe(true)
+    theme.value = 'danger'
+    expect(classes.value['theme-danger']).toBe(true)
+    expect(classes.value).not.toHaveProperty('theme-primary')
   })
 })

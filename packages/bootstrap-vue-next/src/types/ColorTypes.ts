@@ -86,6 +86,8 @@ export interface ColorExtendables {
   fg?: MaybeArray<FgColor> | null
 }
 
+// Keep prefixed color props explicit: Vue's SFC compiler cannot resolve generic mapped interface bases
+// when extracting defineProps, so these concrete interfaces are needed for component prop inference.
 export interface UnderlineColorExtendables {
   underlineTheme?: ThemeColor | null
   underlineBg?: MaybeArray<BgColor> | null

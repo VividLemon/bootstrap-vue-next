@@ -10,18 +10,19 @@ import type {
 
 /**
  * Expands a single value or an array of values into `<prefix>-<value>` classes.
- * `null` and `undefined` entries are skipped
+ * `null` and `undefined` entries are represented as disabled classes.
  */
 export const toColorClasses = (
   prefix: 'theme' | 'bg' | 'fg' | 'border',
   value: MaybeArray<string | number> | null | undefined
-): string[] => {
-  return (Array.isArray(value) ? value : [value]).reduce((out, v) => {
-    if (v !== null && v !== undefined) {
-      out.push(`${prefix}-${v}`)
-      return out
-    }
-  }, [] as string[])
+): Record<string, boolean> => {
+  const values: readonly (string | number | null | undefined)[] = Array.isArray(value)
+    ? value
+    : [value]
+  return values.reduce<Record<string, boolean>>((out, v) => {
+    out[`${prefix}-${v}`] = v !== null && v !== undefined
+    return out
+  }, {})
 }
 
 /**
@@ -43,30 +44,38 @@ export const useThemeClasses = (
 ) => {
   const classes = computed(() => {
     const props = toValue(obj)
-    return [
-      toColorClasses('theme', props.theme),
-      toColorClasses('bg', props.bg),
-      toColorClasses('fg', props.fg),
-      toColorClasses('border', props.border),
-    ].flat()
+    return {
+      ...toColorClasses('theme', props.theme),
+      ...toColorClasses('bg', props.bg),
+      ...toColorClasses('fg', props.fg),
+      ...toColorClasses('border', props.border),
+    }
   })
 
   return {classes}
 }
 
+type ButtonThemeClassesInput = ColorExtendables & {
+  variant?: ButtonVariant | null
+  styled?: boolean
+}
+
 /**
- * Builds `.btn-<variant>` and `.theme-<theme>` classes
+ * Builds `.btn-<variant>` and color utility classes for buttons
  */
-export const getButtonThemeClasses = (
-  variant: ButtonVariant | null | undefined,
-  theme: ColorExtendables['theme'],
-  bg?: ColorExtendables['bg'],
-  fg?: ColorExtendables['fg'],
-  styled = false
-) => [
-  variant !== null && variant !== undefined ? `btn-${variant}` : undefined,
-  toColorClasses('theme', theme),
-  toColorClasses('bg', bg),
-  toColorClasses('fg', fg),
-  {'btn-styled': styled},
-]
+export const useButtonThemeClasses = (obj: MaybeRefOrGetter<ButtonThemeClassesInput>) => {
+  const {classes: colorClasses} = useThemeClasses(() => {
+    const props = toValue(obj)
+    return {theme: props.theme, bg: props.bg, fg: props.fg}
+  })
+
+  const classes = computed(() => {
+    const props = toValue(obj)
+    return {
+      ...colorClasses.value,
+      [`btn-${props.variant}`]: props.variant !== null && props.variant !== undefined,
+      'btn-styled': props.styled === true,
+    }
+  })
+  return {classes}
+}

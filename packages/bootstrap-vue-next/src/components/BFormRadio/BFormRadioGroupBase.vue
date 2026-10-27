@@ -97,7 +97,7 @@ const normalizedOptions = computed(() =>
 provide(radioGroupKey, {
   modelValue: modelValue as import('vue').Ref<import('../../types/RadioTypes').RadioValue>,
   buttonVariant: toRef(() => props.buttonVariant),
-  buttonTheme: toRef(() => ({
+  buttonTheme: computed(() => ({
     theme: props.buttonTheme,
     bg: props.buttonBg,
     fg: props.buttonFg,
