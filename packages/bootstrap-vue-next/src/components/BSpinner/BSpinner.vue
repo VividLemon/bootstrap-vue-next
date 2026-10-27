@@ -35,7 +35,11 @@ const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
     theme: props.theme,
     bg: props.bg,
-    fg: props.fg ?? props.theme,
+    fg:
+      props.fg ??
+      (Array.isArray(props.theme)
+        ? props.theme.filter((theme) => theme !== 'contrast')
+        : props.theme),
   }))
 )
 const computedClasses = computed(() => [
