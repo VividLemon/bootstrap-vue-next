@@ -319,7 +319,7 @@ const hasSelection = computed(() => {
   return currentValue !== null && currentValue !== undefined
 })
 
-const computedAriaInvalid = useAriaInvalid(
+const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(
   () => props.ariaInvalid,
   () => props.state
 )

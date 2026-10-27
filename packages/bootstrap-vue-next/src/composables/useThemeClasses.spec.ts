@@ -4,9 +4,9 @@ import {getButtonThemeClasses, useThemeClasses} from './useThemeClasses'
 
 describe('useThemeClasses', () => {
   it('returns class for theme', () => {
-    const result = useThemeClasses({theme: 'primary'})
-    expect(result.value['theme-primary']).toBe(true)
-    expect(result.value['bg-undefined']).toBe(false)
+    const {classes} = useThemeClasses({theme: 'primary'})
+    expect(classes.value['theme-primary']).toBe(true)
+    expect(classes.value['bg-undefined']).toBe(false)
   })
 
   it.each([
@@ -14,28 +14,28 @@ describe('useThemeClasses', () => {
     {prop: 'fg', value: 'emphasis-success', className: 'fg-emphasis-success'},
     {prop: 'border', value: 'warning', className: 'border-warning'},
   ])('returns $className for $prop=$value', ({prop, value, className}) => {
-    const result = useThemeClasses({[prop]: value})
-    expect(result.value[className]).toBe(true)
+    const {classes} = useThemeClasses({[prop]: value})
+    expect(classes.value[className]).toBe(true)
   })
 
   it('returns layer colors', () => {
-    const result = useThemeClasses({bg: '2', fg: 'body', border: 'emphasized'})
-    expect(result.value['bg-2']).toBe(true)
-    expect(result.value['fg-body']).toBe(true)
-    expect(result.value['border-emphasized']).toBe(true)
+    const {classes} = useThemeClasses({bg: '2', fg: 'body', border: 'emphasized'})
+    expect(classes.value['bg-2']).toBe(true)
+    expect(classes.value['fg-body']).toBe(true)
+    expect(classes.value['border-emphasized']).toBe(true)
   })
 
   it('returns all false classes when all values are null', () => {
-    const result = useThemeClasses({theme: null, bg: null, fg: null, border: null})
-    expect(Object.values(result.value).every((v) => v === false)).toBe(true)
+    const {classes} = useThemeClasses({theme: null, bg: null, fg: null, border: null})
+    expect(Object.values(classes.value).every((v) => v === false)).toBe(true)
   })
 
   it('is reactive', () => {
     const theme = ref<'primary' | 'danger'>('primary')
-    const result = useThemeClasses(() => ({theme: theme.value}))
-    expect(result.value['theme-primary']).toBe(true)
+    const {classes} = useThemeClasses(() => ({theme: theme.value}))
+    expect(classes.value['theme-primary']).toBe(true)
     theme.value = 'danger'
-    expect(result.value['theme-danger']).toBe(true)
+    expect(classes.value['theme-danger']).toBe(true)
   })
 })
 

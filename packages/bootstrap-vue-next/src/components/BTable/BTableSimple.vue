@@ -46,7 +46,7 @@ defineSlots<BTableSimpleSlots>()
 
 const computedId = useId(() => props.id)
 
-const colorClasses = useThemeClasses(
+const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
     border: props.border,
   }))
@@ -79,7 +79,7 @@ const computedTableAttrs = computed(() => ({
   ...props.tableAttrs,
 }))
 
-const computedSticky = useNumberishToStyle(
+const {style: computedSticky} = useNumberishToStyle(
   computed(
     () =>
       (props.stickyHeader === true ? defaultStickyHeaderHeight : props.stickyHeader) || Number.NaN

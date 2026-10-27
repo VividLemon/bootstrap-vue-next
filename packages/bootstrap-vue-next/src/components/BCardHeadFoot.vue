@@ -22,5 +22,5 @@ const props = withDefaults(defineProps<BCardHeadFootProps>(), {
 })
 defineSlots<BCardHeadFootSlots>()
 
-const computedClasses = useThemeClasses(props)
+const {classes: computedClasses} = useThemeClasses(props)
 </script>

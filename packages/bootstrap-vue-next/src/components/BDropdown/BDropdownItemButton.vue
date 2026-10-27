@@ -46,7 +46,7 @@ const processedAttrs = computed(() => {
   return {wrapperClass, buttonAttrs}
 })
 
-const colorClasses = useThemeClasses(() => ({theme: props.theme}))
+const {classes: colorClasses} = useThemeClasses(() => ({theme: props.theme}))
 const computedClasses = computed(() => [
   props.buttonClass,
   colorClasses.value,

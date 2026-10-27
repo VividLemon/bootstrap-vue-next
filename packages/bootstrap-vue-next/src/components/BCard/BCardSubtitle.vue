@@ -19,5 +19,5 @@ const _props = withDefaults(defineProps<BCardSubtitleProps>(), {
 const props = useDefaults(_props, 'BCardSubtitle')
 defineSlots<BCardSubtitleSlots>()
 
-const computedClasses = useThemeClasses(() => ({fg: props.fg}))
+const {classes: computedClasses} = useThemeClasses(() => ({fg: props.fg}))
 </script>

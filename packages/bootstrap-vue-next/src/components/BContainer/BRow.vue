@@ -29,7 +29,7 @@ const _props = withDefaults(defineProps<BRowProps>(), {
 const props = useDefaults(_props, 'BRow')
 defineSlots<BRowSlots>()
 
-const alignment = useAlignment(() => props.alignH)
+const {alignment} = useAlignment(() => props.alignH)
 
 const rowColsClasses = computed(() =>
   getClasses(

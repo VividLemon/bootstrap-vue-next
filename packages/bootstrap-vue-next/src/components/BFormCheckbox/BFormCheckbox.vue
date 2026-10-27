@@ -32,7 +32,11 @@
 <script setup lang="ts">
 import {useFocus} from '@vueuse/core'
 import {computed, inject, useAttrs, useTemplateRef} from 'vue'
-import {getClasses, getInputClasses, getLabelClasses} from '../../composables/useFormCheck'
+import {
+  useFormCheckClasses,
+  useFormCheckInputClasses,
+  useFormCheckLabelClasses,
+} from '../../composables/useFormCheck'
 import {checkboxGroupKey, formGroupKey} from '../../utils/keys'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
 import {isEmptySlot} from '../../utils/dom'
@@ -165,14 +169,14 @@ const classesObject = computed(() => ({
   ...resolvedProps.value,
   hasDefaultSlot: hasDefaultSlot.value,
 }))
-const wrapperClasses = getClasses(classesObject)
+const {classes: wrapperClasses} = useFormCheckClasses(classesObject)
 const computedWrapperClasses = computed(() => [
   wrapperClasses.value,
   processedAttrs.value.wrapperClass,
 ])
-const inputClasses = getInputClasses(classesObject)
+const {classes: inputClasses} = useFormCheckInputClasses(classesObject)
 const computedInputClasses = computed(() => [inputClasses.value, props.inputClass])
-const labelClasses = getLabelClasses(classesObject)
+const {classes: labelClasses} = useFormCheckLabelClasses(classesObject)
 
 defineExpose({
   blur: () => {

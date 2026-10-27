@@ -77,7 +77,7 @@ const navbarData = inject(navbarInjectionKey, null)
 /**
  * Not to be confused with computedLinkClasses
  */
-const linkValueClasses = useLinkClasses(props)
+const {classes: linkValueClasses} = useLinkClasses(props)
 const computedClasses = computed(() => [
   linkValueClasses.value,
   attrs.class,

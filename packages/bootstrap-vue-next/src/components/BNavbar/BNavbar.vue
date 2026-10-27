@@ -30,9 +30,9 @@ defineSlots<BNavbarSlots>()
 
 const computedRole = computed(() => (props.tag === 'nav' ? undefined : 'navigation'))
 
-const containerClass = useContainerClasses(() => props.container)
+const {classes: containerClass} = useContainerClasses(() => props.container)
 
-const colorClasses = useThemeClasses(
+const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
     theme: props.theme,
   }))

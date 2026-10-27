@@ -27,7 +27,7 @@ import type {
 } from '../../types'
 import BFormCheckbox from './BFormCheckbox.vue'
 import {checkboxGroupKey} from '../../utils/keys'
-import {getGroupAttr, getGroupClasses} from '../../composables/useFormCheck'
+import {useFormCheckGroupAttr, useFormCheckGroupClasses} from '../../composables/useFormCheck'
 import {useFocus} from '@vueuse/core'
 import {useId} from '../../composables/useId'
 import {useDefaults} from '../../composables/useDefaults'
@@ -117,8 +117,8 @@ const classesObject = computed(() => ({
   stacked: props.stacked,
   size: props.size,
 }))
-const attrs = getGroupAttr(classesObject)
-const classes = getGroupClasses(classesObject)
+const {attrs} = useFormCheckGroupAttr(classesObject)
+const {classes} = useFormCheckGroupClasses(classesObject)
 
 defineExpose({
   blur: () => {

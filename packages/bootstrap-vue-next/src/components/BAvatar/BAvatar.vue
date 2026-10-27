@@ -151,7 +151,7 @@ const computedSquare = computed(() => parentData?.square.value || props.square)
 // const computedSize = computed(() => computedParentSize.value ?? computedPropSize.value)
 // const computedPropSizeIsLiteralSize = computed(() => propSizeIsLiteralSize(computedSize.value))
 
-const computedSize = useNumberishToStyle(() => parentData?.size.value ?? props.size)
+const {style: computedSize} = useNumberishToStyle(() => parentData?.size.value ?? props.size)
 const computedSizeIsLiteralSize = computed(
   () => !!computedSize.value && SIZES.has(computedSize.value)
 )
@@ -163,7 +163,7 @@ const computedRoundedBottom = computed(() => parentData?.roundedBottom.value ?? 
 const computedRoundedStart = computed(() => parentData?.roundedStart.value ?? props.roundedStart)
 const computedRoundedEnd = computed(() => parentData?.roundedEnd.value ?? props.roundedEnd)
 
-const radiusElementClasses = useRadiusElementClasses(() => ({
+const {classes: radiusElementClasses} = useRadiusElementClasses(() => ({
   rounded: computedRounded.value,
   roundedTop: computedRoundedTop.value,
   roundedBottom: computedRoundedBottom.value,
@@ -174,7 +174,7 @@ const radiusElementClasses = useRadiusElementClasses(() => ({
 const badgeText = computed(() => (props.badge === true ? '' : props.badge))
 const badgeImplicitlyDot = computed(() => !badgeText.value && !hasBadgeSlot.value)
 
-const colorClasses = useThemeClasses(() => ({
+const {classes: colorClasses} = useThemeClasses(() => ({
   bg: parentData?.bg.value ?? props.bg,
   fg: parentData?.fg.value ?? props.fg,
   theme: computedTheme.value,

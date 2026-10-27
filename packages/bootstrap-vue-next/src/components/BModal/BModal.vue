@@ -351,14 +351,14 @@ const modalDialogClasses = computed(() => [
   },
 ])
 
-const bodyColorClasses = useThemeClasses(() => ({
+const {classes: bodyColorClasses} = useThemeClasses(() => ({
   bg: props.bodyBg,
   fg: props.bodyFg,
   theme: props.bodyTheme,
 }))
 const bodyClasses = computed(() => [props.bodyClass, bodyColorClasses.value])
 
-const headerColorClasses = useThemeClasses(() => ({
+const {classes: headerColorClasses} = useThemeClasses(() => ({
   bg: props.headerBg,
   fg: props.headerFg,
   theme: props.headerTheme,
@@ -372,7 +372,7 @@ const headerCloseAttrs = computed(() => ({
   class: props.headerCloseClass,
 }))
 
-const footerColorClasses = useThemeClasses(() => ({
+const {classes: footerColorClasses} = useThemeClasses(() => ({
   bg: props.footerBg,
   fg: props.footerFg,
   theme: props.footerTheme,

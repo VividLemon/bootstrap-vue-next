@@ -25,7 +25,11 @@
 <script setup lang="ts">
 import {useFocus} from '@vueuse/core'
 import {computed, inject, useTemplateRef} from 'vue'
-import {getClasses, getInputClasses, getLabelClasses} from '../../composables/useFormCheck'
+import {
+  useFormCheckClasses,
+  useFormCheckInputClasses,
+  useFormCheckLabelClasses,
+} from '../../composables/useFormCheck'
 import {isEmptySlot} from '../../utils/dom'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
 import {useDefaults} from '../../composables/useDefaults'
@@ -131,9 +135,9 @@ const classesObject = computed(() => ({
   ...resolvedProps.value,
   hasDefaultSlot: hasDefaultSlot.value,
 }))
-const computedClasses = getClasses(classesObject)
-const inputClasses = getInputClasses(classesObject)
-const labelClasses = getLabelClasses(classesObject)
+const {classes: computedClasses} = useFormCheckClasses(classesObject)
+const {classes: inputClasses} = useFormCheckInputClasses(classesObject)
+const {classes: labelClasses} = useFormCheckLabelClasses(classesObject)
 
 defineExpose({
   blur: () => {

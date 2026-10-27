@@ -12,20 +12,20 @@ describe('useAlignment', () => {
     {align: 'around', className: 'justify-content-around'},
     {align: 'evenly', className: 'justify-content-evenly'},
   ])('returns $className for align=$align', ({align, className}) => {
-    const result = useAlignment(align)
-    expect(result.value).toBe(className)
+    const {alignment} = useAlignment(align)
+    expect(alignment.value).toBe(className)
   })
 
   it('is reactive to ref changes', () => {
     const align = ref<'start' | 'center' | undefined>('start')
-    const result = useAlignment(align)
+    const {alignment} = useAlignment(align)
 
-    expect(result.value).toBe('justify-content-start')
+    expect(alignment.value).toBe('justify-content-start')
 
     align.value = 'center'
-    expect(result.value).toBe('justify-content-center')
+    expect(alignment.value).toBe('justify-content-center')
 
     align.value = undefined
-    expect(result.value).toBe('')
+    expect(alignment.value).toBe('')
   })
 })

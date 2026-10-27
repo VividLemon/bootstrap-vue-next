@@ -47,6 +47,6 @@ defineSlots<BDropdownGroupSlots>()
 const headerId = computed(() => (props.id ? `${props.id}_group_dd_header` : undefined))
 const headerRole = computed(() => (props.headerTag === 'header' ? undefined : 'heading'))
 
-const colorClasses = useThemeClasses(() => ({theme: props.headerTheme}))
+const {classes: colorClasses} = useThemeClasses(() => ({theme: props.headerTheme}))
 const computedClasses = computed(() => [props.headerClass, colorClasses.value])
 </script>

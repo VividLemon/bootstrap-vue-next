@@ -17,8 +17,8 @@ interface ClassesItemsInput {
   hasDefaultSlot?: boolean
 }
 
-const getClasses = (items: MaybeRefOrGetter<ClassesItemsInput>) =>
-  computed(() => {
+const useFormCheckClasses = (items: MaybeRefOrGetter<ClassesItemsInput>) => {
+  const classes = computed(() => {
     const resolvedItems = toValue(items)
     return {
       'form-check': !resolvedItems.plain && !resolvedItems.button && resolvedItems.hasDefaultSlot,
@@ -30,24 +30,29 @@ const getClasses = (items: MaybeRefOrGetter<ClassesItemsInput>) =>
     }
   })
 
+  return {classes}
+}
+
 interface InputClassesItemsInput {
   plain?: boolean
   button?: boolean
   state?: ValidationState
 }
 
-const getInputClasses = (items: MaybeRefOrGetter<InputClassesItemsInput>) => {
+const useFormCheckInputClasses = (items: MaybeRefOrGetter<InputClassesItemsInput>) => {
   const resolvedItems = readonly(toRef(items))
 
-  const stateClass = useStateClass(() => resolvedItems.value.state ?? null)
+  const {stateClass} = useStateClass(() => resolvedItems.value.state ?? null)
 
-  return computed(() => [
+  const classes = computed(() => [
     stateClass.value,
     {
       'form-check-input': !resolvedItems.value.plain && !resolvedItems.value.button,
       'btn-check': resolvedItems.value.button === true,
     },
   ])
+
+  return {classes}
 }
 
 interface LabelClasesItemsInput {
@@ -58,8 +63,8 @@ interface LabelClasesItemsInput {
   size?: Size
 }
 
-const getLabelClasses = (items: MaybeRefOrGetter<LabelClasesItemsInput>) =>
-  computed(() => {
+const useFormCheckLabelClasses = (items: MaybeRefOrGetter<LabelClasesItemsInput>) => {
+  const classes = computed(() => {
     const resolvedItems = toValue(items)
     return {
       'form-check-label': !resolvedItems.plain && !resolvedItems.button,
@@ -71,22 +76,27 @@ const getLabelClasses = (items: MaybeRefOrGetter<LabelClasesItemsInput>) =>
     }
   })
 
+  return {classes}
+}
+
 interface GroupAttrItemsInput {
   required?: boolean
   ariaInvalid?: AriaInvalid
   state?: ValidationState
 }
 
-const getGroupAttr = (items: MaybeRefOrGetter<GroupAttrItemsInput>) => {
+const useFormCheckGroupAttr = (items: MaybeRefOrGetter<GroupAttrItemsInput>) => {
   const resolvedItems = readonly(toRef(items))
-  const computedAriaInvalid = useAriaInvalid(
+  const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(
     () => resolvedItems.value.ariaInvalid,
     () => resolvedItems.value.state
   )
-  return computed(() => ({
+  const attrs = computed(() => ({
     'aria-invalid': computedAriaInvalid.value as Exclude<AriaInvalid, ''> | undefined,
     'aria-required': resolvedItems.value.required === true ? true : undefined,
   }))
+
+  return {attrs}
 }
 
 interface GroupClassesItemsInput {
@@ -96,8 +106,8 @@ interface GroupClassesItemsInput {
   size?: Size
 }
 
-const getGroupClasses = (items: MaybeRefOrGetter<GroupClassesItemsInput>) =>
-  computed(() => {
+const useFormCheckGroupClasses = (items: MaybeRefOrGetter<GroupClassesItemsInput>) => {
+  const classes = computed(() => {
     const resolvedItems = toValue(items)
     return {
       'was-validated': resolvedItems.validated === true,
@@ -107,4 +117,13 @@ const getGroupClasses = (items: MaybeRefOrGetter<GroupClassesItemsInput>) =>
     }
   })
 
-export {getClasses, getInputClasses, getLabelClasses, getGroupAttr, getGroupClasses}
+  return {classes}
+}
+
+export {
+  useFormCheckClasses,
+  useFormCheckInputClasses,
+  useFormCheckLabelClasses,
+  useFormCheckGroupAttr,
+  useFormCheckGroupClasses,
+}

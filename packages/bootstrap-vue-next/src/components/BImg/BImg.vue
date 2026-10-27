@@ -48,7 +48,7 @@ const props = useDefaults(_props, 'BImg')
 const heightNumber = useToNumber(() => props.height ?? Number.NaN)
 const widthNumber = useToNumber(() => props.width ?? Number.NaN)
 
-const radiusElementClasses = useRadiusElementClasses(() => ({
+const {classes: radiusElementClasses} = useRadiusElementClasses(() => ({
   rounded: props.rounded,
   roundedTop: props.roundedTop,
   roundedBottom: props.roundedBottom,

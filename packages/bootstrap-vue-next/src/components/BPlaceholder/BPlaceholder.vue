@@ -47,7 +47,7 @@ const colsString = computed(() =>
       : props.cols
 )
 
-const colorClasses = useThemeClasses(computed(() => ({bg: props.bg})))
+const {classes: colorClasses} = useThemeClasses(computed(() => ({bg: props.bg})))
 const computedClasses = computed(() => [
   colorClasses.value,
   {

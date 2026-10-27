@@ -72,7 +72,7 @@ const processedAttrs = computed(() => {
 
 const {computedLink, computedLinkProps} = useBLinkHelper(props)
 
-const colorClasses = useThemeClasses(() => ({theme: props.theme}))
+const {classes: colorClasses} = useThemeClasses(() => ({theme: props.theme}))
 const computedClasses = computed(() => [
   props.linkClass,
   colorClasses.value,

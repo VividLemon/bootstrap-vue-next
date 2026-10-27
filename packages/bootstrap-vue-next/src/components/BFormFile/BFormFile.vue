@@ -218,7 +218,7 @@ const processedAttrs = computed(() => {
 })
 
 const computedId = useId(() => props.id)
-const stateClass = useStateClass(() => props.state)
+const {stateClass} = useStateClass(() => props.state)
 
 // Refs
 const rootRef = useTemplateRef('rootRef')

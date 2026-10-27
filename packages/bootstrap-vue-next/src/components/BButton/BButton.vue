@@ -113,7 +113,7 @@ const computedAriaDisabled = computed(() => {
 })
 
 const variantIsLinkType = computed(() => props.variant === 'link')
-const linkValueClasses = useLinkClasses(
+const {classes: linkValueClasses} = useLinkClasses(
   computed(() => ({
     ...(variantIsLinkType.value
       ? {

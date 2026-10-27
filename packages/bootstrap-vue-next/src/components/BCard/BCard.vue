@@ -119,7 +119,7 @@ const slots = defineSlots<BCardSlots>()
 const hasHeaderSlot = computed(() => !isEmptySlot(slots.header))
 const hasFooterSlot = computed(() => !isEmptySlot(slots.footer))
 
-const colorClasses = useThemeClasses(props)
+const {classes: colorClasses} = useThemeClasses(props)
 const computedClasses = computed(() => [
   colorClasses.value,
   {

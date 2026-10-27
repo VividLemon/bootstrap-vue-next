@@ -37,7 +37,7 @@ defineSlots<BAvatarGroupSlots>()
 
 const overlapNumber = useToNumber(() => props.overlap)
 
-const computedSize = useNumberishToStyle(() => props.size)
+const {style: computedSize} = useNumberishToStyle(() => props.size)
 const overlapScale = computed(() => Math.min(Math.max(overlapNumber.value, 0), 1) / 2)
 
 const paddingStyle = computed<StyleValue>(() => {

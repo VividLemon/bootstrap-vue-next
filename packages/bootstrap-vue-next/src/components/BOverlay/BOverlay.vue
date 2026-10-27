@@ -74,9 +74,9 @@ defineSlots<BOverlaySlots>()
 
 const positionStyles = {top: 0, left: 0, bottom: 0, right: 0} as const
 
-const fadeTransitions = useFadeTransition(() => !props.noFade)
+const {transitionProps: fadeTransitions} = useFadeTransition(() => !props.noFade)
 
-const radiusElementClasses = useRadiusElementClasses(() => ({
+const {classes: radiusElementClasses} = useRadiusElementClasses(() => ({
   rounded: props.rounded,
   roundedTop: props.roundedTop,
   roundedBottom: props.roundedBottom,
@@ -102,7 +102,7 @@ const overlayClasses = computed(() => ({
   'position-fixed': props.noWrap && props.fixed,
 }))
 
-const colorClasses = useThemeClasses(
+const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
     bg: props.bg !== null && !props.bgColor ? props.bg : null,
   }))

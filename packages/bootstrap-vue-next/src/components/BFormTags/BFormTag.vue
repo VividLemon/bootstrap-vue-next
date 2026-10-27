@@ -51,7 +51,7 @@ const tagText = computed(
 )
 const taglabelId = computed(() => `${computedId.value}taglabel__`)
 
-const colorClasses = useThemeClasses(() => ({theme: props.theme}))
+const {classes: colorClasses} = useThemeClasses(() => ({theme: props.theme}))
 const computedClasses = computed(() => [
   colorClasses.value,
   {

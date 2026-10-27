@@ -22,7 +22,7 @@ const _props = withDefaults(defineProps<BFormTextProps>(), {
 const props = useDefaults(_props, 'BFormText')
 defineSlots<BFormTextSlots>()
 
-const colorClasses = useThemeClasses(() => ({fg: props.fg}))
+const {classes: colorClasses} = useThemeClasses(() => ({fg: props.fg}))
 const computedClasses = computed(() => [
   colorClasses.value,
   {

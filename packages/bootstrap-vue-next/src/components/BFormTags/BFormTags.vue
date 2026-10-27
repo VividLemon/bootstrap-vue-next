@@ -226,7 +226,7 @@ const computedId = useId()
 
 const limitNumber = useToNumber(() => props.limit ?? Number.NaN)
 
-const stateClass = useStateClass(() => props.state)
+const {stateClass} = useStateClass(() => props.state)
 
 const input = useTemplateRef('_input')
 

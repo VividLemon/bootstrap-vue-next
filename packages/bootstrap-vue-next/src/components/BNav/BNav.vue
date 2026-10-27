@@ -25,7 +25,7 @@ const _props = withDefaults(defineProps<BNavProps>(), {
 const props = useDefaults(_props, 'BNav')
 defineSlots<BNavSlots>()
 
-const alignment = useAlignment(() => props.align)
+const {alignment} = useAlignment(() => props.align)
 
 const computedClasses = computed(() => ({
   'nav-tabs': props.tabs,

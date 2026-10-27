@@ -29,7 +29,7 @@ export const useRadiusElementClasses = (obj: MaybeRefOrGetter<RadiusElementExten
                 : `rounded${strValue}` // true is last
   }
 
-  return computed(() => {
+  const classes = computed(() => {
     const props = toValue(obj)
 
     return {
@@ -44,4 +44,6 @@ export const useRadiusElementClasses = (obj: MaybeRefOrGetter<RadiusElementExten
         !!props.roundedEnd,
     }
   })
+
+  return {classes}
 }

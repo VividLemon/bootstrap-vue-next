@@ -10,8 +10,8 @@ export const useLinkClasses = (
   linkProps: MaybeRefOrGetter<
     LinkUnderlineProps & LinkOpacityProps & LinkIconProps & LinkThemeProps
   >
-) =>
-  computed(() => {
+) => {
+  const classes = computed(() => {
     const props = toValue(linkProps)
     return {
       [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
@@ -27,3 +27,6 @@ export const useLinkClasses = (
       'icon-link': props.icon === true,
     }
   })
+
+  return {classes}
+}

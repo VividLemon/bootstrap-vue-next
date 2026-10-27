@@ -120,7 +120,7 @@ const computedFill = computed(() => props.align === 'fill')
 // This doesn't use the computedFill util because TS cannot infer that it would never be 'fill'
 const justifyAlign = computed(() => (props.align === 'fill' ? 'start' : props.align))
 
-const alignment = useAlignment(justifyAlign)
+const {alignment} = useAlignment(justifyAlign)
 
 const isActivePage = (pageNumber: number) => pageNumber === computedModelValue.value
 const getTabIndex = (num: number) => (props.disabled ? null : isActivePage(num) ? '0' : '-1')

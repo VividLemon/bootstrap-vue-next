@@ -12,8 +12,8 @@ describe('useRadiusElementClasses', () => {
     {rounded: 'lg', className: 'rounded-5', description: 'lg'},
     {rounded: '3', className: 'rounded-3', description: 'numeric value'},
   ])('returns $className when rounded is $description', ({rounded, className}) => {
-    const result = useRadiusElementClasses({rounded})
-    expect(result.value[className]).toBe(true)
+    const {classes} = useRadiusElementClasses({rounded})
+    expect(classes.value[className]).toBe(true)
   })
 
   it.each([
@@ -22,22 +22,22 @@ describe('useRadiusElementClasses', () => {
     {prop: 'roundedStart', rounded: 'pill', className: 'rounded-start-pill'},
     {prop: 'roundedEnd', rounded: 'lg', className: 'rounded-end-5'},
   ])('returns $className for $prop', ({prop, rounded, className}) => {
-    const result = useRadiusElementClasses({[prop]: rounded})
-    expect(result.value[className]).toBe(true)
+    const {classes} = useRadiusElementClasses({[prop]: rounded})
+    expect(classes.value[className]).toBe(true)
   })
 
   it('returns all false when no rounded props set', () => {
-    const result = useRadiusElementClasses({})
-    const values = Object.values(result.value)
+    const {classes} = useRadiusElementClasses({})
+    const values = Object.values(classes.value)
     expect(values.every((v) => v === false)).toBe(true)
   })
 
   it('is reactive to ref changes', () => {
     const props = ref<{rounded?: boolean | string}>({rounded: true})
-    const result = useRadiusElementClasses(props)
-    expect(result.value['rounded']).toBe(true)
+    const {classes} = useRadiusElementClasses(props)
+    expect(classes.value['rounded']).toBe(true)
 
     props.value = {rounded: 'circle'}
-    expect(result.value['rounded-circle']).toBe(true)
+    expect(classes.value['rounded-circle']).toBe(true)
   })
 })

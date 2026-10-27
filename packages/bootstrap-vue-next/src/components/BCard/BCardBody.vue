@@ -53,7 +53,7 @@ const slots = defineSlots<BCardBodySlots>()
 const hasTitleSlot = computed(() => !isEmptySlot(slots.title))
 const hasSubtitleSlot = computed(() => !isEmptySlot(slots.subtitle))
 
-const colorClasses = useThemeClasses(props)
+const {classes: colorClasses} = useThemeClasses(props)
 const computedClasses = computed(() => [
   colorClasses.value,
   props.overlay ? 'card-img-overlay' : 'card-body',

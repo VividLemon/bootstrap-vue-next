@@ -39,5 +39,5 @@ const processedAttrs = computed(() => {
   return {wrapperClass, headerAttrs}
 })
 
-const colorClasses = useThemeClasses(() => ({theme: props.theme}))
+const {classes: colorClasses} = useThemeClasses(() => ({theme: props.theme}))
 </script>

@@ -29,7 +29,7 @@ const _props = withDefaults(defineProps<BSpinnerProps>(), {
 const props = useDefaults(_props, 'BSpinner')
 const slots = defineSlots<BSpinnerSlots>()
 
-const colorClasses = useThemeClasses(
+const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
     theme: props.theme,
     fg: props.theme,

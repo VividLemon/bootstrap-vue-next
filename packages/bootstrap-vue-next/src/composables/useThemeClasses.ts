@@ -7,8 +7,8 @@ import type {BorderColor, ButtonVariant, ColorExtendables} from '../types/ColorT
  */
 export const useThemeClasses = (
   obj: MaybeRefOrGetter<ColorExtendables & {border?: BorderColor | null}>
-) =>
-  computed(() => {
+) => {
+  const classes = computed(() => {
     const props = toValue(obj)
     return {
       [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
@@ -17,6 +17,9 @@ export const useThemeClasses = (
       [`border-${props.border}`]: props.border !== null && props.border !== undefined,
     }
   })
+
+  return {classes}
+}
 
 /**
  * Builds `.btn-<variant>` and `.theme-<theme>` classes
