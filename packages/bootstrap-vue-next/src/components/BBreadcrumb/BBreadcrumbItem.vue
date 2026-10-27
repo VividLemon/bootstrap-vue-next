@@ -86,7 +86,11 @@ const computedLinkProps = computed(() =>
         'underlineOpacity',
         'underlineOpacityHover',
         'underlineTheme',
+        'underlineBg',
+        'underlineFg',
         'theme',
+        'bg',
+        'fg',
       ])
     : {}
 )
