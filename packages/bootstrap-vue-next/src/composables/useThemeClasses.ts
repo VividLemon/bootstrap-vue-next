@@ -21,19 +21,28 @@ export const useThemeClasses = (
   return {classes}
 }
 
+type ButtonThemeClassesInput = ColorExtendables & {
+  variant?: ButtonVariant | null
+  styled?: boolean
+}
+
 /**
- * Builds `.btn-<variant>` and `.theme-<theme>` classes
+ * Builds `.btn-<variant>` and color utility classes for buttons
  */
-export const getButtonThemeClasses = (
-  variant: ButtonVariant | null | undefined,
-  theme: ColorExtendables['theme'],
-  bg?: ColorExtendables['bg'],
-  fg?: ColorExtendables['fg'],
-  styled = false
-) => ({
-  [`btn-${variant}`]: variant !== null && variant !== undefined,
-  [`theme-${theme}`]: theme !== null && theme !== undefined,
-  [`bg-${bg}`]: bg !== null && bg !== undefined,
-  [`fg-${fg}`]: fg !== null && fg !== undefined,
-  'btn-styled': styled,
-})
+export const useButtonThemeClasses = (obj: MaybeRefOrGetter<ButtonThemeClassesInput>) => {
+  const {classes: colorClasses} = useThemeClasses(() => {
+    const props = toValue(obj)
+    return {theme: props.theme, bg: props.bg, fg: props.fg}
+  })
+
+  const classes = computed(() => {
+    const props = toValue(obj)
+    return {
+      ...colorClasses.value,
+      [`btn-${props.variant}`]: props.variant !== null && props.variant !== undefined,
+      'btn-styled': props.styled === true,
+    }
+  })
+
+  return {classes}
+}

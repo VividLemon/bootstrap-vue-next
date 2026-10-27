@@ -40,7 +40,7 @@ import BLink from '../BLink/BLink.vue'
 import {useLinkClasses} from '../../composables/useLinkClasses'
 import {onKeyStroke} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
-import {getButtonThemeClasses} from '../../composables/useThemeClasses'
+import {useButtonThemeClasses} from '../../composables/useThemeClasses'
 import type {BButtonEmits, BButtonProps, BButtonSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
@@ -139,11 +139,12 @@ const {classes: linkValueClasses} = useLinkClasses(
       : undefined),
   }))
 )
+const {classes: buttonThemeClasses} = useButtonThemeClasses(props)
 const computedClasses = computed(() => [
   variantIsLinkType.value === true && computedLink.value === false
     ? linkValueClasses.value
     : undefined,
-  getButtonThemeClasses(props.variant, props.theme, props.bg, props.fg, props.styled),
+  buttonThemeClasses.value,
   {
     [`btn-${props.size}`]: props.size !== undefined,
     'active': props.active || pressedValue.value,

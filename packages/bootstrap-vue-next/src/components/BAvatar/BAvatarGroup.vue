@@ -49,7 +49,7 @@ provide(avatarGroupInjectionKey, {
   overlapScale,
   size: toRef(() => props.size),
   square: toRef(() => props.square),
-  roundedProps: toRef(() => ({
+  roundedProps: computed(() => ({
     rounded: props.rounded,
     roundedTop: props.roundedTop,
     roundedBottom: props.roundedBottom,

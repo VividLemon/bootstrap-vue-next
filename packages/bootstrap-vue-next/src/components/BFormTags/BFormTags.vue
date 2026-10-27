@@ -138,12 +138,7 @@
               class="btn b-form-tags-button py-0"
               :class="[
                 inputClass,
-                getButtonThemeClasses(
-                  props.addButtonVariant,
-                  props.addButtonTheme,
-                  props.addButtonBg,
-                  props.addButtonFg
-                ),
+                addButtonClasses,
                 {
                   'disabled invisible': inputValue.length === 0,
                 },
@@ -189,7 +184,7 @@ import {escapeRegExpChars} from '../../utils/stringUtils'
 import BFormTag from './BFormTag.vue'
 import {useId} from '../../composables/useId'
 import {useStateClass} from '../../composables/useStateClass'
-import {getButtonThemeClasses} from '../../composables/useThemeClasses'
+import {useButtonThemeClasses} from '../../composables/useThemeClasses'
 import type {BFormTagsEmits, BFormTagsProps, BFormTagsSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
@@ -234,6 +229,12 @@ const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
 const props = useDefaults(_props, 'BFormTags')
 const emit = defineEmits<BFormTagsEmits>()
 defineSlots<BFormTagsSlots>()
+const {classes: addButtonClasses} = useButtonThemeClasses(() => ({
+  variant: props.addButtonVariant,
+  theme: props.addButtonTheme,
+  bg: props.addButtonBg,
+  fg: props.addButtonFg,
+}))
 
 const modelValue = defineModel<Exclude<BFormTagsProps['modelValue'], undefined>>({
   default: () => [],

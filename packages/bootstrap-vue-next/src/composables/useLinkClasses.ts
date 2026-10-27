@@ -5,18 +5,19 @@ import type {
   LinkThemeProps,
   LinkUnderlineProps,
 } from '../types/ComponentProps'
+import {useThemeClasses} from './useThemeClasses'
 
 export const useLinkClasses = (
   linkProps: MaybeRefOrGetter<
     LinkUnderlineProps & LinkOpacityProps & LinkIconProps & LinkThemeProps
   >
 ) => {
+  const {classes: themeClasses} = useThemeClasses(linkProps)
+
   const classes = computed(() => {
     const props = toValue(linkProps)
     return {
-      [`theme-${props.theme}`]: props.theme !== null && props.theme !== undefined,
-      [`bg-${props.bg}`]: props.bg !== null && props.bg !== undefined,
-      [`fg-${props.fg}`]: props.fg !== null && props.fg !== undefined,
+      ...themeClasses.value,
       [`link-${props.opacity}`]: props.opacity !== undefined,
       [`hover:link-${props.opacityHover}`]: props.opacityHover !== undefined,
       [`underline-${props.underlineTheme}`]:
