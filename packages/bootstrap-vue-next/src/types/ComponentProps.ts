@@ -40,7 +40,7 @@ import type {
   TagColorExtendables,
   MaybeArray,
   ThemeColor,
-  ThemeValue,
+  ThemeProp,
   UnderlineColorExtendables,
 } from './ColorTypes'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
@@ -196,8 +196,6 @@ export type LinkUnderlineProps = Pick<
   | 'underlineOpacity'
   | 'underlineOpacityHover'
   | 'underlineTheme'
-  | 'underlineBg'
-  | 'underlineFg'
 >
 export type LinkOpacityProps = Pick<BLinkProps, 'opacity' | 'opacityHover'>
 export type LinkIconProps = Pick<BLinkProps, 'icon'>
@@ -1112,7 +1110,7 @@ export interface BAvatarProps
   badgeBg?: MaybeArray<BgColor> | null
   badgePlacement?: CombinedPlacement
   badgeFg?: MaybeArray<FgColor> | null
-  badgeTheme?: MaybeArray<ThemeValue> | null
+  badgeTheme?: ThemeProp | null
   badgePill?: boolean
   badgeDotIndicator?: boolean
   button?: boolean
@@ -1329,7 +1327,6 @@ export interface BTableSimpleProps extends ColorExtendables {
   borderless?: boolean
   border?: MaybeArray<BorderColor> | null
   captionTop?: boolean
-  dark?: boolean
   fixed?: boolean
   hover?: boolean
   id?: string

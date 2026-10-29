@@ -1,5 +1,5 @@
 import {computed, type MaybeRef, unref} from 'vue'
-import {toColorClasses, useThemeClasses} from './useThemeClasses'
+import {useThemeClasses} from './useThemeClasses'
 import type {
   LinkIconProps,
   LinkOpacityProps,
@@ -20,8 +20,6 @@ export const useLinkClasses = (
       [`hover:link-${props.opacityHover}`]: props.opacityHover !== undefined,
       [`underline-${props.underlineTheme}`]:
         props.underlineTheme !== null && props.underlineTheme !== undefined,
-      ...toColorClasses('bg', props.underlineBg),
-      ...toColorClasses('fg', props.underlineFg),
       [`underline-offset-${props.underlineOffset}`]: props.underlineOffset !== undefined,
       [`hover:underline-offset-${props.underlineOffsetHover}`]:
         props.underlineOffsetHover !== undefined,

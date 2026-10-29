@@ -164,7 +164,7 @@ describe('badge', () => {
       {name: 'disabled', props: {href: '/abc', disabled: true}, expected: true},
       {name: 'replace', props: {to: '/abc', replace: true}, expected: true},
       {name: 'stretched', props: {href: '/abc', stretched: true}, expected: true},
-      {name: 'opacity', props: {href: '/abc', opacity: '75'}, expected: '75'},
+      {name: 'opacity', props: {href: '/abc', opacity: '70'}, expected: '70'},
       {name: 'opacityHover', props: {href: '/abc', opacityHover: '100'}, expected: '100'},
     ] as const)('passes $name prop to BLink', ({name, props, expected}) => {
       const wrapper = mount(BBadge, {

@@ -75,7 +75,7 @@ export default {
           description: 'Accessibility label for the header close button',
         },
         headerCloseTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: 'secondary',
           description:
             'Theme color to use for the header close button when using a custom close slot',

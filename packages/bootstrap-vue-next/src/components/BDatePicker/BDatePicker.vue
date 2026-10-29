@@ -46,7 +46,7 @@
         </template>
       </slot>
       <DatePickerTrigger
-        class="btn btn-outline-secondary b-date-picker-trigger ms-auto"
+        class="btn btn-outline theme-secondary b-date-picker-trigger ms-auto"
         :class="[props.size ? `btn-${props.size}` : '']"
         :disabled="props.disabled"
       >
@@ -70,7 +70,7 @@
       <DatePickerCalendar v-slot="{weekDays, grid}">
         <slot name="calendar" :week-days="weekDays" :grid="grid">
           <DatePickerHeader class="d-flex align-items-center justify-content-between mb-2">
-            <DatePickerPrev class="btn btn-sm btn-outline-secondary">
+            <DatePickerPrev class="btn btn-sm btn-outline theme-secondary">
               <slot name="prev-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +87,7 @@
               </slot>
             </DatePickerPrev>
             <DatePickerHeading class="fw-semibold" />
-            <DatePickerNext class="btn btn-sm btn-outline-secondary">
+            <DatePickerNext class="btn btn-sm btn-outline theme-secondary">
               <slot name="next-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

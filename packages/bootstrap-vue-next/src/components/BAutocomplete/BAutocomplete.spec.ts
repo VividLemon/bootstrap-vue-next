@@ -1043,7 +1043,7 @@ describe('BAutocomplete', () => {
   // --- Pending delete visual states in non-tags mode ---
 
   describe('pending delete visual states in non-tags mode', () => {
-    it('applies text-body-tertiary class to non-last items during pending delete', async () => {
+    it('applies fg-3 class to non-last items during pending delete', async () => {
       const wrapper = mount(BAutocomplete, {
         props: {
           multiple: true,
@@ -1060,8 +1060,8 @@ describe('BAutocomplete', () => {
       await nextTick()
 
       const spans = wrapper.find('.b-autocomplete-selection').findAll('span')
-      // The first span (non-last selected) should have text-body-tertiary
-      expect(spans[0].classes()).toContain('text-body-tertiary')
+      // The first span (non-last selected) should have fg-3
+      expect(spans[0].classes()).toContain('fg-3')
     })
   })
 })

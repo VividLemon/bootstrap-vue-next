@@ -39,7 +39,7 @@ export default {
             "When set, renders the checkbox as part of a button group (it doesn't enclose the checkbox and label with a div). It is not necessary to set this to true if this is part of a CheckboxGroup as it is handled internally",
         },
         buttonTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: 'secondary',
           description: 'Applies one of the theme colors when in `button` mode',
         },
@@ -155,7 +155,7 @@ export default {
         ]),
         ...pick(buildCommonProps(), ['buttonBg', 'buttonFg']),
         buttonTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: 'secondary',
           description: 'Specifies the theme color to apply to the button style checkboxes',
         },

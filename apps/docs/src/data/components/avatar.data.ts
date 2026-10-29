@@ -77,7 +77,7 @@ export default {
             description: 'Applies a foreground (text) color (`FgColor`) to the badge',
           },
           badgeTheme: {
-            type: 'MaybeArray<ThemeValue> | null',
+            type: 'ThemeProp | null',
             default: 'primary',
             description: 'Applies one of the theme colors to the badge',
           },

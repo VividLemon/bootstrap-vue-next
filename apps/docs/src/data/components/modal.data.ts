@@ -125,7 +125,7 @@ export default {
           description: 'Text to place in the default footer Cancel button',
         },
         cancelTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: 'secondary',
           description: 'Theme color for the default footer Cancel button',
         },
@@ -177,7 +177,7 @@ export default {
           description: 'Accessibility label for the header close button',
         },
         headerCloseTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: 'secondary',
           description: 'Theme color for the header close button when using the header-close slot',
         },
@@ -239,7 +239,7 @@ export default {
           description: 'Text to place in the default footer OK button',
         },
         okTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: 'primary',
           description: 'Theme color for the default footer OK button',
         },

@@ -271,7 +271,7 @@ const showBackdrop = computed(
 
 const hasHeaderCloseSlot = computed(() => !isEmptySlot(slots['header-close']))
 const headerCloseClasses = computed(() => [
-  {'text-reset': !hasHeaderCloseSlot.value},
+  {'fg-reset': !hasHeaderCloseSlot.value},
   props.headerCloseClass,
 ])
 const headerCloseAttrs = computed(() => ({

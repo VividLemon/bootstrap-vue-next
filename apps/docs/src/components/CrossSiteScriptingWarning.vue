@@ -1,17 +1,17 @@
 <template>
-  <BAlert :model-value="true" variant="danger">
+  <BAlert :model-value="true" theme="danger">
     <strong>Be cautious</strong> of placing user supplied content in the <code>html</code> field, as
     it may make you vulnerable to
     <BLink
       target="_blank"
       rel="noopener"
-      variant="info"
+      theme="info"
       href="https://en.wikipedia.org/wiki/Cross-site_scripting"
     >
       <abbr title="Cross Site Scripting Attacks">XSS attacks</abbr> </BLink
     >, if you do not first
     <BLink
-      variant="info"
+      theme="info"
       href="https://en.wikipedia.org/wiki/HTML_sanitization"
       target="_blank"
       rel="noopener"

@@ -80,8 +80,8 @@ import {useToNumber} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {useRtl} from '../../composables/useRtl'
-import {themeToBg, toColorClasses} from '../../composables/useThemeClasses'
-import type {BFormRatingProps, BFormRatingSlots, MaybeArray, Size} from '../../types'
+import {getThemeColor, toColorClasses} from '../../composables/useThemeClasses'
+import type {BFormRatingProps, BFormRatingSlots, Size} from '../../types'
 
 const lengthDefault = 5
 const _props = withDefaults(defineProps<Omit<BFormRatingProps, 'modelValue'>>(), {
@@ -220,7 +220,7 @@ const iconColors = computed(() =>
       return {class: 'is-disabled', style: {}}
     }
     const colorClasses = {
-      ...toColorClasses('fg', themeToBg(props.theme) as MaybeArray<string> | null | undefined),
+      ...toColorClasses('fg', getThemeColor(props.theme)),
       ...toColorClasses('bg', props.bg),
       ...toColorClasses('fg', props.fg),
     }

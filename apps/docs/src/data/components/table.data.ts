@@ -96,11 +96,6 @@ export default {
           default: false,
           description: 'When set, the table caption will appear above the table',
         },
-        dark: {
-          type: 'boolean',
-          default: false,
-          description: 'Places the table in dark mode',
-        },
         fixed: {
           type: 'boolean',
           default: false,
@@ -210,24 +205,24 @@ export default {
           description: 'Enable the footer of the table, and clone the header content by default',
         },
         footRowTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
           description:
             'Apply a theme color to the tr element in the tfoot. Falls back to head-row-theme',
         },
         footTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
           description:
             'Apply a theme color to the foot, falls back to head-theme if that prop is specified. May take precedence over foot-row-theme',
         },
         headRowTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
           description: 'Apply a theme color to the tr element in the thead',
         },
         headTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
           description: 'Apply a theme color to the head. May take precedence over head-row-theme',
         },
@@ -754,7 +749,7 @@ export default {
           default: true,
         },
         selectionTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: 'primary',
           description:
             'Theme color to set selected rows to. Use any of the registered theme colors. Set to `null` to not apply a theme',
@@ -1178,7 +1173,7 @@ export default {
         props: {
           ...pick(buildCommonProps(), ['bg', 'fg']),
           theme: {
-            type: 'MaybeArray<ThemeValue> | null',
+            type: 'ThemeProp | null',
             default: null,
           },
         } satisfies PropRecord<keyof BTheadProps>,
@@ -1195,7 +1190,7 @@ export default {
         props: {
           ...pick(buildCommonProps(), ['bg', 'fg']),
           theme: {
-            type: 'MaybeArray<ThemeValue> | null',
+            type: 'ThemeProp | null',
             default: null,
           },
         } satisfies PropRecord<keyof BTrProps>,

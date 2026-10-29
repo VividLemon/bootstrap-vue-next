@@ -2,7 +2,7 @@
   <!-- #region template -->
   <BLink
     :underline-offset="3"
-    underline-opacity="25"
+    underline-opacity="20"
     underline-offset-hover="1"
     underline-opacity-hover="100"
   >

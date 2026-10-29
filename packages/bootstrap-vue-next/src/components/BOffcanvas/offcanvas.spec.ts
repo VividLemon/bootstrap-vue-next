@@ -274,12 +274,12 @@ describe('offcanvas', () => {
       expect($close.props('type')).toBe('button')
     })
 
-    it('BCloseButton has text-reset class', () => {
+    it('BCloseButton has fg-reset class', () => {
       const wrapper = mount(BOffcanvas, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $close = wrapper.findComponent(BCloseButton)
-      expect($close.classes()).toContain('text-reset')
+      expect($close.classes()).toContain('fg-reset')
     })
 
     it('BCloseButton has default aria-label Close', () => {

@@ -392,10 +392,10 @@ describe('breadcrumb-item', () => {
 
   it('gives prop opacity to blink', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {opacity: 75},
+      props: {opacity: 70},
     })
     const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('opacity')).toBe(75)
+    expect($blink.props('opacity')).toBe(70)
   })
 
   it('gives prop opacityHover to blink', () => {

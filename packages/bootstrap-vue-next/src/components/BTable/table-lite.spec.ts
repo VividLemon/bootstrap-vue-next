@@ -1569,13 +1569,6 @@ describe('btablelite', () => {
       expect(wrapper.get('table').classes()).toContain('table-hover')
     })
 
-    it('passes dark prop to BTableSimple', () => {
-      const wrapper = mount(BTableLite, {
-        props: {items: [{a: 1}], dark: true},
-      })
-      expect(wrapper.get('table').classes()).toContain('table-dark')
-    })
-
     it('passes small prop to BTableSimple', () => {
       const wrapper = mount(BTableLite, {
         props: {items: [{a: 1}], small: true},

@@ -316,7 +316,6 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   bordered: undefined,
   borderless: undefined,
   captionTop: undefined,
-  dark: undefined,
   hover: undefined,
   id: undefined,
   noBorderCollapse: undefined,

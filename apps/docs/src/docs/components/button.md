@@ -62,7 +62,7 @@ padding and size of a button. Combine it with `theme` to color it.
 
 <<< DEMO ./demo/ButtonLinkVariant.vue#template{vue-html}
 
-**Tip:** remove the hover underline from a link variant button by setting `underline-opacity="0"`.
+**Tip:** remove the hover underline from a link variant button by adding the `text-decoration-none` class.
 
 ## Colors in other components
 

@@ -49,7 +49,7 @@
         <div class="b-form-file-text">
           <slot name="file-name" :files="selectedFiles" :names="fileNames">
             <span v-if="hasFiles">{{ formattedFileNames }}</span>
-            <span v-else-if="hasPlaceholderSlot || props.placeholder" class="text-muted">
+            <span v-else-if="hasPlaceholderSlot || props.placeholder" class="fg-secondary">
               <slot name="placeholder">{{ props.placeholder }}</slot>
             </span>
           </slot>
@@ -119,10 +119,10 @@
     <!-- External file display (when showFileNames is true and not plain) -->
     <div v-if="showExternalDisplay" class="b-form-file-display mt-2">
       <slot name="file-name" :files="selectedFiles" :names="fileNames">
-        <div v-if="hasFiles" class="small text-muted">
+        <div v-if="hasFiles" class="small fg-secondary">
           {{ formattedFileNames }}
         </div>
-        <div v-else-if="hasPlaceholderSlot || props.placeholder" class="small text-muted">
+        <div v-else-if="hasPlaceholderSlot || props.placeholder" class="small fg-secondary">
           <slot name="placeholder">
             {{ props.placeholder }}
           </slot>

@@ -101,7 +101,7 @@ A single string works exactly as before.
 
 <<< DEMO ./demo/ColorArrays.vue#template{vue-html}
 
-The `theme` prop also accepts the `contrast` modifier (type `ThemeValue`). The `underlineTheme` and spinner `theme` props accept a single theme only.
+The `theme` prop also accepts the theme modifiers `contrast`, `subtle`, `muted`, `border` and `reset` (type `ThemeProp`). In an array, put the theme color first, followed by modifiers. Arrays stored in a variable need `as const` or a `ThemeProp` annotation. The `underlineTheme` and spinner `theme` props accept a single theme only.
 
 ## Prop interactions
 
@@ -137,7 +137,7 @@ Use `theme`. This replaces `.alert-<x>`, `.badge`/`.text-bg-<x>`, `.list-group-i
 Use `theme` on tables, columns (field `theme`), and the helper components `BThead`, `BTfoot`, `BTr`, `BTd` and `BTh`.
 Per-item overrides use the item properties `_rowTheme` and `_cellThemes`. All map to `.theme-<theme>` (replacing `.table-<x>`).
 Table-level props are `theme`, `head-theme`, `head-row-theme`, `foot-theme`, `foot-row-theme` and `selection-theme`.
-The `dark` prop still adds `.table-dark`.
+The `dark` prop has been removed (v6 removed `.table-dark`). Use the [`v-b-color-mode`](/docs/directives/BColorMode) directive or the [`useColorMode`](/docs/composables/useColorMode) composable to place a table in dark mode.
 
 ### Links
 

@@ -3,7 +3,7 @@ import {computed, type MaybeRef, readonly, toRef, toValue} from 'vue'
 import {useAriaInvalid} from './useAriaInvalid'
 import {useStateClass} from './useStateClass'
 import type {Size} from '../types/Size'
-import type {BgColor, ButtonVariant, FgColor, MaybeArray, ThemeValue} from '../types/ColorTypes'
+import type {BgColor, ButtonVariant, FgColor, MaybeArray, ThemeProp} from '../types/ColorTypes'
 import {useButtonThemeClasses} from './useThemeClasses'
 import type {ValidationState} from '../types/CommonTypes'
 
@@ -59,7 +59,7 @@ interface LabelClasesItemsInput {
   plain?: boolean
   button?: boolean
   buttonVariant?: ButtonVariant | null
-  buttonTheme?: MaybeArray<ThemeValue> | null
+  buttonTheme?: ThemeProp | null
   buttonBg?: MaybeArray<BgColor> | null
   buttonFg?: MaybeArray<FgColor> | null
   size?: Size

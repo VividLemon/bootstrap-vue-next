@@ -1,5 +1,5 @@
 <template>
-  <BAlert variant="warning" show class="deprecation-warning">
+  <BAlert theme="warning" show class="deprecation-warning">
     <strong v-html="deprecatedLabel" /> {{ reasonText }}.
     <BLink :href="learnMoreUrl">Learn more about deprecation reasons</BLink
     ><template v-if="$slots.default"> – <slot /></template>
@@ -7,9 +7,9 @@
 </template>
 
 <script setup lang="ts">
-import {computed} from 'vue'
-import {withBase} from 'vitepress'
-import {DEPRECATION_REASON_TEXT, DeprecationReason} from '../types/deprecation'
+import { computed } from 'vue'
+import { withBase } from 'vitepress'
+import { DEPRECATION_REASON_TEXT, DeprecationReason } from '../types/deprecation'
 
 /**
  * Component for displaying deprecation warnings throughout the documentation.

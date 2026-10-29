@@ -253,7 +253,7 @@ const commonProps = () =>
       description: 'Applies a foreground (text) color (`FgColor`) to the body',
     },
     bodyTheme: {
-      type: 'MaybeArray<ThemeValue> | null',
+      type: 'ThemeProp | null',
       default: undefined,
       description: 'Applies one of the theme colors (`theme-*` class) to the body',
     },
@@ -321,7 +321,7 @@ const commonProps = () =>
       description: 'Applies a foreground (text) color (`FgColor`) to the footer',
     },
     footerTheme: {
-      type: 'MaybeArray<ThemeValue> | null',
+      type: 'ThemeProp | null',
       default: undefined,
       description: 'Applies one of the theme colors (`theme-*` class) to the footer',
     },
@@ -367,7 +367,7 @@ const commonProps = () =>
       description: 'Applies a foreground (text) color (`FgColor`) to the header',
     },
     headerTheme: {
-      type: 'MaybeArray<ThemeValue> | null',
+      type: 'ThemeProp | null',
       default: undefined,
       description: 'Applies one of the theme colors (`theme-*` class) to the header',
     },
@@ -584,7 +584,7 @@ const commonProps = () =>
       description: 'Field name in the `options` array that should be used for the value',
     },
     theme: {
-      type: 'MaybeArray<ThemeValue> | null',
+      type: 'ThemeProp | null',
       default: null,
       description:
         'Applies one of the theme colors (`theme-*` class) to the component. Custom themes can be registered by augmenting `ThemeColors`. When implemented `bg` and `fg` take precedence',
@@ -621,7 +621,7 @@ const commonProps = () =>
       description: 'Sets the `aria-label` attribute for the close button',
     },
     closeTheme: {
-      type: 'MaybeArray<ThemeValue> | null',
+      type: 'ThemeProp | null',
       default: 'secondary',
       description: 'Sets the theme color for the close button',
     },

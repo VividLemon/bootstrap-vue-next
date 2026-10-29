@@ -38,7 +38,6 @@ export const bTableSimpleProps = Object.freeze(
     borderless: 0,
     border: 0,
     captionTop: 0,
-    dark: 0,
     fixed: 0,
     hover: 0,
     id: 0,
