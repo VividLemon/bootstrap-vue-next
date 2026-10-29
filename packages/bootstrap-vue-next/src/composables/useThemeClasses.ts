@@ -1,11 +1,12 @@
 import {computed, type MaybeRef, unref} from 'vue'
 import type {
-  BgColor,
   BorderColor,
   ButtonVariant,
   ColorExtendables,
   MaybeArray,
-  ThemeValue,
+  ThemeColor,
+  ThemeModifier,
+  ThemeProp,
 } from '../types/ColorTypes'
 
 /**
@@ -25,14 +26,24 @@ export const toColorClasses = (
   }, {})
 }
 
+const themeModifiers: ReadonlySet<string> = new Set<ThemeModifier>([
+  'contrast',
+  'subtle',
+  'muted',
+  'border',
+  'reset',
+])
+
 /**
- * Converts theme values to bg values. Theme names are valid bg values; modifiers such as `contrast` are dropped
+ * Returns the theme color of a `theme` prop, dropping modifiers such as `contrast`.
+ * Theme colors are also valid `bg`/`fg` values
  */
-export const themeToBg = (
-  theme: MaybeArray<ThemeValue> | null | undefined
-): MaybeArray<BgColor> | null | undefined => {
-  if (Array.isArray(theme)) return theme.filter((t) => t !== 'contrast') as BgColor[]
-  return theme === 'contrast' ? null : (theme as BgColor | null | undefined)
+export const getThemeColor = (
+  theme: ThemeProp | null | undefined
+): ThemeColor | null | undefined => {
+  if (theme === null || theme === undefined) return theme
+  const first = typeof theme === 'string' ? theme : theme[0]
+  return first === undefined || themeModifiers.has(first) ? null : (first as ThemeColor)
 }
 
 /**

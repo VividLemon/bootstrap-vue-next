@@ -66,7 +66,7 @@
       :outlined="outlined"
       :small="small"
       :hover="hover"
-      :dark="dark"
+      v-b-color-mode="dark ? 'dark' : 'light'"
       :fixed="fixed"
       :foot-clone="footClone"
       :no-border-collapse="noCollapse"

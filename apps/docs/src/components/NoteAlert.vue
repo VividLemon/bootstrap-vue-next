@@ -1,5 +1,5 @@
 <template>
-  <BAlert variant="info" :model-value="true">
+  <BAlert theme="info" :model-value="true">
     {{ withNoteTextPrepend === true ? 'Note: ' : '' }}<slot />
   </BAlert>
 </template>
@@ -9,6 +9,6 @@ withDefaults(
   defineProps<{
     withNoteTextPrepend?: boolean
   }>(),
-  {withNoteTextPrepend: true}
+  { withNoteTextPrepend: true },
 )
 </script>

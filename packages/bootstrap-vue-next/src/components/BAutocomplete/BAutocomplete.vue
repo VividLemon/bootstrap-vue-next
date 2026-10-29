@@ -52,7 +52,7 @@
               v-for="(opt, i) in selectedOptions"
               :key="optionKey(opt, i)"
               :class="{
-                'text-body-tertiary': pendingDelete && !isLastSelectedOption(opt, i),
+                'fg-3': pendingDelete && !isLastSelectedOption(opt, i),
               }"
               >{{ opt.text }}<span v-if="i < selectedOptions.length - 1">,&nbsp;</span></span
             >

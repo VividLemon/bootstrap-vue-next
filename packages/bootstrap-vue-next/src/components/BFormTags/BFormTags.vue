@@ -156,12 +156,10 @@
         <div v-if="isInvalid" class="d-block invalid-feedback">
           {{ props.invalidTagText }}: {{ inputValue }}
         </div>
-        <small v-if="isDuplicate" class="form-text text-body-secondary"
+        <small v-if="isDuplicate" class="form-text fg-2"
           >{{ props.duplicateTagText }}: {{ inputValue }}</small
         >
-        <small v-if="isLimitReached" class="form-text text-body-secondary">
-          {{ props.limitTagsText }}</small
-        >
+        <small v-if="isLimitReached" class="form-text fg-2"> {{ props.limitTagsText }}</small>
       </div>
     </slot>
     <template v-if="props.name">

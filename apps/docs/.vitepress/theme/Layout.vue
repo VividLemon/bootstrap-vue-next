@@ -91,10 +91,9 @@
         <div class="px-3">
           <BButton
             v-b-toggle.sidebar-menu
-            class="otp-menu-toggle"
+            class="otp-menu-toggle text-decoration-none"
             variant="link"
             size="sm"
-            underline-opacity="0"
           >
             <List aria-hidden />
             {{ isMigrationPage ? 'Browse migrations' : 'Browse docs' }}
@@ -103,10 +102,9 @@
         <div class="px-3 ms-auto">
           <BButton
             v-b-toggle.otp-menu
-            class="otp-menu-toggle"
+            class="otp-menu-toggle text-decoration-none"
             variant="link"
             size="sm"
-            underline-opacity="0"
           >
             On this page
             <ChevronRight aria-hidden />

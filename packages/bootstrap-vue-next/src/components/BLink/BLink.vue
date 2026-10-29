@@ -55,8 +55,6 @@ const _props = withDefaults(defineProps<BLinkProps>(), {
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
   underlineTheme: null,
-  underlineBg: null,
-  underlineFg: null,
   theme: null,
   bg: null,
   fg: null,

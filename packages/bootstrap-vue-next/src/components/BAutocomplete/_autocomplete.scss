@@ -15,8 +15,8 @@
   font-size: inherit;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--bs-body-color);
-  background-color: var(--bs-body-bg);
+  color: var(--bs-fg-body);
+  background-color: var(--bs-bg-body);
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-right: 0;
   border-radius: var(--bs-border-radius) 0 0 var(--bs-border-radius);
@@ -77,8 +77,8 @@
 
 .b-autocomplete-tag-pending-delete {
   background-color: transparent !important;
-  color: var(--bs-secondary) !important;
-  border: var(--bs-border-width) solid var(--bs-secondary);
+  color: var(--bs-secondary-fg) !important;
+  border: var(--bs-border-width) solid var(--bs-secondary-border);
   transition:
     background-color 0.15s ease-in-out,
     color 0.15s ease-in-out;
@@ -173,7 +173,7 @@
 .b-autocomplete-empty {
   padding: 0.5rem 1rem;
   text-align: center;
-  color: var(--bs-secondary-color);
+  color: var(--bs-fg-2);
 }
 
 .b-autocomplete-item {
@@ -183,8 +183,8 @@
   cursor: pointer;
 
   &[data-highlighted] {
-    background-color: var(--bs-dropdown-link-hover-bg);
-    color: var(--bs-dropdown-link-hover-color);
+    background-color: var(--bs-menu-item-hover-bg);
+    color: var(--bs-menu-item-hover-color);
   }
 
   &[data-state="checked"] {

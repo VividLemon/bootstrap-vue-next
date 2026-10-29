@@ -280,10 +280,10 @@ describe('link', () => {
 
   it('has class link-{value} when opacity is set', () => {
     const wrapper = mount(BLink, {
-      props: {opacity: 75 as const},
+      props: {opacity: 70 as const},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('link-75')
+    expect(wrapper.classes()).toContain('link-70')
   })
 
   it('has class hover:link-{value} when opacityHover is set', () => {
@@ -331,10 +331,10 @@ describe('link', () => {
 
   it('has class hover:underline-{value} when underlineOpacityHover is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineOpacityHover: 75 as const},
+      props: {underlineOpacityHover: 70 as const},
       global: {plugins: [router]},
     })
-    expect(wrapper.classes()).toContain('hover:underline-75')
+    expect(wrapper.classes()).toContain('hover:underline-70')
     expect(wrapper.classes()).not.toContain('link-underline')
   })
 

@@ -77,8 +77,6 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
   underlineTheme: null,
-  underlineBg: null,
-  underlineFg: null,
   bg: null,
   fg: null,
   // End link props
@@ -130,8 +128,6 @@ const {classes: linkValueClasses} = useLinkClasses(
           underlineOpacity: props.underlineOpacity,
           underlineOpacityHover: props.underlineOpacityHover,
           underlineTheme: props.underlineTheme,
-          underlineBg: props.underlineBg,
-          underlineFg: props.underlineFg,
           theme: null,
           bg: props.bg,
           fg: props.fg,

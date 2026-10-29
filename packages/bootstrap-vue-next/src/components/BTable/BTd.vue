@@ -36,7 +36,8 @@ const computedClasses = computed(() => [
   toColorClasses('fg', props.fg),
   {
     'b-table-sticky-column': props.stickyColumn,
-    'table-b-table-default': props.stickyColumn && props.theme === null,
+    'table-b-table-default':
+      props.stickyColumn && props.theme === null && props.bg === null && props.fg === null,
   },
 ])
 </script>

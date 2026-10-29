@@ -202,7 +202,6 @@ const _props = withDefaults(
     bordered: undefined,
     borderless: undefined,
     captionTop: undefined,
-    dark: undefined,
     hover: undefined,
     id: undefined,
     noBorderCollapse: undefined,

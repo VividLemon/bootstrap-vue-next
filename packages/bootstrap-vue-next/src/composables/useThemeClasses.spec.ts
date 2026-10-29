@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 import {computed, ref} from 'vue'
-import {useButtonThemeClasses, useThemeClasses} from './useThemeClasses'
+import {getThemeColor, useButtonThemeClasses, useThemeClasses} from './useThemeClasses'
 
 describe('useThemeClasses', () => {
   it('returns class for theme', () => {
@@ -92,5 +92,19 @@ describe('useButtonThemeClasses', () => {
     theme.value = 'danger'
     expect(classes.value['theme-danger']).toBe(true)
     expect(classes.value).not.toHaveProperty('theme-primary')
+  })
+})
+
+describe('getThemeColor', () => {
+  it.each([
+    {theme: 'primary', expected: 'primary'},
+    {theme: 'contrast', expected: null},
+    {theme: ['danger', 'subtle', 'border'], expected: 'danger'},
+    {theme: ['subtle', 'border'], expected: null},
+    {theme: [], expected: null},
+    {theme: null, expected: null},
+    {theme: undefined, expected: undefined},
+  ] as const)('returns $expected for theme=$theme', ({theme, expected}) => {
+    expect(getThemeColor(theme)).toBe(expected)
   })
 })

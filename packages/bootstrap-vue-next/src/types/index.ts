@@ -55,6 +55,7 @@ export type {
   ThemeColor,
   ThemeModifier,
   ThemeModifiers,
+  ThemeProp,
   ThemeValue,
   ThemeColors,
 } from './ColorTypes'

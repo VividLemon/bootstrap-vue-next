@@ -12,7 +12,7 @@ describe('form-tag', () => {
       expect(wrapper.element.tagName).toBe('SPAN')
     })
 
-    it.each(['badge', 'b-form-tag', 'd-inline-flex', 'align-items-center', 'mw-100'])(
+    it.each(['badge', 'b-form-tag', 'd-inline-flex', 'align-items-center', 'max-w-100'])(
       'has static class %s',
       (className) => {
         const wrapper = mount(BFormTag)

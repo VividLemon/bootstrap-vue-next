@@ -143,8 +143,8 @@
 .table.b-table > tbody > tr > .table-b-table-default,
 .table.b-table > tfoot > tr > .table-b-table-default,
 .table.b-table > thead > tr > .table-b-table-default {
-  color: #212529;
-  background-color: #fff;
+  color: var(--bs-fg-body);
+  background-color: var(--bs-bg-body);
 }
 
 // --- Header sort styling ---
@@ -272,15 +272,15 @@ $b-table-sort-icon-bg-descending-dark: url("data:image/svg+xml,<svg xmlns='http:
     @include table-sort-icons-dark;
   }
 
-  // Apply dark mode icons when thead/tfoot explicitly has table-dark class
-  > thead.table-dark,
-  > tfoot.table-dark {
+  // Apply dark mode icons when thead/tfoot explicitly uses the dark color mode
+  > thead[data-bs-theme="dark"],
+  > tfoot[data-bs-theme="dark"] {
     @include table-sort-icons-dark-inner;
   }
 }
 
-// Apply dark mode icons when entire table has table-dark class
-.table.b-table.table-dark:not(.b-table-no-sort-icon) {
+// Apply dark mode icons when entire table uses the dark color mode
+.table.b-table[data-bs-theme="dark"]:not(.b-table-no-sort-icon) {
   @include table-sort-icons-dark;
 }
 

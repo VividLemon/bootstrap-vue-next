@@ -1009,10 +1009,10 @@ describe('form-file', () => {
       expect($text.text()).toContain('Select files...')
     })
 
-    it('placeholder has text-muted class', () => {
+    it('placeholder has fg-secondary class', () => {
       const wrapper = mount(BFormFile, {props: {placeholder: 'Choose file'}})
       const $span = wrapper.find('.b-form-file-text span')
-      expect($span.classes()).toContain('text-muted')
+      expect($span.classes()).toContain('fg-secondary')
     })
 
     it('placeholder is replaced by file name when file is selected', async () => {

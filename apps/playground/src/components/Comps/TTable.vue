@@ -115,8 +115,8 @@
           :fields="objectTableDefinitions"
           striped
           hover
+          v-b-color-mode="'dark'"
           foot-clone
-          dark
         >
           <template #thead-top>
             <tr class="my">

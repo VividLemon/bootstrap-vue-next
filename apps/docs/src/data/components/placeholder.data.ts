@@ -66,7 +66,7 @@ export default {
           default: undefined,
         },
         footerTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
         },
         footerWidth: {
@@ -82,7 +82,7 @@ export default {
           default: undefined,
         },
         headerTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
         },
         headerWidth: {
@@ -126,7 +126,7 @@ export default {
           default: undefined,
         },
         theme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
         },
       } satisfies PropRecord<keyof BPlaceholderCardProps>,
@@ -205,7 +205,7 @@ export default {
           default: undefined,
         },
         footerTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
         },
         headerAnimation: {
@@ -225,7 +225,7 @@ export default {
           default: undefined,
         },
         headerTheme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
         },
         noHeader: {
@@ -245,7 +245,7 @@ export default {
           default: undefined,
         },
         theme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: undefined,
         },
       } satisfies PropRecord<keyof BPlaceholderTableProps>,
@@ -282,7 +282,7 @@ export default {
           default: 'div',
         },
         theme: {
-          type: 'MaybeArray<ThemeValue> | null',
+          type: 'ThemeProp | null',
           default: 'primary',
         },
         width: {

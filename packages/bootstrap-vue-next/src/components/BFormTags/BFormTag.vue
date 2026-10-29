@@ -3,7 +3,7 @@
     :is="props.tag"
     :id="computedId"
     :title="tagText"
-    class="badge b-form-tag d-inline-flex align-items-center mw-100"
+    class="badge b-form-tag d-inline-flex align-items-center max-w-100"
     :class="computedClasses"
     :aria-labelledby="taglabelId"
   >

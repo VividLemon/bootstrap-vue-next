@@ -24,9 +24,19 @@ export type ThemeColor = keyof ThemeColors
 /** Modifiers that stack with a theme, rendered as `.theme-<modifier>` */
 export interface ThemeModifiers {
   contrast: unknown
+  subtle: unknown
+  muted: unknown
+  border: unknown
+  reset: unknown
 }
 export type ThemeModifier = keyof ThemeModifiers
 export type ThemeValue = ThemeColor | ThemeModifier
+/**
+ * A theme color or modifier, or a list where an optional theme color comes first followed by modifiers.
+ * The tuple form prevents combining two theme colors, e.g. `['danger', 'subtle', 'border']`
+ */
+export type ThemeProp =
+  ThemeValue | readonly [ThemeColor, ...ThemeModifier[]] | readonly ThemeModifier[]
 
 /** A single value or a list of values, rendered as one class per value */
 export type MaybeArray<T> = T | readonly T[]
@@ -81,7 +91,7 @@ export type ButtonVariant = keyof BaseButtonVariant
 
 /** Props shared by components that can be themed or colored with utilities */
 export interface ColorExtendables {
-  theme?: MaybeArray<ThemeValue> | null
+  theme?: ThemeProp | null
   bg?: MaybeArray<BgColor> | null
   fg?: MaybeArray<FgColor> | null
 }
@@ -90,36 +100,34 @@ export interface ColorExtendables {
 // when extracting defineProps, so these concrete interfaces are needed for component prop inference.
 export interface UnderlineColorExtendables {
   underlineTheme?: ThemeColor | null
-  underlineBg?: MaybeArray<BgColor> | null
-  underlineFg?: MaybeArray<FgColor> | null
 }
 
 export interface ButtonColorExtendables {
-  buttonTheme?: MaybeArray<ThemeValue> | null
+  buttonTheme?: ThemeProp | null
   buttonBg?: MaybeArray<BgColor> | null
   buttonFg?: MaybeArray<FgColor> | null
 }
 
 export interface HeaderColorExtendables {
-  headerTheme?: MaybeArray<ThemeValue> | null
+  headerTheme?: ThemeProp | null
   headerBg?: MaybeArray<BgColor> | null
   headerFg?: MaybeArray<FgColor> | null
 }
 
 export interface AddButtonColorExtendables {
-  addButtonTheme?: MaybeArray<ThemeValue> | null
+  addButtonTheme?: ThemeProp | null
   addButtonBg?: MaybeArray<BgColor> | null
   addButtonFg?: MaybeArray<FgColor> | null
 }
 
 export interface TagColorExtendables {
-  tagTheme?: MaybeArray<ThemeValue> | null
+  tagTheme?: ThemeProp | null
   tagBg?: MaybeArray<BgColor> | null
   tagFg?: MaybeArray<FgColor> | null
 }
 
 export interface HeaderCloseColorExtendables {
-  headerCloseTheme?: MaybeArray<ThemeValue> | null
+  headerCloseTheme?: ThemeProp | null
   headerCloseBg?: MaybeArray<BgColor> | null
   headerCloseFg?: MaybeArray<FgColor> | null
 }
@@ -131,67 +139,67 @@ export interface SpinnerColorExtendables {
 }
 
 export interface CloseColorExtendables {
-  closeTheme?: MaybeArray<ThemeValue> | null
+  closeTheme?: ThemeProp | null
   closeBg?: MaybeArray<BgColor> | null
   closeFg?: MaybeArray<FgColor> | null
 }
 
 export interface BodyColorExtendables {
-  bodyTheme?: MaybeArray<ThemeValue> | null
+  bodyTheme?: ThemeProp | null
   bodyBg?: MaybeArray<BgColor> | null
   bodyFg?: MaybeArray<FgColor> | null
 }
 
 export interface FooterColorExtendables {
-  footerTheme?: MaybeArray<ThemeValue> | null
+  footerTheme?: ThemeProp | null
   footerBg?: MaybeArray<BgColor> | null
   footerFg?: MaybeArray<FgColor> | null
 }
 
 export interface FootRowColorExtendables {
-  footRowTheme?: MaybeArray<ThemeValue> | null
+  footRowTheme?: ThemeProp | null
   footRowBg?: MaybeArray<BgColor> | null
   footRowFg?: MaybeArray<FgColor> | null
 }
 
 export interface FootColorExtendables {
-  footTheme?: MaybeArray<ThemeValue> | null
+  footTheme?: ThemeProp | null
   footBg?: MaybeArray<BgColor> | null
   footFg?: MaybeArray<FgColor> | null
 }
 
 export interface HeadRowColorExtendables {
-  headRowTheme?: MaybeArray<ThemeValue> | null
+  headRowTheme?: ThemeProp | null
   headRowBg?: MaybeArray<BgColor> | null
   headRowFg?: MaybeArray<FgColor> | null
 }
 
 export interface HeadColorExtendables {
-  headTheme?: MaybeArray<ThemeValue> | null
+  headTheme?: ThemeProp | null
   headBg?: MaybeArray<BgColor> | null
   headFg?: MaybeArray<FgColor> | null
 }
 
 export interface SelectionColorExtendables {
-  selectionTheme?: MaybeArray<ThemeValue> | null
+  selectionTheme?: ThemeProp | null
   selectionBg?: MaybeArray<BgColor> | null
   selectionFg?: MaybeArray<FgColor> | null
 }
 
 export interface SplitColorExtendables {
-  splitTheme?: MaybeArray<ThemeValue> | null
+  splitTheme?: ThemeProp | null
   splitBg?: MaybeArray<BgColor> | null
   splitFg?: MaybeArray<FgColor> | null
 }
 
 export interface CancelColorExtendables {
-  cancelTheme?: MaybeArray<ThemeValue> | null
+  cancelTheme?: ThemeProp | null
   cancelBg?: MaybeArray<BgColor> | null
   cancelFg?: MaybeArray<FgColor> | null
 }
 
 export interface OkColorExtendables {
-  okTheme?: MaybeArray<ThemeValue> | null
+  okTheme?: ThemeProp | null
   okBg?: MaybeArray<BgColor> | null
   okFg?: MaybeArray<FgColor> | null
 }

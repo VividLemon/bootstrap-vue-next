@@ -52,12 +52,12 @@ export const linkProps = {
       'To improve the responsiveness of your Nuxt.js applications, when the link will be displayed within the viewport, Nuxt.js will automatically prefetch the code splitted page. Setting `no-prefetch` will disabled this feature for the specific link',
   },
   opacity: {
-    type: "10 | 25 | 50 | 75 | 100 | '10' | '25' | '50' | '75' | '100'",
+    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
     default: undefined,
     description: 'Change the alpha opacity of the link `rgba()` color value',
   },
   opacityHover: {
-    type: "10 | 25 | 50 | 75 | 100 | '10' | '25' | '50' | '75' | '100'",
+    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
     default: undefined,
     description: 'Change the alpha opacity of the link `rgba()` color value on hover',
   },
@@ -129,24 +129,14 @@ export const linkProps = {
     description: 'Change the distance of the underline from the bottom of the link text on hover',
   },
   underlineOpacity: {
-    type: "0 | 10 | 25 | 50 | 75 | 100 | '0' | '10' | '25' | '50' | '75' | '100'",
+    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
     default: undefined,
     description: "Set's the opacity of the link's underline",
   },
   underlineOpacityHover: {
-    type: "0 | 10 | 25 | 50 | 75 | 100 | '0' | '10' | '25' | '50' | '75' | '100'",
+    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
     default: undefined,
     description: "Set's the opacity of the link's underline on hover",
-  },
-  underlineBg: {
-    type: 'MaybeArray<BgColor> | null',
-    default: null,
-    description: 'Applies a background color to the link underline',
-  },
-  underlineFg: {
-    type: 'MaybeArray<FgColor> | null',
-    default: null,
-    description: 'Applies a foreground color to the link underline',
   },
   underlineTheme: {
     type: 'ThemeColor | null',
@@ -154,7 +144,7 @@ export const linkProps = {
     description: 'Set the theme color for the link underline independently of the link text',
   },
   theme: {
-    type: 'MaybeArray<ThemeValue> | null',
+    type: 'ThemeProp | null',
     default: null,
     description: 'Set the theme color for the link',
   },

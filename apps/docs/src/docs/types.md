@@ -225,7 +225,7 @@ Shared props of components that can be themed or colored with utilities.
 
 ```ts
 type ColorExtendables = {
-  theme?: MaybeArray<ThemeValue> | null
+  theme?: ThemeProp | null
   bg?: MaybeArray<BgColor> | null
   fg?: MaybeArray<FgColor> | null
 }
@@ -356,8 +356,8 @@ type InputType =
 <BCard class="bg-body-tertiary">
 
 ```ts
-type LinkOpacity = 10 | 25 | 50 | 75 | 100 | '10' | '25' | '50' | '75' | '100'
-type UnderlineOpacity = 0 | '0' | LinkOpacity
+type LinkOpacity = ColorOpacity
+type UnderlineOpacity = ColorOpacity
 type UnderlineOffset = 1 | 2 | 3 | '1' | '2' | '3'
 ```
 
@@ -793,7 +793,34 @@ A theme color or a theme modifier. Modifiers stack with a theme, for example `:t
 <BCard class="bg-body-tertiary">
 
 ```ts
-type ThemeValue = ThemeColor | 'contrast'
+type ThemeModifier = 'contrast' | 'subtle' | 'muted' | 'border' | 'reset'
+type ThemeValue = ThemeColor | ThemeModifier
+```
+
+</BCard>
+
+## ThemeProp
+
+The type of `theme` props. A single theme color or modifier, or an array where an optional theme color comes **first**, followed by modifiers. Two theme colors in one array are rejected by the type checker.
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type ThemeProp =
+  | ThemeValue
+  | readonly [ThemeColor, ...ThemeModifier[]]
+  | readonly ThemeModifier[]
+```
+
+</BCard>
+
+Arrays written inline in a template are checked directly. An array stored in a variable first must use `as const` or a `ThemeProp` annotation, otherwise TypeScript widens it to `string[]`:
+
+<BCard class="bg-body-tertiary">
+
+```ts
+const theme = ['danger', 'subtle'] as const
+const other: ThemeProp = ['danger', 'subtle']
 ```
 
 </BCard>
