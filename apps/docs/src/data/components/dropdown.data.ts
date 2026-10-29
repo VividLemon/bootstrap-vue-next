@@ -57,7 +57,7 @@ export default {
               default: 'hr',
             },
           }),
-          ['tag', 'variant', 'wrapperAttrs'],
+          ['bg', 'fg', 'tag', 'theme', 'wrapperAttrs'],
         ),
         dividerClass: {
           type: 'ClassValue',
@@ -89,7 +89,15 @@ export default {
               default: 'header',
             },
           }),
-          ['ariaDescribedby', 'headerClass', 'headerTag', 'headerVariant', 'id'],
+          [
+            'ariaDescribedby',
+            'headerBg',
+            'headerClass',
+            'headerFg',
+            'headerTag',
+            'headerTheme',
+            'id',
+          ],
         ),
         header: {
           type: 'string',
@@ -109,7 +117,7 @@ export default {
     },
     BDropdownHeader: {
       props: {
-        ...pick(buildCommonProps(), ['headerClass', 'tag', 'variant', 'wrapperAttrs']),
+        ...pick(buildCommonProps(), ['bg', 'fg', 'headerClass', 'tag', 'theme', 'wrapperAttrs']),
         text: {
           type: 'string',
           default: undefined,
@@ -158,8 +166,10 @@ export default {
         ...pick(buildCommonProps(), [
           'active',
           'activeClass',
+          'bg',
           'disabled',
-          'variant',
+          'fg',
+          'theme',
           'wrapperAttrs',
         ]),
         buttonClass: {
@@ -193,7 +203,7 @@ export default {
               default: 'span',
             },
           }),
-          ['tag', 'variant', 'wrapperAttrs'],
+          ['fg', 'bg', 'tag', 'theme', 'wrapperAttrs'],
         ),
         text: {
           type: 'string',

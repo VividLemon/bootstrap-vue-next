@@ -11,6 +11,7 @@ match:
   - caption-html
   - foot-variant
   - head-variant
+  - dark
   - <BTableSimple>
 tags:
   - migration
@@ -41,6 +42,14 @@ Use `table-attrs` to apply additional attributes to the `<table>` element in res
 
 See the [v-html](/docs/migration-data/patterns/v-html-props) section for information on deprecation of the `caption-html` prop.
 
+The `dark` prop has been removed, because Bootstrap v6 no longer ships `.table-dark`. Apply the dark color mode
+with the [`v-b-color-mode`](/docs/directives/BColorMode) directive or the [`useColorMode`](/docs/composables/useColorMode)
+composable instead. This also applies to `BTable` and `BTableLite`:
+
+```vue-html
+<BTableSimple v-b-color-mode="'dark'">...</BTableSimple>
+```
+
 ### BTBody
 
 <DeprecatedFeature :reason="DeprecationReason.INSUFFICIENT_DEMAND">
@@ -49,11 +58,11 @@ See the [v-html](/docs/migration-data/patterns/v-html-props) section for informa
 
 ### BTFoot
 
-`foot-variant` has been replaced with `variant`, which can used on other table elements.
+`foot-variant` has been replaced with `theme`, which can used on other table elements.
 
 ### BTHead
 
-`head-variant` has been replaced with `variant`, which can used on other table elements.
+`head-variant` has been replaced with `theme`, which can used on other table elements.
 
 ## Migration Notes
 

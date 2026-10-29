@@ -3,7 +3,7 @@
     <BButton v-b-toggle.offcanvas-footer>Toggle Offcanvas</BButton>
     <BOffcanvas id="offcanvas-footer" aria-label="Offcanvas with custom footer" no-header shadow>
       <template #footer="scope">
-        <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
+        <div class="d-flex bg-inverse fg-contrast-inverse align-items-center px-3 py-2">
           <strong class="me-auto">Footer</strong>
           <BButton size="sm" @click="() => scope?.hide()">Close</BButton>
         </div>

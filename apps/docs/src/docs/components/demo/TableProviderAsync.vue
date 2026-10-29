@@ -69,9 +69,9 @@ import {
   BTable,
   type BTableProviderContext,
   type BTableSortBy,
-  type ColorVariant,
   type TableFieldRaw,
   type TableItem,
+  type ThemeColor,
 } from 'bootstrap-vue-next'
 import { computed, ref, useTemplateRef, watch } from 'vue'
 import { type ComponentExposed } from 'vue-component-type-helpers'
@@ -129,7 +129,7 @@ const items: TableItem<Person>[] = [
     age: 9,
     first_name: 'Mini',
     last_name: 'Navarro',
-    _rowVariant: 'success' as ColorVariant,
+    _rowTheme: 'success' as ThemeColor,
   },
   { isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson' },
   { isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney' },
@@ -140,7 +140,7 @@ const items: TableItem<Person>[] = [
     age: 87,
     first_name: 'Larsen',
     last_name: 'Shaw',
-    _cellVariants: { age: 'danger', isActive: 'warning' },
+    _cellThemes: { age: 'danger', isActive: 'warning' },
   },
   { isActive: false, age: 26, first_name: 'Mitzi', last_name: 'Navarro' },
   { isActive: false, age: 22, first_name: 'Genevieve', last_name: 'Wilson' },

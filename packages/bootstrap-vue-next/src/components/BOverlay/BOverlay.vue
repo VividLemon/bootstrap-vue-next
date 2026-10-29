@@ -39,8 +39,7 @@ import {useDefaults} from '../../composables/useDefaults'
 import BSpinner from '../BSpinner/BSpinner.vue'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
 import {useRadiusElementClasses} from '../../composables/useRadiusElementClasses'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
-import type {BgColorVariant} from '../../types/ColorTypes'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useFadeTransition} from '../../composables/useTransitions'
 import type {BOverlayEmits, BOverlayProps, BOverlaySlots} from '../../types'
 
@@ -57,8 +56,10 @@ const _props = withDefaults(defineProps<BOverlayProps>(), {
   show: false,
   spinnerSmall: false,
   spinnerType: 'border',
-  spinnerVariant: undefined,
-  variant: 'light',
+  spinnerTheme: undefined,
+  spinnerBg: null,
+  spinnerFg: null,
+  bg: 'body',
   wrapTag: 'div',
   zIndex: 10,
   // RadiusElementExtendables props
@@ -75,21 +76,25 @@ defineSlots<BOverlaySlots>()
 
 const positionStyles = {top: 0, left: 0, bottom: 0, right: 0} as const
 
-const fadeTransitions = useFadeTransition(() => !props.noFade)
+const {transitionProps: fadeTransitions} = useFadeTransition(() => !props.noFade)
 
-const radiusElementClasses = useRadiusElementClasses(() => ({
-  rounded: props.rounded,
-  roundedTop: props.roundedTop,
-  roundedBottom: props.roundedBottom,
-  roundedStart: props.roundedStart,
-  roundedEnd: props.roundedEnd,
-}))
+const {classes: radiusElementClasses} = useRadiusElementClasses(
+  computed(() => ({
+    rounded: props.rounded,
+    roundedTop: props.roundedTop,
+    roundedBottom: props.roundedBottom,
+    roundedStart: props.roundedStart,
+    roundedEnd: props.roundedEnd,
+  }))
+)
 
 const computedAriaBusy = computed(() => (props.show ? true : null))
 
 const spinnerAttrs = computed(() => ({
   type: props.spinnerType,
-  variant: props.spinnerVariant,
+  theme: props.spinnerTheme,
+  bg: props.spinnerBg,
+  fg: props.spinnerFg,
   small: props.spinnerSmall,
 }))
 
@@ -103,9 +108,9 @@ const overlayClasses = computed(() => ({
   'position-fixed': props.noWrap && props.fixed,
 }))
 
-const colorClasses = useColorVariantClasses(
+const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    bgVariant: props.variant !== null && !props.bgColor ? (props.variant as BgColorVariant) : null,
+    bg: props.bg !== null && !props.bgColor ? props.bg : null,
   }))
 )
 const blurClasses = computed(() => [colorClasses.value, radiusElementClasses.value])
@@ -115,7 +120,7 @@ const blurStyles = computed(() => ({
   opacity: props.opacity,
   backgroundColor: props.bgColor || undefined,
   backdropFilter:
-    props.blur && !props.bgColor && (props.variant === 'white' || props.variant === 'transparent')
+    props.blur && !props.bgColor && (props.bg === 'white' || props.bg === 'transparent')
       ? `blur(${props.blur})`
       : undefined,
 }))

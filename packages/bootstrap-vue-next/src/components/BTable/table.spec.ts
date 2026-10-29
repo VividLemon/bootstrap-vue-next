@@ -1552,7 +1552,9 @@ describe('provider debouncing', () => {
   it('supports AbortSignal in provider context', async () => {
     let receivedSignal: AbortSignal | undefined
 
-    const provider = vi.fn<(context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>>(async (context: Readonly<BTableProviderContext>) => {
+    const provider = vi.fn<
+      (context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>
+    >(async (context: Readonly<BTableProviderContext>) => {
       receivedSignal = context.signal
       return simpleItems
     })
@@ -1574,7 +1576,9 @@ describe('provider debouncing', () => {
 
   it('cancels previous provider call when new one is triggered', async () => {
     let abortedCount = 0
-    const provider = vi.fn<(context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>>(
+    const provider = vi.fn<
+      (context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>
+    >(
       async (context: Readonly<BTableProviderContext>) =>
         new Promise<typeof simpleItems>((resolve, reject) => {
           const timeout = setTimeout(() => resolve(simpleItems), 100)
@@ -1614,7 +1618,9 @@ describe('provider debouncing', () => {
   it('does not set busy to false when first provider finishes while second is still running', async () => {
     let callCount = 0
 
-    const provider = vi.fn<(context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>>(async (context: Readonly<BTableProviderContext>) => {
+    const provider = vi.fn<
+      (context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>
+    >(async (context: Readonly<BTableProviderContext>) => {
       callCount++
       const currentCall = callCount
 
@@ -2518,8 +2524,8 @@ describe('noSelectOnClick', () => {
   })
 })
 
-describe('selectionVariant', () => {
-  it('applies correct variant class to selected rows', async () => {
+describe('selectionTheme', () => {
+  it('applies correct theme class to selected rows', async () => {
     const items = [
       {id: 1, name: 'Alice'},
       {id: 2, name: 'Bob'},
@@ -2529,7 +2535,7 @@ describe('selectionVariant', () => {
         items,
         'selectable': true,
         'selectMode': 'multi' as const,
-        'selectionVariant': 'success',
+        'selectionTheme': 'success',
         'selectedItems': [],
         'onUpdate:selectedItems': (value: unknown) =>
           wrapper.setProps({selectedItems: value as typeof items}),
@@ -2537,11 +2543,11 @@ describe('selectionVariant', () => {
     })
     const rows = wrapper.findAll('tbody tr')
     await rows[0].trigger('click')
-    expect(rows[0].classes()).toContain('table-success')
+    expect(rows[0].classes()).toContain('theme-success')
     expect(rows[0].classes()).toContain('selected')
   })
 
-  it('defaults to primary variant for selected rows', async () => {
+  it('defaults to primary theme for selected rows', async () => {
     const items = [{id: 1, name: 'Alice'}]
     const wrapper = mount(BTable, {
       props: {
@@ -2555,7 +2561,7 @@ describe('selectionVariant', () => {
     })
     const rows = wrapper.findAll('tbody tr')
     await rows[0].trigger('click')
-    expect(rows[0].classes()).toContain('table-primary')
+    expect(rows[0].classes()).toContain('theme-primary')
   })
 })
 
@@ -2904,7 +2910,9 @@ describe('BTable additional event emissions', () => {
 
 describe('tbodyTrClass as function', () => {
   it('calls tbodyTrClass function with item and row type', () => {
-    const trClassFn = vi.fn<(item: {name: string} | null) => string>((item: {name: string} | null) => (item ? 'has-item' : 'no-item'))
+    const trClassFn = vi.fn<(item: {name: string} | null) => string>(
+      (item: {name: string} | null) => (item ? 'has-item' : 'no-item')
+    )
     mount(BTable, {
       props: {
         items: [{name: 'test'}],
@@ -3070,7 +3078,9 @@ describe('provider context', () => {
   it('sends sortBy in provider context', async () => {
     let receivedContext: BTableProviderContext | undefined
 
-    const provider = vi.fn<(context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>>(async (context: Readonly<BTableProviderContext>) => {
+    const provider = vi.fn<
+      (context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>
+    >(async (context: Readonly<BTableProviderContext>) => {
       receivedContext = {...context}
       return simpleItems
     })
@@ -3091,7 +3101,9 @@ describe('provider context', () => {
   it('sends filter in provider context', async () => {
     let receivedContext: BTableProviderContext | undefined
 
-    const provider = vi.fn<(context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>>(async (context: Readonly<BTableProviderContext>) => {
+    const provider = vi.fn<
+      (context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>
+    >(async (context: Readonly<BTableProviderContext>) => {
       receivedContext = {...context}
       return simpleItems
     })
@@ -3112,7 +3124,9 @@ describe('provider context', () => {
   it('sends currentPage and perPage in provider context', async () => {
     let receivedContext: BTableProviderContext | undefined
 
-    const provider = vi.fn<(context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>>(async (context: Readonly<BTableProviderContext>) => {
+    const provider = vi.fn<
+      (context: Readonly<BTableProviderContext>) => Promise<TableItem<SimplePerson>[]>
+    >(async (context: Readonly<BTableProviderContext>) => {
       receivedContext = {...context}
       return simpleItems
     })

@@ -218,8 +218,8 @@ const isHorizontal = computed(
 )
 const isFloating = computed(() => props.floating && !isHorizontal.value)
 
-const stateClass = useStateClass(computedState)
-const computedAriaInvalid = useAriaInvalid(() => props.ariaInvalid, computedState)
+const {stateClass} = useStateClass(computedState)
+const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(() => props.ariaInvalid, computedState)
 
 const onLegendClick = (event: Readonly<MouseEvent>) => {
   if (computedLabelFor.value || content.value === null) return

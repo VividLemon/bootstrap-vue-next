@@ -2,12 +2,9 @@
   <BContainer class="py-5">
     <!-- User Interface controls -->
     <BRow>
-      <BCol
-        lg="6"
-        class="my-1"
-      >
+      <BCol lg="6" class="my-1">
         <BFormGroup
-          v-slot="{ariaDescribedby}"
+          v-slot="{ ariaDescribedby }"
           label="Sort"
           label-for="sort-by-select"
           label-cols-sm="3"
@@ -15,16 +12,8 @@
           label-size="sm"
           class="mb-0"
         >
-          <BButton
-            size="sm"
-            @click="onAddSort"
-            >Add Sort...</BButton
-          >
-          <BInputGroup
-            v-for="sort in sortBy"
-            :key="sort.key"
-            size="sm"
-          >
+          <BButton size="sm" @click="onAddSort">Add Sort...</BButton>
+          <BInputGroup v-for="sort in sortBy" :key="sort.key" size="sm">
             <BFormSelect
               id="sort-by-select"
               v-model="sort.key"
@@ -50,11 +39,7 @@
         </BFormGroup>
       </BCol>
 
-      <BCol
-        sm="5"
-        md="6"
-        class="my-1"
-      >
+      <BCol sm="5" md="6" class="my-1">
         <BFormGroup
           label="Initial Direction"
           label-for="initial-sort-direction"
@@ -73,12 +58,9 @@
           />
         </BFormGroup>
       </BCol>
-      <BCol
-        lg="6"
-        class="my-1"
-      >
+      <BCol lg="6" class="my-1">
         <BFormGroup
-          v-slot="{ariaDescribedby}"
+          v-slot="{ ariaDescribedby }"
           label="Filter On"
           description="Leave all unchecked to filter on all data"
           label-cols-sm="3"
@@ -87,31 +69,19 @@
           class="mb-0"
         >
           <div class="d-flex gap-2">
-            <BFormCheckbox
-              v-model="filterOn"
-              value="name"
-              :aria-describedby="ariaDescribedby"
+            <BFormCheckbox v-model="filterOn" value="name" :aria-describedby="ariaDescribedby"
               >Name</BFormCheckbox
             >
-            <BFormCheckbox
-              v-model="filterOn"
-              value="age"
-              :aria-describedby="ariaDescribedby"
+            <BFormCheckbox v-model="filterOn" value="age" :aria-describedby="ariaDescribedby"
               >Age</BFormCheckbox
             >
-            <BFormCheckbox
-              v-model="filterOn"
-              value="isActive"
-              :aria-describedby="ariaDescribedby"
+            <BFormCheckbox v-model="filterOn" value="isActive" :aria-describedby="ariaDescribedby"
               >Active</BFormCheckbox
             >
           </div>
         </BFormGroup>
       </BCol>
-      <BCol
-        lg="6"
-        class="my-1"
-      >
+      <BCol lg="6" class="my-1">
         <BFormGroup
           label="Filter"
           label-for="filter-input"
@@ -128,21 +98,13 @@
               placeholder="Type to Search"
             />
             <BInputGroupText>
-              <BButton
-                :disabled="!filter"
-                @click="filter = ''"
-                >Clear</BButton
-              >
+              <BButton :disabled="!filter" @click="filter = ''">Clear</BButton>
             </BInputGroupText>
           </BInputGroup>
         </BFormGroup>
       </BCol>
 
-      <BCol
-        sm="7"
-        md="6"
-        class="my-1"
-      >
+      <BCol sm="7" md="6" class="my-1">
         <BPagination
           v-model="currentPage"
           :total-rows="totalRows"
@@ -152,11 +114,7 @@
           class="my-0"
         />
       </BCol>
-      <BCol
-        sm="5"
-        md="6"
-        class="my-1"
-      >
+      <BCol sm="5" md="6" class="my-1">
         <BFormGroup
           label="Per page"
           label-for="per-page-select"
@@ -167,12 +125,7 @@
           label-size="sm"
           class="mb-0"
         >
-          <BFormSelect
-            id="per-page-select"
-            v-model="perPage"
-            :options="pageOptions"
-            size="sm"
-          />
+          <BFormSelect id="per-page-select" v-model="perPage" :options="pageOptions" size="sm" />
         </BFormGroup>
       </BCol>
     </BRow>
@@ -197,35 +150,16 @@
         {{ (row.value as PersonName).last }}
       </template>
       <template #cell(actions)="row">
-        <BButton
-          size="sm"
-          class="me-1"
-          @click="info(row.item, row.index)"
-        >
-          Info modal
-        </BButton>
-        <BButton
-          size="sm"
-          @click="row.toggleExpansion"
-        >
+        <BButton size="sm" class="me-1" @click="info(row.item, row.index)"> Info modal </BButton>
+        <BButton size="sm" @click="row.toggleExpansion">
           {{ row.expansionShowing ? 'Hide' : 'Show' }} Details
         </BButton>
       </template>
       <template #row-expansion="row">
         <BCard>
           <ul>
-            <li
-              v-for="(value, key) in row.item"
-              :key="key"
-            >
-              {{ key }}: {{ value }}
-            </li>
-            <BButton
-              size="sm"
-              @click="row.toggleExpansion"
-            >
-              Toggle Details
-            </BButton>
+            <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+            <BButton size="sm" @click="row.toggleExpansion"> Toggle Details </BButton>
           </ul>
         </BCard>
       </template>
@@ -256,16 +190,16 @@
 </template>
 
 <script setup lang="ts">
-import {BTable} from 'bootstrap-vue-next/components/BTable'
+import { BTable } from 'bootstrap-vue-next/components/BTable'
 import type {
   BTableInitialSortDirection,
   BTableSortBy,
-  ColorVariant,
   TableFieldRaw,
   TableItem,
+  ThemeColor,
 } from 'bootstrap-vue-next'
-import {computed, reactive, ref, useTemplateRef} from 'vue'
-import {type ComponentExposed} from 'vue-component-type-helpers'
+import { computed, reactive, ref, useTemplateRef } from 'vue'
+import { type ComponentExposed } from 'vue-component-type-helpers'
 
 interface PersonName {
   first: string
@@ -282,28 +216,28 @@ const table = useTemplateRef<ComponentExposed<typeof BTable<Person>>>('complete-
 const displayItems = computed(() => (table.value?.displayItems ?? []) as TableItem<Person>[])
 
 const items: TableItem<Person>[] = [
-  {isActive: true, age: 40, name: {first: 'Dickerson', last: 'Macdonald'}},
-  {isActive: false, age: 21, name: {first: 'Larsen', last: 'Shaw'}},
+  { isActive: true, age: 40, name: { first: 'Dickerson', last: 'Macdonald' } },
+  { isActive: false, age: 21, name: { first: 'Larsen', last: 'Shaw' } },
   {
     isActive: false,
     age: 9,
-    name: {first: 'Mini', last: 'Navarro'},
-    _rowVariant: 'success' as ColorVariant,
+    name: { first: 'Mini', last: 'Navarro' },
+    _rowTheme: 'success' as ThemeColor,
   },
-  {isActive: false, age: 89, name: {first: 'Geneva', last: 'Wilson'}},
-  {isActive: true, age: 38, name: {first: 'Jami', last: 'Carney'}},
-  {isActive: false, age: 27, name: {first: 'Essie', last: 'Dunlap'}},
-  {isActive: true, age: 40, name: {first: 'Thor', last: 'Macdonald'}},
+  { isActive: false, age: 89, name: { first: 'Geneva', last: 'Wilson' } },
+  { isActive: true, age: 38, name: { first: 'Jami', last: 'Carney' } },
+  { isActive: false, age: 27, name: { first: 'Essie', last: 'Dunlap' } },
+  { isActive: true, age: 40, name: { first: 'Thor', last: 'Macdonald' } },
   {
     isActive: true,
     age: 87,
-    name: {first: 'Larsen', last: 'Shaw'},
-    _cellVariants: {age: 'danger', isActive: 'warning'},
+    name: { first: 'Larsen', last: 'Shaw' },
+    _cellThemes: { age: 'danger', isActive: 'warning' },
   },
-  {isActive: false, age: 26, name: {first: 'Mitzi', last: 'Navarro'}},
-  {isActive: false, age: 22, name: {first: 'Genevieve', last: 'Wilson'}},
-  {isActive: true, age: 38, name: {first: 'John', last: 'Carney'}},
-  {isActive: false, age: 29, name: {first: 'Dick', last: 'Dunlap'}},
+  { isActive: false, age: 26, name: { first: 'Mitzi', last: 'Navarro' } },
+  { isActive: false, age: 22, name: { first: 'Genevieve', last: 'Wilson' } },
+  { isActive: true, age: 38, name: { first: 'John', last: 'Carney' } },
+  { isActive: false, age: 29, name: { first: 'Dick', last: 'Dunlap' } },
 ]
 
 const fields: Exclude<TableFieldRaw<Person>, string>[] = [
@@ -316,34 +250,34 @@ const fields: Exclude<TableFieldRaw<Person>, string>[] = [
     key: 'sortableName',
     label: 'Person sortable name',
     sortable: true,
-    formatter: ({item}) =>
+    formatter: ({ item }) =>
       item ? `${item.name.last}, ${item.name.first}` : 'Something went wrong',
     sortByFormatted: true,
     filterByFormatted: true,
   },
-  {key: 'age', label: 'Person age', sortable: true, class: 'text-center'},
+  { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
   {
     key: 'isActive',
     label: 'Is Active',
-    formatter: ({value}) => (value ? 'Yes' : 'No'),
+    formatter: ({ value }) => (value ? 'Yes' : 'No'),
     sortable: true,
     sortByFormatted: true,
     filterByFormatted: true,
   },
-  {key: 'actions', label: 'Actions'},
+  { key: 'actions', label: 'Actions' },
 ]
 
 const pageOptions = [
-  {value: 5, text: '5'},
-  {value: 10, text: '10'},
-  {value: 15, text: '15'},
-  {value: 100, text: 'Show a lot'},
+  { value: 5, text: '5' },
+  { value: 10, text: '10' },
+  { value: 15, text: '15' },
+  { value: 100, text: 'Show a lot' },
 ]
 
 const sortDirectionOptions = [
-  {value: 'asc', text: 'Ascending'},
-  {value: 'desc', text: 'Descending'},
-  {value: 'last', text: 'Last clicked column'},
+  { value: 'asc', text: 'Ascending' },
+  { value: 'desc', text: 'Descending' },
+  { value: 'last', text: 'Last clicked column' },
 ]
 
 const totalRows = ref(items.length)
@@ -362,7 +296,7 @@ const infoModal = reactive({
 
 // Create an options list from our fields
 const sortOptions = computed(() =>
-  fields.filter((f) => f.sortable).map((f) => ({text: f.label, value: f.key}))
+  fields.filter((f) => f.sortable).map((f) => ({ text: f.label, value: f.key })),
 )
 
 function info(item: TableItem<Person>, index: number) {
@@ -383,6 +317,6 @@ function onFiltered(filteredItems: readonly TableItem<Person>[]) {
 }
 
 function onAddSort() {
-  sortBy.value.push({key: '', order: 'asc'})
+  sortBy.value.push({ key: '', order: 'asc' })
 }
 </script>

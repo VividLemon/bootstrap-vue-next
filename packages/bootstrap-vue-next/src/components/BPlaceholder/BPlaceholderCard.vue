@@ -17,7 +17,8 @@
       <slot name="header">
         <BPlaceholder
           :width="props.headerWidth"
-          :variant="props.headerVariant"
+          :bg="props.headerBg ?? getThemeColor(props.headerTheme)"
+          :fg="props.headerFg"
           :animation="props.headerAnimation"
           :size="props.headerSize"
         />
@@ -37,7 +38,7 @@
           :width="props.footerWidth"
           :animation="props.footerAnimation"
           :size="props.noButton ? props.footerSize : undefined"
-          :variant="props.footerVariant"
+          v-bind="footerColorAttrs"
         />
       </slot>
     </template>
@@ -52,16 +53,21 @@ import BPlaceholderButton from './BPlaceholderButton.vue'
 import {computed} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import type {BPlaceholderCardProps, BPlaceholderCardSlots} from '../../types'
+import {getThemeColor} from '../../composables/useThemeClasses'
 
 const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   animation: undefined,
   footerAnimation: undefined,
   footerSize: undefined,
-  footerVariant: undefined,
+  footerTheme: undefined,
+  footerBg: null,
+  footerFg: null,
   footerWidth: 100,
   headerAnimation: undefined,
   headerSize: undefined,
-  headerVariant: undefined,
+  headerTheme: undefined,
+  headerBg: null,
+  headerFg: null,
   headerWidth: 100,
   imgBlankColor: '#868e96',
   imgPlacement: 'top',
@@ -72,7 +78,9 @@ const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   noHeader: false,
   noImg: false,
   size: undefined,
-  variant: undefined,
+  theme: undefined,
+  bg: null,
+  fg: null,
 })
 const props = useDefaults(_props, 'BPlaceholderCard')
 defineSlots<BPlaceholderCardSlots>()
@@ -80,8 +88,14 @@ defineSlots<BPlaceholderCardSlots>()
 const defaultAttrs = computed(() => ({
   animation: props.animation,
   size: props.size,
-  variant: props.variant,
+  bg: props.bg ?? getThemeColor(props.theme),
+  fg: props.fg,
 }))
 
 const footerComponent = computed(() => (!props.noButton ? BPlaceholderButton : BPlaceholder))
+const footerColorAttrs = computed(() =>
+  props.noButton
+    ? {bg: props.footerBg ?? getThemeColor(props.footerTheme), fg: props.footerFg}
+    : {theme: props.footerTheme, bg: props.footerBg, fg: props.footerFg}
+)
 </script>

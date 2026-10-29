@@ -121,13 +121,13 @@ The `custom-class` prop has been split into more specific props:
 
 ### Variant
 
-The `variant` prop has been deprecated. Use Bootstrap's [color and background utility classes](https://getbootstrap.com/docs/5.3/helpers/color-background/) instead:
+The `variant` prop has been deprecated. Use Bootstrap's `theme-*` classes and `bg-*` / `fg-*` utilities instead:
 
 <<< FRAGMENT ../../demo/PopoverVariantBSV.vue#template{vue-html}
 
 <<< FRAGMENT ../../demo/PopoverVariantBSVN.vue#template{vue-html}
 
-See [Popover custom classes and variants](/docs/components/popover#custom-classes-and-variants) for more details.
+See [Popover custom classes and colors](/docs/components/popover#custom-classes-and-colors) for more details.
 
 ### Programmatic Control
 

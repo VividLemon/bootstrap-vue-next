@@ -20,7 +20,7 @@ const _props = withDefaults(defineProps<BNavbarNavProps>(), {
 const props = useDefaults(_props, 'BNavbarNav')
 defineSlots<BNavbarNavSlots>()
 
-const alignment = useAlignment(() => props.align)
+const {alignment} = useAlignment(() => props.align)
 
 const computedClasses = computed(() => ({
   'nav-fill': props.fill,

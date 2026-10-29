@@ -226,74 +226,87 @@ describe('btablelite', () => {
     })
   })
 
-  it('Sets the head variant correctly', () => {
+  it('Sets the head theme correctly', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headVariant: 'dark',
+        headTheme: 'inverse',
       },
     })
     const $thead = wrapper.get('thead')
-    expect($thead.classes()).toContain('table-dark')
+    expect($thead.classes()).toContain('theme-inverse')
   })
 
-  it('Sets the foot variant correctly', () => {
+  it('Sets head background and foreground colors', () => {
+    const wrapper = mount(BTableLite, {
+      props: {
+        items: [{a: 1}],
+        headBg: 'subtle-primary',
+        headFg: 'emphasis-primary',
+      },
+    })
+    const $thead = wrapper.get('thead')
+    expect($thead.classes()).toContain('bg-subtle-primary')
+    expect($thead.classes()).toContain('fg-emphasis-primary')
+  })
+
+  it('Sets the foot theme correctly', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        footVariant: 'primary',
+        footTheme: 'primary',
         footClone: true,
       },
     })
     const $tfoot = wrapper.get('tfoot')
-    expect($tfoot.classes()).toContain('table-primary')
+    expect($tfoot.classes()).toContain('theme-primary')
   })
 
-  it('Falls back to head variant in cloned footer', () => {
+  it('Falls back to head theme in cloned footer', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headVariant: 'primary',
+        headTheme: 'primary',
         footClone: true,
       },
     })
     const $tfoot = wrapper.get('tfoot')
-    expect($tfoot.classes()).toContain('table-primary')
+    expect($tfoot.classes()).toContain('theme-primary')
   })
 
-  it('Sets the head row variant correctly', () => {
+  it('Sets the head row theme correctly', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headRowVariant: 'dark',
+        headRowTheme: 'inverse',
       },
     })
     const $tr = wrapper.get('thead tr')
-    expect($tr.classes()).toContain('table-dark')
+    expect($tr.classes()).toContain('theme-inverse')
   })
 
-  it('Sets the foot row variant correctly', () => {
+  it('Sets the foot row theme correctly', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        footRowVariant: 'primary',
+        footRowTheme: 'primary',
         footClone: true,
       },
     })
     const $tr = wrapper.get('tfoot tr')
-    expect($tr.classes()).toContain('table-primary')
+    expect($tr.classes()).toContain('theme-primary')
   })
 
-  it('Falls back to head row variant in cloned footer', () => {
+  it('Falls back to head row theme in cloned footer', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headRowVariant: 'primary',
+        headRowTheme: 'primary',
         footClone: true,
       },
     })
     const $tr = wrapper.get('tfoot tr')
-    expect($tr.classes()).toContain('table-primary')
+    expect($tr.classes()).toContain('theme-primary')
   })
 
   it('Renders the #head() slot correctly', () => {
@@ -1080,27 +1093,39 @@ describe('btablelite', () => {
     })
   })
 
-  describe('_rowVariant', () => {
-    it('applies row variant class from _rowVariant property', () => {
+  describe('_rowTheme', () => {
+    it('applies row theme class from _rowTheme property', () => {
       const wrapper = mount(BTableLite, {
         props: {
-          items: [{a: 1, _rowVariant: 'danger'}],
+          items: [{a: 1, _rowTheme: 'danger'}],
         },
       })
+
       const $tr = wrapper.get('tbody tr')
-      expect($tr.classes()).toContain('table-danger')
+      expect($tr.classes()).toContain('theme-danger')
     })
   })
 
-  describe('_cellVariants', () => {
-    it('applies cell variant class from _cellVariants property', () => {
+  it('applies row background and foreground colors', () => {
+    const wrapper = mount(BTableLite, {
+      props: {
+        items: [{a: 1, _rowBg: 'subtle-danger', _rowFg: 'contrast-danger'}],
+      },
+    })
+    const $tr = wrapper.get('tbody tr')
+    expect($tr.classes()).toContain('bg-subtle-danger')
+    expect($tr.classes()).toContain('fg-contrast-danger')
+  })
+
+  describe('_cellThemes', () => {
+    it('applies cell theme class from _cellThemes property', () => {
       const wrapper = mount(BTableLite, {
         props: {
-          items: [{a: 1, b: 2, _cellVariants: {a: 'success'}}],
+          items: [{a: 1, b: 2, _cellThemes: {a: 'success'}}],
         },
       })
       const $tds = wrapper.findAll('tbody td')
-      expect($tds[0].classes()).toContain('table-success')
+      expect($tds[0].classes()).toContain('theme-success')
     })
   })
 
@@ -1542,13 +1567,6 @@ describe('btablelite', () => {
         props: {items: [{a: 1}], hover: true},
       })
       expect(wrapper.get('table').classes()).toContain('table-hover')
-    })
-
-    it('passes dark prop to BTableSimple', () => {
-      const wrapper = mount(BTableLite, {
-        props: {items: [{a: 1}], dark: true},
-      })
-      expect(wrapper.get('table').classes()).toContain('table-dark')
     })
 
     it('passes small prop to BTableSimple', () => {

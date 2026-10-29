@@ -22,16 +22,16 @@
   text-align: center;
 
   &:focus {
-    background-color: var(--bs-primary);
+    background-color: var(--bs-primary-bg);
     color: var(--bs-white);
   }
 
   &[data-placeholder] {
-    color: var(--bs-secondary-color);
+    color: var(--bs-fg-2);
   }
 
   &[data-disabled] {
-    color: var(--bs-secondary-color);
+    color: var(--bs-fg-2);
     cursor: default;
   }
 }
@@ -39,5 +39,5 @@
 .b-date-field-literal {
   padding: 0 0.0625rem;
   user-select: none;
-  color: var(--bs-secondary-color);
+  color: var(--bs-fg-2);
 }

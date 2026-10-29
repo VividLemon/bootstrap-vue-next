@@ -1,20 +1,12 @@
 <template>
   <div>
-    <BTable
-      :items="items"
-      :fields="fields"
-      responsive="sm"
-    >
+    <BTable :items="items" :fields="fields" responsive="sm">
       <template #thead-top>
         <BTr>
           <BTh colspan="2"><span class="visually-hidden">Name and ID</span></BTh>
-          <BTh variant="secondary">Type 1</BTh>
-          <BTh
-            variant="primary"
-            colspan="3"
-            >Type 2</BTh
-          >
-          <BTh variant="danger">Type 3</BTh>
+          <BTh theme="secondary">Type 1</BTh>
+          <BTh theme="primary" colspan="3">Type 2</BTh>
+          <BTh theme="danger">Type 3</BTh>
         </BTr>
       </template>
     </BTable>
@@ -71,11 +63,11 @@ const items = [
 ]
 const fields = [
   'name',
-  {key: 'id', label: 'ID'},
-  {key: 'type1', label: 'Type 1'},
-  {key: 'type2a', label: 'Type 2A'},
-  {key: 'type2b', label: 'Type 2B'},
-  {key: 'type2c', label: 'Type 2C'},
-  {key: 'type3', label: 'Type 3'},
+  { key: 'id', label: 'ID' },
+  { key: 'type1', label: 'Type 1' },
+  { key: 'type2a', label: 'Type 2A' },
+  { key: 'type2b', label: 'Type 2B' },
+  { key: 'type2c', label: 'Type 2C' },
+  { key: 'type3', label: 'Type 3' },
 ]
 </script>

@@ -3,9 +3,9 @@
   <BButton
     v-b-tooltip.hover.top="{
       title: 'Tooltip title',
-      delay: {show: 500, hide: 100},
+      delay: { show: 500, hide: 100 },
     }"
-    variant="primary"
+    theme="primary"
   >
     Object configuration
   </BButton>

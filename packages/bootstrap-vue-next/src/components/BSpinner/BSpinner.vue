@@ -15,7 +15,7 @@
 import {computed} from 'vue'
 import {isEmptySlot} from '../../utils/dom'
 import {useDefaults} from '../../composables/useDefaults'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {getThemeColor, useThemeClasses} from '../../composables/useThemeClasses'
 import type {BSpinnerProps, BSpinnerSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BSpinnerProps>(), {
@@ -24,14 +24,18 @@ const _props = withDefaults(defineProps<BSpinnerProps>(), {
   small: false,
   tag: 'span',
   type: 'border',
-  variant: null,
+  theme: null,
+  bg: null,
+  fg: null,
 })
 const props = useDefaults(_props, 'BSpinner')
 const slots = defineSlots<BSpinnerSlots>()
 
-const colorClasses = useColorVariantClasses(
+const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    textVariant: props.variant,
+    theme: props.theme,
+    bg: props.bg,
+    fg: props.fg ?? getThemeColor(props.theme),
   }))
 )
 const computedClasses = computed(() => [

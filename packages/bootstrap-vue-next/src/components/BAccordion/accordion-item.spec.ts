@@ -340,68 +340,21 @@ describe('accordion-item', () => {
     expect($collapseEl?.attributes('data-custom')).toBe('value')
   })
 
-  it('emits show event from BCollapse', async () => {
+  it.each([
+    {eventName: 'show'},
+    {eventName: 'shown'},
+    {eventName: 'hide'},
+    {eventName: 'hidden'},
+    {eventName: 'hide-prevented'},
+    {eventName: 'show-prevented'},
+    {eventName: 'toggle-prevented'},
+    {eventName: 'toggle'},
+  ])('emits $eventName event from BCollapse', async ({eventName}) => {
     const wrapper = mount(BAccordionItem)
     const $bcollapse = wrapper.findComponent(BCollapse)
-    await $bcollapse.vm.$emit('show', new Event('show'))
-    expect(wrapper.emitted('show')).toBeDefined()
-    expect(wrapper.emitted('show')).toHaveLength(1)
-  })
-
-  it('emits shown event from BCollapse', async () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    await $bcollapse.vm.$emit('shown', new Event('shown'))
-    expect(wrapper.emitted('shown')).toBeDefined()
-    expect(wrapper.emitted('shown')).toHaveLength(1)
-  })
-
-  it('emits hide event from BCollapse', async () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    await $bcollapse.vm.$emit('hide', new Event('hide'))
-    expect(wrapper.emitted('hide')).toBeDefined()
-    expect(wrapper.emitted('hide')).toHaveLength(1)
-  })
-
-  it('emits hidden event from BCollapse', async () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    await $bcollapse.vm.$emit('hidden', new Event('hidden'))
-    expect(wrapper.emitted('hidden')).toBeDefined()
-    expect(wrapper.emitted('hidden')).toHaveLength(1)
-  })
-
-  it('emits hide-prevented event from BCollapse', async () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    await $bcollapse.vm.$emit('hide-prevented', new Event('hide-prevented'))
-    expect(wrapper.emitted('hide-prevented')).toBeDefined()
-    expect(wrapper.emitted('hide-prevented')).toHaveLength(1)
-  })
-
-  it('emits show-prevented event from BCollapse', async () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    await $bcollapse.vm.$emit('show-prevented', new Event('show-prevented'))
-    expect(wrapper.emitted('show-prevented')).toBeDefined()
-    expect(wrapper.emitted('show-prevented')).toHaveLength(1)
-  })
-
-  it('emits toggle-prevented event from BCollapse', async () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    await $bcollapse.vm.$emit('toggle-prevented', new Event('toggle-prevented'))
-    expect(wrapper.emitted('toggle-prevented')).toBeDefined()
-    expect(wrapper.emitted('toggle-prevented')).toHaveLength(1)
-  })
-
-  it('emits toggle event from BCollapse', async () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    await $bcollapse.vm.$emit('toggle', new Event('toggle'))
-    expect(wrapper.emitted('toggle')).toBeDefined()
-    expect(wrapper.emitted('toggle')).toHaveLength(1)
+    await $bcollapse.vm.$emit(eventName, new Event(eventName))
+    expect(wrapper.emitted(eventName)).toBeDefined()
+    expect(wrapper.emitted(eventName)).toHaveLength(1)
   })
 
   it('has modelValue false by default', () => {

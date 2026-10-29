@@ -71,31 +71,30 @@ describe('sort-icon', () => {
     expect($path.attributes('d')).toBe(ascPath)
   })
 
-  it('has opacity 0.4 when field is not currently sorted', () => {
-    const wrapper = mount(SortIcon, {
+  it.each([
+    {
+      name: 'not sorted',
       props: {fieldInfo: {key: 'name'}},
-    })
-    expect(wrapper.attributes('style')).toContain('opacity: 0.4')
-  })
-
-  it('has opacity 1 when field is currently sorted ascending', () => {
-    const wrapper = mount(SortIcon, {
-      props: {
-        fieldInfo: {key: 'name'},
-        sortBy: [{key: 'name', order: 'asc'}],
-      },
-    })
-    expect(wrapper.attributes('style')).toContain('opacity: 1')
-  })
-
-  it('has opacity 1 when field is currently sorted descending', () => {
-    const wrapper = mount(SortIcon, {
-      props: {
-        fieldInfo: {key: 'name'},
-        sortBy: [{key: 'name', order: 'desc'}],
-      },
-    })
-    expect(wrapper.attributes('style')).toContain('opacity: 1')
+      expectedOpacity: '0.4',
+    },
+    {
+      name: 'sorted ascending',
+      props: {fieldInfo: {key: 'name'}, sortBy: [{key: 'name', order: 'asc'}]},
+      expectedOpacity: '1',
+    },
+    {
+      name: 'sorted descending',
+      props: {fieldInfo: {key: 'name'}, sortBy: [{key: 'name', order: 'desc'}]},
+      expectedOpacity: '1',
+    },
+    {
+      name: 'a different field is sorted',
+      props: {fieldInfo: {key: 'name'}, sortBy: [{key: 'age', order: 'asc'}]},
+      expectedOpacity: '0.4',
+    },
+  ])('uses opacity $expectedOpacity when $name', ({props, expectedOpacity}) => {
+    const wrapper = mount(SortIcon, {props})
+    expect(wrapper.attributes('style')).toContain(`opacity: ${expectedOpacity}`)
   })
 
   it('shows ascending icon when sorted ascending', () => {
@@ -118,16 +117,6 @@ describe('sort-icon', () => {
     })
     expect(wrapper.classes()).toContain('bi-arrow-down-short')
     expect(wrapper.find('path').attributes('d')).toBe(descPath)
-  })
-
-  it('has opacity 0.4 when sortBy references a different field', () => {
-    const wrapper = mount(SortIcon, {
-      props: {
-        fieldInfo: {key: 'name'},
-        sortBy: [{key: 'age', order: 'asc'}],
-      },
-    })
-    expect(wrapper.attributes('style')).toContain('opacity: 0.4')
   })
 
   it('defaults to ascending when sortBy has no order', () => {

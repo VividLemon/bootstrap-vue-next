@@ -81,17 +81,17 @@ Image placement is accomplished by the single `img-placement` prop, which takes 
 The `.card-deck` and `.card-columns` styles previously shipped by BootstrapVueNext have been removed.
 `BCardFooter` now correctly uses `BCardFooterProps` (an alias of the header props, so there is no type change).
 
-Card color variant props (`variant`, `bg-variant`, `text-variant`, `border-variant`) still emit the
-Bootstrap 5 style `text-bg-*`, `bg-*`, `text-*` and `border-*` classes. Moving them to Bootstrap 6
-`theme-*` / `fg-*` classes is part of the library-wide color migration rather than the card
-migration. Until then, apply `theme-*` or `fg-*` through the `class` attribute.
+Card color props now use the Bootstrap 6 theme API: `variant` is replaced by `theme` (class `theme-*`),
+`bg-variant` by `bg` (class `bg-*`), `text-variant` by `fg` (class `fg-*`) and `border-variant` by `border`
+(class `border-*`). Values such as `primary-subtle` become `subtle-primary`, and `danger-emphasis` becomes
+`emphasis-danger`. See [Color Themes](/docs/reference/color-variants).
 
 The `sub-title`, `sub-title-tag` and `sub-title-text-variant` props have been renamed to
-`subtitle`, `subtitle-tag` and `subtitle-text-variant`, respectively.
+`subtitle`, `subtitle-tag` and `subtitle-fg`, respectively.
 
 <DeprecatedFeature :reason="DeprecationReason.VUE3_BOOTSTRAP5_CHANGES" what="Component-specific variant props (e.g. `footer-bg-variant`)" :plural="true">
   For `BCardBody`, `BCardHeader`, `BCardFooter`, `BCardTitle`, and `BCardText` components, the component name specific
-  props are replaced by the generalized props. For example `footer-bg-variant` is replaced by `bg-variant`.
+  props are replaced by the generalized props. For example `footer-bg-variant` is replaced by `bg`.
   This is true for all of the `body-*`, `header-*`, and `footer-*` props on these components. Note
   that the specific props are still retained on the main `BCard` component. These renames are simple prop-to-prop mappings.
 

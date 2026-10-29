@@ -1,11 +1,8 @@
 <template>
   <div>
-    <BFormRating
-      v-model="rating"
-      show-clear
-    >
+    <BFormRating v-model="rating" show-clear>
       <template #icon-clear>
-        <BButton variant="dark"> Clear </BButton>
+        <BButton theme="inverse"> Clear </BButton>
       </template>
     </BFormRating>
     <p>Current rating: {{ rating }}</p>
@@ -13,6 +10,6 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 const rating = ref(2.5)
 </script>

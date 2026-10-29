@@ -230,93 +230,68 @@ describe('tabs', () => {
     expect($ul.attributes('role')).toBe('tablist')
   })
 
-  it('next div child ul has class nav-pills when prop pills', async () => {
-    const wrapper = mount(BTabs, {
-      props: {tag: 'span', pills: true},
-    })
-    const $div = wrapper.get('div')
-    const $ul = $div.get('ul')
-    expect($ul.classes()).toContain('nav-pills')
-    await wrapper.setProps({pills: false})
-    expect($ul.classes()).not.toContain('nav-pills')
-  })
-
-  it('next div child ul has class flex-column when prop vertical', async () => {
-    const wrapper = mount(BTabs, {
-      props: {tag: 'span', vertical: true},
-    })
-    const $div = wrapper.get('div')
-    const $ul = $div.get('ul')
-    expect($ul.classes()).toContain('flex-column')
-    await wrapper.setProps({vertical: false})
-    expect($ul.classes()).not.toContain('flex-column')
-  })
-
-  it('next div child ul has class me-3 when prop vertical', async () => {
-    const wrapper = mount(BTabs, {
-      props: {tag: 'span', vertical: true},
-    })
-    const $div = wrapper.get('div')
-    const $ul = $div.get('ul')
-    expect($ul.classes()).toContain('me-3')
-    await wrapper.setProps({vertical: false})
-    expect($ul.classes()).not.toContain('me-3')
-  })
-
-  it('next div child ul has class justify-content-{type} when prop align', async () => {
-    const wrapper = mount(BTabs, {
-      props: {tag: 'span', align: 'end'},
-    })
-    const $div = wrapper.get('div')
-    const $ul = $div.get('ul')
-    expect($ul.classes()).toContain('justify-content-end')
-    await wrapper.setProps({align: undefined})
-    expect($ul.classes()).not.toContain('justify-content-end')
-  })
-
-  it('next div child ul has class nav-fill when prop fill', async () => {
-    const wrapper = mount(BTabs, {
-      props: {tag: 'span', fill: true},
-    })
-    const $div = wrapper.get('div')
-    const $ul = $div.get('ul')
-    expect($ul.classes()).toContain('nav-fill')
-    await wrapper.setProps({fill: false})
-    expect($ul.classes()).not.toContain('nav-fill')
-  })
-
-  it('next div child ul has class card-header-tabs when prop card', async () => {
-    const wrapper = mount(BTabs, {
-      props: {tag: 'span', card: true},
-    })
-    const $div = wrapper.get('div')
-    const $ul = $div.get('ul')
-    expect($ul.classes()).toContain('card-header-tabs')
-    await wrapper.setProps({card: false})
-    expect($ul.classes()).not.toContain('card-header-tabs')
-  })
-
-  it('next div child ul has class nav-justified when prop justified', async () => {
-    const wrapper = mount(BTabs, {
-      props: {tag: 'span', justified: true},
-    })
-    const $div = wrapper.get('div')
-    const $ul = $div.get('ul')
-    expect($ul.classes()).toContain('nav-justified')
-    await wrapper.setProps({justified: false})
-    expect($ul.classes()).not.toContain('nav-justified')
-  })
-
-  it('next div child ul has class small when prop small', async () => {
-    const wrapper = mount(BTabs, {
-      props: {tag: 'span', small: true},
-    })
-    const $div = wrapper.get('div')
-    const $ul = $div.get('ul')
-    expect($ul.classes()).toContain('small')
-    await wrapper.setProps({small: false})
-    expect($ul.classes()).not.toContain('small')
-  })
+  it.each([
+    {
+      caseName: 'pills',
+      props: {pills: true},
+      resetProps: {pills: false},
+      className: 'nav-pills',
+    },
+    {
+      caseName: 'vertical layout column',
+      props: {vertical: true},
+      resetProps: {vertical: false},
+      className: 'flex-column',
+    },
+    {
+      caseName: 'vertical layout margin',
+      props: {vertical: true},
+      resetProps: {vertical: false},
+      className: 'me-3',
+    },
+    {
+      caseName: 'alignment',
+      props: {align: 'end'},
+      resetProps: {align: undefined},
+      className: 'justify-content-end',
+    },
+    {
+      caseName: 'fill',
+      props: {fill: true},
+      resetProps: {fill: false},
+      className: 'nav-fill',
+    },
+    {
+      caseName: 'card',
+      props: {card: true},
+      resetProps: {card: false},
+      className: 'card-header-tabs',
+    },
+    {
+      caseName: 'justified',
+      props: {justified: true},
+      resetProps: {justified: false},
+      className: 'nav-justified',
+    },
+    {
+      caseName: 'small',
+      props: {small: true},
+      resetProps: {small: false},
+      className: 'small',
+    },
+  ])(
+    'next div child ul class responds to $caseName prop',
+    async ({props, resetProps, className}) => {
+      const wrapper = mount(BTabs, {
+        props: {tag: 'span', ...props},
+      })
+      const $div = wrapper.get('div')
+      const $ul = $div.get('ul')
+      expect($ul.classes()).toContain(className)
+      await wrapper.setProps(resetProps)
+      expect($ul.classes()).not.toContain(className)
+    }
+  )
 
   it('next div child ul has class nav-tabs when not prop noNavStyle and not prop pills', async () => {
     const wrapper = mount(BTabs, {

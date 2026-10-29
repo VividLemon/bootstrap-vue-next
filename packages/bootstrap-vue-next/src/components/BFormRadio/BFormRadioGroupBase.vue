@@ -22,7 +22,7 @@
 import {computed, provide, toRef, useTemplateRef} from 'vue'
 import {radioGroupKey} from '../../utils/keys'
 import BFormRadio from './BFormRadio.vue'
-import {getGroupAttr, getGroupClasses} from '../../composables/useFormCheck'
+import {useFormCheckGroupAttr, useFormCheckGroupClasses} from '../../composables/useFormCheck'
 import {useFocus} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
@@ -41,7 +41,10 @@ import type {
 const _props = withDefaults(defineProps<Omit<BFormRadioGroupBaseProps, 'modelValue'>>(), {
   ariaInvalid: undefined,
   autofocus: false,
-  buttonVariant: 'secondary',
+  buttonVariant: 'solid',
+  buttonTheme: 'secondary',
+  buttonBg: null,
+  buttonFg: null,
   buttons: false,
   disabled: false,
   form: undefined,
@@ -94,6 +97,11 @@ const normalizedOptions = computed(() =>
 provide(radioGroupKey, {
   modelValue: modelValue as import('vue').Ref<import('../../types/RadioTypes').RadioValue>,
   buttonVariant: toRef(() => props.buttonVariant),
+  buttonTheme: computed(() => ({
+    theme: props.buttonTheme,
+    bg: props.buttonBg,
+    fg: props.buttonFg,
+  })),
   form: toRef(() => props.form),
   name: computedName,
   buttons: toRef(() => props.buttons),
@@ -115,8 +123,8 @@ const classesObject = computed(() => ({
   stacked: props.stacked,
   size: props.size,
 }))
-const computedAttrs = getGroupAttr(classesObject)
-const computedClasses = getGroupClasses(classesObject)
+const {attrs: computedAttrs} = useFormCheckGroupAttr(classesObject)
+const {classes: computedClasses} = useFormCheckGroupClasses(classesObject)
 
 defineExpose({
   blur: () => {

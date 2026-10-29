@@ -9,7 +9,7 @@ import BOrchestrator from './BOrchestrator.vue'
 import {useProvideDefaults} from '../../composables/useProvideDefaults'
 import {useRegistry} from '../../composables/useRegistry'
 import {useOrchestratorRegistry} from '../../composables/orchestratorShared'
-import {toRef} from 'vue'
+import {computed} from 'vue'
 
 defineOptions({
   inheritAttrs: false,
@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<BAppProps>(), {
 })
 
 useProvideDefaults(
-  toRef(() => props.defaults),
+  computed(() => props.defaults),
   props.mergeDefaults
 )
 useRegistry(props.rtl)

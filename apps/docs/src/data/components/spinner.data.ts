@@ -1,12 +1,12 @@
-import type {BSpinnerProps, BSpinnerSlots} from 'bootstrap-vue-next'
-import {type ComponentReference, type PropRecord, type SlotRecord, StyleKind} from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import type { BSpinnerProps, BSpinnerSlots } from 'bootstrap-vue-next'
+import { type ComponentReference, type PropRecord, type SlotRecord, StyleKind } from '../../types'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BSpinner: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.spinner-*'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.spinner-*' },
       props: {
         ...pick(
           buildCommonProps({
@@ -14,7 +14,7 @@ export default {
               default: 'span',
             },
           }),
-          ['role', 'tag', 'variant']
+          ['bg', 'fg', 'role', 'tag', 'theme'],
         ),
         label: {
           type: 'string',

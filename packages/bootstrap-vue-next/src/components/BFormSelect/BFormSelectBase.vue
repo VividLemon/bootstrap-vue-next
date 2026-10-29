@@ -85,7 +85,7 @@ const isDisabled = computed(() => props.disabled || (formGroupData?.disabled.val
 
 const selectSizeNumber = useToNumber(() => props.selectSize)
 
-const stateClass = useStateClass(() => props.state)
+const {stateClass} = useStateClass(() => props.state)
 
 const input = useTemplateRef('_input')
 
@@ -107,7 +107,7 @@ const computedSelectSize = computed(() =>
   !props.plain && selectSizeNumber.value > 0 ? selectSizeNumber.value : undefined
 )
 
-const computedAriaInvalid = useAriaInvalid(
+const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(
   () => props.ariaInvalid,
   () => props.state
 )

@@ -73,10 +73,9 @@
         :clear-selected="selectedItemsController.clear"
       >
         {{ getTableFieldHeadLabel(field) }}
-        <span
-          v-if="sortController.isSortable.value && field.sortable"
-          class="visually-hidden"
-        >{{ getSortLabel(field) }}</span>
+        <span v-if="sortController.isSortable.value && field.sortable" class="visually-hidden">{{
+          getSortLabel(field)
+        }}</span>
       </slot>
     </template>
     <template #custom-body="scope">
@@ -112,13 +111,19 @@
 </template>
 
 <script setup lang="ts" generic="Item">
+import {toColorClasses} from '../../composables/useThemeClasses'
 import {useToNumber} from '@vueuse/core'
 import {computed, readonly, toRef, watch} from 'vue'
 import BTableLite from './BTableLite.vue'
 import BTd from './BTd.vue'
 import BTr from './BTr.vue'
 import type {BTableEmits, BTableLiteEmits, BTableProps, BTableSlots, CamelCase} from '../../types'
-import {type TableField, type TableFieldRaw, type TableRowType, type TableStrictClassValue} from '../../types'
+import {
+  type TableField,
+  type TableFieldRaw,
+  type TableRowType,
+  type TableStrictClassValue,
+} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import {pick} from '../../utils/object'
 import {bTableLiteProps, bTableSimpleProps, getTableFieldHeadLabel} from '../../utils/tableUtils'
@@ -157,7 +162,7 @@ const _props = withDefaults(
     stickySelect: false,
     selectHead: true,
     selectMode: 'multi',
-    selectionVariant: 'primary',
+    selectionTheme: 'primary',
     sortCompare: undefined,
     sortNullLast: false,
     noFooterSorting: false,
@@ -179,10 +184,10 @@ const _props = withDefaults(
     fieldColumnClass: undefined,
     tbodyTrClass: undefined,
     detailsTdClass: undefined,
-    headVariant: undefined,
-    headRowVariant: undefined,
-    footRowVariant: undefined,
-    footVariant: undefined,
+    headTheme: undefined,
+    headRowTheme: undefined,
+    footRowTheme: undefined,
+    footTheme: undefined,
     modelValue: undefined,
     primaryKey: undefined,
     tbodyClass: undefined,
@@ -192,12 +197,11 @@ const _props = withDefaults(
     theadTrClass: undefined,
     // End BTableLite props
     // BTableSimple props
-    borderVariant: undefined,
-    variant: undefined,
+    border: undefined,
+    theme: undefined,
     bordered: undefined,
     borderless: undefined,
     captionTop: undefined,
-    dark: undefined,
     hover: undefined,
     id: undefined,
     noBorderCollapse: undefined,
@@ -393,9 +397,15 @@ const getFieldColumnClasses = (field: TableField) => [
 // Also the stuff for resolving functions could probably be made a util
 const getRowClasses = (item: Item | null, type: TableRowType): TableStrictClassValue => [
   {
-    [`selected table-${props.selectionVariant}`]:
-      props.selectable && !!item && selectedItemsController.has(item),
+    selected: props.selectable && !!item && selectedItemsController.has(item),
   },
+  props.selectable && !!item && selectedItemsController.has(item)
+    ? [
+        toColorClasses('theme', props.selectionTheme),
+        toColorClasses('bg', props.selectionBg),
+        toColorClasses('fg', props.selectionFg),
+      ]
+    : null,
   props.tbodyTrClass
     ? typeof props.tbodyTrClass === 'function'
       ? props.tbodyTrClass(item, type)

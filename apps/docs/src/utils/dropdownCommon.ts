@@ -1,8 +1,8 @@
-import type {BDropdownEmits, BDropdownProps} from 'bootstrap-vue-next'
-import type {EmitRecord, PropRecord, SlotRecord} from '../types'
-import {buildCommonProps} from './commonProps'
-import {pick} from './objectUtils'
-import {showHideEmits, showHideProps} from './showHideData'
+import type { BDropdownEmits, BDropdownProps } from 'bootstrap-vue-next'
+import type { EmitRecord, PropRecord, SlotRecord } from '../types'
+import { buildCommonProps } from './commonProps'
+import { pick } from './objectUtils'
+import { showHideEmits, showHideProps } from './showHideData'
 
 export const dropdownProps = {
   autoClose: {
@@ -104,11 +104,17 @@ export const dropdownProps = {
     description:
       'Denotes the target route of the split button. When clicked, the value of the to prop will be passed to router.push() internally, so the value can be either a string or a Location descriptor object',
   },
+  splitTheme: {
+    type: 'ThemeProp | null',
+    default: undefined,
+    description:
+      "Applies one of the theme colors to the split button. Defaults to the 'theme' prop value",
+  },
   splitVariant: {
     type: 'ButtonVariant | null',
     default: undefined,
     description:
-      "Applies one of the Bootstrap theme color variants to the split button. Defaults to the 'variant' prop value",
+      "Sets the button style of the split button ('solid', 'outline', 'subtle', 'text' or 'link'). Defaults to the 'variant' prop value",
   },
   strategy: {
     type: 'Strategy',
@@ -152,11 +158,28 @@ export const dropdownProps = {
       role: {
         default: 'menu',
       },
-      variant: {
+      theme: {
         default: 'secondary',
       },
+      variant: {
+        default: 'solid',
+      },
     }),
-    ['ariaLabel', 'disabled', 'id', 'placement', 'role', 'size', 'variant', 'wrapperClass']
+    [
+      'ariaLabel',
+      'bg',
+      'disabled',
+      'fg',
+      'id',
+      'placement',
+      'role',
+      'size',
+      'theme',
+      'variant',
+      'splitBg',
+      'splitFg',
+      'wrapperClass',
+    ],
   ),
 } as const satisfies PropRecord<keyof BDropdownProps>
 
@@ -171,13 +194,13 @@ export const dropdownEmits = {
       },
     },
   },
-  'toggle': {
+  toggle: {
     description: 'Emitted when toggle button is clicked',
   },
 } as const satisfies EmitRecord<keyof BDropdownEmits>
 
 export const dropdownSlots = {
-  'default': {
+  default: {
     description: 'Optionally scoped default slot for dropdown menu content',
     scope: {
       hide: {

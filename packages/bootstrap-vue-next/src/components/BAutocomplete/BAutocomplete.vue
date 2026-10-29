@@ -37,7 +37,7 @@
               :key="optionKey(opt, i)"
               :title="String(opt.text)"
               :disabled="props.disabled"
-              :variant="'secondary'"
+              :theme="'secondary'"
               :class="{
                 'b-autocomplete-tag-muted': pendingDelete && !isLastSelectedOption(opt, i),
                 'b-autocomplete-tag-pending-delete': pendingDelete && isLastSelectedOption(opt, i),
@@ -52,7 +52,7 @@
               v-for="(opt, i) in selectedOptions"
               :key="optionKey(opt, i)"
               :class="{
-                'text-body-tertiary': pendingDelete && !isLastSelectedOption(opt, i),
+                'fg-3': pendingDelete && !isLastSelectedOption(opt, i),
               }"
               >{{ opt.text }}<span v-if="i < selectedOptions.length - 1">,&nbsp;</span></span
             >
@@ -319,7 +319,7 @@ const hasSelection = computed(() => {
   return currentValue !== null && currentValue !== undefined
 })
 
-const computedAriaInvalid = useAriaInvalid(
+const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(
   () => props.ariaInvalid,
   () => props.state
 )

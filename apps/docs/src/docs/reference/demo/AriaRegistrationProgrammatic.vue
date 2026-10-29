@@ -9,12 +9,10 @@
           <p>The v-b-toggle button above has automatic ARIA management.</p>
           <p>You can close this from inside using the slot's hide function:</p>
           <div class="d-flex gap-2">
-            <BButton variant="danger" size="sm" @click="() => scope.hide()">
+            <BButton theme="danger" size="sm" @click="() => scope.hide()">
               Close (slot function)
             </BButton>
-            <BButton variant="secondary" size="sm" @click="closeFromCode">
-              Close (v-model)
-            </BButton>
+            <BButton theme="secondary" size="sm" @click="closeFromCode"> Close (v-model) </BButton>
           </div>
         </BCard>
       </template>

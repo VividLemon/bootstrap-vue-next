@@ -4,7 +4,7 @@
     <BFormTags
       v-model="value"
       input-id="tags-pills"
-      tag-variant="primary"
+      tag-theme="primary"
       tag-pills
       size="lg"
       separator=" "
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const value = ref<string[]>(['apple', 'orange', 'grape'])
 </script>

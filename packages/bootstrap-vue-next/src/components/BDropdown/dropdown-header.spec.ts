@@ -48,12 +48,12 @@ describe('dropdown-header', () => {
     expect($h6.classes()).toContain('my-header-class')
   })
 
-  it('child element has class text-{variant} when prop variant is set', () => {
+  it('child element has class theme-{theme} when prop theme is set', () => {
     const wrapper = mount(BDropdownHeader, {
-      props: {variant: 'danger'},
+      props: {theme: 'danger'},
     })
     const $h6 = wrapper.get('h6')
-    expect($h6.classes()).toContain('text-danger')
+    expect($h6.classes()).toContain('theme-danger')
   })
 
   it('child h6 renders default slot', () => {

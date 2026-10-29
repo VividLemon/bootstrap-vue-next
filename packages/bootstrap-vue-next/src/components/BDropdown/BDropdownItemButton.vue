@@ -20,7 +20,7 @@ import type {
   BDropdownItemButtonProps,
   BDropdownItemButtonSlots,
 } from '../../types'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed, useAttrs} from 'vue'
 
@@ -33,7 +33,9 @@ const _props = withDefaults(defineProps<BDropdownItemButtonProps>(), {
   activeClass: 'active',
   buttonClass: undefined,
   disabled: false,
-  variant: null,
+  theme: null,
+  bg: null,
+  fg: null,
   wrapperAttrs: undefined,
 })
 const props = useDefaults(_props, 'BDropdownItemButton')
@@ -46,9 +48,11 @@ const processedAttrs = computed(() => {
   return {wrapperClass, buttonAttrs}
 })
 
-const colorClasses = useColorVariantClasses(
+const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    textVariant: props.variant,
+    theme: props.theme,
+    bg: props.bg,
+    fg: props.fg,
   }))
 )
 const computedClasses = computed(() => [

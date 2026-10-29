@@ -2,7 +2,7 @@
 <template>
   <BListGroup>
     <BListGroupItem>
-      <BAvatar button variant="primary" text="FF" class="align-baseline" @click="alertEvent" />
+      <BAvatar button theme="primary" text="FF" class="align-baseline" @click="alertEvent" />
       Button Text Avatar
     </BListGroupItem>
     <BListGroupItem>

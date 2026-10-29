@@ -2,8 +2,10 @@
   <BDropdown
     split
     class="me-2"
-    variant="outline-info"
-    split-variant="outline-info"
+    variant="outline"
+    theme="info"
+    split-variant="outline"
+    split-theme="info"
     toggle-text="More markdown actions"
     :disabled="!actionsReady"
     :split-disabled="!actionsReady"
@@ -32,8 +34,11 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from 'vue'
-import {defaultAiProviders, useCopyOrDownloadAsMarkdownButtons} from 'vitepress-plugin-llms/vitepress-components'
+import { computed, onMounted, ref } from 'vue'
+import {
+  defaultAiProviders,
+  useCopyOrDownloadAsMarkdownButtons,
+} from 'vitepress-plugin-llms/vitepress-components'
 
 const supportedAiProviderNames = new Set(['ChatGPT', 'Claude'])
 

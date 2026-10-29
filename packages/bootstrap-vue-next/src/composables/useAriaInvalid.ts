@@ -5,8 +5,8 @@ import type {StringAriaInvalid} from '../types/AriaInvalid'
 export const useAriaInvalid = (
   ariaInvalid: MaybeRefOrGetter<AriaInvalid | undefined>,
   state: MaybeRefOrGetter<boolean | null | undefined>
-) =>
-  computed<StringAriaInvalid | undefined>(() => {
+) => {
+  const computedAriaInvalid = computed<StringAriaInvalid | undefined>(() => {
     const resolvedAriaInvalid = toValue(ariaInvalid)
     const resolvedState = toValue(state)
 
@@ -20,3 +20,6 @@ export const useAriaInvalid = (
             ? 'false'
             : undefined
   })
+
+  return {ariaInvalid: computedAriaInvalid}
+}

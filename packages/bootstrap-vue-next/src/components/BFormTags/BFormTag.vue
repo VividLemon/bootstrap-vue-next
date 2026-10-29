@@ -3,7 +3,7 @@
     :is="props.tag"
     :id="computedId"
     :title="tagText"
-    class="badge b-form-tag d-inline-flex align-items-center mw-100"
+    class="badge b-form-tag d-inline-flex align-items-center max-w-100"
     :class="computedClasses"
     :aria-labelledby="taglabelId"
   >
@@ -27,7 +27,7 @@ import {computed} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import BCloseButton from '../BButton/BCloseButton.vue'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BFormTagEmits, BFormTagProps, BFormTagSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BFormTagProps>(), {
@@ -38,7 +38,9 @@ const _props = withDefaults(defineProps<BFormTagProps>(), {
   removeLabel: 'Remove tag',
   tag: 'span',
   title: undefined,
-  variant: 'secondary',
+  theme: 'secondary',
+  bg: null,
+  fg: null,
 })
 const props = useDefaults(_props, 'BFormTag')
 const emit = defineEmits<BFormTagEmits>()
@@ -51,7 +53,13 @@ const tagText = computed(
 )
 const taglabelId = computed(() => `${computedId.value}taglabel__`)
 
-const colorClasses = useColorVariantClasses(props)
+const {classes: colorClasses} = useThemeClasses(
+  computed(() => ({
+    theme: props.theme,
+    bg: props.bg,
+    fg: props.fg,
+  }))
+)
 const computedClasses = computed(() => [
   colorClasses.value,
   {

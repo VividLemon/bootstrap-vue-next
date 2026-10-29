@@ -1,5 +1,5 @@
 import type {ComputedRef, StyleValue} from 'vue'
-import type {ColorVariant} from './ColorTypes'
+import type {BgColor, FgColor, MaybeArray, ThemeProp} from './ColorTypes'
 import type {MaybePromise} from './MaybePromise'
 import type {LiteralUnion} from './LiteralUnion'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
@@ -20,8 +20,12 @@ export type TableRowEvent<T, E extends UIEvent = Readonly<MouseEvent>> = [
 ]
 
 export type TableItem<T = Record<string, unknown>> = T & {
-  _rowVariant?: ColorVariant | null
-  _cellVariants?: Partial<Record<keyof T, ColorVariant>>
+  _rowBg?: MaybeArray<BgColor> | null
+  _rowFg?: MaybeArray<FgColor> | null
+  _rowTheme?: ThemeProp | null
+  _cellBgs?: Partial<Record<keyof T, MaybeArray<BgColor>>>
+  _cellFgs?: Partial<Record<keyof T, MaybeArray<FgColor>>>
+  _cellThemes?: Partial<Record<keyof T, ThemeProp>>
   _showDetails?: boolean
 }
 
@@ -73,7 +77,9 @@ export type TableStrictClassValue = string | readonly unknown[] | Record<string,
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TableField<T = any> = {
+  bg?: MaybeArray<BgColor> | null
   class?: ClassValue
+  fg?: MaybeArray<FgColor> | null
   filterByFormatted?: boolean | TableFieldFormatter<T>
   formatter?: TableFieldFormatter<T>
   isRowHeader?: boolean
@@ -114,15 +120,14 @@ export type TableField<T = any> = {
   scope?: TableThScope
   initialSortDirection?: BTableInitialSortDirection
   tdClass?:
-    | TableStrictClassValue
-    | ((value: unknown, key: string, item: T) => TableStrictClassValue)
+    TableStrictClassValue | ((value: unknown, key: string, item: T) => TableStrictClassValue)
   thClass?: ClassValue
   thStyle?: StyleValue
   tdAttr?: AttrsValue | ((obj: {value: unknown; key: string; item: T}) => AttrsValue)
   thAttr?:
     | AttrsValue
     | ((obj: {value: unknown; key: string; item: T | null; type: TableRowThead}) => AttrsValue)
-  variant?: ColorVariant | null
+  theme?: ThemeProp | null
 }
 
 export type TableFieldRaw<T = unknown> = T extends object
@@ -239,8 +244,7 @@ export type TableSelectedReturn<Item> = ItemTrackerReturn<Item> & {
 }
 
 export type MaybeGetter<Obj extends object, Key extends PropertyKey, Output = unknown> =
-  | Key
-  | ((obj: Obj) => Output)
+  Key | ((obj: Obj) => Output)
 
 // export type MaybeGetter<Obj, Key extends PropertyKey, Output = unknown> = Obj extends object
 // ? Key | ((obj: Obj) => Output)

@@ -64,48 +64,36 @@ describe('collapse', () => {
     expect(wrapper.findAll('*')[1].attributes('is-nav')).toBe('false')
   })
 
-  it('has class navbar-collapse when isNav is true', () => {
-    const wrapper = mount(BCollapse, {
+  it.each([
+    {
+      caseName: 'navbar-collapse',
       props: {isNav: true, modelValue: true},
-    })
-    expect(wrapper.findAll('*')[1].classes()).toContain('navbar-collapse')
-  })
-
-  it('does not have class navbar-collapse when isNav is false', () => {
-    const wrapper = mount(BCollapse, {
+      className: 'navbar-collapse',
+      expected: true,
+    },
+    {
+      caseName: 'navbar-collapse',
       props: {isNav: false, modelValue: true},
-    })
-    expect(wrapper.findAll('*')[1].classes()).not.toContain('navbar-collapse')
-  })
-
-  // --- horizontal prop ---
-  it('has class collapse-horizontal when horizontal is true', () => {
-    const wrapper = mount(BCollapse, {
+      className: 'navbar-collapse',
+      expected: false,
+    },
+    {
+      caseName: 'collapse-horizontal',
       props: {horizontal: true, modelValue: true},
-    })
-    expect(wrapper.findAll('*')[1].classes()).toContain('collapse-horizontal')
-  })
-
-  it('does not have class collapse-horizontal when horizontal is false', () => {
-    const wrapper = mount(BCollapse, {
+      className: 'collapse-horizontal',
+      expected: true,
+    },
+    {
+      caseName: 'collapse-horizontal',
       props: {horizontal: false, modelValue: true},
-    })
-    expect(wrapper.findAll('*')[1].classes()).not.toContain('collapse-horizontal')
-  })
-
-  // --- show class ---
-  it('has class show when modelValue is true', () => {
-    const wrapper = mount(BCollapse, {
-      props: {modelValue: true},
-    })
-    expect(wrapper.findAll('*')[1].classes()).toContain('show')
-  })
-
-  it('does not have class show when modelValue is false', () => {
-    const wrapper = mount(BCollapse, {
-      props: {modelValue: false},
-    })
-    expect(wrapper.findAll('*')[1].classes()).not.toContain('show')
+      className: 'collapse-horizontal',
+      expected: false,
+    },
+    {caseName: 'show', props: {modelValue: true}, className: 'show', expected: true},
+    {caseName: 'show', props: {modelValue: false}, className: 'show', expected: false},
+  ])('$caseName class reflects its prop value ($expected)', ({props, className, expected}) => {
+    const wrapper = mount(BCollapse, {props})
+    expect(wrapper.findAll('*')[1].classes().includes(className)).toBe(expected)
   })
 
   // --- visibility / v-show ---
@@ -342,52 +330,36 @@ describe('collapse', () => {
   })
 
   // --- show/hide/toggle via exposed methods ---
-  it('show method makes content visible', async () => {
+  it.each([
+    {
+      caseName: 'show method makes content visible',
+      method: 'show',
+      modelValue: false,
+      expected: true,
+    },
+    {caseName: 'hide method hides content', method: 'hide', modelValue: true, expected: false},
+    {
+      caseName: 'toggle method shows hidden content',
+      method: 'toggle',
+      modelValue: false,
+      expected: true,
+    },
+    {
+      caseName: 'toggle method hides visible content',
+      method: 'toggle',
+      modelValue: true,
+      expected: false,
+    },
+  ])('$caseName', async ({method, modelValue, expected}) => {
     const wrapper = mount(BCollapse, {
-      props: {modelValue: false, noAnimation: true},
+      props: {modelValue, noAnimation: true},
     })
-    wrapper.vm.show()
+    wrapper.vm[method]()
     await nextTick()
     await new Promise((resolve) => setTimeout(resolve, 30))
     const emitted = wrapper.emitted('update:modelValue') ?? []
     expect(emitted.length).toBeGreaterThan(0)
-    expect(emitted[0][0]).toBe(true)
-  })
-
-  it('hide method hides content', async () => {
-    const wrapper = mount(BCollapse, {
-      props: {modelValue: true, noAnimation: true},
-    })
-    wrapper.vm.hide()
-    await nextTick()
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    const emitted = wrapper.emitted('update:modelValue') ?? []
-    expect(emitted.length).toBeGreaterThan(0)
-    expect(emitted[0][0]).toBe(false)
-  })
-
-  it('toggle method toggles from hidden to visible', async () => {
-    const wrapper = mount(BCollapse, {
-      props: {modelValue: false, noAnimation: true},
-    })
-    wrapper.vm.toggle()
-    await nextTick()
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    const emitted = wrapper.emitted('update:modelValue') ?? []
-    expect(emitted.length).toBeGreaterThan(0)
-    expect(emitted[0][0]).toBe(true)
-  })
-
-  it('toggle method toggles from visible to hidden', async () => {
-    const wrapper = mount(BCollapse, {
-      props: {modelValue: true, noAnimation: true},
-    })
-    wrapper.vm.toggle()
-    await nextTick()
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    const emitted = wrapper.emitted('update:modelValue') ?? []
-    expect(emitted.length).toBeGreaterThan(0)
-    expect(emitted[0][0]).toBe(false)
+    expect(emitted[0][0]).toBe(expected)
   })
 
   // --- Events ---
@@ -419,20 +391,35 @@ describe('collapse', () => {
   })
 
   // --- Transition enter/leave classes ---
-  it('uses collapsing class for enter-active-class when animation enabled', () => {
-    const wrapper = mount(BCollapse, {
+  it.each([
+    {
+      caseName: 'enter-active class when animation enabled',
       props: {noAnimation: false},
-    })
-    const $transition = wrapper.findComponent(Transition)
-    expect($transition.attributes('enteractiveclass')).toBe('collapsing')
-  })
-
-  it('uses collapsing class for leave-active-class when animation enabled', () => {
-    const wrapper = mount(BCollapse, {
+      attribute: 'enteractiveclass',
+      expectedClass: 'collapsing',
+    },
+    {
+      caseName: 'leave-active class when animation enabled',
       props: {noAnimation: false},
-    })
+      attribute: 'leaveactiveclass',
+      expectedClass: 'collapsing',
+    },
+    {
+      caseName: 'empty enter-active class when noAnimation is true',
+      props: {noAnimation: true},
+      attribute: 'enteractiveclass',
+      expectedClass: '',
+    },
+    {
+      caseName: 'empty leave-active class when noAnimation is true',
+      props: {noAnimation: true},
+      attribute: 'leaveactiveclass',
+      expectedClass: '',
+    },
+  ])('uses $caseName', ({props, attribute, expectedClass}) => {
+    const wrapper = mount(BCollapse, {props})
     const $transition = wrapper.findComponent(Transition)
-    expect($transition.attributes('leaveactiveclass')).toBe('collapsing')
+    expect($transition.attributes(attribute)).toBe(expectedClass)
   })
 
   // --- inheritAttrs: false ---

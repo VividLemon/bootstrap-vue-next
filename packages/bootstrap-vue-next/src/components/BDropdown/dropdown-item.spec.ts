@@ -104,14 +104,14 @@ describe('dropdown-item', () => {
     expect($button.classes()).not.toContain('disabled')
   })
 
-  it('button has class text-{type} when prop variant', async () => {
+  it('button has class theme-{type} when prop theme', async () => {
     const wrapper = mount(BDropdownItem, {
-      props: {variant: 'danger'},
+      props: {theme: 'danger'},
     })
     const $button = wrapper.get('button')
-    expect($button.classes()).toContain('text-danger')
-    await wrapper.setProps({variant: undefined})
-    expect($button.classes()).not.toContain('text-danger')
+    expect($button.classes()).toContain('theme-danger')
+    await wrapper.setProps({theme: undefined})
+    expect($button.classes()).not.toContain('theme-danger')
   })
 
   it('emits a click event when clicked', async () => {

@@ -32,7 +32,11 @@
 <script setup lang="ts">
 import {useFocus} from '@vueuse/core'
 import {computed, inject, useAttrs, useTemplateRef} from 'vue'
-import {getClasses, getInputClasses, getLabelClasses} from '../../composables/useFormCheck'
+import {
+  useFormCheckClasses,
+  useFormCheckInputClasses,
+  useFormCheckLabelClasses,
+} from '../../composables/useFormCheck'
 import {checkboxGroupKey, formGroupKey} from '../../utils/keys'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
 import {isEmptySlot} from '../../utils/dom'
@@ -55,6 +59,9 @@ const _props = withDefaults(
     button: undefined,
     buttonGroup: false,
     buttonVariant: undefined,
+    buttonTheme: undefined,
+    buttonBg: undefined,
+    buttonFg: undefined,
     disabled: false,
     form: undefined,
     id: undefined,
@@ -109,7 +116,10 @@ const propDefaults = {
   reverse: false,
   switch: false,
   size: undefined,
-  buttonVariant: 'secondary' as const,
+  buttonVariant: 'solid' as const,
+  buttonTheme: 'secondary' as const,
+  buttonBg: null,
+  buttonFg: null,
   state: null,
 }
 
@@ -124,6 +134,9 @@ const resolvedProps = computed(() => ({
   size: props.size ?? parentData?.size.value ?? propDefaults.size,
   buttonVariant:
     props.buttonVariant ?? parentData?.buttonVariant.value ?? propDefaults.buttonVariant,
+  buttonTheme: props.buttonTheme ?? parentData?.buttonTheme.value.theme ?? propDefaults.buttonTheme,
+  buttonBg: props.buttonBg ?? parentData?.buttonTheme.value.bg ?? propDefaults.buttonBg,
+  buttonFg: props.buttonFg ?? parentData?.buttonTheme.value.fg ?? propDefaults.buttonFg,
 }))
 
 // Shorthand for template usage
@@ -162,14 +175,14 @@ const classesObject = computed(() => ({
   ...resolvedProps.value,
   hasDefaultSlot: hasDefaultSlot.value,
 }))
-const wrapperClasses = getClasses(classesObject)
+const {classes: wrapperClasses} = useFormCheckClasses(classesObject)
 const computedWrapperClasses = computed(() => [
   wrapperClasses.value,
   processedAttrs.value.wrapperClass,
 ])
-const inputClasses = getInputClasses(classesObject)
+const {classes: inputClasses} = useFormCheckInputClasses(classesObject)
 const computedInputClasses = computed(() => [inputClasses.value, props.inputClass])
-const labelClasses = getLabelClasses(classesObject)
+const {classes: labelClasses} = useFormCheckLabelClasses(classesObject)
 
 defineExpose({
   blur: () => {

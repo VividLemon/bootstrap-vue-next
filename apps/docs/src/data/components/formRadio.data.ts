@@ -11,13 +11,13 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BFormRadio: {
-      styleSpec: {kind: StyleKind.Tag, value: 'input[type="radio"]'},
+      styleSpec: { kind: StyleKind.Tag, value: 'input[type="radio"]' },
       props: {
         ...pick(buildCommonProps(), [
           'ariaLabel',
@@ -32,6 +32,7 @@ export default {
           'size',
           'state',
         ]),
+        ...pick(buildCommonProps(), ['buttonBg', 'buttonFg']),
         button: {
           type: 'boolean',
           default: false, // TODO item not in string format
@@ -43,10 +44,16 @@ export default {
           description:
             "When set, renders the radio button as part of a button group (it doesn't enclose the radio and label with a div). It is not necessary to set this to true if this is part of a RadioGroup as it is handled internally",
         },
+        buttonTheme: {
+          type: 'ThemeProp | null',
+          default: 'secondary',
+          description: 'Applies one of the theme colors when in `button` mode',
+        },
         buttonVariant: {
           type: 'ButtonVariant | null',
-          default: null, // TODO item not in string format
-          description: "Applies one of Bootstrap's theme colors when in `button` mode",
+          default: 'solid',
+          description:
+            "Sets the button style ('solid', 'outline', 'subtle', 'text' or 'link') when in `button` mode",
         },
         inline: {
           type: 'boolean',
@@ -103,7 +110,7 @@ export default {
       } satisfies ExposedRecord,
     },
     BFormRadioGroup: {
-      styleSpec: {kind: StyleKind.Tag, value: 'div[role="radiogroup"]'},
+      styleSpec: { kind: StyleKind.Tag, value: 'div[role="radiogroup"]' },
       props: {
         ...pick(buildCommonProps(), [
           'ariaInvalid',
@@ -121,11 +128,17 @@ export default {
           'textField',
           'valueField',
         ]),
+        ...pick(buildCommonProps(), ['buttonBg', 'buttonFg']),
+        buttonTheme: {
+          type: 'ThemeProp | null',
+          default: 'secondary',
+          description: 'Specifies the theme color to apply to the button style radio buttons',
+        },
         buttonVariant: {
           type: 'ButtonVariant | null',
-          default: 'secondary',
+          default: 'solid',
           description:
-            'Specifies the Bootstrap contextual color theme variant to apply to the button style radio buttons',
+            "Specifies the button style ('solid', 'outline', 'subtle', 'text' or 'link') to apply to the button style radio buttons",
         },
         buttons: {
           type: 'boolean',

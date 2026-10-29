@@ -291,39 +291,39 @@ describe('list-group-item', () => {
     })
   })
 
-  describe('variant', () => {
-    it('does not have variant class by default', () => {
+  describe('theme', () => {
+    it('does not have theme class by default', () => {
       const wrapper = mount(BListGroupItem)
-      expect(wrapper.classes().some((c) => c.startsWith('list-group-item-'))).toBe(false)
+      expect(wrapper.classes().some((c) => c.startsWith('theme-'))).toBe(false)
     })
 
-    it('has class list-group-item-{variant} when variant is set', () => {
+    it('has class theme-{theme} when theme is set', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {variant: 'danger'},
+        props: {theme: 'danger'},
       })
-      expect(wrapper.classes()).toContain('list-group-item-danger')
+      expect(wrapper.classes()).toContain('theme-danger')
     })
 
-    it('variant prop is reactive', async () => {
+    it('theme prop is reactive', async () => {
       const wrapper = mount(BListGroupItem, {
-        props: {variant: 'danger'},
+        props: {theme: 'danger'},
       })
-      expect(wrapper.classes()).toContain('list-group-item-danger')
-      await wrapper.setProps({variant: 'success'})
-      expect(wrapper.classes()).toContain('list-group-item-success')
-      expect(wrapper.classes()).not.toContain('list-group-item-danger')
+      expect(wrapper.classes()).toContain('theme-danger')
+      await wrapper.setProps({theme: 'success'})
+      expect(wrapper.classes()).toContain('theme-success')
+      expect(wrapper.classes()).not.toContain('theme-danger')
     })
 
-    it('does not have variant class when variant is null', () => {
+    it('does not have theme class when theme is null', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {variant: null},
+        props: {theme: null},
       })
-      expect(wrapper.classes().some((c) => c.startsWith('list-group-item-'))).toBe(false)
+      expect(wrapper.classes().some((c) => c.startsWith('theme-'))).toBe(false)
     })
 
-    it('retains list-group-item class with variant', () => {
+    it('retains list-group-item class with theme', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {variant: 'primary'},
+        props: {theme: 'primary'},
       })
       expect(wrapper.classes()).toContain('list-group-item')
     })
@@ -338,21 +338,21 @@ describe('list-group-item', () => {
       expect(wrapper.classes()).toContain('disabled')
     })
 
-    it('variant and active can coexist', () => {
+    it('theme and active can coexist', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {variant: 'primary', active: true},
+        props: {theme: 'primary', active: true},
       })
-      expect(wrapper.classes()).toContain('list-group-item-primary')
+      expect(wrapper.classes()).toContain('theme-primary')
       expect(wrapper.classes()).toContain('active')
     })
 
-    it('href with active and variant', () => {
+    it('href with active and theme', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {href: '/test', active: true, variant: 'info'},
+        props: {href: '/test', active: true, theme: 'info'},
       })
       expect(wrapper.classes()).toContain('list-group-item-action')
       expect(wrapper.classes()).toContain('active')
-      expect(wrapper.classes()).toContain('list-group-item-info')
+      expect(wrapper.classes()).toContain('theme-info')
     })
   })
 })

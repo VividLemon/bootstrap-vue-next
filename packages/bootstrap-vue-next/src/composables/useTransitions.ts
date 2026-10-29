@@ -15,5 +15,8 @@ const FADE_PROPS = {
   leaveActiveClass: 'fade showing',
 } as const satisfies TransitionProps
 
-export const useFadeTransition = (fade: MaybeRefOrGetter<boolean>) =>
-  computed(() => (toValue(fade) ? FADE_PROPS : NO_FADE_PROPS))
+export const useFadeTransition = (fade: MaybeRefOrGetter<boolean>) => {
+  const transitionProps = computed(() => (toValue(fade) ? FADE_PROPS : NO_FADE_PROPS))
+
+  return {transitionProps}
+}

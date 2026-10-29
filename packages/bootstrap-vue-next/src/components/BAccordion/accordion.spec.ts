@@ -53,29 +53,15 @@ describe('accordion', () => {
     expect(wrapper.props('free')).toBe(true)
   })
 
-  it('free prop defaults to false', () => {
+  it.each([
+    {propName: 'free'},
+    {propName: 'flush'},
+    {propName: 'initialAnimation'},
+    {propName: 'lazy'},
+    {propName: 'unmountLazy'},
+  ])('$propName prop defaults to false', ({propName}) => {
     const wrapper = mount(BAccordion)
-    expect(wrapper.props('free')).toBe(false)
-  })
-
-  it('flush prop defaults to false', () => {
-    const wrapper = mount(BAccordion)
-    expect(wrapper.props('flush')).toBe(false)
-  })
-
-  it('initialAnimation prop defaults to false', () => {
-    const wrapper = mount(BAccordion)
-    expect(wrapper.props('initialAnimation')).toBe(false)
-  })
-
-  it('lazy prop defaults to false', () => {
-    const wrapper = mount(BAccordion)
-    expect(wrapper.props('lazy')).toBe(false)
-  })
-
-  it('unmountLazy prop defaults to false', () => {
-    const wrapper = mount(BAccordion)
-    expect(wrapper.props('unmountLazy')).toBe(false)
+    expect(wrapper.props(propName)).toBe(false)
   })
 
   const complexAccordion = {

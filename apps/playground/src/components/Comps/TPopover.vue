@@ -29,11 +29,11 @@
       </BCol>
       <BCol style="width: 250px">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        <span v-b-tooltip.show="'tool tip not inline'" class="text-warning">
+        <span v-b-tooltip.show="'tool tip not inline'" class="fg-warning">
           this is without using .inline modifier.
         </span>
         Ut porta rhoncus elit et tincidunt gravida.
-        <span v-b-tooltip.inline.show="'tool tip inline'" class="text-warning">
+        <span v-b-tooltip.inline.show="'tool tip inline'" class="fg-warning">
           Better inline tooltip location with .inline.
         </span>
         Curabitur bibendum, velit vel gravida finibus, nisl tortor condimentum metus, eu pulvinar
@@ -53,7 +53,7 @@
       <BCol>
         <BTooltip click>
           <template #target="{visible}">
-            <BButton :variant="visible ? 'primary' : 'secondary'">
+            <BButton :theme="visible ? 'primary' : 'secondary'">
               click tooltip component
             </BButton>
           </template>
@@ -93,7 +93,7 @@
             content: 'And here\'s some amazing content. It\'s very engaging. Right?',
           }"
           type="button"
-          class="btn btn-lg btn-danger"
+          class="btn btn-lg btn-solid theme-danger"
         >
           Click to toggle popover
         </button>
@@ -102,7 +102,7 @@
         <button
           v-b-popover.left="'I\'m another popover!'"
           type="button"
-          class="btn btn-lg btn-success"
+          class="btn btn-lg btn-solid theme-success"
         >
           Hover to toggle popover
         </button>

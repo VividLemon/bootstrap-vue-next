@@ -58,10 +58,10 @@ See the [Vue 3 migration guide](https://v3-migration.vuejs.org/breaking-changes/
 
 Instead, BootstrapVueNext provides two approaches for customizing icons:
 
-1. **Default built-in SVG icons** (recommended): Uses built-in star SVG icons that work with `variant`, `color`, and `size` props
+1. **Default built-in SVG icons** (recommended): Uses built-in star SVG icons that work with `theme`, `color`, and `size` props
 2. **Custom icons via scoped slots**: For complete customization where you handle all styling yourself
 
-**Important:** When using custom icons via scoped slots, the `variant`, `color`, and `size` props do not apply. You must handle all styling in your custom CSS.
+**Important:** When using custom icons via scoped slots, the `theme`, `color`, and `size` props do not apply. You must handle all styling in your custom CSS.
 
 ## Migration Notes
 

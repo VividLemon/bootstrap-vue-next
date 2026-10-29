@@ -1,14 +1,14 @@
 <template>
   <div class="d-flex gap-2">
     <!-- #region template -->
-    <BButton variant="primary">Primary</BButton>
-    <BButton variant="secondary">Secondary</BButton>
-    <BButton variant="success">Success</BButton>
-    <BButton variant="danger">Danger</BButton>
-    <BButton variant="warning">Warning</BButton>
-    <BButton variant="info">Info</BButton>
-    <BButton variant="light">Light</BButton>
-    <BButton variant="dark">Dark</BButton>
+    <BButton theme="primary">Primary</BButton>
+    <BButton theme="secondary">Secondary</BButton>
+    <BButton theme="success">Success</BButton>
+    <BButton theme="danger">Danger</BButton>
+    <BButton theme="warning">Warning</BButton>
+    <BButton theme="info">Info</BButton>
+    <BButton theme="accent">Accent</BButton>
+    <BButton theme="inverse">Inverse</BButton>
     <!-- #endregion template -->
   </div>
 </template>

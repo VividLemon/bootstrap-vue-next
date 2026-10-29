@@ -7,7 +7,7 @@
     v-bind="computedLinkProps"
     :type="props.button && !computedLink ? props.buttonType : undefined"
     :disabled="props.disabled || null"
-    :variant="null"
+    :theme="null"
     @click="clicked"
   >
     <span v-if="hasDefaultSlot" class="b-avatar-custom">
@@ -35,9 +35,9 @@
       v-if="showBadge"
       :pill="props.badgePill"
       :dot-indicator="props.badgeDotIndicator || badgeImplicitlyDot"
-      :variant="props.badgeVariant"
-      :bg-variant="props.badgeBgVariant"
-      :text-variant="props.badgeTextVariant"
+      :theme="props.badgeTheme"
+      :bg="props.badgeBg"
+      :fg="props.badgeFg"
       :style="badgeStyle"
       :placement="props.badgePlacement"
     >
@@ -57,16 +57,16 @@ import {useBLinkHelper} from '../../composables/useBLinkHelper'
 import {isEmptySlot} from '../../utils/dom'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
 import {useRadiusElementClasses} from '../../composables/useRadiusElementClasses'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BAvatarEmits, BAvatarProps, BAvatarSlots, Size} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 
 const _props = withDefaults(defineProps<BAvatarProps>(), {
   alt: 'avatar',
   badge: false,
-  badgeBgVariant: null,
-  badgeTextVariant: null,
-  badgeVariant: 'primary',
+  badgeBg: null,
+  badgeFg: null,
+  badgeTheme: 'primary',
   badgePlacement: 'bottom-end',
   badgeDotIndicator: false,
   badgePill: false,
@@ -77,7 +77,7 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   src: undefined,
   text: undefined,
   // Link props
-  variant: 'secondary',
+  theme: 'secondary',
   // All others use defaults
   active: undefined,
   activeClass: undefined,
@@ -95,12 +95,12 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   underlineOffsetHover: undefined,
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
-  underlineVariant: undefined,
+  underlineTheme: undefined,
   // End link props
   // ColorExtendables props
-  // Variant is here as well
-  bgVariant: null,
-  textVariant: null,
+  // Theme is here as well
+  bg: null,
+  fg: null,
   // End ColorExtendables props
   // RadiusElementExtendables props
   rounded: 'circle',
@@ -126,13 +126,15 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props)
 
 const parentData = inject(avatarGroupInjectionKey, null)
 
-const SIZES: ReadonlySet<string | null> = new Set(Object.freeze([
-  null,
-  ...Object.keys({
-    lg: null,
-    sm: null,
-  } satisfies Record<Size, null>),
-] as (string | null)[]))
+const SIZES: ReadonlySet<string | null> = new Set(
+  Object.freeze([
+    null,
+    ...Object.keys({
+      lg: null,
+      sm: null,
+    } satisfies Record<Size, null>),
+  ] as (string | null)[])
+)
 const FONT_SIZE_SCALE = 0.4
 const BADGE_FONT_SIZE_SCALE = FONT_SIZE_SCALE * 0.7
 
@@ -149,34 +151,46 @@ const computedSquare = computed(() => parentData?.square.value || props.square)
 // const computedSize = computed(() => computedParentSize.value ?? computedPropSize.value)
 // const computedPropSizeIsLiteralSize = computed(() => propSizeIsLiteralSize(computedSize.value))
 
-const computedSize = useNumberishToStyle(() => parentData?.size.value ?? props.size)
+const {style: computedSize} = useNumberishToStyle(() => parentData?.size.value ?? props.size)
 const computedSizeIsLiteralSize = computed(
   () => !!computedSize.value && SIZES.has(computedSize.value)
 )
 
-const computedVariant = computed(() => parentData?.variant.value ?? props.variant)
-const computedRounded = computed(() => parentData?.rounded.value ?? props.rounded)
-const computedRoundedTop = computed(() => parentData?.roundedTop.value ?? props.roundedTop)
-const computedRoundedBottom = computed(() => parentData?.roundedBottom.value ?? props.roundedBottom)
-const computedRoundedStart = computed(() => parentData?.roundedStart.value ?? props.roundedStart)
-const computedRoundedEnd = computed(() => parentData?.roundedEnd.value ?? props.roundedEnd)
+const computedTheme = computed(() => parentData?.theme.value ?? props.theme)
+const computedRounded = computed(() => parentData?.roundedProps.value.rounded ?? props.rounded)
+const computedRoundedTop = computed(
+  () => parentData?.roundedProps.value.roundedTop ?? props.roundedTop
+)
+const computedRoundedBottom = computed(
+  () => parentData?.roundedProps.value.roundedBottom ?? props.roundedBottom
+)
+const computedRoundedStart = computed(
+  () => parentData?.roundedProps.value.roundedStart ?? props.roundedStart
+)
+const computedRoundedEnd = computed(
+  () => parentData?.roundedProps.value.roundedEnd ?? props.roundedEnd
+)
 
-const radiusElementClasses = useRadiusElementClasses(() => ({
-  rounded: computedRounded.value,
-  roundedTop: computedRoundedTop.value,
-  roundedBottom: computedRoundedBottom.value,
-  roundedStart: computedRoundedStart.value,
-  roundedEnd: computedRoundedEnd.value,
-}))
+const {classes: radiusElementClasses} = useRadiusElementClasses(
+  computed(() => ({
+    rounded: computedRounded.value,
+    roundedTop: computedRoundedTop.value,
+    roundedBottom: computedRoundedBottom.value,
+    roundedStart: computedRoundedStart.value,
+    roundedEnd: computedRoundedEnd.value,
+  }))
+)
 
 const badgeText = computed(() => (props.badge === true ? '' : props.badge))
 const badgeImplicitlyDot = computed(() => !badgeText.value && !hasBadgeSlot.value)
 
-const colorClasses = useColorVariantClasses(() => ({
-  bgVariant: parentData?.bgVariant.value ?? props.bgVariant,
-  textVariant: parentData?.textVariant.value ?? props.textVariant,
-  variant: computedVariant.value,
-}))
+const {classes: colorClasses} = useThemeClasses(
+  computed(() => ({
+    bg: parentData?.bg.value ?? props.bg,
+    fg: parentData?.fg.value ?? props.fg,
+    theme: computedTheme.value,
+  }))
+)
 const computedClasses = computed(() => [
   colorClasses.value,
   // Square overwrites all else
@@ -184,8 +198,8 @@ const computedClasses = computed(() => [
   {
     [`b-avatar-${computedSize.value}`]:
       computedSizeIsLiteralSize.value && computedSize.value !== 'md',
-    [`btn-${computedVariant.value}`]: props.button ? computedVariant.value !== null : false,
-    'badge': !props.button && computedVariant.value !== null && hasDefaultSlot.value,
+    'btn-solid': props.button && computedTheme.value !== null,
+    'badge': !props.button && computedTheme.value !== null && hasDefaultSlot.value,
     'btn': props.button,
     // Square is the same as rounded-0 class
     'rounded-0': computedSquare.value === true,

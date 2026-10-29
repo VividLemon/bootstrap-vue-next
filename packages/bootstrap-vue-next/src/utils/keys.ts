@@ -4,13 +4,8 @@ import type {ClassValue} from '../types/AnyValuedAttributes'
 import type {Numberish, ValidationState} from '../types/CommonTypes'
 import type {LiteralUnion} from '../types/LiteralUnion'
 import type {Size} from '../types/Size'
-import type {RadiusElement} from '../types/RadiusElement'
-import type {
-  BgColorVariant,
-  ButtonVariant,
-  ColorVariant,
-  TextColorVariant,
-} from '../types/ColorTypes'
+import type {RadiusElementExtendables} from '../types/RadiusElement'
+import type {BgColor, ButtonVariant, FgColor, MaybeArray, ThemeProp} from '../types/ColorTypes'
 import type {CheckboxValue} from '../types/CheckboxTypes'
 import type {RadioValue} from '../types/RadioTypes'
 import type {BreadcrumbItemRaw} from '../types/BreadcrumbTypes'
@@ -73,14 +68,10 @@ export const avatarGroupInjectionKey: InjectionKey<{
   overlapScale: Readonly<Ref<number>>
   size: Readonly<Ref<LiteralUnion<Size, Numberish> | undefined>>
   square: Readonly<Ref<boolean>>
-  rounded: Readonly<Ref<RadiusElement | boolean>>
-  roundedTop: Readonly<Ref<RadiusElement | boolean | undefined>>
-  roundedBottom: Readonly<Ref<RadiusElement | boolean | undefined>>
-  roundedStart: Readonly<Ref<RadiusElement | boolean | undefined>>
-  roundedEnd: Readonly<Ref<RadiusElement | boolean | undefined>>
-  variant: Readonly<Ref<ColorVariant | null>>
-  bgVariant: Readonly<Ref<BgColorVariant | null>>
-  textVariant: Readonly<Ref<TextColorVariant | null>>
+  roundedProps: Readonly<Ref<RadiusElementExtendables>>
+  theme: Readonly<Ref<ThemeProp | null>>
+  bg: Readonly<Ref<MaybeArray<BgColor> | null>>
+  fg: Readonly<Ref<MaybeArray<FgColor> | null>>
 }> = createBvnInjectionKey('avatarGroup')
 
 // BAccordion
@@ -101,6 +92,13 @@ export const checkboxGroupKey: InjectionKey<{
   modelValue: Ref<readonly CheckboxValue[]>
   switch: Readonly<Ref<boolean>>
   buttonVariant: Readonly<Ref<ButtonVariant | null>>
+  buttonTheme: Readonly<
+    Ref<{
+      theme: ThemeProp | null
+      bg: MaybeArray<BgColor> | null
+      fg: MaybeArray<FgColor> | null
+    }>
+  >
   form: Readonly<Ref<string | undefined>>
   name: Readonly<Ref<string>>
   state: Readonly<Ref<ValidationState | undefined>>
@@ -116,6 +114,13 @@ export const checkboxGroupKey: InjectionKey<{
 export const radioGroupKey: InjectionKey<{
   modelValue: Ref<RadioValue>
   buttonVariant: Readonly<Ref<ButtonVariant | null>>
+  buttonTheme: Readonly<
+    Ref<{
+      theme: ThemeProp | null
+      bg: MaybeArray<BgColor> | null
+      fg: MaybeArray<FgColor> | null
+    }>
+  >
   form: Readonly<Ref<string | undefined>>
   name: Readonly<Ref<string>>
   buttons: Readonly<Ref<boolean>>

@@ -576,10 +576,10 @@ describe('form-radio-group', () => {
 
     it('forwards buttonVariant prop', () => {
       const wrapper = mount(BFormRadioGroup, {
-        props: {buttonVariant: 'primary'},
+        props: {buttonTheme: 'primary'},
       })
       const base = wrapper.findComponent(BFormRadioGroupBase)
-      expect(base.props('buttonVariant')).toBe('primary')
+      expect(base.props('buttonTheme')).toBe('primary')
     })
 
     it('forwards id prop', () => {

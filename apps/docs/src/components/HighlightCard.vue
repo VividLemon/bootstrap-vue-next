@@ -9,7 +9,8 @@
         <BButton
           v-if="hasFileContent"
           size="sm"
-          variant="outline-primary"
+          variant="outline"
+          theme="primary"
           :loading="isLoading"
           :loading-text="'Opening...'"
           title="Open in StackBlitz"

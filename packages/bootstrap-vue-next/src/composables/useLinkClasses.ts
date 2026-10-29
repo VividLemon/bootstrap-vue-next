@@ -1,31 +1,33 @@
-import {computed, type MaybeRefOrGetter, toValue} from 'vue'
+import {computed, type MaybeRef, unref} from 'vue'
+import {useThemeClasses} from './useThemeClasses'
 import type {
   LinkIconProps,
   LinkOpacityProps,
+  LinkThemeProps,
   LinkUnderlineProps,
-  LinkVariantProps,
 } from '../types/ComponentProps'
 
 export const useLinkClasses = (
-  linkProps: MaybeRefOrGetter<
-    LinkUnderlineProps & LinkOpacityProps & LinkIconProps & LinkVariantProps
-  >
-) =>
-  computed(() => {
-    const props = toValue(linkProps)
+  linkProps: MaybeRef<LinkUnderlineProps & LinkOpacityProps & LinkIconProps & LinkThemeProps>
+) => {
+  const {classes: themeClasses} = useThemeClasses(linkProps)
+
+  const classes = computed(() => {
+    const props = unref(linkProps)
     return {
-      [`link-${props.variant}`]: props.variant !== null,
-      [`link-opacity-${props.opacity}`]: props.opacity !== undefined,
-      [`link-opacity-${props.opacityHover}-hover`]: props.opacityHover !== undefined,
-      [`link-underline-${props.underlineVariant}`]: props.underlineVariant !== null,
-      [`link-offset-${props.underlineOffset}`]: props.underlineOffset !== undefined,
-      [`link-offset-${props.underlineOffsetHover}-hover`]: props.underlineOffsetHover !== undefined,
-      ['link-underline']:
-        props.underlineVariant === null &&
-        (props.underlineOpacity !== undefined || props.underlineOpacityHover !== undefined),
-      [`link-underline-opacity-${props.underlineOpacity}`]: props.underlineOpacity !== undefined,
-      [`link-underline-opacity-${props.underlineOpacityHover}-hover`]:
-        props.underlineOpacityHover !== undefined,
+      ...themeClasses.value,
+      [`link-${props.opacity}`]: props.opacity !== undefined,
+      [`hover:link-${props.opacityHover}`]: props.opacityHover !== undefined,
+      [`underline-${props.underlineTheme}`]:
+        props.underlineTheme !== null && props.underlineTheme !== undefined,
+      [`underline-offset-${props.underlineOffset}`]: props.underlineOffset !== undefined,
+      [`hover:underline-offset-${props.underlineOffsetHover}`]:
+        props.underlineOffsetHover !== undefined,
+      [`underline-${props.underlineOpacity}`]: props.underlineOpacity !== undefined,
+      [`hover:underline-${props.underlineOpacityHover}`]: props.underlineOpacityHover !== undefined,
       'icon-link': props.icon === true,
     }
   })
+
+  return {classes}
+}

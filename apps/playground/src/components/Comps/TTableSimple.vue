@@ -34,7 +34,7 @@
           </BThead>
           <BTbody>
             <BTr>
-              <BTd sticky-column variant="primary">Sticky Column Row Header</BTd>
+              <BTd sticky-column theme="primary">Sticky Column Row Header</BTd>
               <BTd>Cell</BTd>
               <BTd>Cell</BTd>
               <BTd>Cell</BTd>
@@ -79,7 +79,7 @@
             <col />
             <col />
           </colgroup>
-          <BThead head-variant="dark">
+          <BThead head-theme="inverse">
             <BTr>
               <BTh colspan="2">Region</BTh>
               <BTh colspan="3">Clothes</BTh>
@@ -102,16 +102,16 @@
               <BTd>56</BTd>
               <BTd>22</BTd>
               <BTd>43</BTd>
-              <BTd variant="success">72</BTd>
+              <BTd theme="success">72</BTd>
               <BTd>23</BTd>
             </BTr>
             <BTr>
               <BTh class="text-end">Gent</BTh>
               <BTd>46</BTd>
-              <BTd variant="warning">18</BTd>
+              <BTd theme="warning">18</BTd>
               <BTd>50</BTd>
               <BTd>61</BTd>
-              <BTd variant="danger">15</BTd>
+              <BTd theme="danger">15</BTd>
             </BTr>
             <BTr>
               <BTh class="text-end">Brussels</BTh>
@@ -124,7 +124,7 @@
             <BTr>
               <BTh rowspan="2">The Netherlands</BTh>
               <BTh class="text-end">Amsterdam</BTh>
-              <BTd variant="success">89</BTd>
+              <BTd theme="success">89</BTd>
               <BTd>34</BTd>
               <BTd>69</BTd>
               <BTd>85</BTd>
@@ -133,15 +133,15 @@
             <BTr>
               <BTh class="text-end">Utrecht</BTh>
               <BTd>80</BTd>
-              <BTd variant="danger">12</BTd>
+              <BTd theme="danger">12</BTd>
               <BTd>43</BTd>
               <BTd>36</BTd>
-              <BTd variant="warning">19</BTd>
+              <BTd theme="warning">19</BTd>
             </BTr>
           </BTbody>
           <BTfoot>
             <BTr>
-              <BTd colspan="7" variant="secondary" class="text-end">
+              <BTd colspan="7" theme="secondary" class="text-end">
                 Total Rows:
                 <b>5</b>
               </BTd>
@@ -169,7 +169,7 @@
             <col />
             <col />
           </colgroup>
-          <BThead head-variant="dark">
+          <BThead head-theme="inverse">
             <BTr>
               <BTh colspan="2">Region</BTh>
               <BTh colspan="3">Clothes</BTh>
@@ -192,16 +192,16 @@
               <BTd stacked-heading="Clothes: Trousers">56</BTd>
               <BTd stacked-heading="Clothes: Skirts">22</BTd>
               <BTd stacked-heading="Clothes: Dresses">43</BTd>
-              <BTd stacked-heading="Accessories: Bracelets" variant="success">72</BTd>
+              <BTd stacked-heading="Accessories: Bracelets" theme="success">72</BTd>
               <BTd stacked-heading="Accessories: Rings">23</BTd>
             </BTr>
             <BTr>
               <BTh stacked-heading="City">Gent</BTh>
               <BTd stacked-heading="Clothes: Trousers">46</BTd>
-              <BTd stacked-heading="Clothes: Skirts" variant="warning">18</BTd>
+              <BTd stacked-heading="Clothes: Skirts" theme="warning">18</BTd>
               <BTd stacked-heading="Clothes: Dresses">50</BTd>
               <BTd stacked-heading="Accessories: Bracelets">61</BTd>
-              <BTd stacked-heading="Accessories: Rings" variant="danger">15</BTd>
+              <BTd stacked-heading="Accessories: Rings" theme="danger">15</BTd>
             </BTr>
             <BTr>
               <BTh stacked-heading="City">Brussels</BTh>
@@ -214,7 +214,7 @@
             <BTr>
               <BTh rowspan="2" class="text-center">The Netherlands (2 Cities)</BTh>
               <BTh stacked-heading="City">Amsterdam</BTh>
-              <BTd stacked-heading="Clothes: Trousers" variant="success">89</BTd>
+              <BTd stacked-heading="Clothes: Trousers" theme="success">89</BTd>
               <BTd stacked-heading="Clothes: Skirts">34</BTd>
               <BTd stacked-heading="Clothes: Dresses">69</BTd>
               <BTd stacked-heading="Accessories: Bracelets">85</BTd>
@@ -223,15 +223,15 @@
             <BTr>
               <BTh stacked-heading="City">Utrecht</BTh>
               <BTd stacked-heading="Clothes: Trousers">80</BTd>
-              <BTd stacked-heading="Clothes: Skirts" variant="danger">12</BTd>
+              <BTd stacked-heading="Clothes: Skirts" theme="danger">12</BTd>
               <BTd stacked-heading="Clothes: Dresses">43</BTd>
               <BTd stacked-heading="Accessories: Bracelets">36</BTd>
-              <BTd stacked-heading="Accessories: Rings" variant="warning">19</BTd>
+              <BTd stacked-heading="Accessories: Rings" theme="warning">19</BTd>
             </BTr>
           </BTbody>
           <BTfoot>
             <BTr>
-              <BTd colspan="7" variant="secondary" class="text-end">
+              <BTd colspan="7" theme="secondary" class="text-end">
                 Total Rows:
                 <b>5</b>
               </BTd>

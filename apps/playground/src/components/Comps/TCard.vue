@@ -53,7 +53,7 @@
             content.
           </BCardText>
 
-          <BButton href="#" variant="primary">Go somewhere</BButton>
+          <BButton href="#" theme="primary">Go somewhere</BButton>
         </BCard>
       </BCol>
       <BCol cols="6">

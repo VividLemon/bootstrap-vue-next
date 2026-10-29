@@ -4,15 +4,15 @@ import type {
   BProgressProps,
   BProgressSlots,
 } from 'bootstrap-vue-next'
-import type {ComponentReference, PropRecord, SlotRecord} from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import type { ComponentReference, PropRecord, SlotRecord } from '../../types'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BProgress: {
       props: {
-        ...pick(buildCommonProps(), ['bgVariant', 'textVariant', 'variant']),
+        ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
         animated: {
           type: 'boolean',
           default: undefined,
@@ -63,7 +63,7 @@ export default {
     },
     BProgressBar: {
       props: {
-        ...pick(buildCommonProps(), ['bgVariant', 'textVariant', 'variant']),
+        ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
         animated: {
           type: 'boolean',
           default: false, // TODO item not in string format

@@ -10,17 +10,14 @@
       <div v-if="files && files.length > 0">
         <strong>{{ files.length }} files selected:</strong>
         <ul class="mt-2 font-monospace small">
-          <li
-            v-for="(file, index) in files.slice(0, 10)"
-            :key="index"
-          >
+          <li v-for="(file, index) in files.slice(0, 10)" :key="index">
             {{ file.webkitRelativePath || file.name }}
           </li>
           <li v-if="files.length > 10">
             <em>...and {{ files.length - 10 }} more files</em>
           </li>
         </ul>
-        <p class="text-muted small mt-2">
+        <p class="fg-3 small mt-2">
           Each file has a <code>webkitRelativePath</code> property with the relative path from the
           directory root.
         </p>
@@ -31,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const files = ref<File[]>([])
 </script>

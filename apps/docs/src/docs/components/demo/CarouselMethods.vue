@@ -6,22 +6,14 @@
   </BCarousel>
 
   <BButtonGroup class="mt-3">
-    <BButton
-      variant="danger"
-      @click="prev"
-      >Previous Slide</BButton
-    >
-    <BButton
-      variant="success"
-      @click="next"
-      >Next Slide</BButton
-    >
+    <BButton theme="danger" @click="prev">Previous Slide</BButton>
+    <BButton theme="success" @click="next">Next Slide</BButton>
   </BButtonGroup>
 </template>
 
 <script setup lang="ts">
-import {BCarousel} from 'bootstrap-vue-next/components/BCarousel'
-import {useTemplateRef} from 'vue'
+import { BCarousel } from 'bootstrap-vue-next/components/BCarousel'
+import { useTemplateRef } from 'vue'
 
 const myCarousel = useTemplateRef('myCarousel')
 

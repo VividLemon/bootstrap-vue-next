@@ -54,8 +54,10 @@ const _props = withDefaults(defineProps<BLinkProps>(), {
   underlineOffsetHover: undefined,
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
-  underlineVariant: null,
-  variant: null,
+  underlineTheme: null,
+  theme: null,
+  bg: null,
+  fg: null,
 })
 const props = useDefaults(_props, 'BLink')
 const emit = defineEmits<BLinkEmits>()
@@ -77,7 +79,7 @@ const navbarData = inject(navbarInjectionKey, null)
 /**
  * Not to be confused with computedLinkClasses
  */
-const linkValueClasses = useLinkClasses(props)
+const {classes: linkValueClasses} = useLinkClasses(props)
 const computedClasses = computed(() => [
   linkValueClasses.value,
   attrs.class,

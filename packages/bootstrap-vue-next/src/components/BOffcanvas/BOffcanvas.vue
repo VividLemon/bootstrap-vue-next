@@ -131,7 +131,10 @@ const _props = withDefaults(defineProps<Omit<BOffcanvasProps, 'modelValue'>>(), 
   headerClass: undefined,
   headerCloseClass: undefined,
   headerCloseLabel: 'Close',
-  headerCloseVariant: 'secondary',
+  headerCloseTheme: 'secondary',
+  headerCloseBg: null,
+  headerCloseFg: null,
+  headerCloseVariant: 'solid',
   id: undefined,
   initialAnimation: false,
   lazy: false,
@@ -268,11 +271,14 @@ const showBackdrop = computed(
 
 const hasHeaderCloseSlot = computed(() => !isEmptySlot(slots['header-close']))
 const headerCloseClasses = computed(() => [
-  {'text-reset': !hasHeaderCloseSlot.value},
+  {'fg-reset': !hasHeaderCloseSlot.value},
   props.headerCloseClass,
 ])
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
+  theme: hasHeaderCloseSlot.value ? props.headerCloseTheme : undefined,
+  bg: hasHeaderCloseSlot.value ? props.headerCloseBg : undefined,
+  fg: hasHeaderCloseSlot.value ? props.headerCloseFg : undefined,
   class: headerCloseClasses.value,
 }))
 

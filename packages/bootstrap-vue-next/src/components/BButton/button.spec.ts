@@ -17,9 +17,10 @@ describe('button', () => {
     expect(wrapper.element.tagName).toBe('BUTTON')
   })
 
-  it('has default variant class btn-secondary', () => {
+  it('has default classes btn-solid and theme-secondary', () => {
     const wrapper = mount(BButton)
-    expect(wrapper.classes()).toContain('btn-secondary')
+    expect(wrapper.classes()).toContain('btn-solid')
+    expect(wrapper.classes()).toContain('theme-secondary')
   })
 
   it('does not have a size class by default', () => {
@@ -82,21 +83,50 @@ describe('button', () => {
     expect($blink.exists()).toBe(true)
   })
 
-  it('has class btn-{type} when prop variant', async () => {
+  it('has class btn-{variant} when prop variant', async () => {
     const wrapper = mount(BButton, {
-      props: {variant: 'primary'},
+      props: {variant: 'outline'},
     })
-    expect(wrapper.classes()).toContain('btn-primary')
-    await wrapper.setProps({variant: undefined})
-    expect(wrapper.classes()).not.toContain('btn-primary')
+    expect(wrapper.classes()).toContain('btn-outline')
+    expect(wrapper.classes()).not.toContain('btn-solid')
+    await wrapper.setProps({variant: 'subtle'})
+    expect(wrapper.classes()).not.toContain('btn-outline')
+    expect(wrapper.classes()).toContain('btn-subtle')
+  })
+
+  it('applies styled as a modifier separately from the variant', () => {
+    const wrapper = mount(BButton, {
+      props: {variant: 'outline', styled: true},
+    })
+    expect(wrapper.classes()).toContain('btn-outline')
+    expect(wrapper.classes()).toContain('btn-styled')
+  })
+
+  it('has class theme-{theme} when prop theme', async () => {
+    const wrapper = mount(BButton, {
+      props: {theme: 'primary'},
+    })
+    expect(wrapper.classes()).toContain('theme-primary')
+    expect(wrapper.classes()).not.toContain('theme-secondary')
+    await wrapper.setProps({theme: 'danger'})
+    expect(wrapper.classes()).toContain('theme-danger')
+    expect(wrapper.classes()).not.toContain('theme-primary')
   })
 
   it('does not have btn-{variant} class when variant is null', () => {
     const wrapper = mount(BButton, {
       props: {variant: null},
     })
-    expect(wrapper.classes()).not.toContain('btn-secondary')
+    expect(wrapper.classes()).not.toContain('btn-solid')
     expect(wrapper.classes()).not.toContain('btn-null')
+  })
+
+  it('does not have theme class when theme is null', () => {
+    const wrapper = mount(BButton, {
+      props: {theme: null},
+    })
+    expect(wrapper.classes()).not.toContain('theme-secondary')
+    expect(wrapper.classes()).not.toContain('theme-null')
   })
 
   it('has class btn-{type} when prop size', async () => {
@@ -655,10 +685,11 @@ describe('button', () => {
     expect(wrapper.classes()).toContain('btn-link')
   })
 
-  it('does not have btn-link-{color} class when variant is link-primary', () => {
+  it('has classes btn-link and theme-info when variant is link and theme is info', () => {
     const wrapper = mount(BButton, {
-      props: {variant: 'link-primary'},
+      props: {variant: 'link', theme: 'info'},
     })
-    expect(wrapper.classes()).not.toContain('btn-link-primary')
+    expect(wrapper.classes()).toContain('btn-link')
+    expect(wrapper.classes()).toContain('theme-info')
   })
 })

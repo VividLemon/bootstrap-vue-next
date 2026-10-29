@@ -1,5 +1,5 @@
-import type {BLinkProps} from 'bootstrap-vue-next'
-import type {PropRecord, PropRecordWithOptions} from '../types'
+import type { BLinkProps } from 'bootstrap-vue-next'
+import type { PropRecord, PropRecordWithOptions } from '../types'
 
 export const linkTo = '/docs/components/link'
 
@@ -14,6 +14,11 @@ export const linkProps = {
     default: 'router-link-active',
     description: 'Configure the active CSS class applied when the link is active.',
   },
+  bg: {
+    type: 'MaybeArray<BgColor> | null',
+    default: null,
+    description: 'Applies a background color (`bg-*` class) to the link',
+  },
   disabled: {
     type: 'boolean',
     default: false,
@@ -24,6 +29,11 @@ export const linkProps = {
     type: 'string',
     default: 'router-link-exact-active',
     description: 'Configure the active CSS class applied when the link is active with exact match.',
+  },
+  fg: {
+    type: 'MaybeArray<FgColor> | null',
+    default: null,
+    description: 'Applies a foreground (text) color (`fg-*` class) to the link',
   },
   href: {
     type: 'string',
@@ -42,12 +52,12 @@ export const linkProps = {
       'To improve the responsiveness of your Nuxt.js applications, when the link will be displayed within the viewport, Nuxt.js will automatically prefetch the code splitted page. Setting `no-prefetch` will disabled this feature for the specific link',
   },
   opacity: {
-    type: "10 | 25 | 50 | 75 | 100 | '10' | '25' | '50' | '75' | '100'",
+    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
     default: undefined,
     description: 'Change the alpha opacity of the link `rgba()` color value',
   },
   opacityHover: {
-    type: "10 | 25 | 50 | 75 | 100 | '10' | '25' | '50' | '75' | '100'",
+    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
     default: undefined,
     description: 'Change the alpha opacity of the link `rgba()` color value on hover',
   },
@@ -119,24 +129,24 @@ export const linkProps = {
     description: 'Change the distance of the underline from the bottom of the link text on hover',
   },
   underlineOpacity: {
-    type: "0 | 10 | 25 | 50 | 75 | 100 | '0' | '10' | '25' | '50' | '75' | '100'",
+    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
     default: undefined,
     description: "Set's the opacity of the link's underline",
   },
   underlineOpacityHover: {
-    type: "0 | 10 | 25 | 50 | 75 | 100 | '0' | '10' | '25' | '50' | '75' | '100'",
+    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
     default: undefined,
     description: "Set's the opacity of the link's underline on hover",
   },
-  underlineVariant: {
-    type: 'ColorVariant | null',
+  underlineTheme: {
+    type: 'ThemeColor | null',
     default: null,
-    description: 'Set the color variant for the link underline independently of the link text',
+    description: 'Set the theme color for the link underline independently of the link text',
   },
-  variant: {
-    type: 'ColorVariant | null',
+  theme: {
+    type: 'ThemeProp | null',
     default: null,
-    description: 'Set the color variant for the link',
+    description: 'Set the theme color for the link',
   },
   // TODO: remove the hard-coded NYI props below when they are implemented
 } as const satisfies PropRecord<keyof BLinkProps | 'noPrefetch' | 'prefetch' | 'prefetchedClass'>

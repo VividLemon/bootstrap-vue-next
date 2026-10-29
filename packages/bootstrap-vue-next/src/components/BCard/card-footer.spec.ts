@@ -48,24 +48,24 @@ describe('card-footer', () => {
     expect($headfoot.props('text')).toBe('baz')
   })
 
-  it('gives prop bgVariant to child', async () => {
+  it('gives prop bg to child', async () => {
     const wrapper = mount(BCardFooter, {
-      props: {bgVariant: 'danger'},
+      props: {bg: 'danger'},
     })
     const $headfoot = wrapper.getComponent(BCardHeadFoot)
-    expect($headfoot.props('bgVariant')).toBe('danger')
-    await wrapper.setProps({bgVariant: 'success'})
-    expect($headfoot.props('bgVariant')).toBe('success')
+    expect($headfoot.props('bg')).toBe('danger')
+    await wrapper.setProps({bg: 'success'})
+    expect($headfoot.props('bg')).toBe('success')
   })
 
-  it('gives prop borderVariant to child', async () => {
+  it('gives prop border to child', async () => {
     const wrapper = mount(BCardFooter, {
-      props: {borderVariant: 'danger'},
+      props: {border: 'danger'},
     })
     const $headfoot = wrapper.getComponent(BCardHeadFoot)
-    expect($headfoot.props('borderVariant')).toBe('danger')
-    await wrapper.setProps({borderVariant: 'warning'})
-    expect($headfoot.props('borderVariant')).toBe('warning')
+    expect($headfoot.props('border')).toBe('danger')
+    await wrapper.setProps({border: 'warning'})
+    expect($headfoot.props('border')).toBe('warning')
   })
 
   it('gives prop tag to child', async () => {
@@ -78,86 +78,86 @@ describe('card-footer', () => {
     expect($headfoot.props('tag')).toBe('footer')
   })
 
-  it('gives prop textVariant to child', async () => {
+  it('gives prop fg to child', async () => {
     const wrapper = mount(BCardFooter, {
-      props: {textVariant: 'danger'},
+      props: {fg: 'danger'},
     })
     const $headfoot = wrapper.getComponent(BCardHeadFoot)
-    expect($headfoot.props('textVariant')).toBe('danger')
-    await wrapper.setProps({textVariant: 'info'})
-    expect($headfoot.props('textVariant')).toBe('info')
+    expect($headfoot.props('fg')).toBe('danger')
+    await wrapper.setProps({fg: 'info'})
+    expect($headfoot.props('fg')).toBe('info')
   })
 
-  it('gives prop variant to child', async () => {
+  it('gives prop theme to child', async () => {
     const wrapper = mount(BCardFooter, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
     const $headfoot = wrapper.getComponent(BCardHeadFoot)
-    expect($headfoot.props('variant')).toBe('primary')
-    await wrapper.setProps({variant: 'secondary'})
-    expect($headfoot.props('variant')).toBe('secondary')
+    expect($headfoot.props('theme')).toBe('primary')
+    await wrapper.setProps({theme: 'secondary'})
+    expect($headfoot.props('theme')).toBe('secondary')
   })
 
-  it('has class text-bg-{type} when prop variant', async () => {
+  it('has class theme-{type} when prop theme', async () => {
     const wrapper = mount(BCardFooter, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('text-bg-primary')
-    await wrapper.setProps({variant: 'danger'})
-    expect(wrapper.classes()).toContain('text-bg-danger')
-    expect(wrapper.classes()).not.toContain('text-bg-primary')
-    await wrapper.setProps({variant: undefined})
-    expect(wrapper.classes()).not.toContain('text-bg-danger')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: 'danger'})
+    expect(wrapper.classes()).toContain('theme-danger')
+    expect(wrapper.classes()).not.toContain('theme-primary')
+    await wrapper.setProps({theme: undefined})
+    expect(wrapper.classes()).not.toContain('theme-danger')
   })
 
-  it('has class text-{type} when prop textVariant', async () => {
+  it('has class fg-{type} when prop fg', async () => {
     const wrapper = mount(BCardFooter, {
-      props: {textVariant: 'primary'},
+      props: {fg: 'primary'},
     })
-    expect(wrapper.classes()).toContain('text-primary')
-    await wrapper.setProps({textVariant: 'danger'})
-    expect(wrapper.classes()).toContain('text-danger')
-    expect(wrapper.classes()).not.toContain('text-primary')
-    await wrapper.setProps({textVariant: undefined})
-    expect(wrapper.classes()).not.toContain('text-danger')
+    expect(wrapper.classes()).toContain('fg-primary')
+    await wrapper.setProps({fg: 'danger'})
+    expect(wrapper.classes()).toContain('fg-danger')
+    expect(wrapper.classes()).not.toContain('fg-primary')
+    await wrapper.setProps({fg: undefined})
+    expect(wrapper.classes()).not.toContain('fg-danger')
   })
 
-  it('has class bg-{type} when prop bgVariant', async () => {
+  it('has class bg-{type} when prop bg', async () => {
     const wrapper = mount(BCardFooter, {
-      props: {bgVariant: 'primary'},
+      props: {bg: 'primary'},
     })
     expect(wrapper.classes()).toContain('bg-primary')
-    await wrapper.setProps({bgVariant: 'danger'})
+    await wrapper.setProps({bg: 'danger'})
     expect(wrapper.classes()).toContain('bg-danger')
     expect(wrapper.classes()).not.toContain('bg-primary')
-    await wrapper.setProps({bgVariant: undefined})
+    await wrapper.setProps({bg: undefined})
     expect(wrapper.classes()).not.toContain('bg-danger')
   })
 
-  it('has class border-{type} when prop borderVariant', async () => {
+  it('has class border-{type} when prop border', async () => {
     const wrapper = mount(BCardFooter, {
-      props: {borderVariant: 'primary'},
+      props: {border: 'primary'},
     })
     expect(wrapper.classes()).toContain('border-primary')
-    await wrapper.setProps({borderVariant: 'danger'})
+    await wrapper.setProps({border: 'danger'})
     expect(wrapper.classes()).toContain('border-danger')
     expect(wrapper.classes()).not.toContain('border-primary')
-    await wrapper.setProps({borderVariant: undefined})
+    await wrapper.setProps({border: undefined})
     expect(wrapper.classes()).not.toContain('border-danger')
   })
 
-  it('card-footer class persists with variant classes', () => {
+  it('card-footer class persists with color classes', () => {
     const wrapper = mount(BCardFooter, {
       props: {
-        variant: 'primary',
-        textVariant: 'danger',
-        bgVariant: 'success',
-        borderVariant: 'warning',
+        theme: 'primary',
+        fg: 'danger',
+        bg: 'success',
+        border: 'warning',
       },
     })
     expect(wrapper.classes()).toContain('card-footer')
-    expect(wrapper.classes()).toContain('text-bg-primary')
-    expect(wrapper.classes()).toContain('text-danger')
+    expect(wrapper.classes()).toContain('theme-primary')
+    expect(wrapper.classes()).toContain('fg-danger')
     expect(wrapper.classes()).toContain('bg-success')
     expect(wrapper.classes()).toContain('border-warning')
   })

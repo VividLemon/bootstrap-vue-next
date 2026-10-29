@@ -26,10 +26,10 @@
 
     <h2>7. Bootstrap variants</h2>
     <div class="d-flex gap-3">
-      <BFormRating v-model="valVar1" variant="primary" />
-      <BFormRating v-model="valVar2" variant="success" />
-      <BFormRating v-model="valVar3" variant="warning" />
-      <BFormRating v-model="valVar4" variant="danger" />
+      <BFormRating v-model="valVar1" theme="primary" />
+      <BFormRating v-model="valVar2" theme="success" />
+      <BFormRating v-model="valVar3" theme="warning" />
+      <BFormRating v-model="valVar4" theme="danger" />
     </div>
     <p>primary={{ valVar1 }}, success={{ valVar2 }}, warning={{ valVar3 }}, danger={{ valVar4 }}</p>
 

@@ -42,12 +42,22 @@ export type {
 } from './TableTypes'
 export type {
   BaseButtonVariant,
-  BaseColorVariant,
-  BaseTextColorVariant,
+  BgColor,
+  BgLayerColor,
+  BorderColor,
+  BorderLayerColor,
   ButtonVariant,
+  ColorOpacity,
   ColorExtendables,
-  ColorVariant,
-  TextColorVariant,
+  FgColor,
+  FgLayerColor,
+  MaybeArray,
+  ThemeColor,
+  ThemeModifier,
+  ThemeModifiers,
+  ThemeProp,
+  ThemeValue,
+  ThemeColors,
 } from './ColorTypes'
 export type {BaseSize, Size} from './Size'
 export type {BootstrapVueOptions, showHide} from './BootstrapVueOptions'

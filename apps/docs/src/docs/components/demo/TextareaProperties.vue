@@ -7,17 +7,12 @@
     rows="3"
   />
 
-  <button
-    class="btn btn-primary mt-1"
-    @click="selectText"
-  >
-    Select text
-  </button>
+  <button class="btn btn-solid theme-primary mt-1" @click="selectText">Select text</button>
 </template>
 
 <script setup lang="ts">
-import type {BFormTextarea} from 'bootstrap-vue-next'
-import {ref} from 'vue'
+import type { BFormTextarea } from 'bootstrap-vue-next'
+import { ref } from 'vue'
 
 const textSelectEx = ref('')
 const textArea = ref<InstanceType<typeof BFormTextarea> | null>(null)

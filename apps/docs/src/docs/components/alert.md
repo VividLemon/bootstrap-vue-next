@@ -14,19 +14,20 @@ Alerts are available for any length of text, as well as an optional dismiss butt
 You can use the `v-model` directive to create two-way data bindings as in `v-model="showDismissibleAlert"`. This is useful when you use dismissible because when the user closes the alert, your variable will be updated. The v-model prop accepts boolean `true` or `false` to show and hide the alert respectively. It can also be set to a positive integer (representing seconds) to create a self-dismissing alert. See the [Auto Dismissing Alerts](#auto-dismissing-alerts) section below for details. `:model-value="true"` can be used to unconditionally show the alert, as the `show` prop did in `bootstrap-vue`. See the
 [migration knowledge base](/docs/migration-data/components/balert) for details.
 
-## Contextual Variants
+## Contextual Themes
 
-For proper styling of `BAlert`, use one of the four required contextual variants by setting the `variant` prop to one of the following: `info`, `success`, `warning`, or `danger`. The default is `info`.
+For proper styling of `BAlert`, set the `theme` prop to one of the Bootstrap theme colors, such as `info`, `success`, `warning`, or `danger`. The default is `info`.
+The theme renders the Bootstrap v6 class `.theme-<theme>`, which the alert styles read to set their background, border and text colors. See [Color Themes](/docs/reference/color-variants) for all values, and [registering custom themes](/docs/components/button#custom-themes) to add your own.
 
 <<< DEMO ./demo/AlertVariants.vue#template{vue-html}
 
 ### Conveying Meaning to Assistive Technologies
 
-Using color variants to add meaning only provides a visual indication, which will not be conveyed to users of assistive technologies – such as screen readers. Ensure that information denoted by the color is either obvious from the content itself (e.g. the visible text) or is included through alternative means, such as additional text hidden with the `.visually-hidden` class.
+Using color themes to add meaning only provides a visual indication, which will not be conveyed to users of assistive technologies – such as screen readers. Ensure that information denoted by the color is either obvious from the content itself (e.g. the visible text) or is included through alternative means, such as additional text hidden with the `.visually-hidden` class.
 
 ## Additional Content Inside Alerts
 
-`BAlerts` can also contain additional HTML elements like headings and paragraphs, which will be styled with the appropriate color matching the variant.
+`BAlerts` can also contain additional HTML elements like headings and paragraphs, which will be styled with the appropriate color matching the theme.
 
 <<< DEMO ./demo/AlertContent.vue#template{vue-html}
 

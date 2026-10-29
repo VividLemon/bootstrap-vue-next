@@ -1,11 +1,7 @@
 <template>
   <div>
-    <BFormTags
-      v-model="value"
-      no-outer-focus
-      class="mb-2"
-    >
-      <template #default="{tags, inputAttrs, inputHandlers, tagVariant, addTag, removeTag}">
+    <BFormTags v-model="value" no-outer-focus class="mb-2">
+      <template #default="{ tags, inputAttrs, inputHandlers, tagTheme, addTag, removeTag }">
         <BInputGroup class="mb-2">
           <BFormInput
             v-bind="inputAttrs"
@@ -14,22 +10,15 @@
             v-on="inputHandlers"
           />
           <BInputGroupText>
-            <BButton
-              variant="primary"
-              @click="addTag()"
-              >Add</BButton
-            >
+            <BButton theme="primary" @click="addTag()">Add</BButton>
           </BInputGroupText>
         </BInputGroup>
-        <div
-          class="d-inline-block"
-          style="font-size: 1.5rem"
-        >
+        <div class="d-inline-block" style="font-size: 1.5rem">
           <BFormTag
             v-for="tag in tags"
             :key="tag"
             :title="tag"
-            :variant="tagVariant"
+            :theme="tagTheme"
             class="me-1"
             @remove="removeTag(tag)"
             >{{ tag }}</BFormTag
@@ -41,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const value = ref<string[]>(['apple', 'orange', 'banana'])
 </script>

@@ -157,102 +157,25 @@ describe('row', () => {
     expect(wrapper.classes()).not.toContain('row-cols-xxl-6')
   })
 
-  it('has class align-items-start when prop alignV is start', () => {
-    const wrapper = mount(BRow, {
-      props: {alignV: 'start'},
+  describe.each([
+    {prop: 'alignV', prefix: 'align-items', values: ['start', 'center', 'end', 'stretch']},
+    {
+      prop: 'alignH',
+      prefix: 'justify-content',
+      values: ['start', 'center', 'end', 'around', 'evenly'],
+    },
+    {
+      prop: 'alignContent',
+      prefix: 'align-content',
+      values: ['start', 'center', 'end', 'stretch', 'around'],
+    },
+  ])('prop $prop', ({prop, prefix, values}) => {
+    it.each(values)(`has class ${prefix}-%s when prop ${prop} is %s`, (value) => {
+      const wrapper = mount(BRow, {
+        props: {[prop]: value},
+      })
+      expect(wrapper.classes()).toContain(`${prefix}-${value}`)
     })
-    expect(wrapper.classes()).toContain('align-items-start')
-  })
-
-  it('has class align-items-center when prop alignV is center', () => {
-    const wrapper = mount(BRow, {
-      props: {alignV: 'center'},
-    })
-    expect(wrapper.classes()).toContain('align-items-center')
-  })
-
-  it('has class align-items-end when prop alignV is end', () => {
-    const wrapper = mount(BRow, {
-      props: {alignV: 'end'},
-    })
-    expect(wrapper.classes()).toContain('align-items-end')
-  })
-
-  it('has class align-items-stretch when prop alignV is stretch', () => {
-    const wrapper = mount(BRow, {
-      props: {alignV: 'stretch'},
-    })
-    expect(wrapper.classes()).toContain('align-items-stretch')
-  })
-
-  it('has class justify-content-start when prop alignH is start', () => {
-    const wrapper = mount(BRow, {
-      props: {alignH: 'start'},
-    })
-    expect(wrapper.classes()).toContain('justify-content-start')
-  })
-
-  it('has class justify-content-center when prop alignH is center', () => {
-    const wrapper = mount(BRow, {
-      props: {alignH: 'center'},
-    })
-    expect(wrapper.classes()).toContain('justify-content-center')
-  })
-
-  it('has class justify-content-end when prop alignH is end', () => {
-    const wrapper = mount(BRow, {
-      props: {alignH: 'end'},
-    })
-    expect(wrapper.classes()).toContain('justify-content-end')
-  })
-
-  it('has class justify-content-around when prop alignH is around', () => {
-    const wrapper = mount(BRow, {
-      props: {alignH: 'around'},
-    })
-    expect(wrapper.classes()).toContain('justify-content-around')
-  })
-
-  it('has class justify-content-evenly when prop alignH is evenly', () => {
-    const wrapper = mount(BRow, {
-      props: {alignH: 'evenly'},
-    })
-    expect(wrapper.classes()).toContain('justify-content-evenly')
-  })
-
-  it('has class align-content-start when prop alignContent is start', () => {
-    const wrapper = mount(BRow, {
-      props: {alignContent: 'start'},
-    })
-    expect(wrapper.classes()).toContain('align-content-start')
-  })
-
-  it('has class align-content-center when prop alignContent is center', () => {
-    const wrapper = mount(BRow, {
-      props: {alignContent: 'center'},
-    })
-    expect(wrapper.classes()).toContain('align-content-center')
-  })
-
-  it('has class align-content-end when prop alignContent is end', () => {
-    const wrapper = mount(BRow, {
-      props: {alignContent: 'end'},
-    })
-    expect(wrapper.classes()).toContain('align-content-end')
-  })
-
-  it('has class align-content-stretch when prop alignContent is stretch', () => {
-    const wrapper = mount(BRow, {
-      props: {alignContent: 'stretch'},
-    })
-    expect(wrapper.classes()).toContain('align-content-stretch')
-  })
-
-  it('has class align-content-around when prop alignContent is around', () => {
-    const wrapper = mount(BRow, {
-      props: {alignContent: 'around'},
-    })
-    expect(wrapper.classes()).toContain('align-content-around')
   })
 
   it('combines gutterX and gutterY classes', () => {

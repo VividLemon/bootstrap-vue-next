@@ -44,65 +44,47 @@ describe('form-select-base', () => {
 
   // --- CSS Classes ---
 
-  it('has form-select class when plain is false (default)', () => {
-    const wrapper = mount(BFormSelectBase)
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).not.toContain('form-control')
-  })
-
-  it('has form-select-sm class when size is sm', () => {
-    const wrapper = mount(BFormSelectBase, {
+  it.each([
+    {
+      name: 'select with default size',
+      props: {},
+      expectedClasses: ['form-select'],
+      absentClasses: ['form-control', 'form-select-md'],
+    },
+    {
+      name: 'select with small size',
       props: {size: 'sm'},
-    })
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).toContain('form-select-sm')
-  })
-
-  it('has form-select-lg class when size is lg', () => {
-    const wrapper = mount(BFormSelectBase, {
+      expectedClasses: ['form-select', 'form-select-sm'],
+      absentClasses: ['form-control', 'form-select-lg'],
+    },
+    {
+      name: 'select with large size',
       props: {size: 'lg'},
-    })
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).toContain('form-select-lg')
-  })
-
-  it('does not have size class when size is undefined (default)', () => {
-    const wrapper = mount(BFormSelectBase)
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).not.toContain('form-select-md')
-  })
-
-  it('has form-control class when plain is true', () => {
-    const wrapper = mount(BFormSelectBase, {
+      expectedClasses: ['form-select', 'form-select-lg'],
+      absentClasses: ['form-control', 'form-select-sm'],
+    },
+    {
+      name: 'plain select with default size',
       props: {plain: true},
-    })
-    expect(wrapper.classes()).toContain('form-control')
-    expect(wrapper.classes()).not.toContain('form-select')
-  })
-
-  it('has form-control-sm class when plain is true and size is sm', () => {
-    const wrapper = mount(BFormSelectBase, {
+      expectedClasses: ['form-control'],
+      absentClasses: ['form-select', 'form-control-md'],
+    },
+    {
+      name: 'plain select with small size',
       props: {plain: true, size: 'sm'},
-    })
-    expect(wrapper.classes()).toContain('form-control')
-    expect(wrapper.classes()).toContain('form-control-sm')
-    expect(wrapper.classes()).not.toContain('form-select')
-  })
-
-  it('has form-control-lg class when plain is true and size is lg', () => {
-    const wrapper = mount(BFormSelectBase, {
+      expectedClasses: ['form-control', 'form-control-sm'],
+      absentClasses: ['form-select', 'form-control-lg'],
+    },
+    {
+      name: 'plain select with large size',
       props: {plain: true, size: 'lg'},
-    })
-    expect(wrapper.classes()).toContain('form-control')
-    expect(wrapper.classes()).toContain('form-control-lg')
-  })
-
-  it('does not have form-control size class when plain is true and size is undefined (default)', () => {
-    const wrapper = mount(BFormSelectBase, {
-      props: {plain: true},
-    })
-    expect(wrapper.classes()).toContain('form-control')
-    expect(wrapper.classes()).not.toContain('form-control-md')
+      expectedClasses: ['form-control', 'form-control-lg'],
+      absentClasses: ['form-select', 'form-control-sm'],
+    },
+  ])('$name has the expected base and size classes', ({props, expectedClasses, absentClasses}) => {
+    const wrapper = mount(BFormSelectBase, {props})
+    expectedClasses.forEach((className) => expect(wrapper.classes()).toContain(className))
+    absentClasses.forEach((className) => expect(wrapper.classes()).not.toContain(className))
   })
 
   it('has is-valid class when state is true', () => {
@@ -469,9 +451,7 @@ describe('form-select-base', () => {
   it('does not treat option with empty object options field as a group', () => {
     const wrapper = mount(BFormSelectBase, {
       props: {
-        options: [
-          {value: 'a', text: 'Option A', options: {}},
-        ],
+        options: [{value: 'a', text: 'Option A', options: {}}],
       },
     })
     const optgroups = wrapper.findAll('optgroup')
@@ -487,7 +467,10 @@ describe('form-select-base', () => {
           {value: 'solo', text: 'Solo option'},
           {
             label: 'Group',
-            options: [{value: 'a', text: 'A'}, {value: 'b', text: 'B'}],
+            options: [
+              {value: 'a', text: 'A'},
+              {value: 'b', text: 'B'},
+            ],
           },
         ],
       },

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {Placement} from './Alignment'
 import type {ClassValue} from './AnyValuedAttributes'
-import type {ButtonVariant, ColorVariant} from './ColorTypes'
+import type {BgColor, ButtonVariant, FgColor, MaybeArray, ThemeColor, ThemeProp} from './ColorTypes'
 import type {ValidationState} from './CommonTypes'
 import type {LiteralUnion} from './LiteralUnion'
 import type {SelectOption} from './SelectTypes'
@@ -471,6 +471,9 @@ export type BFormTagsSlots = {
   'default'?: (props: {
     addButtonText: string
     addButtonVariant: ButtonVariant | null
+    addButtonTheme: ThemeProp | null
+    addButtonBg: MaybeArray<BgColor> | null
+    addButtonFg: MaybeArray<FgColor> | null
     addTag: (tag?: string) => void
     disableAddButton: boolean
     disabled: boolean
@@ -503,13 +506,17 @@ export type BFormTagsSlots = {
     tagClass: ClassValue
     tagPills: boolean
     tagRemoveLabel: string | undefined
-    tagVariant: ColorVariant | null
+    tagTheme: ThemeProp | null
+    tagBg: MaybeArray<BgColor> | null
+    tagFg: MaybeArray<FgColor> | null
     tags: string[]
   }) => any
   'tag'?: (props: {
     tag: string
     tagClass: ClassValue
-    tagVariant: ColorVariant | null
+    tagTheme: ThemeProp | null
+    tagBg: MaybeArray<BgColor> | null
+    tagFg: MaybeArray<FgColor> | null
     tagPills: boolean
     removeTag: (tag?: string) => void
   }) => any
@@ -546,7 +553,9 @@ export type BOverlaySlots = {
 
   overlay?: (props: {
     type: SpinnerType
-    variant: ColorVariant | null | undefined
+    theme: ThemeColor | null | undefined
+    bg: MaybeArray<BgColor> | null | undefined
+    fg: MaybeArray<FgColor> | null | undefined
     small: boolean
   }) => any
 }

@@ -1,4 +1,4 @@
-import type {BToastEmits, BToastProps} from 'bootstrap-vue-next'
+import type { BToastEmits, BToastProps } from 'bootstrap-vue-next'
 import {
   type ComponentReference,
   defaultPropSectionSymbol,
@@ -6,10 +6,10 @@ import {
   type ExposedRecord,
   type PropRecord,
 } from '../../types'
-import {omit, pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
-import {linkedBLinkSection, type linkProps} from '../../utils/linkProps'
-import {buildDismissibleEmits, showHideProps} from '../../utils/showHideData'
+import { omit, pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
+import { linkedBLinkSection, type linkProps } from '../../utils/linkProps'
+import { buildDismissibleEmits, showHideProps } from '../../utils/showHideData'
 
 export default {
   load: (): ComponentReference => ({
@@ -18,13 +18,17 @@ export default {
         [defaultPropSectionSymbol]: {
           ...omit(showHideProps, ['modelValue']),
           ...pick(buildCommonProps(), [
-            'bgVariant',
+            'bg',
             'body',
             'bodyClass',
             'closeClass',
             'closeContent',
             'closeLabel',
+            'closeBg',
+            'closeFg',
+            'closeTheme',
             'closeVariant',
+            'fg',
             'headerClass',
             'headerTag',
             'id',
@@ -34,9 +38,8 @@ export default {
             'noResumeOnHoverLeave',
             'progressProps',
             'showOnPause',
-            'textVariant',
+            'theme',
             'title',
-            'variant',
           ]),
 
           modelValue: {

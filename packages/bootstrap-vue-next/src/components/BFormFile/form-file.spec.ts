@@ -221,100 +221,40 @@ describe('form-file', () => {
       expect($input.attributes('aria-required')).toBeUndefined()
     })
 
-    it('input element has set attr multiple to true when prop multiple is true', () => {
-      const wrapper = mount(BFormFile, {
-        props: {multiple: true, plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('multiple')).toBeDefined()
+    it.each([
+      {value: true, expected: true},
+      {value: false, expected: false},
+      {value: undefined, expected: false},
+    ])('sets multiple attribute to $expected when multiple is $value', ({value, expected}) => {
+      const wrapper = mount(BFormFile, {props: {multiple: value, plain: true}})
+      expect(wrapper.get('input').attributes('multiple') !== undefined).toBe(expected)
     })
 
-    it('input element has set attr multiple to false when prop multiple is false', () => {
-      const wrapper = mount(BFormFile, {
-        props: {multiple: false, plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('multiple')).toBeUndefined()
+    it.each([
+      {value: 'user', expected: 'user'},
+      {value: 'environment', expected: 'environment'},
+      {value: undefined, expected: undefined},
+    ])('sets capture attribute to $expected when capture is $value', ({value, expected}) => {
+      const wrapper = mount(BFormFile, {props: {capture: value, plain: true}})
+      expect(wrapper.get('input').attributes('capture')).toBe(expected)
     })
 
-    it('input element has set attr multiple to false when prop multiple is undefined', () => {
-      const wrapper = mount(BFormFile, {
-        props: {multiple: undefined, plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('multiple')).toBeUndefined()
+    it.each([
+      {value: '', expected: undefined},
+      {value: 'foo', expected: 'foo'},
+      {value: undefined, expected: undefined},
+    ])('sets accept attribute to $expected when accept is $value', ({value, expected}) => {
+      const wrapper = mount(BFormFile, {props: {accept: value, plain: true}})
+      expect(wrapper.get('input').attributes('accept')).toBe(expected)
     })
 
-    it('input element has set attr capture to user when prop capture is user', () => {
-      const wrapper = mount(BFormFile, {
-        props: {capture: 'user', plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('capture')).toBe('user')
-    })
-
-    it('input element has set attr capture to environment when prop capture is environment', () => {
-      const wrapper = mount(BFormFile, {
-        props: {capture: 'environment', plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('capture')).toBe('environment')
-    })
-
-    it('input element has set attr capture to undefined when prop capture is undefined', () => {
-      const wrapper = mount(BFormFile, {
-        props: {capture: undefined, plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('capture')).toBe(undefined)
-    })
-
-    it('input element has set attr accept to empty when prop accept is empty string', () => {
-      const wrapper = mount(BFormFile, {
-        props: {accept: '', plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('accept')).toBeUndefined()
-    })
-
-    it('input element has set attr accept to "foo" when prop accept is "foo"', () => {
-      const wrapper = mount(BFormFile, {
-        props: {accept: 'foo', plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('accept')).toBe('foo')
-    })
-
-    it('input element does not have attr accept when prop accept is undefined', () => {
-      const wrapper = mount(BFormFile, {
-        props: {accept: undefined, plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('accept')).toBeUndefined()
-    })
-
-    it('input element has set attr directory to true when prop directory is true', () => {
-      const wrapper = mount(BFormFile, {
-        props: {directory: true, plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('directory')).toBe('true')
-    })
-
-    it('input element does not have attr directory when prop directory is false', () => {
-      const wrapper = mount(BFormFile, {
-        props: {directory: false, plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('directory')).toBeUndefined()
-    })
-
-    it('input element does not have attr directory when prop directory is undefined', () => {
-      const wrapper = mount(BFormFile, {
-        props: {directory: undefined, plain: true},
-      })
-      const $input = wrapper.get('input')
-      expect($input.attributes('directory')).toBeUndefined()
+    it.each([
+      {value: true, expected: 'true'},
+      {value: false, expected: undefined},
+      {value: undefined, expected: undefined},
+    ])('sets directory attribute to $expected when directory is $value', ({value, expected}) => {
+      const wrapper = mount(BFormFile, {props: {directory: value, plain: true}})
+      expect(wrapper.get('input').attributes('directory')).toBe(expected)
     })
 
     it('has custom attributes transferred to input element in plain mode', async () => {
@@ -350,61 +290,24 @@ describe('form-file', () => {
   })
 
   describe('validation state classes', () => {
-    it('has is-invalid class on control when state=false in custom mode', () => {
-      const wrapper = mount(BFormFile, {
-        props: {state: false},
-      })
-
-      const $control = wrapper.find('.b-form-file-control')
-      expect($control.classes()).toContain('is-invalid')
-    })
-
-    it('has is-valid class on control when state=true in custom mode', () => {
-      const wrapper = mount(BFormFile, {
-        props: {state: true},
-      })
-
-      const $control = wrapper.find('.b-form-file-control')
-      expect($control.classes()).toContain('is-valid')
-    })
-
-    it('does not have validation classes on control when state=undefined in custom mode', () => {
-      const wrapper = mount(BFormFile, {
-        props: {state: undefined},
-      })
-
-      const $control = wrapper.find('.b-form-file-control')
-      expect($control.classes()).not.toContain('is-invalid')
-      expect($control.classes()).not.toContain('is-valid')
-    })
-
-    it('has is-invalid class on input when state=false in plain mode', () => {
-      const wrapper = mount(BFormFile, {
-        props: {state: false, plain: true},
-      })
-
-      const $input = wrapper.find('input')
-      expect($input.classes()).toContain('is-invalid')
-    })
-
-    it('has is-valid class on input when state=true in plain mode', () => {
-      const wrapper = mount(BFormFile, {
-        props: {state: true, plain: true},
-      })
-
-      const $input = wrapper.find('input')
-      expect($input.classes()).toContain('is-valid')
-    })
-
-    it('does not have validation classes on input when state=undefined in plain mode', () => {
-      const wrapper = mount(BFormFile, {
-        props: {state: undefined, plain: true},
-      })
-
-      const $input = wrapper.find('input')
-      expect($input.classes()).not.toContain('is-invalid')
-      expect($input.classes()).not.toContain('is-valid')
-    })
+    it.each([
+      {plain: false, state: false, className: 'is-invalid'},
+      {plain: false, state: true, className: 'is-valid'},
+      {plain: false, state: undefined, className: undefined},
+      {plain: true, state: false, className: 'is-invalid'},
+      {plain: true, state: true, className: 'is-valid'},
+      {plain: true, state: undefined, className: undefined},
+    ])(
+      'applies $className validation class for state $state in plain=$plain mode',
+      ({plain, state, className}) => {
+        const wrapper = mount(BFormFile, {props: {state, plain}})
+        const element = plain ? wrapper.get('input') : wrapper.get('.b-form-file-control')
+        const present = ['is-valid', 'is-invalid'].filter((c) => c === className)
+        expect(['is-valid', 'is-invalid'].filter((c) => element.classes().includes(c))).toEqual(
+          present
+        )
+      }
+    )
   })
 
   describe('custom mode - UI elements', () => {
@@ -1106,10 +1009,10 @@ describe('form-file', () => {
       expect($text.text()).toContain('Select files...')
     })
 
-    it('placeholder has text-muted class', () => {
+    it('placeholder has fg-secondary class', () => {
       const wrapper = mount(BFormFile, {props: {placeholder: 'Choose file'}})
       const $span = wrapper.find('.b-form-file-text span')
-      expect($span.classes()).toContain('text-muted')
+      expect($span.classes()).toContain('fg-secondary')
     })
 
     it('placeholder is replaced by file name when file is selected', async () => {

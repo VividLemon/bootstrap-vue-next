@@ -6,7 +6,7 @@
           <!-- <label for="tags-basic">Type a new tag and press enter</label> -->
           <BFormTags
             v-model="value"
-            tag-variant="warning"
+            tag-theme="warning"
             autofocus
             separator=" ,"
             remove-on-delete
@@ -88,7 +88,7 @@
     <BRow>
       <BCol>
         <h4 class="mt-4 mb-3">Legend Click Focus Test (Horizontal Fieldset)</h4>
-        <p class="text-info mb-3">
+        <p class="fg-info mb-3">
           <strong>Test:</strong> Click on the legend text below. The input should receive focus.
           This tests that legend clicks work correctly in horizontal fieldset mode.
         </p>
@@ -106,7 +106,7 @@
           />
         </BFormGroup>
 
-        <p class="text-muted small">
+        <p class="fg-2 small">
           ✓ Clicking the legend should focus the input<br />
           ✓ No console errors should appear<br />
           ✓ Works because BFormGroup now accesses $el from BCol component ref

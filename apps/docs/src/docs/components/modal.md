@@ -11,8 +11,8 @@ description: 'Modals are streamlined, but flexible dialog prompts. They support 
 
 `<BModal>`, by default, has an **OK** and **Cancel** buttons in the footer. These buttons can be
 customized by setting various props on the component. You can customize the size of the buttons,
-disable buttons, hide the **Cancel** button (i.e. `ok-only`), choose a variant (e.g. `danger` for a
-red OK button) using the `ok-variant` and `cancel-variant` props, and provide custom button content
+disable buttons, hide the **Cancel** button (i.e. `ok-only`), choose a theme (e.g. `danger` for a
+red OK button) and style (e.g. `outline`) using the `ok-theme`, `ok-variant`, `cancel-theme` and `cancel-variant` props, and provide custom button content
 using the `ok-title` and `cancel-title` props, or using the named slots `ok` and
 `cancel`.
 
@@ -173,15 +173,14 @@ Vertically center your modal in the viewport by setting the `centered` prop.
 
 Feel free to mix vertically `centered` with `scrollable`.
 
-### Variants
+### Colors
 
-Control the header, footer, and body background and text variants by setting the
-`header-bg-variant`, `header-text-variant`, `body-bg-variant`, `body-text-variant`,
-`footer-bg-variant`, and `footer-text-variant` props. Use any of the standard Bootstrap variants
-such as `danger`, `warning`, `info`, `success`, `dark`, `light`, etc.
+Control the header, footer, and body themes, backgrounds and foregrounds by setting the
+`header-theme`, `header-bg`, `header-fg`, `body-theme`, `body-bg`, `body-fg`,
+`footer-theme`, `footer-bg`, and `footer-fg` props. Themes accept any registered theme such as `danger`, `warning`, `info`, `success`, `inverse`, etc. `*-bg` accepts values like `subtle-danger`, and `*-fg` accepts values like `emphasis-danger` (see [Color Themes](/docs/reference/color-variants)).
 
-The variants for the bottom border of the header and top border of the footer can be controlled by
-the `header-border-variant` and `footer-border-variant` props respectively.
+The colors for the bottom border of the header and top border of the footer can be controlled by
+the `header-border` and `footer-border` props respectively.
 
 <<< DEMO ./demo/ModalVariants.vue
 

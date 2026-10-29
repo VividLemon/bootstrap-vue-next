@@ -22,16 +22,18 @@ describe('placeholder-button', () => {
     expect(wrapper.find('.placeholder').classes()).toContain('disabled')
   })
 
-  it('BPlaceholder has class btn-primary by default', () => {
+  it('BPlaceholder has classes btn-solid and theme-primary by default', () => {
     const wrapper = mount(BPlaceholderButton)
-    expect(wrapper.find('.placeholder').classes()).toContain('btn-primary')
+    expect(wrapper.find('.placeholder').classes()).toContain('btn-solid')
+    expect(wrapper.find('.placeholder').classes()).toContain('theme-primary')
   })
 
-  it('BPlaceholder has class btn-{type} when prop variant', () => {
+  it('BPlaceholder has classes btn-solid and theme-{type} when prop theme', () => {
     const wrapper = mount(BPlaceholderButton, {
-      props: {variant: 'danger'},
+      props: {theme: 'danger'},
     })
-    expect(wrapper.find('.placeholder').classes()).toContain('btn-danger')
+    expect(wrapper.find('.placeholder').classes()).toContain('btn-solid')
+    expect(wrapper.find('.placeholder').classes()).toContain('theme-danger')
   })
 
   it('BPlaceholder has prop tag to be div by default', () => {

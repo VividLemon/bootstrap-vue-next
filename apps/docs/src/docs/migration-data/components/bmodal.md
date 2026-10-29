@@ -149,7 +149,7 @@ See the [v-html](/docs/migration-data/patterns/v-html-props) section for informa
 - `no-trap` - Disable focus trapping (replaces `no-enforce-focus`)
 - `focus` - Enhanced focus control replacing `auto-focus-button`
 - `title-visually-hidden` - Hide title visually but keep for screen readers
-- `header-close-variant` - Control close button variant
+- `header-close-variant` / `header-close-theme` - Control close button style and color
 - `header-close-label` - Accessibility label for close button
 - `lazy` - **Available in BootstrapVueNext** - When set, the content will not be mounted until opened
 - `no-fade` - **Available in BootstrapVueNext** - Disables animation (alias for `no-animation`)

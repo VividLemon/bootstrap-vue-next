@@ -310,9 +310,9 @@ describe('overlay', () => {
     expect($second.classes().find((str) => str.startsWith('rounded'))).toBeUndefined()
   })
 
-  it('child BTransition child div first child div has class bg-{variant} when prop variant', async () => {
+  it('child BTransition child div first child div has class bg-{bg} when prop bg', async () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, variant: 'info'},
+      props: {show: true, bg: 'info'},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
@@ -320,29 +320,29 @@ describe('overlay', () => {
     expect($second.classes()).toContain('bg-info')
   })
 
-  it('child BTransition child div first child div has class bg-light by default', async () => {
+  it('child BTransition child div first child div has class bg-body by default', async () => {
     const wrapper = mount(BOverlay, {
       props: {show: true},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
     const $second = $div.get('div')
-    expect($second.classes()).toContain('bg-light')
+    expect($second.classes()).toContain('bg-body')
   })
 
-  it('child BTransition child div first child div has class bg-light when bgColor empty string', async () => {
+  it('child BTransition child div first child div has class bg-body when bgColor empty string', async () => {
     const wrapper = mount(BOverlay, {
       props: {show: true, bgColor: ''},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
     const $second = $div.get('div')
-    expect($second.classes()).toContain('bg-light')
+    expect($second.classes()).toContain('bg-body')
   })
 
-  it('child BTransition child div first child div does not have class bg-{variant} when prop variant but also prop bgColor', async () => {
+  it('child BTransition child div first child div does not have class bg-{bg} when prop bg but also prop bgColor', async () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, variant: 'info', bgColor: 'red'},
+      props: {show: true, bg: 'info', bgColor: 'red'},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
@@ -537,15 +537,15 @@ describe('overlay', () => {
     expect($spinner.props('type')).toBe('grow')
   })
 
-  it('child BTransition child div second child div BSpinner is given prop variant', () => {
+  it('child BTransition child div second child div BSpinner is given prop theme', () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, spinnerVariant: 'danger'},
+      props: {show: true, spinnerTheme: 'danger'},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
     const [, $third] = $div.findAll('div')
     const $spinner = $third.getComponent(BSpinner)
-    expect($spinner.props('variant')).toBe('danger')
+    expect($spinner.props('theme')).toBe('danger')
   })
 
   it('child BTransition child div second child div BSpinner is given prop small', () => {

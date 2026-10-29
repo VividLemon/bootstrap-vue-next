@@ -84,17 +84,16 @@ Button style checkboxes will have the class `.active` automatically applied to t
 
 A single checkbox can be rendered with a button appearance by setting the prop `button` to `true`.
 
-Change the button variant by setting the `button-variant` prop to one of the standard Bootstrap button variants
-(see [`BButton`](/docs/components/button) for supported variants). The default variant is `secondary`.
+Change the button style and color by setting the `button-variant` prop (`solid`, `outline`, `subtle`, `text` or `link`) and the `button-theme` prop
+(see [`BButton`](/docs/components/button) for supported values). The default is variant `solid` with theme `secondary`.
 
 <<< DEMO ./demo/CheckboxButton.vue
 
 ### Grouped button style checkboxes
 
 Render groups of checkboxes with the look of a button-group by setting the prop `buttons` on
-`BFormCheckboxGroup`. Change the button variant by setting the `button-variant` prop to one of
-the standard Bootstrap button variants (see [`BButton`](/docs/components/button) for supported
-variants). The default `button-variant` is `secondary`.
+`BFormCheckboxGroup`. Change the button style and color by setting the `button-variant` and `button-theme` props
+(see [`BButton`](/docs/components/button) for supported values). The default is `button-variant` `solid` with `button-theme` `secondary`.
 
 <<< DEMO ./demo/CheckboxButtonGroup.vue
 

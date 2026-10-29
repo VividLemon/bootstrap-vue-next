@@ -87,25 +87,11 @@ describe('container', () => {
     expect(wrapper.classes()).not.toContain('container')
   })
 
-  it('has class container-md when prop fluid is md', () => {
+  it.each(['md', 'lg', 'xl'] as const)('has class container-%s when prop fluid is %s', (value) => {
     const wrapper = mount(BContainer, {
-      props: {fluid: 'md'},
+      props: {fluid: value},
     })
-    expect(wrapper.classes()).toContain('container-md')
-  })
-
-  it('has class container-lg when prop fluid is lg', () => {
-    const wrapper = mount(BContainer, {
-      props: {fluid: 'lg'},
-    })
-    expect(wrapper.classes()).toContain('container-lg')
-  })
-
-  it('has class container-xl when prop fluid is xl', () => {
-    const wrapper = mount(BContainer, {
-      props: {fluid: 'xl'},
-    })
-    expect(wrapper.classes()).toContain('container-xl')
+    expect(wrapper.classes()).toContain(`container-${value}`)
   })
 
   it('combines gutterX and gutterY classes', () => {

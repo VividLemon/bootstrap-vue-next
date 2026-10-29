@@ -53,23 +53,9 @@ describe('input-group', () => {
     expect(wrapper.classes()).toContain('input-group-lg')
   })
 
-  it('renders slot prepend', () => {
+  it.each(['prepend', 'append', 'default'] as const)('renders slot %s', (slot) => {
     const wrapper = mount(BInputGroup, {
-      slots: {prepend: 'foobar'},
-    })
-    expect(wrapper.text()).toBe('foobar')
-  })
-
-  it('renders slot append', () => {
-    const wrapper = mount(BInputGroup, {
-      slots: {append: 'foobar'},
-    })
-    expect(wrapper.text()).toBe('foobar')
-  })
-
-  it('renders default', () => {
-    const wrapper = mount(BInputGroup, {
-      slots: {default: 'foobar'},
+      slots: {[slot]: 'foobar'},
     })
     expect(wrapper.text()).toBe('foobar')
   })
@@ -81,92 +67,50 @@ describe('input-group', () => {
     expect(wrapper.text()).toBe('prependdefaultappend')
   })
 
-  it('has child span if prop prepend', () => {
-    const wrapper = mount(BInputGroup, {
-      props: {prepend: 'foobar'},
+  describe.each(['prepend', 'append'] as const)('prop %s', (name) => {
+    it('has child span', () => {
+      const wrapper = mount(BInputGroup, {
+        props: {[name]: 'foobar'},
+      })
+      const $span = wrapper.find('span')
+      expect($span.exists()).toBe(true)
     })
-    const $span = wrapper.find('span')
-    expect($span.exists()).toBe(true)
-  })
 
-  it('child span has static class input-group-text', () => {
-    const wrapper = mount(BInputGroup, {
-      props: {prepend: 'foobar'},
+    it('child span has static class input-group-text', () => {
+      const wrapper = mount(BInputGroup, {
+        props: {[name]: 'foobar'},
+      })
+      const $span = wrapper.get('span')
+      expect($span.classes()).toContain('input-group-text')
     })
-    const $span = wrapper.get('span')
-    expect($span.classes()).toContain('input-group-text')
-  })
 
-  it('child span has an additional span element', () => {
-    const wrapper = mount(BInputGroup, {
-      props: {prepend: 'foobar'},
+    it('child span has an additional span element', () => {
+      const wrapper = mount(BInputGroup, {
+        props: {[name]: 'foobar'},
+      })
+      const $span = wrapper.get('span')
+      const $nested = $span.find('span')
+      expect($nested.exists()).toBe(true)
     })
-    const $span = wrapper.get('span')
-    const $nested = $span.find('span')
-    expect($nested.exists()).toBe(true)
-  })
 
-  it('child span further child span element renders prop prepend', () => {
-    const wrapper = mount(BInputGroup, {
-      props: {prepend: 'foobar'},
+    it('child span further child span element renders the prop', () => {
+      const wrapper = mount(BInputGroup, {
+        props: {[name]: 'foobar'},
+      })
+      const $span = wrapper.get('span')
+      const $nested = $span.get('span')
+      expect($nested.text()).toBe('foobar')
     })
-    const $span = wrapper.get('span')
-    const $nested = $span.get('span')
-    expect($nested.text()).toBe('foobar')
-  })
 
-  it('does not have child span if prop prepend, but also slot prepend', () => {
-    // May break if a span element is ever non v-if on the element
-    const wrapper = mount(BInputGroup, {
-      props: {prepend: 'foobar'},
-      slots: {prepend: 'foobar'},
+    it('does not have child span if prop and slot are both set', () => {
+      // May break if a span element is ever non v-if on the element
+      const wrapper = mount(BInputGroup, {
+        props: {[name]: 'foobar'},
+        slots: {[name]: 'foobar'},
+      })
+      const $span = wrapper.find('span')
+      expect($span.exists()).toBe(false)
     })
-    const $span = wrapper.find('span')
-    expect($span.exists()).toBe(false)
-  })
-
-  it('does not have child span if prop append, but also slot append', () => {
-    // May break if a span element is ever non v-if on the element
-    const wrapper = mount(BInputGroup, {
-      props: {append: 'foobar'},
-      slots: {append: 'foobar'},
-    })
-    const $span = wrapper.find('span')
-    expect($span.exists()).toBe(false)
-  })
-
-  it('has child span if prop append', () => {
-    const wrapper = mount(BInputGroup, {
-      props: {append: 'foobar'},
-    })
-    const $span = wrapper.find('span')
-    expect($span.exists()).toBe(true)
-  })
-
-  it('child span has static class input-group-text when append', () => {
-    const wrapper = mount(BInputGroup, {
-      props: {append: 'foobar'},
-    })
-    const $span = wrapper.get('span')
-    expect($span.classes()).toContain('input-group-text')
-  })
-
-  it('child span has an additional span element when append', () => {
-    const wrapper = mount(BInputGroup, {
-      props: {append: 'foobar'},
-    })
-    const $span = wrapper.get('span')
-    const $nested = $span.find('span')
-    expect($nested.exists()).toBe(true)
-  })
-
-  it('child span further child span element renders prop append', () => {
-    const wrapper = mount(BInputGroup, {
-      props: {append: 'foobar'},
-    })
-    const $span = wrapper.get('span')
-    const $nested = $span.get('span')
-    expect($nested.text()).toBe('foobar')
   })
 
   it('prop prepend prop append and slot default render in correct order', () => {

@@ -1,28 +1,25 @@
 <template>
   <div>
-    <BTable
-      hover
-      :items="items"
-    />
+    <BTable hover :items="items" />
   </div>
 </template>
 
 <script setup lang="ts">
 const items = [
-  {age: 40, first_name: 'Dickerson', last_name: 'Macdonald'},
-  {age: 21, first_name: 'Larsen', last_name: 'Shaw'},
+  { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
+  { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
   {
     age: 89,
     first_name: 'Geneva',
     last_name: 'Wilson',
-    _rowVariant: 'danger',
+    _rowTheme: 'danger',
   },
   {
     age: 40,
     first_name: 'Thor',
     last_name: 'MacDonald',
-    _cellVariants: {age: 'info', first_name: 'warning'},
+    _cellThemes: { age: 'info', first_name: 'warning' },
   },
-  {age: 29, first_name: 'Dick', last_name: 'Dunlap'},
+  { age: 29, first_name: 'Dick', last_name: 'Dunlap' },
 ]
 </script>

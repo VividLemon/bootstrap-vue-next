@@ -1,8 +1,8 @@
 <template>
   <!-- #region template -->
-  <BAvatarGroup variant="success">
+  <BAvatarGroup theme="success">
     <BAvatar />
-    <BAvatar variant="info" />
+    <BAvatar theme="info" />
     <BAvatar />
     <BAvatar />
     <BAvatar />

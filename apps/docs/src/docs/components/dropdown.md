@@ -108,20 +108,20 @@ Set the `size` prop to either `sm` for a small button, or `lg` for a large butto
 
 **Note:** _changing the size of the button(s) does not affect the size of the menu items!_
 
-### Dropdown color variants
+### Dropdown color themes and variants
 
-The dropdown toggle button can have one of the standard Bootstrap contextual variants applied by setting the prop `variant` to `success`, `primary`, `info`, `danger`, `link`, `outline-dark`, etc. (or custom variants, if defined). The default variant is `secondary`.
+The dropdown toggle button is colored with the `theme` prop (`success`, `primary`, `info`, `danger`, etc., or custom themes, if [registered](/docs/components/button#custom-themes)) and styled with the `variant` prop (`solid`, `outline`, `subtle`, `text` or `link`). The defaults are theme `secondary` and variant `solid`.
 
-See the [Variant Reference](/docs/reference/color-variants) for a full list of built-in contextual variants.
+See the [Color Themes Reference](/docs/reference/color-variants) for a full list of built-in themes.
 
 <<< DEMO ./demo/DropdownColorVariants.vue#template{vue-html}
 
 You can also apply arbitrary classes to the toggle button via the `toggle-class` prop.
 
-### Split button color variant
+### Split button color
 
-By default, the left split button uses the same `variant` as the `toggle` button. You can give the
-split button its variant via the `split-variant` prop.
+By default, the left split button uses the same `variant` and `theme` as the `toggle` button. You can give the
+split button its own style and color via the `split-variant` and `split-theme` props.
 
 <<< DEMO ./demo/DropdownSplitButtonVariant.vue#template{vue-html}
 
@@ -144,10 +144,10 @@ utility class to the `menu-class` prop.
 
 <<< DEMO ./demo/DropdownBlockMenu.vue#template{vue-html}
 
-### Dropdown sub-component color variants
+### Dropdown sub-component themes
 
 Many of the supported dropdown [sub-components](#dropdown-supported-sub-components) provide a
-`variant` prop for controlling their text color.
+`theme` prop for controlling their color.
 
 ### Hidden caret
 
@@ -232,7 +232,7 @@ constrain/set the menu width.
 
 `BDropdownText` has the BootstrapVueNext custom class `.b-dropdown-text` applied to it which sets some basic styles which are suitable in most situations. By default, its width will be the same as the widest `BDropdownItem` content. You may need to place additional styles or helper classes on the component.
 
-`variant`)
+`theme`)
 
 ### BDropdownGroup
 

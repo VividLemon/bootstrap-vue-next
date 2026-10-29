@@ -73,14 +73,14 @@ describe('dropdown-text', () => {
     expect($span.classes()).toContain('foobar')
   })
 
-  it('child element has class text-{variant} when prop variant is set', async () => {
+  it('child element has class theme-{theme} when prop theme is set', async () => {
     const wrapper = mount(BDropdownText, {
-      props: {variant: 'danger'},
+      props: {theme: 'danger'},
     })
     const $span = wrapper.get('span')
-    expect($span.classes()).toContain('text-danger')
-    await wrapper.setProps({variant: undefined})
-    expect($span.classes()).not.toContain('text-danger')
+    expect($span.classes()).toContain('theme-danger')
+    await wrapper.setProps({theme: undefined})
+    expect($span.classes()).not.toContain('theme-danger')
   })
 
   it('li has attrs from prop wrapperAttrs', () => {

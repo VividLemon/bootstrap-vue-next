@@ -305,37 +305,37 @@ describe('avatar-group', () => {
       })
     })
 
-    describe('variant', () => {
-      it('child BAvatar inherits variant from group', () => {
+    describe('theme', () => {
+      it('child BAvatar inherits theme from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {variant: 'primary'},
+          props: {theme: 'primary'},
           slots: {
             default: () => h(BAvatar),
           },
         })
         const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('text-bg-primary')
+        expect(avatar.classes()).toContain('theme-primary')
       })
 
-      it('group variant overrides child BAvatar variant', () => {
+      it('group theme overrides child BAvatar theme', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {variant: 'danger'},
+          props: {theme: 'danger'},
           slots: {
-            default: () => h(BAvatar, {variant: 'success'}),
+            default: () => h(BAvatar, {theme: 'success'}),
           },
         })
         const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('text-bg-danger')
-        expect(avatar.classes()).not.toContain('text-bg-success')
+        expect(avatar.classes()).toContain('theme-danger')
+        expect(avatar.classes()).not.toContain('theme-success')
       })
     })
 
-    describe('bgVariant', () => {
-      it('child BAvatar inherits bgVariant from group', () => {
+    describe('bg', () => {
+      it('child BAvatar inherits bg from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {bgVariant: 'primary', variant: null},
+          props: {bg: 'primary', theme: null},
           slots: {
-            default: () => h(BAvatar, {variant: null}),
+            default: () => h(BAvatar, {theme: null}),
           },
         })
         const avatar = wrapper.findComponent(BAvatar)
@@ -343,16 +343,16 @@ describe('avatar-group', () => {
       })
     })
 
-    describe('textVariant', () => {
-      it('child BAvatar inherits textVariant from group', () => {
+    describe('fg', () => {
+      it('child BAvatar inherits fg from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {textVariant: 'danger', variant: null},
+          props: {fg: 'danger', theme: null},
           slots: {
-            default: () => h(BAvatar, {variant: null}),
+            default: () => h(BAvatar, {theme: null}),
           },
         })
         const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('text-danger')
+        expect(avatar.classes()).toContain('fg-danger')
       })
     })
 
@@ -482,18 +482,18 @@ describe('avatar-group', () => {
         expect(avatar.attributes('style')).toContain('width: 80px')
       })
 
-      it('child BAvatar updates when group variant changes', async () => {
+      it('child BAvatar updates when group theme changes', async () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {variant: 'primary'},
+          props: {theme: 'primary'},
           slots: {
             default: () => h(BAvatar),
           },
         })
         const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('text-bg-primary')
-        await wrapper.setProps({variant: 'danger'})
-        expect(avatar.classes()).toContain('text-bg-danger')
-        expect(avatar.classes()).not.toContain('text-bg-primary')
+        expect(avatar.classes()).toContain('theme-primary')
+        await wrapper.setProps({theme: 'danger'})
+        expect(avatar.classes()).toContain('theme-danger')
+        expect(avatar.classes()).not.toContain('theme-primary')
       })
 
       it('child BAvatar updates when group square changes', async () => {

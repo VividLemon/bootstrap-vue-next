@@ -319,31 +319,13 @@ describe('col', () => {
     expect(wrapper.classes()).toContain('order-md-2')
   })
 
-  it('has align-self-start when prop alignSelf is start', () => {
-    const wrapper = mount(BCol, {
-      props: {alignSelf: 'start'},
-    })
-    expect(wrapper.classes()).toContain('align-self-start')
-  })
-
-  it('has align-self-end when prop alignSelf is end', () => {
-    const wrapper = mount(BCol, {
-      props: {alignSelf: 'end'},
-    })
-    expect(wrapper.classes()).toContain('align-self-end')
-  })
-
-  it('has align-self-center when prop alignSelf is center', () => {
-    const wrapper = mount(BCol, {
-      props: {alignSelf: 'center'},
-    })
-    expect(wrapper.classes()).toContain('align-self-center')
-  })
-
-  it('has align-self-stretch when prop alignSelf is stretch', () => {
-    const wrapper = mount(BCol, {
-      props: {alignSelf: 'stretch'},
-    })
-    expect(wrapper.classes()).toContain('align-self-stretch')
-  })
+  it.each(['start', 'end', 'center', 'stretch'] as const)(
+    'has align-self-%s when prop alignSelf is %s',
+    (value) => {
+      const wrapper = mount(BCol, {
+        props: {alignSelf: value},
+      })
+      expect(wrapper.classes()).toContain(`align-self-${value}`)
+    }
+  )
 })

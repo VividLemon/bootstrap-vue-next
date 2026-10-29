@@ -7,20 +7,20 @@
 </template>
 
 <script setup lang="ts">
-import {useColorVariantClasses} from '../composables/useColorVariantClasses'
+import {useThemeClasses} from '../composables/useThemeClasses'
 import type {BCardHeadFootProps, BCardHeadFootSlots} from '../types'
 
 const props = withDefaults(defineProps<BCardHeadFootProps>(), {
-  borderVariant: null,
+  border: null,
   tag: 'div',
   text: undefined,
   // ColorExtendables props
-  bgVariant: null,
-  textVariant: null,
-  variant: null,
+  bg: null,
+  fg: null,
+  theme: null,
   // End ColorExtendables props
 })
 defineSlots<BCardHeadFootSlots>()
 
-const computedClasses = useColorVariantClasses(props)
+const {classes: computedClasses} = useThemeClasses(props)
 </script>

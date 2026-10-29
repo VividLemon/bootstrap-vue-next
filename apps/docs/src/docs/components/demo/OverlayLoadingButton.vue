@@ -4,24 +4,19 @@
     rounded
     opacity="0.6"
     spinner-small
-    spinner-variant="primary"
+    spinner-theme="primary"
     class="d-inline-block"
     @hidden="onBuzyHidden"
   >
-    <BButton
-      ref="buzyButton"
-      :disabled="loadingBuzy"
-      variant="primary"
-      @click="setBuzyClick"
-    >
+    <BButton ref="buzyButton" :disabled="loadingBuzy" theme="primary" @click="setBuzyClick">
       Do something
     </BButton>
   </BOverlay>
 </template>
 
 <script setup lang="ts">
-import {ref, useTemplateRef} from 'vue'
-import {BButton} from 'bootstrap-vue-next/components/BButton'
+import { ref, useTemplateRef } from 'vue'
+import { BButton } from 'bootstrap-vue-next/components/BButton'
 
 let timeout: ReturnType<typeof setTimeout> | null = null
 

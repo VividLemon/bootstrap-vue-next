@@ -45,8 +45,10 @@
           split
           text="Split variant"
           class="m-2"
-          variant="outline-primary"
-          split-variant="primary"
+          variant="outline"
+          theme="primary"
+          split-variant="solid"
+          split-theme="primary"
           @click="(event: Event) => consoleLog('main split button clicked', event)"
           @toggle="consoleLog('toggle button clicked')"
         >
@@ -61,19 +63,19 @@
     </BRow>
     <BRow>
       <BCol>
-        <BDropdown placement="top" text="Up" variant="success" class="m-2">
+        <BDropdown placement="top" text="Up" theme="success" class="m-2">
           <BDropdownItem href="#">Action</BDropdownItem>
         </BDropdown>
 
-        <BDropdown placement="top" end text="Up End" variant="dark" class="m-2">
+        <BDropdown placement="top" end text="Up End" theme="inverse" class="m-2">
           <BDropdownItem href="#">Action</BDropdownItem>
         </BDropdown>
 
-        <BDropdown placement="right" text="drop end" variant="info" class="m-2">
+        <BDropdown placement="right" text="drop end" theme="info" class="m-2">
           <BDropdownItem href="#">Action</BDropdownItem>
         </BDropdown>
 
-        <BDropdown placement="left" text="dropstart" variant="outline-primary" class="m-2">
+        <BDropdown placement="left" text="dropstart" variant="outline" theme="primary" class="m-2">
           <BDropdownItem href="#">Action</BDropdownItem>
           <BDropdownItem href="#">Action</BDropdownItem>
           <BDropdownItem href="#">Action</BDropdownItem>
@@ -83,7 +85,8 @@
           placement="left"
           center
           text="dropstart center"
-          variant="outline-primary"
+          variant="outline"
+          theme="primary"
           class="m-2"
         >
           <BDropdownItem href="#">Action</BDropdownItem>
@@ -91,17 +94,17 @@
           <BDropdownItem href="#">Action</BDropdownItem>
         </BDropdown>
 
-        <BDropdown placement="left" end text="dropstart end" variant="outline-primary" class="m-2">
+        <BDropdown placement="left" end text="dropstart end" variant="outline" theme="primary" class="m-2">
           <BDropdownItem href="#">Action</BDropdownItem>
           <BDropdownItem href="#">Action</BDropdownItem>
           <BDropdownItem href="#">Action</BDropdownItem>
         </BDropdown>
 
-        <BDropdown text="Bottom" variant="warning" class="m-2">
+        <BDropdown text="Bottom" theme="warning" class="m-2">
           <BDropdownItem href="#">Action</BDropdownItem>
         </BDropdown>
 
-        <BDropdown end text="Bottom end" variant="light" class="m-2">
+        <BDropdown end text="Bottom end" theme="accent" class="m-2">
           <BDropdownItem href="#">Action</BDropdownItem>
         </BDropdown>
 
@@ -182,7 +185,7 @@
     </BRow>
     <BRow>
       <BCol>
-        <BDropdown text="Block" class="m-2" block variant="primary">
+        <BDropdown text="Block" class="m-2" block theme="primary">
           <BDropdownItem href="#">Action</BDropdownItem>
         </BDropdown>
       </BCol>
@@ -204,7 +207,7 @@
               @click.stop.prevent="consoleLog('button clicked')"
             >
               <BDropdownItem>First Action</BDropdownItem>
-              <BDropdownItem variant="primary">Second Action</BDropdownItem>
+              <BDropdownItem theme="primary">Second Action</BDropdownItem>
               <BDropdownItem active>Active action</BDropdownItem>
               <BDropdownItem disabled>Disabled action</BDropdownItem>
               <BDropdownItem to="/docs/components/badge">Badge</BDropdownItem></BDropdown
@@ -223,7 +226,7 @@
         <BDropdown
           text="Open up, offset & no flip"
           class="m-2"
-          variant="success"
+          theme="success"
           :popper-opts="{
             placement: 'top-end',
             modifiers: [
@@ -262,9 +265,9 @@
         <BCard>
           <RouterView />
         </BCard>
-        <BLink to="/" active-class="link-success">Home</BLink> |
-        <BLink to="/about/foo" active-class="link-success">About</BLink> |
-        <BLink to="/test" active-class="link-success">Test</BLink>
+        <BLink to="/" active-class="theme-success">Home</BLink> |
+        <BLink to="/about/foo" active-class="theme-success">About</BLink> |
+        <BLink to="/test" active-class="theme-success">Test</BLink>
         <BDropdown text="Router integration" class="m-2">
           <BDropdownItem to="/">Home</BDropdownItem>
           <BDropdownItem

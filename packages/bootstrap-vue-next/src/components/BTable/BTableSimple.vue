@@ -14,20 +14,21 @@
 import {computed, type StyleValue} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useId} from '../../composables/useId'
 import type {BTableSimpleProps, BTableSimpleSlots} from '../../types'
 
 const defaultStickyHeaderHeight = '300px'
 
 const _props = withDefaults(defineProps<BTableSimpleProps>(), {
-  borderVariant: null,
+  border: null,
   tableClass: undefined,
-  variant: null,
+  theme: null,
+  bg: null,
+  fg: null,
   bordered: false,
   borderless: false,
   captionTop: false,
-  dark: false,
   hover: false,
   id: undefined,
   noBorderCollapse: false,
@@ -46,9 +47,12 @@ defineSlots<BTableSimpleSlots>()
 
 const computedId = useId(() => props.id)
 
-const colorClasses = useColorVariantClasses(
+const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    borderVariant: props.borderVariant,
+    border: props.border,
+    theme: props.theme,
+    bg: props.bg,
+    fg: props.fg,
   }))
 )
 const computedClasses = computed(() => [
@@ -61,13 +65,11 @@ const computedClasses = computed(() => [
     'table-bordered': props.bordered,
     'table-borderless': props.borderless,
     'caption-top': props.captionTop,
-    'table-dark': props.dark,
     'table-hover': props.hover,
     'b-table-stacked': props.stacked === true,
     [`b-table-stacked-${props.stacked}`]: typeof props.stacked === 'string',
     'table-striped': props.striped,
     'table-sm': props.small,
-    [`table-${props.variant}`]: props.variant !== null,
     'table-striped-columns': props.stripedColumns,
     'b-table-fixed': props.fixed,
     'b-table-no-border-collapse': props.noBorderCollapse,
@@ -79,7 +81,7 @@ const computedTableAttrs = computed(() => ({
   ...props.tableAttrs,
 }))
 
-const computedSticky = useNumberishToStyle(
+const {style: computedSticky} = useNumberishToStyle(
   computed(
     () =>
       (props.stickyHeader === true ? defaultStickyHeaderHeight : props.stickyHeader) || Number.NaN

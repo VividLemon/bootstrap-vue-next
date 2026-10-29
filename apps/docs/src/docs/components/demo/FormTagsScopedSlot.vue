@@ -1,14 +1,9 @@
 <template>
   <div>
-    <BFormCheckbox
-      v-model="disabled"
-      switch
-      size="lg"
-      >Disable</BFormCheckbox
-    >
+    <BFormCheckbox v-model="disabled" switch size="lg">Disable</BFormCheckbox>
     <BFormTags
       v-model="tags"
-      tag-variant="success"
+      tag-theme="success"
       class="mb-2 mt-2"
       :disabled="disabled"
       no-outer-focus
@@ -38,7 +33,7 @@
           <BInputGroupText>
             <BButton
               :disabled="innerDisabled || state === false"
-              variant="primary"
+              theme="primary"
               @click="addTag(newTag)"
               >Add</BButton
             >
@@ -47,22 +42,15 @@
         <BFormInvalidFeedback :state="state">
           Duplicate tag value cannot be added again!
         </BFormInvalidFeedback>
-        <ul
-          v-if="innerTags.length > 0"
-          class="mb-0"
-        >
-          <li
-            v-for="tag in innerTags"
-            :key="tag"
-            :title="`Tag: ${tag}`"
-            class="mt-2"
-          >
+        <ul v-if="innerTags.length > 0" class="mb-0">
+          <li v-for="tag in innerTags" :key="tag" :title="`Tag: ${tag}`" class="mt-2">
             <span class="d-flex align-items-center">
               <span class="me-2">{{ tag }}</span>
               <BButton
                 :disabled="disabled"
                 size="sm"
-                variant="outline-danger"
+                variant="outline"
+                theme="danger"
                 @click="removeTag(tag)"
               >
                 remove tag
@@ -77,14 +65,14 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import { computed, ref } from 'vue'
 
 const tags = ref<string[]>([])
 const newTag = ref<string>('')
 const disabled = ref<boolean>(false)
 const state = computed(() =>
   // Return false (invalid) if new tag is a duplicate
-  tags.value.indexOf(newTag.value.trim()) > -1 ? false : null
+  tags.value.indexOf(newTag.value.trim()) > -1 ? false : null,
 )
 const resetInputValue = () => {
   newTag.value = ''

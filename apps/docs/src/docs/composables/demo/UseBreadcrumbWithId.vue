@@ -1,26 +1,15 @@
 <template>
   <BBreadcrumb id="foobar" />
 
-  <BFormInput
-    v-model="inputValue"
-    class="my-3"
-  />
+  <BFormInput v-model="inputValue" class="my-3" />
 
-  <BButton
-    class="me-2"
-    @click="addItem"
-    >Add</BButton
-  >
-  <BButton
-    variant="danger"
-    @click="breadcrumb.reset"
-    >Clear</BButton
-  >
+  <BButton class="me-2" @click="addItem">Add</BButton>
+  <BButton theme="danger" @click="breadcrumb.reset">Clear</BButton>
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
-import {BBreadcrumb, BButton, BFormInput, useBreadcrumb} from 'bootstrap-vue-next'
+import { ref } from 'vue'
+import { BBreadcrumb, BButton, BFormInput, useBreadcrumb } from 'bootstrap-vue-next'
 
 // Input matches the id passed to the component
 const breadcrumb = useBreadcrumb('foobar')

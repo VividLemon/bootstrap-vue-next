@@ -73,28 +73,34 @@ describe('BAutocomplete', () => {
       expect(input.classes()).not.toContain('form-control')
     })
 
-    it('has form-control-sm class when size is sm', () => {
-      const wrapper = mount(BAutocomplete, {
+    it.each([
+      {
+        name: 'small',
         props: {size: 'sm'},
-      })
-      const input = wrapper.find('input')
-      expect(input.classes()).toContain('form-control-sm')
-    })
-
-    it('has form-control-lg class when size is lg', () => {
-      const wrapper = mount(BAutocomplete, {
+        expectedClasses: ['form-control-sm'],
+        absentClasses: ['form-control-lg'],
+      },
+      {
+        name: 'large',
         props: {size: 'lg'},
-      })
-      const input = wrapper.find('input')
-      expect(input.classes()).toContain('form-control-lg')
-    })
-
-    it('does not have size class when size is not set', () => {
-      const wrapper = mount(BAutocomplete)
-      const input = wrapper.find('input')
-      expect(input.classes()).not.toContain('form-control-sm')
-      expect(input.classes()).not.toContain('form-control-lg')
-    })
+        expectedClasses: ['form-control-lg'],
+        absentClasses: ['form-control-sm'],
+      },
+      {
+        name: 'unset',
+        props: {},
+        expectedClasses: [],
+        absentClasses: ['form-control-sm', 'form-control-lg'],
+      },
+    ])(
+      'applies the expected input size classes when size is $name',
+      ({props, expectedClasses, absentClasses}) => {
+        const wrapper = mount(BAutocomplete, {props})
+        const input = wrapper.find('input')
+        expectedClasses.forEach((className) => expect(input.classes()).toContain(className))
+        absentClasses.forEach((className) => expect(input.classes()).not.toContain(className))
+      }
+    )
 
     it('has is-valid class when state is true', () => {
       const wrapper = mount(BAutocomplete, {
@@ -235,67 +241,29 @@ describe('BAutocomplete', () => {
   // --- Options normalization ---
 
   describe('options normalization', () => {
-    it('normalizes string array options', async () => {
-      const wrapper = mount(BAutocomplete, {
-        props: {
-          options: ['apple', 'banana', 'cherry'],
-          open: true,
-        },
-      })
+    it.each([
+      {
+        name: 'string options',
+        options: ['apple', 'banana', 'cherry'],
+        expectedTexts: ['apple', 'banana', 'cherry'],
+      },
+      {name: 'number options', options: [10, 20, 30], expectedTexts: ['10', '20', '30']},
+      {name: 'boolean options', options: [true, false], expectedTexts: ['true', 'false']},
+      {
+        name: 'object options',
+        options: [
+          {value: 1, text: 'One'},
+          {value: 2, text: 'Two'},
+          {value: 3, text: 'Three'},
+        ],
+        expectedTexts: ['One', 'Two', 'Three'],
+      },
+    ])('normalizes $name', async ({options, expectedTexts}) => {
+      const wrapper = mount(BAutocomplete, {props: {options, open: true}})
       await nextTick()
       const items = wrapper.findAll('.b-autocomplete-item')
-      expect(items).toHaveLength(3)
-      expect(items[0].text()).toContain('apple')
-      expect(items[1].text()).toContain('banana')
-      expect(items[2].text()).toContain('cherry')
-    })
-
-    it('normalizes number array options', async () => {
-      const wrapper = mount(BAutocomplete, {
-        props: {
-          options: [10, 20, 30],
-          open: true,
-        },
-      })
-      await nextTick()
-      const items = wrapper.findAll('.b-autocomplete-item')
-      expect(items).toHaveLength(3)
-      expect(items[0].text()).toContain('10')
-      expect(items[1].text()).toContain('20')
-      expect(items[2].text()).toContain('30')
-    })
-
-    it('normalizes boolean array options', async () => {
-      const wrapper = mount(BAutocomplete, {
-        props: {
-          options: [true, false],
-          open: true,
-        },
-      })
-      await nextTick()
-      const items = wrapper.findAll('.b-autocomplete-item')
-      expect(items).toHaveLength(2)
-      expect(items[0].text()).toContain('true')
-      expect(items[1].text()).toContain('false')
-    })
-
-    it('normalizes object array options', async () => {
-      const wrapper = mount(BAutocomplete, {
-        props: {
-          options: [
-            {value: 1, text: 'One'},
-            {value: 2, text: 'Two'},
-            {value: 3, text: 'Three'},
-          ],
-          open: true,
-        },
-      })
-      await nextTick()
-      const items = wrapper.findAll('.b-autocomplete-item')
-      expect(items).toHaveLength(3)
-      expect(items[0].text()).toContain('One')
-      expect(items[1].text()).toContain('Two')
-      expect(items[2].text()).toContain('Three')
+      expect(items).toHaveLength(expectedTexts.length)
+      expectedTexts.forEach((text, index) => expect(items[index].text()).toContain(text))
     })
 
     it('uses custom valueField and textField', async () => {
@@ -1075,7 +1043,7 @@ describe('BAutocomplete', () => {
   // --- Pending delete visual states in non-tags mode ---
 
   describe('pending delete visual states in non-tags mode', () => {
-    it('applies text-body-tertiary class to non-last items during pending delete', async () => {
+    it('applies fg-3 class to non-last items during pending delete', async () => {
       const wrapper = mount(BAutocomplete, {
         props: {
           multiple: true,
@@ -1092,8 +1060,8 @@ describe('BAutocomplete', () => {
       await nextTick()
 
       const spans = wrapper.find('.b-autocomplete-selection').findAll('span')
-      // The first span (non-last selected) should have text-body-tertiary
-      expect(spans[0].classes()).toContain('text-body-tertiary')
+      // The first span (non-last selected) should have fg-3
+      expect(spans[0].classes()).toContain('fg-3')
     })
   })
 })

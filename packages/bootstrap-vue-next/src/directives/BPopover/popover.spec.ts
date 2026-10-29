@@ -38,55 +38,24 @@ describe('v-b-popover directive', () => {
     wrapper.unmount()
   })
 
-  it('removes title attribute when directive is used with object value', async () => {
+  it.each([
+    {
+      template: `<button v-b-popover="{title: 'Popover Title', body: 'Popover content'}" title="Native tooltip">Button</button>`,
+      description: 'object value',
+    },
+    {
+      template: '<button v-b-popover title="Native tooltip">Button</button>',
+      description: 'no directive value',
+    },
+    {
+      template: `<button v-b-popover.hover.top="'Popover content'" title="Native tooltip">Button</button>`,
+      description: 'modifiers',
+    },
+  ])('removes title attribute with $description', async ({template}) => {
     const wrapper = mount(
       {
         directives: {bPopover: vBPopover},
-        template:
-          '<button v-b-popover="{title: \'Popover Title\', body: \'Popover content\'}" title="Native tooltip">Button</button>',
-      },
-      {
-        attachTo: document.body,
-      }
-    )
-
-    await flushPromises()
-    await nextTick()
-
-    const button = wrapper.find('button')
-    expect(button.attributes('title')).toBeUndefined()
-    expect(button.attributes('data-original-title')).toBe('Native tooltip')
-
-    wrapper.unmount()
-  })
-
-  it('uses title attribute as popover body when no directive value is provided', async () => {
-    const wrapper = mount(
-      {
-        directives: {bPopover: vBPopover},
-        template: '<button v-b-popover title="Native tooltip">Button</button>',
-      },
-      {
-        attachTo: document.body,
-      }
-    )
-
-    await flushPromises()
-    await nextTick()
-
-    const button = wrapper.find('button')
-    expect(button.attributes('title')).toBeUndefined()
-    expect(button.attributes('data-original-title')).toBe('Native tooltip')
-
-    wrapper.unmount()
-  })
-
-  it('removes title attribute when using modifiers', async () => {
-    const wrapper = mount(
-      {
-        directives: {bPopover: vBPopover},
-        template:
-          '<button v-b-popover.hover.top="\'Popover content\'" title="Native tooltip">Button</button>',
+        template,
       },
       {
         attachTo: document.body,

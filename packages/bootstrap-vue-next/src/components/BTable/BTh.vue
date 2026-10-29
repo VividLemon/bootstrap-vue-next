@@ -14,6 +14,7 @@
 </template>
 
 <script setup lang="ts">
+import {toColorClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
 import type {BThProps, BThSlots} from '../../types'
@@ -23,17 +24,24 @@ const _props = withDefaults(defineProps<BThProps>(), {
   rowspan: undefined,
   stackedHeading: undefined,
   stickyColumn: false,
-  variant: null,
+  theme: null,
+  bg: null,
+  fg: null,
   scope: undefined,
 })
 const props = useDefaults(_props, 'BTh')
 defineSlots<BThSlots>()
 
-const computedClasses = computed(() => ({
-  [`table-${props.variant}`]: props.variant !== null,
-  'b-table-sticky-column': props.stickyColumn,
-  'table-b-table-default': props.stickyColumn && props.variant === null,
-}))
+const computedClasses = computed(() => [
+  toColorClasses('theme', props.theme),
+  toColorClasses('bg', props.bg),
+  toColorClasses('fg', props.fg),
+  {
+    'b-table-sticky-column': props.stickyColumn,
+    'table-b-table-default':
+      props.stickyColumn && props.theme === null && props.bg === null && props.fg === null,
+  },
+])
 
 const localScope = computed(() =>
   props.scope ? props.scope : props.colspan ? 'colgroup' : props.rowspan ? 'rowgroup' : 'col'

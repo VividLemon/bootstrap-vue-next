@@ -14,7 +14,7 @@
 import {computed, type CSSProperties} from 'vue'
 import type {BPlaceholderProps} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 
 defineOptions({
   inheritAttrs: false,
@@ -25,7 +25,7 @@ const _props = withDefaults(defineProps<BPlaceholderProps>(), {
   cols: 12,
   size: undefined,
   tag: 'span',
-  variant: null,
+  bg: null,
   width: undefined,
   wrapperTag: 'span',
 })
@@ -47,11 +47,7 @@ const colsString = computed(() =>
       : props.cols
 )
 
-const colorClasses = useColorVariantClasses(
-  computed(() => ({
-    bgVariant: props.variant,
-  }))
-)
+const {classes: colorClasses} = useThemeClasses(computed(() => ({bg: props.bg, fg: props.fg})))
 const computedClasses = computed(() => [
   colorClasses.value,
   {

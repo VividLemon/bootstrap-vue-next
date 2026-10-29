@@ -37,7 +37,7 @@
         <BFormTextarea v-model.trim="value6" placeholder="Textarea with trim modifier" rows="3" />
         <p>Value: "{{ value6 }}" (length: {{ value6.length }})</p>
 
-        <BButton variant="secondary" class="mt-3" @click="resetAll">Reset All Values</BButton>
+        <BButton theme="secondary" class="mt-3" @click="resetAll">Reset All Values</BButton>
       </BCol>
     </BRow>
   </BContainer>

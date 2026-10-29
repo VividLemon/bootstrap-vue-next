@@ -26,7 +26,7 @@ import {computed, inject, useAttrs} from 'vue'
 import {useBLinkHelper} from '../../composables/useBLinkHelper'
 import {collapseInjectionKey, dropdownInjectionKey, navbarInjectionKey} from '../../utils/keys'
 import {useDefaults} from '../../composables/useDefaults'
-import {useColorVariantClasses} from '../../composables/useColorVariantClasses'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BDropdownItemEmits, BDropdownItemProps, BDropdownItemSlots} from '../../types'
 
 defineOptions({
@@ -37,7 +37,7 @@ const _props = withDefaults(defineProps<BDropdownItemProps>(), {
   wrapperAttrs: undefined,
   // Link props
   linkClass: undefined,
-  variant: null,
+  theme: null,
   // All others use defaults
   active: undefined,
   activeClass: undefined,
@@ -57,7 +57,7 @@ const _props = withDefaults(defineProps<BDropdownItemProps>(), {
   underlineOffsetHover: undefined,
   underlineOpacity: undefined,
   underlineOpacityHover: undefined,
-  underlineVariant: undefined,
+  underlineTheme: undefined,
   // End link props
 })
 const props = useDefaults(_props, 'BDropdownItem')
@@ -72,9 +72,11 @@ const processedAttrs = computed(() => {
 
 const {computedLink, computedLinkProps} = useBLinkHelper(props)
 
-const colorClasses = useColorVariantClasses(
+const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    textVariant: props.variant,
+    theme: props.theme,
+    bg: props.bg,
+    fg: props.fg,
   }))
 )
 const computedClasses = computed(() => [

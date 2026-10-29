@@ -4,9 +4,9 @@
     <BButton
       v-b-tooltip.hover.top="{
         title: 'Appears after 500ms',
-        delay: {show: 500, hide: 100},
+        delay: { show: 500, hide: 100 },
       }"
-      variant="primary"
+      theme="primary"
     >
       Delayed show
     </BButton>
@@ -16,7 +16,7 @@
         title: 'No delay',
         delay: 0,
       }"
-      variant="secondary"
+      theme="secondary"
     >
       Instant
     </BButton>

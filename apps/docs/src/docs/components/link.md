@@ -69,7 +69,7 @@ Just like the setting `opacity` has a matching `opacity-hover` prop, `underline-
 
 ## Colored Links
 
-You can use the `variant` prop to colorize links. Some of the link styles use a relatively light foreground color, and should only be used on a dark background in order to have sufficient contrast.
+You can use the `theme` prop to colorize links (rendered as `.theme-<theme>`, which v6 anchors read through `--theme-fg`). Some of the link styles use a relatively light foreground color, and should only be used on a dark background in order to have sufficient contrast. The `underline-theme` prop colors the underline (`.underline-<theme>`). See [registering custom themes](/docs/components/button#custom-themes) to add your own.
 
 <<< DEMO ./demo/LinkColors.vue
 

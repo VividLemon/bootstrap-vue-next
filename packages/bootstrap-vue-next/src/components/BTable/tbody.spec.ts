@@ -30,60 +30,57 @@ describe('tbody', () => {
     expect(wrapper.text()).toBe('')
   })
 
-  it('has class thead-{type} when prop variant is set', () => {
+  it('has class theme-{type} when prop theme is set', () => {
     const wrapper = mount(BTbody, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('thead-primary')
+    expect(wrapper.classes()).toContain('theme-primary')
   })
 
-  it('does not have variant class when variant is null', () => {
+  it('does not have theme class when theme is null', () => {
     const wrapper = mount(BTbody, {
-      props: {variant: null},
+      props: {theme: null},
     })
-    expect(wrapper.classes().join(' ')).not.toMatch(/thead-/)
+    expect(wrapper.classes().join(' ')).not.toMatch(/theme-/)
   })
 
-  it('does not have variant class by default', () => {
+  it('does not have theme class by default', () => {
     const wrapper = mount(BTbody)
-    expect(wrapper.classes().join(' ')).not.toMatch(/thead-/)
+    expect(wrapper.classes().join(' ')).not.toMatch(/theme-/)
   })
 
-  it('variant class is reactive', async () => {
+  it('theme class is reactive', async () => {
     const wrapper = mount(BTbody, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('thead-primary')
-    await wrapper.setProps({variant: 'secondary'})
-    expect(wrapper.classes()).not.toContain('thead-primary')
-    expect(wrapper.classes()).toContain('thead-secondary')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: 'secondary'})
+    expect(wrapper.classes()).not.toContain('theme-primary')
+    expect(wrapper.classes()).toContain('theme-secondary')
   })
 
-  it('variant class is removed when variant is set to undefined', async () => {
+  it('theme class is removed when theme is set to undefined', async () => {
     const wrapper = mount(BTbody, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
-    expect(wrapper.classes()).toContain('thead-primary')
-    await wrapper.setProps({variant: undefined})
-    expect(wrapper.classes()).not.toContain('thead-primary')
+    expect(wrapper.classes()).toContain('theme-primary')
+    await wrapper.setProps({theme: undefined})
+    expect(wrapper.classes()).not.toContain('theme-primary')
   })
 
-  it('supports different variant values', () => {
-    const variants = [
-      'primary',
-      'secondary',
-      'success',
-      'danger',
-      'warning',
-      'info',
-      'light',
-      'dark',
-    ] as const
-    variants.forEach((variant) => {
-      const wrapper = mount(BTbody, {
-        props: {variant},
-      })
-      expect(wrapper.classes()).toContain(`thead-${variant}`)
+  it.each([
+    'primary',
+    'secondary',
+    'success',
+    'danger',
+    'warning',
+    'info',
+    'accent',
+    'inverse',
+  ] as const)('has class theme-%s when theme is set', (theme) => {
+    const wrapper = mount(BTbody, {
+      props: {theme},
     })
+    expect(wrapper.classes()).toContain(`theme-${theme}`)
   })
 })

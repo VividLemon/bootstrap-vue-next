@@ -7,15 +7,10 @@
     prepend="Label"
   >
     <BFormInput />
-    <BButton
-      size="sm"
-      text="Button"
-      variant="success"
-      >Button</BButton
-    >
+    <BButton size="sm" text="Button" theme="success">Button</BButton>
   </BInputGroup>
 </template>
 
 <script setup lang="ts">
-import type {BaseSize} from 'bootstrap-vue-next'
+import type { BaseSize } from 'bootstrap-vue-next'
 </script>

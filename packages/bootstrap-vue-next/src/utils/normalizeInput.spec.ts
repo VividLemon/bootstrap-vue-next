@@ -14,20 +14,13 @@ describe('normalizeInput', () => {
     )
   })
 
-  it('converts numeric string to number with number modifier', () => {
-    expect(normalizeInput('42', {number: true, lazy: undefined, trim: undefined})).toBe(42)
-  })
-
-  it('converts float string to number with number modifier', () => {
-    expect(normalizeInput('3.14', {number: true, lazy: undefined, trim: undefined})).toBe(3.14)
-  })
-
-  it('returns original string when not parseable as number with number modifier', () => {
-    expect(normalizeInput('abc', {number: true, lazy: undefined, trim: undefined})).toBe('abc')
-  })
-
-  it('returns empty string unchanged even with number modifier', () => {
-    expect(normalizeInput('', {number: true, lazy: undefined, trim: undefined})).toBe('')
+  it.each([
+    {input: '42', expected: 42, description: 'numeric string'},
+    {input: '3.14', expected: 3.14, description: 'float string'},
+    {input: 'abc', expected: 'abc', description: 'unparseable string'},
+    {input: '', expected: '', description: 'empty string'},
+  ])('normalizes $description with the number modifier', ({input, expected}) => {
+    expect(normalizeInput(input, {number: true, lazy: undefined, trim: undefined})).toBe(expected)
   })
 
   it('returns number value as-is', () => {

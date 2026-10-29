@@ -64,6 +64,7 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   splitHref: undefined,
   splitTo: undefined,
   splitVariant: undefined,
+  splitTheme: undefined,
   placement: undefined,
   noWrapper: undefined,
   wrapperClass: undefined,
@@ -73,6 +74,7 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   toggleClass: undefined,
   toggleText: 'Toggle dropdown',
   variant: 'link',
+  theme: null,
 })
 const props = useDefaults(_props, 'BNavItemDropdown')
 const emit = defineEmits<BDropdownEmits>()

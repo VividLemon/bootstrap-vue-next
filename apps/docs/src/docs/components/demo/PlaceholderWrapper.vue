@@ -15,7 +15,7 @@
         Some quick example text to build on the card title and make up the bulk of the card's
         content.
       </BCardText>
-      <BButton href="#placeholder-wrapper" variant="primary">Go somewhere</BButton>
+      <BButton href="#placeholder-wrapper" theme="primary">Go somewhere</BButton>
     </BCard>
   </BPlaceholderWrapper>
   <BButton @click="startLoading">Restart</BButton>

@@ -37,8 +37,8 @@ export const useFormInput = (
     props.state !== undefined ? props.state : (formGroupData?.state.value ?? null)
   )
   const isDisabled = computed(() => props.disabled || (formGroupData?.disabled.value ?? false))
-  const computedAriaInvalid = useAriaInvalid(() => props.ariaInvalid, computedState)
-  const stateClass = useStateClass(computedState)
+  const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(() => props.ariaInvalid, computedState)
+  const {stateClass} = useStateClass(computedState)
 
   // Holds what the user has typed while a debounced model update is still in
   // flight, during which the model itself still has the previous value. Vue

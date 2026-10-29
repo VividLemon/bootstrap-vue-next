@@ -8,6 +8,9 @@
       :id="computedId"
       ref="_splitButton"
       :variant="props.splitVariant || props.variant"
+      :theme="props.splitTheme || props.theme"
+      :bg="props.splitBg || props.bg"
+      :fg="props.splitFg || props.fg"
       :size="props.size"
       :class="buttonClasses"
       :disabled="props.splitDisabled || props.disabled"
@@ -28,6 +31,9 @@
       :id="computedId + '-split'"
       ref="_button"
       :variant="props.variant"
+      :theme="props.theme"
+      :bg="props.bg"
+      :fg="props.fg"
       :size="props.size"
       :disabled="props.disabled"
       :class="[props.toggleClass, {show: showRef}]"
@@ -152,6 +158,9 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   splitTo: undefined,
   placement: 'bottom-start',
   splitVariant: undefined,
+  splitTheme: undefined,
+  splitBg: null,
+  splitFg: null,
   strategy: 'absolute',
   text: undefined,
   show: false,
@@ -159,7 +168,10 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   toggleClass: undefined,
   toggleText: 'Toggle dropdown',
   transProps: undefined,
-  variant: 'secondary',
+  variant: 'solid',
+  theme: 'secondary',
+  bg: null,
+  fg: null,
   visible: false,
   wrapperClass: undefined,
 })

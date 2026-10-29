@@ -4,23 +4,18 @@
     <div class="contains-inline">
       <BCardGroup>
         <BCard
-          border-variant="primary"
+          border="primary"
           header="Primary"
-          header-bg-variant="primary"
-          header-text-variant="white"
+          header-bg="primary"
+          header-fg="white"
           align="center"
         >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard
-          border-variant="secondary"
-          header="Secondary"
-          header-border-variant="secondary"
-          align="center"
-        >
+        <BCard border="secondary" header="Secondary" header-border="secondary" align="center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard border-variant="success" header="Success" align="center">
+        <BCard border="success" header="Success" align="center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
       </BCardGroup>
@@ -29,17 +24,17 @@
   <div class="mt-3">
     <div class="contains-inline">
       <BCardGroup>
-        <BCard border-variant="info" header="Info" align="center">
+        <BCard border="info" header="Info" align="center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard border-variant="warning" header="Warning" align="center">
+        <BCard border="warning" header="Warning" align="center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
         <BCard
-          border-variant="danger"
+          border="danger"
           header="Danger"
-          header-border-variant="danger"
-          header-text-variant="danger"
+          header-border="danger"
+          header-fg="danger"
           align="center"
         >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
@@ -49,10 +44,10 @@
   </div>
   <div class="mt-3">
     <BCardGroup class="mb-3">
-      <BCard border-variant="light" header="Light" class="text-center">
+      <BCard border="accent" header="Accent" class="text-center">
         <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
       </BCard>
-      <BCard border-variant="dark" header="Dark" align="center">
+      <BCard border="inverse" header="Inverse" align="center">
         <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
       </BCard>
     </BCardGroup>

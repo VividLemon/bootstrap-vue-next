@@ -1,61 +1,28 @@
 <template>
-  <BForm
-    class="position-relative p-3"
-    @submit.prevent="onFormSubmit"
-  >
+  <BForm class="position-relative p-3" @submit.prevent="onFormSubmit">
     <div class="row">
-      <label
-        class="col-lg-2"
-        label-for="form-name"
-        >Name</label
-      >
-      <BFormInput
-        id="form-name"
-        class="col"
-        :disabled="formbusy"
-      />
+      <label class="col-lg-2" label-for="form-name">Name</label>
+      <BFormInput id="form-name" class="col" :disabled="formbusy" />
     </div>
 
     <div class="row mt-2">
-      <label
-        class="col-lg-2"
-        label-for="form-email"
-        >Email</label
-      >
-      <BFormInput
-        id="form-email"
-        class="col"
-        type="email"
-        :disabled="formbusy"
-      />
+      <label class="col-lg-2" label-for="form-email">Email</label>
+      <BFormInput id="form-email" class="col" type="email" :disabled="formbusy" />
     </div>
 
     <div class="d-flex justify-content-center mt-2">
-      <BButton
-        ref="formsubmit"
-        type="submit"
-        :disabled="formbusy"
-        >Submit</BButton
-      >
+      <BButton ref="formsubmit" type="submit" :disabled="formbusy">Submit</BButton>
     </div>
 
-    <BOverlay
-      :show="formbusy"
-      no-wrap
-      @shown="onFormOverlayShown"
-      @hidden="onFormOverlayHidden"
-    >
+    <BOverlay :show="formbusy" no-wrap @shown="onFormOverlayShown" @hidden="onFormOverlayHidden">
       <template #overlay>
-        <div
-          v-if="processing"
-          class="text-center p-4 bg-primary text-light rounded"
-        >
+        <div v-if="processing" class="text-center p-4 bg-primary fg-contrast-primary rounded">
           <div class="mb-3">Processing...</div>
           <BProgress
             min="1"
             max="20"
             :value="processingcounter"
-            variant="success"
+            theme="success"
             height="3px"
             class="mx-n4 rounded-0"
           />
@@ -70,21 +37,11 @@
           class="text-center p-3"
         >
           <p><strong id="form-confirm-label">Are you sure?</strong></p>
-          <div
-            class="d-flex"
-            style="column-gap: 5%"
-          >
-            <BButton
-              variant="outline-danger"
-              class="me-3"
-              @click="onFormCancel"
-            >
+          <div class="d-flex" style="column-gap: 5%">
+            <BButton variant="outline" theme="danger" class="me-3" @click="onFormCancel">
               Cancel
             </BButton>
-            <BButton
-              ref="successbutton"
-              variant="outline-success"
-              @click="onFormOK"
+            <BButton ref="successbutton" variant="outline" theme="success" @click="onFormOK"
               >OK</BButton
             >
           </div>
@@ -95,8 +52,8 @@
 </template>
 
 <script setup lang="ts">
-import {nextTick, ref, useTemplateRef} from 'vue'
-import {BButton} from 'bootstrap-vue-next/components/BButton'
+import { nextTick, ref, useTemplateRef } from 'vue'
+import { BButton } from 'bootstrap-vue-next/components/BButton'
 
 const formbusy = ref(false)
 const processing = ref(false)

@@ -42,40 +42,40 @@ describe('progress-bar', () => {
     expect(wrapper.classes()).toContain('progress-bar-striped')
   })
 
-  it('has class text-bg-{variant} when prop variant', async () => {
+  it('has class theme-{theme} when prop theme', async () => {
     const wrapper = mount(BProgressBar, {
-      props: {variant: 'success'},
+      props: {theme: 'success'},
     })
-    expect(wrapper.classes()).toContain('text-bg-success')
-    await wrapper.setProps({variant: 'danger'})
-    expect(wrapper.classes()).toContain('text-bg-danger')
-    expect(wrapper.classes()).not.toContain('text-bg-success')
+    expect(wrapper.classes()).toContain('theme-success')
+    await wrapper.setProps({theme: 'danger'})
+    expect(wrapper.classes()).toContain('theme-danger')
+    expect(wrapper.classes()).not.toContain('theme-success')
   })
 
-  it('does not have text-bg-* class when variant is null', () => {
+  it('does not have theme-* class when theme is null', () => {
     const wrapper = mount(BProgressBar)
     const classes = wrapper.classes()
-    expect(classes.some((c) => c.startsWith('text-bg-'))).toBe(false)
+    expect(classes.some((c) => c.startsWith('theme-'))).toBe(false)
   })
 
-  it('has class bg-{bgVariant} when prop bgVariant', async () => {
+  it('has class bg-{bg} when prop bg', async () => {
     const wrapper = mount(BProgressBar, {
-      props: {bgVariant: 'primary'},
+      props: {bg: 'primary'},
     })
     expect(wrapper.classes()).toContain('bg-primary')
-    await wrapper.setProps({bgVariant: 'warning'})
+    await wrapper.setProps({bg: 'warning'})
     expect(wrapper.classes()).toContain('bg-warning')
     expect(wrapper.classes()).not.toContain('bg-primary')
   })
 
-  it('has class text-{textVariant} when prop textVariant', async () => {
+  it('has class fg-{fg} when prop fg', async () => {
     const wrapper = mount(BProgressBar, {
-      props: {textVariant: 'dark'},
+      props: {fg: 'black'},
     })
-    expect(wrapper.classes()).toContain('text-dark')
-    await wrapper.setProps({textVariant: 'light'})
-    expect(wrapper.classes()).toContain('text-light')
-    expect(wrapper.classes()).not.toContain('text-dark')
+    expect(wrapper.classes()).toContain('fg-black')
+    await wrapper.setProps({fg: 'white'})
+    expect(wrapper.classes()).toContain('fg-white')
+    expect(wrapper.classes()).not.toContain('fg-black')
   })
 
   it('width style is value% when value is number and no max', () => {

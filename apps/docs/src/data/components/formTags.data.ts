@@ -14,13 +14,13 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BFormTags: {
-      styleSpec: {kind: StyleKind.BsvnClass},
+      styleSpec: { kind: StyleKind.BsvnClass },
       props: {
         ...pick(
           buildCommonProps({
@@ -31,11 +31,11 @@ export default {
             tag: {
               default: '<span>',
             },
-            variant: {
+            theme: {
               default: 'secondary',
             },
           }),
-          ['disabled', 'id', 'tag', 'title', 'variant']
+          ['bg', 'disabled', 'fg', 'id', 'tag', 'theme', 'title'],
         ),
         noRemove: {
           type: 'boolean',
@@ -71,7 +71,7 @@ export default {
       } satisfies SlotRecord<keyof BFormTagSlots>,
     },
     BFormTag: {
-      styleSpec: {kind: StyleKind.BsvnClass},
+      styleSpec: { kind: StyleKind.BsvnClass },
       props: {
         ...pick(
           buildCommonProps({
@@ -83,18 +83,25 @@ export default {
               default: 'Add tag...',
             },
           }),
-          ['autofocus', 'disabled', 'form', 'name', 'placeholder', 'required', 'size', 'state']
+          ['autofocus', 'disabled', 'form', 'name', 'placeholder', 'required', 'size', 'state'],
         ),
+        ...pick(buildCommonProps(), ['addButtonBg', 'addButtonFg', 'tagBg', 'tagFg']),
         addButtonText: {
           type: 'string',
           default: 'Add',
           description:
             "Text for the built-in 'Add' button. Slot `add-button-text` takes precedence",
         },
+        addButtonTheme: {
+          type: 'ThemeProp | null',
+          default: 'secondary',
+          description: "Applies one of the theme colors to the 'Add' button",
+        },
         addButtonVariant: {
           type: 'ButtonVariant | null',
-          default: 'outline-secondary',
-          description: "Applies one of the Bootstrap theme color variants to the 'Add' button",
+          default: 'outline',
+          description:
+            "Sets the button style ('solid', 'outline', 'subtle', 'text' or 'link') of the 'Add' button",
         },
         addOnChange: {
           type: 'boolean',
@@ -215,14 +222,14 @@ export default {
           description:
             "Optional tag validator method. Passed a single argument of tag being added. Should return 'true' if the tag passes validation, or 'false' if the tag cannot be added",
         },
-        tagVariant: {
-          type: 'ColorVariant | null',
+        tagTheme: {
+          type: 'ThemeProp | null',
           default: 'secondary',
-          description: 'Applies one of the Bootstrap theme color variants to the tags',
+          description: 'Applies one of the theme colors to the tags',
         },
       } satisfies PropRecord<keyof BFormTagsProps>,
       emits: {
-        'blur': {
+        blur: {
           description: 'Emitted when component loses focus',
           args: {
             event: {
@@ -231,7 +238,7 @@ export default {
             },
           },
         },
-        'focus': {
+        focus: {
           description: 'Emitted when component gains focus',
           args: {
             event: {
@@ -240,7 +247,7 @@ export default {
             },
           },
         },
-        'focusin': {
+        focusin: {
           description: 'Emitted when internal elements of component gain focus',
           args: {
             event: {
@@ -249,7 +256,7 @@ export default {
             },
           },
         },
-        'focusout': {
+        focusout: {
           description: 'Emitted when internal elements of component lose focus',
           args: {
             event: {
@@ -302,15 +309,19 @@ export default {
           description:
             "Content to place in the built-in 'Add' button. Takes precedence over the 'add-button-text' prop. Not used when the default scoped slot is provided",
         },
-        'default': {
+        default: {
           description: 'Slot to override the default rendering of the tags component',
           scope: {
             addButtonText: {
               type: 'string',
               description: "Value of the 'add-button-text' prop",
             },
+            addButtonTheme: {
+              type: 'ThemeProp | null',
+              description: "Value of the 'add-button-theme' prop",
+            },
             addButtonVariant: {
-              type: 'string',
+              type: 'ButtonVariant | null',
               description: "Value of the 'add-button-variant' prop",
             },
             addTag: {
@@ -444,13 +455,13 @@ export default {
               type: '(t: string) => boolean',
               description: "Value of the 'tag-validator' prop",
             },
-            tagVariant: {
-              type: 'ColorVariant | null',
-              description: "Value of the 'tag-variant' prop",
+            tagTheme: {
+              type: 'ThemeProp | null',
+              description: "Value of the 'tag-theme' prop",
             },
           },
         },
-        'tag': {
+        tag: {
           description: 'Slot to override the default rendering of an individual tag',
           scope: {
             tag: {
@@ -461,9 +472,9 @@ export default {
               type: 'ClassValue',
               description: 'Class (or classes) to apply to the tag element',
             },
-            tagVariant: {
-              type: 'ColorVariant | null',
-              description: 'Color variant to apply to the tag',
+            tagTheme: {
+              type: 'ThemeProp | null',
+              description: 'Theme color to apply to the tag',
             },
             tagPills: {
               type: 'boolean',

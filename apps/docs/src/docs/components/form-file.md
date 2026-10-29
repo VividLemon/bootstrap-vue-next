@@ -78,7 +78,7 @@ Use the `plain` prop to render a native HTML file input without custom styling. 
 
 <<< DEMO ./demo/FormFilePlain.vue
 
-<BAlert variant="info" :model-value="true">
+<BAlert theme="info" :model-value="true">
   Plain mode uses the native browser file input, which has limited styling options but provides maximum compatibility. Custom mode (default) provides drag-and-drop support and better visual customization.
 </BAlert>
 
@@ -86,7 +86,7 @@ Use the `plain` prop to render a native HTML file input without custom styling. 
 
 By adding the `directory` prop, a user can select directories instead of files.
 
-<BAlert variant="danger" :model-value="true">
+<BAlert theme="danger" :model-value="true">
   Directory mode uses the non-standard `webkitdirectory` attribute. Supported browsers include Chrome, Edge, Safari, Opera, and Firefox (desktop). Mobile browser support varies. The component gracefully degrades to standard file selection if unsupported. Use with caution in production environments requiring broad compatibility.
 </BAlert>
 

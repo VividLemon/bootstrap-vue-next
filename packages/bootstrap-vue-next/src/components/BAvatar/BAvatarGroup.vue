@@ -27,9 +27,9 @@ const _props = withDefaults(defineProps<BAvatarGroupProps>(), {
   roundedTop: undefined,
   // End RadiusElementExtendables props
   // ColorExtendables props
-  bgVariant: null,
-  textVariant: null,
-  variant: null,
+  bg: null,
+  fg: null,
+  theme: null,
   // End ColorExtendables props
 })
 const props = useDefaults(_props, 'BAvatarGroup')
@@ -37,7 +37,7 @@ defineSlots<BAvatarGroupSlots>()
 
 const overlapNumber = useToNumber(() => props.overlap)
 
-const computedSize = useNumberishToStyle(() => props.size)
+const {style: computedSize} = useNumberishToStyle(() => props.size)
 const overlapScale = computed(() => Math.min(Math.max(overlapNumber.value, 0), 1) / 2)
 
 const paddingStyle = computed<StyleValue>(() => {
@@ -49,13 +49,15 @@ provide(avatarGroupInjectionKey, {
   overlapScale,
   size: toRef(() => props.size),
   square: toRef(() => props.square),
-  rounded: toRef(() => props.rounded),
-  roundedTop: toRef(() => props.roundedTop),
-  roundedBottom: toRef(() => props.roundedBottom),
-  roundedStart: toRef(() => props.roundedStart),
-  roundedEnd: toRef(() => props.roundedEnd),
-  variant: toRef(() => props.variant),
-  bgVariant: toRef(() => props.bgVariant),
-  textVariant: toRef(() => props.textVariant),
+  roundedProps: computed(() => ({
+    rounded: props.rounded,
+    roundedTop: props.roundedTop,
+    roundedBottom: props.roundedBottom,
+    roundedStart: props.roundedStart,
+    roundedEnd: props.roundedEnd,
+  })),
+  theme: toRef(() => props.theme),
+  bg: toRef(() => props.bg),
+  fg: toRef(() => props.fg),
 })
 </script>

@@ -10,8 +10,8 @@ export const useNumberishToStyle = (
    * @default 'px'
    */
   unit: MaybeRefOrGetter<string> = 'px'
-) =>
-  computed(() => {
+) => {
+  const style = computed(() => {
     const value = toValue(el)
     const resolvedUnit = toValue(unit)
     // If num is non-numeric, return val as-is (sm, md, lg, undefined or any other custom value), otherwise return num as a px value
@@ -19,3 +19,6 @@ export const useNumberishToStyle = (
       ? `${Number(value)}${resolvedUnit}`
       : (value as string | undefined)
   })
+
+  return {style}
+}

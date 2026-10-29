@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BNavbar toggleable="lg" type="dark" variant="info">
+    <BNavbar toggleable="lg" theme="info">
       <BNavbarBrand href="#">NavBar</BNavbarBrand>
 
       <BNavbarToggle target="nav-collapse" />

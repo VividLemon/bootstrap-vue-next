@@ -1,4 +1,4 @@
-import type {BOffcanvasEmits, BOffcanvasProps, BOffcanvasSlots} from 'bootstrap-vue-next'
+import type { BOffcanvasEmits, BOffcanvasProps, BOffcanvasSlots } from 'bootstrap-vue-next'
 import {
   type ComponentReference,
   type EmitRecord,
@@ -7,14 +7,14 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {buildCommonProps} from '../../utils/commonProps'
-import {pick} from '../../utils/objectUtils'
-import {bvTriggerableEventArg, showHideEmits, showHideProps} from '../../utils/showHideData'
+import { buildCommonProps } from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { bvTriggerableEventArg, showHideEmits, showHideProps } from '../../utils/showHideData'
 
 export default {
   load: (): ComponentReference => ({
     BOffcanvas: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.offcanvas[-*]'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.offcanvas[-*]' },
       props: {
         ...showHideProps,
         ...pick(
@@ -30,14 +30,16 @@ export default {
             'bodyAttrs',
             'bodyClass',
             'footerClass',
+            'headerCloseBg',
             'headerClass',
+            'headerCloseFg',
             'id',
             'noBackdrop',
             'noHeader',
             'noHeaderClose',
             'placement',
             'title',
-          ]
+          ],
         ),
         backdropFirst: {
           type: 'boolean',
@@ -72,11 +74,17 @@ export default {
           default: 'Close',
           description: 'Accessibility label for the header close button',
         },
-        headerCloseVariant: {
-          type: 'ButtonVariant | null',
+        headerCloseTheme: {
+          type: 'ThemeProp | null',
           default: 'secondary',
           description:
-            'Button variant to use for the header close button when using a custom close slot',
+            'Theme color to use for the header close button when using a custom close slot',
+        },
+        headerCloseVariant: {
+          type: 'ButtonVariant | null',
+          default: 'solid',
+          description:
+            'Button style (variant) to use for the header close button when using a custom close slot',
         },
         noCloseOnBackdrop: {
           type: 'boolean',
@@ -131,7 +139,7 @@ export default {
           },
           description: 'Standard event to update the v-model',
         },
-        'breakpoint': {
+        breakpoint: {
           args: {
             value: bvTriggerableEventArg,
             opened: {
@@ -141,19 +149,19 @@ export default {
           },
           description: "Emitted when the offcanvas's responsive breakpoint state changes",
         },
-        'close': {
+        close: {
           description: 'Emitted when the close button is clicked',
           args: {
             value: bvTriggerableEventArg,
           },
         },
-        'esc': {
+        esc: {
           description: 'Emitted when the Escape key is pressed while the offcanvas is open',
           args: {
             value: bvTriggerableEventArg,
           },
         },
-        'backdrop': {
+        backdrop: {
           description: 'Emitted when the backdrop is clicked',
           args: {
             value: bvTriggerableEventArg,
@@ -161,7 +169,7 @@ export default {
         },
       } satisfies EmitRecord<keyof BOffcanvasEmits | 'update:model-value'>,
       slots: {
-        'title': {
+        title: {
           description: 'Content to place in the title section of the header',
           scope: {
             visible: {
@@ -178,7 +186,7 @@ export default {
             },
           },
         },
-        'default': {
+        default: {
           description: 'Content to place in the body of the offcanvas',
           scope: {
             visible: {
@@ -195,11 +203,11 @@ export default {
             },
           },
         },
-        'backdrop': {
+        backdrop: {
           description: 'Content to replace the default backdrop',
           scope: {},
         },
-        'footer': {
+        footer: {
           description: 'Content to place in the footer of the offcanvas',
           scope: {
             visible: {
@@ -216,7 +224,7 @@ export default {
             },
           },
         },
-        'header': {
+        header: {
           description: 'Content to replace the entire default header',
           scope: {
             visible: {

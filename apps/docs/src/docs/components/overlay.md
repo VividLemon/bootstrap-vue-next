@@ -33,16 +33,15 @@ the overlay.
 
 ### Overlay backdrop color
 
-You can control the backdrop background color via the `variant` prop. The variant is translated into
-one of Bootstrap's
-[background variant utility classes](/docs/reference/color-variants#background-and-border-variants).
+You can control the backdrop background color via the `bg` prop. The value is translated into
+one of Bootstrap v6's `bg-<value>` utility classes (for example `bg="primary"`, `bg="subtle-primary"` or `bg="black"`; see [Color Themes](/docs/reference/color-variants#background-foreground-and-border-values)). Registering your own themes is covered in [custom themes](/docs/components/button#custom-themes).
 Control the opacity of the backdrop via the `opacity` prop (opacity values can range from `0` to
 `1`). And background blurring can be controlled via the `blur` prop.
 
 <<< DEMO ./demo/OverlayBackdropColor.vue
 
-As an alternative to the `variant` prop, you can specify a CSS color string value via the `bg-color`
-prop. When a value is provided for `bg-color`, the `variant` prop value is ignored.
+As an alternative to the `bg` prop, you can specify a CSS color string value via the `bg-color`
+prop. When a value is provided for `bg-color`, the `bg` prop value is ignored.
 
 **Notes:**
 
@@ -62,7 +61,7 @@ The default overlay content is a [`BSpinner`](/docs/components/spinner) of type 
 can control the appearance of the spinner via the following props:
 
 - `spinner-type`: Currently supported values are `'border'` (the default) or `'grow'`
-- `spinner-variant`: Variant theme color for the spinner. Default is `null` which inherits the
+- `spinner-theme`: Theme color for the spinner (rendered as `.fg-<theme>`). Default is `null` which inherits the
   current font color
 - `spinner-small`: Set to `true` to render a small size spinner
 
@@ -91,7 +90,7 @@ The following scope properties are available to the `overlay` slot:
 
 | Property         | Description                         |
 | ---------------- | ----------------------------------- |
-| `spinnerVariant` | Value of the `spinner-variant` prop |
+| `spinnerTheme`   | Value of the `spinner-theme` prop   |
 | `spinnerType`    | Value of the `spinner-type` prop    |
 | `spinnerSmall`   | Value of the `spinner-small` prop   |
 

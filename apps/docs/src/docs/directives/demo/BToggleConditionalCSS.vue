@@ -1,18 +1,12 @@
 <template>
   <div>
-    <BButton
-      v-b-toggle.collapse-css
-      variant="primary"
-    >
+    <BButton v-b-toggle.collapse-css theme="primary">
       <span class="when-open">Hide</span>
       <span class="when-closed">Show</span>
       Content
     </BButton>
 
-    <BCollapse
-      id="collapse-css"
-      class="mt-3"
-    >
+    <BCollapse id="collapse-css" class="mt-3">
       <BCard>
         <p class="card-text">
           The button text changes based on the collapse state using CSS classes.

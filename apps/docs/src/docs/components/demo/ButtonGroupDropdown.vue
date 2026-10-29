@@ -1,11 +1,8 @@
 <template>
   <!-- #region template -->
   <BButtonGroup aria-label="Button group with dropdown">
-    <BButton variant="secondary">Button</BButton>
-    <BDropdown
-      text="Dropdown"
-      variant="secondary"
-    >
+    <BButton theme="secondary">Button</BButton>
+    <BDropdown text="Dropdown" theme="secondary">
       <BDropdownItem>Action</BDropdownItem>
       <BDropdownItem>Another action</BDropdownItem>
       <BDropdownItem>Something else here</BDropdownItem>

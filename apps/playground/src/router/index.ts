@@ -15,7 +15,7 @@ export default createRouter({
         render() {
           return [
             h('h1', {}, 'About page'),
-            h(BLink, {to: {name: 'index'}, variant: 'danger'}, 'Go to home'),
+            h(BLink, {to: {name: 'index'}, theme: 'danger'}, 'Go to home'),
           ]
         },
       },

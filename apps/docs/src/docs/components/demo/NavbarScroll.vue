@@ -1,31 +1,16 @@
 <template>
   <!-- #region template -->
-  <BNavbar
-    v-b-color-mode="'dark'"
-    :toggleable="true"
-    variant="primary"
-    class="navbar-nav-scroll"
-  >
+  <BNavbar v-b-color-mode="'dark'" :toggleable="true" theme="primary" class="navbar-nav-scroll">
     <BNavbarBrand href="#navbar-scroll">NavBar</BNavbarBrand>
     <BNavbarToggle target="nav-scroll" />
-    <BCollapse
-      id="nav-scroll"
-      is-nav
-    >
+    <BCollapse id="nav-scroll" is-nav>
       <BNavbarNav>
         <BNavItem href="#navbar-scroll">Link</BNavItem>
-        <BNavItem
-          href="#navbar-scroll"
-          disabled
-          >Disabled</BNavItem
-        >
+        <BNavItem href="#navbar-scroll" disabled>Disabled</BNavItem>
       </BNavbarNav>
       <!-- Right aligned nav items -->
       <BNavbarNav class="ms-auto mb-2 mb-lg-0">
-        <BNavItemDropdown
-          text="Lang"
-          right
-        >
+        <BNavItemDropdown text="Lang" right>
           <BDropdownItem>EN</BDropdownItem>
           <BDropdownItem>ES</BDropdownItem>
           <BDropdownItem>RU</BDropdownItem>
@@ -41,15 +26,8 @@
         </BNavItemDropdown>
       </BNavbarNav>
       <BNavForm class="d-flex">
-        <BFormInput
-          class="me-2"
-          placeholder="Search"
-        />
-        <BButton
-          type="submit"
-          variant="outline-success"
-          >Search</BButton
-        >
+        <BFormInput class="me-2" placeholder="Search" />
+        <BButton type="submit" variant="outline" theme="success">Search</BButton>
       </BNavForm>
     </BCollapse>
   </BNavbar>

@@ -382,20 +382,20 @@ describe('breadcrumb-item', () => {
     expect($blink.props('stretched')).toBe(true)
   })
 
-  it('gives prop variant to blink', () => {
+  it('gives prop theme to blink', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
     const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('variant')).toBe('primary')
+    expect($blink.props('theme')).toBe('primary')
   })
 
   it('gives prop opacity to blink', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {opacity: 75},
+      props: {opacity: 70},
     })
     const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('opacity')).toBe(75)
+    expect($blink.props('opacity')).toBe(70)
   })
 
   it('gives prop opacityHover to blink', () => {
@@ -462,11 +462,11 @@ describe('breadcrumb-item', () => {
     expect($blink.props('underlineOpacityHover')).toBe(100)
   })
 
-  it('gives prop underlineVariant to blink', () => {
+  it('gives prop underlineTheme to blink', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {underlineVariant: 'primary'},
+      props: {underlineTheme: 'primary'},
     })
     const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('underlineVariant')).toBe('primary')
+    expect($blink.props('underlineTheme')).toBe('primary')
   })
 })

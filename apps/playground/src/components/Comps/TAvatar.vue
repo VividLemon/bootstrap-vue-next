@@ -2,7 +2,7 @@
   <BContainer fluid>
     <!-- <BRow>
       <BCol>
-        <BAvatar button class="me-1" icon="person-fill" variant="secondary" />
+        <BAvatar button class="me-1" icon="person-fill" theme="secondary" />
       </BCol>
     </BRow>
 
@@ -26,31 +26,31 @@
 
     <BRow>
       <BCol>
-        <BAvatar class="me-2" icon="person-fill" variant="success" rounded />
+        <BAvatar class="me-2" icon="person-fill" theme="success" rounded />
       </BCol>
     </BRow>
 
     <BRow>
       <BCol>
-        <BAvatar class="me-5" icon="person-fill" variant="warning" size="lg" />
+        <BAvatar class="me-5" icon="person-fill" theme="warning" size="lg" />
       </BCol>
     </BRow>
 
     <BRow>
       <BCol>
-        <BAvatar class="me-2" text="ED" size="sm" square text-variant="dark" />
+        <BAvatar class="me-2" text="ED" size="sm" square fg="black" />
       </BCol>
     </BRow>
 
     <BRow>
       <BCol>
-        <BAvatar class="me-2" text="ED" variant="success" rounded />
+        <BAvatar class="me-2" text="ED" theme="success" rounded />
       </BCol>
     </BRow>
 
     <BRow>
       <BCol>
-        <BAvatar class="me-5" text="ED" variant="warning" text-variant="danger" size="lg" />
+        <BAvatar class="me-5" text="ED" theme="warning" fg="danger" size="lg" />
       </BCol>
     </BRow>
 

@@ -77,11 +77,10 @@ bootstrap-vue-next includes custom SCSS/CSS that adds support for sizing the cus
 ## Button style radios
 
 Render radios with the look of buttons by setting the prop `buttons` to `true` on
-`BFormRadioGroup`. Set the button variant by setting the `button-variant` prop to one of the
-standard Bootstrap button variants (see [`BButton`](/docs/components/button) for supported
-variants). The default `button-variant` is `secondary`.
+`BFormRadioGroup`. Set the button style and color via the `button-variant` and `button-theme` props
+(see [`BButton`](/docs/components/button) for supported values). The default is `button-variant` `solid` with `button-theme` `secondary`.
 
-The `buttons` prop has precedence over `plain`, and `button-variant` has no effect if `buttons` is
+The `buttons` prop has precedence over `plain`, and `button-variant` and `button-theme` have no effect if `buttons` is
 not set.
 
 Button style radios will have the class `.active` automatically applied to their label when they are

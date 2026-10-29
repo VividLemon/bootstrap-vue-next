@@ -187,12 +187,12 @@ describe('nav-item', () => {
     expect($blink.props('target')).toBe('_blank')
   })
 
-  it('passes variant prop to BLink', () => {
+  it('passes theme prop to BLink', () => {
     const wrapper = mount(BNavItem, {
-      props: {variant: 'primary'},
+      props: {theme: 'primary'},
     })
     const $blink = wrapper.findComponent(BLink)
-    expect($blink.props('variant')).toBe('primary')
+    expect($blink.props('theme')).toBe('primary')
   })
 
   it('passes replace prop to BLink', () => {
@@ -213,9 +213,9 @@ describe('nav-item', () => {
 
   it('passes opacityHover prop to BLink', () => {
     const wrapper = mount(BNavItem, {
-      props: {opacityHover: 75},
+      props: {opacityHover: 70},
     })
     const $blink = wrapper.findComponent(BLink)
-    expect($blink.props('opacityHover')).toBe(75)
+    expect($blink.props('opacityHover')).toBe(70)
   })
 })

@@ -46,10 +46,12 @@ Using color to add meaning only provides a visual indication, which will not be 
 
 <div class="mt-2"></div>
 
-::: warning Interactions between Variant props
-`BBadge` implements `bg-variant` and `text-variant` to provide finer control of colors, they take
-precedence over the `variant` prop. See the
-[Color Variant Reference](/docs/reference/color-variants#variant-interactions) for details.
+::: warning Interactions between color props
+`BBadge` is colored by the `theme` prop (class `.theme-<theme>`). It also implements `bg` and `fg`
+(for example `bg="subtle-primary"` and `fg="emphasis-primary"`) to provide finer control of colors;
+they take precedence over the `theme` prop. See the
+[Color Themes Reference](/docs/reference/color-variants#prop-interactions) for details, and
+[registering custom themes](/docs/components/button#custom-themes) to add your own themes.
 :::
 
 ## Pill badges

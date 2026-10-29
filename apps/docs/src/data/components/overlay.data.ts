@@ -1,4 +1,4 @@
-import type {BOverlayEmits, BOverlayProps, BOverlaySlots} from 'bootstrap-vue-next'
+import type { BOverlayEmits, BOverlayProps, BOverlaySlots } from 'bootstrap-vue-next'
 import {
   type ComponentReference,
   type EmitRecord,
@@ -6,20 +6,20 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {buildCommonProps} from '../../utils/commonProps'
+import { buildCommonProps } from '../../utils/commonProps'
 
-import {pick} from '../../utils/objectUtils'
+import { pick } from '../../utils/objectUtils'
 
 export default {
   load: (): ComponentReference => ({
     BOverlay: {
-      styleSpec: {kind: StyleKind.BsvnClass},
+      styleSpec: { kind: StyleKind.BsvnClass },
       props: {
         bgColor: {
           type: 'string',
           default: undefined,
           description:
-            'CSS color to use as the opaque overlay backdrop color. If set, overrides the `variant` prop',
+            'CSS color to use as the opaque overlay backdrop color. If set, overrides the `bg` prop',
         },
         blur: {
           type: 'string | null',
@@ -81,16 +81,16 @@ export default {
           description:
             "Type of the default spinner to show. Current supported types are 'border' and 'grow'",
         },
-        spinnerVariant: {
-          type: 'ColorVariant | null',
+        spinnerTheme: {
+          type: 'ThemeColor | null',
           default: undefined,
-          description: 'Applies one of the Bootstrap theme color variants to the spinner.',
+          description: 'Applies one of the theme colors to the default spinner.',
         },
-        variant: {
-          type: "ColorVariant | 'white' | 'transparent' | null",
-          default: 'light',
+        bg: {
+          type: 'MaybeArray<BgColor> | null',
+          default: 'body',
           description:
-            'Applies one of the Bootstrap theme color variants to the default spinner. Default is to use the current font color',
+            'Applies a background color (`BgColor`) to the overlay backdrop. Set to `null` to apply no background class',
         },
         wrapTag: {
           type: 'string',
@@ -105,6 +105,8 @@ export default {
             'Z-index value to apply to the overlay. You may need to increase this value to suit your content or placement',
         },
         ...pick(buildCommonProps({}), [
+          'spinnerBg',
+          'spinnerFg',
           'rounded',
           'roundedTop',
           'roundedBottom',
@@ -143,8 +145,8 @@ export default {
             type: {
               type: 'SpinnerType',
             },
-            variant: {
-              type: 'ColorVariant | null',
+            theme: {
+              type: 'ThemeColor | null | undefined',
             },
             small: {
               type: 'boolean',

@@ -6,7 +6,7 @@
       title: 'Manual Popover',
       body: 'Click the button to toggle',
     }"
-    variant="primary"
+    theme="primary"
     @click="popoverVisible = !popoverVisible"
   >
     {{ popoverVisible ? 'Hide' : 'Show' }} popover
@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const popoverVisible = ref(false)
 </script>

@@ -2,10 +2,7 @@
   <BContainer class="py-5">
     <!-- User Interface controls -->
     <BRow>
-      <BCol
-        lg="6"
-        class="my-1"
-      >
+      <BCol lg="6" class="my-1">
         <BFormGroup
           label="Filter"
           label-for="filter-input"
@@ -22,19 +19,12 @@
               placeholder="Type to Search"
             />
             <BInputGroupText>
-              <BButton
-                :disabled="!filter"
-                @click="filter = ''"
-                >Clear</BButton
-              >
+              <BButton :disabled="!filter" @click="filter = ''">Clear</BButton>
             </BInputGroupText>
           </BInputGroup>
         </BFormGroup>
       </BCol>
-      <BCol
-        lg="6"
-        class="my-1"
-      >
+      <BCol lg="6" class="my-1">
         <BFormGroup
           label="Per page"
           label-for="per-page-select"
@@ -45,18 +35,10 @@
           label-size="sm"
           class="mb-0"
         >
-          <BFormSelect
-            id="per-page-select"
-            v-model="perPage"
-            :options="pageOptions"
-            size="sm"
-          />
+          <BFormSelect id="per-page-select" v-model="perPage" :options="pageOptions" size="sm" />
         </BFormGroup>
       </BCol>
-      <BCol
-        lg="6"
-        class="my-1"
-      >
+      <BCol lg="6" class="my-1">
         <BPagination
           v-model="currentPage"
           :total-rows="totalRows"
@@ -86,13 +68,13 @@
 import type {
   BTableProviderContext,
   BTableSortBy,
-  ColorVariant,
   TableFieldRaw,
   TableItem,
+  ThemeColor,
 } from 'bootstrap-vue-next'
-import {BTable} from 'bootstrap-vue-next/components/BTable'
-import {computed, ref, useTemplateRef, watch} from 'vue'
-import {type ComponentExposed} from 'vue-component-type-helpers'
+import { BTable } from 'bootstrap-vue-next/components/BTable'
+import { computed, ref, useTemplateRef, watch } from 'vue'
+import { type ComponentExposed } from 'vue-component-type-helpers'
 
 interface Person {
   first_name: string
@@ -106,7 +88,7 @@ const table = useTemplateRef<ComponentExposed<typeof BTable<Person>>>('provider-
 const provider = (context: Readonly<BTableProviderContext>) =>
   sortItems(filteredItems.value, context.sortBy).slice(
     (context.currentPage - 1) * context.perPage,
-    context.currentPage * context.perPage
+    context.currentPage * context.perPage,
   )
 
 const sortItems = (items: Person[], sortBy?: readonly BTableSortBy[]) => {
@@ -134,30 +116,30 @@ const sortItems = (items: Person[], sortBy?: readonly BTableSortBy[]) => {
 }
 
 const items: TableItem<Person>[] = [
-  {isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald'},
-  {isActive: false, age: 21, first_name: 'Larsen', last_name: 'Shaw'},
+  { isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
+  { isActive: false, age: 21, first_name: 'Larsen', last_name: 'Shaw' },
   {
     isActive: false,
     age: 9,
     first_name: 'Mini',
     last_name: 'Navarro',
-    _rowVariant: 'success' as ColorVariant,
+    _rowTheme: 'success' as ThemeColor,
   },
-  {isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson'},
-  {isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney'},
-  {isActive: false, age: 27, first_name: 'Essie', last_name: 'Dunlap'},
-  {isActive: true, age: 40, first_name: 'Thor', last_name: 'Macdonald'},
+  { isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson' },
+  { isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney' },
+  { isActive: false, age: 27, first_name: 'Essie', last_name: 'Dunlap' },
+  { isActive: true, age: 40, first_name: 'Thor', last_name: 'Macdonald' },
   {
     isActive: true,
     age: 87,
     first_name: 'Larsen',
     last_name: 'Shaw',
-    _cellVariants: {age: 'danger', isActive: 'warning'},
+    _cellThemes: { age: 'danger', isActive: 'warning' },
   },
-  {isActive: false, age: 26, first_name: 'Mitzi', last_name: 'Navarro'},
-  {isActive: false, age: 22, first_name: 'Genevieve', last_name: 'Wilson'},
-  {isActive: true, age: 38, first_name: 'John', last_name: 'Carney'},
-  {isActive: false, age: 29, first_name: 'Dick', last_name: 'Dunlap'},
+  { isActive: false, age: 26, first_name: 'Mitzi', last_name: 'Navarro' },
+  { isActive: false, age: 22, first_name: 'Genevieve', last_name: 'Wilson' },
+  { isActive: true, age: 38, first_name: 'John', last_name: 'Carney' },
+  { isActive: false, age: 29, first_name: 'Dick', last_name: 'Dunlap' },
 ]
 
 const fields: Exclude<TableFieldRaw<Person>, string>[] = [
@@ -169,14 +151,14 @@ const fields: Exclude<TableFieldRaw<Person>, string>[] = [
     key: 'last_name',
     sortable: true,
   },
-  {key: 'age', label: 'Person age', sortable: true, class: 'text-center'},
+  { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
 ]
 
 const pageOptions = [
-  {value: 5, text: '5'},
-  {value: 10, text: '10'},
-  {value: 15, text: '15'},
-  {value: 100, text: 'Show a lot'},
+  { value: 5, text: '5' },
+  { value: 10, text: '10' },
+  { value: 15, text: '15' },
+  { value: 100, text: 'Show a lot' },
 ]
 
 const currentPage = ref(1)
@@ -194,7 +176,7 @@ const filteredItems = computed(() => {
     (item) =>
       item.first_name.toLowerCase().includes(lcFilter.value) ||
       item.last_name.toLowerCase().includes(lcFilter.value) ||
-      item.age.toLocaleString().includes(lcFilter.value)
+      item.age.toLocaleString().includes(lcFilter.value),
   )
 })
 

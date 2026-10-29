@@ -29,7 +29,11 @@
           <button
             :id="tab.buttonId"
             class="nav-link"
-            :class="[tab.navItemClasses, tab.titleLinkClass, tab.active ? props.activeNavLinkClass : props.inactiveNavLinkClass]"
+            :class="[
+              tab.navItemClasses,
+              tab.titleLinkClass,
+              tab.active ? props.activeNavLinkClass : props.inactiveNavLinkClass,
+            ]"
             role="tab"
             :aria-controls="tab.id"
             :aria-selected="tab.active"
@@ -322,7 +326,7 @@ const computedClasses = computed(() => ({
   'align-items-start': props.vertical,
 }))
 
-const alignment = useAlignment(() => props.align)
+const {alignment} = useAlignment(() => props.align)
 
 const navTabsClasses = computed(() => ({
   'nav-pills': props.pills,

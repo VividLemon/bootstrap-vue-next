@@ -31,6 +31,9 @@
     <slot
       :add-button-text="props.addButtonText"
       :add-button-variant="props.addButtonVariant"
+      :add-button-theme="props.addButtonTheme"
+      :add-button-bg="props.addButtonBg"
+      :add-button-fg="props.addButtonFg"
       :add-tag
       :disable-add-button="disableAddButton"
       :disabled="props.disabled"
@@ -69,7 +72,9 @@
       :tag-class="props.tagClass"
       :tag-pills="props.tagPills"
       :tag-remove-label="props.tagRemoveLabel"
-      :tag-variant="props.tagVariant"
+      :tag-theme="props.tagTheme"
+      :tag-bg="props.tagBg"
+      :tag-fg="props.tagFg"
       :tags="[...modelValue]"
     >
       <ul
@@ -81,7 +86,9 @@
             name="tag"
             :tag="tag"
             :tag-class="props.tagClass"
-            :tag-variant="props.tagVariant"
+            :tag-theme="props.tagTheme"
+            :tag-bg="props.tagBg"
+            :tag-fg="props.tagFg"
             :tag-pills="props.tagPills"
             :remove-tag="removeTag"
           >
@@ -89,7 +96,9 @@
               :key="tag"
               :class="props.tagClass"
               tag="li"
-              :variant="props.tagVariant"
+              :theme="props.tagTheme"
+              :bg="props.tagBg"
+              :fg="props.tagFg"
               :pill="props.tagPills"
               :no-remove="props.noTagRemove"
               :disabled="props.disabled"
@@ -129,8 +138,8 @@
               class="btn b-form-tags-button py-0"
               :class="[
                 inputClass,
+                addButtonClasses,
                 {
-                  [`btn-${props.addButtonVariant}`]: props.addButtonVariant !== null,
                   'disabled invisible': inputValue.length === 0,
                 },
               ]"
@@ -147,12 +156,10 @@
         <div v-if="isInvalid" class="d-block invalid-feedback">
           {{ props.invalidTagText }}: {{ inputValue }}
         </div>
-        <small v-if="isDuplicate" class="form-text text-body-secondary"
+        <small v-if="isDuplicate" class="form-text fg-2"
           >{{ props.duplicateTagText }}: {{ inputValue }}</small
         >
-        <small v-if="isLimitReached" class="form-text text-body-secondary">
-          {{ props.limitTagsText }}</small
-        >
+        <small v-if="isLimitReached" class="form-text fg-2"> {{ props.limitTagsText }}</small>
       </div>
     </slot>
     <template v-if="props.name">
@@ -175,11 +182,15 @@ import {escapeRegExpChars} from '../../utils/stringUtils'
 import BFormTag from './BFormTag.vue'
 import {useId} from '../../composables/useId'
 import {useStateClass} from '../../composables/useStateClass'
+import {useButtonThemeClasses} from '../../composables/useThemeClasses'
 import type {BFormTagsEmits, BFormTagsProps, BFormTagsSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
   addButtonText: 'Add',
-  addButtonVariant: 'outline-secondary',
+  addButtonVariant: 'outline',
+  addButtonTheme: 'secondary',
+  addButtonBg: null,
+  addButtonFg: null,
   addOnChange: false,
   autofocus: false,
   disabled: false,
@@ -209,11 +220,21 @@ const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
   tagRemoveLabel: undefined,
   tagRemovedLabel: 'Tag removed',
   tagValidator: () => true,
-  tagVariant: 'secondary',
+  tagTheme: 'secondary',
+  tagBg: null,
+  tagFg: null,
 })
 const props = useDefaults(_props, 'BFormTags')
 const emit = defineEmits<BFormTagsEmits>()
 defineSlots<BFormTagsSlots>()
+const {classes: addButtonClasses} = useButtonThemeClasses(
+  computed(() => ({
+    variant: props.addButtonVariant,
+    theme: props.addButtonTheme,
+    bg: props.addButtonBg,
+    fg: props.addButtonFg,
+  }))
+)
 
 const modelValue = defineModel<Exclude<BFormTagsProps['modelValue'], undefined>>({
   default: () => [],
@@ -223,7 +244,7 @@ const computedId = useId()
 
 const limitNumber = useToNumber(() => props.limit ?? Number.NaN)
 
-const stateClass = useStateClass(() => props.state)
+const {stateClass} = useStateClass(() => props.state)
 
 const input = useTemplateRef('_input')
 

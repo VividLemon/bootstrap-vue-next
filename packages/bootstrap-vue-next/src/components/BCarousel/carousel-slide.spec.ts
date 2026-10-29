@@ -58,36 +58,35 @@ describe('carousel-slide', () => {
     expect(bImg.attributes('alt')).toBe('Test Alt')
   })
 
-  it('BImg receives imgSrc as src prop', () => {
+  it.each([
+    {caseName: 'imgSrc as src', slideProp: 'imgSrc', imageProp: 'src', value: 'test.jpg'},
+    {caseName: 'imgWidth as width', slideProp: 'imgWidth', imageProp: 'width', value: 200},
+    {caseName: 'imgHeight as height', slideProp: 'imgHeight', imageProp: 'height', value: 150},
+    {caseName: 'imgBlank as blank', slideProp: 'imgBlank', imageProp: 'blank', value: true},
+    {
+      caseName: 'imgBlankColor as blankColor',
+      slideProp: 'imgBlankColor',
+      imageProp: 'blankColor',
+      value: 'blue',
+    },
+    {
+      caseName: 'imgSrcset string as srcset',
+      slideProp: 'imgSrcset',
+      imageProp: 'srcset',
+      value: 'test.jpg 1x, test2.jpg 2x',
+    },
+    {
+      caseName: 'imgSrcset array as srcset',
+      slideProp: 'imgSrcset',
+      imageProp: 'srcset',
+      value: ['test.jpg 1x', 'test2.jpg 2x'],
+    },
+  ])('BImg receives $caseName prop', ({slideProp, imageProp, value}) => {
     const wrapper = mount(BCarouselSlide, {
-      props: {imgSrc: 'test.jpg'},
+      props: {[slideProp]: value},
     })
     const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('src')).toBe('test.jpg')
-  })
-
-  it('BImg receives imgWidth as width prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {imgWidth: 200},
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('width')).toBe(200)
-  })
-
-  it('BImg receives imgHeight as height prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {imgHeight: 150},
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('height')).toBe(150)
-  })
-
-  it('BImg receives imgBlank as blank prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {imgBlank: true},
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('blank')).toBe(true)
+    expect(bImg.props(imageProp)).toEqual(value)
   })
 
   it('BImg blank prop defaults to false', () => {
@@ -96,35 +95,10 @@ describe('carousel-slide', () => {
     expect(bImg.props('blank')).toBe(false)
   })
 
-  it('BImg receives imgBlankColor as blankColor prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {imgBlankColor: 'blue'},
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('blankColor')).toBe('blue')
-  })
-
   it('BImg blankColor defaults to transparent', () => {
     const wrapper = mount(BCarouselSlide)
     const bImg = wrapper.findComponent(BImg)
     expect(bImg.props('blankColor')).toBe('transparent')
-  })
-
-  it('BImg receives imgSrcset as srcset prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {imgSrcset: 'test.jpg 1x, test2.jpg 2x'},
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('srcset')).toBe('test.jpg 1x, test2.jpg 2x')
-  })
-
-  it('BImg receives imgSrcset array as srcset prop', () => {
-    const srcset = ['test.jpg 1x', 'test2.jpg 2x']
-    const wrapper = mount(BCarouselSlide, {
-      props: {imgSrcset: srcset},
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('srcset')).toEqual(srcset)
   })
 
   it('BImg receives width from parent injection when imgWidth is not set', () => {

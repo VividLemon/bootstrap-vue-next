@@ -103,15 +103,16 @@ slot, and the slots (as always) take precedence over the props.
 
 <<< DEMO ./demo/TooltipContent.vue#template{vue-html}
 
-## Custom Classes and Variants
+## Custom Classes and Colors
 
 Custom classes can be applied to the tooltip using the `title-class` prop or `body-class` prop
 (depending on which prop or slot you use to populate the tooltip):
 
 <<< FRAGMENT ./demo/TooltipCustomClass.vue#template{vue-html}
 
-Similarly, use [Bootstrap's Color and background](https://getbootstrap.com/docs/5.3/helpers/color-background/)
-utilities to change the variant of the tooltip.
+Similarly, use Bootstrap v6's `.theme-*` classes and the `.bg-*` / `.fg-*` utilities
+(for example `bg-subtle-primary fg-emphasis-primary`) to change the color of the tooltip.
+See [Color Themes](/docs/reference/color-variants) for the available values.
 
 <<< DEMO ./demo/TooltipVariant.vue#template{vue-html}
 

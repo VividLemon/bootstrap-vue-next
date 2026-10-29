@@ -8,12 +8,15 @@ import type {
   BPlaceholderWrapperProps,
   BPlaceholderWrapperSlots,
 } from 'bootstrap-vue-next'
-import {type ComponentReference, type PropRecord, type SlotRecord, StyleKind} from '../../types'
+import { type ComponentReference, type PropRecord, type SlotRecord, StyleKind } from '../../types'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BPlaceholder: {
       props: {
+        ...pick(buildCommonProps(), ['fg']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -30,8 +33,8 @@ export default {
           type: 'string',
           default: 'span',
         },
-        variant: {
-          type: 'BgColorVariant | null',
+        bg: {
+          type: 'MaybeArray<BgColor> | null',
           default: null,
         },
         width: {
@@ -47,8 +50,9 @@ export default {
       slots: {},
     },
     BPlaceholderCard: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.card'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.card' },
       props: {
+        ...pick(buildCommonProps(), ['bg', 'fg', 'footerBg', 'footerFg', 'headerBg', 'headerFg']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -61,8 +65,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        footerVariant: {
-          type: 'ColorVariant | null',
+        footerTheme: {
+          type: 'ThemeProp | null',
           default: undefined,
         },
         footerWidth: {
@@ -77,8 +81,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        headerVariant: {
-          type: 'ColorVariant | null',
+        headerTheme: {
+          type: 'ThemeProp | null',
           default: undefined,
         },
         headerWidth: {
@@ -121,8 +125,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        variant: {
-          type: 'ColorVariant | null',
+        theme: {
+          type: 'ThemeProp | null',
           default: undefined,
         },
       } satisfies PropRecord<keyof BPlaceholderCardProps>,
@@ -147,8 +151,9 @@ export default {
       } satisfies SlotRecord<keyof BPlaceholderCardSlots>,
     },
     BPlaceholderWrapper: {
-      styleSpec: {kind: StyleKind.None},
+      styleSpec: { kind: StyleKind.None },
       props: {
+        ...pick(buildCommonProps(), ['bg', 'fg', 'footerBg', 'footerFg', 'headerBg', 'headerFg']),
         loading: {
           description: 'Determines whether the loading slot is displayed',
           type: 'boolean',
@@ -168,8 +173,9 @@ export default {
       } satisfies SlotRecord<keyof BPlaceholderWrapperSlots>,
     },
     BPlaceholderTable: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.table'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.table' },
       props: {
+        ...pick(buildCommonProps(), ['bg', 'fg', 'footerBg', 'footerFg', 'headerBg', 'headerFg']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -198,8 +204,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        footerVariant: {
-          type: 'ColorVariant | null',
+        footerTheme: {
+          type: 'ThemeProp | null',
           default: undefined,
         },
         headerAnimation: {
@@ -218,8 +224,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        headerVariant: {
-          type: 'ColorVariant | null',
+        headerTheme: {
+          type: 'ThemeProp | null',
           default: undefined,
         },
         noHeader: {
@@ -238,8 +244,8 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        variant: {
-          type: 'ColorVariant | null',
+        theme: {
+          type: 'ThemeProp | null',
           default: undefined,
         },
       } satisfies PropRecord<keyof BPlaceholderTableProps>,
@@ -260,8 +266,9 @@ export default {
       } satisfies SlotRecord<keyof BPlaceholderTableSlots>,
     },
     BPlaceholderButton: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.placeholder.btn'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.placeholder.btn' },
       props: {
+        ...pick(buildCommonProps(), ['bg', 'fg']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -274,8 +281,8 @@ export default {
           type: 'string',
           default: 'div',
         },
-        variant: {
-          type: 'ColorVariant | null',
+        theme: {
+          type: 'ThemeProp | null',
           default: 'primary',
         },
         width: {

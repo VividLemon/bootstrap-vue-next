@@ -81,26 +81,26 @@ describe('card-subtitle', () => {
     expect(wrapper.text()).toBe('')
   })
 
-  it('has class text-body-secondary by default', () => {
+  it('has class fg-2 by default', () => {
     const wrapper = mount(BCardSubtitle)
-    expect(wrapper.classes()).toContain('text-body-secondary')
+    expect(wrapper.classes()).toContain('fg-2')
   })
 
-  it('has class text-{type} when prop textVariant', async () => {
+  it('has class fg-{type} when prop fg', async () => {
     const wrapper = mount(BCardSubtitle, {
-      props: {textVariant: 'primary'},
+      props: {fg: 'primary'},
     })
-    expect(wrapper.classes()).toContain('text-primary')
-    await wrapper.setProps({textVariant: undefined})
-    expect(wrapper.classes()).not.toContain('text-primary')
-    expect(wrapper.classes()).toContain('text-body-secondary')
+    expect(wrapper.classes()).toContain('fg-primary')
+    await wrapper.setProps({fg: undefined})
+    expect(wrapper.classes()).not.toContain('fg-primary')
+    expect(wrapper.classes()).toContain('fg-2')
   })
 
-  it('does not have text-body-secondary when textVariant is null', () => {
+  it('does not have fg-2 when fg is null', () => {
     const wrapper = mount(BCardSubtitle, {
-      props: {textVariant: null},
+      props: {fg: null},
     })
-    expect(wrapper.classes()).not.toContain('text-body-secondary')
-    expect(wrapper.classes()).not.toContain('text-null')
+    expect(wrapper.classes()).not.toContain('fg-2')
+    expect(wrapper.classes()).not.toContain('fg-null')
   })
 })

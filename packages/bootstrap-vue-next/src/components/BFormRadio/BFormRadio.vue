@@ -25,7 +25,11 @@
 <script setup lang="ts">
 import {useFocus} from '@vueuse/core'
 import {computed, inject, useTemplateRef} from 'vue'
-import {getClasses, getInputClasses, getLabelClasses} from '../../composables/useFormCheck'
+import {
+  useFormCheckClasses,
+  useFormCheckInputClasses,
+  useFormCheckLabelClasses,
+} from '../../composables/useFormCheck'
 import {isEmptySlot} from '../../utils/dom'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
 import {useDefaults} from '../../composables/useDefaults'
@@ -44,6 +48,9 @@ const _props = withDefaults(defineProps<Omit<BFormRadioProps, 'modelValue'>>(), 
   button: undefined,
   buttonGroup: false,
   buttonVariant: undefined,
+  buttonTheme: undefined,
+  buttonBg: undefined,
+  buttonFg: undefined,
   disabled: false,
   form: undefined,
   id: undefined,
@@ -82,7 +89,10 @@ const propDefaults = {
   inline: false,
   reverse: false,
   size: undefined,
-  buttonVariant: 'secondary' as const,
+  buttonVariant: 'solid' as const,
+  buttonTheme: 'secondary' as const,
+  buttonBg: null,
+  buttonFg: null,
   state: null,
 }
 
@@ -96,6 +106,9 @@ const resolvedProps = computed(() => ({
   size: props.size ?? parentData?.size.value ?? propDefaults.size,
   buttonVariant:
     props.buttonVariant ?? parentData?.buttonVariant.value ?? propDefaults.buttonVariant,
+  buttonTheme: props.buttonTheme ?? parentData?.buttonTheme.value.theme ?? propDefaults.buttonTheme,
+  buttonBg: props.buttonBg ?? parentData?.buttonTheme.value.bg ?? propDefaults.buttonBg,
+  buttonFg: props.buttonFg ?? parentData?.buttonTheme.value.fg ?? propDefaults.buttonFg,
 }))
 
 // Shorthand for template usage
@@ -128,9 +141,9 @@ const classesObject = computed(() => ({
   ...resolvedProps.value,
   hasDefaultSlot: hasDefaultSlot.value,
 }))
-const computedClasses = getClasses(classesObject)
-const inputClasses = getInputClasses(classesObject)
-const labelClasses = getLabelClasses(classesObject)
+const {classes: computedClasses} = useFormCheckClasses(classesObject)
+const {classes: inputClasses} = useFormCheckInputClasses(classesObject)
+const {classes: labelClasses} = useFormCheckLabelClasses(classesObject)
 
 defineExpose({
   blur: () => {

@@ -4,7 +4,7 @@
       ><BCol>
         <BButton
           variant="link"
-          underline-opacity="0"
+          class="text-decoration-none"
           aria-controls="offcanvas-toc"
           :aria-expanded="tocVisible ? 'true' : 'false'"
           @click="showToc"
@@ -14,7 +14,7 @@
         ><div class="text-end">
           <BButton
             variant="link"
-            underline-opacity="0"
+            class="text-decoration-none"
             aria-controls="offcanvas-otp"
             :aria-expanded="otpVisible ? 'true' : 'false'"
             @click="showOtp"
@@ -24,10 +24,7 @@
       ></BRow
     >
     <BRow>
-      <BCol
-        md="2"
-        class="scrollable-column"
-      >
+      <BCol md="2" class="scrollable-column">
         <BOffcanvas
           id="offcanvas-toc"
           v-model="tocVisible"
@@ -37,10 +34,7 @@
         >
           <ul>
             <ul>
-              <li
-                v-for="item in toc"
-                :key="item"
-              >
+              <li v-for="item in toc" :key="item">
                 {{ item }}
               </li>
               <li>A very large entry in table of contents</li>
@@ -83,10 +77,7 @@
         luctus id viverra porta. Habitasse lorem bibendum semper maecenas volutpat porta. Eros
         praesent duis odio sagittis metus montes interdum.
       </BCol>
-      <BCol
-        md="2"
-        class="scrollable-column"
-      >
+      <BCol md="2" class="scrollable-column">
         <BOffcanvas
           id="offcanvas-otp"
           v-model="otpVisible"
@@ -95,10 +86,7 @@
           responsive="md"
         >
           <ul>
-            <li
-              v-for="item in otp"
-              :key="item"
-            >
+            <li v-for="item in otp" :key="item">
               {{ item }}
             </li>
             <li>A very large entry in on this page</li>
@@ -110,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const otpVisible = ref(false)
 const tocVisible = ref(false)

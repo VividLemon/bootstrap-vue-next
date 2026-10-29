@@ -23,52 +23,25 @@ describe('bDateRangeField', () => {
     expect(separator.exists()).toBe(true)
   })
 
-  it('applies disabled class when disabled prop is true', () => {
-    const wrapper = mount(BDateRangeField, {
-      props: {disabled: true},
-    })
-    expect(wrapper.classes()).toContain('disabled')
+  it.each([
+    {name: 'disabled', props: {disabled: true}, expectedClass: 'disabled'},
+    {name: 'readonly', props: {readonly: true}, expectedClass: 'readonly'},
+    {name: 'valid', props: {state: true}, expectedClass: 'is-valid'},
+    {name: 'invalid', props: {state: false}, expectedClass: 'is-invalid'},
+  ])('applies $expectedClass class for $name state', ({props, expectedClass}) => {
+    const wrapper = mount(BDateRangeField, {props})
+    expect(wrapper.classes()).toContain(expectedClass)
   })
 
-  it('applies readonly class when readonly prop is true', () => {
-    const wrapper = mount(BDateRangeField, {
-      props: {readonly: true},
-    })
-    expect(wrapper.classes()).toContain('readonly')
-  })
-
-  it('applies is-valid class when state is true', () => {
-    const wrapper = mount(BDateRangeField, {
-      props: {state: true},
-    })
-    expect(wrapper.classes()).toContain('is-valid')
-  })
-
-  it('applies is-invalid class when state is false', () => {
-    const wrapper = mount(BDateRangeField, {
-      props: {state: false},
-    })
-    expect(wrapper.classes()).toContain('is-invalid')
-  })
-
-  it('applies form-control-sm class when size is sm', () => {
-    const wrapper = mount(BDateRangeField, {
-      props: {size: 'sm'},
-    })
-    expect(wrapper.classes()).toContain('form-control-sm')
-  })
-
-  it('applies form-control-lg class when size is lg', () => {
-    const wrapper = mount(BDateRangeField, {
-      props: {size: 'lg'},
-    })
-    expect(wrapper.classes()).toContain('form-control-lg')
-  })
-
-  it('does not apply size class when size is undefined', () => {
-    const wrapper = mount(BDateRangeField)
-    expect(wrapper.classes()).not.toContain('form-control-sm')
-    expect(wrapper.classes()).not.toContain('form-control-lg')
+  it.each([
+    {name: 'small', size: 'sm', expectedClass: 'form-control-sm'},
+    {name: 'large', size: 'lg', expectedClass: 'form-control-lg'},
+    {name: 'undefined', size: undefined, expectedClass: undefined},
+  ])('handles $name size', ({size, expectedClass}) => {
+    const wrapper = mount(BDateRangeField, {props: {size}})
+    for (const sizeClass of ['form-control-sm', 'form-control-lg']) {
+      expect(wrapper.classes().includes(sizeClass)).toBe(sizeClass === expectedClass)
+    }
   })
 
   it('passes id prop to the underlying DateRangeFieldRoot', () => {

@@ -99,7 +99,7 @@ The following features are not included in v1:
 
 `no-sort-reset` is deprecated. Use `must-sort`. By default, sortability can be reset by clicking (3) times [asc => desc => undefined => asc...]
 
-`selected-variant` has been renamed to `selection-variant` for internal consistency.
+`selected-variant` has been renamed to `selection-theme` (a `ThemeColor`, default `primary`).
 
 Sorting has been significantly reworked. Read the [sorting section](/docs/components/table#sorting) of our documentation. Some specific changes include the following:
 
@@ -109,7 +109,7 @@ Sorting has been significantly reworked. Read the [sorting section](/docs/compon
 - The internal `sort-compare` routine has been simplified, if you need to customize sorting for localization, the documentation on [custom sort comparers](/docs/components/table#custom-sort-comparers) for details.
 - `multi-sort` functionality has been implemented.
 
-`table-variant` is replaced with `variant` for consistency.
+`table-variant` is replaced with `theme` for consistency.
 
 The slot scope for `table-colgroup` slot now only contains the `fields` prop, with the `columns` prop removed.
 

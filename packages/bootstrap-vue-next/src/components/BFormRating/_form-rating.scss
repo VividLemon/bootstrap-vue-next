@@ -17,7 +17,7 @@ $clear-icon-size: 1em !default;
   }
 
   &.is-disabled {
-    color: var(--bs-secondary);
+    color: var(--bs-secondary-fg);
     background-color: var(--bs-secondary-bg);
   }
 
@@ -25,7 +25,7 @@ $clear-icon-size: 1em !default;
     width: $clear-icon-size;
     height: $clear-icon-size;
     transition: transform var(--bs-transition-duration) ease;
-    color: var(--bs-body-color);
+    color: var(--bs-fg-body);
     fill: currentColor;
   }
 
@@ -61,7 +61,7 @@ $clear-icon-size: 1em !default;
 
 .rating-value-text {
   flex-shrink: 0;
-  color: var(--bs-body-color);
+  color: var(--bs-fg-body);
   margin: 0;
   padding: 0 0.25em;
 }

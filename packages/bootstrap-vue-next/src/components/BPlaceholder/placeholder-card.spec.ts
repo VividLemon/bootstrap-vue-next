@@ -154,20 +154,20 @@ describe('placeholder-card', () => {
     expect($placeholder.props('width')).toBe(100)
   })
 
-  it('placeholder has prop variant to be prop headerWidth', () => {
+  it('placeholder has prop theme to be prop headerTheme', () => {
     const wrapper = mount(BPlaceholderCard, {
-      props: {headerVariant: 'danger'},
+      props: {headerTheme: 'danger'},
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholder = $card.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBe('danger')
+    expect($placeholder.props('bg')).toBe('danger')
   })
 
-  it('placeholder has prop variant to be default undefined', () => {
+  it('placeholder has prop theme to be default undefined', () => {
     const wrapper = mount(BPlaceholderCard)
     const $card = wrapper.getComponent(BCard)
     const $placeholder = $card.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBeNull()
+    expect($placeholder.props('bg')).toBeNull()
   })
 
   it('placeholder has prop animation to be prop headerWidth', () => {
@@ -377,24 +377,24 @@ describe('placeholder-card', () => {
     expect($placeholder.props('size')).toBe('xs')
   })
 
-  it('BPlaceholder is given prop variant to be undefined by default', () => {
+  it('BPlaceholder is given prop theme to be undefined by default', () => {
     const wrapper = mount(BPlaceholderCard, {
       props: {noHeader: true, noButton: true},
       slots: {default: 'foo'},
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholder = $card.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBeNull()
+    expect($placeholder.props('bg')).toBeNull()
   })
 
-  it('BPlaceholder is given prop variant to be prop footerVariant', () => {
+  it('BPlaceholder is given prop theme to be prop footerTheme', () => {
     const wrapper = mount(BPlaceholderCard, {
-      props: {noHeader: true, noButton: true, footerVariant: 'danger'},
+      props: {noHeader: true, noButton: true, footerTheme: 'danger'},
       slots: {default: 'foo'},
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholder = $card.getComponent(BPlaceholder)
-    expect($placeholder.props('variant')).toBe('danger')
+    expect($placeholder.props('bg')).toBe('danger')
   })
 
   it('BPlaceholderButton is given prop width to be 100 by default', () => {
@@ -437,24 +437,24 @@ describe('placeholder-card', () => {
     expect($placeholderbutton.props('animation')).toBe('glow')
   })
 
-  it('BPlaceholderButton is given prop variant to be primary by default', () => {
+  it('BPlaceholderButton is given prop theme to be primary by default', () => {
     const wrapper = mount(BPlaceholderCard, {
       props: {noHeader: true, noButton: false},
       slots: {default: 'foo'},
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholderbutton = $card.getComponent(BPlaceholderButton)
-    expect($placeholderbutton.props('variant')).toBe('primary')
+    expect($placeholderbutton.props('theme')).toBe('primary')
   })
 
-  it('BPlaceholderButton is given prop variant to be prop footerVariant', () => {
+  it('BPlaceholderButton is given prop theme to be prop footerTheme', () => {
     const wrapper = mount(BPlaceholderCard, {
-      props: {noHeader: true, noButton: false, footerVariant: 'danger'},
+      props: {noHeader: true, noButton: false, footerTheme: 'danger'},
       slots: {default: 'foo'},
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholderbutton = $card.getComponent(BPlaceholderButton)
-    expect($placeholderbutton.props('variant')).toBe('danger')
+    expect($placeholderbutton.props('theme')).toBe('danger')
   })
 
   it('renders all in correct order', () => {

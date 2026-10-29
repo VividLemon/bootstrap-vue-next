@@ -18,7 +18,7 @@
 // You can use this file as a development spot to test your changes
 // Please do not commit this file
 import {computed, h, markRaw, onMounted, onUnmounted, ref, watchEffect} from 'vue'
-import type {ColorVariant, ToastOrchestratorCreateParamBase} from 'bootstrap-vue-next'
+import type {ThemeColor, ToastOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {useToast} from 'bootstrap-vue-next/composables/useToast'
 
 const {create, store} = useToast()
@@ -48,7 +48,7 @@ const dynamicToast = computed<ToastOrchestratorCreateParamBase>({
   get: () => ({
     modelValue: dynamicModelValue.value,
     body: firstRef.value.body,
-    variant: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ColorVariant,
+    theme: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ThemeColor,
   }),
   set: (value) => {
     dynamicModelValue.value = value.modelValue
@@ -69,7 +69,7 @@ const showFns = {
       slots: {default: () => markRaw(h('div', null, 'foobar!'))},
       modelValue: true,
       active: true,
-      variant: 'primary',
+      theme: 'primary',
     }).show()
     return _
   },

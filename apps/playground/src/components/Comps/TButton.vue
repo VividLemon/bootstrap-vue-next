@@ -2,7 +2,7 @@
   <BContainer fluid>
     <BRow>
       <BCol>
-        <BButton v-model:pressed="buttonIsPressed" variant="primary" class="mt-3"
+        <BButton v-model:pressed="buttonIsPressed" theme="primary" class="mt-3"
           >Toggle Me</BButton
         >
       </BCol>

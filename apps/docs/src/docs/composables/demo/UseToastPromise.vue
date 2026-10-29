@@ -1,6 +1,6 @@
 <template>
   <BButtonGroup>
-    <BButton variant="success" @click="promiseToast"> Show the Toast </BButton>
+    <BButton theme="success" @click="promiseToast"> Show the Toast </BButton>
   </BButtonGroup>
 </template>
 
@@ -13,7 +13,7 @@ const { create } = useToast()
 
 const promiseToast = async () => {
   await using r = await create({
-    variant: 'primary',
+    theme: 'primary',
     position: 'middle-center',
     bodyClass: 'w-100',
     modelValue: true,

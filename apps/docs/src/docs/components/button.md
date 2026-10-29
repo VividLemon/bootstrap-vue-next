@@ -30,39 +30,67 @@ Fancy larger or smaller buttons? Specify `lg` or `sm` via the `size` prop.
 
 <<< DEMO ./demo/ButtonSizing.vue#template{vue-html}
 
-## Contextual variants
+## Themes and variants
 
-Use the `variant` prop to generate the various Bootstrap contextual button variants.
+Bootstrap v6 separates a button's **color** from its **style**:
 
-By default, `BButton` will render with the `secondary` variant.
+- The `theme` prop picks the color. It adds the Bootstrap class `.theme-<theme>`. The default is `secondary`.
+- The `variant` prop picks the style: `solid` (default), `outline`, `subtle`, `text` or `link`. It adds the class `.btn-<variant>`.
+- The `styled` prop independently adds the `.btn-styled` modifier.
 
-The `variant` prop adds the Bootstrap class `.btn-<variant>` on the rendered button.
-See the [Color Variants](/docs/reference/color-variants) page for details.
+For example, `<BButton variant="outline" theme="danger">` renders `class="btn btn-outline theme-danger"`.
+See the [Color Themes](/docs/reference/color-variants) page for details.
 
-### Solid color variants
+### Themes
 
-`primary`, `secondary`, `success`, `danger`, `warning`, `info`, `light` and `dark`.
+Built-in themes are `primary`, `accent`, `success`, `danger`, `warning`, `info`, `inverse` and `secondary`.
+The v5 `light` and `dark` colors no longer exist; use `secondary` or `inverse` instead.
 
 <<< DEMO ./demo/ButtonContextualVariants.vue#template{vue-html}
 
-### Outline color variants
+### Outline variant
 
-In need of a button, but not the hefty background colors they bring? Use the `outline-*` variants to
-remove all background images and colors on any `BButton`:
-
-`outline-primary`, `outline-secondary`, `outline-success`, `outline-danger`, `outline-warning`,
-`outline-info`, `outline-light` and `outline-dark`.
+In need of a button, but not the hefty background colors they bring? Set `variant="outline"` to
+remove all background images and colors on any `BButton`, and keep the `theme` prop for the color.
 
 <<< DEMO ./demo/ButtonOutlineVariants.vue#template{vue-html}
 
 ### Link variant
 
 Variant `link` will render a button with the appearance of a link while maintaining the default
-padding and size of a button.
+padding and size of a button. Combine it with `theme` to color it.
 
 <<< DEMO ./demo/ButtonLinkVariant.vue#template{vue-html}
 
-**Tip:** remove the hover underline from a link variant button by setting `underline-opacity="0"`.
+**Tip:** remove the hover underline from a link variant button by adding the `text-decoration-none` class.
+
+## Colors in other components
+
+Most components share the same color model, which maps onto Bootstrap v6's `.theme-*` classes and
+`bg`/`fg`/`border` utilities:
+
+- `theme` (and `*-theme` props such as `header-theme`) takes a theme name and renders `.theme-<theme>`. Components whose Bootstrap styles read the theme variables (alert, badge, card, list-group, progress, table, ...) are colored by this class alone.
+- `bg` (and `*-bg`) renders `.bg-<value>`. Values are a theme (`primary`), a subtle or muted theme (`subtle-primary`, `muted-primary`), or a neutral layer (`body`, `1`, `2`, `3`, `4`, `fg`, `white`, `black`, `transparent`).
+- `fg` (and `*-fg`) renders `.fg-<value>`. Values are a theme (`danger`), an emphasis or contrast theme (`emphasis-danger`, `contrast-danger`), or a neutral layer (`body`, `1`, `2`, `3`, `4`, `bg`, `white`, `black`, `reset`).
+- `border` (and `*-border`) renders `.border-<value>`. Values are a theme (`primary`), a subtle theme (`subtle-primary`), or `bg`, `body`, `muted`, `subtle`, `emphasized`, `white`, `black`.
+- Props that style a nested button (`ok-variant`/`ok-theme`, `button-variant`/`button-theme`, `split-variant`/`split-theme`, ...) come in the same variant + theme pairs as `BButton`.
+
+See [Color Themes](/docs/reference/color-variants) for the full list of values.
+
+### Registering custom themes {#custom-themes}
+
+Custom themes work as long as the matching `.theme-<name>` class (and any `bg-`/`fg-`/`border-` utilities you use with it) exists in your CSS.
+To make TypeScript accept the new name in `theme` props, augment the `ThemeColors` interface:
+
+```typescript
+declare module 'bootstrap-vue-next' {
+  interface ThemeColors {
+    brand: unknown
+  }
+}
+```
+
+After that, `<BButton theme="brand">`, `<BAlert theme="brand">` and every other `theme` prop accept `brand`.
 
 ## Block level buttons
 

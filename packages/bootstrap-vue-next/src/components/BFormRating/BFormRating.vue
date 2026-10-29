@@ -80,6 +80,7 @@ import {useToNumber} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {useRtl} from '../../composables/useRtl'
+import {getThemeColor, toColorClasses} from '../../composables/useThemeClasses'
 import type {BFormRatingProps, BFormRatingSlots, Size} from '../../types'
 
 const lengthDefault = 5
@@ -101,7 +102,7 @@ const _props = withDefaults(defineProps<Omit<BFormRatingProps, 'modelValue'>>(),
   showValueMax: false,
   size: undefined,
   length: lengthDefault,
-  variant: undefined,
+  theme: undefined,
 })
 const props = useDefaults(_props, 'BFormRating')
 defineSlots<BFormRatingSlots>()
@@ -218,8 +219,13 @@ const iconColors = computed(() =>
     if (props.disabled) {
       return {class: 'is-disabled', style: {}}
     }
-    if (props.variant) {
-      return {class: `text-${props.variant}`, style: {}}
+    const colorClasses = {
+      ...toColorClasses('fg', getThemeColor(props.theme)),
+      ...toColorClasses('bg', props.bg),
+      ...toColorClasses('fg', props.fg),
+    }
+    if (props.theme || props.bg || props.fg) {
+      return {class: colorClasses, style: {}}
     }
     if (props.color) {
       return {class: '', style: {color: props.color}}

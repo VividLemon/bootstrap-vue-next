@@ -26,21 +26,21 @@ describe('form-text', () => {
     expect(wrapper.classes()).not.toContain('form-text')
   })
 
-  it('has class text-{type} when prop textVariant', async () => {
+  it('has class fg-{type} when prop fg', async () => {
     const wrapper = mount(BFormText, {
-      props: {textVariant: 'danger'},
+      props: {fg: 'danger'},
     })
-    expect(wrapper.classes()).toContain('text-danger')
-    await wrapper.setProps({textVariant: undefined})
-    expect(wrapper.classes()).toContain('text-body-secondary')
+    expect(wrapper.classes()).toContain('fg-danger')
+    await wrapper.setProps({fg: undefined})
+    expect(wrapper.classes()).toContain('fg-2')
   })
 
-  it('has no text class when prop textVariant is null', () => {
+  it('has no fg class when prop fg is null', () => {
     const wrapper = mount(BFormText, {
-      props: {textVariant: null},
+      props: {fg: null},
     })
-    const textClasses = wrapper.classes().filter((c) => c.startsWith('text-'))
-    expect(textClasses).toHaveLength(0)
+    const fgClasses = wrapper.classes().filter((c) => c.startsWith('fg-'))
+    expect(fgClasses).toHaveLength(0)
   })
 
   it('has attr id when prop id', async () => {
