@@ -1,0 +1,241 @@
+# Bootstrap v6 Migration Plan
+
+## Overview
+
+This document records the maintainer decisions for migrating BootstrapVueNext from Bootstrap 5 to Bootstrap 6 (`6.0.0-alpha.1`).
+It is the single source of truth for the migration: implementation work follows it, and the deferred-component section keeps decided-but-not-yet-applied changes from being lost.
+
+- Branch: `bootstrap-v6`
+- Breaking changes are allowed and expected. Do not add backwards-compatible aliases, mappings or deprecated shims unless a section below says so.
+- Verify every class and CSS variable against `packages/bootstrap-vue-next/node_modules/bootstrap/dist/css/bootstrap.css` before using it.
+- Breaking-change notes for users are written into `apps/docs/src/docs/migration-data/components/*.md` (v5→v6 notes are deliberately kept together with the BootstrapVue→BootstrapVueNext notes for now; they will be split out later by comparing the git history).
+
+## Status
+
+| Phase                                                                                       | State                                           |
+| ------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Color API (`theme` / `bg` / `fg` / `border`, `ThemeProp`)                                   | Done (`641959ec`)                               |
+| Phase 0: workspace on Bootstrap 6, library SCSS on v6 Sass                                  | Done (`80574a2c`)                               |
+| Phase 2a: foundations (CSS layer, breakpoints + responsive objects + grid, transition core) | Not started                                     |
+| Phase 2b: component batches                                                                 | Not started                                     |
+| Phase 3: migration docs                                                                     | Not started                                     |
+| Deferred components                                                                         | See [Deferred components](#deferred-components) |
+
+## Cross-cutting decisions
+
+### CSS cascade layer
+
+- Wrap all library CSS in Bootstrap's `@layer components`.
+- Emit Bootstrap's full layer order statement at the top of the library CSS so load order cannot reorder the layers:
+  `@layer colors, config, root, reboot, layout, content, forms, components, custom, helpers, utilities;`
+- Remove `!important`s that only existed to beat Bootstrap's unlayered v5 CSS.
+
+### Breakpoints
+
+- `Breakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl'`. `xxl` is removed with no alias.
+- Responsive classes use v6 prefix syntax: `md:col-6`, `2xl:table-responsive`, `md:list-group-horizontal`.
+- Breakpoint widths follow v6: sm 576, md 768, lg 1024, xl 1280, 2xl 1536.
+
+### Responsive and state objects
+
+- Per-breakpoint and per-state props are replaced by a single object prop. Object only, never a `T | object` union (avoids Vue prop-type inference problems).
+- Keys are v6 class prefixes. `xs` means "no prefix".
+
+```ts
+type ResponsiveKey = 'xs' | Breakpoint
+type Responsive<T> = Partial<Record<ResponsiveKey, T>>
+type HoverState<T> = Partial<Record<'xs' | 'hover', T>>
+```
+
+```vue-html
+<BCol :cols="{ xs: 12, md: 6, '2xl': 4 }" :offset="{ md: 2 }" :order="{ lg: 'first' }" />
+<!-- col-12 md:col-6 2xl:col-4 md:offset-2 lg:order-first -->
+<BLink :opacity="{ xs: 50, hover: 100 }" />
+<!-- link-50 hover:link-100 -->
+```
+
+### Prefixed color props become objects
+
+Every `<part>Theme` / `<part>Bg` / `<part>Fg` trio (the 19 `*ColorExtendables` interfaces in `types/ColorTypes.ts`, plus inline families such as `badge*`) becomes one `<part>Color` object prop typed as `ColorExtendables` (plus `border` where the part has a border prop). The root `theme` / `bg` / `fg` props stay flat.
+
+```vue-html
+<BCard :header-color="{ theme: 'primary', bg: 'subtle-primary', border: 'primary' }" :body-color="{ fg: '2' }" />
+```
+
+- `headerBorder` / `bodyBorder` / `footerBorder` move into the matching `<part>Color` object.
+- `subtitleFg` becomes `subtitleColor: { fg }`.
+- `underlineTheme` stays flat (v6 has no hover variant for it).
+- `*Variant` props that select a button style (`buttonVariant`, `closeVariant`, `okVariant`, …) are styles, not colors, and stay separate.
+- Applies to all components now, including deferred ones, because these props were introduced in this same major release.
+- Check whether `BApp` defaults merge object props deeply or replace them, and document the behavior.
+
+### Part attributes (`*Attrs` replaces `*Class`)
+
+- Every configurable inner part gets a `<part>Attrs` prop; every `<part>Class` prop is removed. Users write `:header-attrs="{ class: '…' }"`.
+- Tag props (`headerTag`, `bodyTag`, …) and behavior props (`closeLabel`, `closeContent`, `okTitle`, `okDisabled`, …) stay as flat props.
+- Attrs are bound with `v-bind`, so `class` and `style` merge with the component's own. Specs cover the merge per part.
+- State-specific class props become state-specific attrs props (`activeNavLinkClass` → `activeNavLinkAttrs`).
+- Applied now to in-scope components; applied to deferred components during their own migration (see below).
+
+### Transitions (native, no Vue `<Transition>`)
+
+Bootstrap v6 lets CSS own all motion: JavaScript toggles a state class (`.show`, `.active`, `.hiding`), waits for the transition to end, then fires the event. `{component}-instant` opts one element out. Zero duration resolves on the next tick.
+
+- New composable `useCssTransition(el)`: applies a class change, waits a frame, awaits `el.getAnimations()` finished; zero duration resolves next frame; a newer toggle invalidates an older wait so no stale event fires.
+- `useShowHide` becomes state + v-model + cancelable `show` / `hide` and `shown` / `hidden` events only, with no class or timing logic.
+- Elements stay mounted while hidden, as in v6. `lazy` / `unmountLazy` unmount only after `hidden`.
+- Remove Vue `<Transition>` from in-scope components. Deferred components may keep the old internal path until their migration; delete it once nothing uses it.
+- **Remove `transProps`** from the public API everywhere. Its uses map to native replacements:
+
+| `transProps` was used for | Replacement                                                  |
+| ------------------------- | ------------------------------------------------------------ |
+| enter/leave hooks         | `show` / `shown` / `hide` / `hidden` events                  |
+| duration, easing          | `--bs-{component}-transition-duration` / `-timing` tokens    |
+| custom classes            | `--bs-{component}-transition-property` + user CSS on `.show` |
+| disabling motion          | `noTransition` or the `transition-none` utility              |
+
+- **Rename `noFade` and `noAnimation` to `noTransition`** everywhere (`ShowHideProps`, `BTabs`, `BOverlay`, `BCarousel`, `BTransition`). It adds the component's `-instant` class.
+- **Remove the `collapsed` / `not-collapsed` trigger classes.**
+- Update `architecture/ARIA_VISIBILITY.md` after the rewrite; it documents the current `useShowHide`.
+- In-scope components: `BCollapse` (+ `vBToggle`), `BAlert`, `BToast`, `BPopover` / `BTooltip`, `BTabs`. `BAccordionItem` renders `BCollapse` and changes with it.
+
+## Component decisions (in scope)
+
+### Grid (`BContainer`, `BRow`, `BCol`)
+
+- `BCol`: `cols`, `offset`, `order`, `alignSelf` are `Responsive<…>` objects. Remove `sm` / `md` / `lg` / `xl` / `xxl`, `col`, all `offset*` and `order*` props. Equal-width column is `true` (`{ md: true }` → `md:col`); `'auto'` is allowed.
+- `BRow`: `cols` (row-cols), `gutterX`, `gutterY`, `alignH`, `alignV`, `alignContent` are `Responsive<…>` objects. Remove `colsSm…colsXxl`. Keep `noGutters`.
+- `BContainer`: `gutterX`, `gutterY` are `Responsive<…>` objects. `fluid` stays `boolean | Breakpoint` (→ `{bp}:container`).
+- Rewrite `BCol`'s `.col` fallback detection so prefix classes don't add a stray `.col`.
+- Types: remove `'fill'` from alignment values; row-cols `1…6 | 'auto'`; gutters `0…12` passed straight through (document the new spacing scale, no remap); include `order-0`.
+- Fix `useContainerClasses` (shared with `BNavbar`). Delete unused `utils/getBreakpointProps.ts`. Update grid docs tables (breakpoints, container widths).
+- CSS Grid mode (`BGrid`): deferred.
+
+### Buttons
+
+- `BButton`: add `xs` size (button-only size type; `form-control-xs` doesn't exist). Add `.input-group-btn` automatically inside `BInputGroup`.
+- `BButtonGroup`: add `xs` size and a `divider` boolean (`.btn-group-divider`).
+- Fix toolbar demos (v6 `.btn-toolbar` has its own gap).
+
+### Forms
+
+- `BFormSelect`: emit `.form-control` (+ `form-control-sm/lg`) instead of `.form-select`. Remove `plain`.
+- Floating labels (`BFormFloatingLabel`, `BFormGroup` floating): label renders before the control; drop `d-block` on the floating label.
+- Validation: remove `validated` from `BFormGroup`, `BFormCheckboxGroup`, `BFormRadioGroup`, `BDropdownForm`. Add `validate?: boolean | 'valid'` to `BForm` (and form-rendering subcomponents such as `BNavForm`), rendering `data-bs-validate` / `data-bs-validate="valid"`.
+- Tooltip feedback renders `tooltip invalid-tooltip` / `tooltip valid-tooltip`.
+- `BFormGroup`: root gets `.form-field` in stacked mode; horizontal mode unchanged. `labelCols`, `contentCols`, `labelAlign` are `Responsive<…>` objects; remove all `*Sm…*Xl` variants. `labelAlign` emits `md:text-end`-style classes. `labelClass` → `labelAttrs`.
+- `BFormFile`: refresh custom SCSS to v6 tokens (`--bs-control-*`, radius tokens); drop v5 validation icons.
+- Remove the stale `.input-group > .form-floating` overrides in `styles.scss`.
+- Checks (`BFormCheckbox`, `BFormRadio`, groups, `useFormCheck`): v6 markup — `.check` / `.radio` on the input, `check-sm/lg`, switch as `<div class="switch">` with `role="switch"`, `.form-field` instead of `.form-check`. Button mode is `<label class="btn btn-check …"><input></label>`; remove the standalone wrapper `<div>`. Remove `inline` and `reverse`. `button*` colors become `buttonColor`.
+
+### Content
+
+- `BTableSimple`: `responsive="md"` → `md:table-responsive`; update `_table.scss` sticky selectors.
+- Stacked tables adopt v6 native: `stacked` emits `table-stacked` / `{bp}:table-stacked`, cells get `data-cell`, the wrapper provides a query container. Remove the library's stacked CSS and stacked-only props (`stackedHeading`, `labelStacked`, …).
+- Remove `table-b-table-default`. Fix sort-icon light/dark switching. Fix demo `TableRowStyles.vue` (`table-success`).
+- Table color families become `headColor`, `headRowColor`, `footColor`, `footRowColor`, `selectionColor`. Section class props become `*Attrs`.
+- `BImg`: no changes.
+
+### Feedback
+
+- `BAlert`: stack vertically, drop `alert-dismissible`, `ms-auto` on close buttons; dismiss uses `.hiding` then unmounts. `close*` colors → `closeColor`; `closeClass` / `alertClass` / `headerClass` / `bodyClass` → `*Attrs`.
+- `BToast`: `toast-instant` when `noTransition`; `display: flex`; remove old opacity hacks in `_toast.scss`. Add `translucent` (`.toast-translucent`), remove `solid`. Same color/attrs changes as `BAlert`.
+- `BSpinner`: `spinner-sm` instead of `spinner-<type>-sm`. No workaround for the upstream grow + sm bug.
+- `BBadge`: fix dot indicator (`min-h-0`). Add `variant` (`subtle` | `outline`) and a `lg` size (`.badge-lg`).
+- `BPlaceholder*`: add `pulse` animation. `header*` / `footer*` colors → `headerColor` / `footerColor`.
+- `BProgress`: no changes.
+
+### Navigation
+
+- Remove `card-header-pills` from `BNav` and `BTabs` (no v6 rule; 11 spec assertions).
+- `BTabs`: `noTransition` → `tab-pane-instant`. Class props become `*Attrs`.
+- Vertical pills use `nav-pills-vertical`. No workaround for fill/justified pills: fixed upstream in [twbs/bootstrap#43047](https://github.com/twbs/bootstrap/pull/43047), released after alpha.1.
+- `BListGroup horizontal`: `true` → `list-group-horizontal`; breakpoint → `{bp}:list-group-horizontal`. Document that breakpoint values need a query-container ancestor (e.g. `.contains-inline`). No auto-wrap.
+- `BCollapse`: native transition mechanism. `BPagination`: add `theme`; class props become `*Attrs`.
+
+### Floating UI
+
+- `BPopover` / `BTooltip`: `noTransition` → `popover-instant` / `tooltip-instant`; remove the dead `[data-popper-placement]` SCSS line; keep the bottom header-arrow rule. Add Escape-to-dismiss and `aria-describedby` on the trigger. Fix demo `PopoverStyles.vue` (`--bs-danger`, `--bs-emphasis-color`). `titleClass` / `bodyClass` → `*Attrs`.
+
+### Links
+
+- `opacity` + `opacityHover`, `underlineOffset` + `underlineOffsetHover`, `underlineOpacity` + `underlineOpacityHover` collapse to `HoverState<…>` objects on `BLink` and every component that forwards link props.
+- Link opacity values are `10…100` in steps of 10 (already done).
+
+### Breadcrumb and Card
+
+- `BCard`: `img-placement="end"` renders the image after the body; pass `bodyTheme` / body color to `BCardBody`. Add `subtle` and `translucent`. Fix demos `CardOverlayImage.vue` + `card.md` (`img-placement="overlay"`), `CardNavComponent.vue` (`tag`), `CardHorizontal.vue`.
+- `BBreadcrumb`: add a `divider` slot and a `BBreadcrumbDivider` component; auto dividers get `aria-hidden`.
+
+## Deferred components
+
+These map to components Bootstrap marks "New" in v6 and need large structural changes. Each will be migrated in its own pass. Changes marked **now** are applied during the current migration so the API stays uniform; everything else is pending and must be done when the component is migrated.
+
+### BModal → Dialog
+
+- **Now:** `noFade` / `noAnimation` → `noTransition`; `transProps` removed from its props; color families → `headerColor`, `bodyColor`, `footerColor`, `headerCloseColor`, `okColor`, `cancelColor`; `--bs-modal-zindex` now comes from v6 `$zindex-levels` (`dialog`, 1040).
+- **Pending:**
+  - Native `<dialog>` + v6 Dialog markup and lifecycle (`.hiding`, `.dialog-instant`, `.dialog-static`), native transition path instead of `<Transition>`.
+  - Part attrs: `bodyClass`, `cancelClass`, `contentClass`, `dialogClass`, `footerClass`, `headerClass`, `headerCloseClass`, `modalClass`, `okClass`, `titleClass` → `*Attrs` (merge with existing `bodyAttrs` / `headerAttrs`).
+  - `fullscreen` breakpoint → `md-down:dialog-fullscreen` prefix syntax.
+  - `useModal` result redesign: resolve with `{ trigger, ok, value? }` instead of `BvTriggerableEvent`; align with native `cancel` / `close`, `returnValue` and `closedby`.
+
+### BOffcanvas → Drawer
+
+- **Now:** `noTransition`, `transProps` removed, `headerCloseColor`.
+- **Pending:** v6 Drawer markup (native `<dialog class="drawer">`, `.hiding`, `.drawer-instant`); `responsive` uses `@vueuse` v5 widths and must follow v6 breakpoints + `md:drawer` prefix syntax; part attrs (`bodyClass`, `footerClass`, `headerClass`, `headerCloseClass` → `*Attrs`).
+
+### BDropdown / BNavItemDropdown → Menu
+
+- **Now:** `noTransition`, `transProps` removed, `splitColor`; `BDropdownForm` loses `validated` (forms decision); `BDropdownGroup` header colors → `headerColor`.
+- **Pending:** v6 Menu markup and classes; part attrs (`menuClass`, `splitClass`, `toggleClass`, `wrapperClass` → `*Attrs`); `.dropdown-toggle-no-caret` overrides in `styles.scss`.
+
+### BNavbar
+
+- **Now:** `useContainerClasses` fix lands with the grid.
+- **Pending:** `toggleable` breakpoint → `md:navbar-expand` prefix syntax; `navbar-collapse` has no v6 CSS; v6 navbar is a container query container.
+
+### BAccordion / BAccordionItem
+
+- **Now:** behavior changes with `BCollapse` (native transitions); `noTransition`.
+- **Pending:** v6 Accordion markup; part attrs (`bodyClass`, `buttonClass`, `collapseClass`, `headerClass` → merge into `bodyAttrs` / `buttonAttrs` / `headerAttrs` / `wrapperAttrs`); `initialAnimation` naming review.
+
+### BCarousel
+
+- **Now:** `noAnimation` → `noTransition`.
+- **Pending:** v6 Carousel rewrite (removed `.carousel-control-prev/next`, `.carousel-caption`, `.carousel-dark`, `.carousel-stacked`; `data-bs-ride` → autoplay; `wrap` → `ends`); replace `<Transition>`.
+
+### BOverlay
+
+- **Now:** `noFade` → `noTransition`; `spinner*` colors → `spinnerColor`.
+- **Pending:** replace `<Transition>` / `useFadeTransition` with the native path.
+
+### BAvatar / BAvatarGroup
+
+- **Now:** `badge*` colors → `badgeColor`.
+- **Pending:** v6 Avatar markup and classes; library `_avatar.scss` vs v6 avatar CSS.
+
+### BFormTags → Chips
+
+- **Now:** `tag*` / `addButton*` colors → `tagColor` / `addButtonColor`.
+- **Pending:** v6 Chips markup; part attrs (`inputClass`, `tagClass` → `*Attrs`).
+
+### Other new-in-v6 counterparts
+
+- `BAutocomplete` → Combobox; `BDatePicker` / `BDateRangePicker` → Datepicker (hard-coded z-index 1050 now ties with popovers); `BFormOtp` → OTP input; `vBScrollspy` → Scrollspy; `BFormInput type="range"` → Range; `BFormGroup` → Field (review once Field is adopted).
+- `BApp` / `BOrchestrator`: toast container and `<Transition>` usage follow the native transition path.
+
+### Deferred features
+
+- CSS Grid mode (`BGrid`, `.grid` / `g-col-*`).
+- Bump to the next Bootstrap prerelease to pick up upstream fixes (nav fill/justified pills; spinner grow + sm).
+- A future v6 `.btn-icon` feature on `BButton` needs a new prop name: `icon` is already taken by `BLink`'s `icon-link`.
+
+## Cleanup and verification (end of the current migration)
+
+- Sweep library SCSS for CSS variables missing from v6 (e.g. `--bs-border-radius*`, `--bs-transition-duration`) and replace them with v6 tokens.
+- Check the `RadiusElement` scale against v6: `rounded-lg` now matches the default `rounded` radius.
+- Replace v5 classes left in the docs and playground (`bg-body-tertiary`, `text-body-secondary`, `text-muted`, `bg-light`, `bg-dark`, `text-bg-*`; about 72 uses across 10 files).
+- Update `modal.spec.ts` tests that still use v5 values (`bodyBg: 'dark'` → `bg-dark`).
+- Docs notes for visual v6 changes that need no code change (e.g. `.btn` is now `inline-flex` with a gap).
+- Final checks: library lint, unit tests and build; docs build; playground and Nuxt builds; a pass over the built CSS for classes or variables missing from v6.
