@@ -8,9 +8,9 @@
       :id="computedId"
       ref="_splitButton"
       :variant="props.splitVariant || props.variant"
-      :theme="props.splitTheme || props.theme"
-      :bg="props.splitBg || props.bg"
-      :fg="props.splitFg || props.fg"
+      :theme="props.splitColor?.theme || props.theme"
+      :bg="props.splitColor?.bg || props.bg"
+      :fg="props.splitColor?.fg || props.fg"
       :size="props.size"
       :class="buttonClasses"
       :disabled="props.splitDisabled || props.disabled"
@@ -153,14 +153,12 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   split: false,
   splitButtonType: 'button',
   splitClass: undefined,
+  splitColor: undefined,
   splitDisabled: undefined,
   splitHref: undefined,
   splitTo: undefined,
   placement: 'bottom-start',
   splitVariant: undefined,
-  splitTheme: undefined,
-  splitBg: null,
-  splitFg: null,
   strategy: 'absolute',
   text: undefined,
   show: false,

@@ -19,28 +19,11 @@ import type {
   BgColor,
   BorderColor,
   ButtonVariant,
-  AddButtonColorExtendables,
-  BodyColorExtendables,
-  ButtonColorExtendables,
-  CancelColorExtendables,
-  CloseColorExtendables,
+  ColorBorderExtendables,
   ColorExtendables,
-  FootColorExtendables,
-  FooterColorExtendables,
   FgColor,
-  FootRowColorExtendables,
-  HeadColorExtendables,
-  HeaderCloseColorExtendables,
-  HeaderColorExtendables,
-  HeadRowColorExtendables,
-  OkColorExtendables,
-  SelectionColorExtendables,
-  SpinnerColorExtendables,
-  SplitColorExtendables,
-  TagColorExtendables,
   MaybeArray,
   ThemeColor,
-  ThemeProp,
   UnderlineColorExtendables,
 } from './ColorTypes'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
@@ -295,10 +278,11 @@ export interface BDropdownFormProps {
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
-export interface BDropdownGroupProps extends HeaderColorExtendables {
+export interface BDropdownGroupProps {
   ariaDescribedby?: string
   header?: string
   headerClass?: ClassValue
+  headerColor?: ColorExtendables
   headerTag?: string
   id?: string
 }
@@ -347,11 +331,12 @@ export interface BFormTextProps {
   fg?: MaybeArray<FgColor> | null
 }
 
-export interface BFormCheckboxProps extends ButtonColorExtendables {
+export interface BFormCheckboxProps {
   ariaLabel?: string
   ariaLabelledby?: string
   autofocus?: boolean
   button?: boolean
+  buttonColor?: ColorExtendables
   buttonGroup?: boolean
   buttonVariant?: ButtonVariant | null
   disabled?: boolean
@@ -378,7 +363,8 @@ export interface BFormCheckboxProps extends ButtonColorExtendables {
 }
 
 // Base props (non-generic)
-export interface BFormCheckboxGroupBaseProps extends ButtonColorExtendables {
+export interface BFormCheckboxGroupBaseProps {
+  buttonColor?: ColorExtendables
   id?: string
   name?: string
   size?: Size
@@ -411,7 +397,8 @@ export interface BFormCheckboxGroupProps<
   Options extends readonly (object | string | number | boolean)[] = readonly (
     object | string | number | boolean
   )[],
-> extends ButtonColorExtendables {
+> {
+  buttonColor?: ColorExtendables
   // Options array - generic parameter captures the specific array type
   options?: Options
   valueField?: string
@@ -505,11 +492,12 @@ export interface BFormInputProps extends CommonInputProps {
   type?: InputType
 }
 
-export interface BFormRadioProps extends ButtonColorExtendables {
+export interface BFormRadioProps {
   ariaLabel?: string
   ariaLabelledby?: string
   autofocus?: boolean
   button?: boolean
+  buttonColor?: ColorExtendables
   buttonGroup?: boolean
   buttonVariant?: ButtonVariant | null
   disabled?: boolean
@@ -532,9 +520,10 @@ export interface BFormRadioProps extends ButtonColorExtendables {
  * Users should use BFormRadioGroup (the type-safe wrapper) instead.
  * @internal
  */
-export interface BFormRadioGroupBaseProps extends ButtonColorExtendables {
+export interface BFormRadioGroupBaseProps {
   ariaInvalid?: AriaInvalid
   autofocus?: boolean
+  buttonColor?: ColorExtendables
   buttonVariant?: ButtonVariant | null
   buttons?: boolean
   disabled?: boolean
@@ -569,9 +558,10 @@ export interface BFormRadioGroupProps<
   Options extends readonly (object | string | number | boolean)[] = readonly (
     object | string | number | boolean
   )[],
-> extends ButtonColorExtendables {
+> {
   ariaInvalid?: AriaInvalid
   autofocus?: boolean
+  buttonColor?: ColorExtendables
   buttonVariant?: ButtonVariant | null
   buttons?: boolean
   disabled?: boolean
@@ -729,7 +719,8 @@ export interface BFormTagProps extends ColorExtendables {
   title?: string
 }
 
-export interface BFormTagsProps extends AddButtonColorExtendables, TagColorExtendables {
+export interface BFormTagsProps {
+  addButtonColor?: ColorExtendables
   addButtonText?: string
   addButtonVariant?: ButtonVariant | null
   addOnChange?: boolean
@@ -758,6 +749,7 @@ export interface BFormTagsProps extends AddButtonColorExtendables, TagColorExten
   size?: Size
   state?: ValidationState
   tagClass?: ClassValue
+  tagColor?: ColorExtendables
   tagPills?: boolean
   tagRemoveLabel?: string
   tagRemovedLabel?: string
@@ -854,8 +846,8 @@ export interface BNavbarToggleProps {
   target?: string | readonly string[]
 }
 
-export interface BOffcanvasProps
-  extends TeleporterProps, ShowHideProps, HeaderCloseColorExtendables {
+export interface BOffcanvasProps extends TeleporterProps, ShowHideProps {
+  headerCloseColor?: ColorExtendables
   noBackdrop?: boolean
   backdropFirst?: boolean
   bodyAttrs?: Readonly<AttrsValue>
@@ -883,7 +875,7 @@ export interface BOffcanvasProps
   width?: string
 }
 
-export interface BOverlayProps extends RadiusElementExtendables, SpinnerColorExtendables {
+export interface BOverlayProps extends RadiusElementExtendables {
   bgColor?: string
   blur?: string | null
   fixed?: boolean
@@ -894,6 +886,7 @@ export interface BOverlayProps extends RadiusElementExtendables, SpinnerColorExt
   opacity?: Numberish
   overlayTag?: string
   show?: boolean
+  spinnerColor?: Pick<BSpinnerProps, 'theme' | 'bg' | 'fg'>
   spinnerSmall?: boolean
   spinnerType?: SpinnerType
   bg?: MaybeArray<BgColor> | null
@@ -952,13 +945,14 @@ export interface BPlaceholderButtonProps extends ColorExtendables {
   width?: Numberish
 }
 
-export interface BPlaceholderCardProps
-  extends ColorExtendables, HeaderColorExtendables, FooterColorExtendables {
+export interface BPlaceholderCardProps extends ColorExtendables {
   animation?: PlaceholderAnimation
   footerAnimation?: PlaceholderAnimation
+  footerColor?: ColorExtendables
   footerSize?: PlaceholderSize
   footerWidth?: Numberish
   headerAnimation?: PlaceholderAnimation
+  headerColor?: ColorExtendables
   headerSize?: PlaceholderSize
   headerWidth?: Numberish
   imgBlankColor?: string
@@ -972,17 +966,18 @@ export interface BPlaceholderCardProps
   size?: PlaceholderSize
 }
 
-export interface BPlaceholderTableProps
-  extends ColorExtendables, HeaderColorExtendables, FooterColorExtendables {
+export interface BPlaceholderTableProps extends ColorExtendables {
   animation?: PlaceholderAnimation
   cellWidth?: Numberish
   columns?: Numberish
   footerAnimation?: PlaceholderAnimation
   footerCellWidth?: Numberish
+  footerColor?: ColorExtendables
   footerColumns?: Numberish
   footerSize?: PlaceholderSize
   headerAnimation?: PlaceholderAnimation
   headerCellWidth?: Numberish
+  headerColor?: ColorExtendables
   headerColumns?: Numberish
   headerSize?: PlaceholderSize
   noHeader?: boolean
@@ -1070,11 +1065,12 @@ export interface BSpinnerProps extends ColorExtendables {
 }
 
 export interface BAlertProps
-  extends ColorExtendables, CloseColorExtendables, Omit<BLinkProps, 'routerTag'>, ShowHideProps {
+  extends ColorExtendables, Omit<BLinkProps, 'routerTag'>, ShowHideProps {
   alertClass?: ClassValue
   body?: string
   bodyClass?: ClassValue
   closeClass?: ClassValue
+  closeColor?: ColorExtendables
   closeContent?: string
   closeLabel?: string
   closeVariant?: ButtonVariant | null
@@ -1096,10 +1092,8 @@ export interface BAvatarProps
   extends Omit<BLinkProps, 'routerTag' | 'icon'>, ColorExtendables, RadiusElementExtendables {
   alt?: string
   badge?: boolean | string
-  badgeBg?: MaybeArray<BgColor> | null
+  badgeColor?: ColorExtendables
   badgePlacement?: CombinedPlacement
-  badgeFg?: MaybeArray<FgColor> | null
-  badgeTheme?: ThemeProp | null
   badgePill?: boolean
   badgeDotIndicator?: boolean
   button?: boolean
@@ -1170,21 +1164,20 @@ export interface BCloseButtonProps {
   type?: ButtonType
 }
 
-export interface BCardProps
-  extends ColorExtendables, BodyColorExtendables, FooterColorExtendables, HeaderColorExtendables {
+export interface BCardProps extends ColorExtendables {
   align?: AlignmentTextHorizontal
-  bodyBorder?: MaybeArray<BorderColor> | null
   bodyClass?: ClassValue
+  bodyColor?: ColorBorderExtendables
   bodyTag?: string
   bodyText?: string
   border?: MaybeArray<BorderColor> | null
   footer?: string
-  footerBorder?: MaybeArray<BorderColor> | null
   footerClass?: ClassValue
+  footerColor?: ColorBorderExtendables
   footerTag?: string
   header?: string
-  headerBorder?: MaybeArray<BorderColor> | null
   headerClass?: ClassValue
+  headerColor?: ColorBorderExtendables
   headerTag?: string
   imgAlt?: string
   imgAttrs?: Readonly<AttrsValue>
@@ -1194,8 +1187,8 @@ export interface BCardProps
   imgWidth?: Numberish
   noBody?: boolean
   subtitle?: string
+  subtitleColor?: Pick<ColorExtendables, 'fg'>
   subtitleTag?: string
-  subtitleFg?: MaybeArray<FgColor> | null
   tag?: string
   title?: string
   titleTag?: string
@@ -1205,8 +1198,8 @@ export interface BCardBodyProps extends ColorExtendables {
   border?: MaybeArray<BorderColor> | null
   overlay?: boolean
   subtitle?: string
+  subtitleColor?: Pick<ColorExtendables, 'fg'>
   subtitleTag?: string
-  subtitleFg?: MaybeArray<FgColor> | null
   tag?: string
   text?: string
   title?: string
@@ -1331,13 +1324,7 @@ export interface BTableSimpleProps extends ColorExtendables {
   tableClass?: ClassValue
 }
 
-export interface BTableLiteProps<Item>
-  extends
-    BTableSimpleProps,
-    HeadColorExtendables,
-    HeadRowColorExtendables,
-    FootColorExtendables,
-    FootRowColorExtendables {
+export interface BTableLiteProps<Item> extends BTableSimpleProps {
   align?: VerticalAlign
   caption?: string
   detailsTdClass?: ClassValue
@@ -1351,6 +1338,10 @@ export interface BTableLiteProps<Item>
     | readonly any[]
   fields?: readonly TableFieldRaw<Item>[]
   footClone?: boolean
+  footColor?: ColorExtendables
+  footRowColor?: ColorExtendables
+  headColor?: ColorExtendables
+  headRowColor?: ColorExtendables
   items?: readonly Item[]
   labelStacked?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1371,15 +1362,13 @@ export interface BTableLiteProps<Item>
 }
 
 export interface BTableProps<Item>
-  extends
-    Omit<BTableLiteProps<Item>, 'tableClass'>,
-    FormDebounceOptions,
-    SelectionColorExtendables {
+  extends Omit<BTableLiteProps<Item>, 'tableClass'>, FormDebounceOptions {
   provider?: BTableProvider<Item>
   noProvider?: readonly NoProviderTypes[]
   noProviderPaging?: boolean
   noProviderSorting?: boolean
   noProviderFiltering?: boolean
+  selectionColor?: ColorExtendables
   sortBy?: readonly BTableSortBy[]
   sortCompare?: BTableSortByComparerFunction<Item>
   mustSort?: boolean | readonly string[] // TODO this is a string of fields, possibly generic
@@ -1463,8 +1452,7 @@ export interface BFormFeedbackSharedProps {
 export type BFormInvalidFeedbackProps = BFormFeedbackSharedProps
 export type BFormValidFeedbackProps = BFormFeedbackSharedProps
 
-export interface BDropdownProps
-  extends TeleporterProps, ShowHideProps, ColorExtendables, SplitColorExtendables {
+export interface BDropdownProps extends TeleporterProps, ShowHideProps, ColorExtendables {
   ariaLabel?: string
   autoClose?: boolean | 'inside' | 'outside'
   boundary?: Boundary | RootBoundary
@@ -1490,6 +1478,7 @@ export interface BDropdownProps
   split?: boolean
   splitButtonType?: ButtonType
   splitClass?: ClassValue
+  splitColor?: ColorExtendables
   splitDisabled?: boolean
   splitHref?: string
   splitTo?: RouteLocationRaw
@@ -1505,10 +1494,11 @@ export interface BDropdownProps
 }
 
 export interface BToastProps
-  extends ColorExtendables, CloseColorExtendables, Omit<BLinkProps, 'routerTag'>, ShowHideProps {
+  extends ColorExtendables, Omit<BLinkProps, 'routerTag'>, ShowHideProps {
   body?: string
   bodyClass?: ClassValue
   closeClass?: ClassValue
+  closeColor?: ColorExtendables
   closeContent?: string
   closeLabel?: string
   closeVariant?: ButtonVariant | null
@@ -1583,16 +1573,9 @@ export interface BCardHeadFootProps extends ColorExtendables {
 export type BCardFooterProps = BCardHeadFootProps
 export type BCardHeaderProps = BCardHeadFootProps
 
-export interface BModalProps
-  extends
-    TeleporterProps,
-    ShowHideProps,
-    BodyColorExtendables,
-    FooterColorExtendables,
-    HeaderColorExtendables,
-    CancelColorExtendables,
-    OkColorExtendables,
-    HeaderCloseColorExtendables {
+export interface BModalProps extends TeleporterProps, ShowHideProps {
+  bodyColor?: ColorExtendables
+  cancelColor?: ColorExtendables
   focus?:
     | 'ok'
     | 'cancel'
@@ -1616,15 +1599,16 @@ export interface BModalProps
   centered?: boolean
   contentClass?: ClassValue
   dialogClass?: ClassValue
-  footerBorder?: MaybeArray<BorderColor> | null
   footerClass?: ClassValue
+  footerColor?: ColorBorderExtendables
   fullscreen?: boolean | Breakpoint
   headerAttrs?: Readonly<AttrsValue>
-  headerBorder?: MaybeArray<BorderColor> | null
   headerClass?: ClassValue
   headerCloseClass?: ClassValue
+  headerCloseColor?: ColorExtendables
   headerCloseLabel?: string
   headerCloseVariant?: ButtonVariant | null
+  headerColor?: ColorBorderExtendables
   noBackdrop?: boolean
   noFooter?: boolean
   noHeader?: boolean
@@ -1637,6 +1621,7 @@ export interface BModalProps
   noTrap?: boolean
   noStacking?: boolean
   okClass?: ClassValue
+  okColor?: ColorExtendables
   okDisabled?: boolean
   okOnly?: boolean
   okTitle?: string

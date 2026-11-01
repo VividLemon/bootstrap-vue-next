@@ -96,110 +96,15 @@ export interface ColorExtendables {
   fg?: MaybeArray<FgColor> | null
 }
 
-// Keep prefixed color props explicit: Vue's SFC compiler cannot resolve generic mapped interface bases
-// when extracting defineProps, so these concrete interfaces are needed for component prop inference.
+/**
+ * Color props of a component part that also accepts a border color, used by prefixed
+ * `<part>Color` object props such as `headerColor`: `{theme, bg, fg, border}`.
+ * Parts without a border use `ColorExtendables`
+ */
+export interface ColorBorderExtendables extends ColorExtendables {
+  border?: MaybeArray<BorderColor> | null
+}
+
 export interface UnderlineColorExtendables {
   underlineTheme?: ThemeColor | null
-}
-
-export interface ButtonColorExtendables {
-  buttonTheme?: ThemeProp | null
-  buttonBg?: MaybeArray<BgColor> | null
-  buttonFg?: MaybeArray<FgColor> | null
-}
-
-export interface HeaderColorExtendables {
-  headerTheme?: ThemeProp | null
-  headerBg?: MaybeArray<BgColor> | null
-  headerFg?: MaybeArray<FgColor> | null
-}
-
-export interface AddButtonColorExtendables {
-  addButtonTheme?: ThemeProp | null
-  addButtonBg?: MaybeArray<BgColor> | null
-  addButtonFg?: MaybeArray<FgColor> | null
-}
-
-export interface TagColorExtendables {
-  tagTheme?: ThemeProp | null
-  tagBg?: MaybeArray<BgColor> | null
-  tagFg?: MaybeArray<FgColor> | null
-}
-
-export interface HeaderCloseColorExtendables {
-  headerCloseTheme?: ThemeProp | null
-  headerCloseBg?: MaybeArray<BgColor> | null
-  headerCloseFg?: MaybeArray<FgColor> | null
-}
-
-export interface SpinnerColorExtendables {
-  spinnerTheme?: ThemeColor | null
-  spinnerBg?: MaybeArray<BgColor> | null
-  spinnerFg?: MaybeArray<FgColor> | null
-}
-
-export interface CloseColorExtendables {
-  closeTheme?: ThemeProp | null
-  closeBg?: MaybeArray<BgColor> | null
-  closeFg?: MaybeArray<FgColor> | null
-}
-
-export interface BodyColorExtendables {
-  bodyTheme?: ThemeProp | null
-  bodyBg?: MaybeArray<BgColor> | null
-  bodyFg?: MaybeArray<FgColor> | null
-}
-
-export interface FooterColorExtendables {
-  footerTheme?: ThemeProp | null
-  footerBg?: MaybeArray<BgColor> | null
-  footerFg?: MaybeArray<FgColor> | null
-}
-
-export interface FootRowColorExtendables {
-  footRowTheme?: ThemeProp | null
-  footRowBg?: MaybeArray<BgColor> | null
-  footRowFg?: MaybeArray<FgColor> | null
-}
-
-export interface FootColorExtendables {
-  footTheme?: ThemeProp | null
-  footBg?: MaybeArray<BgColor> | null
-  footFg?: MaybeArray<FgColor> | null
-}
-
-export interface HeadRowColorExtendables {
-  headRowTheme?: ThemeProp | null
-  headRowBg?: MaybeArray<BgColor> | null
-  headRowFg?: MaybeArray<FgColor> | null
-}
-
-export interface HeadColorExtendables {
-  headTheme?: ThemeProp | null
-  headBg?: MaybeArray<BgColor> | null
-  headFg?: MaybeArray<FgColor> | null
-}
-
-export interface SelectionColorExtendables {
-  selectionTheme?: ThemeProp | null
-  selectionBg?: MaybeArray<BgColor> | null
-  selectionFg?: MaybeArray<FgColor> | null
-}
-
-export interface SplitColorExtendables {
-  splitTheme?: ThemeProp | null
-  splitBg?: MaybeArray<BgColor> | null
-  splitFg?: MaybeArray<FgColor> | null
-}
-
-export interface CancelColorExtendables {
-  cancelTheme?: ThemeProp | null
-  cancelBg?: MaybeArray<BgColor> | null
-  cancelFg?: MaybeArray<FgColor> | null
-}
-
-export interface OkColorExtendables {
-  okTheme?: ThemeProp | null
-  okBg?: MaybeArray<BgColor> | null
-  okFg?: MaybeArray<FgColor> | null
 }

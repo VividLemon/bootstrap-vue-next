@@ -347,9 +347,9 @@ describe('offcanvas', () => {
       expect($button.classes()).toContain('custom-close')
     })
 
-    it('BButton from header-close slot has headerCloseTheme and headerCloseVariant', () => {
+    it('BButton from header-close slot has headerCloseColor.theme and headerCloseVariant', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseTheme: 'warning', headerCloseVariant: 'outline'},
+        props: {headerCloseColor: {theme: 'warning'}, headerCloseVariant: 'outline'},
         slots: {'header-close': 'X'},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
@@ -358,9 +358,9 @@ describe('offcanvas', () => {
       expect($button.classes()).toContain('btn-outline')
     })
 
-    it('BCloseButton does not have theme class when headerCloseTheme is set', () => {
+    it('BCloseButton does not have theme class when headerCloseColor.theme is set', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseTheme: 'warning'},
+        props: {headerCloseColor: {theme: 'warning'}},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $close = wrapper.findComponent(BCloseButton)

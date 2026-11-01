@@ -154,9 +154,9 @@ describe('placeholder-card', () => {
     expect($placeholder.props('width')).toBe(100)
   })
 
-  it('placeholder has prop theme to be prop headerTheme', () => {
+  it('placeholder has prop theme to be prop headerColor.theme', () => {
     const wrapper = mount(BPlaceholderCard, {
-      props: {headerTheme: 'danger'},
+      props: {headerColor: {theme: 'danger'}},
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholder = $card.getComponent(BPlaceholder)
@@ -387,9 +387,9 @@ describe('placeholder-card', () => {
     expect($placeholder.props('bg')).toBeNull()
   })
 
-  it('BPlaceholder is given prop theme to be prop footerTheme', () => {
+  it('BPlaceholder is given prop theme to be prop footerColor.theme', () => {
     const wrapper = mount(BPlaceholderCard, {
-      props: {noHeader: true, noButton: true, footerTheme: 'danger'},
+      props: {noHeader: true, noButton: true, footerColor: {theme: 'danger'}},
       slots: {default: 'foo'},
     })
     const $card = wrapper.getComponent(BCard)
@@ -447,9 +447,9 @@ describe('placeholder-card', () => {
     expect($placeholderbutton.props('theme')).toBe('primary')
   })
 
-  it('BPlaceholderButton is given prop theme to be prop footerTheme', () => {
+  it('BPlaceholderButton is given prop theme to be prop footerColor.theme', () => {
     const wrapper = mount(BPlaceholderCard, {
-      props: {noHeader: true, noButton: false, footerTheme: 'danger'},
+      props: {noHeader: true, noButton: false, footerColor: {theme: 'danger'}},
       slots: {default: 'foo'},
     })
     const $card = wrapper.getComponent(BCard)

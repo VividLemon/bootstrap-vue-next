@@ -356,13 +356,13 @@ describe('avatar', () => {
 
   it.each([
     {
-      name: 'badgeTheme to theme',
-      props: {badge: true, badgeTheme: 'danger'},
+      name: 'badgeColor.theme to theme',
+      props: {badge: true, badgeColor: {theme: 'danger'}},
       prop: 'theme',
       expected: 'danger',
     },
     {
-      name: 'default badgeTheme of primary to theme',
+      name: 'default badgeColor.theme of primary to theme',
       props: {badge: true},
       prop: 'theme',
       expected: 'primary',
@@ -404,12 +404,17 @@ describe('avatar', () => {
       expected: 'bottom-end',
     },
     {
-      name: 'badgeBg to bg',
-      props: {badge: true, badgeBg: 'success'},
+      name: 'badgeColor.bg to bg',
+      props: {badge: true, badgeColor: {bg: 'success'}},
       prop: 'bg',
       expected: 'success',
     },
-    {name: 'badgeFg to fg', props: {badge: true, badgeFg: 'white'}, prop: 'fg', expected: 'white'},
+    {
+      name: 'badgeColor.fg to fg',
+      props: {badge: true, badgeColor: {fg: 'white'}},
+      prop: 'fg',
+      expected: 'white',
+    },
   ] as const)('passes to BBadge: $name', ({props, prop, expected}) => {
     const wrapper = mount(BAvatar, {props: {...props}})
     const $badge = wrapper.getComponent(BBadge)

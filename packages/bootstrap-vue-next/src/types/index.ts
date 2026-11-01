@@ -48,6 +48,7 @@ export type {
   BorderLayerColor,
   ButtonVariant,
   ColorOpacity,
+  ColorBorderExtendables,
   ColorExtendables,
   FgColor,
   FgLayerColor,

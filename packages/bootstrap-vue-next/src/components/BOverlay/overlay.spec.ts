@@ -539,7 +539,7 @@ describe('overlay', () => {
 
   it('child BTransition child div second child div BSpinner is given prop theme', () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, spinnerTheme: 'danger'},
+      props: {show: true, spinnerColor: {theme: 'danger'}},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')

@@ -484,7 +484,7 @@ describe('form-checkbox', () => {
 
     it('child label has class btn-{type} when prop button and prop buttonVariant', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {button: true, buttonTheme: 'danger', plain: false},
+        props: {button: true, buttonColor: {theme: 'danger'}, plain: false},
       })
       const $label = wrapper.get('label')
       expect($label.classes()).toContain('theme-danger')
@@ -492,7 +492,7 @@ describe('form-checkbox', () => {
 
     it('child label does not have class btn-{type} when prop button false and prop buttonVariant', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {button: false, buttonTheme: 'danger', plain: false},
+        props: {button: false, buttonColor: {theme: 'danger'}, plain: false},
       })
       const $label = wrapper.get('label')
       expect($label.classes()).not.toContain('theme-danger')
@@ -681,7 +681,7 @@ describe('form-checkbox', () => {
     it('inherits buttonVariant from parent when not explicitly set', () => {
       const wrapper = mount(BFormCheckboxGroup, {
         props: {
-          buttonTheme: 'primary',
+          buttonColor: {theme: 'primary'},
           buttons: true,
         },
         slots: {
@@ -701,11 +701,12 @@ describe('form-checkbox', () => {
     it('child buttonVariant overrides parent buttonVariant when explicitly set', () => {
       const wrapper = mount(BFormCheckboxGroup, {
         props: {
-          buttonTheme: 'primary',
+          buttonColor: {theme: 'primary'},
           buttons: true,
         },
         slots: {
-          default: '<BFormCheckbox value="1" button-theme="danger">Checkbox 1</BFormCheckbox>',
+          default:
+            '<BFormCheckbox value="1" :button-color="{theme: \'danger\'}">Checkbox 1</BFormCheckbox>',
           option: () => {},
         },
         global: {
@@ -1050,7 +1051,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1079,7 +1080,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('parent-name'),
               state: ref(undefined),
@@ -1108,7 +1109,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref('parent-form'),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1137,7 +1138,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1166,7 +1167,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('parent-name'),
               state: ref(undefined),
@@ -1195,7 +1196,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref('parent-form'),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1225,7 +1226,7 @@ describe('form-checkbox', () => {
               modelValue: parentModelValue,
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1255,7 +1256,7 @@ describe('form-checkbox', () => {
               modelValue: parentModelValue,
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1358,7 +1359,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1398,7 +1399,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1583,7 +1584,7 @@ describe('form-checkbox', () => {
               modelValue: parentModelValue,
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1614,7 +1615,7 @@ describe('form-checkbox', () => {
               modelValue: parentModelValue,
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1645,7 +1646,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('group-name'),
               state: ref(undefined),
@@ -1675,7 +1676,7 @@ describe('form-checkbox', () => {
               modelValue: ref<CheckboxValue[]>([]),
               switch: ref(false),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref(''),
               state: ref(undefined),

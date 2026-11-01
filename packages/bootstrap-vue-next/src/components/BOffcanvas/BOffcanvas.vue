@@ -93,6 +93,7 @@ import {onKeyStroke, unrefElement, useBreakpoints} from '@vueuse/core'
 import {breakpointWidths} from '../../utils/responsive'
 import {useActivatedFocusTrap} from '../../composables/useActivatedFocusTrap'
 import {computed, type EmitFn, nextTick, onMounted, ref, useTemplateRef, watch} from 'vue'
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import type {
@@ -131,10 +132,8 @@ const _props = withDefaults(defineProps<Omit<BOffcanvasProps, 'modelValue'>>(), 
   headerAttrs: undefined,
   headerClass: undefined,
   headerCloseClass: undefined,
+  headerCloseColor: undefined,
   headerCloseLabel: 'Close',
-  headerCloseTheme: 'secondary',
-  headerCloseBg: null,
-  headerCloseFg: null,
   headerCloseVariant: 'solid',
   id: undefined,
   initialAnimation: false,
@@ -275,11 +274,14 @@ const headerCloseClasses = computed(() => [
   {'fg-reset': !hasHeaderCloseSlot.value},
   props.headerCloseClass,
 ])
+const headerCloseColor = computed(() =>
+  resolvePartColor(props.headerCloseColor, {theme: 'secondary'})
+)
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
-  theme: hasHeaderCloseSlot.value ? props.headerCloseTheme : undefined,
-  bg: hasHeaderCloseSlot.value ? props.headerCloseBg : undefined,
-  fg: hasHeaderCloseSlot.value ? props.headerCloseFg : undefined,
+  theme: hasHeaderCloseSlot.value ? headerCloseColor.value.theme : undefined,
+  bg: hasHeaderCloseSlot.value ? headerCloseColor.value.bg : undefined,
+  fg: hasHeaderCloseSlot.value ? headerCloseColor.value.fg : undefined,
   class: headerCloseClasses.value,
 }))
 

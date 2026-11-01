@@ -33,9 +33,9 @@
             :class="[props.closeClass]"
             class="ms-auto"
             :variant="props.closeVariant"
-            :theme="props.closeTheme"
-            :bg="props.closeBg"
-            :fg="props.closeFg"
+            :theme="closeColor.theme"
+            :bg="closeColor.bg"
+            :fg="closeColor.fg"
             @click.stop.prevent="hide('close')"
           >
             <slot name="close" v-bind="sharedSlots">
@@ -72,9 +72,9 @@
               :class="[props.closeClass]"
               class="ms-auto btn-close-custom"
               :variant="props.closeVariant"
-              :theme="props.closeTheme"
-              :bg="props.closeBg"
-              :fg="props.closeFg"
+              :theme="closeColor.theme"
+              :bg="closeColor.bg"
+              :fg="closeColor.fg"
               @click.stop.prevent="hide('close')"
             >
               <slot name="close" v-bind="sharedSlots">
@@ -115,7 +115,7 @@ import BCloseButton from '../BButton/BCloseButton.vue'
 import BLink from '../BLink/BLink.vue'
 import BProgress from '../BProgress/BProgress.vue'
 import {useCountdown} from '../../composables/useCountdown'
-import {useThemeClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {useCountdownHover} from '../../composables/useCountdownHover'
 import {useId} from '../../composables/useId'
@@ -129,9 +129,7 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   closeClass: undefined,
   closeContent: undefined,
   closeLabel: 'Close',
-  closeTheme: 'secondary',
-  closeBg: null,
-  closeFg: null,
+  closeColor: undefined,
   closeVariant: 'solid',
   headerClass: undefined,
   headerTag: 'div',
@@ -178,6 +176,7 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   // End link props
 })
 const props = useDefaults(_props, 'BToast')
+const closeColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
 const emit = defineEmits<BToastEmits>()
 const slots = defineSlots<BToastSlots>()
 

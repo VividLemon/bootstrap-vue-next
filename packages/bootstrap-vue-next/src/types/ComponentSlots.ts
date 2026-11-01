@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {Placement} from './Alignment'
 import type {ClassValue} from './AnyValuedAttributes'
-import type {BgColor, ButtonVariant, FgColor, MaybeArray, ThemeColor, ThemeProp} from './ColorTypes'
+import type {
+  BgColor,
+  ButtonVariant,
+  ColorExtendables,
+  FgColor,
+  MaybeArray,
+  ThemeColor,
+} from './ColorTypes'
 import type {ValidationState} from './CommonTypes'
 import type {LiteralUnion} from './LiteralUnion'
 import type {SelectOption} from './SelectTypes'
@@ -471,9 +478,7 @@ export type BFormTagsSlots = {
   'default'?: (props: {
     addButtonText: string
     addButtonVariant: ButtonVariant | null
-    addButtonTheme: ThemeProp | null
-    addButtonBg: MaybeArray<BgColor> | null
-    addButtonFg: MaybeArray<FgColor> | null
+    addButtonColor: ColorExtendables
     addTag: (tag?: string) => void
     disableAddButton: boolean
     disabled: boolean
@@ -506,17 +511,13 @@ export type BFormTagsSlots = {
     tagClass: ClassValue
     tagPills: boolean
     tagRemoveLabel: string | undefined
-    tagTheme: ThemeProp | null
-    tagBg: MaybeArray<BgColor> | null
-    tagFg: MaybeArray<FgColor> | null
+    tagColor: ColorExtendables
     tags: string[]
   }) => any
   'tag'?: (props: {
     tag: string
     tagClass: ClassValue
-    tagTheme: ThemeProp | null
-    tagBg: MaybeArray<BgColor> | null
-    tagFg: MaybeArray<FgColor> | null
+    tagColor: ColorExtendables
     tagPills: boolean
     removeTag: (tag?: string) => void
   }) => any

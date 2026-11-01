@@ -461,9 +461,9 @@ describe('toast', () => {
   })
 
   // closeVariant prop
-  it('BButton has theme class from closeTheme prop', () => {
+  it('BButton has theme class from closeColor.theme prop', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeTheme: 'warning', closeContent: 'X'},
+      props: {modelValue: true, closeColor: {theme: 'warning'}, closeContent: 'X'},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)

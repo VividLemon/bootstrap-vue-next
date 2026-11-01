@@ -230,7 +230,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headTheme: 'inverse',
+        headColor: {theme: 'inverse'},
       },
     })
     const $thead = wrapper.get('thead')
@@ -241,8 +241,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1}],
-        headBg: 'subtle-primary',
-        headFg: 'emphasis-primary',
+        headColor: {bg: 'subtle-primary', fg: 'emphasis-primary'},
       },
     })
     const $thead = wrapper.get('thead')
@@ -254,7 +253,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        footTheme: 'primary',
+        footColor: {theme: 'primary'},
         footClone: true,
       },
     })
@@ -266,7 +265,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headTheme: 'primary',
+        headColor: {theme: 'primary'},
         footClone: true,
       },
     })
@@ -278,7 +277,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headRowTheme: 'inverse',
+        headRowColor: {theme: 'inverse'},
       },
     })
     const $tr = wrapper.get('thead tr')
@@ -289,7 +288,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        footRowTheme: 'primary',
+        footRowColor: {theme: 'primary'},
         footClone: true,
       },
     })
@@ -301,7 +300,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headRowTheme: 'primary',
+        headRowColor: {theme: 'primary'},
         footClone: true,
       },
     })

@@ -37,10 +37,8 @@ const _props = withDefaults(defineProps<BDropdownGroupProps>(), {
   ariaDescribedby: undefined,
   header: undefined,
   headerClass: undefined,
+  headerColor: undefined,
   headerTag: 'header',
-  headerTheme: null,
-  headerBg: null,
-  headerFg: null,
   id: undefined,
 })
 const props = useDefaults(_props, 'BDropdownGroup')
@@ -51,9 +49,9 @@ const headerRole = computed(() => (props.headerTag === 'header' ? undefined : 'h
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.headerTheme,
-    bg: props.headerBg,
-    fg: props.headerFg,
+    theme: props.headerColor?.theme,
+    bg: props.headerColor?.bg,
+    fg: props.headerColor?.fg,
   }))
 )
 const computedClasses = computed(() => [props.headerClass, colorClasses.value])

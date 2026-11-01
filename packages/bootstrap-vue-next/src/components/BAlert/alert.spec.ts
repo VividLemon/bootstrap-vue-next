@@ -324,9 +324,9 @@ describe('alert', () => {
     expect($bclosebutton.classes()).not.toContain('btn-close-custom')
   })
 
-  it('nested div BCloseButton has no variant class when closeTheme', () => {
+  it('nested div BCloseButton has no variant class when closeColor.theme', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeTheme: 'warning'},
+      props: {modelValue: true, dismissible: true, closeColor: {theme: 'warning'}},
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -415,9 +415,14 @@ describe('alert', () => {
     expect($bbutton.classes()).toContain('btn-close-custom')
   })
 
-  it('nested div BButton has variant and theme classes when closeVariant and closeTheme', () => {
+  it('nested div BButton has variant and theme classes when closeVariant and closeColor.theme', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeVariant: 'outline', closeTheme: 'warning'},
+      props: {
+        modelValue: true,
+        dismissible: true,
+        closeVariant: 'outline',
+        closeColor: {theme: 'warning'},
+      },
       slots: {close: 'foobar', default: 'foobar'},
     })
     const $div = wrapper.get('div')

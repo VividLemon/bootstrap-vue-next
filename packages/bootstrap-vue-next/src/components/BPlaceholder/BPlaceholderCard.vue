@@ -17,8 +17,8 @@
       <slot name="header">
         <BPlaceholder
           :width="props.headerWidth"
-          :bg="props.headerBg ?? getThemeColor(props.headerTheme)"
-          :fg="props.headerFg"
+          :bg="props.headerColor?.bg ?? getThemeColor(props.headerColor?.theme)"
+          :fg="props.headerColor?.fg"
           :animation="props.headerAnimation"
           :size="props.headerSize"
         />
@@ -58,16 +58,12 @@ import {getThemeColor} from '../../composables/useThemeClasses'
 const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   animation: undefined,
   footerAnimation: undefined,
+  footerColor: undefined,
   footerSize: undefined,
-  footerTheme: undefined,
-  footerBg: null,
-  footerFg: null,
   footerWidth: 100,
   headerAnimation: undefined,
+  headerColor: undefined,
   headerSize: undefined,
-  headerTheme: undefined,
-  headerBg: null,
-  headerFg: null,
   headerWidth: 100,
   imgBlankColor: '#868e96',
   imgPlacement: 'top',
@@ -95,7 +91,10 @@ const defaultAttrs = computed(() => ({
 const footerComponent = computed(() => (!props.noButton ? BPlaceholderButton : BPlaceholder))
 const footerColorAttrs = computed(() =>
   props.noButton
-    ? {bg: props.footerBg ?? getThemeColor(props.footerTheme), fg: props.footerFg}
-    : {theme: props.footerTheme, bg: props.footerBg, fg: props.footerFg}
+    ? {
+        bg: props.footerColor?.bg ?? getThemeColor(props.footerColor?.theme),
+        fg: props.footerColor?.fg,
+      }
+    : {theme: props.footerColor?.theme, bg: props.footerColor?.bg, fg: props.footerColor?.fg}
 )
 </script>

@@ -25,6 +25,7 @@
 <script setup lang="ts">
 import {useFocus} from '@vueuse/core'
 import {computed, inject, useTemplateRef} from 'vue'
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import {
   useFormCheckClasses,
   useFormCheckInputClasses,
@@ -48,9 +49,7 @@ const _props = withDefaults(defineProps<Omit<BFormRadioProps, 'modelValue'>>(), 
   button: undefined,
   buttonGroup: false,
   buttonVariant: undefined,
-  buttonTheme: undefined,
-  buttonBg: undefined,
-  buttonFg: undefined,
+  buttonColor: undefined,
   disabled: false,
   form: undefined,
   id: undefined,
@@ -90,9 +89,7 @@ const propDefaults = {
   reverse: false,
   size: undefined,
   buttonVariant: 'solid' as const,
-  buttonTheme: 'secondary' as const,
-  buttonBg: null,
-  buttonFg: null,
+  buttonColor: {theme: 'secondary' as const},
   state: null,
 }
 
@@ -106,9 +103,10 @@ const resolvedProps = computed(() => ({
   size: props.size ?? parentData?.size.value ?? propDefaults.size,
   buttonVariant:
     props.buttonVariant ?? parentData?.buttonVariant.value ?? propDefaults.buttonVariant,
-  buttonTheme: props.buttonTheme ?? parentData?.buttonTheme.value.theme ?? propDefaults.buttonTheme,
-  buttonBg: props.buttonBg ?? parentData?.buttonTheme.value.bg ?? propDefaults.buttonBg,
-  buttonFg: props.buttonFg ?? parentData?.buttonTheme.value.fg ?? propDefaults.buttonFg,
+  buttonColor: resolvePartColor(
+    props.buttonColor,
+    parentData?.buttonColor.value ?? propDefaults.buttonColor
+  ),
 }))
 
 // Shorthand for template usage

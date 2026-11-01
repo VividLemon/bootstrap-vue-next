@@ -289,10 +289,10 @@ describe('form-tags', () => {
     })
   })
 
-  describe('tagTheme prop', () => {
-    it('passes tagTheme to BFormTag children', () => {
+  describe('tagColor.theme prop', () => {
+    it('passes tagColor.theme to BFormTag children', () => {
       const wrapper = mount(BFormTags, {
-        props: {modelValue: ['apple'], tagTheme: 'primary'},
+        props: {modelValue: ['apple'], tagColor: {theme: 'primary'}},
       })
       const tag = wrapper.findComponent(BFormTag)
       expect(tag.props('theme')).toBe('primary')
@@ -937,7 +937,7 @@ describe('form-tags', () => {
     })
   })
 
-  describe('addButtonVariant and addButtonTheme props', () => {
+  describe('addButtonVariant and addButtonColor.theme props', () => {
     it('uses default add button variant outline and theme secondary', async () => {
       const wrapper = mount(BFormTags)
       const input = wrapper.find('.b-form-tags-input')

@@ -2,6 +2,7 @@ import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it} from 'vitest'
 import {defineComponent, h, inject, type Ref} from 'vue'
 import BApp from './BApp.vue'
+import BAlert from '../BAlert/BAlert.vue'
 import {
   breadcrumbRegistryKey,
   defaultsKey,
@@ -470,7 +471,12 @@ describe('BApp', () => {
       })
 
       const orchestrator = captured.orchestrator as {
-        store: Ref<{modal: Map<unknown, unknown>; toast: Map<unknown, unknown>; popover: Map<unknown, unknown>; tooltip: Map<unknown, unknown>}>
+        store: Ref<{
+          modal: Map<unknown, unknown>
+          toast: Map<unknown, unknown>
+          popover: Map<unknown, unknown>
+          tooltip: Map<unknown, unknown>
+        }>
       }
       expect(orchestrator.store.value.modal.size).toBe(0)
       expect(orchestrator.store.value.toast.size).toBe(0)
@@ -519,5 +525,38 @@ describe('BApp', () => {
       const orchestrator = wrapper.findComponent({name: 'BOrchestrator'})
       expect(orchestrator.props('teleportTo')).toBeUndefined()
     })
+  })
+})
+
+describe('BApp defaults for prefixed color objects', () => {
+  const mountAlert = (alertProps: Record<string, unknown> = {}) =>
+    mount(BApp, {
+      props: {
+        defaults: {BAlert: {closeColor: {bg: 'subtle-danger' as const}}},
+        noOrchestrator: true,
+      },
+      slots: {
+        default: () =>
+          h(BAlert, {
+            modelValue: true,
+            dismissible: true,
+            closeContent: 'X',
+            body: 'content',
+            ...alertProps,
+          }),
+      },
+    })
+
+  it('applies a BApp color object default and keeps built-in keys it leaves out', () => {
+    const $button = mountAlert().get('.btn-close-custom')
+    expect($button.classes()).toContain('bg-subtle-danger')
+    expect($button.classes()).toContain('theme-secondary')
+  })
+
+  it('replaces the BApp color object default when the prop is passed (no deep merge)', () => {
+    const $button = mountAlert({closeColor: {fg: 'white'}}).get('.btn-close-custom')
+    expect($button.classes()).toContain('fg-white')
+    expect($button.classes()).not.toContain('bg-subtle-danger')
+    expect($button.classes()).toContain('theme-secondary')
   })
 })

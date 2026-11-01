@@ -271,10 +271,10 @@ describe('modal', () => {
     expect($bclosebutton.classes()).toContain('foobar')
   })
 
-  it('nested div BCloseButton has no theme class when headerCloseTheme', () => {
+  it('nested div BCloseButton has no theme class when headerCloseColor.theme', () => {
     const wrapper = mount(BModal, {
       global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-      props: {headerCloseTheme: 'warning'},
+      props: {headerCloseColor: {theme: 'warning'}},
     })
     const $div = wrapper.get('div')
     const $bclosebutton = $div.getComponent(BCloseButton)
@@ -311,10 +311,10 @@ describe('modal', () => {
     expect($bbutton.classes()).toContain('foobar')
   })
 
-  it('nested div BButton has theme and variant classes when headerCloseTheme and headerCloseVariant', () => {
+  it('nested div BButton has theme and variant classes when headerCloseColor.theme and headerCloseVariant', () => {
     const wrapper = mount(BModal, {
       global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-      props: {headerCloseTheme: 'warning', headerCloseVariant: 'outline'},
+      props: {headerCloseColor: {theme: 'warning'}, headerCloseVariant: 'outline'},
       slots: {'header-close': 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -771,11 +771,11 @@ describe('modal', () => {
 
     it.each([
       {prop: 'headerClass', value: 'custom-header', expectedClass: 'custom-header'},
-      {prop: 'headerBg', value: 'danger', expectedClass: 'bg-danger'},
-      {prop: 'headerFg', value: 'white', expectedClass: 'fg-white'},
-      {prop: 'headerTheme', value: 'success', expectedClass: 'theme-success'},
-      {prop: 'headerBorder', value: 'primary', expectedClass: 'border-primary'},
-    ])('applies $prop class to header element', ({prop, value, expectedClass}) => {
+      {prop: 'headerColor', value: {bg: 'danger'}, expectedClass: 'bg-danger'},
+      {prop: 'headerColor', value: {fg: 'white'}, expectedClass: 'fg-white'},
+      {prop: 'headerColor', value: {theme: 'success'}, expectedClass: 'theme-success'},
+      {prop: 'headerColor', value: {border: 'primary'}, expectedClass: 'border-primary'},
+    ])('applies $prop $expectedClass class to header element', ({prop, value, expectedClass}) => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
         props: {[prop]: value},
@@ -830,11 +830,11 @@ describe('modal', () => {
 
     it.each([
       {prop: 'footerClass', value: 'custom-footer', expectedClass: 'custom-footer'},
-      {prop: 'footerBg', value: 'info', expectedClass: 'bg-info'},
-      {prop: 'footerFg', value: 'black', expectedClass: 'fg-black'},
-      {prop: 'footerTheme', value: 'warning', expectedClass: 'theme-warning'},
-      {prop: 'footerBorder', value: 'danger', expectedClass: 'border-danger'},
-    ])('applies $prop class to footer element', ({prop, value, expectedClass}) => {
+      {prop: 'footerColor', value: {bg: 'info'}, expectedClass: 'bg-info'},
+      {prop: 'footerColor', value: {fg: 'black'}, expectedClass: 'fg-black'},
+      {prop: 'footerColor', value: {theme: 'warning'}, expectedClass: 'theme-warning'},
+      {prop: 'footerColor', value: {border: 'danger'}, expectedClass: 'border-danger'},
+    ])('applies $prop $expectedClass class to footer element', ({prop, value, expectedClass}) => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
         props: {[prop]: value},
@@ -892,28 +892,28 @@ describe('modal', () => {
       expect($body.attributes('id')).toBe('test-modal-body')
     })
 
-    it('applies bodyBg class', () => {
+    it('applies bodyColor.bg class', () => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {bodyBg: 'dark'},
+        props: {bodyColor: {bg: 'dark'}},
       })
       const $body = wrapper.find('.modal-body')
       expect($body.classes()).toContain('bg-dark')
     })
 
-    it('applies bodyFg class', () => {
+    it('applies bodyColor.fg class', () => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {bodyFg: 'white'},
+        props: {bodyColor: {fg: 'white'}},
       })
       const $body = wrapper.find('.modal-body')
       expect($body.classes()).toContain('fg-white')
     })
 
-    it('applies bodyTheme class', () => {
+    it('applies bodyColor.theme class', () => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {bodyTheme: 'primary'},
+        props: {bodyColor: {theme: 'primary'}},
       })
       const $body = wrapper.find('.modal-body')
       expect($body.classes()).toContain('theme-primary')
@@ -953,15 +953,36 @@ describe('modal', () => {
       expect($okButton.classes()).toContain('btn-solid')
     })
 
-    it('ok button theme from okTheme prop', () => {
+    it('ok button theme from okColor.theme prop', () => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {okTheme: 'success'},
+        props: {okColor: {theme: 'success'}},
       })
       const $footer = wrapper.find('.modal-footer')
       const $buttons = $footer.findAll('button')
       const $okButton = $buttons[$buttons.length - 1]
       expect($okButton.classes()).toContain('theme-success')
+    })
+
+    it('okColor keeps the default theme for keys it leaves out', () => {
+      const wrapper = mount(BModal, {
+        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
+        props: {okColor: {fg: 'white'}},
+      })
+      const $buttons = wrapper.find('.modal-footer').findAll('button')
+      const $okButton = $buttons[$buttons.length - 1]
+      expect($okButton.classes()).toContain('theme-primary')
+      expect($okButton.classes()).toContain('fg-white')
+    })
+
+    it('okColor theme null clears the default theme', () => {
+      const wrapper = mount(BModal, {
+        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
+        props: {okColor: {theme: null}},
+      })
+      const $buttons = wrapper.find('.modal-footer').findAll('button')
+      const $okButton = $buttons[$buttons.length - 1]
+      expect($okButton.classes()).not.toContain('theme-primary')
     })
 
     it('ok button variant from okVariant prop', () => {
@@ -1064,10 +1085,10 @@ describe('modal', () => {
       expect($buttons[0].classes()).toContain('btn-solid')
     })
 
-    it('cancel button theme from cancelTheme prop', () => {
+    it('cancel button theme from cancelColor.theme prop', () => {
       const wrapper = mount(BModal, {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-        props: {cancelTheme: 'danger'},
+        props: {cancelColor: {theme: 'danger'}},
       })
       const $footer = wrapper.find('.modal-footer')
       const $buttons = $footer.findAll('button')

@@ -84,9 +84,9 @@
                     :disabled="disableCancel"
                     :size="props.buttonSize"
                     :variant="props.cancelVariant"
-                    :theme="props.cancelTheme"
-                    :bg="props.cancelBg"
-                    :fg="props.cancelFg"
+                    :theme="cancelColor.theme"
+                    :bg="cancelColor.bg"
+                    :fg="cancelColor.fg"
                     :class="props.cancelClass"
                     @click="hide('cancel')"
                   >
@@ -99,9 +99,9 @@
                     :disabled="disableOk"
                     :size="props.buttonSize"
                     :variant="props.okVariant"
-                    :theme="props.okTheme"
-                    :bg="props.okBg"
-                    :fg="props.okFg"
+                    :theme="okColor.theme"
+                    :bg="okColor.bg"
+                    :fg="okColor.fg"
                     :class="props.okClass"
                     @click="hide('ok')"
                   >
@@ -160,7 +160,7 @@ import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {useSafeScrollLock} from '../../composables/useSafeScrollLock'
 import {getModalZIndex, getSafeDocument, isEmptySlot} from '../../utils/dom'
-import {useThemeClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {useModalManager} from '../../composables/useModalManager'
 import {useShowHide} from '../../composables/useShowHide'
 import ConditionalTeleport from '../ConditionalTeleport.vue'
@@ -174,42 +174,30 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   focus: undefined,
   backdropFirst: false,
   body: undefined,
-  bodyBg: null,
   bodyAttrs: undefined,
   bodyClass: null,
+  bodyColor: undefined,
   bodyScrolling: false,
-  bodyFg: null,
-  bodyTheme: null,
   busy: false,
   buttonSize: undefined,
   cancelClass: undefined,
+  cancelColor: undefined,
   cancelDisabled: false,
   cancelTitle: 'Cancel',
-  cancelTheme: 'secondary',
-  cancelBg: null,
-  cancelFg: null,
   cancelVariant: 'solid',
   centered: false,
   contentClass: undefined,
   dialogClass: undefined,
-  footerBg: null,
-  footerBorder: null,
   footerClass: undefined,
-  footerFg: null,
-  footerTheme: null,
+  footerColor: undefined,
   fullscreen: false,
   headerAttrs: undefined,
-  headerBg: null,
-  headerBorder: null,
   headerClass: undefined,
   headerCloseClass: undefined,
+  headerCloseColor: undefined,
   headerCloseLabel: 'Close',
-  headerCloseTheme: 'secondary',
-  headerCloseBg: null,
-  headerCloseFg: null,
   headerCloseVariant: 'solid',
-  headerFg: null,
-  headerTheme: null,
+  headerColor: undefined,
   noFooter: false,
   noHeader: false,
   noHeaderClose: false,
@@ -223,12 +211,10 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   noFade: false,
   noTrap: false,
   okClass: undefined,
+  okColor: undefined,
   okDisabled: false,
   okOnly: false,
   okTitle: 'OK',
-  okTheme: 'primary',
-  okBg: null,
-  okFg: null,
   okVariant: 'solid',
   unmountLazy: false,
   scrollable: false,
@@ -244,6 +230,8 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   visible: false,
 })
 const props = useDefaults(_props, 'BModal')
+const okColor = computed(() => resolvePartColor(props.okColor, {theme: 'primary'}))
+const cancelColor = computed(() => resolvePartColor(props.cancelColor, {theme: 'secondary'}))
 const emit = defineEmits<BModalEmits>()
 const slots = defineSlots<BModalSlots>()
 
@@ -361,41 +349,24 @@ const modalDialogClasses = computed(() => [
   },
 ])
 
-const {classes: bodyColorClasses} = useThemeClasses(
-  computed(() => ({
-    bg: props.bodyBg,
-    fg: props.bodyFg,
-    theme: props.bodyTheme,
-  }))
-)
+const {classes: bodyColorClasses} = useThemeClasses(computed(() => props.bodyColor ?? {}))
 const bodyClasses = computed(() => [props.bodyClass, bodyColorClasses.value])
 
-const {classes: headerColorClasses} = useThemeClasses(
-  computed(() => ({
-    bg: props.headerBg,
-    fg: props.headerFg,
-    theme: props.headerTheme,
-    border: props.headerBorder,
-  }))
-)
+const {classes: headerColorClasses} = useThemeClasses(computed(() => props.headerColor ?? {}))
 const headerClasses = computed(() => [props.headerClass, headerColorClasses.value])
 
+const headerCloseColor = computed(() =>
+  resolvePartColor(props.headerCloseColor, {theme: 'secondary'})
+)
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
-  theme: hasHeaderCloseSlot.value ? props.headerCloseTheme : undefined,
-  bg: hasHeaderCloseSlot.value ? props.headerCloseBg : undefined,
-  fg: hasHeaderCloseSlot.value ? props.headerCloseFg : undefined,
+  theme: hasHeaderCloseSlot.value ? headerCloseColor.value.theme : undefined,
+  bg: hasHeaderCloseSlot.value ? headerCloseColor.value.bg : undefined,
+  fg: hasHeaderCloseSlot.value ? headerCloseColor.value.fg : undefined,
   class: props.headerCloseClass,
 }))
 
-const {classes: footerColorClasses} = useThemeClasses(
-  computed(() => ({
-    bg: props.footerBg,
-    fg: props.footerFg,
-    theme: props.footerTheme,
-    border: props.footerBorder,
-  }))
-)
+const {classes: footerColorClasses} = useThemeClasses(computed(() => props.footerColor ?? {}))
 const footerClasses = computed(() => [props.footerClass, footerColorClasses.value])
 
 const titleClasses = computed(() => [

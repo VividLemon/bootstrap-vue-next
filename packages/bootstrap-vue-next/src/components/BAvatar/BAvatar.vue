@@ -35,9 +35,9 @@
       v-if="showBadge"
       :pill="props.badgePill"
       :dot-indicator="props.badgeDotIndicator || badgeImplicitlyDot"
-      :theme="props.badgeTheme"
-      :bg="props.badgeBg"
-      :fg="props.badgeFg"
+      :theme="badgeColor.theme"
+      :bg="badgeColor.bg"
+      :fg="badgeColor.fg"
       :style="badgeStyle"
       :placement="props.badgePlacement"
     >
@@ -57,16 +57,14 @@ import {useBLinkHelper} from '../../composables/useBLinkHelper'
 import {isEmptySlot} from '../../utils/dom'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
 import {useRadiusElementClasses} from '../../composables/useRadiusElementClasses'
-import {useThemeClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import type {BAvatarEmits, BAvatarProps, BAvatarSlots, Size} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 
 const _props = withDefaults(defineProps<BAvatarProps>(), {
   alt: 'avatar',
   badge: false,
-  badgeBg: null,
-  badgeFg: null,
-  badgeTheme: 'primary',
+  badgeColor: undefined,
   badgePlacement: 'bottom-end',
   badgeDotIndicator: false,
   badgePill: false,
@@ -108,6 +106,7 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   // End RadiusElementExtendables props
 })
 const props = useDefaults(_props, 'BAvatar')
+const badgeColor = computed(() => resolvePartColor(props.badgeColor, {theme: 'primary'}))
 const emit = defineEmits<BAvatarEmits>()
 const slots = defineSlots<BAvatarSlots>()
 

@@ -31,9 +31,9 @@
             v-if="slots.close || props.closeContent"
             :class="[props.closeClass]"
             class="ms-auto ps-1 btn-close-custom"
-            :theme="props.closeTheme"
-            :bg="props.closeBg"
-            :fg="props.closeFg"
+            :theme="closeColor.theme"
+            :bg="closeColor.bg"
+            :fg="closeColor.fg"
             :variant="props.closeVariant"
             @click.stop.prevent="hide('close')"
           >
@@ -68,9 +68,9 @@
               v-if="slots.close || props.closeContent"
               :class="[props.closeClass]"
               class="ms-auto btn-close-custom"
-              :theme="props.closeTheme"
-              :bg="props.closeBg"
-              :fg="props.closeFg"
+              :theme="closeColor.theme"
+              :bg="closeColor.bg"
+              :fg="closeColor.fg"
               :variant="props.closeVariant"
               @click.stop.prevent="hide('close')"
             >
@@ -116,7 +116,7 @@ import {useCountdownHover} from '../../composables/useCountdownHover'
 import {useId} from '../../composables/useId'
 import {useShowHide} from '../../composables/useShowHide'
 import BButton from '../BButton/BButton.vue'
-import {useThemeClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 
 const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   bg: null,
@@ -125,9 +125,7 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   closeClass: undefined,
   closeContent: undefined,
   closeLabel: 'Close',
-  closeTheme: 'secondary',
-  closeBg: null,
-  closeFg: null,
+  closeColor: undefined,
   closeVariant: 'solid',
   dismissible: false,
   headerClass: undefined,
@@ -173,6 +171,7 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   theme: 'info',
 })
 const props = useDefaults(_props, 'BAlert')
+const closeColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
 const emit = defineEmits<BAlertEmits>()
 const slots = defineSlots<BAlertSlots>()
 

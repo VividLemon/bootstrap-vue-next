@@ -127,13 +127,13 @@ describe('dropdown-group', () => {
     expect($header.classes()).toContain('foo')
   })
 
-  it('dynamic header tag has class theme-{type} when prop headerTheme', async () => {
+  it('dynamic header tag has class theme-{type} when prop headerColor.theme', async () => {
     const wrapper = mount(BDropdownGroup, {
-      props: {headerTheme: 'danger'},
+      props: {headerColor: {theme: 'danger'}},
     })
     const $header = wrapper.get('header')
     expect($header.classes()).toContain('theme-danger')
-    await wrapper.setProps({headerTheme: undefined})
+    await wrapper.setProps({headerColor: {theme: undefined}})
     expect($header.classes()).not.toContain('theme-danger')
   })
 

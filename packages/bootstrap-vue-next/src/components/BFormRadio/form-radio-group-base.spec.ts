@@ -488,7 +488,7 @@ describe('form-radio-group-base', () => {
       const wrapper = mount(BFormRadioGroupBase, {
         props: {
           buttons: true,
-          buttonTheme: 'primary',
+          buttonColor: {theme: 'primary'},
           options: [{text: 'A', value: 'a', disabled: false}],
         },
       })

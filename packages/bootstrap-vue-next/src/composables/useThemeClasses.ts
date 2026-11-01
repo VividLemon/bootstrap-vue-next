@@ -47,6 +47,25 @@ export const getThemeColor = (
 }
 
 /**
+ * Resolves a prefixed `<part>Color` object prop against the part's built-in defaults, key by key.
+ * Keys that are `undefined` (or missing) fall back to the default; `null` clears the default
+ */
+export const resolvePartColor = <
+  T extends ColorExtendables & {border?: MaybeArray<BorderColor> | null},
+>(
+  value: Readonly<T> | null | undefined,
+  defaults: Readonly<T>
+): T => {
+  const out = {...defaults} as Record<string, unknown>
+  if (value) {
+    for (const [key, v] of Object.entries(value)) {
+      if (v !== undefined) out[key] = v
+    }
+  }
+  return out as T
+}
+
+/**
  * Converts `theme`, `bg`, `fg` and `border` props into Bootstrap v6 classes:
  * `.theme-<theme>`, `.bg-<bg>`, `.fg-<fg>` and `.border-<border>`
  */
