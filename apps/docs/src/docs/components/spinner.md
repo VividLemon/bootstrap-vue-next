@@ -46,7 +46,7 @@ at least one side, so `.border-{color}` utilities would override that.
 
 ## Size
 
-Set the prop `small` to `true` to make a smaller spinner that can quickly be used within other components.
+Set the prop `small` to `true` to make a smaller spinner that can quickly be used within other components. It adds Bootstrap's `.spinner-sm` class for both spinner types.
 
 <<< DEMO ./demo/SpinnerSmall.vue#template{vue-html}
 
