@@ -2,7 +2,7 @@
   "private": true,
   "name": "my-module-playground",
   "devDependencies": {
-    "bootstrap": "^5.3.8",
+    "bootstrap": "^6.0.0-alpha.1",
     "bootstrap-vue-next": "workspace:^"
   }
 }

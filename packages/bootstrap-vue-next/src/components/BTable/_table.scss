@@ -1,12 +1,16 @@
+@use "bootstrap/scss/layout/breakpoints" as bs-breakpoints;
+@use "bootstrap/scss/config" as bs;
+@use "../../styles/breakpoints" as bv;
+
 .b-table-stacked-label {
   display: none;
   font-weight: bold;
 }
 
-@each $breakpoint in map-keys($grid-breakpoints) {
-  $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+@each $breakpoint in map-keys(bs.$breakpoints) {
+  $infix: bv.infix($breakpoint);
 
-  @include media-breakpoint-down($breakpoint, $grid-breakpoints) {
+  @include bs-breakpoints.media-breakpoint-down($breakpoint) {
     .table.b-table.b-table-stacked#{$infix} {
       display: block;
       width: 100%;
@@ -64,7 +68,7 @@
 .table-responsive,
 [class*="table-responsive-"] {
   // Move the table bottom margin to the wrapper
-  margin-bottom: $spacer;
+  margin-bottom: var(--bs-spacer);
 
   > .table {
     // Reset `margin-bottom` to we don't get a space after
@@ -236,14 +240,14 @@ $b-table-sort-icon-bg-descending-dark: url("data:image/svg+xml,<svg xmlns='http:
 
         &:not(.b-table-sort-icon-left) {
           // Default is icon on the right edge of the cell
-          background-position: right calc(#{$table-cell-padding-x} / 2) center;
-          padding-right: calc(#{$table-cell-padding-x} + #{$b-table-sort-icon-bg-width});
+          background-position: right calc(var(--bs-table-cell-padding-x) / 2) center;
+          padding-right: calc(var(--bs-table-cell-padding-x) + #{$b-table-sort-icon-bg-width});
         }
 
         &.b-table-sort-icon-left {
           // Left aligned sort icon (at left edge of cell)
-          background-position: left calc(#{$table-cell-padding-x} / 2) center;
-          padding-left: calc(#{$table-cell-padding-x} + #{$b-table-sort-icon-bg-width});
+          background-position: left calc(var(--bs-table-cell-padding-x) / 2) center;
+          padding-left: calc(var(--bs-table-cell-padding-x) + #{$b-table-sort-icon-bg-width});
         }
       }
 
@@ -292,14 +296,14 @@ $b-table-sort-icon-bg-descending-dark: url("data:image/svg+xml,<svg xmlns='http:
       > tr > [aria-sort] {
         &:not(.b-table-sort-icon-left) {
           // Default is icon on the right edge of the cell
-          background-position: right calc(#{$table-cell-padding-x-sm} / 2) center;
-          padding-right: calc(#{$table-cell-padding-x-sm} + #{$b-table-sort-icon-bg-width});
+          background-position: right calc(var(--bs-table-cell-padding-x) / 2) center;
+          padding-right: calc(var(--bs-table-cell-padding-x) + #{$b-table-sort-icon-bg-width});
         }
 
         &.b-table-sort-icon-left {
           // Left aligned sort icon (at left edge of cell)
-          background-position: left calc(#{$table-cell-padding-x-sm} / 2) center;
-          padding-left: calc(#{$table-cell-padding-x-sm} + #{$b-table-sort-icon-bg-width});
+          background-position: left calc(var(--bs-table-cell-padding-x) / 2) center;
+          padding-left: calc(var(--bs-table-cell-padding-x) + #{$b-table-sort-icon-bg-width});
         }
       }
     }

@@ -1,0 +1,10 @@
+@use "sass:map";
+@use "bootstrap/scss/config" as bs;
+
+// Returns a blank string for the smallest breakpoint, otherwise `-<name>`
+@function infix($name) {
+  @if map.get(bs.$breakpoints, $name) == 0 {
+    @return "";
+  }
+  @return "-#{$name}";
+}

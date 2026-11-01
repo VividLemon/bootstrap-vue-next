@@ -1,6 +1,6 @@
-@import "bootstrap/scss/functions";
-@import "bootstrap/scss/variables";
-@import "bootstrap/scss/mixins";
+@use "sass:map";
+@use "bootstrap/scss/config" as bs;
+@use "bootstrap/scss/layout/breakpoints" as bs-breakpoints;
 @import "../components/BAvatar/avatar";
 @import "../components/BFormRating/form-rating";
 @import "../components/BFormTags/form-tags";
@@ -55,8 +55,8 @@
 }
 
 // Create `.bv-d-<bp>-down-none` helper classes
-@each $breakpoint in (map-keys(map-remove($grid-breakpoints, "xs"))) {
-  @include media-breakpoint-down($breakpoint) {
+@each $breakpoint in map.keys(map.remove(bs.$breakpoints, "xs")) {
+  @include bs-breakpoints.media-breakpoint-down($breakpoint) {
     .bv-d-#{$breakpoint}-down-none {
       display: none !important;
     }
@@ -83,6 +83,5 @@
 }
 
 :root {
-  --bs-modal-zindex: #{$zindex-modal};
-  --bs-toast-max-width: #{$toast-max-width};
+  --bs-modal-zindex: #{map.get(bs.$zindex-levels, dialog)};
 }

@@ -1,16 +1,22 @@
-// Bootstrap 5 does not include validation styling for .form-range,
+// Bootstrap does not include validation styling for .form-range,
 // so we add it here to provide contextual state feedback
-// Based on the original Bootstrap Vue implementation, updated for Bootstrap 5
-@mixin bv-form-range-validation-state($state, $color) {
+// Based on the original Bootstrap Vue implementation, updated for Bootstrap v6 tokens
+@mixin bv-form-range-validation-state($state, $theme) {
+  $color: var(--bs-#{$theme}-bg);
+
   .form-range {
     &.is-#{$state} {
       // Pseudo-elements must be split across multiple rulesets to have an effect
       &:focus {
         &::-webkit-slider-thumb {
-          box-shadow: 0 0 0 1px $body-bg, 0 0 0 $input-btn-focus-width rgba($color, 0.25);
+          box-shadow:
+            0 0 0 1px var(--bs-bg-body),
+            0 0 0 var(--bs-focus-ring-width) var(--bs-#{$theme}-focus-ring);
         }
         &::-moz-range-thumb {
-          box-shadow: 0 0 0 1px $body-bg, 0 0 0 $input-btn-focus-width rgba($color, 0.25);
+          box-shadow:
+            0 0 0 1px var(--bs-bg-body),
+            0 0 0 var(--bs-focus-ring-width) var(--bs-#{$theme}-focus-ring);
         }
       }
 
@@ -18,28 +24,28 @@
         background-color: $color;
 
         &:active {
-          background-color: tint-color($color, 70%);
+          background-color: color-mix(in oklch, #{$color} 30%, white);
         }
       }
 
       &::-webkit-slider-runnable-track {
-        background-color: rgba($color, 0.35);
+        background-color: color-mix(in oklch, #{$color} 35%, transparent);
       }
 
       &::-moz-range-thumb {
         background-color: $color;
 
         &:active {
-          background-color: tint-color($color, 70%);
+          background-color: color-mix(in oklch, #{$color} 30%, white);
         }
       }
 
       &::-moz-range-track {
-        background-color: rgba($color, 0.35);
+        background-color: color-mix(in oklch, #{$color} 35%, transparent);
       }
     }
   }
 }
 
-@include bv-form-range-validation-state("valid", $form-feedback-valid-color);
-@include bv-form-range-validation-state("invalid", $form-feedback-invalid-color);
+@include bv-form-range-validation-state("valid", success);
+@include bv-form-range-validation-state("invalid", danger);
