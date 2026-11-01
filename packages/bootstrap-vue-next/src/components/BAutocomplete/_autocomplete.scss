@@ -76,8 +76,8 @@
 }
 
 .b-autocomplete-tag-pending-delete {
-  background-color: transparent !important;
-  color: var(--bs-secondary-fg) !important;
+  background-color: transparent;
+  color: var(--bs-secondary-fg);
   border: var(--bs-border-width) solid var(--bs-secondary-border);
   transition:
     background-color 0.15s ease-in-out,
@@ -144,7 +144,7 @@
 
 // Add right padding to the input when clear button is showing so text doesn't overlap it
 .b-autocomplete-input-clearable {
-  padding-right: 2rem !important;
+  padding-right: 2rem;
 }
 
 .b-autocomplete-trigger {

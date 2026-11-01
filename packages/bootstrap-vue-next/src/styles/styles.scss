@@ -1,87 +1,101 @@
 @use "sass:map";
+@use "sass:meta";
 @use "bootstrap/scss/config" as bs;
 @use "bootstrap/scss/layout/breakpoints" as bs-breakpoints;
-@import "../components/BAvatar/avatar";
-@import "../components/BFormRating/form-rating";
-@import "../components/BFormTags/form-tags";
-@import "../components/BInputGroup/input-group";
-@import "../components/BPagination/pagination";
-@import "../components/BTable/table";
-@import "../components/BFormInput/form-input";
-@import "../components/BFormFile/form-file";
-@import "../components/BFormSpinbutton/spinbutton";
-@import "../components/BAlert/alert";
-@import "../components/BAutocomplete/autocomplete";
-@import "../components/BFormOtp/form-otp";
-@import "../components/BPopover/popover";
-@import "../components/BToast/toast";
-@import "../components/BTimeField/time-field";
-@import "../components/BDateField/date-field";
-@import "../components/BDateField/date-range-field";
-@import "../components/BDateField/time-range-field";
-@import "../components/BDatePicker/date-picker";
-@import "../components/BDatePicker/date-range-picker";
 
-.container,
-.container-fluid {
-  display: block;
-}
+// Bootstrap v6 cascade layer order, copied verbatim from `bootstrap/scss/_root.scss`.
+// Emitted first so the load order of Bootstrap's CSS and this file cannot reorder the layers.
+@layer colors, config, root, reboot, layout, content, forms, components, custom, helpers, utilities;
 
-.input-group
-  > .form-floating:not(:first-child)
-  > :not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(
-    .invalid-feedback
-  ) {
-  margin-left: 0px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
+// All library CSS lives in Bootstrap's `components` layer, so Bootstrap's helpers and utilities
+// (and any unlayered consumer CSS) override it without `!important`.
+@layer components {
+  @include meta.load-css("../components/BAvatar/avatar");
+  @include meta.load-css("../components/BFormRating/form-rating");
+  @include meta.load-css("../components/BFormTags/form-tags");
+  @include meta.load-css("../components/BInputGroup/input-group");
+  @include meta.load-css("../components/BPagination/pagination");
+  @include meta.load-css("../components/BTable/table");
+  @include meta.load-css("../components/BFormInput/form-input");
+  @include meta.load-css("../components/BFormFile/form-file");
+  @include meta.load-css("../components/BFormSpinbutton/spinbutton");
+  @include meta.load-css("../components/BAlert/alert");
+  @include meta.load-css("../components/BAutocomplete/autocomplete");
+  @include meta.load-css("../components/BFormOtp/form-otp");
+  @include meta.load-css("../components/BPopover/popover");
+  @include meta.load-css("../components/BToast/toast");
+  @include meta.load-css("../components/BTimeField/time-field");
+  @include meta.load-css("../components/BDateField/date-field");
+  @include meta.load-css("../components/BDateField/date-range-field");
+  @include meta.load-css("../components/BDateField/time-range-field");
+  @include meta.load-css("../components/BDatePicker/date-picker");
+  @include meta.load-css("../components/BDatePicker/date-range-picker");
 
-.input-group:not(.has-validation)
-  > .form-floating:not(:last-child)
-  > :not(.dropdown-toggle):not(.dropdown-menu) {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
+  .container,
+  .container-fluid {
+    display: block;
+  }
 
-.dropdown-toggle.dropdown-toggle-no-caret:before,
-.dropdown-toggle.dropdown-toggle-no-caret:after {
-  display: none !important;
-}
+  .input-group
+    > .form-floating:not(:first-child)
+    > :not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(
+      .invalid-feedback
+    ) {
+    margin-left: 0px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
 
-// No focus outline helper (use sparingly)
-.bv-no-focus-ring:focus {
-  outline: none;
-}
+  .input-group:not(.has-validation)
+    > .form-floating:not(:last-child)
+    > :not(.dropdown-toggle):not(.dropdown-menu) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 
-// Create `.bv-d-<bp>-down-none` helper classes
-@each $breakpoint in map.keys(map.remove(bs.$breakpoints, "xs")) {
-  @include bs-breakpoints.media-breakpoint-down($breakpoint) {
-    .bv-d-#{$breakpoint}-down-none {
-      display: none !important;
+  .dropdown-toggle.dropdown-toggle-no-caret:before,
+  .dropdown-toggle.dropdown-toggle-no-caret:after {
+    display: none;
+  }
+
+  // No focus outline helper (use sparingly)
+  .bv-no-focus-ring:focus {
+    outline: none;
+  }
+
+  // Create `.bv-d-<bp>-down-none` helper classes.
+  // `!important` is kept: like a display utility, this helper must hide the element even when
+  // a display utility (`d-flex`, ...) in the higher `utilities` layer is also applied.
+  @each $breakpoint in map.keys(map.remove(bs.$breakpoints, "xs")) {
+    @include bs-breakpoints.media-breakpoint-down($breakpoint) {
+      .bv-d-#{$breakpoint}-down-none {
+        display: none !important;
+      }
     }
   }
-}
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.25s linear;
-}
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.25s linear;
+  }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+  }
 
-.no-transition {
-  transition: none !important;
-}
+  // `!important` is kept: this opt-out must beat every component transition, including
+  // Bootstrap's own `!important` / unlayered transition rules and transition utilities.
+  .no-transition {
+    transition: none !important;
+  }
 
-.b-floating-size {
-  max-height: var(--bv-floating-max-height, none);
-  max-width: var(--bv-floating-max-width, none);
-}
+  .b-floating-size {
+    max-height: var(--bv-floating-max-height, none);
+    max-width: var(--bv-floating-max-width, none);
+  }
 
-:root {
-  --bs-modal-zindex: #{map.get(bs.$zindex-levels, dialog)};
+  :root {
+    --bs-modal-zindex: #{map.get(bs.$zindex-levels, dialog)};
+  }
 }

@@ -54,7 +54,7 @@
 
   .btn {
     line-height: 1;
-    box-shadow: none !important;
+    box-shadow: none;
 
     &:disabled {
       pointer-events: none;
