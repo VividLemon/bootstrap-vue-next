@@ -12,14 +12,14 @@ It is the single source of truth for the migration: implementation work follows 
 
 ## Status
 
-| Phase                                                                                       | State                                           |
-| ------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Color API (`theme` / `bg` / `fg` / `border`, `ThemeProp`)                                   | Done (`641959ec`)                               |
-| Phase 0: workspace on Bootstrap 6, library SCSS on v6 Sass                                  | Done (`80574a2c`)                               |
-| Phase 2a: foundations (CSS layer, breakpoints + responsive objects + grid, transition core) | Not started                                     |
-| Phase 2b: component batches                                                                 | Not started                                     |
-| Phase 3: migration docs                                                                     | Not started                                     |
-| Deferred components                                                                         | See [Deferred components](#deferred-components) |
+| Phase                                                                                                              | State                                           |
+| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| Color API (`theme` / `bg` / `fg` / `border`, `ThemeProp`)                                                          | Done (`641959ec`)                               |
+| Phase 0: workspace on Bootstrap 6, library SCSS on v6 Sass                                                         | Done (`80574a2c`)                               |
+| Phase 2a: foundations (CSS layer, breakpoints + responsive objects + grid, transition core, color + hover objects) | Done (`6e762b88`…`ee04af38`)                    |
+| Phase 2b: component batches                                                                                        | Not started                                     |
+| Phase 3: migration docs                                                                                            | Not started                                     |
+| Deferred components                                                                                                | See [Deferred components](#deferred-components) |
 
 ## Cross-cutting decisions
 
@@ -29,6 +29,11 @@ It is the single source of truth for the migration: implementation work follows 
 - Emit Bootstrap's full layer order statement at the top of the library CSS so load order cannot reorder the layers:
   `@layer colors, config, root, reboot, layout, content, forms, components, custom, helpers, utilities;`
 - Remove `!important`s that only existed to beat Bootstrap's unlayered v5 CSS.
+- Done in `6e762b88`. Kept `!important` on `.bv-d-<bp>-down-none` (must beat display utilities), `.no-transition`, and the BTable sticky-header print rules (must beat inline styles).
+- Migration notes must mention:
+  - Rules that tie on specificity still rely on the library CSS loading after Bootstrap's CSS.
+  - Partials are now loaded with `meta.load-css`, so consumers compiling `src/styles/styles.scss` can no longer override the library's `!default` Sass variables (e.g. `$b-table-sort-icon-*`, `$b-avatar-size`) by declaring them before the import.
+  - Bootstrap 6.0.0-alpha.1 leaves some rules unlayered (`:root` tokens, `.fade`, `.collapse`, `.drawer`); they beat layered library rules.
 
 ### Breakpoints
 
@@ -96,7 +101,11 @@ Bootstrap v6 lets CSS own all motion: JavaScript toggles a state class (`.show`,
 
 - **Rename `noFade` and `noAnimation` to `noTransition`** everywhere (`ShowHideProps`, `BTabs`, `BOverlay`, `BCarousel`, `BTransition`). It adds the component's `-instant` class.
 - **Remove the `collapsed` / `not-collapsed` trigger classes.**
-- Update `architecture/ARIA_VISIBILITY.md` after the rewrite; it documents the current `useShowHide`.
+- Done: `useCssTransition` and the split `useShowHide` (native core + `useLegacyShowHide` for components not yet migrated); `noTransition` rename; `transProps` removed; trigger classes removed; `BCollapse` migrated; `ARIA_VISIBILITY.md` rewritten.
+- To adopt the native path, a component passes `{transition: () => run()}` to `useShowHide` and binds `{show: visible, '<comp>-instant': props.noTransition || instant}`. See the composable's JSDoc and `ARIA_VISIBILITY.md`.
+- `BAlert`, `BToast`, `BPopover` / `BTooltip` are still on `useLegacyShowHide` and move to the native path in their batches. Delete `useLegacyShowHide` once only deferred components remain on it, or once they are migrated.
+- v6 has no `collapse-instant` class: `BCollapse` `noTransition` uses the `transition-none` utility. Because 6.0.0-alpha.1 emits `.fade` and `.collapse` transitions outside any layer, `BCollapse` also sets `--bs-transition-collapse-duration: 0s` inline while instant. Remove that workaround once upstream layers those rules.
+- `shown` / `hidden` now fire when the CSS transition ends; an interrupted transition never fires its `shown` / `hidden`. Migration notes must say so.
 - In-scope components: `BCollapse` (+ `vBToggle`), `BAlert`, `BToast`, `BPopover` / `BTooltip`, `BTabs`. `BAccordionItem` renders `BCollapse` and changes with it.
 
 ## Component decisions (in scope)
@@ -177,13 +186,14 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 - **Pending:**
   - Native `<dialog>` + v6 Dialog markup and lifecycle (`.hiding`, `.dialog-instant`, `.dialog-static`), native transition path instead of `<Transition>`.
   - Part attrs: `bodyClass`, `cancelClass`, `contentClass`, `dialogClass`, `footerClass`, `headerClass`, `headerCloseClass`, `modalClass`, `okClass`, `titleClass` → `*Attrs` (merge with existing `bodyAttrs` / `headerAttrs`).
-  - `fullscreen` breakpoint → `md-down:dialog-fullscreen` prefix syntax.
+  - `fullscreen` breakpoint → `md-down:dialog-fullscreen` prefix syntax (currently emits v5-style `modal-fullscreen-2xl-down`, which has no v6 CSS).
   - `useModal` result redesign: resolve with `{ trigger, ok, value? }` instead of `BvTriggerableEvent`; align with native `cancel` / `close`, `returnValue` and `closedby`.
 
 ### BOffcanvas → Drawer
 
 - **Now:** `noTransition`, `transProps` removed, `headerCloseColor`.
-- **Pending:** v6 Drawer markup (native `<dialog class="drawer">`, `.hiding`, `.drawer-instant`); `responsive` uses `@vueuse` v5 widths and must follow v6 breakpoints + `md:drawer` prefix syntax; part attrs (`bodyClass`, `footerClass`, `headerClass`, `headerCloseClass` → `*Attrs`).
+- **Done early:** the JS breakpoint widths for `responsive` now come from the shared v6 `breakpointWidths` (lg 1024, xl 1280, 2xl 1536), needed for the `Breakpoint` type change.
+- **Pending:** v6 Drawer markup (native `<dialog class="drawer">`, `.hiding`, `.drawer-instant`); `responsive` must emit `md:drawer` prefix syntax; part attrs (`bodyClass`, `footerClass`, `headerClass`, `headerCloseClass` → `*Attrs`).
 
 ### BDropdown / BNavItemDropdown → Menu
 
@@ -193,11 +203,12 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 ### BNavbar
 
 - **Now:** `useContainerClasses` fix lands with the grid.
-- **Pending:** `toggleable` breakpoint → `md:navbar-expand` prefix syntax; `navbar-collapse` has no v6 CSS; v6 navbar is a container query container.
+- **Pending:** `toggleable` breakpoint → `md:navbar-expand` prefix syntax (currently emits v5-style `navbar-expand-2xl`, which has no v6 CSS); `navbar-collapse` has no v6 CSS; v6 navbar is a container query container.
 
 ### BAccordion / BAccordionItem
 
-- **Now:** behavior changes with `BCollapse` (native transitions); `noTransition`.
+- **Now:** behavior changes with `BCollapse` (native transitions); `BAccordionItem` has `noTransition` (`BAccordion` itself does not yet).
+- **Pending:** the item header button still renders the v5 accordion `collapsed` class.
 - **Pending:** v6 Accordion markup; part attrs (`bodyClass`, `buttonClass`, `collapseClass`, `headerClass` → merge into `bodyAttrs` / `buttonAttrs` / `headerAttrs` / `wrapperAttrs`); `initialAnimation` naming review.
 
 ### BCarousel
@@ -237,5 +248,10 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 - Check the `RadiusElement` scale against v6: `rounded-lg` now matches the default `rounded` radius.
 - Replace v5 classes left in the docs and playground (`bg-body-tertiary`, `text-body-secondary`, `text-muted`, `bg-light`, `bg-dark`, `text-bg-*`; about 72 uses across 10 files).
 - Update `modal.spec.ts` tests that still use v5 values (`bodyBg: 'dark'` → `bg-dark`).
+- Replace v5 infix utilities left in docs components (`text-md-right` in `ComponentReference.vue` / `SourceHeader.vue`, `text-sm-right` in `TableRowDetails.vue`) with v6 prefix classes.
+- Remove `suffixPropName` in `utils/props.ts` if it still has no non-spec callers.
+- Run the docs formatter (`oxfmt` via lint-staged) over files from commits made with `--no-verify` (grid foundation).
 - Docs notes for visual v6 changes that need no code change (e.g. `.btn` is now `inline-flex` with a gap).
+- Nuxt builds print PostCSS `Lexical error` warnings: Nuxt's CSS minifier (`postcss-calc`) doesn't understand v6's relative color syntax (`oklch(from … calc(l * .9) …)`) in Bootstrap's own CSS. Builds succeed; decide whether to document it or configure the minifier for Nuxt users.
+- Spec type-checking (`vue-tsc -p tsconfig.vitest.json`) already fails in many existing specs; it is not part of the required checks.
 - Final checks: library lint, unit tests and build; docs build; playground and Nuxt builds; a pass over the built CSS for classes or variables missing from v6.
