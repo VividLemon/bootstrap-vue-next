@@ -15,7 +15,7 @@ const promiseToast = async () => {
   await using r = await create({
     theme: 'primary',
     position: 'middle-center',
-    bodyClass: 'w-100',
+    bodyAttrs: { class: 'w-100' },
     modelValue: true,
     slots: {
       default: ({ hide }: { hide: (trigger?: string) => void }) => {

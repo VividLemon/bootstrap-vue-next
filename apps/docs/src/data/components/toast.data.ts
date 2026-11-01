@@ -20,14 +20,12 @@ export default {
           ...pick(buildCommonProps(), [
             'bg',
             'body',
-            'bodyClass',
-            'closeClass',
+            'bodyAttrs',
             'closeContent',
             'closeLabel',
             'closeColor',
             'closeVariant',
             'fg',
-            'headerClass',
             'headerTag',
             'id',
             'interval',
@@ -40,6 +38,16 @@ export default {
             'title',
           ]),
 
+          closeAttrs: {
+            type: 'Readonly<AttrsValue>',
+            default: undefined,
+            description: 'Attributes to be applied to the close button',
+          },
+          headerAttrs: {
+            type: 'Readonly<AttrsValue>',
+            default: undefined,
+            description: 'Attributes to be applied to the toast header (rendered for `title`)',
+          },
           modelValue: {
             type: 'boolean | number',
             default: false,
@@ -56,15 +64,17 @@ export default {
             default: false,
             description: 'Hides the progress bar in the toast.',
           },
-          solid: {
+          toastAttrs: {
+            type: 'Readonly<AttrsValue>',
+            default: undefined,
+            description:
+              "Attributes to be applied to the toast element. `class` and `style` are merged with the component's own",
+          },
+          translucent: {
             type: 'boolean',
             default: false,
-            description: 'Renders the toast with a solid background instead of a translucent one.',
-          },
-          toastClass: {
-            type: 'ClassValue',
-            default: undefined,
-            description: 'Sets the CSS class(es) for the toast wrapper element.',
+            description:
+              'Adds `.toast-translucent`: a backdrop blur and saturation filter for stronger translucency',
           },
         } satisfies PropRecord<Exclude<keyof BToastProps, keyof typeof linkProps>>,
         'BLink props': linkedBLinkSection,

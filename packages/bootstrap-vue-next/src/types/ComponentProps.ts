@@ -1061,16 +1061,16 @@ export interface BSpinnerProps extends ColorExtendables {
 
 export interface BAlertProps
   extends ColorExtendables, Omit<BLinkProps, 'routerTag'>, ShowHideProps {
-  alertClass?: ClassValue
+  alertAttrs?: Readonly<AttrsValue>
   body?: string
-  bodyClass?: ClassValue
-  closeClass?: ClassValue
+  bodyAttrs?: Readonly<AttrsValue>
+  closeAttrs?: Readonly<AttrsValue>
   closeColor?: ColorExtendables
   closeContent?: string
   closeLabel?: string
   closeVariant?: ButtonVariant | null
   dismissible?: boolean
-  headerClass?: ClassValue
+  headerAttrs?: Readonly<AttrsValue>
   headerTag?: string
   id?: string
   interval?: number | 'requestAnimationFrame'
@@ -1490,13 +1490,13 @@ export interface BDropdownProps extends TeleporterProps, ShowHideProps, ColorExt
 export interface BToastProps
   extends ColorExtendables, Omit<BLinkProps, 'routerTag'>, ShowHideProps {
   body?: string
-  bodyClass?: ClassValue
-  closeClass?: ClassValue
+  bodyAttrs?: Readonly<AttrsValue>
+  closeAttrs?: Readonly<AttrsValue>
   closeColor?: ColorExtendables
   closeContent?: string
   closeLabel?: string
   closeVariant?: ButtonVariant | null
-  headerClass?: ClassValue
+  headerAttrs?: Readonly<AttrsValue>
   headerTag?: string
   id?: string
   interval?: number | 'requestAnimationFrame'
@@ -1508,9 +1508,9 @@ export interface BToastProps
   noResumeOnHoverLeave?: boolean
   progressProps?: Omit<BProgressBarProps, 'label' | 'max' | 'value'>
   showOnPause?: boolean
-  solid?: boolean
   title?: string
-  toastClass?: ClassValue
+  toastAttrs?: Readonly<AttrsValue>
+  translucent?: boolean
 }
 
 export interface BPopoverProps extends TeleporterProps, ShowHideProps {
