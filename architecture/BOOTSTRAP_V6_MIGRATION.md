@@ -29,17 +29,23 @@ Last updated: 2026-11-01. `bootstrap-v6` is local and not pushed.
 
 Each batch runs as an agent in its own git worktree under `.claude/worktrees/agent-<id>/` on branch `worktree-agent-<id>`, branched from `9380edda`. Uncommitted work stays in the worktree if the agent stops; check with `git -C .claude/worktrees/agent-<id> status`.
 
-| Wave | Batch                                                | Plan section        | Worktree branch                    | State                                 |
-| ---- | ---------------------------------------------------- | ------------------- | ---------------------------------- | ------------------------------------- |
-| 1    | Forms and checks                                     | Forms               | `worktree-agent-a6179c069c2f5495c` | Running, uncommitted work in progress |
-| 1    | Tables                                               | Content             | `worktree-agent-a893a70706bdb896b` | Running, uncommitted work in progress |
-| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `worktree-agent-a50e69ba3623a816a` | Running, uncommitted work in progress |
-| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `worktree-agent-a30fb2b266fa71b4e` | Running, uncommitted work in progress |
-| 2    | Buttons                                              | Buttons             | —                                  | Not started                           |
-| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                                  | Not started                           |
-| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                                  | Not started                           |
+| Wave | Batch                                                | Plan section        | Worktree branch                    | State                                                          |
+| ---- | ---------------------------------------------------- | ------------------- | ---------------------------------- | -------------------------------------------------------------- |
+| 1    | Forms and checks                                     | Forms               | `worktree-agent-a6179c069c2f5495c` | Running, uncommitted work in progress                          |
+| 1    | Tables                                               | Content             | `worktree-agent-a893a70706bdb896b` | Done in `d37aec0f`, all checks pass; awaiting review and merge |
+| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `worktree-agent-a50e69ba3623a816a` | Running, uncommitted work in progress                          |
+| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `worktree-agent-a30fb2b266fa71b4e` | Running, uncommitted work in progress                          |
+| 2    | Buttons                                              | Buttons             | —                                  | Not started                                                    |
+| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                                  | Not started                                                    |
+| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                                  | Not started                                                    |
 
 Known merge overlap: the navigation batch edited `BNavForm`, whose `validate` prop belongs to the forms batch.
+
+Tables batch follow-ups (from its report):
+
+- Stacked tables now always render a wrapper (`table-responsive`) because v6 stacking uses container queries; breakpoints compare against the wrapper, not the viewport. Users lose the side-by-side label layout, `<th>` body cell stacking, `tfoot` stacking and `labelStacked`; single-cell rows render bold. All of this belongs in the `btable` / `btablesimple` migration notes.
+- `table.md` still says stacked overrides sticky header/columns, which is no longer accurate.
+- `src/styles/_breakpoints.scss` is now unused; remove it in cleanup.
 
 ### Resuming
 
