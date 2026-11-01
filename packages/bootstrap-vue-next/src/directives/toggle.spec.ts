@@ -6,7 +6,11 @@ import {asyncTimeout} from '../../tests/utils'
 import BCollapse from '../components/BCollapse/BCollapse.vue'
 import {createBootstrap} from '../plugins'
 
-// Emitted control event for collapse (emitted to collapse)
+// Bootstrap v6 has no trigger state classes: only aria-expanded reflects the state
+const expectNoStateClasses = (classes: string[]) => {
+  expect(classes).not.toContain('collapsed')
+  expect(classes).not.toContain('not-collapsed')
+}
 
 describe('toggle directive', () => {
   enableAutoUnmount(afterEach)
@@ -51,14 +55,12 @@ describe('toggle directive', () => {
     const $button = wrapper.find('button')
     expect($button.attributes('aria-controls')).toBe('test1')
     expect($button.attributes('aria-expanded')).toBe('false')
-    expect($button.classes()).toContain('collapsed')
-    expect($button.classes()).not.toContain('not-collapsed')
+    expectNoStateClasses($button.classes())
 
     await wrapper.setProps({target: ['test1', 'test2']})
     expect($button.attributes('aria-controls')).toBe('test1 test2')
     expect($button.attributes('aria-expanded')).toBe('false')
-    expect($button.classes()).toContain('collapsed')
-    expect($button.classes()).not.toContain('not-collapsed')
+    expectNoStateClasses($button.classes())
     expect(spy1).not.toHaveBeenCalled()
     expect(spy2).not.toHaveBeenCalled()
 
@@ -70,14 +72,12 @@ describe('toggle directive', () => {
 
     expect($button.attributes('aria-controls')).toBe('test1 test2')
     expect($button.attributes('aria-expanded')).toBe('true')
-    expect($button.classes()).toContain('not-collapsed')
-    expect($button.classes()).not.toContain('collapsed')
+    expectNoStateClasses($button.classes())
 
     await wrapper.setProps({target: ['test2']})
     expect($button.attributes('aria-controls')).toBe('test2')
     expect($button.attributes('aria-expanded')).toBe('true')
-    expect($button.classes()).toContain('not-collapsed')
-    expect($button.classes()).not.toContain('collapsed')
+    expectNoStateClasses($button.classes())
     expect(spy1).toHaveBeenCalledTimes(1)
     expect(spy2).toHaveBeenCalledTimes(1)
 
@@ -87,12 +87,29 @@ describe('toggle directive', () => {
     expect(spy1).toHaveBeenCalledTimes(1)
     expect(spy2).toHaveBeenCalledTimes(2)
 
-    // Since there is no target collapse to respond with the
-    // current state, the classes and attrs remain the same
+    // test2 closed again
     expect($button.attributes('aria-controls')).toBe('test2')
     expect($button.attributes('aria-expanded')).toBe('false')
-    expect($button.classes()).toContain('collapsed')
-    expect($button.classes()).not.toContain('not-collapsed')
+    expectNoStateClasses($button.classes())
+  })
+
+  it('removes aria-expanded and aria-controls when the trigger unmounts', async () => {
+    const App = {
+      directives: {bToggle: VBToggle},
+      components: {BCollapse},
+      props: {showTrigger: {type: Boolean, default: true}},
+      template: `<div><button v-if="showTrigger" v-b-toggle.unmount-collapse>button</button></div><BCollapse id="unmount-collapse" :model-value="true">collapse</BCollapse>`,
+    }
+    const wrapper = mount(App, {attachTo: document.body, global: {plugins: [createBootstrap()]}})
+    await flushPromises()
+    await nextTick()
+    const el = wrapper.find('button').element
+    expect(el.getAttribute('aria-expanded')).toBe('true')
+    expect(el.getAttribute('aria-controls')).toBe('unmount-collapse')
+    await wrapper.setProps({showTrigger: false})
+    await flushPromises()
+    expect(el.hasAttribute('aria-expanded')).toBe(false)
+    expect(el.hasAttribute('aria-controls')).toBe(false)
   })
 
   it('does not log findProvides error when unmounted quickly', async () => {

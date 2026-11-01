@@ -21,7 +21,7 @@ Because BootstrapVue's components are purposely designed to be fairly generic, a
 
 ## ARIA Trigger Registration for component visibility
 
-Several BootstrapVueNext components (`BCollapse`, `BOffcanvas`, `BModal`, `BDropdown`, `BAlert`, `BToast`, `BPopover`) support automatic ARIA attribute management for trigger elements that control their visibility. This system ensures proper accessibility by automatically updating `aria-expanded` attributes and CSS classes (`collapsed`/`not-collapsed`) on trigger elements as the component's visibility changes.
+Several BootstrapVueNext components (`BCollapse`, `BOffcanvas`, `BModal`, `BDropdown`, `BAlert`, `BToast`, `BPopover`) support automatic ARIA attribute management for trigger elements that control their visibility. This system ensures proper accessibility by automatically updating the `aria-expanded` attribute on trigger elements as the component's visibility changes. There are no trigger state classes; style triggers with `[aria-expanded]` attribute selectors.
 
 ### How Trigger Registration Works
 
@@ -43,11 +43,10 @@ When you use `v-b-toggle`, the directive:
 Once a trigger is registered (via `v-b-toggle`), the component automatically:
 
 - Sets and maintains the `aria-expanded` attribute (`"true"` or `"false"`) based on visibility state
-- Adds/removes the `collapsed` and `not-collapsed` CSS classes for visual state
-- Updates these attributes and classes whenever visibility changes, regardless of the method used (`v-b-toggle` click, `v-model` change, slot functions, etc.)
-- Cleans up the `aria-expanded` attribute and classes when the trigger unregisters
+- Updates it whenever visibility changes, regardless of the method used (`v-b-toggle` click, `v-model` change, slot functions, etc.). It changes when a show or hide starts, not after the transition
+- Cleans up the `aria-expanded` attribute when the trigger unregisters
 
-This split responsibility ensures that `aria-controls` (which depends on target IDs known by the directive) is managed separately from `aria-expanded` and visual classes (which depend on the component's visibility state).
+This split responsibility ensures that `aria-controls` (which depends on target IDs known by the directive) is managed separately from `aria-expanded` (which depends on the component's visibility state).
 
 ### Method 1: Using v-b-toggle (Automatic Registration)
 
@@ -59,7 +58,6 @@ With this approach, the button automatically receives:
 
 - `aria-controls="aria-demo-directive"`
 - `aria-expanded="true"` or `aria-expanded="false"` (updated automatically)
-- `collapsed` or `not-collapsed` CSS class (updated automatically)
 
 ### Method 2: Using v-model with v-b-toggle
 
@@ -83,7 +81,6 @@ This approach requires you to manually:
 
 - Set `aria-controls` to the component's ID
 - Update `aria-expanded` based on visibility state
-- Toggle `collapsed`/`not-collapsed` CSS classes
 
 ### When to Use Each Method
 

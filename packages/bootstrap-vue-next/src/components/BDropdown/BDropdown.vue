@@ -121,7 +121,7 @@ import ConditionalTeleport from '../ConditionalTeleport.vue'
 import {isBoundary, isRootBoundary, resolveBootstrapCaret} from '../../utils/floatingUi'
 import {getElement} from '../../utils/getElement'
 import {buttonGroupKey, dropdownInjectionKey, inputGroupKey} from '../../utils/keys'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import type {BDropdownEmits, BDropdownProps, BDropdownSlots} from '../../types'
 import {getSafeDocument} from '../../utils/dom'
 
@@ -213,7 +213,7 @@ const {
   contentShowing,
   isVisible,
   isActive,
-} = useShowHide(
+} = useLegacyShowHide(
   {modelValue, props, emit: emit as EmitFn, element: referenceElement, id: computedId},
   {
     showFn: () => {

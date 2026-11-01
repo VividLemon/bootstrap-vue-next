@@ -162,7 +162,7 @@ import {useSafeScrollLock} from '../../composables/useSafeScrollLock'
 import {getModalZIndex, getSafeDocument, isEmptySlot} from '../../utils/dom'
 import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {useModalManager} from '../../composables/useModalManager'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import ConditionalTeleport from '../ConditionalTeleport.vue'
 import {getElement} from '../../utils/getElement'
 
@@ -302,7 +302,7 @@ const {
   contentShowing,
   backdropReady,
   backdropVisible,
-} = useShowHide(
+} = useLegacyShowHide(
   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
   {
     // addShowClass: false,

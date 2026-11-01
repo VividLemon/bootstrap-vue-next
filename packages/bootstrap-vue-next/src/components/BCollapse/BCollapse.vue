@@ -29,7 +29,7 @@ import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {collapseInjectionKey} from '../../utils/keys'
 import type {BCollapseEmits, BCollapseProps, BCollapseSlots, ShowHideSlotsData} from '../../types'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 
 defineOptions({
   inheritAttrs: false,
@@ -115,7 +115,7 @@ const {
   computedNoAnimation,
   contentShowing,
   transitionProps,
-} = useShowHide(
+} = useLegacyShowHide(
   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
   {
     // addShowClass: false,

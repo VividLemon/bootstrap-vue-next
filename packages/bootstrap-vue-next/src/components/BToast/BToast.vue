@@ -119,7 +119,7 @@ import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClass
 import {useDefaults} from '../../composables/useDefaults'
 import {useCountdownHover} from '../../composables/useCountdownHover'
 import {useId} from '../../composables/useId'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import BButton from '../BButton/BButton.vue'
 
 const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
@@ -197,7 +197,7 @@ const {
   isVisible,
   transitionProps,
   contentShowing,
-} = useShowHide({modelValue, props, emit: emit as EmitFn, element, id: computedId})
+} = useLegacyShowHide({modelValue, props, emit: emit as EmitFn, element, id: computedId})
 
 // TODO solid is never used
 const countdownLength = computed(() =>

@@ -107,7 +107,7 @@ import BCloseButton from '../BButton/BCloseButton.vue'
 import ConditionalTeleport from '../ConditionalTeleport.vue'
 import {useSafeScrollLock} from '../../composables/useSafeScrollLock'
 import {isEmptySlot} from '../../utils/dom'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import {getElement} from '../../utils/getElement'
 
 // TODO once the responsive stuff may be implemented correctly,
@@ -206,7 +206,7 @@ const {
   isLeaving,
   trapActive,
   setLocalNoAnimation,
-} = useShowHide(
+} = useLegacyShowHide(
   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
   {
     transitionProps: {
