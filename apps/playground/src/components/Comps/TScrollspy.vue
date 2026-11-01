@@ -44,7 +44,7 @@
         <p>current: {{ nestedCurrent }}</p>
         <BCard id="nested">
           <BRow>
-            <BCol cols="4">
+            <BCol :cols="{ xs: 4 }">
               <BNavbar ref="targetNested" class="flex-column">
                 <BNavbarBrand href="#">Navbar</BNavbarBrand>
                 <BNav pills vertical>
@@ -69,7 +69,7 @@
               </BNavbar>
             </BCol>
 
-            <BCol cols="8">
+            <BCol :cols="{ xs: 8 }">
               <div
                 id="scrollspy-nested"
                 ref="contentNested"
@@ -104,7 +104,7 @@
         <div class="split" />
         <BCard id="list">
           <BRow>
-            <BCol cols="4">
+            <BCol :cols="{ xs: 4 }">
               <BListGroup>
                 <BListGroupItem
                   v-for="(e, idx) in currentListItems"
@@ -117,7 +117,7 @@
               </BListGroup>
             </BCol>
 
-            <BCol cols="8">
+            <BCol :cols="{ xs: 8 }">
               <BButton @click="addItem">add</BButton>
               <div
                 id="listgroup-ex"
@@ -135,7 +135,7 @@
         <div class="split" />
         <BCard id="directive">
           <BRow>
-            <BCol cols="4">
+            <BCol :cols="{ xs: 4 }">
               <BListGroup v-b-scrollspy:directive-list>
                 <BListGroupItem v-for="(e, idx) in items" :key="idx" :href="'#' + e.id">
                   {{ e.text }}
@@ -143,7 +143,7 @@
               </BListGroup>
             </BCol>
 
-            <BCol cols="8">
+            <BCol :cols="{ xs: 8 }">
               <BButton @click="addItem">add</BButton>
               <div id="directive-list" style="position: relative; overflow-y: auto; height: 400px">
                 <template v-for="i in items" :key="i.id">

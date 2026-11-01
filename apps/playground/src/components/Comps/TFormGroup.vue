@@ -54,8 +54,8 @@
         <BFormGroup
           label="Aktiv:"
           label-for="test-active-fixed"
-          label-align-md="end"
-          label-cols-md="3"
+          :label-align="{ md: 'end' }"
+          :label-cols="{ md: 3 }"
           label-class="custom-label-field"
           class="align-items-center test-form-group"
         >
@@ -65,8 +65,8 @@
         <BFormGroup
           label="Standard:"
           label-for="test-default-fixed"
-          label-align-md="end"
-          label-cols-md="3"
+          :label-align="{ md: 'end' }"
+          :label-cols="{ md: 3 }"
           label-class="custom-label-field"
           class="align-items-center test-form-group"
         >
@@ -76,8 +76,8 @@
         <BFormGroup
           label="Name:"
           label-for="test-name-fixed"
-          label-align-md="end"
-          label-cols-md="3"
+          :label-align="{ md: 'end' }"
+          :label-cols="{ md: 3 }"
           label-class="custom-label-field"
           class="align-items-center test-form-group"
         >
@@ -95,8 +95,8 @@
 
         <BFormGroup
           label="Click me to focus input"
-          label-cols-md="4"
-          label-align-md="end"
+          :label-cols="{ md: 4 }"
+          :label-align="{ md: 'end' }"
           class="test-form-group"
         >
           <BFormInput
