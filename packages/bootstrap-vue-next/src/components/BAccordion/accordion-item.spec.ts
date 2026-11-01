@@ -26,7 +26,7 @@ describe('accordion-item', () => {
 
   it('b-collapse contains static class accordion-collapse', () => {
     const wrapper = mount(BAccordionItem)
-    const [, , , $bcollapse] = wrapper.findComponent(BCollapse).findAll('*')
+    const $bcollapse = wrapper.get('.accordion-item > .collapse')
     expect($bcollapse.classes()).toContain('accordion-collapse')
   })
 
@@ -63,8 +63,17 @@ describe('accordion-item', () => {
     const wrapper = mount(BAccordionItem, {
       props: {id: 'spam&eggs'},
     })
-    const [, , , $bcollapse] = wrapper.findComponent(BCollapse).findAll('*')
+    const $bcollapse = wrapper.get('.accordion-item > .collapse')
     expect($bcollapse.attributes('id')).toBe('spam&eggs')
+  })
+
+  it('passes noTransition to b-collapse', async () => {
+    const wrapper = mount(BAccordionItem, {props: {noTransition: true}})
+    const $bcollapse = wrapper.findComponent(BCollapse)
+    expect($bcollapse.props('noTransition')).toBe(true)
+    expect(wrapper.get('.accordion-item > .collapse').classes()).toContain('transition-none')
+    await wrapper.setProps({noTransition: false})
+    expect($bcollapse.props('noTransition')).toBe(false)
   })
 
   it('b-collapse has prop visible', async () => {
@@ -81,7 +90,7 @@ describe('accordion-item', () => {
     const wrapper = mount(BAccordionItem, {
       props: {id: 'foobar'},
     })
-    const [, , , $bcollapse] = wrapper.findComponent(BCollapse).findAll('*')
+    const $bcollapse = wrapper.get('.accordion-item > .collapse')
     expect($bcollapse.attributes('aria-labelledby')).toBe('foobar-heading')
   })
 
