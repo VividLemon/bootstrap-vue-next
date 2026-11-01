@@ -15,9 +15,9 @@ function createMockParentData(overrides: Record<string, unknown> = {}) {
     lazy: ref(false),
     card: ref(false),
     noTransition: ref(false),
-    activeTabClass: ref(undefined),
-    inactiveTabClass: ref(undefined),
-    tabClass: ref(undefined),
+    activeTabAttrs: ref(undefined),
+    inactiveTabAttrs: ref(undefined),
+    tabAttrs: ref(undefined),
     activeId,
     registerTab: (tab: ComputedRef<TabType>) => {
       registeredTabs.push(tab)
@@ -146,34 +146,42 @@ describe('tab', () => {
     expect(wrapper.classes()).not.toContain('card-body')
   })
 
-  it('has class fade when parentData noTransition is false', () => {
+  it('does not have class tab-pane-instant when parentData noTransition is false', () => {
     const parentData = createMockParentData({noTransition: ref(false)})
     const wrapper = mount(BTab, {
       global: {provide: {[tabsInjectionKey as unknown as symbol]: parentData}},
     })
-    expect(wrapper.classes()).toContain('fade')
+    expect(wrapper.classes()).not.toContain('tab-pane-instant')
   })
 
-  it('does not have class fade when parentData noTransition is true', () => {
+  it('has class tab-pane-instant when parentData noTransition is true', () => {
     const parentData = createMockParentData({noTransition: ref(true)})
     const wrapper = mount(BTab, {
       global: {provide: {[tabsInjectionKey as unknown as symbol]: parentData}},
     })
-    expect(wrapper.classes()).not.toContain('fade')
+    expect(wrapper.classes()).toContain('tab-pane-instant')
   })
 
-  it('has class fade when no parent data', () => {
+  it('never has the v5 fade or show classes', () => {
     const wrapper = mount(BTab)
-    // When no parent is provided, the fade class is applied by default
-    expect(wrapper.classes()).toContain('fade')
+    expect(wrapper.classes()).not.toContain('fade')
+    expect(wrapper.classes()).not.toContain('show')
   })
 
-  it('applies tabClass from parent', () => {
-    const parentData = createMockParentData({tabClass: ref('custom-tab-class')})
+  it('applies tabAttrs from parent and merges class and style', () => {
+    const parentData = createMockParentData({
+      tabAttrs: ref({'class': 'custom-tab-class', 'style': {color: 'red'}, 'data-foo': 'bar'}),
+    })
     const wrapper = mount(BTab, {
+      attrs: {class: 'own-class', style: 'margin: 1px;'},
       global: {provide: {[tabsInjectionKey as unknown as symbol]: parentData}},
     })
+    expect(wrapper.classes()).toContain('tab-pane')
     expect(wrapper.classes()).toContain('custom-tab-class')
+    expect(wrapper.classes()).toContain('own-class')
+    expect(wrapper.attributes('style')).toContain('color: red')
+    expect(wrapper.attributes('style')).toContain('margin: 1px')
+    expect(wrapper.attributes('data-foo')).toBe('bar')
   })
 
   // --- Default slot rendering ---
@@ -264,8 +272,9 @@ describe('tab', () => {
     expect(panes[1].classes()).not.toContain('active')
   })
 
-  it('has class show when tab is active (after timeout)', async () => {
+  it('adds tab-pane-instant to every pane when BTabs has noTransition', async () => {
     const wrapper = mount(BTabs, {
+      props: {noTransition: true},
       slots: {
         default: () => [
           h(BTab, {id: 'tab-a', title: 'A'}, () => 'content-a'),
@@ -274,12 +283,9 @@ describe('tab', () => {
       },
     })
     await nextTick()
-    // show is set via setTimeout, wait for it
-    await new Promise((resolve) => setTimeout(resolve, 10))
-    await nextTick()
     const panes = wrapper.findAll('.tab-pane')
-    expect(panes[0].classes()).toContain('show')
-    expect(panes[1].classes()).not.toContain('show')
+    expect(panes[0].classes()).toContain('tab-pane-instant')
+    expect(panes[1].classes()).toContain('tab-pane-instant')
   })
 
   it('switches active class when another tab is clicked', async () => {
@@ -303,9 +309,9 @@ describe('tab', () => {
     expect(panes[1].classes()).toContain('active')
   })
 
-  it('applies activeTabClass from parent when active', async () => {
+  it('applies activeTabAttrs from parent when active', async () => {
     const wrapper = mount(BTabs, {
-      props: {activeTabClass: 'my-active-class'},
+      props: {activeTabAttrs: {class: 'my-active-class'}},
       slots: {
         default: () => [
           h(BTab, {id: 'tab-a', title: 'A'}, () => 'content-a'),
@@ -321,9 +327,9 @@ describe('tab', () => {
     expect(panes[1].classes()).not.toContain('my-active-class')
   })
 
-  it('applies inactiveTabClass from parent when inactive', async () => {
+  it('applies inactiveTabAttrs from parent when inactive', async () => {
     const wrapper = mount(BTabs, {
-      props: {inactiveTabClass: 'my-inactive-class'},
+      props: {inactiveTabAttrs: {class: 'my-inactive-class'}},
       slots: {
         default: () => [
           h(BTab, {id: 'tab-a', title: 'A'}, () => 'content-a'),

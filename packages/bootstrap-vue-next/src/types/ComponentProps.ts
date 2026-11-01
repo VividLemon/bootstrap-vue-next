@@ -998,38 +998,37 @@ export interface BTabProps {
   noBody?: boolean
   tag?: string
   title?: string
-  titleItemClass?: ClassValue
+  titleItemAttrs?: Readonly<AttrsValue>
   titleLinkAttrs?: Readonly<AttrsValue>
-  titleLinkClass?: ClassValue
 }
 
 export interface BTabsProps {
-  activeNavItemClass?: ClassValue
-  activeNavLinkClass?: ClassValue
-  activeTabClass?: ClassValue
+  activeNavItemAttrs?: Readonly<AttrsValue>
+  activeNavLinkAttrs?: Readonly<AttrsValue>
+  activeTabAttrs?: Readonly<AttrsValue>
   align?: AlignmentJustifyContent
   card?: boolean
-  contentClass?: ClassValue
+  contentAttrs?: Readonly<AttrsValue>
   end?: boolean
   fill?: boolean
   id?: string
   index?: number
-  inactiveNavItemClass?: ClassValue
-  inactiveNavLinkClass?: ClassValue
-  inactiveTabClass?: ClassValue
+  inactiveNavItemAttrs?: Readonly<AttrsValue>
+  inactiveNavLinkAttrs?: Readonly<AttrsValue>
+  inactiveTabAttrs?: Readonly<AttrsValue>
   justified?: boolean
   lazy?: boolean
   modelValue?: string
-  navClass?: ClassValue
-  navItemClass?: ClassValue
-  navWrapperClass?: ClassValue
+  navAttrs?: Readonly<AttrsValue>
+  navItemAttrs?: Readonly<AttrsValue>
+  navWrapperAttrs?: Readonly<AttrsValue>
   noTransition?: boolean
   noKeyNav?: boolean
   noNavStyle?: boolean
   pills?: boolean
   small?: boolean
   tag?: string
-  tabClass?: ClassValue
+  tabAttrs?: Readonly<AttrsValue>
   underline?: boolean
   vertical?: boolean
 }
