@@ -12,14 +12,58 @@ It is the single source of truth for the migration: implementation work follows 
 
 ## Status
 
-| Phase                                                                                                              | State                                           |
-| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
-| Color API (`theme` / `bg` / `fg` / `border`, `ThemeProp`)                                                          | Done (`641959ec`)                               |
-| Phase 0: workspace on Bootstrap 6, library SCSS on v6 Sass                                                         | Done (`80574a2c`)                               |
-| Phase 2a: foundations (CSS layer, breakpoints + responsive objects + grid, transition core, color + hover objects) | Done (`6e762b88`…`ee04af38`)                    |
-| Phase 2b: component batches                                                                                        | Not started                                     |
-| Phase 3: migration docs                                                                                            | Not started                                     |
-| Deferred components                                                                                                | See [Deferred components](#deferred-components) |
+| Phase                                                                                                              | State                                                                 |
+| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| Color API (`theme` / `bg` / `fg` / `border`, `ThemeProp`)                                                          | Done (`641959ec`)                                                     |
+| Phase 0: workspace on Bootstrap 6, library SCSS on v6 Sass                                                         | Done (`80574a2c`)                                                     |
+| Phase 2a: foundations (CSS layer, breakpoints + responsive objects + grid, transition core, color + hover objects) | Done (`6e762b88`…`ee04af38`)                                          |
+| Phase 2b: component batches                                                                                        | In progress — see [Implementation progress](#implementation-progress) |
+| Phase 3: migration docs                                                                                            | Not started                                                           |
+| Deferred components                                                                                                | See [Deferred components](#deferred-components)                       |
+
+## Implementation progress
+
+Last updated: 2026-11-01. `bootstrap-v6` is local and not pushed.
+
+### Phase 2b batches
+
+Each batch runs as an agent in its own git worktree under `.claude/worktrees/agent-<id>/` on branch `worktree-agent-<id>`, branched from `9380edda`. Uncommitted work stays in the worktree if the agent stops; check with `git -C .claude/worktrees/agent-<id> status`.
+
+| Wave | Batch                                                | Plan section        | Worktree branch                    | State                                 |
+| ---- | ---------------------------------------------------- | ------------------- | ---------------------------------- | ------------------------------------- |
+| 1    | Forms and checks                                     | Forms               | `worktree-agent-a6179c069c2f5495c` | Running, uncommitted work in progress |
+| 1    | Tables                                               | Content             | `worktree-agent-a893a70706bdb896b` | Running, uncommitted work in progress |
+| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `worktree-agent-a50e69ba3623a816a` | Running, uncommitted work in progress |
+| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `worktree-agent-a30fb2b266fa71b4e` | Running, uncommitted work in progress |
+| 2    | Buttons                                              | Buttons             | —                                  | Not started                           |
+| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                                  | Not started                           |
+| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                                  | Not started                           |
+
+Known merge overlap: the navigation batch edited `BNavForm`, whose `validate` prop belongs to the forms batch.
+
+### Resuming
+
+1. Check each wave 1 worktree: if its branch has commits after `9380edda`, the batch finished — review and merge it. If it only has uncommitted changes, the agent stopped mid-task: resume the same agent if possible; otherwise start a new agent in that same worktree with the batch instructions below and tell it to continue from the existing changes.
+2. Merge finished batches one at a time onto `bootstrap-v6` with `git cherry-pick 9380edda..<branch>` (keeps history linear), then run the checks below on the combined result.
+3. Start wave 2 after wave 1 is merged, then Phase 3 (migration docs), then the cleanup section.
+4. Update this section and the Status table after each merge.
+
+### Required checks
+
+- `pnpm --filter bootstrap-vue-next run test:lint`, `test:unit:ci`, `build`
+- `pnpm --filter docs run type-check` — not a plain `vue-tsc --noEmit` in `apps/docs`, whose root tsconfig contains no files and checks nothing
+- `cd apps/playground && npx vue-tsc --build --force`
+- `npx turbo run build --force` (docs site and Nuxt) before each phase is marked done
+
+### Batch agent instructions
+
+Every batch agent receives these instructions plus its batch's components and plan section.
+
+1. **Base check first.** Worktrees for this project have been created from `main` by mistake. Run `git merge-base --is-ancestor 9380edda HEAD`; if it fails and there are no commits yet, `git reset --hard bootstrap-v6`. Then `pnpm install --frozen-lockfile --ignore-scripts`.
+2. **Read** `AGENTS.md`, this plan (implement exactly what it says for the batch, including the cross-cutting rules), and `architecture/ARIA_VISIBILITY.md` plus the JSDoc in `useShowHide.ts` / `useCssTransition.ts` when moving a component to the native transition path. Bootstrap v6 references: `packages/bootstrap-vue-next/node_modules/bootstrap/dist/css/bootstrap.css`, `scss/`, `js/src/`, and https://getbootstrap.com/docs/6.0/. The original research reports are lost, so re-derive details from the code and v6 sources; when something wasn't anticipated, follow v6 native behavior, make the smallest correct change, and report it.
+3. **Rules.** No compatibility shims. Apply the part attrs rule to every in-scope component (specs for the class merge). Update specs, docs `*.data.ts`, `apps/docs/src/utils/*.ts`, docs pages and demos, and playground usages. Do not write `migration-data` pages or edit this plan. Keep `ComponentProps.ts` edits inside the batch's interfaces, line-local. No `git commit --no-verify`.
+4. **Verify** with the required checks above, plus a headless Chromium check (installed `playwright-core`) where behavior or layout changed — via the package dev server on port 5174 with a temporary `src/App.vue` (reverted before committing) or a static SSR render with v6 `bootstrap.css` and the built library CSS. Report what could not be verified.
+5. **Commit** focused Conventional Commits (`!` and a `BREAKING CHANGE:` footer for API or markup changes), each ending with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, on the worktree branch; do not push. Final report: branch, commit SHAs, check results, every breaking change (old → new), unanticipated findings, files touched outside the batch, and what wasn't verified.
 
 ## Cross-cutting decisions
 
