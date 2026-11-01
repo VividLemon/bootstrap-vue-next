@@ -76,6 +76,7 @@ export type {
 export type {InputType} from './InputType'
 export type {LinkTarget} from './LinkTarget'
 export type {LinkOpacity, UnderlineOffset, UnderlineOpacity} from './LinkDecorators'
+export type {HoverState} from './HoverState'
 export type {LiteralUnion} from './LiteralUnion'
 export type {PaginationPage} from './PaginationPage'
 export type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'

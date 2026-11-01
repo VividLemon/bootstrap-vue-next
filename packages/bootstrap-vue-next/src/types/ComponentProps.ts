@@ -79,6 +79,7 @@ import type {SpinnerType} from './SpinnerType'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {ButtonType} from './ButtonType'
 import type {LinkOpacity, UnderlineOffset, UnderlineOpacity} from './LinkDecorators'
+import type {HoverState} from './HoverState'
 import type {LiteralUnion} from './LiteralUnion'
 import type {BreadcrumbItemRaw} from './BreadcrumbTypes'
 import type {TransitionMode} from './TransitionMode'
@@ -162,8 +163,7 @@ export interface BLinkProps extends ColorExtendables, UnderlineColorExtendables 
   href?: string
   icon?: boolean
   noRel?: boolean
-  opacity?: LinkOpacity
-  opacityHover?: LinkOpacity
+  opacity?: HoverState<LinkOpacity>
   prefetch?: boolean
   prefetchOn?: Partial<{
     visibility: boolean
@@ -178,21 +178,15 @@ export interface BLinkProps extends ColorExtendables, UnderlineColorExtendables 
   stretched?: boolean
   target?: LinkTarget
   to?: RouteLocationRaw
-  underlineOffset?: UnderlineOffset
-  underlineOffsetHover?: UnderlineOffset
-  underlineOpacity?: UnderlineOpacity
-  underlineOpacityHover?: UnderlineOpacity
+  underlineOffset?: HoverState<UnderlineOffset>
+  underlineOpacity?: HoverState<UnderlineOpacity>
 }
 
 export type LinkUnderlineProps = Pick<
   BLinkProps,
-  | 'underlineOffset'
-  | 'underlineOffsetHover'
-  | 'underlineOpacity'
-  | 'underlineOpacityHover'
-  | 'underlineTheme'
+  'underlineOffset' | 'underlineOpacity' | 'underlineTheme'
 >
-export type LinkOpacityProps = Pick<BLinkProps, 'opacity' | 'opacityHover'>
+export type LinkOpacityProps = Pick<BLinkProps, 'opacity'>
 export type LinkIconProps = Pick<BLinkProps, 'icon'>
 export type LinkThemeProps = Pick<BLinkProps, 'theme' | 'bg' | 'fg'>
 

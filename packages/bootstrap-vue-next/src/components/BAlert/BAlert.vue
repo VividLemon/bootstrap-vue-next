@@ -160,7 +160,6 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   href: undefined,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   stretched: false,
   rel: undefined,
   replace: undefined,
@@ -168,9 +167,7 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   target: undefined,
   to: undefined,
   underlineOffset: undefined,
-  underlineOffsetHover: undefined,
   underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
   underlineTheme: undefined,
   // End link props
   theme: 'info',

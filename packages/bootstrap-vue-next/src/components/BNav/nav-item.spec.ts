@@ -205,17 +205,9 @@ describe('nav-item', () => {
 
   it('passes opacity prop to BLink', () => {
     const wrapper = mount(BNavItem, {
-      props: {opacity: 50},
+      props: {opacity: {xs: 50, hover: 70}},
     })
     const $blink = wrapper.findComponent(BLink)
-    expect($blink.props('opacity')).toBe(50)
-  })
-
-  it('passes opacityHover prop to BLink', () => {
-    const wrapper = mount(BNavItem, {
-      props: {opacityHover: 70},
-    })
-    const $blink = wrapper.findComponent(BLink)
-    expect($blink.props('opacityHover')).toBe(70)
+    expect($blink.props('opacity')).toStrictEqual({xs: 50, hover: 70})
   })
 })

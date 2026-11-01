@@ -85,16 +85,13 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   exactActiveClass: undefined,
   href: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   rel: undefined,
   replace: undefined,
   stretched: false,
   routerComponentName: undefined,
   target: undefined,
   underlineOffset: undefined,
-  underlineOffsetHover: undefined,
   underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
   underlineTheme: undefined,
   // End link props
   // ColorExtendables props

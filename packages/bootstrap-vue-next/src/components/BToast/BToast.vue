@@ -165,7 +165,6 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   href: undefined,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   stretched: false,
   rel: undefined,
   replace: undefined,
@@ -173,9 +172,7 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   target: undefined,
   to: undefined,
   underlineOffset: undefined,
-  underlineOffsetHover: undefined,
   underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
   underlineTheme: undefined,
   theme: undefined,
   // End link props
