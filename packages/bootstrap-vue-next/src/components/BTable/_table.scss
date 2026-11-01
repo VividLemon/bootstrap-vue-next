@@ -66,7 +66,7 @@
 
 .b-table-sticky-header,
 .table-responsive,
-[class*="table-responsive-"] {
+[class*=":table-responsive"] {
   // Move the table bottom margin to the wrapper
   margin-bottom: var(--bs-spacer);
 
@@ -113,7 +113,7 @@
   // headers and/or is responsive
   .b-table-sticky-header,
   .table-responsive,
-  [class*="table-responsive-"] {
+  [class*=":table-responsive"] {
     > .table.b-table {
       > thead,
       > tbody,

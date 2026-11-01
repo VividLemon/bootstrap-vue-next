@@ -24,7 +24,7 @@ const computedClasses = computed(() => {
   return {
     'list-group-flush': props.flush,
     'list-group-horizontal': horizontal === true,
-    [`list-group-horizontal-${horizontal}`]: typeof horizontal === 'string',
+    [`${horizontal}:list-group-horizontal`]: typeof horizontal === 'string',
     'list-group-numbered': props.numbered,
   }
 })
