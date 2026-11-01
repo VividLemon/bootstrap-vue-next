@@ -58,17 +58,12 @@ import type {
 } from './SelectTypes'
 import type {
   Breakpoint,
-  ColBreakpointProps,
-  ColsNumbers,
   ColsOffsetNumbers,
   ColsOrderNumbers,
-  ContentColsBreakpointProps,
+  ColsValue,
   GutterNumbers,
-  LabelAlignBreakpointProps,
-  LabelColsBreakpointProps,
-  OffsetBreakpointProps,
-  OrderBreakpointProps,
-  RowColsBreakpointProps,
+  Responsive,
+  RowColsNumbers,
 } from './BreakpointProps'
 import type {
   AlignmentContent,
@@ -1066,8 +1061,8 @@ export interface BCollapseProps extends ShowHideProps {
 
 export interface BContainerProps {
   fluid?: boolean | Breakpoint
-  gutterX?: GutterNumbers
-  gutterY?: GutterNumbers
+  gutterX?: Responsive<GutterNumbers>
+  gutterY?: Responsive<GutterNumbers>
   tag?: string
 }
 
@@ -1671,31 +1666,29 @@ export interface ShowHideProps {
   visible?: boolean
 }
 
-export interface BRowProps extends RowColsBreakpointProps {
+export interface BRowProps {
   tag?: string
-  gutterX?: GutterNumbers
-  gutterY?: GutterNumbers
+  gutterX?: Responsive<GutterNumbers>
+  gutterY?: Responsive<GutterNumbers>
   noGutters?: boolean
-  alignV?: AlignmentVertical
-  alignH?: AlignmentJustifyContent
-  alignContent?: AlignmentContent
-  cols?: ColsNumbers
+  alignV?: Responsive<AlignmentVertical>
+  alignH?: Responsive<AlignmentJustifyContent>
+  alignContent?: Responsive<AlignmentContent>
+  cols?: Responsive<RowColsNumbers>
 }
 
-export interface BColProps extends OffsetBreakpointProps, OrderBreakpointProps, ColBreakpointProps {
-  alignSelf?: AlignmentVertical | 'auto'
+export interface BColProps {
+  alignSelf?: Responsive<AlignmentVertical | 'auto'>
   tag?: string
-  order?: ColsOrderNumbers
-  offset?: ColsOffsetNumbers
-  cols?: ColsNumbers | 'auto'
-  col?: boolean
+  order?: Responsive<ColsOrderNumbers>
+  offset?: Responsive<ColsOffsetNumbers>
+  cols?: Responsive<ColsValue>
 }
 
-export interface BFormGroupProps
-  extends ContentColsBreakpointProps, LabelColsBreakpointProps, LabelAlignBreakpointProps {
-  contentCols?: boolean | Numberish
-  labelCols?: boolean | Numberish
-  labelAlign?: string
+export interface BFormGroupProps {
+  contentCols?: Responsive<ColsValue>
+  labelCols?: Responsive<ColsValue>
+  labelAlign?: Responsive<AlignmentTextHorizontal>
   ariaInvalid?: AriaInvalid
   description?: string
   disabled?: boolean

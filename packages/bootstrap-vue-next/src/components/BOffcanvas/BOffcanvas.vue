@@ -89,7 +89,8 @@
 </template>
 
 <script setup lang="ts">
-import {breakpointsBootstrapV5, onKeyStroke, unrefElement, useBreakpoints} from '@vueuse/core'
+import {onKeyStroke, unrefElement, useBreakpoints} from '@vueuse/core'
+import {breakpointWidths} from '../../utils/responsive'
 import {useActivatedFocusTrap} from '../../composables/useActivatedFocusTrap'
 import {computed, type EmitFn, nextTick, onMounted, ref, useTemplateRef, watch} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
@@ -221,7 +222,7 @@ const {
   }
 )
 
-const breakpoints = useBreakpoints(breakpointsBootstrapV5)
+const breakpoints = useBreakpoints(breakpointWidths)
 const smallerThanBreakpoint = breakpoints.smaller(() => props.responsive ?? 'xs')
 // Initialize with SSR-safe default value to prevent hydration mismatches
 // The actual breakpoint evaluation is deferred to onMounted (client-side only)

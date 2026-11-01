@@ -1,4 +1,4 @@
-export type AlignmentCommon = 'start' | 'end' | 'center' | 'fill'
+export type AlignmentCommon = 'start' | 'end' | 'center'
 
 export type AlignmentContent = AlignmentCommon | 'between' | 'around' | 'stretch'
 

@@ -106,10 +106,10 @@ import {useAriaInvalid} from '../../composables/useAriaInvalid'
 import {attemptFocus, isVisible} from '../../utils/dom'
 import BCol from '../BContainer/BCol.vue'
 import BFormRow from '../BForm/BFormRow.vue'
-import {suffixPropName} from '../../utils/props'
+import {getResponsiveClasses, responsiveKeys} from '../../utils/responsive'
 import {useStateClass} from '../../composables/useStateClass'
 import {useId} from '../../composables/useId'
-import type {BFormGroupProps, BFormGroupSlots} from '../../types'
+import type {BFormGroupProps, BFormGroupSlots, ColsValue, Responsive} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import {useProvideFormGroupData} from '../../composables/useProvideFormGroupData'
 import BFormGroupContent from '../BFormGroupContent.vue'
@@ -124,10 +124,6 @@ const INPUTS = ['input', 'select', 'textarea']
 const _props = withDefaults(defineProps<BFormGroupProps>(), {
   ariaInvalid: undefined,
   contentCols: undefined,
-  contentColsLg: undefined,
-  contentColsMd: undefined,
-  contentColsSm: undefined,
-  contentColsXl: undefined,
   description: undefined,
   disabled: false,
   feedbackAriaLive: 'assertive',
@@ -136,16 +132,8 @@ const _props = withDefaults(defineProps<BFormGroupProps>(), {
   invalidFeedback: undefined,
   label: undefined,
   labelAlign: undefined,
-  labelAlignLg: undefined,
-  labelAlignMd: undefined,
-  labelAlignSm: undefined,
-  labelAlignXl: undefined,
   labelClass: undefined,
   labelCols: undefined,
-  labelColsLg: undefined,
-  labelColsMd: undefined,
-  labelColsSm: undefined,
-  labelColsXl: undefined,
   labelFor: undefined,
   labelSize: undefined,
   labelVisuallyHidden: false,
@@ -165,54 +153,24 @@ const {singleLabelTargetId} = useProvideFormGroupData({
 })
 const computedLabelFor = computed(() => props.labelFor ?? singleLabelTargetId.value)
 
-const breakPoints = ['xs', 'sm', 'md', 'lg', 'xl']
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getColProps = (props: any, prefix: string) =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  breakPoints.reduce((result: any, breakpoint: string) => {
-    const suffix = suffixPropName(breakpoint === 'xs' ? '' : breakpoint, `${prefix}Cols`)
-    let propValue = props[suffix]
-    propValue = propValue === '' ? true : propValue || false
-
-    if (!(typeof propValue === 'boolean') && propValue !== 'auto') {
-      const val = Number.parseInt(propValue)
-      propValue = Number.isNaN(val) ? 0 : val
-      propValue = propValue > 0 ? propValue : false
-    }
-
-    if (propValue) {
-      if (breakpoint === 'xs') {
-        result[typeof propValue === 'boolean' ? 'col' : 'cols'] = propValue
-      } else {
-        result[breakpoint || (typeof propValue === 'boolean' ? 'col' : 'cols')] = propValue
-      }
-    }
+/**
+ * Keeps only the breakpoints that render a column, so an empty object (or one with only `false`
+ * values) does not switch the group into horizontal mode
+ */
+const getColProps = (value: Readonly<Responsive<ColsValue>> | undefined) => {
+  const cols = responsiveKeys.reduce<Responsive<ColsValue>>((result, key) => {
+    const entry = value?.[key]
+    if (entry !== undefined && entry !== null && entry !== false) result[key] = entry
     return result
   }, {})
+  return Object.keys(cols).length > 0 ? {cols} : {}
+}
 
 const content = useTemplateRef<HTMLDivElement | InstanceType<typeof BCol> | null>('_content')
 
-const contentColProps = computed(() => getColProps(props, 'content'))
-const labelAlignClasses = computed(() =>
-  ((props: BFormGroupProps, prefix: string) =>
-    breakPoints.reduce((result: string[], breakpoint) => {
-      const suffix = suffixPropName(
-        breakpoint === 'xs' ? '' : breakpoint,
-        `${prefix}Align`
-      ) as keyof BFormGroupProps
-      const propValue: string = props[suffix] || null
-      if (propValue) {
-        if (breakpoint === 'xs') {
-          result.push(`text-${propValue}`)
-        } else {
-          result.push(`text-${breakpoint}-${propValue}`)
-        }
-      }
-      return result
-    }, []))(props, 'label')
-)
-const labelColProps = computed(() => getColProps(props, 'label'))
+const contentColProps = computed(() => getColProps(props.contentCols))
+const labelAlignClasses = computed(() => getResponsiveClasses(props.labelAlign, 'text'))
+const labelColProps = computed(() => getColProps(props.labelCols))
 const isHorizontal = computed(
   () => Object.keys(contentColProps.value).length > 0 || Object.keys(labelColProps.value).length > 0
 )
