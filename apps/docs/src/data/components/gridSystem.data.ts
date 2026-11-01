@@ -4,27 +4,33 @@ import { pick } from '../../utils/objectUtils'
 import { buildCommonProps } from '../../utils/commonProps'
 import type { BColProps, BContainerProps, BContainerSlots, BRowProps } from 'bootstrap-vue-next'
 
+const responsiveNote =
+  "Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'); 'xs' has no class prefix"
+
 export default {
   load: (): ComponentReference => ({
     BContainer: {
-      styleSpec: { kind: StyleKind.OverrideClass, value: '.container[-*]' },
+      styleSpec: {
+        kind: StyleKind.OverrideClass,
+        value: '.container, .container-fluid, .{bp}:container',
+      },
       props: {
         ...pick(buildCommonProps(), ['tag']),
         fluid: {
           type: 'boolean | Breakpoint',
           default: false, // TODO item not in string format
           description:
-            'When set to true, makes the container 100% wide all the time, or set to one of the Bootstrap breakpoint names for 100% width up to the breakpoint',
+            'When set to true, makes the container 100% wide all the time (`container-fluid`), or set to one of the breakpoint names for 100% width up to that breakpoint (`fluid="md"` renders `md:container`)',
         },
         gutterX: {
-          type: 'GutterNumbers',
+          type: 'Responsive<GutterNumbers>',
           default: undefined,
-          description: 'Horizontal gutter',
+          description: `Horizontal gutter, 0 to 12 on the spacing scale (\`{ xs: 3, md: 5 }\` renders \`gx-3 md:gx-5\`). ${responsiveNote}`,
         },
         gutterY: {
-          type: 'GutterNumbers',
+          type: 'Responsive<GutterNumbers>',
           default: undefined,
-          description: 'Vertical gutter',
+          description: `Vertical gutter, 0 to 12 on the spacing scale (\`{ xs: 3, md: 5 }\` renders \`gy-3 md:gy-5\`). ${responsiveNote}`,
         },
       } satisfies PropRecord<keyof BContainerProps>,
       slots: {
@@ -37,62 +43,34 @@ export default {
       props: {
         ...pick(buildCommonProps(), ['tag']),
         alignContent: {
-          type: 'AlignmentContent',
+          type: 'Responsive<AlignmentContent>',
           default: undefined,
-          description:
-            "Aligns column items together on the cross axis: 'start', 'center', 'end', 'around', 'between', 'fill' or 'stretch'. Has no effect on single rows of items",
+          description: `Aligns column items together on the cross axis: 'start', 'center', 'end', 'around', 'between' or 'stretch' (\`{ md: 'between' }\` renders \`md:align-content-between\`). Has no effect on single rows of items. ${responsiveNote}`,
         },
         alignH: {
-          type: 'AlignmentJustifyContent',
+          type: 'Responsive<AlignmentJustifyContent>',
           default: undefined,
-          description:
-            "Horizontal alignment/spacing of all columns: 'start', 'center', 'end', 'around', 'between', or 'evenly'",
+          description: `Horizontal alignment/spacing of all columns: 'start', 'center', 'end', 'around', 'between', or 'evenly' (\`{ md: 'center' }\` renders \`md:justify-content-center\`). ${responsiveNote}`,
         },
         alignV: {
-          type: 'AlignmentVertical',
+          type: 'Responsive<AlignmentVertical>',
           default: undefined,
-          description:
-            "Vertical alignment of all columns in a row: 'start', 'center', 'end', 'baseline', 'fill', or 'stretch'",
+          description: `Vertical alignment of all columns in a row: 'start', 'center', 'end', 'baseline', or 'stretch' (\`{ md: 'center' }\` renders \`md:align-items-center\`). ${responsiveNote}`,
         },
         cols: {
-          type: 'ColsNumbers',
+          type: 'Responsive<RowColsNumbers>',
           default: undefined,
-          description: "The number of row columns to create at the 'xs' breakpoint.",
-        },
-        colsLg: {
-          type: 'ColsNumbers',
-          default: undefined,
-          description: "The number of row columns to create at the 'lg' breakpoint.",
-        },
-        colsMd: {
-          type: 'ColsNumbers',
-          default: undefined,
-          description: "The number of row columns to create at the 'md' breakpoint.",
-        },
-        colsSm: {
-          type: 'ColsNumbers',
-          default: undefined,
-          description: "The number of row columns to create at the 'sm' breakpoint.",
-        },
-        colsXl: {
-          type: 'ColsNumbers',
-          default: undefined,
-          description: "The number of row columns to create at the 'xl' breakpoint.",
-        },
-        colsXxl: {
-          type: 'ColsNumbers',
-          default: undefined,
-          description: "The number of row columns to create at the 'xxl' breakpoint.",
+          description: `The number of row columns to create, 1 to 6 or 'auto' (\`{ xs: 1, md: 3 }\` renders \`row-cols-1 md:row-cols-3\`). ${responsiveNote}`,
         },
         gutterX: {
-          type: 'GutterNumbers',
+          type: 'Responsive<GutterNumbers>',
           default: undefined,
-          description: 'Horizontal gutter',
+          description: `Horizontal gutter, 0 to 12 on the spacing scale (\`{ xs: 3, md: 5 }\` renders \`gx-3 md:gx-5\`). ${responsiveNote}`,
         },
         gutterY: {
-          type: 'GutterNumbers',
+          type: 'Responsive<GutterNumbers>',
           default: undefined,
-          description: 'Vertical gutter',
+          description: `Vertical gutter, 0 to 12 on the spacing scale (\`{ xs: 3, md: 5 }\` renders \`gy-3 md:gy-5\`). ${responsiveNote}`,
         },
         noGutters: {
           type: 'boolean',
@@ -108,117 +86,28 @@ export default {
       } satisfies SlotRecord<keyof BRowSlots>,
     },
     BCol: {
-      styleSpec: { kind: StyleKind.OverrideClass, value: '.col[-*]' },
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.col[-*], .{bp}:col[-*]' },
       props: {
         ...pick(buildCommonProps(), ['tag']),
         alignSelf: {
-          type: "AlignmentVertical | 'auto'",
+          type: "Responsive<AlignmentVertical | 'auto'>",
           default: undefined,
-          description:
-            "Vertical alignment of the grid cell with respect to the row: 'start', 'center', 'fill', 'end', 'baseline', or 'stretch'",
-        },
-        col: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description:
-            'When true, makes the column grid cell span equal width for xs and up breakpoints',
+          description: `Vertical alignment of the grid cell with respect to the row: 'auto', 'start', 'center', 'end', 'baseline', or 'stretch' (\`{ md: 'end' }\` renders \`md:align-self-end\`). ${responsiveNote}`,
         },
         cols: {
-          type: "ColsNumbers | 'auto'",
+          type: 'Responsive<ColsValue>',
           default: undefined,
-          description: 'Number of columns the grid cell spans for xs and up breakpoints',
-        },
-        lg: {
-          type: "boolean | ColsNumbers | 'auto'",
-          default: false, // TODO item not in string format
-          description: 'Number of columns the grid cell spans for lg and up breakpoints',
-        },
-        md: {
-          type: "boolean | ColsNumbers | 'auto'",
-          default: false, // TODO item not in string format
-          description: 'Number of columns the grid cell spans for md and up breakpoints',
-        },
-        sm: {
-          type: "boolean | ColsNumbers | 'auto'",
-          default: false, // TODO item not in string format
-          description: 'Number of columns the grid cell spans for sm and up breakpoints',
-        },
-        xl: {
-          type: "boolean | ColsNumbers | 'auto'",
-          default: false, // TODO item not in string format
-          description: 'Number of columns the grid cell spans for xl and up breakpoints',
-        },
-        xxl: {
-          type: "boolean | ColsNumbers | 'auto'",
-          default: false, // TODO item not in string format
-          description: 'Number of columns the grid cell spans for xxl and up breakpoints',
+          description: `Number of columns (1 to 12) the grid cell spans, 'auto' for its natural width, or \`true\` for an equal-width column (\`{ xs: 12, md: 6 }\` renders \`col-12 md:col-6\`, \`{ md: true }\` renders \`md:col\`). When no breakpoint sets a column size the cell renders \`.col\`. ${responsiveNote}`,
         },
         offset: {
-          type: 'ColsOffsetNumbers',
+          type: 'Responsive<ColsOffsetNumbers>',
           default: undefined,
-          description: 'Number of columns the grid cell is offset for xs and up breakpoints (0-12)',
-        },
-        offsetLg: {
-          type: 'ColsOffsetNumbers',
-          default: undefined,
-          description: 'Number of columns the grid cell is offset for lg and up breakpoints (0-12)',
-        },
-        offsetMd: {
-          type: 'ColsOffsetNumbers',
-          default: undefined,
-          description: 'Number of columns the grid cell is offset for md and up breakpoints (0-12)',
-        },
-        offsetSm: {
-          type: 'ColsOffsetNumbers',
-          default: undefined,
-          description: 'Number of columns the grid cell is offset for sm and up breakpoints (0-12)',
-        },
-        offsetXl: {
-          type: 'ColsOffsetNumbers',
-          default: undefined,
-          description: 'Number of columns the grid cell is offset for xl and up breakpoints (0-12)',
-        },
-        offsetXxl: {
-          type: 'ColsOffsetNumbers',
-          default: undefined,
-          description:
-            'Number of columns the grid cell is offset for xxl and up breakpoints (0-12)',
+          description: `Number of columns (0 to 11) the grid cell is offset (\`{ md: 2 }\` renders \`md:offset-2\`). ${responsiveNote}`,
         },
         order: {
-          type: 'ColsOrderNumbers',
+          type: 'Responsive<ColsOrderNumbers>',
           default: undefined,
-          description:
-            "Flex order of the grid cell for xs and up breakpoints (1-5, 'first', or 'last')",
-        },
-        orderLg: {
-          type: 'ColsOrderNumbers',
-          default: undefined,
-          description:
-            "Flex order of the grid cell for lg and up breakpoints (1-5, 'first', or 'last')",
-        },
-        orderMd: {
-          type: 'ColsOrderNumbers',
-          default: undefined,
-          description:
-            "Flex order of the grid cell for md and up breakpoints (1-5, 'first', or 'last')",
-        },
-        orderSm: {
-          type: 'ColsOrderNumbers',
-          default: undefined,
-          description:
-            "Flex order of the grid cell for sm and up breakpoints (1-5, 'first', or 'last')",
-        },
-        orderXl: {
-          type: 'ColsOrderNumbers',
-          default: undefined,
-          description:
-            "Flex order of the grid cell for xl and up breakpoints (1-5, 'first', or 'last')",
-        },
-        orderXxl: {
-          type: 'ColsOrderNumbers',
-          default: undefined,
-          description:
-            "Flex order of the grid cell for xxl and up breakpoints (1-5, 'first', or 'last')",
+          description: `Flex order of the grid cell: 0 to 5, 'first', or 'last' (\`{ lg: 'first' }\` renders \`lg:order-first\`). ${responsiveNote}`,
         },
       } satisfies PropRecord<keyof BColProps>,
       emits: {},

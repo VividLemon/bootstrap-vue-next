@@ -4,13 +4,13 @@
     :key="type"
     class="my-1"
   >
-    <BCol sm="3">
+    <BCol :cols="{ sm: 3 }">
       <label :for="`type-${type}`"
         >Type <code>{{ type }}</code
         >:</label
       >
     </BCol>
-    <BCol sm="9">
+    <BCol :cols="{ sm: 9 }">
       <BFormInput
         :id="`type-${type}`"
         :type="type"

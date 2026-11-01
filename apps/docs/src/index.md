@@ -4,7 +4,7 @@ description: With BootstrapVueNext you can build fast, responsive, and ARIA acce
 ---
 
 <BRow>
-  <BCol class="text-center" cols="12" sm="6">
+  <BCol class="text-center" :cols="{ xs: 12, sm: 6 }">
     <BLink href="https://getbootstrap.com" target="_blank" rel="noopener">
       <BCard class="p-3">
         <BootstrapIcon aria-hidden class="icon-lg" />

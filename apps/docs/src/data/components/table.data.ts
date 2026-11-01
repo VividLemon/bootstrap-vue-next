@@ -122,7 +122,7 @@ export default {
           type: 'boolean | Breakpoint',
           default: false,
           description:
-            "Makes the table responsive in width, adding a horizontal scrollbar. Set to true for always responsive or set to one of the breakpoints to switch from responsive to normal: 'sm', 'md', 'lg', 'xl'",
+            "Makes the table responsive in width, adding a horizontal scrollbar. Set to true for always responsive (`table-responsive`) or set to one of the breakpoints to switch from responsive to normal: 'sm', 'md', 'lg', 'xl', '2xl' (`responsive=\"md\"` renders `md:table-responsive`)",
         },
         small: {
           type: 'boolean',

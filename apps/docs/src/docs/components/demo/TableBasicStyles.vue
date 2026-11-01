@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BFormGroup v-slot="{ ariaDescribedby }" label="Table Options" label-cols-lg="2">
+    <BFormGroup v-slot="{ ariaDescribedby }" label="Table Options" :label-cols="{ lg: 2 }">
       <BFormCheckbox v-model="striped" :aria-describedby="ariaDescribedby" inline
         >Striped</BFormCheckbox
       >
@@ -34,7 +34,7 @@
       >
     </BFormGroup>
 
-    <BFormGroup label="Theme" label-for="table-style-theme" label-cols-lg="2" class="my-2">
+    <BFormGroup label="Theme" label-for="table-style-theme" :label-cols="{ lg: 2 }" class="my-2">
       <BFormSelect id="table-style-theme" v-model="theme" :options="themes">
         <template #first>
           <option :value="null">-- None --</option>
@@ -42,7 +42,12 @@
       </BFormSelect>
     </BFormGroup>
 
-    <BFormGroup label="Head Theme" label-for="head-style-theme" label-cols-lg="2" class="my-2">
+    <BFormGroup
+      label="Head Theme"
+      label-for="head-style-theme"
+      :label-cols="{ lg: 2 }"
+      class="my-2"
+    >
       <BFormSelect id="head-style-theme" v-model="headTheme" :options="themes">
         <template #first>
           <option :value="null">-- None --</option>
@@ -50,7 +55,12 @@
       </BFormSelect>
     </BFormGroup>
 
-    <BFormGroup label="Foot Theme" label-for="foot-style-theme" label-cols-lg="2" class="my-2">
+    <BFormGroup
+      label="Foot Theme"
+      label-for="foot-style-theme"
+      :label-cols="{ lg: 2 }"
+      class="my-2"
+    >
       <BFormSelect id="foot-style-theme" v-model="footTheme" :options="themes">
         <template #first>
           <option :value="null">-- None --</option>

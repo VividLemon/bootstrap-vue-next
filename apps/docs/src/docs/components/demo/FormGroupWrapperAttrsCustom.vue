@@ -2,8 +2,8 @@
   <BFormGroup
     label="Active:"
     label-for="status"
-    label-align-md="end"
-    label-cols-md="3"
+    :label-align="{ md: 'end' }"
+    :label-cols="{ md: 3 }"
     :label-wrapper-attrs="{
       class: 'custom-label-field',
     }"

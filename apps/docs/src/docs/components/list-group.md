@@ -96,9 +96,15 @@ prop when using cards with `no-body` to make the sides of the list group flush w
 ## Horizontal list groups
 
 Set the prop `horizontal` to `true` to change the layout of list group items from vertical to
-horizontal across all breakpoints. Alternatively, set `horizontal` to a responsive breakpoint (`sm`,
-`md`, `lg` or `xl`) to make a list group horizontal starting at that breakpoint's min-width.
+horizontal across all breakpoints (`list-group-horizontal`). Alternatively, set `horizontal` to a
+breakpoint (`sm`, `md`, `lg`, `xl` or `2xl`) to make a list group horizontal starting at that
+breakpoint's min-width (`horizontal="md"` renders `md:list-group-horizontal`).
 Currently, horizontal list groups cannot be combined with `flush` list groups.
+
+Bootstrap v6 implements the breakpoint variants with container queries, so the breakpoint is
+measured against the nearest query-container ancestor rather than the viewport. Wrap the list group
+in an element with a query container, such as the `.contains-inline` utility. Horizontal list groups
+do not wrap automatically.
 
 **ProTip:** Want equal-width list group items when horizontal? Add the class `flex-fill` to each
 list group item.

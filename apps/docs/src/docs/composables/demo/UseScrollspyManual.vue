@@ -1,7 +1,7 @@
 <template>
   <BContainer>
     <BRow>
-      <BCol cols="4">
+      <BCol :cols="{ xs: 4 }">
         <BListGroup>
           <BListGroupItem
             v-for="item in filteredList"
@@ -14,7 +14,7 @@
           </BListGroupItem>
         </BListGroup>
       </BCol>
-      <BCol cols="8">
+      <BCol :cols="{ xs: 8 }">
         <div>
           Current: <strong>{{ current || 'None' }}</strong>
         </div>

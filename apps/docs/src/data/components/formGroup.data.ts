@@ -17,29 +17,10 @@ export default {
           ['ariaInvalid', 'disabled', 'id', 'state', 'tooltip']
         ),
         contentCols: {
-          type: 'boolean | number | string',
+          type: 'Responsive<ColsValue>',
           default: 'undefined',
-          description: "Number of columns for the content width 'xs' screens and up",
-        },
-        contentColsLg: {
-          type: 'boolean | number | string',
-          default: 'undefined',
-          description: "Number of columns for the content width 'lg' screens and up",
-        },
-        contentColsMd: {
-          type: 'boolean | number | string',
-          default: 'undefined',
-          description: "Number of columns for the content width 'md' screens and up",
-        },
-        contentColsSm: {
-          type: 'boolean | number | string',
-          default: 'undefined',
-          description: "Number of columns for the content width 'sm' screens and up",
-        },
-        contentColsXl: {
-          type: 'boolean | number | string',
-          default: 'undefined',
-          description: "Number of columns for the content width 'xl' screens and up",
+          description:
+            "Number of columns (1 to 12), 'auto', or `true` for an equal-width column, for the content (`{md: 8}` renders `md:col-8`). Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'). Setting it switches the form group into horizontal layout",
         },
         description: {
           type: 'string',
@@ -67,29 +48,10 @@ export default {
           description: 'Text to place in the label/legend of the form group',
         },
         labelAlign: {
-          type: 'string',
+          type: 'Responsive<AlignmentTextHorizontal>',
           default: 'undefined',
-          description: "Text alignment 'left', 'center', 'right' for the label 'xs' screens and up",
-        },
-        labelAlignLg: {
-          type: 'string',
-          default: 'undefined',
-          description: "Text alignment 'left', 'center', 'right' for the label 'lg' screens and up",
-        },
-        labelAlignMd: {
-          type: 'string',
-          default: 'undefined',
-          description: "Text alignment 'left', 'center', 'right' for the label 'md' screens and up",
-        },
-        labelAlignSm: {
-          type: 'string',
-          default: 'undefined',
-          description: "Text alignment 'left', 'center', 'right' for the label 'sm' screens and up",
-        },
-        labelAlignXl: {
-          type: 'string',
-          default: 'undefined',
-          description: "Text alignment 'left', 'center', 'right' for the label 'xl' screens and up",
+          description:
+            "Text alignment 'start', 'center' or 'end' of the label (`{md: 'end'}` renders `md:text-end`). Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'); 'xs' has no class prefix",
         },
         labelClass: {
           type: 'string[] | Record<string, unknown> | string',
@@ -97,29 +59,10 @@ export default {
           description: 'CSS class (or classes) to add to the label/legend element',
         },
         labelCols: {
-          type: 'boolean | number | string',
+          type: 'Responsive<ColsValue>',
           default: 'undefined',
-          description: "Number of columns for the label width 'xs' screens and up",
-        },
-        labelColsLg: {
-          type: 'boolean | number | string',
-          default: 'undefined',
-          description: "Number of columns for the label width 'lg' screens and up",
-        },
-        labelColsMd: {
-          type: 'boolean | number | string',
-          default: 'undefined',
-          description: "Number of columns for the label width 'md' screens and up",
-        },
-        labelColsSm: {
-          type: 'boolean | number | string',
-          default: 'undefined',
-          description: "Number of columns for the label width 'sm' screens and up",
-        },
-        labelColsXl: {
-          type: 'boolean | number | string',
-          default: 'undefined',
-          description: "Number of columns for the label width 'xl' screens and up",
+          description:
+            "Number of columns (1 to 12), 'auto', or `true` for an equal-width column, for the label (`{xs: 12, md: 4}` renders `col-12 md:col-4`). Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'). Setting it switches the form group into horizontal layout",
         },
         labelFor: {
           type: 'string',

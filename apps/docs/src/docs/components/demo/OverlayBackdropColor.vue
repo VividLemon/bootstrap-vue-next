@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <BCol lg="6">
+    <BCol :cols="{ lg: 6 }">
       <BOverlay id="overlay-background" show :bg="bg" :opacity="opacity" :blur="blur" rounded="sm">
         <BCard title="Card with overlay" aria-hidden="true">
           <BCardText>

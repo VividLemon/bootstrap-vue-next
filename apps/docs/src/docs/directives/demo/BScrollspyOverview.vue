@@ -2,7 +2,7 @@
   <!-- #region template -->
   <BContainer>
     <BRow>
-      <BCol cols="4">
+      <BCol :cols="{ xs: 4 }">
         <BListGroup v-b-scrollspy:directive-overview-content>
           <BListGroupItem href="#scrollspy-introduction">Introduction</BListGroupItem>
           <BListGroupItem href="#scrollspy-usage">Usage</BListGroupItem>
@@ -10,7 +10,7 @@
         </BListGroup>
       </BCol>
 
-      <BCol cols="8">
+      <BCol :cols="{ xs: 8 }">
         <div
           id="directive-overview-content"
           style="height: 260px; overflow-y: auto; border: 1px solid #dee2e6; padding: 1rem"

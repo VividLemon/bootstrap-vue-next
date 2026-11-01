@@ -14,7 +14,11 @@
                 <code class="display-6">{{ `<` + component.component + `>` }}</code>
               </h3>
             </BCol>
-            <BCol v-if="globalData && component.sourcePath !== null" cols="4" class="text-md-right">
+            <BCol
+              v-if="globalData && component.sourcePath !== null"
+              :cols="{ xs: 4 }"
+              class="text-md-right"
+            >
               <ViewSourceButton
                 :href="
                   component.sourcePath
@@ -34,7 +38,7 @@
                 </li>
               </ul>
             </BCol>
-            <BCol cols="4" class="text-md-right"
+            <BCol :cols="{ xs: 4 }" class="text-md-right"
               ><StyleExtension :name="component.component" :style-spec="component.styleSpec" />
             </BCol>
           </BRow>

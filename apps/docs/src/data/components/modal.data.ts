@@ -159,7 +159,7 @@ export default {
           type: 'boolean | Breakpoint',
           default: false,
           description:
-            "Enables full-screen mode with a boolean value or sets the breakpoint for full-screen mode below the specified breakpoint value ('sm', 'md', 'lg', 'xl', 'xxl')",
+            "Enables full-screen mode with a boolean value or sets the breakpoint for full-screen mode below the specified breakpoint value ('sm', 'md', 'lg', 'xl', '2xl')",
         },
         headerAttrs: {
           type: 'Readonly<AttrsValue>',

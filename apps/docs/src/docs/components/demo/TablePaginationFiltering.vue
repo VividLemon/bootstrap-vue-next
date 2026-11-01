@@ -1,7 +1,7 @@
 <template>
   <div>
     <BRow class="mb-3">
-      <BCol md="6">
+      <BCol :cols="{ md: 6 }">
         <BFormGroup label="Filter" label-for="filter-input">
           <BFormInput
             id="filter-input"
@@ -11,7 +11,7 @@
           />
         </BFormGroup>
       </BCol>
-      <BCol md="6">
+      <BCol :cols="{ md: 6 }">
         <BFormGroup label="Per page" label-for="per-page-select">
           <BFormSelect
             id="per-page-select"

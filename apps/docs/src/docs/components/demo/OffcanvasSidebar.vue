@@ -1,5 +1,5 @@
 <template>
-  <BContainer fluid="xxl">
+  <BContainer fluid="2xl">
     <BRow class="d-md-none"
       ><BCol>
         <BButton
@@ -24,7 +24,7 @@
       ></BRow
     >
     <BRow>
-      <BCol md="2" class="scrollable-column">
+      <BCol :cols="{ md: 2 }" class="scrollable-column">
         <BOffcanvas
           id="offcanvas-toc"
           v-model="tocVisible"
@@ -42,7 +42,7 @@
           </ul>
         </BOffcanvas>
       </BCol>
-      <BCol md="8">
+      <BCol :cols="{ md: 8 }">
         Lorem ipsum odor amet, consectetuer adipiscing elit. Pellentesque imperdiet libero litora
         nisl condimentum ullamcorper. Convallis vel auctor morbi mauris lectus mi. Consequat urna
         tempus tristique id augue luctus. Quis ullamcorper faucibus laoreet dapibus elit. Habitant
@@ -77,7 +77,7 @@
         luctus id viverra porta. Habitasse lorem bibendum semper maecenas volutpat porta. Eros
         praesent duis odio sagittis metus montes interdum.
       </BCol>
-      <BCol md="2" class="scrollable-column">
+      <BCol :cols="{ md: 2 }" class="scrollable-column">
         <BOffcanvas
           id="offcanvas-otp"
           v-model="otpVisible"
