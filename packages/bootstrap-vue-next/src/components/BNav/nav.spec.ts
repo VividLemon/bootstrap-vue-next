@@ -71,29 +71,31 @@ describe('nav', () => {
     expect(wrapper.classes()).not.toContain('card-header-tabs')
   })
 
-  it('has class card-header-pills when prop pills is set and cardHeader is set', () => {
+  it('never has class card-header-pills (removed in Bootstrap v6)', () => {
     const wrapper = mount(BNav, {
       props: {pills: true, cardHeader: true},
     })
-    expect(wrapper.classes()).toContain('card-header-pills')
-  })
-
-  it('does not have class card-header-pills when prop pills is set and cardHeader is set, but prop vertical is set', async () => {
-    const wrapper = mount(BNav, {
-      props: {pills: true, cardHeader: true, vertical: false},
-    })
-    expect(wrapper.classes()).toContain('card-header-pills')
-    await wrapper.setProps({vertical: true})
+    expect(wrapper.classes()).toContain('nav-pills')
     expect(wrapper.classes()).not.toContain('card-header-pills')
   })
 
-  it('does not have class card-header-pills when prop pills is set and cardHeader is set, but prop tabs is set', async () => {
+  it('uses nav-pills-vertical instead of flex-column when props pills and vertical are set', async () => {
     const wrapper = mount(BNav, {
-      props: {pills: true, cardHeader: true, tabs: false},
+      props: {pills: true, vertical: true},
     })
-    expect(wrapper.classes()).toContain('card-header-pills')
-    await wrapper.setProps({tabs: true})
-    expect(wrapper.classes()).not.toContain('card-header-pills')
+    expect(wrapper.classes()).toContain('nav-pills')
+    expect(wrapper.classes()).toContain('nav-pills-vertical')
+    expect(wrapper.classes()).not.toContain('flex-column')
+    await wrapper.setProps({vertical: false})
+    expect(wrapper.classes()).not.toContain('nav-pills-vertical')
+  })
+
+  it('uses flex-column, not nav-pills-vertical, when props tabs, pills and vertical are set', () => {
+    const wrapper = mount(BNav, {
+      props: {tabs: true, pills: true, vertical: true},
+    })
+    expect(wrapper.classes()).toContain('flex-column')
+    expect(wrapper.classes()).not.toContain('nav-pills-vertical')
   })
 
   it('does not have nav-fill when prop fill is set, but prop vertical is also set', async () => {

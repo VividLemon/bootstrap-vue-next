@@ -801,12 +801,11 @@ export interface BNavProps {
 export interface BNavFormProps extends BFormProps {
   role?: string
   wrapperAttrs?: Readonly<AttrsValue>
-  formClass?: ClassValue
+  formAttrs?: Readonly<AttrsValue>
 }
 
 export interface BNavItemProps extends Omit<BLinkProps, 'routerTag'> {
   linkAttrs?: Readonly<AttrsValue>
-  linkClass?: ClassValue
 }
 
 export interface BNavTextProps {

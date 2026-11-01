@@ -1,14 +1,13 @@
 <template>
   <li :class="liClasses" v-bind="wrapperAttrs">
     <BForm
-      v-bind="processedAttrs.formAttrs"
+      v-bind="formBindings"
       :id="props.id"
       :floating="props.floating"
       :role="props.role"
       :novalidate="props.novalidate"
       :validated="props.validated"
       class="d-flex"
-      :class="props.formClass"
       @submit.prevent="submitted"
     >
       <slot />
@@ -17,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, useAttrs} from 'vue'
+import {computed, mergeProps, useAttrs} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import BForm from '../BForm/BForm.vue'
 import type {BNavFormEmits, BNavFormProps, BNavFormSlots} from '../../types'
@@ -29,7 +28,7 @@ defineOptions({
 const _props = withDefaults(defineProps<BNavFormProps>(), {
   role: undefined,
   wrapperAttrs: undefined,
-  formClass: undefined,
+  formAttrs: undefined,
   // BForm props
   floating: undefined,
   id: undefined,
@@ -46,6 +45,10 @@ const processedAttrs = computed(() => {
   const {class: wrapperClass, ...formAttrs} = attrs
   return {wrapperClass, formAttrs}
 })
+
+const formBindings = computed(() =>
+  mergeProps(processedAttrs.value.formAttrs, props.formAttrs ?? {})
+)
 
 const submitted = (e: Readonly<Event>) => {
   emit('submit', e)
