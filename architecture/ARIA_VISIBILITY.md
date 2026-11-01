@@ -1,512 +1,189 @@
-# ARIA Visibility Architecture
+# ARIA Visibility and Show/Hide Architecture
 
 ## Overview
 
-Bootstrap Vue Next implements a sophisticated ARIA attribute management system for show/hide components (BCollapse, BOffcanvas, BModal, BDropdown, BAlert, BToast, BPopover, BTooltip). This system ensures proper accessibility through dynamic ARIA attributes while supporting multiple usage patterns.
+Show/hide components (BCollapse, BOffcanvas, BModal, BDropdown, BAlert, BToast, BPopover, BTooltip) share one system for visibility state, `v-model`, cancelable events and ARIA attributes on registered triggers.
 
-## Core Components
+With Bootstrap v6 the system is being moved to Bootstrap's **native transition** model: CSS owns all motion, JavaScript toggles a state class, waits for the element's transition to end, then fires the event. See `architecture/BOOTSTRAP_V6_MIGRATION.md`, section "Transitions (native, no Vue `<Transition>`)".
 
-### 1. Show/Hide Components
+During the migration there are two paths:
 
-Components that use the `useShowHide` composable:
+| Path               | Composables                              | Components                                                                                  |
+| ------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse (+ BAccordionItem, which renders it)                                              |
+| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BModal, BOffcanvas, BDropdown (deferred); BAlert, BToast, BPopover / BTooltip (later batch) |
 
-- **BCollapse** - Collapsible content sections
-- **BOffcanvas** - Off-canvas panels
-- **BModal** - Modal dialogs
-- **BDropdown** - Dropdown menus
-- **BAlert** - Dismissible alerts
-- **BToast** - Toast notifications
-- **BPopover** - Popovers
-- **BTooltip** - Tooltips
+Both paths share `useShowHideRegistration` (app registry + trigger registry + `aria-expanded`), so ARIA behavior is identical on both.
 
-### 2. v-b-toggle Directive
+`useLegacyShowHide.ts` is marked `@deprecated` and must be deleted once the last component has moved to the native path. BCarousel, BOverlay (`useFadeTransition` in `useTransitions.ts`) and BOrchestrator use Vue `<Transition>` directly and are migrated with their own components.
 
-The `v-b-toggle` directive (`packages/bootstrap-vue-next/src/directives/BToggle/index.ts`) provides automatic trigger registration and relationship mapping.
+## Files
 
-### 3. useShowHide Composable
+- `packages/bootstrap-vue-next/src/composables/useCssTransition.ts` - waits for an element's own CSS transition
+- `packages/bootstrap-vue-next/src/composables/useShowHide.ts` - native-path state/v-model/events, plus the shared `useShowHideRegistration`
+- `packages/bootstrap-vue-next/src/composables/useLegacyShowHide.ts` - deprecated pre-v6 path
+- `packages/bootstrap-vue-next/src/directives/BToggle/index.ts` - `v-b-toggle` (and `v-b-modal`)
 
-The `useShowHide` composable (`packages/bootstrap-vue-next/src/composables/useShowHide.ts`) manages visibility state and dynamic ARIA attributes for registered triggers.
+## Native path
 
-## Architecture Principles
+### Division of responsibilities
 
-### Trigger Registration System
+| Concern                                                      | Owner                                 |
+| ------------------------------------------------------------ | ------------------------------------- |
+| Visibility state, `v-model`, `show`/`hide`/`toggle`, events  | `useShowHide`                         |
+| Mapping state to v6 classes (`.show`, `.hiding`, `-instant`) | The component                         |
+| Waiting for the transition                                   | `useCssTransition`                    |
+| Duration, easing, animated properties                        | CSS (`--bs-{component}-transition-*`) |
+| `aria-controls` on triggers                                  | `v-b-toggle`                          |
+| `aria-expanded` on registered triggers                       | `useShowHideRegistration`             |
 
-The ARIA management is **opt-in** through a trigger registration system:
+`useShowHide` has **no class and no timing logic**. The only "timing" it knows about is the optional `delay` prop (a wait before the state flips, used by popovers).
 
-**Registration happens when:**
+### `useCssTransition(element)`
 
-- Using `v-b-toggle` directive (automatic)
-- Using slot functions (`toggle`, `show`, `hide`) which leverage the registration system
-
-**Unregistered triggers:**
-
-- Must manually manage all ARIA attributes
-- Do NOT receive automatic updates from the composable
-
-### Division of Responsibilities
-
-The architecture splits ARIA attribute management based on **static vs dynamic** characteristics:
-
-#### Static Attributes (v-b-toggle Directive)
-
-**Managed by:** `v-b-toggle` directive
-
-**Attributes:**
-
-- `aria-controls` - Lists the IDs of controlled elements
-
-**Rationale:**
-
-- The directive knows target IDs from its binding (modifiers, arg, value, href)
-- Supports multiple targets: `v-b-toggle.target1.target2.target3`
-- This relationship is **static** - it doesn't change with visibility state
-- Only the directive layer has access to this binding information
-- Set once on mount/update, removed on unmount
-
-**Example:**
-
-```html
-<!-- Directive sets aria-controls="my-collapse" -->
-<BButton v-b-toggle.my-collapse>Toggle</BButton>
+```ts
+const {run, cancel, isTransitioning} = useCssTransition(elementRef)
+const finished: boolean = await run(applyFn?)
 ```
 
-#### Dynamic Attributes (useShowHide Composable)
+`run(apply?)`:
 
-**Managed by:** `useShowHide` composable (for registered triggers only)
+1. calls `apply()` synchronously (optional; a `classList` change or a reactive change that drives `:class`);
+2. awaits `nextTick()` (Vue patched the DOM) and one animation frame;
+3. awaits `Promise.allSettled(el.getAnimations().map((a) => a.finished))` for the element's **own** finite animations (no subtree, infinite animations ignored, cancelled ones count as settled).
 
-**Attributes:**
+It resolves `true` when finished **and still the latest call**, `false` when a newer `run()` or `cancel()` happened. Zero duration, `prefers-reduced-motion`, an `-instant` class, `transition-none` or a missing element all mean "no animations", so it resolves right after the frame. It is SSR-safe: nothing touches browser globals before `run()`, `requestAnimationFrame` is read through `getSafeWindow()` and falls back to a timeout (also when no frame arrives within 100 ms, e.g. background tabs that throttle or pause rAF), and `getAnimations` is feature-checked. Pending runs are cancelled when the owning effect scope is disposed.
 
-- `aria-expanded` - Current visibility state ('true' or 'false')
-- CSS classes - `collapsed` / `not-collapsed` visual state indicators
+### `useShowHide({modelValue, props, emit, element, id}, {transition})`
 
-**Rationale:**
+Props read: `visible`, `show`, `initialAnimation`, `lazy`, `unmountLazy`, `noCloseOnBackdrop`, `noCloseOnEsc`, `delay`.
 
-- These attributes **change dynamically** when visibility changes
-- The composable watches `modelValue` and knows current state
-- Must update **all registered triggers** when visibility changes
-- Works regardless of HOW visibility changed (v-b-toggle click, v-model update, slot function, programmatic call)
-- Centralized state management ensures consistency
+`transition(visible)` is called right after the state flipped and must resolve `true` once the transition ended (and is current). Components pass `() => run()`. Without it, the composable resolves after `nextTick`.
 
-**Example:**
+Returns:
 
-```html
-<!-- Composable sets aria-expanded="false" and class="collapsed" initially -->
-<!-- Then updates to aria-expanded="true" and class="not-collapsed" when visible -->
-<BButton v-b-toggle.my-collapse>Toggle</BButton>
-```
+| Name                                                            | Meaning                                                                                                                                                               |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `visible`                                                       | Target state. Flips at the start of a show/hide (after the cancelable event and any `delay`). Drives the state class, `aria-expanded` and the `visible` slot prop     |
+| `isActive`                                                      | `true` from the start of a show until `hidden`. Use for `v-if` of transient elements; the `active` slot prop                                                          |
+| `instant`                                                       | `true` while the current change must skip the transition (initial render of an initially shown component, `visible` prop changes). Add the `-instant` class while set |
+| `contentShowing`                                                | Default content should render (`lazy` / `unmountLazy`)                                                                                                                |
+| `show()`                                                        | Resolves `true` after `shown`, `'show-prevented'`, or `false` when superseded                                                                                         |
+| `hide(trigger?, noTriggerEmit?)`                                | Resolves `trigger ?? ''` after `hidden`, `'hide-prevented'`, or `false` when superseded                                                                               |
+| `toggle()`                                                      | Emits `toggle` (cancelable), then hides (trigger `'toggle-function'`) or shows                                                                                        |
+| `buildTriggerableEvent`, `registerTrigger`, `unregisterTrigger` | Helpers / registry                                                                                                                                                    |
 
-### Why Split Responsibilities?
-
-The division is based on **information ownership** and **lifecycle management**:
-
-1. **Information Ownership:**
-   - Directive = knows target IDs, sets static relationships
-   - Composable = knows visibility state, manages dynamic attributes
-
-2. **Lifecycle:**
-   - `aria-controls` = set once, static for component lifetime
-   - `aria-expanded` & classes = updated on every visibility change
-
-3. **Multi-Trigger Support:**
-   - One component can have multiple registered triggers
-   - All triggers must update when visibility changes
-   - Composable's watch mechanism handles this automatically
-
-4. **Decoupling:**
-   - Directive doesn't need to know visibility state
-   - Composable doesn't need to know target IDs
-   - Each layer has single, focused responsibility
-
-## Data Flow
-
-### Registration Flow
+Event order:
 
 ```
-User adds v-b-toggle directive to button
-         ↓
-Directive mounts and calls handleUpdate()
-         ↓
-1. Parses target IDs from binding
-2. Sets aria-controls="target-id" on button
-3. Calls component.registerTrigger('click', buttonElement)
-         ↓
-useShowHide.registerTrigger() executes:
-         ↓
-1. Adds buttonElement to triggerRegistry[]
-2. Adds 'click' event listener
-3. Calls checkVisibility(buttonElement)
-         ↓
-checkVisibility() sets initial state:
-         ↓
-1. Sets aria-expanded="false" (or "true" if visible)
-2. Adds class="collapsed" (or "not-collapsed")
+show():  'show' (cancelable → 'show-prevented') → visible = true, isActive = true, update:modelValue
+         → transition(true) → 'shown'
+hide():  [trigger] + 'hide' (cancelable → 'hide-prevented') → visible = false, update:modelValue
+         → transition(false) → isActive = false, 'hidden' {trigger}
 ```
 
-### Visibility Change Flow
+- A newer show/hide supersedes a pending one. The older one never emits `shown` / `hidden`; its promise resolves `false`. Repeating the same direction while pending returns the pending promise.
+- A prevented show/hide that was requested through `v-model` reverts `modelValue`.
+- Numeric `modelValue` (countdown) is set to `0` on hide; changes between truthy numbers do nothing.
+- Initially shown (`modelValue` without `initialAnimation`, or `visible`): rendered shown with `instant = true`; on mount it emits `show` (cancelable) and, one frame later, `shown`.
+- `initialAnimation` with `modelValue`, or the `show` prop: rendered hidden, then shown with a transition on mount.
+- `lazy`: content mounts when a show starts (so it is laid out for the transition). With `unmountLazy` it unmounts after `hidden`.
+- Unmounting resolves a pending change with `false` and emits nothing more.
 
-```
-Visibility changes via ANY method:
-  - User clicks v-b-toggle button
-  - v-model updates programmatically
-  - Slot function called (hide/show/toggle)
-  - Direct method call via template ref
-         ↓
-modelValue updates in component
-         ↓
-useShowHide watch() triggers:
-         ↓
-watch(modelValue, () => {
-  triggerRegistry.forEach((t) => {
-    checkVisibility(t.el)
-  })
-})
-         ↓
-checkVisibility() updates EACH registered trigger:
-         ↓
-1. Sets aria-expanded="true" or "false"
-2. Toggles collapsed/not-collapsed classes
-         ↓
-ALL registered triggers now reflect current state
+### Adopting it in a component
+
+```ts
+const element = useTemplateRef<HTMLElement>('_element')
+const {run} = useCssTransition(element)
+const {visible, isActive, instant, contentShowing, show, hide, toggle} = useShowHide(
+  {modelValue, props, emit: emit as EmitFn, element, id: computedId},
+  {transition: () => run()}
+)
+const classes = computed(() => ({
+  'show': visible.value,
+  'toast-instant': props.noTransition || instant.value,
+}))
 ```
 
-### Unregistration Flow
+Checklist: check the `-instant` class exists in `node_modules/bootstrap/dist/css/bootstrap.css`; remove the Vue `<Transition>`; keep the element mounted while hidden unless the v6 component removes it (then `v-if="isActive"`); emit component-specific events from `shown` / `hidden`.
+
+### BCollapse
+
+- The element always has `.collapse`; only `.show` is toggled. `navbar-collapse` / `collapse-horizontal` follow `isNav` / `horizontal`.
+- v6 CSS animates `block-size` (or `inline-size` for `.collapse-horizontal`) with `interpolate-size: allow-keywords`, `@starting-style` and a discrete `display` transition. No `.collapsing`, no JS height measuring, no inline sizes, no `<Transition>`.
+- Bootstrap v6 has **no `collapse-instant` class**. `noTransition` (and `instant`) add the `transition-none` utility, which v6's own collapse JS also treats as "no transition".
+- Workaround: in 6.0.0-alpha.1 `.fade` / `.collapse` (from `_transitions.scss`) are emitted **outside any cascade layer**, so they beat the layered `transition-none` utility. While instant, BCollapse therefore also sets `--bs-transition-collapse-duration: 0s` inline. Remove that once upstream layers the transition rules.
+
+## Trigger registration and ARIA (both paths)
+
+Registration is **opt-in**: `v-b-toggle` / `v-b-modal` register their element with the target through the app-wide show/hide registry (`showHideRegistryKey`). Unregistered triggers must manage their own ARIA attributes.
+
+| Attribute       | Owner                     | Lifecycle                                                                                                |
+| --------------- | ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `aria-controls` | `v-b-toggle`              | Static: set from the binding (modifiers, arg, value, `href`), removed on unmount                         |
+| `aria-expanded` | `useShowHideRegistration` | Dynamic: set on registration, updated on every visibility change, removed on unregister (`clean = true`) |
+
+There are **no trigger state classes**. The v5 `collapsed` / `not-collapsed` classes were removed; style triggers with `[aria-expanded="true"]` / `[aria-expanded="false"]`. (BAccordionItem's own header button still renders the v5 accordion `collapsed` class until the accordion markup is migrated; that is accordion markup, not the trigger system.)
+
+`aria-expanded` follows `visible` on the native path (changes when a show/hide starts, like v6) and `!!modelValue` on the legacy path.
+
+### Registration flow
 
 ```
-Directive unmounts
-         ↓
-handleUnmount() executes:
-         ↓
-1. Calls component.unregisterTrigger('click', buttonElement, true)
-2. Removes aria-controls from button
-         ↓
-useShowHide.unregisterTrigger(clean=true) executes:
-         ↓
-1. Removes buttonElement from triggerRegistry[]
-2. Removes 'click' event listener
-3. Removes aria-expanded attribute
-4. Removes collapsed/not-collapsed classes
+v-b-toggle mounted/updated
+  → parse targets, set aria-controls, store targets in data-bvtoggle
+  → find target in the registry (retries 5 × 100 ms)
+  → target.registerTrigger('click', el)
+      → push to the trigger registry, add the click listener, set aria-expanded
 ```
 
-## Usage Patterns
+### Visibility change flow
 
-### Pattern 1: v-b-toggle Directive (Automatic)
-
-**Use when:** You want automatic ARIA management with minimal code
-
-**Example:**
-
-```vue
-<template>
-  <BButton v-b-toggle.my-collapse>Toggle</BButton>
-  <BCollapse id="my-collapse">
-    <BCard>Content</BCard>
-  </BCollapse>
-</template>
+```
+any source (trigger click, v-model, slot function, exposed method, useToggle)
+  → show()/hide() → state changes
+  → watch(isExpanded) → aria-expanded updated on every registered trigger
 ```
 
-**What happens:**
+### Unregistration flow
 
-- ✅ `aria-controls` - Set by directive
-- ✅ `aria-expanded` - Managed by composable
-- ✅ `collapsed`/`not-collapsed` classes - Managed by composable
-- ✅ Click handler - Added by composable
-- ✅ Automatic updates - All triggers update on visibility change
-
-### Pattern 2: v-b-toggle + v-model (Hybrid)
-
-**Use when:** You need both automatic ARIA and programmatic control
-
-**Example:**
-
-```vue
-<template>
-  <BButton v-b-toggle.my-collapse>Toggle</BButton>
-  <BButton @click="visible = false">Close</BButton>
-
-  <BCollapse id="my-collapse" v-model="visible">
-    <BCard>Content</BCard>
-  </BCollapse>
-</template>
-
-<script setup lang="ts">
-import {ref} from 'vue'
-const visible = ref(false)
-</script>
+```
+v-b-toggle unmounted
+  → target.unregisterTrigger('click', el, true) → remove listener and aria-expanded
+  → directive removes aria-controls and data-bvtoggle
 ```
 
-**What happens:**
+`unregisterTrigger(..., false)` keeps `aria-expanded`; the directive uses it when targets change before re-registering.
 
-- ✅ First button gets automatic ARIA management (registered via v-b-toggle)
-- ✅ First button updates when second button closes collapse
-- ✅ Programmatic control via v-model works seamlessly
-- ❌ Second button has NO ARIA attributes (not registered)
+### `useShowHideRegistration`
 
-### Pattern 3: v-model with Slot Functions
-
-**Use when:** You want programmatic control with ARIA managed via slots
-
-**Example:**
-
-```vue
-<template>
-  <BCollapse v-model="visible">
-    <template #default="scope">
-      <BCard>
-        Content
-        <BButton @click="scope.hide">Close</BButton>
-      </BCard>
-    </template>
-  </BCollapse>
-</template>
-
-<script setup lang="ts">
-import {ref} from 'vue'
-const visible = ref(false)
-</script>
+```ts
+useShowHideRegistration({id, isExpanded, value, show, hide, toggle, triggerToggle})
+// → {registerTrigger, unregisterTrigger}
 ```
 
-**What happens:**
+Registers the component in the app registry (`useToggle`, directives), follows `id` changes, keeps `aria-expanded` of registered triggers in sync with `isExpanded()`, and removes listeners and the registry entry before unmount.
 
-- ✅ Slot functions work with v-model
-- ✅ Button can use slot function for accessibility
-- ℹ️ For external triggers, still need v-b-toggle or manual ARIA
+## Usage patterns
 
-### Pattern 4: Manual ARIA Management
+1. **`v-b-toggle`** - automatic `aria-controls`, `aria-expanded` and click handling.
+2. **`v-b-toggle` + `v-model`** - programmatic control; registered triggers stay in sync whatever changed the state. Other buttons get no ARIA.
+3. **Slot functions** (`toggle`, `show`, `hide`) - use the same show/hide functions; external triggers still need `v-b-toggle` or manual ARIA.
+4. **Manual** - the author sets `aria-controls` and `:aria-expanded`.
 
-**Use when:** You're not using v-b-toggle and don't register triggers
+Components with internal triggers manage ARIA in their template (BAccordionItem header button, BDropdown toggle / split button).
 
-**Example:**
+## Testing
 
-```vue
-<template>
-  <BButton
-    aria-controls="my-collapse"
-    :aria-expanded="visible ? 'true' : 'false'"
-    :class="visible ? 'not-collapsed' : 'collapsed'"
-    @click="toggle"
-  >
-    Toggle
-  </BButton>
+- `useCssTransition.spec.ts`: frame wait, awaiting animations, cancelled/infinite animations, invalidation by a newer run / `cancel()` / scope disposal, missing element or API, no `requestAnimationFrame`.
+- `useShowHide.spec.ts`: event order, superseded changes, trigger events, `noCloseOnEsc` / `noCloseOnBackdrop`, prevented changes reverting `v-model`, numeric `modelValue`, `delay`, trigger registry and `aria-expanded`, unmount, `lazy`.
+- `collapse.spec.ts`: native mechanism (no `<Transition>`, no inline sizes, no `.collapsing`), event timing with a fake `getAnimations()` (happy-dom has no Web Animations API), rapid toggling, `noTransition`, `lazy` / `unmountLazy`.
+- `toggle.spec.ts`: `aria-controls` / `aria-expanded` across target changes and unmount; no state classes.
 
-  <BCollapse id="my-collapse" v-model="visible">
-    <BCard>Content</BCard>
-  </BCollapse>
-</template>
+Real transition timing (that `getAnimations()` reports the collapse transition and `shown` / `hidden` wait for it) can only be verified in a browser.
 
-<script setup lang="ts">
-import {ref} from 'vue'
-const visible = ref(false)
-const toggle = () => {
-  visible.value = !visible.value
-}
-</script>
-```
+## Non-goals
 
-**What happens:**
-
-- ❌ No automatic ARIA management
-- ✅ Full manual control
-- ✅ All ARIA attributes on trigger element
-- ⚠️ Developer responsible for keeping attributes in sync
-
-## Component Internals
-
-### useShowHide Key Functions
-
-#### registerTrigger(trigger: string, el: Element)
-
-```typescript
-const registerTrigger = (trigger: string, el: Element) => {
-  triggerRegistry.push({trigger, el})
-  el.addEventListener(trigger, triggerToggle)
-  checkVisibility(el) // Sets initial state
-}
-```
-
-**Purpose:** Adds trigger to registry and sets initial ARIA state
-
-**Called by:**
-
-- v-b-toggle directive (internal use only)
-
-#### unregisterTrigger(trigger: string, el: Element, clean = true)
-
-```typescript
-const unregisterTrigger = (trigger: string, el: Element, clean = true) => {
-  const idx = triggerRegistry.findIndex((t) => t?.trigger === trigger && t.el === el)
-  if (idx > -1) {
-    triggerRegistry.splice(idx, 1)
-    el.removeEventListener(trigger, triggerToggle)
-    if (clean) {
-      el.removeAttribute('aria-expanded')
-      el.classList.remove('collapsed')
-      el.classList.remove('not-collapsed')
-    }
-  }
-}
-```
-
-**Purpose:** Removes trigger from registry and optionally cleans attributes
-
-**Parameters:**
-
-- `clean=true` - Remove aria-expanded and classes (default)
-- `clean=false` - Preserve attributes (used during updates before re-registration)
-
-#### checkVisibility(el: Element)
-
-```typescript
-const checkVisibility = (el: Element) => {
-  el.setAttribute('aria-expanded', modelValue.value ? 'true' : 'false')
-  el.classList.toggle('collapsed', !modelValue.value)
-  el.classList.toggle('not-collapsed', !!modelValue.value)
-}
-```
-
-**Purpose:** Updates ARIA attributes and classes based on current visibility state
-
-**Called by:**
-
-- `registerTrigger()` - Sets initial state
-- `watch(modelValue)` - Updates all registered triggers on visibility change
-
-#### Watch Mechanism
-
-```typescript
-watch(modelValue, () => {
-  triggerRegistry.forEach((t) => {
-    checkVisibility(t.el)
-  })
-})
-```
-
-**Purpose:** Ensures ALL registered triggers stay in sync when visibility changes
-
-**Why it works for all visibility sources:**
-
-- v-b-toggle click → updates modelValue → triggers watch
-- v-model update → updates modelValue → triggers watch
-- Slot function call → updates modelValue → triggers watch
-- Direct method call → updates modelValue → triggers watch
-
-## Design Benefits
-
-### 1. Separation of Concerns
-
-- **Directive:** Relationship mapping (aria-controls)
-- **Composable:** State management (aria-expanded, classes)
-- Clear boundaries between static and dynamic concerns
-
-### 2. Consistency
-
-- All show/hide components use the same system
-- Predictable behavior across the library
-- Single source of truth for ARIA state
-
-### 3. Flexibility
-
-- Supports multiple usage patterns
-- Works with v-model, directives, slots, and programmatic control
-- Opt-in system doesn't force users into one approach
-
-### 4. Maintainability
-
-- Centralized ARIA logic in composable
-- Changes to ARIA behavior only require updating one place
-- Clear responsibilities make debugging easier
-
-### 5. Accessibility
-
-- Automatic ARIA management reduces developer burden
-- Ensures all registered triggers stay in sync
-- Prevents common accessibility mistakes
-
-### 6. Performance
-
-- Efficient registry-based system
-- Only updates registered triggers
-- Single watch handles all visibility changes
-
-## Common Patterns in Components
-
-### BAccordionItem - Internal ARIA Management
-
-```vue
-<button
-  class="accordion-button"
-  :aria-expanded="toggleVisible ? 'true' : 'false'"
-  :aria-controls="computedId"
-  @click="slotToggle"
-></button>
-```
-
-**Why manual?** The accordion button is internal to the component and has specific styling/behavior needs. Using the registry system would add unnecessary complexity.
-
-### BDropdown - Split Button Handling
-
-```vue
-<BButton :aria-expanded="props.split ? undefined : showRef" aria-haspopup="menu">
-</BButton>
-<BButton v-if="props.split" :aria-expanded="showRef" aria-haspopup="menu"></BButton>
-```
-
-**Why manual?** Different buttons need different aria-expanded values based on split mode. Template-based management is clearer than programmatic registration.
-
-## Testing Considerations
-
-### Unit Tests
-
-**v-b-toggle directive:**
-
-- Sets `aria-controls` correctly
-- Registers trigger with component
-- Only removes `aria-controls` on unmount
-- Does NOT manage `aria-expanded` or classes
-
-**useShowHide composable:**
-
-- `registerTrigger` sets initial `aria-expanded` and classes
-- `unregisterTrigger(clean=true)` removes attributes
-- `unregisterTrigger(clean=false)` preserves attributes
-- `watch(modelValue)` updates all registered triggers
-
-### Integration Tests
-
-- Multiple triggers for single component
-- v-model updates affect registered triggers
-- Rapid mount/unmount cycles
-- Mixed usage patterns (v-b-toggle + v-model)
-
-## Migration Notes
-
-### From Bootstrap Vue 2
-
-Bootstrap Vue Next improves ARIA management through:
-
-1. **Automatic registration system** - v-b-toggle handles ARIA automatically
-2. **Multi-trigger support** - One component can have multiple registered triggers
-3. **Consistent updates** - All triggers update regardless of visibility source
-4. **Better separation** - Clear division between static (aria-controls) and dynamic (aria-expanded) attributes
-
-### Best Practices
-
-1. **Prefer v-b-toggle** for external triggers - Gets you automatic ARIA management
-2. **Use v-model** when you need programmatic control - Works seamlessly with v-b-toggle
-3. **Manual ARIA only when necessary** - When not using v-b-toggle and not registering triggers
-4. **Don't mix approaches on same trigger** - Choose either automatic (v-b-toggle) or manual, not both
-5. **Test with screen readers** - Verify ARIA attributes work correctly in practice
-
-## Future Considerations
-
-### Potential Enhancements
-
-1. **Exposed registerTrigger API** - Allow programmatic registration without v-b-toggle
-2. **ARIA live regions** - Enhanced announcements for state changes
-3. **Keyboard navigation** - Arrow key support for grouped show/hide components
-4. **Focus management** - Automatic focus handling on show/hide
-
-### Non-Goals
-
-- **Automatic registration of all buttons** - Opt-in system is intentional
-- **ARIA on target elements** - Target elements (BCollapse, etc.) don't need aria-expanded
-- **Complex ARIA patterns** - Keep it simple; focus on core show/hide accessibility
+- Automatic registration of all buttons (opt-in is intentional).
+- `aria-expanded` on the target element itself.
+- Transition timing or class logic inside `useShowHide`.
