@@ -21,25 +21,23 @@ import {
   type TablePrimaryKey,
   type TableRowEventObject,
 } from '../types/TableTypes'
-import {getDataLabelAttr, getWithGetter, type StackedProps} from '../utils/tableUtils'
+import {getDataCellAttr, getWithGetter} from '../utils/tableUtils'
 import {startCase} from '../utils/stringUtils'
 import {CODE_DOWN, CODE_END, CODE_HOME, CODE_UP} from '../utils/constants'
 import {tableKeyboardNavigationKey} from '../utils/keys'
 import {filterEvent} from '../utils/filterEvent'
 import type {AttrsValue} from '../types/AnyValuedAttributes'
+import type {Breakpoint} from '../types/BreakpointProps'
 import {getSafeDocument} from '../utils/dom'
 
 export const useTableFieldsMapper = <Item>({
   fields,
   items,
-  stackedProps,
+  stacked,
 }: {
   fields: MaybeRefOrGetter<readonly TableFieldRaw<Item>[]>
   items: MaybeRefOrGetter<readonly Item[]>
-  stackedProps: {
-    stacked: MaybeRefOrGetter<StackedProps['stacked']>
-    labelStacked: MaybeRefOrGetter<StackedProps['labelStacked']>
-  }
+  stacked: MaybeRefOrGetter<boolean | Breakpoint | undefined>
 }) => {
   const computedFields = computed<{
     items: TableField[]
@@ -47,10 +45,7 @@ export const useTableFieldsMapper = <Item>({
   }>(() => {
     const fieldsValue = toValue(fields)
     const itemsValue = toValue(items)
-    const stacked = {
-      stacked: toValue(stackedProps.stacked),
-      labelStacked: toValue(stackedProps.labelStacked),
-    }
+    const stackedValue = toValue(stacked)
 
     if (!fieldsValue.length && itemsValue.length) {
       const [firstItem] = itemsValue
@@ -61,7 +56,7 @@ export const useTableFieldsMapper = <Item>({
             return {
               key: k,
               label,
-              tdAttr: getDataLabelAttr(stacked, label),
+              tdAttr: getDataCellAttr(stackedValue, label),
             }
           }),
         }
@@ -75,15 +70,15 @@ export const useTableFieldsMapper = <Item>({
       items: fieldsValue.map((f) => {
         if (isTableField(f)) {
           const label = f.label ?? startCase(f.key as string)
-          const dataLabelAttr = getDataLabelAttr(stacked, label)
+          const dataCellAttr = getDataCellAttr(stackedValue, label)
           const tdAttr =
             typeof f.tdAttr === 'function'
               ? (obj: unknown) => ({
-                  ...dataLabelAttr,
+                  ...dataCellAttr,
                   ...(f.tdAttr as (obj: unknown) => AttrsValue)(obj),
                 })
-              : dataLabelAttr || f.tdAttr
-                ? {...dataLabelAttr, ...f.tdAttr}
+              : dataCellAttr || f.tdAttr
+                ? {...dataCellAttr, ...f.tdAttr}
                 : undefined
           return {
             ...(f as TableField),
@@ -94,7 +89,7 @@ export const useTableFieldsMapper = <Item>({
         return {
           key: f as string,
           label,
-          tdAttr: getDataLabelAttr(stacked, label),
+          tdAttr: getDataCellAttr(stackedValue, label),
         }
       }),
     }
@@ -256,23 +251,18 @@ export const useTableKeyboardNavigation = <Item>(
 
     return !!(props[`on${eventName}`] || props[`on${eventName}Once`])
   }
-  const hasHeadClickedHandler = computed(
-    () => hasEventHandler('HeadClicked')
-  )
-  const hasRowClickedHandler = computed(
-    () => hasEventHandler('RowClicked')
-  )
+  const hasHeadClickedHandler = computed(() => hasEventHandler('HeadClicked'))
+  const hasRowClickedHandler = computed(() => hasEventHandler('RowClicked'))
   // Keyboard navigation support
   const shouldHeaderBeFocusable = (field: TableField) =>
     keyboardNavigation
       ? !!(keyboardNavigation.headerNavigation.value && field.sortable === true)
       : hasHeadClickedHandler.value
 
-  const shouldRowBeFocusable = computed(
-    () =>
-      keyboardNavigation
-        ? !!(keyboardNavigation.rowNavigation.value && toValue(items).length > 0)
-        : !!(hasRowClickedHandler.value && toValue(items).length > 0)
+  const shouldRowBeFocusable = computed(() =>
+    keyboardNavigation
+      ? !!(keyboardNavigation.rowNavigation.value && toValue(items).length > 0)
+      : !!(hasRowClickedHandler.value && toValue(items).length > 0)
   )
 
   const headerClicked = (

@@ -128,7 +128,7 @@
                           <BTable
                             :items="table._data.map((el) => ({ prop: el[0], ...el[1] }))"
                             :fields="tableFieldDefinitions.props"
-                            table-class="m-0 p-0"
+                            :table-attrs="{ class: 'm-0 p-0' }"
                             class="m-0 p-0"
                             hover
                             small

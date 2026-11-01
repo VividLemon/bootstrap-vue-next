@@ -133,7 +133,7 @@ export default {
           type: 'boolean | Breakpoint',
           default: false,
           description:
-            "Place the table in stacked mode. Set to true for always stacked, or set to one of the breakpoints to switch from stacked to normal: 'sm', 'md', 'lg', 'xl'",
+            "Place the table in Bootstrap's stacked mode. Set to true for always stacked (`table-stacked`), or set to one of the breakpoints to stack the table only while its container is narrower than it: 'sm', 'md', 'lg', 'xl', '2xl' (`stacked=\"md\"` renders `md:table-stacked`). A stacked table is wrapped in a `table-responsive` query container and its body cells get `data-cell` labels",
         },
         stickyHeader: {
           type: 'boolean | Numberish',
@@ -152,14 +152,10 @@ export default {
           description: 'Applies striping to the table columns',
         },
         tableAttrs: {
-          type: 'AttrsValue',
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Attributes to apply to the table element',
-        },
-        tableClass: {
-          type: 'ClassValue',
-          default: undefined,
-          description: 'Classes to apply to the table element',
+          description:
+            'Attributes to apply to the table element. `class` and `style` are merged with the table classes',
         },
       } satisfies PropRecord<keyof BTableSimpleProps>,
     } as const
@@ -176,14 +172,17 @@ export default {
           default: undefined,
           description: 'Text string to place in the caption element',
         },
-        detailsTdClass: {
-          type: 'ClassValue',
+        detailsTdAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'CSS class (or classes) to apply to the td element in the details row',
+          description:
+            'Attributes (including `class` and `style`) to apply to the td element in the details row',
         },
-        fieldColumnClass: {
-          type: '(field: TableField) => Record<string, any>[] | string | Record<PropertyKey, any> | any[]',
+        fieldColumnAttrs: {
+          type: '((field: TableField) => AttrsValue) | Readonly<AttrsValue>',
           default: undefined,
+          description:
+            'Attributes (including `class` and `style`) to apply to every header and footer th element. Pass a function to compute them per field',
         },
         fields: {
           type: 'TableFieldRaw[]',
@@ -198,12 +197,6 @@ export default {
         items: {
           type: 'readonly Item[]',
           default: '() => []',
-        },
-        labelStacked: {
-          type: 'boolean',
-          default: false,
-          description:
-            'When set, the labels will appear as actual label elements, rather than with the data-label attribute',
         },
         modelValue: {
           type: 'any',
@@ -221,33 +214,39 @@ export default {
           description:
             'Name of a table field that contains a guaranteed unique value per row. For row expansion and selection to persist across item updates. Also speeds up table rendering and enables proper item tracking.',
         },
-        tbodyClass: {
-          type: 'ClassValue',
+        tbodyAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
+          description: 'Attributes (including `class` and `style`) to apply to the tbody element',
         },
         tbodyTrAttrs: {
           type: '((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue',
           default: undefined,
+          description:
+            'Attributes (including `class` and `style`) to apply to every tbody row. Pass a function to compute them per row and row type',
         },
-        tbodyTrClass: {
-          type: '((item: TableItem | null, type: string) => string | any[] | null | undefined) | string | Record<PropertyKey, any> | any[]',
+        tfootAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
+          description:
+            'Attributes (including `class` and `style`) to apply to the tfoot element. Defaults to `thead-attrs`',
         },
-        tfootClass: {
-          type: 'ClassValue',
+        tfootTrAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
+          description:
+            'Attributes (including `class` and `style`) to apply to the tr in the tfoot element. Defaults to `thead-tr-attrs`',
         },
-        tfootTrClass: {
-          type: 'ClassValue',
+        theadAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
+          description: 'Attributes (including `class` and `style`) to apply to the thead element',
         },
-        theadClass: {
-          type: 'ClassValue',
+        theadTrAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-        },
-        theadTrClass: {
-          type: 'ClassValue',
-          default: undefined,
+          description:
+            'Attributes (including `class` and `style`) to apply to the tr in the thead element',
         },
       } satisfies PropRecord,
       slots: {
@@ -1070,12 +1069,6 @@ export default {
             default: undefined,
             description: 'Number of rows this cell spans',
           },
-          stackedHeading: {
-            type: 'string',
-            default: undefined,
-            description:
-              "Heading for the cell when in stacked mode. Only applicable to cells in the 'tbody' element",
-          },
           stickyColumn: {
             type: 'boolean',
             default: false,
@@ -1111,12 +1104,6 @@ export default {
           rowspan: {
             type: 'Numberish',
             default: undefined,
-          },
-          stackedHeading: {
-            type: 'string',
-            default: undefined,
-            description:
-              "Heading for the cell when in stacked mode. Only applicable to cells in the 'tbody' element",
           },
           stickyColumn: {
             type: 'boolean',

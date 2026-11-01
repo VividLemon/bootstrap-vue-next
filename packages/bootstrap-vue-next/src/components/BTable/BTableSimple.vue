@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, type StyleValue} from 'vue'
+import {computed, mergeProps, type StyleValue} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
 import {useThemeClasses} from '../../composables/useThemeClasses'
@@ -22,7 +22,6 @@ const defaultStickyHeaderHeight = '300px'
 
 const _props = withDefaults(defineProps<BTableSimpleProps>(), {
   border: null,
-  tableClass: undefined,
   theme: null,
   bg: null,
   fg: null,
@@ -56,7 +55,6 @@ const {classes: colorClasses} = useThemeClasses(
   }))
 )
 const computedClasses = computed(() => [
-  props.tableClass,
   'table',
   'b-table',
   colorClasses.value,
@@ -66,8 +64,8 @@ const computedClasses = computed(() => [
     'table-borderless': props.borderless,
     'caption-top': props.captionTop,
     'table-hover': props.hover,
-    'b-table-stacked': props.stacked === true,
-    [`b-table-stacked-${props.stacked}`]: typeof props.stacked === 'string',
+    'table-stacked': props.stacked === true,
+    [`${props.stacked}:table-stacked`]: typeof props.stacked === 'string',
     'table-striped': props.striped,
     'table-sm': props.small,
     'table-striped-columns': props.stripedColumns,
@@ -75,11 +73,9 @@ const computedClasses = computed(() => [
     'b-table-no-border-collapse': props.noBorderCollapse,
   },
 ])
-const computedTableAttrs = computed(() => ({
-  id: computedId.value,
-  class: computedClasses.value,
-  ...props.tableAttrs,
-}))
+const computedTableAttrs = computed(() =>
+  mergeProps({id: computedId.value, class: computedClasses.value}, props.tableAttrs ?? {})
+)
 
 const {style: computedSticky} = useNumberishToStyle(
   computed(
@@ -89,12 +85,16 @@ const {style: computedSticky} = useNumberishToStyle(
 )
 const stickyIsValid = computed(() => props.stickyHeader !== false)
 
-const isResponsive = computed(() => props.responsive !== false || stickyIsValid.value)
+const isStacked = computed(() => props.stacked !== false)
+// Bootstrap's stacked tables use container queries: the `table-responsive` wrapper is the query container
+const isResponsive = computed(
+  () => props.responsive !== false || stickyIsValid.value || isStacked.value
+)
 const responsiveStyles = computed<StyleValue | undefined>(() =>
   stickyIsValid.value ? {maxHeight: computedSticky.value} : undefined
 )
 const responsiveClasses = computed(() => ({
-  'table-responsive': props.responsive === true,
+  'table-responsive': props.responsive === true || (props.responsive === false && isStacked.value),
   [`${props.responsive}:table-responsive`]: typeof props.responsive === 'string',
   'b-table-sticky-header': stickyIsValid.value,
 }))
