@@ -39,7 +39,7 @@ export default {
           description:
             'When set, disables the vertical and horizontal centering of the overlay content',
         },
-        noFade: {
+        noTransition: {
           type: 'boolean',
           default: false,
           description: 'Disables the fade transition of the overlay',

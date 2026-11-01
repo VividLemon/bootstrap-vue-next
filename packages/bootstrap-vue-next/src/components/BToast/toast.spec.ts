@@ -195,20 +195,10 @@ describe('toast', () => {
     expect($div.attributes('id')).toBeUndefined()
   })
 
-  // noFade prop
-  it('nested div does not have class fade when prop noFade is true', () => {
+  // noTransition prop
+  it('nested div does not have class fade when prop noTransition is true', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, noFade: true},
-      slots: {default: 'content'},
-    })
-    const $div = wrapper.get('div')
-    expect($div.classes()).not.toContain('fade')
-  })
-
-  // noAnimation prop
-  it('nested div does not have class fade when prop noAnimation is true', () => {
-    const wrapper = mount(BToast, {
-      props: {modelValue: true, noAnimation: true},
+      props: {modelValue: true, noTransition: true},
       slots: {default: 'content'},
     })
     const $div = wrapper.get('div')
@@ -483,7 +473,7 @@ describe('toast', () => {
   // Close button click events
   it('BCloseButton emits update:modelValue when clicked', async () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, noAnimation: true},
+      props: {modelValue: true, noTransition: true},
       slots: {default: 'content'},
     })
     const $bclosebutton = wrapper.getComponent(BCloseButton)
@@ -494,7 +484,7 @@ describe('toast', () => {
 
   it('BCloseButton clicked emits arg false when modelValue boolean', async () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, noAnimation: true},
+      props: {modelValue: true, noTransition: true},
       slots: {default: 'content'},
     })
     const $bclosebutton = wrapper.getComponent(BCloseButton)
@@ -539,7 +529,7 @@ describe('toast', () => {
 
   it('BButton emits update:modelValue when clicked', async () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, noAnimation: true},
+      props: {modelValue: true, noTransition: true},
       slots: {close: 'close text', default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)
@@ -550,7 +540,7 @@ describe('toast', () => {
 
   it('BButton clicked emits arg false when modelValue boolean', async () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, noAnimation: true},
+      props: {modelValue: true, noTransition: true},
       slots: {close: 'close text', default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)
@@ -594,7 +584,7 @@ describe('toast', () => {
 
   it('close button in header emits update:modelValue when clicked', async () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, title: 'Title', noAnimation: true},
+      props: {modelValue: true, title: 'Title', noTransition: true},
       slots: {default: 'content'},
     })
     const $header = wrapper.find('.toast-header')
@@ -669,7 +659,7 @@ describe('toast', () => {
   // show prop
   it('show prop triggers show event emission', async () => {
     const wrapper = mount(BToast, {
-      props: {show: true, noAnimation: true},
+      props: {show: true, noTransition: true},
     })
     await nextTick()
     expect(wrapper.emitted()).toHaveProperty('show')
@@ -678,7 +668,7 @@ describe('toast', () => {
   // visible prop
   it('visible prop makes the component render', async () => {
     const wrapper = mount(BToast, {
-      props: {visible: true, noAnimation: true},
+      props: {visible: true, noTransition: true},
     })
     await nextTick()
     const $div = wrapper.find('div')

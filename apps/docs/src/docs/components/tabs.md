@@ -124,7 +124,7 @@ To apply classes to the currently active control or tab use the `active-nav-item
 
 ## Fade animation
 
-Fade is enabled by default when changing tabs. It can disabled with `no-fade` property.
+Fade is enabled by default when changing tabs. It can be disabled with the `no-transition` prop.
 
 ## Add tabs without content
 

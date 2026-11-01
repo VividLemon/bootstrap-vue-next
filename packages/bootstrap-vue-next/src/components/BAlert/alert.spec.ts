@@ -244,7 +244,7 @@ describe('alert', () => {
   // BCloseButton variant
   it('nested div BCloseButton emits update:modelValue when clicked when modelValue boolean', async () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, noAnimation: true},
+      props: {modelValue: true, dismissible: true, noTransition: true},
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -256,7 +256,7 @@ describe('alert', () => {
 
   it('nested div BCloseButton clicked update:modelValue emits arg false when modelValue boolean', async () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, noAnimation: true},
+      props: {modelValue: true, dismissible: true, noTransition: true},
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -487,19 +487,10 @@ describe('alert', () => {
     expect($div.classes()).not.toContain('theme-info')
   })
 
-  // noFade prop
-  it('nested div does not have class fade when prop noFade is true', () => {
+  // noTransition prop
+  it('nested div does not have class fade when prop noTransition is true', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, noFade: true},
-    })
-    const $div = wrapper.get('div')
-    expect($div.classes()).not.toContain('fade')
-  })
-
-  // noAnimation prop
-  it('nested div does not have class fade when prop noAnimation is true', () => {
-    const wrapper = mount(BAlert, {
-      props: {modelValue: true, noAnimation: true},
+      props: {modelValue: true, noTransition: true},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).not.toContain('fade')
@@ -642,7 +633,7 @@ describe('alert', () => {
 
   it('close button in header emits update:modelValue when clicked', async () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, title: 'Title', dismissible: true, noAnimation: true},
+      props: {modelValue: true, title: 'Title', dismissible: true, noTransition: true},
       slots: {default: 'content'},
     })
     const $heading = wrapper.find('.alert-heading')
@@ -692,7 +683,7 @@ describe('alert', () => {
   // show prop
   it('show prop triggers show event emission', async () => {
     const wrapper = mount(BAlert, {
-      props: {show: true, noAnimation: true},
+      props: {show: true, noTransition: true},
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.emitted()).toHaveProperty('show')
@@ -701,7 +692,7 @@ describe('alert', () => {
   // visible prop
   it('visible prop makes the component render', async () => {
     const wrapper = mount(BAlert, {
-      props: {visible: true, noAnimation: true},
+      props: {visible: true, noTransition: true},
     })
     await wrapper.vm.$nextTick()
     const $div = wrapper.find('div')

@@ -46,7 +46,7 @@ export const carouselInjectionKey: InjectionKey<{
 export const tabsInjectionKey: InjectionKey<{
   lazy: Readonly<Ref<boolean>>
   card: Readonly<Ref<boolean>>
-  noFade: Readonly<Ref<boolean>>
+  noTransition: Readonly<Ref<boolean>>
   registerTab: (tab: ComputedRef<TabType>) => string
   unregisterTab: (id: string) => void
   activateTab: (id: string | undefined) => void

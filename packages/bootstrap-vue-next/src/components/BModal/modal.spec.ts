@@ -84,19 +84,19 @@ describe('modal', () => {
     expect($div.classes()).toContain('foo')
   })
 
-  it('div has class fade when not prop noFade', () => {
+  it('div has class fade when not prop noTransition', () => {
     const wrapper = mount(BModal, {
       global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-      props: {noFade: false},
+      props: {noTransition: false},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('fade')
   })
 
-  it('div has class fade when prop noFade', () => {
+  it('div has class fade when prop noTransition', () => {
     const wrapper = mount(BModal, {
       global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
-      props: {noFade: true},
+      props: {noTransition: true},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).not.toContain('fade')
@@ -621,7 +621,7 @@ describe('modal', () => {
       global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       props: {
         id: 'test',
-        noFade: true,
+        noTransition: true,
       },
     })
 
@@ -647,7 +647,7 @@ describe('modal', () => {
       global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       props: {
         id: 'test',
-        noFade: false,
+        noTransition: false,
       },
     })
 

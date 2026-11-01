@@ -81,7 +81,7 @@ use margin/padding utility classes on the content of the offcanvas.
 ### Disable slide transition
 
 By default the offcanvas will use a sliding transition when showing and hiding. You can disable the
-slide transition via the `no-animation` prop.
+slide transition via the `no-transition` prop.
 
 **Note:** The BootstrapVueNext defined transition effect of this component is dependent on the
 `prefers-reduced-motion` media query. See the

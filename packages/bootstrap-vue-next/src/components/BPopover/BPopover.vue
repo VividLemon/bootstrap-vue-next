@@ -117,7 +117,7 @@ const _props = withDefaults(defineProps<Omit<BPopoverProps, 'modelValue'>>(), {
   lazy: false,
   manual: false,
   noAutoClose: false,
-  noFade: false,
+  noTransition: false,
   noFlip: false,
   noHide: false,
   noShift: false,

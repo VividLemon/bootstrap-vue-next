@@ -5,10 +5,10 @@ import type {
   BAccordionProps,
   BAccordionSlots,
 } from 'bootstrap-vue-next'
-import type {ComponentReference, EmitRecord, PropRecord, SlotRecord} from '../../types'
-import {buildCommonProps} from '../../utils/commonProps'
-import {pick} from '../../utils/objectUtils'
-import {showHideEmits, showHideProps} from '../../utils/showHideData'
+import type { ComponentReference, EmitRecord, PropRecord, SlotRecord } from '../../types'
+import { buildCommonProps } from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { showHideEmits, showHideProps } from '../../utils/showHideData'
 
 export default {
   load: (): ComponentReference => ({
@@ -22,7 +22,7 @@ export default {
                 'The Id to be injected to accordion items and used in BCollapse for state management',
             },
           }),
-          ['id']
+          ['id'],
         ),
         flush: {
           type: 'boolean',
@@ -74,7 +74,14 @@ export default {
     },
     BAccordionItem: {
       props: {
-        ...pick(showHideProps, ['modelValue', 'lazy', 'show', 'unmountLazy', 'visible']), // Restored spread
+        ...pick(showHideProps, [
+          'modelValue',
+          'lazy',
+          'noTransition',
+          'show',
+          'unmountLazy',
+          'visible',
+        ]), // Restored spread
         ...pick(
           buildCommonProps({
             id: {
@@ -82,7 +89,7 @@ export default {
                 'The Id to be injected to accordion items and used in BCollapse for state management',
             },
           }),
-          ['bodyAttrs', 'bodyClass', 'id', 'tag', 'wrapperAttrs']
+          ['bodyAttrs', 'bodyClass', 'id', 'tag', 'wrapperAttrs'],
         ),
         buttonAttrs: {
           type: 'Readonly<AttrsValue>',

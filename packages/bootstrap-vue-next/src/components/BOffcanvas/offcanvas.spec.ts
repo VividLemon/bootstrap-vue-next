@@ -578,9 +578,9 @@ describe('offcanvas', () => {
   })
 
   describe('animation', () => {
-    it('has no-transition class when noAnimation is true', () => {
+    it('has no-transition class when noTransition is true', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {noAnimation: true},
+        props: {noTransition: true},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $offcanvas = wrapper.find('.offcanvas')
@@ -749,7 +749,7 @@ describe('offcanvas', () => {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
         props: {
           id: 'test',
-          noFade: true,
+          noTransition: true,
         },
       })
 
@@ -770,7 +770,7 @@ describe('offcanvas', () => {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
         props: {
           id: 'test',
-          noFade: false,
+          noTransition: false,
         },
       })
 

@@ -115,7 +115,7 @@ const _props = withDefaults(defineProps<Omit<BTabsProps, 'modelValue' | 'activeI
   navClass: undefined,
   navItemClass: undefined,
   navWrapperClass: undefined,
-  noFade: false,
+  noTransition: false,
   noKeyNav: false,
   noNavStyle: false,
   pills: false,
@@ -524,7 +524,7 @@ const unregisterTab = (id: string) => {
 provide(tabsInjectionKey, {
   lazy: toRef(() => props.lazy),
   card: toRef(() => props.card),
-  noFade: toRef(() => props.noFade),
+  noTransition: toRef(() => props.noTransition),
   activeTabClass: toRef(() => props.activeTabClass),
   inactiveTabClass: toRef(() => props.inactiveTabClass),
   tabClass: toRef(() => props.tabClass),

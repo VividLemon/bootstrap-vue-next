@@ -139,7 +139,7 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   isStatus: false,
   lazy: false,
   noCloseButton: false,
-  noFade: false,
+  noTransition: false,
   noHoverPause: false,
   noProgress: false,
   noResumeOnHoverLeave: false,
@@ -151,7 +151,6 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   fg: null,
   title: undefined,
   toastClass: undefined,
-  transProps: undefined,
   visible: false,
   // Link props
   // All others use defaults

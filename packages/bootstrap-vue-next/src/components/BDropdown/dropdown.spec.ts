@@ -718,7 +718,7 @@ describe('dropdown', () => {
 
     it('has class show when dropdown is open and not split', async () => {
       const wrapper = mount(BDropdown, {
-        props: {modelValue: true, noAnimation: true},
+        props: {modelValue: true, noTransition: true},
       })
       await new Promise((resolve) => setTimeout(resolve, 30))
       const $bbutton = wrapper.getComponent(BButton)

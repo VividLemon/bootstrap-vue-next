@@ -208,7 +208,7 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   noBackdrop: false,
   noCloseOnBackdrop: false,
   noCloseOnEsc: false,
-  noFade: false,
+  noTransition: false,
   noTrap: false,
   okClass: undefined,
   okColor: undefined,
@@ -226,7 +226,6 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   titleVisuallyHidden: false,
   titleTag: 'h5',
   show: false,
-  transProps: undefined,
   visible: false,
 })
 const props = useDefaults(_props, 'BModal')

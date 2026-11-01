@@ -314,8 +314,8 @@ describe('popover', () => {
   })
 
   describe('classes and styling', () => {
-    it('does not have fade class when noFade is true', () => {
-      const wrapper = mount(BPopover, {props: {modelValue: true, noFade: true}})
+    it('does not have fade class when noTransition is true', () => {
+      const wrapper = mount(BPopover, {props: {modelValue: true, noTransition: true}})
       const $div = wrapper.get('div.popover')
       expect($div.classes()).not.toContain('fade')
     })

@@ -676,7 +676,7 @@ describe('carousel', () => {
     })
   })
 
-  describe('noAnimation', () => {
+  describe('noTransition', () => {
     it('does not apply transition none style by default', () => {
       const wrapper = mount(BCarousel, {
         slots: {default: () => [h(BCarouselSlide)]},
@@ -685,9 +685,9 @@ describe('carousel', () => {
       expect(slide.attributes('style')).not.toContain('transition: none')
     })
 
-    it('applies transition none style when noAnimation is true', () => {
+    it('applies transition none style when noTransition is true', () => {
       const wrapper = mount(BCarousel, {
-        props: {noAnimation: true},
+        props: {noTransition: true},
         slots: {default: () => [h(BCarouselSlide)]},
       })
       const slide = wrapper.get('.carousel-item')

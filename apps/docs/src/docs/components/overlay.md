@@ -51,7 +51,7 @@ prop. When a value is provided for `bg-color`, the `bg` prop value is ignored.
 ### Fade transition
 
 By default, the overlay uses Bootstrap's fade transition when showing or hiding. You can disable the
-fade transition via adding the `no-fade` prop to `BOverlay`.
+fade transition via adding the `no-transition` prop to `BOverlay`.
 
 <<< DEMO ./demo/OverlayNoFade.vue
 

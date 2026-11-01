@@ -136,7 +136,7 @@ describe('collapse', () => {
 
   it('emits update:modelValue when toggled', async () => {
     const wrapper = mount(BCollapse, {
-      props: {modelValue: false, noAnimation: true},
+      props: {modelValue: false, noTransition: true},
     })
     wrapper.vm.toggle()
     await nextTick()
@@ -148,7 +148,7 @@ describe('collapse', () => {
 
   it('emits update:modelValue with false when hiding', async () => {
     const wrapper = mount(BCollapse, {
-      props: {modelValue: true, noAnimation: true},
+      props: {modelValue: true, noTransition: true},
     })
     wrapper.vm.toggle()
     await nextTick()
@@ -352,7 +352,7 @@ describe('collapse', () => {
     },
   ])('$caseName', async ({method, modelValue, expected}) => {
     const wrapper = mount(BCollapse, {
-      props: {modelValue, noAnimation: true},
+      props: {modelValue, noTransition: true},
     })
     wrapper.vm[method]()
     await nextTick()
@@ -365,7 +365,7 @@ describe('collapse', () => {
   // --- Events ---
   it('emits show event when showing', async () => {
     const wrapper = mount(BCollapse, {
-      props: {modelValue: false, noAnimation: true},
+      props: {modelValue: false, noTransition: true},
     })
     wrapper.vm.show()
     await nextTick()
@@ -374,7 +374,7 @@ describe('collapse', () => {
 
   it('emits hide event when hiding', async () => {
     const wrapper = mount(BCollapse, {
-      props: {modelValue: true, noAnimation: true},
+      props: {modelValue: true, noTransition: true},
     })
     wrapper.vm.hide()
     await nextTick()
@@ -383,7 +383,7 @@ describe('collapse', () => {
 
   it('emits toggle event when toggling', async () => {
     const wrapper = mount(BCollapse, {
-      props: {modelValue: false, noAnimation: true},
+      props: {modelValue: false, noTransition: true},
     })
     wrapper.vm.toggle()
     await nextTick()
@@ -394,25 +394,25 @@ describe('collapse', () => {
   it.each([
     {
       caseName: 'enter-active class when animation enabled',
-      props: {noAnimation: false},
+      props: {noTransition: false},
       attribute: 'enteractiveclass',
       expectedClass: 'collapsing',
     },
     {
       caseName: 'leave-active class when animation enabled',
-      props: {noAnimation: false},
+      props: {noTransition: false},
       attribute: 'leaveactiveclass',
       expectedClass: 'collapsing',
     },
     {
-      caseName: 'empty enter-active class when noAnimation is true',
-      props: {noAnimation: true},
+      caseName: 'empty enter-active class when noTransition is true',
+      props: {noTransition: true},
       attribute: 'enteractiveclass',
       expectedClass: '',
     },
     {
-      caseName: 'empty leave-active class when noAnimation is true',
-      props: {noAnimation: true},
+      caseName: 'empty leave-active class when noTransition is true',
+      props: {noTransition: true},
       attribute: 'leaveactiveclass',
       expectedClass: '',
     },
@@ -457,18 +457,18 @@ describe('collapse', () => {
     expect($transition.exists()).toBe(true)
   })
 
-  // --- noAnimation prop ---
-  it('uses empty enter-active-class when noAnimation is true', () => {
+  // --- noTransition prop ---
+  it('uses empty enter-active-class when noTransition is true', () => {
     const wrapper = mount(BCollapse, {
-      props: {noAnimation: true},
+      props: {noTransition: true},
     })
     const $transition = wrapper.findComponent(Transition)
     expect($transition.attributes('enteractiveclass')).toBe('')
   })
 
-  it('uses empty leave-active-class when noAnimation is true', () => {
+  it('uses empty leave-active-class when noTransition is true', () => {
     const wrapper = mount(BCollapse, {
-      props: {noAnimation: true},
+      props: {noTransition: true},
     })
     const $transition = wrapper.findComponent(Transition)
     expect($transition.attributes('leaveactiveclass')).toBe('')

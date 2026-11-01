@@ -135,7 +135,7 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   interval: 'requestAnimationFrame',
   isStatus: false,
   lazy: false,
-  noFade: false,
+  noTransition: false,
   noHoverPause: false,
   noResumeOnHoverLeave: false,
   progressProps: undefined,
@@ -146,7 +146,6 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   fg: null,
   title: undefined,
   alertClass: undefined,
-  transProps: undefined,
   visible: false,
   // Link props
   // All others use defaults

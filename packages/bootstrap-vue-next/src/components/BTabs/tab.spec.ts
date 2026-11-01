@@ -14,7 +14,7 @@ function createMockParentData(overrides: Record<string, unknown> = {}) {
   return {
     lazy: ref(false),
     card: ref(false),
-    noFade: ref(false),
+    noTransition: ref(false),
     activeTabClass: ref(undefined),
     inactiveTabClass: ref(undefined),
     tabClass: ref(undefined),
@@ -146,16 +146,16 @@ describe('tab', () => {
     expect(wrapper.classes()).not.toContain('card-body')
   })
 
-  it('has class fade when parentData noFade is false', () => {
-    const parentData = createMockParentData({noFade: ref(false)})
+  it('has class fade when parentData noTransition is false', () => {
+    const parentData = createMockParentData({noTransition: ref(false)})
     const wrapper = mount(BTab, {
       global: {provide: {[tabsInjectionKey as unknown as symbol]: parentData}},
     })
     expect(wrapper.classes()).toContain('fade')
   })
 
-  it('does not have class fade when parentData noFade is true', () => {
-    const parentData = createMockParentData({noFade: ref(true)})
+  it('does not have class fade when parentData noTransition is true', () => {
+    const parentData = createMockParentData({noTransition: ref(true)})
     const wrapper = mount(BTab, {
       global: {provide: {[tabsInjectionKey as unknown as symbol]: parentData}},
     })

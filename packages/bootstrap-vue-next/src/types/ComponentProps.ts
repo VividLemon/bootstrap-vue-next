@@ -6,13 +6,7 @@ import type {
   RootBoundary,
   Strategy,
 } from '@floating-ui/vue'
-import type {
-  AriaAttributes,
-  Component,
-  ComponentPublicInstance,
-  TeleportProps,
-  TransitionProps,
-} from 'vue'
+import type {AriaAttributes, Component, ComponentPublicInstance, TeleportProps} from 'vue'
 import type {RouteLocationRaw} from 'vue-router'
 import type {LinkTarget} from './LinkTarget'
 import type {
@@ -257,6 +251,7 @@ export interface BAccordionItemProps {
   isNav?: boolean
   modelValue?: boolean
   lazy?: boolean
+  noTransition?: boolean
   unmountLazy?: boolean
   tag?: string
   title?: string
@@ -880,7 +875,7 @@ export interface BOverlayProps extends RadiusElementExtendables {
   blur?: string | null
   fixed?: boolean
   noCenter?: boolean
-  noFade?: boolean
+  noTransition?: boolean
   noSpinner?: boolean
   noWrap?: boolean
   opacity?: Numberish
@@ -1029,7 +1024,7 @@ export interface BTabsProps {
   navClass?: ClassValue
   navItemClass?: ClassValue
   navWrapperClass?: ClassValue
-  noFade?: boolean
+  noTransition?: boolean
   noKeyNav?: boolean
   noNavStyle?: boolean
   pills?: boolean
@@ -1245,7 +1240,7 @@ export interface BCarouselProps {
   labelIndicators?: string
   keyboard?: boolean
   modelValue?: number
-  noAnimation?: boolean
+  noTransition?: boolean
   noHoverPause?: boolean
   noTouch?: boolean
   noWrap?: boolean
@@ -1276,8 +1271,7 @@ export interface BCarouselSlideProps {
 export interface BTransitionProps {
   appear?: boolean
   mode?: TransitionMode
-  noFade?: boolean
-  transProps?: Readonly<TransitionProps>
+  noTransition?: boolean
 }
 
 export interface BImgProps extends RadiusElementExtendables {
@@ -1636,12 +1630,10 @@ export interface BModalProps extends TeleporterProps, ShowHideProps {
 
 export interface ShowHideProps {
   initialAnimation?: boolean
-  noAnimation?: boolean
-  noFade?: boolean
+  noTransition?: boolean
   lazy?: boolean
   unmountLazy?: boolean
   show?: boolean
-  transProps?: Readonly<TransitionProps>
   visible?: boolean
 }
 

@@ -42,11 +42,9 @@ export const useShowHide = (
     props: {
       visible?: boolean
       show?: boolean
-      noAnimation?: boolean
-      noFade?: boolean
+      noTransition?: boolean
       noCloseOnBackdrop?: boolean
       noCloseOnEsc?: boolean
-      transitionProps?: TransitionProps
       lazy?: boolean
       initialAnimation?: boolean
       delay?:
@@ -93,9 +91,7 @@ export const useShowHide = (
 
   const localNoAnimation = ref(initialShow)
   const localTemporaryHide = ref(false)
-  const computedNoAnimation = computed(
-    () => props.noAnimation || props.noFade || localNoAnimation.value || false
-  )
+  const computedNoAnimation = computed(() => props.noTransition || localNoAnimation.value || false)
   let isMounted = false
   onMounted(() => {
     isMounted = true
@@ -406,10 +402,7 @@ export const useShowHide = (
   const isVisible = ref(initialShow)
 
   const onBeforeEnter: TransitionProps['onBeforeEnter'] = [
-    ...[
-      options.transitionProps?.onBeforeEnter ?? noop,
-      props.transitionProps?.onBeforeEnter ?? noop,
-    ].flat(),
+    ...[options.transitionProps?.onBeforeEnter ?? noop].flat(),
     () => {
       isActive.value = true
     },
@@ -424,14 +417,11 @@ export const useShowHide = (
         })
       })
     },
-    ...[options.transitionProps?.onEnter ?? noop, props.transitionProps?.onEnter ?? noop].flat(),
+    ...[options.transitionProps?.onEnter ?? noop].flat(),
   ]
   const onAfterEnter: TransitionProps['onAfterEnter'] = [
     markLazyLoadCompleted,
-    ...[
-      options.transitionProps?.onAfterEnter ?? noop,
-      props.transitionProps?.onAfterEnter ?? noop,
-    ].flat(),
+    ...[options.transitionProps?.onAfterEnter ?? noop].flat(),
     () => {
       if (localNoAnimation.value) {
         requestAnimationFrame(() => {
@@ -459,10 +449,7 @@ export const useShowHide = (
     () => {
       if (!isLeaving.value) isLeaving.value = true
     },
-    ...[
-      options.transitionProps?.onBeforeLeave ?? noop,
-      props.transitionProps?.onBeforeLeave ?? noop,
-    ].flat(),
+    ...[options.transitionProps?.onBeforeLeave ?? noop].flat(),
     () => {
       trapActive.value = false
     },
@@ -472,17 +459,14 @@ export const useShowHide = (
     () => {
       isVisible.value = false
     },
-    ...[options.transitionProps?.onLeave ?? noop, props.transitionProps?.onLeave ?? noop].flat(),
+    ...[options.transitionProps?.onLeave ?? noop].flat(),
   ]
 
   const onAfterLeave: TransitionProps['onAfterLeave'] = [
     () => {
       emit('hidden', buildTriggerableEvent('hidden', {trigger: leaveTrigger, cancelable: false}))
     },
-    ...[
-      options.transitionProps?.onAfterLeave ?? noop,
-      props.transitionProps?.onAfterLeave ?? noop,
-    ].flat(),
+    ...[options.transitionProps?.onAfterLeave ?? noop].flat(),
     () => {
       isLeaving.value = false
       isActive.value = false
@@ -546,7 +530,6 @@ export const useShowHide = (
     isLeaving: readonly(isLeaving),
     transitionProps: {
       ...fadeBaseTransitionProps,
-      ...props.transitionProps,
       ...transitionFunctions,
     } satisfies TransitionProps,
 
