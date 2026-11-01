@@ -3,7 +3,7 @@
   <BDropdown
     split
     split-variant="outline"
-    split-theme="primary"
+    :split-color="{ theme: 'primary' }"
     theme="primary"
     text="Split Variant Dropdown"
     class="me-2"

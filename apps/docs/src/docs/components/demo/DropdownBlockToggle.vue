@@ -10,7 +10,7 @@
       text="Block Level Split Dropdown"
       split
       split-variant="outline"
-      split-theme="primary"
+      :split-color="{ theme: 'primary' }"
       theme="primary"
       split-class="w-100"
     >

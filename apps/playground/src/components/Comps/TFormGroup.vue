@@ -6,7 +6,7 @@
           <!-- <label for="tags-basic">Type a new tag and press enter</label> -->
           <BFormTags
             v-model="value"
-            tag-theme="warning"
+            :tag-color="{ theme: 'warning' }"
             autofocus
             separator=" ,"
             remove-on-delete

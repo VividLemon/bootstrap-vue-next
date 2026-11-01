@@ -4,7 +4,7 @@
     <BFormTags
       v-model="value"
       input-id="tags-pills"
-      tag-theme="primary"
+      :tag-color="{ theme: 'primary' }"
       tag-pills
       size="lg"
       separator=" "

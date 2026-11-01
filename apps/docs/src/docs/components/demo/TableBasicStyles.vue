@@ -83,8 +83,8 @@
       :items="items"
       :fields="fields"
       :theme="theme"
-      :head-theme="headTheme"
-      :foot-theme="footTheme"
+      :head-color="{ theme: headTheme }"
+      :foot-color="{ theme: footTheme }"
     />
   </div>
 </template>

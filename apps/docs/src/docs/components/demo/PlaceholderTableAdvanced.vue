@@ -3,7 +3,7 @@
     columns="3"
     rows="2"
     show-footer
-    footer-theme="info"
+    :footer-color="{ theme: 'info' }"
     header-size="lg"
     footer-size="xs"
     footer-columns="1"

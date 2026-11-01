@@ -48,7 +48,7 @@
           variant="outline"
           theme="primary"
           split-variant="solid"
-          split-theme="primary"
+          :split-color="{ theme: 'primary' }"
           @click="(event: Event) => consoleLog('main split button clicked', event)"
           @toggle="consoleLog('toggle button clicked')"
         >

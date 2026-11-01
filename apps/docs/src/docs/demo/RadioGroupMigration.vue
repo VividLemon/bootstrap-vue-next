@@ -7,7 +7,7 @@
         v-model="model"
         name="color-group"
         button-variant="outline"
-        button-theme="secondary"
+        :button-color="{ theme: 'secondary' }"
         :options="options"
         buttons
       >

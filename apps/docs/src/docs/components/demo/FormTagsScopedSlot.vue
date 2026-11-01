@@ -3,7 +3,7 @@
     <BFormCheckbox v-model="disabled" switch size="lg">Disable</BFormCheckbox>
     <BFormTags
       v-model="tags"
-      tag-theme="success"
+      :tag-color="{ theme: 'success' }"
       class="mb-2 mt-2"
       :disabled="disabled"
       no-outer-focus

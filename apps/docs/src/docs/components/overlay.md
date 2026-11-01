@@ -88,11 +88,13 @@ Place custom content in the overlay (replacing the default spinner) via the opti
 
 The following scope properties are available to the `overlay` slot:
 
-| Property         | Description                         |
-| ---------------- | ----------------------------------- |
-| `spinnerTheme`   | Value of the `spinner-theme` prop   |
-| `spinnerType`    | Value of the `spinner-type` prop    |
-| `spinnerSmall`   | Value of the `spinner-small` prop   |
+| Property | Description                            |
+| -------- | -------------------------------------- |
+| `type`   | Value of the `spinner-type` prop       |
+| `theme`  | `theme` key of the `spinner-color` prop |
+| `bg`     | `bg` key of the `spinner-color` prop    |
+| `fg`     | `fg` key of the `spinner-color` prop    |
+| `small`  | Value of the `spinner-small` prop      |
 
 When placing interactive content in the overlay, you should focus the container of the custom
 content or one of the focusable controls in the overlay content for accessibility reasons. You can

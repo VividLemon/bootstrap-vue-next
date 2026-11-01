@@ -104,12 +104,6 @@ export const dropdownProps = {
     description:
       'Denotes the target route of the split button. When clicked, the value of the to prop will be passed to router.push() internally, so the value can be either a string or a Location descriptor object',
   },
-  splitTheme: {
-    type: 'ThemeProp | null',
-    default: undefined,
-    description:
-      "Applies one of the theme colors to the split button. Defaults to the 'theme' prop value",
-  },
   splitVariant: {
     type: 'ButtonVariant | null',
     default: undefined,
@@ -176,8 +170,7 @@ export const dropdownProps = {
       'size',
       'theme',
       'variant',
-      'splitBg',
-      'splitFg',
+      'splitColor',
       'wrapperClass',
     ],
   ),

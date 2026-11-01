@@ -81,11 +81,6 @@ export default {
           description:
             "Type of the default spinner to show. Current supported types are 'border' and 'grow'",
         },
-        spinnerTheme: {
-          type: 'ThemeColor | null',
-          default: undefined,
-          description: 'Applies one of the theme colors to the default spinner.',
-        },
         bg: {
           type: 'MaybeArray<BgColor> | null',
           default: 'body',
@@ -104,15 +99,16 @@ export default {
           description:
             'Z-index value to apply to the overlay. You may need to increase this value to suit your content or placement',
         },
-        ...pick(buildCommonProps({}), [
-          'spinnerBg',
-          'spinnerFg',
-          'rounded',
-          'roundedTop',
-          'roundedBottom',
-          'roundedStart',
-          'roundedEnd',
-        ]),
+        ...pick(
+          buildCommonProps({
+            spinnerColor: {
+              type: "Pick<BSpinnerProps, 'theme' | 'bg' | 'fg'>",
+              description:
+                'Color object for the default spinner: `theme` (a theme color only, no modifiers), `bg` and `fg` keys. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+            },
+          }),
+          ['spinnerColor', 'rounded', 'roundedTop', 'roundedBottom', 'roundedStart', 'roundedEnd'],
+        ),
       } satisfies PropRecord<keyof BOverlayProps>,
       emits: {
         click: {

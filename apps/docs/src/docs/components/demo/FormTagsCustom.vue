@@ -1,7 +1,7 @@
 <template>
   <div>
     <BFormTags v-model="value" no-outer-focus class="mb-2">
-      <template #default="{ tags, inputAttrs, inputHandlers, tagTheme, addTag, removeTag }">
+      <template #default="{ tags, inputAttrs, inputHandlers, tagColor, addTag, removeTag }">
         <BInputGroup class="mb-2">
           <BFormInput
             v-bind="inputAttrs"
@@ -18,7 +18,9 @@
             v-for="tag in tags"
             :key="tag"
             :title="tag"
-            :theme="tagTheme"
+            :theme="tagColor.theme"
+            :bg="tagColor.bg"
+            :fg="tagColor.fg"
             class="me-1"
             @remove="removeTag(tag)"
             >{{ tag }}</BFormTag

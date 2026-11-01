@@ -2,13 +2,11 @@
   <!-- #region template -->
   <BCard
     header="Card Header"
-    header-fg="white"
+    :header-color="{ fg: 'white', bg: 'inverse' }"
     header-tag="header"
-    header-bg="inverse"
     footer="Card Footer"
     footer-tag="footer"
-    footer-bg="success"
-    footer-border="inverse"
+    :footer-color="{ bg: 'success', border: 'inverse' }"
     title="Title"
     style="max-width: 20rem"
   >

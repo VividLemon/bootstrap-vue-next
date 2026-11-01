@@ -5,12 +5,9 @@
     <BModal
       v-model="show"
       title="Modal Variants"
-      :header-bg="headerBg"
-      :header-fg="headerFg"
-      :body-bg="bodyBg"
-      :body-fg="bodyFg"
-      :footer-bg="footerBg"
-      :footer-fg="footerFg"
+      :header-color="{ bg: headerBg, fg: headerFg }"
+      :body-color="{ bg: bodyBg, fg: bodyFg }"
+      :footer-color="{ bg: footerBg, fg: footerFg }"
     >
       <BContainer fluid>
         <BRow class="mb-1 text-center">

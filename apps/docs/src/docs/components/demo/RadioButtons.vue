@@ -16,7 +16,7 @@
       v-model="selected"
       :options="options"
       button-variant="outline"
-      button-theme="primary"
+      :button-color="{ theme: 'primary' }"
       size="lg"
       name="radios-btn-outline"
       buttons
