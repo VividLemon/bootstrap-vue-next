@@ -893,9 +893,9 @@ export interface BPaginationProps {
   ariaControls?: string
   ariaLabel?: string
   disabled?: boolean
-  ellipsisClass?: ClassValue
+  ellipsisAttrs?: Readonly<AttrsValue>
   ellipsisText?: string
-  firstClass?: ClassValue
+  firstAttrs?: Readonly<AttrsValue>
   firstNumber?: boolean
   firstText?: string
   noEllipsis?: boolean
@@ -905,19 +905,20 @@ export interface BPaginationProps {
   labelNextPage?: string
   labelPage?: string
   labelPrevPage?: string
-  lastClass?: ClassValue
+  lastAttrs?: Readonly<AttrsValue>
   lastNumber?: boolean
   lastText?: string
   limit?: Numberish
   modelValue?: Numberish
-  nextClass?: ClassValue
+  nextAttrs?: Readonly<AttrsValue>
   nextText?: string
-  pageClass?: ClassValue
+  pageAttrs?: Readonly<AttrsValue>
   perPage?: Numberish
   pills?: boolean
-  prevClass?: ClassValue
+  prevAttrs?: Readonly<AttrsValue>
   prevText?: string
   size?: Size
+  theme?: ColorExtendables['theme']
   totalRows?: Numberish
 }
 

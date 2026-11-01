@@ -83,11 +83,11 @@
           :per-page="paginationPerPage"
           prev-text="Prev"
           next-text="Next"
-          :first-class="paginationDangerClasses"
+          :first-attrs="{class: paginationDangerClasses}"
           first-text="First"
           last-text="Last"
-          last-class="border border-4 border-info"
-          ellipsis-class="border border-3 border-success"
+          :last-attrs="{class: 'border border-4 border-info'}"
+          :ellipsis-attrs="{class: 'border border-3 border-success'}"
         />
       </BCol>
     </BRow>

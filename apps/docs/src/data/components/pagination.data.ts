@@ -1,4 +1,4 @@
-import type {BPaginationEmits, BPaginationProps, BPaginationSlots} from 'bootstrap-vue-next'
+import type { BPaginationEmits, BPaginationProps, BPaginationSlots } from 'bootstrap-vue-next'
 import type {
   ComponentReference,
   EmitRecord,
@@ -6,8 +6,8 @@ import type {
   SlotRecord,
   SlotScopeReference,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 const sharedScope: SlotScopeReference = {
   disabled: {
@@ -36,28 +36,43 @@ export default {
             size: {
               default: undefined,
             },
+            theme: {
+              default: undefined,
+              description:
+                'Applies one of the theme colors (`theme-*` class) to the pagination, coloring the active page and hover/focus states',
+            },
           }),
-          ['ariaControls', 'ariaLabel', 'disabled', 'noEllipsis', 'noGotoEndButtons', 'size']
+          [
+            'ariaControls',
+            'ariaLabel',
+            'disabled',
+            'noEllipsis',
+            'noGotoEndButtons',
+            'size',
+            'theme',
+          ],
         ),
         align: {
           type: 'AlignmentJustifyContent | fill',
           description:
             "Alignment of the page buttons: 'start' (or 'left'), 'center', 'end' (or 'right'), or 'fill'",
         },
-        ellipsisClass: {
-          type: 'ClassValue',
+        ellipsisAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: "Class(es) to apply to the 'ellipsis' placeholders",
+          description:
+            "Attributes to apply to the ellipsis placeholder `<li>` items. `class` and `style` merge with the component's own",
         },
         ellipsisText: {
           type: 'string',
           default: '\u2026',
           description: 'Content to place in the ellipsis placeholder',
         },
-        firstClass: {
-          type: 'ClassValue',
+        firstAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-first-page button',
+          description:
+            "Attributes to apply to the go-to-first-page button `<li>` item. `class` and `style` merge with the component's own",
         },
         firstNumber: {
           type: 'boolean',
@@ -97,10 +112,11 @@ export default {
           description:
             "Value to place in the 'aria-label' attribute of the go-to-previous-page button",
         },
-        lastClass: {
-          type: 'ClassValue',
+        lastAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-last-page button',
+          description:
+            "Attributes to apply to the go-to-last-page button `<li>` item. `class` and `style` merge with the component's own",
         },
         lastNumber: {
           type: 'boolean',
@@ -123,20 +139,22 @@ export default {
           default: 1, // TODO item not in string format
           description: 'Current page number, starting from 1',
         },
-        nextClass: {
-          type: 'ClassValue',
+        nextAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-next-page button',
+          description:
+            "Attributes to apply to the go-to-next-page button `<li>` item. `class` and `style` merge with the component's own",
         },
         nextText: {
           type: 'string',
           default: '\u203A',
           description: 'Content to place in the go-to-next-page button',
         },
-        pageClass: {
-          type: 'ClassValue',
+        pageAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-page buttons',
+          description:
+            "Attributes to apply to the go-to-page button `<li>` items. `class` and `style` merge with the component's own",
         },
         perPage: {
           type: 'Numberish',
@@ -148,10 +166,11 @@ export default {
           default: false, // TODO item not in string format
           description: 'Applies pill styling to the pagination buttons',
         },
-        prevClass: {
-          type: 'ClassValue',
+        prevAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-previous-page button',
+          description:
+            "Attributes to apply to the go-to-previous-page button `<li>` item. `class` and `style` merge with the component's own",
         },
         prevText: {
           type: 'string',
@@ -206,7 +225,7 @@ export default {
           description: 'The go-to-next-page button content',
           scope: sharedScope,
         },
-        'page': {
+        page: {
           description: 'Page number button content',
           scope: {
             ...sharedScope,
