@@ -53,6 +53,7 @@ import type {
 } from './Alignment'
 import type {RadiusElementExtendables} from './RadiusElement'
 import type {SpinnerType} from './SpinnerType'
+import type {BadgeSize, BadgeVariant} from './BadgeTypes'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {ButtonType} from './ButtonType'
 import type {LinkOpacity, UnderlineOffset, UnderlineOpacity} from './LinkDecorators'
@@ -1110,7 +1111,9 @@ export interface BBadgeProps extends Omit<BLinkProps, 'routerTag'>, ColorExtenda
   dotIndicator?: boolean
   pill?: boolean
   placement?: CombinedPlacement
+  size?: BadgeSize
   tag?: string
+  variant?: BadgeVariant | null
 }
 
 export interface BBreadcrumbProps {
