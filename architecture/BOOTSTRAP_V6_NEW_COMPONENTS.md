@@ -105,11 +105,11 @@ Each group runs as one read-only research subagent. Components sharing a v6 base
 | Group                  | Scope                                                                     | Depends on                                                                   | Output                                     | State       |
 | ---------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------ | ----------- |
 | G1 Overlays            | Dialog, Drawer, `useModal` redesign                                       | #164 transition core                                                         | `architecture/BOOTSTRAP_V6_OVERLAYS.md`    | Questions open |
-| G2 Menus               | Menu, Combobox, Nav overflow                                              | #164; Menu is the base for the other two                                     | `architecture/BOOTSTRAP_V6_MENUS.md`       | In research |
+| G2 Menus               | Menu, Combobox, Nav overflow                                              | #164; Menu is the base for the other two                                     | `architecture/BOOTSTRAP_V6_MENUS.md`       | Questions open |
 | G3 Navbar              | Navbar                                                                    | References G1 (Drawer) and G2 (Menu) decisions; research can run in parallel | `architecture/BOOTSTRAP_V6_NAVBAR.md`      | Questions open |
-| G4 Form inputs         | Field, Range, Chips, OTP input, Datepicker, Password strength, Form adorn | #165 forms                                                                   | `architecture/BOOTSTRAP_V6_FORM_INPUTS.md` | In research |
-| G5 Display             | Accordion, Avatar, Carousel, Stepper, Prose                               | #164 (Collapse), #167 (Badge)                                                | `architecture/BOOTSTRAP_V6_DISPLAY.md`     | In research |
-| G6 Layout and behavior | Scrollspy, CSS Grid, container-query helpers                              | #164 (breakpoints, responsive)                                               | `architecture/BOOTSTRAP_V6_LAYOUT.md`      | In research |
+| G4 Form inputs         | Field, Range, Chips, OTP input, Datepicker, Password strength, Form adorn | #165 forms                                                                   | `architecture/BOOTSTRAP_V6_FORM_INPUTS.md` | Questions open |
+| G5 Display             | Accordion, Avatar, Carousel, Stepper, Prose                               | #164 (Collapse), #167 (Badge)                                                | `architecture/BOOTSTRAP_V6_DISPLAY.md`     | Questions open |
+| G6 Layout and behavior | Scrollspy, CSS Grid, container-query helpers                              | #164 (breakpoints, responsive)                                               | `architecture/BOOTSTRAP_V6_LAYOUT.md`      | Questions open |
 
 ## Orchestrator handoff
 
