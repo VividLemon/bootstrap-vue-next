@@ -19,10 +19,10 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {linkProps, linkTo} from '../../utils/linkProps'
-import {buildCommonProps} from '../../utils/commonProps'
-import {omit, pick} from '../../utils/objectUtils'
-import {dropdownEmits, dropdownProps, dropdownSlots} from '../../utils/dropdownCommon'
+import { linkProps, linkTo } from '../../utils/linkProps'
+import { buildCommonProps } from '../../utils/commonProps'
+import { omit, pick } from '../../utils/objectUtils'
+import { dropdownEmits, dropdownProps, dropdownSlots } from '../../utils/dropdownCommon'
 
 export default {
   load: (): ComponentReference => ({
@@ -34,7 +34,7 @@ export default {
               default: 'ul',
             },
           }),
-          ['tag']
+          ['tag'],
         ),
         align: {
           type: 'AlignmentJustifyContent',
@@ -92,14 +92,14 @@ export default {
       } satisfies SlotRecord<keyof BNavSlots>,
     },
     BNavForm: {
-      styleSpec: {kind: StyleKind.Tag, value: 'li > form'},
+      styleSpec: { kind: StyleKind.Tag, value: 'li > form' },
       props: {
         ...pick(buildCommonProps(), [
           'floating',
           'id',
           'novalidate',
           'role',
-          'validated',
+          'validate',
           'wrapperAttrs',
         ]),
         formClass: {
@@ -170,7 +170,7 @@ export default {
       } satisfies SlotRecord<keyof BNavItemSlots>,
     },
     BNavItemDropdown: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.nav-item.dropdown'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.nav-item.dropdown' },
       props: dropdownProps,
       emits: dropdownEmits,
       slots: dropdownSlots,
@@ -190,7 +190,7 @@ export default {
       } satisfies ExposedRecord,
     },
     BNavText: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.navbar-text'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.navbar-text' },
       props: {
         text: {
           type: 'string',

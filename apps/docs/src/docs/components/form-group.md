@@ -26,9 +26,13 @@ element is more suitable. With `label-for` unset, auto-detection only claims `<l
 when there is exactly one slot input without its own integrated label, so these cases render
 as `<fieldset>` + `<legend>`.
 
-You can also apply additional classes to the label via the `label-class` prop, such as responsive
-padding and text alignment utility classes. The `label-class` prop accepts either a string or array
-of strings.
+You can also apply additional attributes to the label via the `label-attrs` prop, such as responsive
+padding and text alignment utility classes (`:label-attrs="{class: 'fw-bold'}"`). Its `class` and
+`style` merge with the component's own label classes.
+
+In stacked (non-horizontal) mode the `BFormGroup` root gets Bootstrap's `.form-field` class, which
+lays out the label, control, feedback and description as a grid with a consistent gap. Horizontal
+mode keeps the grid row layout.
 
 ### Automatic Inheriting of id
 
@@ -103,7 +107,7 @@ This is particularly useful when you need to override the default column widths 
 - These props **only apply in horizontal layout mode** (when `label-cols` or `content-cols` is set)
 - `label-wrapper-attrs` applies to the column wrapper around the label element
 - `content-wrapper-attrs` applies to the column wrapper around the content/input
-- Use `label-class` if you need to style the `<label>` or `<legend>` element itself
+- Use `label-attrs` if you need to style the `<label>` or `<legend>` element itself
 - The `class` property in wrapper attrs will be merged with the Bootstrap column classes
 
 **Common use case:** You need more precise control over column widths than Bootstrap's 12-column grid provides. For example, setting a label to exactly 120px wide using flexbox properties:
@@ -138,16 +142,16 @@ Generally speaking, you'll want to use a particular state for specific types of 
 To apply one of the contextual state icons on `BFormGroup`, set the `state` prop to `false` (for
 invalid), `true` (for valid), or `null` (no validation state).
 
-Bootstrap v5 uses sibling CSS selectors of `:invalid` or `:valid` inputs to show the feedback text.
+Bootstrap uses sibling CSS selectors of invalid or valid inputs to show the feedback text.
 Some form controls (such as checkboxes, radios, and file inputs, or inputs inside input-groups) are
 wrapped in additional markup that will no longer make the feedback text a sibling of the input, and
 hence the feedback will not show. In these situations you will need to set the validity `state` on
 the `BFormGroup` _as well as_ the input.
 
-Feedback will be shown if the parent `BForm` component does _not_ have the `novalidate` prop set
-(or set to `false`) along with the `validated` prop set (and the input fails or passes native
-browser validation constraints such as `required`). Refer to Bootstrap 5's
-[Forms Validation](https://getbootstrap.com/docs/5.3/forms/validation) documentation for
+Feedback will also be shown when the parent `BForm` has the `validate` prop set and the user has
+interacted with an input that fails (or, with `validate="valid"`, passes) native browser validation
+constraints such as `required`. Refer to Bootstrap 6's
+[Forms Validation](https://getbootstrap.com/docs/6.0/forms/validation/) documentation for
 details on validation methods.
 
 You should always provide content via the `invalid-feedback` prop (or slot) to aid users using
@@ -194,7 +198,8 @@ the invalid feedback to show when using one of the above-mentioned form controls
 
 ## Floating labels
 
-BFormGroup supports the new [Floating labels](https://getbootstrap.com/docs/5.3/forms/floating-labels/) feature of Bootstrap 5.
+BFormGroup supports the [Floating labels](https://getbootstrap.com/docs/6.0/forms/floating-labels/) feature of Bootstrap.
+As Bootstrap v6 requires, the label is rendered before the control inside the `.form-floating` wrapper.
 
 You can make a floating label by setting the property `floating` to true and specify a placeholder on the `BFormInput`.
 

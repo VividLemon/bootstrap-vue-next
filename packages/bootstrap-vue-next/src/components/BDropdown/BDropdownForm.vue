@@ -4,6 +4,7 @@
       class="dropdown-item-text"
       :class="computedClasses"
       :novalidate="props.novalidate"
+      :data-bs-validate="computedValidate"
       v-bind="processedAttrs.formAttrs"
     >
       <slot />
@@ -23,7 +24,7 @@ defineOptions({
 const _props = withDefaults(defineProps<BDropdownFormProps>(), {
   formClass: undefined,
   novalidate: undefined,
-  validated: undefined,
+  validate: undefined,
   wrapperAttrs: undefined,
 })
 const props = useDefaults(_props, 'BDropdownForm')
@@ -35,10 +36,10 @@ const processedAttrs = computed(() => {
   return {wrapperClass, formAttrs}
 })
 
-const computedClasses = computed(() => [
-  props.formClass,
-  {
-    'was-validated': props.validated,
-  },
-])
+const computedClasses = computed(() => [props.formClass])
+
+// `data-bs-validate` opts in to `:user-invalid` styling; `="valid"` also shows `:user-valid`
+const computedValidate = computed(() =>
+  props.validate === 'valid' ? 'valid' : props.validate === true ? '' : undefined
+)
 </script>

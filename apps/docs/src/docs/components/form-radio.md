@@ -53,15 +53,17 @@ Radios support values of many types, such as a `string`, `boolean`, `number`, or
 ## Inline or stacked radios
 
 By default, `BFormRadioGroup` generates inline radio inputs, while `BFormRadio` generates
-stacked radios. Set the prop `stacked` on `BFormRadioGroup` to make the radios appear one over
-the other, or when using radios not in a group, set the `inline` prop on `BFormRadio` to true to
-render them inline.
+stacked radios (Bootstrap's `.form-field` layout with an `<input class="radio">` followed by its
+label). Set the prop `stacked` on `BFormRadioGroup` to make the radios appear one over the other.
+Bootstrap v6 has no inline radio modifier: a non-stacked group lays its radios out with the
+`d-flex flex-wrap column-gap-5` utilities, and radios not in a group can be placed in a container
+with the same utilities.
 
 <<< DEMO ./demo/RadioInline.vue
 
 ## Control sizing
 
-Use the `size` prop to control the size of the radio. The default size is medium. Supported size
+Use the `size` prop to control the size of the radio (`radio-sm` / `radio-lg`). The default size is medium. Supported size
 values are `sm` (small) and `lg` (large).
 
 <<< DEMO ./demo/RadioSizing.vue#template{vue-html}
@@ -69,35 +71,25 @@ values are `sm` (small) and `lg` (large).
 Sizes can be set on individual `BFormRadio` components, or inherited from the `size` setting of
 `BFormRadioGroup`.
 
-::: info NOTE
-Bootstrap v5.x does not natively support sizes for the custom radio control. However,
-bootstrap-vue-next includes custom SCSS/CSS that adds support for sizing the custom radios.
-:::
-
 ## Button style radios
 
 Render radios with the look of buttons by setting the prop `buttons` to `true` on
-`BFormRadioGroup`. Set the button style and color via the `button-variant` and `button-theme` props
-(see [`BButton`](/docs/components/button) for supported values). The default is `button-variant` `solid` with `button-theme` `secondary`.
+`BFormRadioGroup`. Set the button style and color via the `button-variant` and `button-color` props
+(see [`BButton`](/docs/components/button) for supported values). The default is `button-variant` `solid` with `button-color` `{theme: 'secondary'}`.
 
-The `buttons` prop has precedence over `plain`, and `button-variant` and `button-theme` have no effect if `buttons` is
+The `buttons` prop has precedence over `plain`, and `button-variant` and `button-color` have no effect if `buttons` is
 not set.
 
-Button style radios will have the class `.active` automatically applied to their label when they are
-in the checked state.
+Button style radios render Bootstrap's toggle button markup: a `<label class="btn btn-check …">` that
+wraps the input, with no wrapper `<div>`. Bootstrap styles the label as active while its input is
+checked (`.btn-check:has(input:checked)`).
 
 <<< DEMO ./demo/RadioButtons.vue
-
-## Reverse
-
-Use the `reverse` prop to put your radio buttons on the opposite side of the label.
-
-<<< DEMO ./demo/RadioReverse.vue#template{vue-html}
 
 ## Without Labels
 
 In order to omit labels as described in the
-[bootstrap documentation](https://getbootstrap.com/docs/5.3/forms/checks-radios/#without-labels)
+[bootstrap documentation](https://getbootstrap.com/docs/6.0/forms/radio/)
 just leave the default slot empty. Remember to still provide some form of accessible name for
 assistive technologies (for instance, using aria-label).
 

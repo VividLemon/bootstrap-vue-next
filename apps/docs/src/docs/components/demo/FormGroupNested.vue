@@ -5,7 +5,7 @@
       :label-cols="{ lg: 3 }"
       label="Shipping Address"
       label-size="lg"
-      label-class="fw-bold pt-0"
+      :label-attrs="{ class: 'fw-bold pt-0' }"
       class="mb-0"
     >
       <BFormGroup

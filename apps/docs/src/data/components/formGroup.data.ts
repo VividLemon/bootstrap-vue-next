@@ -1,7 +1,7 @@
-import type {BFormGroupProps, BFormGroupSlots} from 'bootstrap-vue-next'
-import type {ComponentReference, PropRecord, SlotRecord} from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import type { BFormGroupProps, BFormGroupSlots } from 'bootstrap-vue-next'
+import type { ComponentReference, PropRecord, SlotRecord } from '../../types'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
@@ -14,7 +14,7 @@ export default {
                 'Disables the fieldset element, which in turn disables the form controls (on browsers that support disabled fieldsets). Has no effect if `label-for` is set',
             },
           }),
-          ['ariaInvalid', 'disabled', 'id', 'state', 'tooltip']
+          ['ariaInvalid', 'disabled', 'id', 'state', 'tooltip'],
         ),
         contentCols: {
           type: 'Responsive<ColsValue>',
@@ -53,10 +53,11 @@ export default {
           description:
             "Text alignment 'start', 'center' or 'end' of the label (`{md: 'end'}` renders `md:text-end`). Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'); 'xs' has no class prefix",
         },
-        labelClass: {
-          type: 'string[] | Record<string, unknown> | string',
+        labelAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: 'undefined',
-          description: 'CSS class (or classes) to add to the label/legend element',
+          description:
+            'Attributes to apply to the label/legend element. `class` and `style` merge with the component classes',
         },
         labelCols: {
           type: 'Responsive<ColsValue>',
@@ -87,16 +88,10 @@ export default {
           default: 'undefined',
           description: 'Text to show when the form group has a valid state',
         },
-        validated: {
-          type: 'boolean',
-          default: 'undefined',
-          description:
-            "When set, adds the Bootstrap validation trigger class 'was-validated' on the component",
-        },
       } satisfies PropRecord<keyof BFormGroupProps>,
       emits: {},
       slots: {
-        'default': {
+        default: {
           description: 'Content to place in the form group',
           scope: {
             ariaDescribedby: {
@@ -120,14 +115,14 @@ export default {
             },
           },
         },
-        'description': {
+        description: {
           description: 'Content to place in the description area. Overrides the `description` prop',
         },
         'invalid-feedback': {
           description:
             'Content to place in the invalid feedback area. Overrides the `invalid-feedback` prop',
         },
-        'label': {
+        label: {
           description: 'Content to place inside the label element. Overrides the `label` prop',
         },
         'valid-feedback': {

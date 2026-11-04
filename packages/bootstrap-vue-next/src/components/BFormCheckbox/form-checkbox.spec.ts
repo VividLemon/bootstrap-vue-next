@@ -16,96 +16,75 @@ describe('form-checkbox', () => {
       expect(wrapper.element.tagName).toBe('DIV')
     })
 
-    it('has class form-check if prop plain and prop button are false', () => {
+    it('has class form-field if prop plain and prop button are false', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: false, button: false},
         slots: {
           default: 'checkbox',
         },
       })
-      expect(wrapper.classes()).toContain('form-check')
+      expect(wrapper.classes()).toContain('form-field')
+      expect(wrapper.classes()).not.toContain('form-check')
     })
 
-    it('has class form-check if prop plain and prop button are true', () => {
+    it('does not have class form-field if prop plain and prop button are true', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: true, button: true},
       })
-      expect(wrapper.classes()).not.toContain('form-check')
+      expect(wrapper.classes()).not.toContain('form-field')
     })
 
-    it('does not have class form-check if default slot is empty', () => {
+    it('does not have class form-field if default slot is empty', () => {
       const wrapper = mount(BFormCheckbox, {})
-      expect(wrapper.classes()).not.toContain('form-check')
+      expect(wrapper.classes()).not.toContain('form-field')
     })
 
-    it('does not have class form-check if prop plain false and prop button true', () => {
+    it('does not have class form-field if prop plain false and prop button true', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: false, button: true},
+        slots: {default: 'foo'},
       })
-      expect(wrapper.classes()).not.toContain('form-check')
+      expect(wrapper.classes()).not.toContain('form-field')
     })
 
-    it('does not have class form-check if prop plain true and prop button false', () => {
+    it('does not have class form-field if prop plain true and prop button false', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: true, button: false},
+        slots: {default: 'foo'},
       })
-      expect(wrapper.classes()).not.toContain('form-check')
+      expect(wrapper.classes()).not.toContain('form-field')
     })
 
-    it('has class form-check-inline when prop inline', () => {
+    it('renders input before label inside the form-field', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {inline: true},
+        slots: {default: 'foo'},
       })
-      expect(wrapper.classes()).toContain('form-check-inline')
+      const {children} = wrapper.element
+      expect(children[0].tagName).toBe('INPUT')
+      expect(children[1].tagName).toBe('LABEL')
     })
 
-    it('does not have class form-check-inline when prop inline', () => {
-      const wrapper = mount(BFormCheckbox, {
-        props: {inline: false},
-      })
-      expect(wrapper.classes()).not.toContain('form-check-inline')
-    })
-
-    it('has class form-check-reverse when prop reverse', () => {
-      const wrapper = mount(BFormCheckbox, {
-        props: {reverse: true},
-      })
-      expect(wrapper.classes()).toContain('form-check-reverse')
-    })
-
-    it('does not have class form-check-reverse when prop reverse', () => {
-      const wrapper = mount(BFormCheckbox, {
-        props: {reverse: false},
-      })
-      expect(wrapper.classes()).not.toContain('form-check-reverse')
-    })
-
-    it('does not have class form-switch when prop switch is false', () => {
+    it('does not have a switch wrapper when prop switch is false', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {switch: false},
       })
-      expect(wrapper.classes()).not.toContain('form-switch')
+      expect(wrapper.find('.switch').exists()).toBe(false)
     })
 
-    it('has class form-control-{type} when prop size', () => {
+    it('input has class check-{size} when prop size', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {size: 'lg'},
       })
-      expect(wrapper.classes()).toContain('form-control-lg')
-    })
-
-    it('does not have class form-control-{type} when prop size undefined', () => {
-      const wrapper = mount(BFormCheckbox, {
-        props: {size: undefined},
-      })
+      const $input = wrapper.get('input')
+      expect($input.classes()).toContain('check-lg')
       expect(wrapper.classes()).not.toContain('form-control-lg')
     })
 
-    it('does not have a form-control size class when size is undefined (default)', () => {
+    it('does not have a size class when size is undefined (default)', () => {
       const wrapper = mount(BFormCheckbox)
-      expect(wrapper.classes()).not.toContain('form-control-md')
-      expect(wrapper.classes()).not.toContain('form-control-sm')
-      expect(wrapper.classes()).not.toContain('form-control-lg')
+      const $input = wrapper.get('input')
+      expect($input.classes()).not.toContain('check-sm')
+      expect($input.classes()).not.toContain('check-lg')
     })
   })
 
@@ -136,68 +115,75 @@ describe('form-checkbox', () => {
       expect($input.attributes('type')).toBe('checkbox')
     })
 
-    it('input element has class form-check-input when prop plain and prop button are false', () => {
+    it('input element has class check when prop plain and prop button are false', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: false, button: false},
       })
       const $input = wrapper.get('input')
-      expect($input.classes()).toContain('form-check-input')
+      expect($input.classes()).toContain('check')
+      expect($input.classes()).not.toContain('form-check-input')
     })
 
-    it('input element does not have class form-check-input when prop plain and prop button false', () => {
+    it('input element does not have class check when prop plain true and prop button false', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: true, button: false},
       })
       const $input = wrapper.get('input')
-      expect($input.classes()).not.toContain('form-check-input')
+      expect($input.classes()).not.toContain('check')
     })
 
-    it('input element does not have class form-check-input when prop plain false and prop button true', () => {
+    it('input element does not have class check when prop plain false and prop button true', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: false, button: true},
       })
       const $input = wrapper.get('input')
-      expect($input.classes()).not.toContain('form-check-input')
+      expect($input.classes()).not.toContain('check')
     })
 
-    it('input element does not have class form-check-input when prop plain and prop button are true', () => {
+    it('input element does not have class check when prop plain and prop button are true', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: true, button: true},
       })
       const $input = wrapper.get('input')
-      expect($input.classes()).not.toContain('form-check-input')
+      expect($input.classes()).not.toContain('check')
     })
 
-    it('input element has class form-check-input when prop plain and prop button are undefined', () => {
+    it('input element has class check when prop plain and prop button are undefined', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: undefined, button: undefined},
       })
       const $input = wrapper.get('input')
-      expect($input.classes()).toContain('form-check-input')
+      expect($input.classes()).toContain('check')
     })
 
-    it('input element has class btn-check when prop button is true', () => {
+    it('renders label.btn.btn-check wrapping the input when prop button is true', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {button: true},
+        slots: {default: 'foo'},
       })
+      expect(wrapper.element.tagName).toBe('LABEL')
+      expect(wrapper.classes()).toContain('btn')
+      expect(wrapper.classes()).toContain('btn-check')
       const $input = wrapper.get('input')
-      expect($input.classes()).toContain('btn-check')
+      expect($input.element.parentElement).toBe(wrapper.element)
+      expect($input.classes()).not.toContain('btn-check')
+      expect(wrapper.findAll('label')).toHaveLength(1)
+      expect(wrapper.text()).toBe('foo')
     })
 
-    it('input element does not have class btn-check when prop button is false', () => {
+    it('does not render label.btn-check when prop button is false', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {button: false},
       })
-      const $input = wrapper.get('input')
-      expect($input.classes()).not.toContain('btn-check')
+      expect(wrapper.element.tagName).toBe('DIV')
+      expect(wrapper.find('.btn-check').exists()).toBe(false)
     })
 
-    it('input element does not have class btn-check when prop button is undefined', () => {
+    it('does not render label.btn-check when prop button is undefined', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {button: undefined},
       })
-      const $input = wrapper.get('input')
-      expect($input.classes()).not.toContain('btn-check')
+      expect(wrapper.find('.btn-check').exists()).toBe(false)
     })
 
     it.each([
@@ -431,12 +417,12 @@ describe('form-checkbox', () => {
       expect($label.classes()).not.toContain('focus')
     })
 
-    it('child label has class form-check-label when prop plain and prop button are false', () => {
+    it('child label has no class when prop plain and prop button are false', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {plain: false, button: false},
       })
       const $label = wrapper.get('label')
-      expect($label.classes()).toContain('form-check-label')
+      expect($label.classes()).toHaveLength(0)
     })
 
     it('child label does not have class form-check-label when prop plain true and prop button false', () => {
@@ -733,7 +719,7 @@ describe('form-checkbox', () => {
         },
       })
       const $checkbox = wrapper.findComponent(BFormCheckbox)
-      expect($checkbox.classes()).toContain('form-control-lg')
+      expect($checkbox.get('input').classes()).toContain('check-lg')
     })
 
     it('child size overrides parent size when explicitly set', () => {
@@ -750,8 +736,8 @@ describe('form-checkbox', () => {
         },
       })
       const $checkbox = wrapper.findComponent(BFormCheckbox)
-      expect($checkbox.classes()).toContain('form-control-sm')
-      expect($checkbox.classes()).not.toContain('form-control-lg')
+      expect($checkbox.get('input').classes()).toContain('check-sm')
+      expect($checkbox.get('input').classes()).not.toContain('check-lg')
     })
 
     it('inherits state from parent when not explicitly set', () => {
@@ -805,8 +791,8 @@ describe('form-checkbox', () => {
         },
       })
       const $checkbox = wrapper.findComponent(BFormCheckbox)
-      const $input = $checkbox.get('input')
-      expect($input.classes()).toContain('btn-check')
+      expect($checkbox.classes()).toContain('btn-check')
+      expect($checkbox.element.tagName).toBe('LABEL')
     })
 
     it('child can explicitly set button=false to override parent button=true', () => {
@@ -824,8 +810,8 @@ describe('form-checkbox', () => {
       })
       const $checkbox = wrapper.findComponent(BFormCheckbox)
       const $input = $checkbox.get('input')
-      expect($input.classes()).not.toContain('btn-check')
-      expect($input.classes()).toContain('form-check-input')
+      expect($checkbox.classes()).not.toContain('btn-check')
+      expect($input.classes()).toContain('check')
     })
 
     it('inherits plain prop from parent when not explicitly set', () => {
@@ -842,7 +828,7 @@ describe('form-checkbox', () => {
         },
       })
       const $checkbox = wrapper.findComponent(BFormCheckbox)
-      expect($checkbox.classes()).not.toContain('form-check')
+      expect($checkbox.classes()).not.toContain('form-field')
     })
 
     it('child can explicitly set plain=false to override parent plain=true', () => {
@@ -859,40 +845,7 @@ describe('form-checkbox', () => {
         },
       })
       const $checkbox = wrapper.findComponent(BFormCheckbox)
-      expect($checkbox.classes()).toContain('form-check')
-    })
-
-    it('inherits inline prop from parent when not explicitly set', () => {
-      const wrapper = mount(BFormCheckboxGroup, {
-        props: {
-          stacked: false,
-        },
-        slots: {
-          default: '<BFormCheckbox value="1">Checkbox 1</BFormCheckbox>',
-        },
-        global: {
-          components: {BFormCheckbox},
-        },
-      })
-      const $checkbox = wrapper.findComponent(BFormCheckbox)
-      expect($checkbox.classes()).toContain('form-check-inline')
-    })
-
-    it('inherits reverse prop from parent when not explicitly set', () => {
-      const wrapper = mount(BFormCheckboxGroup, {
-        props: {
-          reverse: true,
-        },
-        slots: {
-          default: '<BFormCheckbox value="1">Checkbox 1</BFormCheckbox>',
-          option: () => {},
-        },
-        global: {
-          components: {BFormCheckbox},
-        },
-      })
-      const $checkbox = wrapper.findComponent(BFormCheckbox)
-      expect($checkbox.classes()).toContain('form-check-reverse')
+      expect($checkbox.classes()).toContain('form-field')
     })
 
     it('inherits switch prop from parent when not explicitly set', () => {
@@ -909,7 +862,7 @@ describe('form-checkbox', () => {
         },
       })
       const $checkbox = wrapper.findComponent(BFormCheckbox)
-      expect($checkbox.classes()).toContain('form-switch')
+      expect($checkbox.find('.switch > input[role="switch"]').exists()).toBe(true)
     })
 
     it('uses default values when neither parent nor child provide value', () => {
@@ -930,34 +883,69 @@ describe('form-checkbox', () => {
       // Default buttonVariant should be 'secondary'
       expect($label.classes()).toContain('theme-secondary')
       // Default size is undefined which doesn't add a class
-      expect($checkbox.classes()).not.toContain('form-control-sm')
-      expect($checkbox.classes()).not.toContain('form-control-lg')
+      expect($label.classes()).not.toContain('btn-sm')
+      expect($label.classes()).not.toContain('btn-lg')
     })
   })
 
   describe('switch prop', () => {
-    it('has class form-switch when prop switch is true', () => {
+    it('renders the input inside div.switch with role switch when prop switch is true', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {switch: true},
         slots: {default: 'foo'},
       })
-      expect(wrapper.classes()).toContain('form-switch')
+      expect(wrapper.classes()).toContain('form-field')
+      expect(wrapper.classes()).not.toContain('form-switch')
+      const $switch = wrapper.get('div.switch')
+      const $input = $switch.get('input')
+      expect($input.attributes('role')).toBe('switch')
+      expect($input.attributes('switch')).toBeDefined()
+      expect($input.classes()).not.toContain('check')
+      // label follows the .switch wrapper
+      expect(wrapper.element.children[1].tagName).toBe('LABEL')
     })
 
-    it('does not have class form-switch when prop switch is false', () => {
+    it('switch wrapper has class switch-{size} when prop size', () => {
+      const wrapper = mount(BFormCheckbox, {
+        props: {switch: true, size: 'sm'},
+        slots: {default: 'foo'},
+      })
+      expect(wrapper.get('.switch').classes()).toContain('switch-sm')
+      expect(wrapper.get('input').classes()).not.toContain('check-sm')
+    })
+
+    it('state class stays on the input of a switch', () => {
+      const wrapper = mount(BFormCheckbox, {
+        props: {switch: true, state: false},
+        slots: {default: 'foo'},
+      })
+      expect(wrapper.get('.switch > input').classes()).toContain('is-invalid')
+    })
+
+    it('does not render a switch when prop switch is false', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {switch: false},
         slots: {default: 'foo'},
       })
-      expect(wrapper.classes()).not.toContain('form-switch')
+      expect(wrapper.find('.switch').exists()).toBe(false)
+      expect(wrapper.get('input').attributes('role')).toBeUndefined()
     })
 
-    it('does not have class form-switch when prop switch is undefined', () => {
+    it('does not render a switch when prop switch is undefined', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {switch: undefined},
         slots: {default: 'foo'},
       })
-      expect(wrapper.classes()).not.toContain('form-switch')
+      expect(wrapper.find('.switch').exists()).toBe(false)
+    })
+
+    it('button mode takes precedence over switch', () => {
+      const wrapper = mount(BFormCheckbox, {
+        props: {switch: true, button: true},
+        slots: {default: 'foo'},
+      })
+      expect(wrapper.find('.switch').exists()).toBe(false)
+      expect(wrapper.classes()).toContain('btn-check')
     })
   })
 
@@ -977,31 +965,37 @@ describe('form-checkbox', () => {
     })
   })
 
-  describe('inputClass prop', () => {
-    it('input element has custom class from inputClass string', () => {
+  describe('inputAttrs prop', () => {
+    it('input element merges class from inputAttrs string', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {inputClass: 'my-custom-class'},
+        props: {inputAttrs: {class: 'my-custom-class'}},
       })
       const $input = wrapper.get('input')
       expect($input.classes()).toContain('my-custom-class')
     })
 
-    it('input element has custom classes from inputClass array', () => {
+    it('input element merges classes from inputAttrs array', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {inputClass: ['class-a', 'class-b']},
+        props: {inputAttrs: {class: ['class-a', 'class-b']}},
       })
       const $input = wrapper.get('input')
       expect($input.classes()).toContain('class-a')
       expect($input.classes()).toContain('class-b')
     })
 
-    it('input element retains default classes alongside inputClass', () => {
+    it('input element retains default classes alongside inputAttrs class and style', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {inputClass: 'my-custom-class', plain: false, button: false},
+        props: {
+          inputAttrs: {'class': 'my-custom-class', 'style': {color: 'red'}, 'data-foo': 'bar'},
+          plain: false,
+          button: false,
+        },
       })
       const $input = wrapper.get('input')
-      expect($input.classes()).toContain('form-check-input')
+      expect($input.classes()).toContain('check')
       expect($input.classes()).toContain('my-custom-class')
+      expect($input.attributes('style')).toContain('color: red')
+      expect($input.attributes('data-foo')).toBe('bar')
     })
   })
 
@@ -1057,8 +1051,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(true),
@@ -1086,8 +1078,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1115,8 +1105,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1144,8 +1132,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(true),
               buttons: ref(false),
               disabled: ref(false),
@@ -1173,8 +1159,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1202,8 +1186,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1232,8 +1214,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1262,8 +1242,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1330,26 +1308,28 @@ describe('form-checkbox', () => {
     })
   })
 
-  describe('buttonGroup / ConditionalWrapper', () => {
-    it('wrapper div is rendered when buttonGroup is false', () => {
+  describe('button mode wrapper', () => {
+    it('wrapper div is rendered when not in button mode', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {buttonGroup: false},
         slots: {default: 'foo'},
       })
       expect(wrapper.element.tagName).toBe('DIV')
     })
 
-    it('wrapper div is skipped when buttonGroup is true', () => {
+    it('wrapperAttrs and class go to the btn-check label in button mode', () => {
       const wrapper = mount(BFormCheckbox, {
-        props: {buttonGroup: true},
+        props: {button: true, wrapperAttrs: {'class': 'from-wrapper', 'data-testid': 'x'}},
+        attrs: {class: 'extra-class'},
         slots: {default: 'foo'},
       })
-      // When ConditionalWrapper skips, VTU wraps in a div
-      // but it should not have the form-check class
-      expect(wrapper.classes()).not.toContain('form-check')
+      expect(wrapper.element.tagName).toBe('LABEL')
+      expect(wrapper.classes()).toEqual(
+        expect.arrayContaining(['btn', 'btn-check', 'from-wrapper', 'extra-class'])
+      )
+      expect(wrapper.attributes('data-testid')).toBe('x')
     })
 
-    it('wrapper div is skipped when parent has buttons=true', () => {
+    it('renders label.btn-check with no wrapper div when parent has buttons=true', () => {
       const wrapper = mount(BFormCheckbox, {
         props: {value: 'a'},
         slots: {default: 'A'},
@@ -1365,8 +1345,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(true),
               disabled: ref(false),
@@ -1374,9 +1352,11 @@ describe('form-checkbox', () => {
           },
         },
       })
+      expect(wrapper.element.tagName).toBe('LABEL')
+      expect(wrapper.classes()).toContain('btn-check')
       const $input = wrapper.find('input')
       expect($input.exists()).toBe(true)
-      expect($input.classes()).toContain('btn-check')
+      expect($input.element.parentElement).toBe(wrapper.element)
     })
   })
 
@@ -1405,8 +1385,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(true),
@@ -1491,32 +1469,14 @@ describe('form-checkbox', () => {
   })
 
   describe('prop reactivity', () => {
-    it('inline class reacts to prop change', async () => {
-      const wrapper = mount(BFormCheckbox, {
-        props: {inline: false},
-      })
-      expect(wrapper.classes()).not.toContain('form-check-inline')
-      await wrapper.setProps({inline: true})
-      expect(wrapper.classes()).toContain('form-check-inline')
-    })
-
-    it('reverse class reacts to prop change', async () => {
-      const wrapper = mount(BFormCheckbox, {
-        props: {reverse: false},
-      })
-      expect(wrapper.classes()).not.toContain('form-check-reverse')
-      await wrapper.setProps({reverse: true})
-      expect(wrapper.classes()).toContain('form-check-reverse')
-    })
-
     it('size class reacts to prop change', async () => {
       const wrapper = mount(BFormCheckbox, {
         props: {size: 'sm'},
       })
-      expect(wrapper.classes()).toContain('form-control-sm')
+      expect(wrapper.get('input').classes()).toContain('check-sm')
       await wrapper.setProps({size: 'lg'})
-      expect(wrapper.classes()).not.toContain('form-control-sm')
-      expect(wrapper.classes()).toContain('form-control-lg')
+      expect(wrapper.get('input').classes()).not.toContain('check-sm')
+      expect(wrapper.get('input').classes()).toContain('check-lg')
     })
 
     it('switch class reacts to prop change', async () => {
@@ -1524,9 +1484,9 @@ describe('form-checkbox', () => {
         props: {switch: false},
         slots: {default: 'foo'},
       })
-      expect(wrapper.classes()).not.toContain('form-switch')
+      expect(wrapper.find('.switch').exists()).toBe(false)
       await wrapper.setProps({switch: true})
-      expect(wrapper.classes()).toContain('form-switch')
+      expect(wrapper.find('.switch').exists()).toBe(true)
     })
 
     it('state class on input reacts to prop change', async () => {
@@ -1590,8 +1550,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1621,8 +1579,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1652,8 +1608,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(true),
               buttons: ref(false),
               disabled: ref(false),
@@ -1682,8 +1636,6 @@ describe('form-checkbox', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(true),
               buttons: ref(false),
               disabled: ref(false),

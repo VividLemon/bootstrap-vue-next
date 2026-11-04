@@ -35,13 +35,16 @@ describe('dropdown-form', () => {
     expect($form.text()).toBe('foobar')
   })
 
-  it('child from has class was-validated when prop validated', async () => {
+  it('child form has attr data-bs-validate when prop validate', async () => {
     const wrapper = mount(BDropdownForm, {
-      props: {validated: true},
+      props: {validate: true},
     })
     const $form = wrapper.get('form')
-    expect($form.classes()).toContain('was-validated')
-    await wrapper.setProps({validated: false})
+    expect($form.attributes('data-bs-validate')).toBe('')
+    await wrapper.setProps({validate: 'valid'})
+    expect($form.attributes('data-bs-validate')).toBe('valid')
+    await wrapper.setProps({validate: false})
+    expect($form.attributes('data-bs-validate')).toBeUndefined()
     expect($form.classes()).not.toContain('was-validated')
   })
 

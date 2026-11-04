@@ -14,98 +14,57 @@ describe('form-radio', () => {
     expect(wrapper.element.tagName).toBe('DIV')
   })
 
-  it('has class form-check if prop plain and prop button are false', () => {
+  it('has class form-field if prop plain and prop button are false', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: false, button: false},
       slots: {
-        default: 'checkbox',
+        default: 'radio',
       },
     })
-    expect(wrapper.classes()).toContain('form-check')
+    expect(wrapper.classes()).toContain('form-field')
+    expect(wrapper.classes()).not.toContain('form-check')
   })
 
-  it('has class form-check if prop plain and prop button are true', () => {
+  it('does not have class form-field if prop plain and prop button are true', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: true, button: true},
     })
-    expect(wrapper.classes()).not.toContain('form-check')
+    expect(wrapper.classes()).not.toContain('form-field')
   })
 
-  it('does not have class form-check if prop plain false and prop button true', () => {
+  it('does not have class form-field if prop plain false and prop button true', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: false, button: true},
+      slots: {default: 'foo'},
     })
-    expect(wrapper.classes()).not.toContain('form-check')
+    expect(wrapper.classes()).not.toContain('form-field')
   })
 
-  it('does not have class form-check if prop plain true and prop button false', () => {
+  it('does not have class form-field if prop plain true and prop button false', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: true, button: false},
+      slots: {default: 'foo'},
     })
-    expect(wrapper.classes()).not.toContain('form-check')
+    expect(wrapper.classes()).not.toContain('form-field')
   })
 
-  it('does not have class form-check if default slot is empty', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {plain: true, button: false},
-    })
-    expect(wrapper.classes()).not.toContain('form-check')
+  it('does not have class form-field if default slot is empty', () => {
+    const wrapper = mount(BFormRadio)
+    expect(wrapper.classes()).not.toContain('form-field')
   })
 
-  it('has class form-check-inline when prop inline', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {inline: true},
-    })
-    expect(wrapper.classes()).toContain('form-check-inline')
-  })
-
-  it('does not have class form-check-inline when prop inline false', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {inline: false},
-    })
-    expect(wrapper.classes()).not.toContain('form-check-inline')
-  })
-
-  it('has class form-check-reverse when prop reverse', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {reverse: true},
-    })
-    expect(wrapper.classes()).toContain('form-check-reverse')
-  })
-
-  it('does not have class form-check-reverse when prop reverse', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {reverse: false},
-    })
-    expect(wrapper.classes()).not.toContain('form-check-reverse')
-  })
-
-  it('does not have class form-switch when prop switch is false', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {switch: false},
-    })
-    expect(wrapper.classes()).not.toContain('form-switch')
-  })
-
-  it('has class form-control-{type} when prop size', () => {
+  it('input has class radio-{size} when prop size', () => {
     const wrapper = mount(BFormRadio, {
       props: {size: 'lg'},
     })
-    expect(wrapper.classes()).toContain('form-control-lg')
-  })
-
-  it('does not have class form-control-{type} when prop size undefined', () => {
-    const wrapper = mount(BFormRadio, {
-      props: {size: undefined},
-    })
+    expect(wrapper.get('input').classes()).toContain('radio-lg')
     expect(wrapper.classes()).not.toContain('form-control-lg')
   })
 
-  it('does not have a form-control size class when size is undefined (default)', () => {
+  it('does not have a size class when size is undefined (default)', () => {
     const wrapper = mount(BFormRadio)
-    expect(wrapper.classes()).not.toContain('form-control-md')
-    expect(wrapper.classes()).not.toContain('form-control-sm')
-    expect(wrapper.classes()).not.toContain('form-control-lg')
+    expect(wrapper.get('input').classes()).not.toContain('radio-sm')
+    expect(wrapper.get('input').classes()).not.toContain('radio-lg')
   })
 
   it('has input element', () => {
@@ -134,68 +93,70 @@ describe('form-radio', () => {
     expect($input.attributes('type')).toBe('radio')
   })
 
-  it('input element has class form-check-input when prop plain and prop button are false', () => {
+  it('input element has class radio when prop plain and prop button are false', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: false, button: false},
     })
     const $input = wrapper.get('input')
-    expect($input.classes()).toContain('form-check-input')
+    expect($input.classes()).toContain('radio')
+    expect($input.classes()).not.toContain('form-check-input')
   })
 
-  it('input element does not have class form-check-input when prop plain and prop button false', () => {
+  it('input element does not have class radio when prop plain true and prop button false', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: true, button: false},
     })
-    const $input = wrapper.get('input')
-    expect($input.classes()).not.toContain('form-check-input')
+    expect(wrapper.get('input').classes()).not.toContain('radio')
   })
 
-  it('input element does not have class form-check-input when prop plain false and prop button true', () => {
+  it('input element does not have class radio when prop plain false and prop button true', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: false, button: true},
     })
-    const $input = wrapper.get('input')
-    expect($input.classes()).not.toContain('form-check-input')
+    expect(wrapper.get('input').classes()).not.toContain('radio')
   })
 
-  it('input element does not have class form-check-input when prop plain and prop button are true', () => {
+  it('input element does not have class radio when prop plain and prop button are true', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: true, button: true},
     })
-    const $input = wrapper.get('input')
-    expect($input.classes()).not.toContain('form-check-input')
+    expect(wrapper.get('input').classes()).not.toContain('radio')
   })
 
-  it('input element has class form-check-input when prop plain and prop button are undefined', () => {
+  it('input element has class radio when prop plain and prop button are undefined', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: undefined, button: undefined},
     })
-    const $input = wrapper.get('input')
-    expect($input.classes()).toContain('form-check-input')
+    expect(wrapper.get('input').classes()).toContain('radio')
   })
 
-  it('input element has class btn-check when prop button is true', () => {
+  it('renders label.btn.btn-check wrapping the input when prop button is true', () => {
     const wrapper = mount(BFormRadio, {
       props: {button: true},
+      slots: {default: 'foo'},
     })
+    expect(wrapper.element.tagName).toBe('LABEL')
+    expect(wrapper.classes()).toContain('btn')
+    expect(wrapper.classes()).toContain('btn-check')
     const $input = wrapper.get('input')
-    expect($input.classes()).toContain('btn-check')
+    expect($input.element.parentElement).toBe(wrapper.element)
+    expect($input.classes()).not.toContain('btn-check')
+    expect(wrapper.findAll('label')).toHaveLength(1)
   })
 
-  it('input element does not have class btn-check when prop button is false', () => {
+  it('does not render label.btn-check when prop button is false', () => {
     const wrapper = mount(BFormRadio, {
       props: {button: false},
     })
-    const $input = wrapper.get('input')
-    expect($input.classes()).not.toContain('btn-check')
+    expect(wrapper.element.tagName).toBe('DIV')
+    expect(wrapper.find('.btn-check').exists()).toBe(false)
   })
 
-  it('input element does not have class btn-check when prop button is undefined', () => {
+  it('does not render label.btn-check when prop button is undefined', () => {
     const wrapper = mount(BFormRadio, {
       props: {button: undefined},
     })
-    const $input = wrapper.get('input')
-    expect($input.classes()).not.toContain('btn-check')
+    expect(wrapper.find('.btn-check').exists()).toBe(false)
   })
 
   it.each([
@@ -423,12 +384,12 @@ describe('form-radio', () => {
     expect($label.classes()).not.toContain('focus')
   })
 
-  it('child label has class form-check-label when prop plain and prop button are false', () => {
+  it('child label has no class when prop plain and prop button are false', () => {
     const wrapper = mount(BFormRadio, {
       props: {plain: false, button: false},
     })
     const $label = wrapper.get('label')
-    expect($label.classes()).toContain('form-check-label')
+    expect($label.classes()).toHaveLength(0)
   })
 
   it('child label does not have class form-check-label when prop plain true and prop button false', () => {
@@ -603,7 +564,7 @@ describe('form-radio', () => {
         },
       })
       const $radio = wrapper.findComponent(BFormRadio)
-      expect($radio.classes()).toContain('form-control-lg')
+      expect($radio.get('input').classes()).toContain('radio-lg')
     })
 
     it('child size overrides parent size when explicitly set', () => {
@@ -620,8 +581,8 @@ describe('form-radio', () => {
         },
       })
       const $radio = wrapper.findComponent(BFormRadio)
-      expect($radio.classes()).toContain('form-control-sm')
-      expect($radio.classes()).not.toContain('form-control-lg')
+      expect($radio.get('input').classes()).toContain('radio-sm')
+      expect($radio.get('input').classes()).not.toContain('radio-lg')
     })
 
     it('inherits state from parent when not explicitly set', () => {
@@ -675,8 +636,8 @@ describe('form-radio', () => {
         },
       })
       const $radio = wrapper.findComponent(BFormRadio)
-      const $input = $radio.get('input')
-      expect($input.classes()).toContain('btn-check')
+      expect($radio.element.tagName).toBe('LABEL')
+      expect($radio.classes()).toContain('btn-check')
     })
 
     it('child can explicitly set button=false to override parent button=true', () => {
@@ -694,8 +655,8 @@ describe('form-radio', () => {
       })
       const $radio = wrapper.findComponent(BFormRadio)
       const $input = $radio.get('input')
-      expect($input.classes()).not.toContain('btn-check')
-      expect($input.classes()).toContain('form-check-input')
+      expect($radio.classes()).not.toContain('btn-check')
+      expect($input.classes()).toContain('radio')
     })
 
     it('inherits plain prop from parent when not explicitly set', () => {
@@ -712,7 +673,7 @@ describe('form-radio', () => {
         },
       })
       const $radio = wrapper.findComponent(BFormRadio)
-      expect($radio.classes()).not.toContain('form-check')
+      expect($radio.classes()).not.toContain('form-field')
     })
 
     it('child can explicitly set plain=false to override parent plain=true', () => {
@@ -729,41 +690,7 @@ describe('form-radio', () => {
         },
       })
       const $radio = wrapper.findComponent(BFormRadio)
-      expect($radio.classes()).toContain('form-check')
-    })
-
-    it('inherits inline prop from parent when not explicitly set', () => {
-      const wrapper = mount(BFormRadioGroup, {
-        props: {
-          stacked: false,
-        },
-        slots: {
-          default: '<BFormRadio value="1">Radio 1</BFormRadio>',
-          option: () => {},
-        },
-        global: {
-          components: {BFormRadio},
-        },
-      })
-      const $radio = wrapper.findComponent(BFormRadio)
-      expect($radio.classes()).toContain('form-check-inline')
-    })
-
-    it('inherits reverse prop from parent when not explicitly set', () => {
-      const wrapper = mount(BFormRadioGroup, {
-        props: {
-          reverse: true,
-        },
-        slots: {
-          default: '<BFormRadio value="1">Radio 1</BFormRadio>',
-          option: () => {},
-        },
-        global: {
-          components: {BFormRadio},
-        },
-      })
-      const $radio = wrapper.findComponent(BFormRadio)
-      expect($radio.classes()).toContain('form-check-reverse')
+      expect($radio.classes()).toContain('form-field')
     })
 
     it('uses default values when neither parent nor child provide value', () => {
@@ -784,8 +711,8 @@ describe('form-radio', () => {
       // Default buttonVariant should be 'secondary'
       expect($label.classes()).toContain('theme-secondary')
       // Default size is undefined which doesn't add a class
-      expect($radio.classes()).not.toContain('form-control-sm')
-      expect($radio.classes()).not.toContain('form-control-lg')
+      expect($label.classes()).not.toContain('btn-sm')
+      expect($label.classes()).not.toContain('btn-lg')
     })
   })
 
@@ -893,8 +820,6 @@ describe('form-radio', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(true),
@@ -921,8 +846,6 @@ describe('form-radio', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -949,8 +872,6 @@ describe('form-radio', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -977,8 +898,6 @@ describe('form-radio', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(true),
               buttons: ref(false),
               disabled: ref(false),
@@ -1005,8 +924,6 @@ describe('form-radio', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1033,8 +950,6 @@ describe('form-radio', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1062,8 +977,6 @@ describe('form-radio', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),
@@ -1091,8 +1004,6 @@ describe('form-radio', () => {
               state: ref(undefined),
               plain: ref(false),
               size: ref(undefined),
-              inline: ref(false),
-              reverse: ref(false),
               required: ref(false),
               buttons: ref(false),
               disabled: ref(false),

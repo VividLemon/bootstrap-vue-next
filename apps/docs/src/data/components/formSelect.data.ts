@@ -13,8 +13,8 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 const optionSlot: SlotRecord = {
   option: {
@@ -40,11 +40,11 @@ const optionSlot: SlotRecord = {
 export default {
   load: (): ComponentReference => ({
     BFormSelect: {
-      styleSpec: {kind: StyleKind.Tag, value: 'select'},
+      styleSpec: { kind: StyleKind.Tag, value: 'select' },
       props: {
         ...pick(
           buildCommonProps({
-            options: {type: 'unknown[] | Record<string, unknown>'},
+            options: { type: 'unknown[] | Record<string, unknown>' },
           }),
           [
             'ariaInvalid',
@@ -55,13 +55,12 @@ export default {
             'id',
             'name',
             'options',
-            'plain',
             'required',
             'size',
             'state',
             'textField',
             'valueField',
-          ]
+          ],
         ),
         labelField: {
           type: 'string',
@@ -132,7 +131,7 @@ export default {
       } satisfies ExposedRecord,
     },
     BFormSelectOption: {
-      styleSpec: {kind: StyleKind.Tag, value: 'option'},
+      styleSpec: { kind: StyleKind.Tag, value: 'option' },
       props: {
         value: {
           type: 'any',
@@ -152,13 +151,13 @@ export default {
       } satisfies SlotRecord<keyof BFormSelectOptionSlots>,
     },
     BFormSelectOptionGroup: {
-      styleSpec: {kind: StyleKind.Tag, value: 'optgroup'},
+      styleSpec: { kind: StyleKind.Tag, value: 'optgroup' },
       props: {
         ...pick(
           buildCommonProps({
-            options: {type: 'readonly (unknown | Record<string, unknown>)[]'},
+            options: { type: 'readonly (unknown | Record<string, unknown>)[]' },
           }),
-          ['disabledField', 'options', 'textField', 'valueField']
+          ['disabledField', 'options', 'textField', 'valueField'],
         ),
         label: {
           type: 'string',

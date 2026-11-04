@@ -108,7 +108,18 @@ describe('form-floating-label', () => {
     const wrapper = mount(BFormFloatingLabel, {
       slots: {default: 'default', label: 'label'},
     })
-    expect(wrapper.text()).toBe('defaultlabel')
+    // Bootstrap v6 places the label before the control
+    expect(wrapper.text()).toBe('labeldefault')
+  })
+
+  it('renders the label before the control', () => {
+    const wrapper = mount(BFormFloatingLabel, {
+      props: {label: 'Email', labelFor: 'email'},
+      slots: {default: '<input id="email" class="form-control" />'},
+    })
+    const {children} = wrapper.element
+    expect(children[0].tagName).toBe('LABEL')
+    expect(children[1].tagName).toBe('INPUT')
   })
 
   it('forwards outer formGroup state/disabled to descendants through the boundary', async () => {
