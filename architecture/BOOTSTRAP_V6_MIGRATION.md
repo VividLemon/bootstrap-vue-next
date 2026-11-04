@@ -29,15 +29,15 @@ Last updated: 2026-11-03. `bootstrap-v6` is local and not pushed.
 
 Each batch runs as an agent in its own git worktree under `.claude/worktrees/agent-<id>/` on branch `worktree-agent-<id>`, branched from `9380edda`. Uncommitted work stays in the worktree if the agent stops; check with `git -C .claude/worktrees/agent-<id> status`.
 
-| Wave | Batch                                                | Plan section        | Worktree branch                    | State                                                                                                                                                               |
-| ---- | ---------------------------------------------------- | ------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | Forms and checks                                     | Forms               | `worktree-agent-a6179c069c2f5495c` | Stopped by the usage limit before committing: 47 uncommitted files; it had just started the full unit tests and lint                                                |
-| 1    | Tables                                               | Content             | `worktree-agent-a893a70706bdb896b` | Done in `d37aec0f`, all checks pass; awaiting review and merge                                                                                                      |
-| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `worktree-agent-a50e69ba3623a816a` | Stopped by the usage limit: `6b596223` (BAlert, BToast native transitions and markup) and `01431c7a` (BSpinner) committed; BBadge and BPlaceholder work uncommitted |
-| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `worktree-agent-a30fb2b266fa71b4e` | Done in `434ab6ac`, `c5d79b3a`, `e148bdfa`, all checks pass; awaiting review and merge                                                                              |
-| 2    | Buttons                                              | Buttons             | —                                  | Not started                                                                                                                                                         |
-| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                                  | Not started                                                                                                                                                         |
-| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                                  | Not started                                                                                                                                                         |
+| Wave | Batch                                                | Plan section        | Worktree branch                    | State                                                                                                                |
+| ---- | ---------------------------------------------------- | ------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| 1    | Forms and checks                                     | Forms               | `worktree-agent-a6179c069c2f5495c` | Stopped by the usage limit before committing: 47 uncommitted files; it had just started the full unit tests and lint |
+| 1    | Tables                                               | Content             | `worktree-agent-a893a70706bdb896b` | Done in `d37aec0f`, all checks pass; awaiting review and merge                                                       |
+| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `worktree-agent-a50e69ba3623a816a` | Done in `6b596223`, `01431c7a`, `0ceaf2f3`, `ecd1bcee`, all checks pass; awaiting review and merge                   |
+| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `worktree-agent-a30fb2b266fa71b4e` | Done in `434ab6ac`, `c5d79b3a`, `e148bdfa`, all checks pass; awaiting review and merge                               |
+| 2    | Buttons                                              | Buttons             | —                                  | Not started                                                                                                          |
+| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                                  | Not started                                                                                                          |
+| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                                  | Not started                                                                                                          |
 
 Known merge overlap: the navigation batch changed `BNavForm` (`formClass` → `formAttrs`, `validated` left alone), and the forms batch adds `validate` to the same file; expect a small conflict there.
 
@@ -53,6 +53,13 @@ Navigation batch follow-ups (from its report):
 - Tab panes now toggle only `.active` (v6 fades with `@starting-style`); `fade` / `show` and the timer are gone. There are no `shown` / `hidden` tab events.
 - `b-pagination-pills` stays custom CSS (v6 has no pagination pills); the docs say so.
 - Not checked visually: dark mode, `NavPillCard.vue` (pills in a card header now render as normal v6 pills), fill/justified pills.
+
+Feedback batch follow-ups (from its report):
+
+- `BAlert` and `BToast` are on the native path; nothing renders while hidden (before, a hidden element stayed in the DOM). Migration notes: `shown` / `hidden` timing, `solid` → `translucent`, `*Class` → `*Attrs`, no `fade` / `show` / `alert-dismissible` classes.
+- v6 `.alert` has no bottom margin, so consecutive alerts sit flush. Native behavior; mention it in the migration notes.
+- `showOnPause` on `BAlert` / `BToast` has no effect (before or after). Decide whether to remove it.
+- Expect a merge conflict in `architecture/ARIA_VISIBILITY.md` (native/legacy table) with the floating UI batch.
 
 ### Resuming
 
