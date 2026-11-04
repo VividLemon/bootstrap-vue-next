@@ -20,7 +20,7 @@ You can adjust the width using props `width` and `cols`. Cols is a number value 
 
 ## Placeholder Animations
 
-Bootstrap supports two types of animations, `wave` and `glow`.
+Bootstrap supports two types of animations, `wave` and `pulse`. `glow` is Bootstrap's older name for `pulse` and renders the same animation.
 
 ::: info NOTE
 When using `BPlaceholderCard`, the image does not inherit an animation
