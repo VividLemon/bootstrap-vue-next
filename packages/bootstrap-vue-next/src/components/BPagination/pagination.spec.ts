@@ -703,6 +703,61 @@ describe('pagination', () => {
     const $inactive = wrapper.find('button[aria-posinset="2"]')
     expect($inactive.attributes('tabindex')).toBe('-1')
   })
+
+  it('has theme class when prop theme is set', async () => {
+    const wrapper = mount(BPagination, {
+      props: {theme: 'danger'},
+    })
+    expect(wrapper.classes()).toContain('theme-danger')
+    await wrapper.setProps({theme: undefined})
+    expect(wrapper.classes()).not.toContain('theme-danger')
+  })
+
+  it('merges firstAttrs, prevAttrs, nextAttrs and lastAttrs on their page items', () => {
+    const wrapper = mount(BPagination, {
+      props: {
+        totalRows: 100,
+        perPage: 10,
+        modelValue: 5,
+        firstAttrs: {'class': 'is-first', 'data-part': 'first'},
+        prevAttrs: {class: 'is-prev', style: {color: 'red'}},
+        nextAttrs: {class: 'is-next'},
+        lastAttrs: {class: 'is-last'},
+      },
+    })
+    const items = wrapper.findAll('.page-item')
+    const first = items[0]
+    const prev = items[1]
+    const next = items[items.length - 2]
+    const last = items[items.length - 1]
+    expect(first.classes()).toEqual(expect.arrayContaining(['page-item', 'is-first']))
+    expect(first.attributes('data-part')).toBe('first')
+    expect(first.attributes('role')).toBe('presentation')
+    expect(prev.classes()).toEqual(expect.arrayContaining(['page-item', 'is-prev']))
+    expect(prev.attributes('style')).toContain('color: red')
+    expect(next.classes()).toEqual(expect.arrayContaining(['page-item', 'is-next']))
+    expect(last.classes()).toEqual(expect.arrayContaining(['page-item', 'is-last']))
+  })
+
+  it('merges pageAttrs on every page number item, keeping active', () => {
+    const wrapper = mount(BPagination, {
+      props: {totalRows: 30, perPage: 10, modelValue: 2, pageAttrs: {class: 'is-page'}},
+    })
+    const pages = wrapper.findAll('.page-item.is-page')
+    expect(pages.length).toBe(3)
+    expect(pages[1].classes()).toContain('active')
+  })
+
+  it('merges ellipsisAttrs on ellipsis items', () => {
+    const wrapper = mount(BPagination, {
+      props: {totalRows: 200, perPage: 10, modelValue: 10, ellipsisAttrs: {class: 'is-ellipsis'}},
+    })
+    const separators = wrapper.findAll('[role="separator"]')
+    expect(separators.length).toBe(2)
+    separators.forEach((el) => {
+      expect(el.classes()).toEqual(expect.arrayContaining(['page-item', 'disabled', 'is-ellipsis']))
+    })
+  })
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

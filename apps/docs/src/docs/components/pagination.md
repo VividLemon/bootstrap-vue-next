@@ -91,7 +91,15 @@ Easily switch to pill style buttons by setting the `pills` prop.
 
 <<< DEMO ./demo/PaginationPillStyle.vue
 
-**Note:** Pill styling requires bootstrap-vue-next's custom CSS/SCSS.
+**Note:** Pill styling requires bootstrap-vue-next's custom CSS/SCSS. Bootstrap v6 has no pill
+pagination of its own.
+
+### Theme
+
+Set the `theme` prop to apply one of the theme colors (`theme-*` class) to the pagination. Bootstrap
+v6 uses it for the active page and the hover and focus states.
+
+<<< DEMO ./demo/PaginationTheme.vue
 
 ### Alignment
 

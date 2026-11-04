@@ -100,31 +100,39 @@ Visually move the tab controls to the right hand side by setting the `end` prop:
 <<< DEMO ./demo/TabsVerticalEnd.vue#template{vue-html}
 
 The width of the vertical tab controls will expand to fit the width of the tab title. To control the
-width, set a [width utility class](/docs/reference/size-props-and-classes) via the prop
-`nav-wrapper-class`. You can use values such as `w-25` (25% width), `w-50` (50% width), etc., or
-column classes such as `col-2`, `col-3`, etc.
+width, set a [width utility class](/docs/reference/size-props-and-classes) on the controls wrapper
+via the `nav-wrapper-attrs` prop (e.g. `:nav-wrapper-attrs="{class: 'w-25'}"`). You can use values
+such as `w-25` (25% width), `w-50` (50% width), etc., or column classes such as `col-2`, `col-3`,
+etc.
 
 <<< DEMO ./demo/TabsVerticalWidth.vue#template{vue-html}
 
-Vertical placement visually works best with the `pills` variant. When using the default `tabs`
-variant, you may want to provided your own custom styling classes, as Bootstrap v5 CSS assumes the
-tab controls will always be placed on the top of the tabs content.
+Vertical placement visually works best with the `pills` variant, which renders Bootstrap v6's
+`nav-pills-vertical` class (every control stretches to the full width of the wrapper). Other
+variants stack with `flex-column`. When using the default `tabs` variant, you may want to provide
+your own custom styling classes, as Bootstrap CSS assumes the tab controls will always be placed on
+the top of the tabs content.
 
 ::: info
 Overflowing text may occur if your width is narrower than the tab title. You may need
 additional custom styling.
 :::
 
-## Active classes
+## Active attributes
 
-To apply classes to the currently active control or tab use the `active-nav-item-class` and
-`active-tab-class` props.
+To apply classes (or any other attributes) to the currently active control or tab use the
+`active-nav-item-attrs` and `active-tab-attrs` props. The matching `inactive-*-attrs` props target
+the inactive ones, and `nav-item-attrs` / `tab-attrs` apply to all of them. `class` and `style`
+merge with the component's own.
 
 <<< DEMO ./demo/TabsActive.vue#template{vue-html}
 
 ## Fade animation
 
-Fade is enabled by default when changing tabs. It can be disabled with the `no-transition` prop.
+The newly active tab pane fades in by default, using Bootstrap v6's native CSS transition (the
+outgoing pane is hidden at once). Disable it with the `no-transition` prop, which adds the
+`tab-pane-instant` class to each pane. Adjust the motion with the `--bs-tab-pane-transition-duration`
+and `--bs-tab-pane-transition-timing` CSS variables.
 
 ## Add tabs without content
 
@@ -153,16 +161,17 @@ Vue component, this possible by using `title` slot of `<BTab>`.
 which does not support child interactive elements per the HTML5 spec.
 :::
 
-## Apply custom classes to the generated nav-tabs or pills
+## Apply custom attributes to the generated nav-tabs or pills
 
-The tab selectors are based on Bootstrap v5's `nav` markup ( i.e.
-`ul.nav > li.nav-item > a.nav-link`). In some situations, you may want to add classes to the `<li>`
-(nav-item) and/or the `<a>` (nav-link) on a per tab basis. To do so, simply supply the classname to
-the `title-item-class` prop (for the `<li>` element) or `title-link-class` prop (for the `<a>`
-element). Value's can be passed as a string or array of strings.
+The tab selectors are based on Bootstrap's `nav` markup (i.e.
+`ul.nav > li.nav-item > button.nav-link`). In some situations, you may want to add classes or other
+attributes to the `<li>` (nav-item) and/or the `<button>` (nav-link) on a per tab basis. To do so,
+pass an attributes object to the `title-item-attrs` prop (for the `<li>` element) or the
+`title-link-attrs` prop (for the `<button>` element), e.g. `:title-link-attrs="{class: 'fw-bold'}"`.
+`class` and `style` merge with the component's own.
 
 ::: info
-The `active` class is automatically applied to the active tabs `<a>` element. You may
+The `active` class is automatically applied to the active tab's `<button>` element. You may
 need to accommodate your custom classes for this.
 :::
 

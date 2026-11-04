@@ -1,16 +1,14 @@
 // Pagination pill style
+// Bootstrap v6 has no pill pagination: round every link and separate the items
 .b-pagination-pills {
-  .page-item {
-    .page-link {
-      border-radius: 50rem;
-      margin-left: 0.25rem;
-      line-height: 1;
-    }
+  --bs-pagination-border-radius: 50rem;
 
-    &:first-child {
-      .page-link {
-        margin-left: 0;
-      }
-    }
+  .page-link {
+    line-height: 1;
+    border-radius: var(--bs-pagination-border-radius);
+  }
+
+  .page-item:not(:first-child) .page-link {
+    margin-inline-start: 0.25rem;
   }
 }

@@ -74,12 +74,14 @@ describe('tabs', () => {
     expect($div.classes()).toContain('tab-content')
   })
 
-  it('first child div has classes from prop contentClass', () => {
+  it('first child div has attrs from prop contentAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {tag: 'span', end: true, contentClass: ['foo']},
+      props: {tag: 'span', end: true, contentAttrs: {'class': ['foo'], 'data-foo': 'bar'}},
     })
     const $div = wrapper.get('div')
+    expect($div.classes()).toContain('tab-content')
     expect($div.classes()).toContain('foo')
+    expect($div.attributes('data-foo')).toBe('bar')
   })
 
   it('first child div has another div child when tabs empty', () => {
@@ -186,12 +188,14 @@ describe('tabs', () => {
     expect($div.classes()).not.toContain('ms-auto')
   })
 
-  it('next div has classes from prop navWrapperClass', () => {
+  it('next div merges classes from prop navWrapperAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {tag: 'span', navWrapperClass: ['foo']},
+      props: {tag: 'span', card: true, navWrapperAttrs: {class: ['foo'], style: {color: 'red'}}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('foo')
+    expect($div.classes()).toContain('card-header')
+    expect($div.attributes('style')).toContain('color: red')
   })
 
   it('next div has child ul', () => {
@@ -212,13 +216,16 @@ describe('tabs', () => {
     expect($ul.classes()).toContain('nav')
   })
 
-  it('next div child ul has class from prop navClass', () => {
+  it('next div child ul merges classes from prop navAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {tag: 'span', navClass: ['foo']},
+      props: {tag: 'span', navAttrs: {'class': ['foo'], 'aria-label': 'Sections'}},
     })
     const $div = wrapper.get('div')
     const $ul = $div.get('ul')
     expect($ul.classes()).toContain('foo')
+    expect($ul.classes()).toContain('nav')
+    expect($ul.classes()).toContain('nav-tabs')
+    expect($ul.attributes('aria-label')).toBe('Sections')
   })
 
   it('next div child ul has static attr tablist', () => {
@@ -242,6 +249,12 @@ describe('tabs', () => {
       props: {vertical: true},
       resetProps: {vertical: false},
       className: 'flex-column',
+    },
+    {
+      caseName: 'vertical pills',
+      props: {vertical: true, pills: true},
+      resetProps: {vertical: false},
+      className: 'nav-pills-vertical',
     },
     {
       caseName: 'vertical layout margin',
@@ -335,9 +348,9 @@ describe('tabs', () => {
     expect($div.classes()).toContain('tab-content')
   })
 
-  it('end div has classes from prop contentClass', () => {
+  it('end div has classes from prop contentAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {tag: 'span', contentClass: ['foo']},
+      props: {tag: 'span', contentAttrs: {class: ['foo']}},
     })
     const [, $div] = wrapper.findAll('div')
     expect($div.classes()).toContain('foo')
@@ -777,14 +790,22 @@ describe('tabs', () => {
 
   // --- Card-header-pills class ---
 
-  it('has class card-header-pills when card and pills', async () => {
+  it('never has class card-header-pills (removed in Bootstrap v6)', () => {
     const wrapper = mount(BTabs, {
       props: {card: true, pills: true},
     })
     const $ul = wrapper.get('ul')
-    expect($ul.classes()).toContain('card-header-pills')
-    await wrapper.setProps({pills: false})
     expect($ul.classes()).not.toContain('card-header-pills')
+  })
+
+  it('vertical pills use nav-pills-vertical instead of flex-column', () => {
+    const wrapper = mount(BTabs, {
+      props: {vertical: true, pills: true},
+    })
+    const $ul = wrapper.get('ul')
+    expect($ul.classes()).toContain('nav-pills')
+    expect($ul.classes()).toContain('nav-pills-vertical')
+    expect($ul.classes()).not.toContain('flex-column')
   })
 
   it('does not have card-header-tabs when card and pills', () => {
@@ -974,28 +995,40 @@ describe('tabs', () => {
     expect(li.attributes('role')).toBe('presentation')
   })
 
-  it('nav item li has titleItemClass', () => {
+  it('nav item li merges titleItemAttrs', () => {
     const wrapper = mount(BTabs, {
       slots: {
         default: () => [
-          h(BTab, {id: 'tab-1', title: 'First', titleItemClass: 'custom-item'}, () => 'one'),
+          h(
+            BTab,
+            {id: 'tab-1', title: 'First', titleItemAttrs: {'class': 'custom-item', 'data-x': 'y'}},
+            () => 'one'
+          ),
         ],
       },
     })
     const li = wrapper.get('li')
+    expect(li.classes()).toContain('nav-item')
     expect(li.classes()).toContain('custom-item')
+    expect(li.attributes('data-x')).toBe('y')
   })
 
-  it('tab button has titleLinkClass', () => {
+  it('tab button merges class from titleLinkAttrs', () => {
     const wrapper = mount(BTabs, {
       slots: {
         default: () => [
-          h(BTab, {id: 'tab-1', title: 'First', titleLinkClass: 'custom-link'}, () => 'one'),
+          h(
+            BTab,
+            {id: 'tab-1', title: 'First', titleLinkAttrs: {class: 'custom-link'}},
+            () => 'one'
+          ),
         ],
       },
     })
     const button = wrapper.get('button')
     expect(button.classes()).toContain('custom-link')
+    expect(button.classes()).toContain('nav-link')
+    expect(button.classes()).toContain('active')
   })
 
   it('tab button has titleLinkAttrs', () => {
@@ -1011,11 +1044,11 @@ describe('tabs', () => {
     expect(button.attributes('data-custom')).toBe('value')
   })
 
-  // --- activeNavItemClass / inactiveNavItemClass ---
+  // --- activeNavItemAttrs / inactiveNavItemAttrs ---
 
-  it('active tab button has activeNavItemClass', () => {
+  it('active tab button has activeNavItemAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {activeNavItemClass: 'nav-active'},
+      props: {activeNavItemAttrs: {class: 'nav-active'}},
       slots: {
         default: () => [
           h(BTab, {id: 'tab-1', title: 'First'}, () => 'one'),
@@ -1028,9 +1061,9 @@ describe('tabs', () => {
     expect(buttons[1].classes()).not.toContain('nav-active')
   })
 
-  it('inactive tab button has inactiveNavItemClass', () => {
+  it('inactive tab button has inactiveNavItemAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {inactiveNavItemClass: 'nav-inactive'},
+      props: {inactiveNavItemAttrs: {class: 'nav-inactive'}},
       slots: {
         default: () => [
           h(BTab, {id: 'tab-1', title: 'First'}, () => 'one'),
@@ -1043,11 +1076,11 @@ describe('tabs', () => {
     expect(buttons[1].classes()).toContain('nav-inactive')
   })
 
-  // --- navItemClass ---
+  // --- navItemAttrs ---
 
-  it('all tab buttons have navItemClass', () => {
+  it('all tab buttons have navItemAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {navItemClass: 'all-nav'},
+      props: {navItemAttrs: {class: 'all-nav'}},
       slots: {
         default: () => [
           h(BTab, {id: 'tab-1', title: 'First'}, () => 'one'),
@@ -1060,11 +1093,11 @@ describe('tabs', () => {
     expect(buttons[1].classes()).toContain('all-nav')
   })
 
-  // --- activeNavLinkClass / inactiveNavLinkClass ---
+  // --- activeNavLinkAttrs / inactiveNavLinkAttrs ---
 
-  it('active tab button has activeNavLinkClass', () => {
+  it('active tab button has activeNavLinkAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {activeNavLinkClass: 'link-active'},
+      props: {activeNavLinkAttrs: {class: 'link-active'}},
       slots: {
         default: () => [
           h(BTab, {id: 'tab-1', title: 'First'}, () => 'one'),
@@ -1077,9 +1110,9 @@ describe('tabs', () => {
     expect(buttons[1].classes()).not.toContain('link-active')
   })
 
-  it('inactive tab button has inactiveNavLinkClass', () => {
+  it('inactive tab button has inactiveNavLinkAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {inactiveNavLinkClass: 'link-inactive'},
+      props: {inactiveNavLinkAttrs: {class: 'link-inactive'}},
       slots: {
         default: () => [
           h(BTab, {id: 'tab-1', title: 'First'}, () => 'one'),
@@ -1155,7 +1188,7 @@ describe('tabs', () => {
 
   // --- noTransition provided to children ---
 
-  it('tab panes have fade class when noTransition is false', async () => {
+  it('tab panes do not have tab-pane-instant when noTransition is false', async () => {
     const wrapper = mount(BTabs, {
       props: {noTransition: false},
       slots: {
@@ -1164,10 +1197,11 @@ describe('tabs', () => {
     })
     await nextTick()
     const pane = wrapper.get('.tab-pane')
-    expect(pane.classes()).toContain('fade')
+    expect(pane.classes()).not.toContain('tab-pane-instant')
+    expect(pane.classes()).not.toContain('fade')
   })
 
-  it('tab panes do not have fade class when noTransition is true', async () => {
+  it('tab panes have tab-pane-instant when noTransition is true', async () => {
     const wrapper = mount(BTabs, {
       props: {noTransition: true},
       slots: {
@@ -1176,7 +1210,56 @@ describe('tabs', () => {
     })
     await nextTick()
     const pane = wrapper.get('.tab-pane')
-    expect(pane.classes()).not.toContain('fade')
+    expect(pane.classes()).toContain('tab-pane-instant')
+  })
+
+  it('merges navItemAttrs, state attrs and titleLinkAttrs on the tab button', () => {
+    const wrapper = mount(BTabs, {
+      props: {
+        navItemAttrs: {class: 'a', style: {color: 'red'}},
+        activeNavItemAttrs: {class: 'b'},
+        activeNavLinkAttrs: {class: 'c'},
+      },
+      slots: {
+        default: () => [
+          h(
+            BTab,
+            {id: 'tab-1', title: 'First', titleLinkAttrs: {class: 'd', style: {margin: '1px'}}},
+            () => 'one'
+          ),
+        ],
+      },
+    })
+    const button = wrapper.get('button')
+    expect(button.classes()).toEqual(
+      expect.arrayContaining(['nav-link', 'active', 'a', 'b', 'c', 'd'])
+    )
+    expect(button.attributes('style')).toContain('color: red')
+    expect(button.attributes('style')).toContain('margin: 1px')
+  })
+
+  it('merges tabAttrs and state tab attrs on panes', async () => {
+    const wrapper = mount(BTabs, {
+      props: {
+        tabAttrs: {class: 'all-tabs'},
+        activeTabAttrs: {class: 'on'},
+        inactiveTabAttrs: {class: 'off'},
+      },
+      slots: {
+        default: () => [
+          h(BTab, {id: 'tab-1', title: 'First'}, () => 'one'),
+          h(BTab, {id: 'tab-2', title: 'Second'}, () => 'two'),
+        ],
+      },
+    })
+    await nextTick()
+    const panes = wrapper.findAll('.tab-pane')
+    expect(panes[0].classes()).toEqual(
+      expect.arrayContaining(['tab-pane', 'active', 'all-tabs', 'on'])
+    )
+    expect(panes[0].classes()).not.toContain('off')
+    expect(panes[1].classes()).toEqual(expect.arrayContaining(['tab-pane', 'all-tabs', 'off']))
+    expect(panes[1].classes()).not.toContain('on')
   })
 
   // --- activate-tab event cancellation ---

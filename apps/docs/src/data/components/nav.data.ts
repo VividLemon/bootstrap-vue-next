@@ -19,10 +19,10 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {linkProps, linkTo} from '../../utils/linkProps'
-import {buildCommonProps} from '../../utils/commonProps'
-import {omit, pick} from '../../utils/objectUtils'
-import {dropdownEmits, dropdownProps, dropdownSlots} from '../../utils/dropdownCommon'
+import { linkProps, linkTo } from '../../utils/linkProps'
+import { buildCommonProps } from '../../utils/commonProps'
+import { omit, pick } from '../../utils/objectUtils'
+import { dropdownEmits, dropdownProps, dropdownSlots } from '../../utils/dropdownCommon'
 
 export default {
   load: (): ComponentReference => ({
@@ -34,7 +34,7 @@ export default {
               default: 'ul',
             },
           }),
-          ['tag']
+          ['tag'],
         ),
         align: {
           type: 'AlignmentJustifyContent',
@@ -44,7 +44,8 @@ export default {
         cardHeader: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'Indicates the nav is placed inside a card header',
+          description:
+            'Indicates the nav is placed inside a card header. Adds `card-header-tabs` to tabs; has no effect on pills or vertical navs',
         },
         fill: {
           type: 'boolean',
@@ -80,7 +81,8 @@ export default {
         vertical: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'Stacks nav items vertically',
+          description:
+            'Stacks nav items vertically (`flex-column`). Pills use `nav-pills-vertical`, which also stretches each item to the full width',
         },
       } satisfies PropRecord<keyof BNavProps>,
       emits: {},
@@ -92,7 +94,7 @@ export default {
       } satisfies SlotRecord<keyof BNavSlots>,
     },
     BNavForm: {
-      styleSpec: {kind: StyleKind.Tag, value: 'li > form'},
+      styleSpec: { kind: StyleKind.Tag, value: 'li > form' },
       props: {
         ...pick(buildCommonProps(), [
           'floating',
@@ -102,10 +104,11 @@ export default {
           'validated',
           'wrapperAttrs',
         ]),
-        formClass: {
-          type: 'ClassValue',
+        formAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'CSS class (or classes) to apply to the form element',
+          description:
+            "Attributes to apply to the form element. `class` and `style` merge with the component's own",
         },
       } satisfies PropRecord<keyof BNavFormProps>,
       emits: {
@@ -132,12 +135,8 @@ export default {
           linkAttrs: {
             type: 'Readonly<AttrsValue>',
             default: undefined,
-            description: 'Additional attributes for the nested link element',
-          },
-          linkClass: {
-            type: 'ClassValue',
-            default: undefined,
-            description: 'CSS class (or classes) for the nested link element',
+            description:
+              "Additional attributes for the nested link element. `class` and `style` merge with the component's own",
           },
         } satisfies PropRecord<Exclude<keyof BNavItemProps, keyof typeof linkProps>>,
         'BLink props': {
@@ -170,7 +169,7 @@ export default {
       } satisfies SlotRecord<keyof BNavItemSlots>,
     },
     BNavItemDropdown: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.nav-item.dropdown'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.nav-item.dropdown' },
       props: dropdownProps,
       emits: dropdownEmits,
       slots: dropdownSlots,
@@ -190,7 +189,7 @@ export default {
       } satisfies ExposedRecord,
     },
     BNavText: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.navbar-text'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.navbar-text' },
       props: {
         text: {
           type: 'string',

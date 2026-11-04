@@ -45,11 +45,12 @@
 
 <script setup lang="ts">
 import {BvEvent} from '../../utils'
-import {computed, nextTick, useTemplateRef, watch} from 'vue'
+import {computed, mergeProps, nextTick, useTemplateRef, watch} from 'vue'
 import {useAlignment} from '../../composables/useAlignment'
 import {useToNumber} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
-import type {ClassValue} from '../../types/AnyValuedAttributes'
+import {toColorClasses} from '../../composables/useThemeClasses'
+import type {AttrsValue} from '../../types/AnyValuedAttributes'
 import {CODE_DOWN, CODE_LEFT, CODE_RIGHT, CODE_UP} from '../../utils/constants'
 import {getActiveElement} from '../../utils/dom'
 import {type BPaginationEmits, type BPaginationProps, type BPaginationSlots} from '../../types'
@@ -71,9 +72,9 @@ const _props = withDefaults(defineProps<Omit<BPaginationProps, 'modelValue'>>(),
   ariaControls: undefined,
   ariaLabel: 'Pagination',
   disabled: false,
-  ellipsisClass: undefined,
+  ellipsisAttrs: undefined,
   ellipsisText: '\u2026',
-  firstClass: undefined,
+  firstAttrs: undefined,
   firstNumber: false,
   firstText: '\u00AB',
   noEllipsis: false,
@@ -83,18 +84,19 @@ const _props = withDefaults(defineProps<Omit<BPaginationProps, 'modelValue'>>(),
   labelNextPage: 'Go to next page',
   labelPage: 'Go to page',
   labelPrevPage: 'Go to previous page',
-  lastClass: undefined,
+  lastAttrs: undefined,
   lastNumber: false,
   lastText: '\u00BB',
   limit: 5,
-  nextClass: undefined,
+  nextAttrs: undefined,
   nextText: '\u203A',
-  pageClass: undefined,
+  pageAttrs: undefined,
   perPage: DEFAULT_PER_PAGE,
   pills: false,
-  prevClass: undefined,
+  prevAttrs: undefined,
   prevText: '\u2039',
   size: undefined,
+  theme: undefined,
   totalRows: DEFAULT_TOTAL_ROWS,
 })
 const props = useDefaults(_props, 'BPagination')
@@ -140,7 +142,7 @@ const nextDisabled = computed(() => checkDisabled(computedModelValue.value + 1))
 
 const getBaseButtonProps = ({
   page,
-  classVal,
+  itemAttrs,
   disabled,
   slotName,
   textValue,
@@ -153,7 +155,7 @@ const getBaseButtonProps = ({
 }: {
   page: number
   disabled: boolean
-  classVal: ClassValue
+  itemAttrs: Readonly<AttrsValue> | undefined
   slotName: 'first-text' | 'prev-text' | 'next-text' | 'last-text' | 'page'
   textValue?: string
   tabIndex?: string
@@ -163,21 +165,23 @@ const getBaseButtonProps = ({
   hidden?: boolean
   isSmHidden?: boolean
 }) => ({
-  li: {
-    'class': [
-      'page-item',
-      {
-        'active': isActive,
-        disabled,
-        'bv-d-sm-down-none': isSmHidden,
-        'flex-fill': computedFill.value,
-        'd-flex': computedFill.value && !disabled,
-      },
-      classVal,
-    ],
-    'role': 'presentation',
-    'aria-hidden': hidden,
-  },
+  li: mergeProps(
+    {
+      'class': [
+        'page-item',
+        {
+          'active': isActive,
+          disabled,
+          'bv-d-sm-down-none': isSmHidden,
+          'flex-fill': computedFill.value,
+          'd-flex': computedFill.value && !disabled,
+        },
+      ],
+      'role': 'presentation',
+      'aria-hidden': hidden,
+    },
+    itemAttrs ?? {}
+  ),
   button: {
     'is': disabled ? 'span' : 'button',
     'class': ['page-link', 'text-center', {'flex-grow-1': !disabled && computedFill.value}],
@@ -204,7 +208,7 @@ const getBaseButtonProps = ({
 
 const getButtonProps = ({
   page,
-  classVal,
+  itemAttrs,
   disabled,
   slotName,
   textValue,
@@ -212,17 +216,17 @@ const getButtonProps = ({
 }: {
   page: number
   disabled: boolean
-  classVal: ClassValue
+  itemAttrs: Readonly<AttrsValue> | undefined
   slotName: 'first-text' | 'prev-text' | 'next-text' | 'last-text' | 'page'
   textValue?: string
   label: string
-}) => getBaseButtonProps({page, classVal, disabled, slotName, textValue, label, tabIndex: '-1'})
+}) => getBaseButtonProps({page, itemAttrs, disabled, slotName, textValue, label, tabIndex: '-1'})
 
 const getPageButtonProps = (page: number, isSmHidden?: boolean) =>
   getBaseButtonProps({
     page,
     disabled: props.disabled,
-    classVal: props.pageClass,
+    itemAttrs: props.pageAttrs,
     slotName: 'page',
     label: props.labelPage ? `${props.labelPage} ${page}` : undefined,
     tabIndex: getTabIndex(page) ?? undefined,
@@ -235,7 +239,7 @@ const firstButtonProps = computed(() =>
   getButtonProps({
     page: 1,
     disabled: firstDisabled.value,
-    classVal: props.firstClass,
+    itemAttrs: props.firstAttrs,
     slotName: 'first-text',
     textValue: props.firstText,
     label: props.labelFirstPage,
@@ -245,7 +249,7 @@ const prevButtonProps = computed(() =>
   getButtonProps({
     page: Math.max(computedModelValue.value - 1, 1),
     disabled: prevDisabled.value,
-    classVal: props.prevClass,
+    itemAttrs: props.prevAttrs,
     slotName: 'prev-text',
     textValue: props.prevText,
     label: props.labelPrevPage,
@@ -255,7 +259,7 @@ const nextButtonProps = computed(() =>
   getButtonProps({
     page: Math.min(computedModelValue.value + 1, numberOfPages.value),
     disabled: nextDisabled.value,
-    classVal: props.nextClass,
+    itemAttrs: props.nextAttrs,
     slotName: 'next-text',
     textValue: props.nextText,
     label: props.labelNextPage,
@@ -265,7 +269,7 @@ const lastButtonProps = computed(() =>
   getButtonProps({
     page: numberOfPages.value,
     disabled: lastDisabled.value,
-    classVal: props.lastClass,
+    itemAttrs: props.lastAttrs,
     slotName: 'last-text',
     textValue: props.lastText,
     label: props.labelLastPage,
@@ -273,17 +277,19 @@ const lastButtonProps = computed(() =>
 )
 
 const ellipsisProps = computed(() => ({
-  li: {
-    class: [
-      'page-item',
-      'disabled',
-      'text-center',
-      'bv-d-sm-down-none',
-      computedFill.value ? 'flex-fill' : '',
-      props.ellipsisClass,
-    ],
-    role: 'separator',
-  },
+  li: mergeProps(
+    {
+      class: [
+        'page-item',
+        'disabled',
+        'text-center',
+        'bv-d-sm-down-none',
+        computedFill.value ? 'flex-fill' : '',
+      ],
+      role: 'separator',
+    },
+    props.ellipsisAttrs ?? {}
+  ),
   span: {
     class: ['page-link'],
   },
@@ -291,6 +297,7 @@ const ellipsisProps = computed(() => ({
 
 const computedWrapperClasses = computed(() => [
   alignment.value,
+  toColorClasses('theme', props.theme),
   {
     [`pagination-${props.size}`]: props.size !== undefined,
     'b-pagination-pills': props.pills,

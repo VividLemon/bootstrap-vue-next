@@ -801,12 +801,11 @@ export interface BNavProps {
 export interface BNavFormProps extends BFormProps {
   role?: string
   wrapperAttrs?: Readonly<AttrsValue>
-  formClass?: ClassValue
+  formAttrs?: Readonly<AttrsValue>
 }
 
 export interface BNavItemProps extends Omit<BLinkProps, 'routerTag'> {
   linkAttrs?: Readonly<AttrsValue>
-  linkClass?: ClassValue
 }
 
 export interface BNavTextProps {
@@ -894,9 +893,9 @@ export interface BPaginationProps {
   ariaControls?: string
   ariaLabel?: string
   disabled?: boolean
-  ellipsisClass?: ClassValue
+  ellipsisAttrs?: Readonly<AttrsValue>
   ellipsisText?: string
-  firstClass?: ClassValue
+  firstAttrs?: Readonly<AttrsValue>
   firstNumber?: boolean
   firstText?: string
   noEllipsis?: boolean
@@ -906,19 +905,20 @@ export interface BPaginationProps {
   labelNextPage?: string
   labelPage?: string
   labelPrevPage?: string
-  lastClass?: ClassValue
+  lastAttrs?: Readonly<AttrsValue>
   lastNumber?: boolean
   lastText?: string
   limit?: Numberish
   modelValue?: Numberish
-  nextClass?: ClassValue
+  nextAttrs?: Readonly<AttrsValue>
   nextText?: string
-  pageClass?: ClassValue
+  pageAttrs?: Readonly<AttrsValue>
   perPage?: Numberish
   pills?: boolean
-  prevClass?: ClassValue
+  prevAttrs?: Readonly<AttrsValue>
   prevText?: string
   size?: Size
+  theme?: ColorExtendables['theme']
   totalRows?: Numberish
 }
 
@@ -999,38 +999,37 @@ export interface BTabProps {
   noBody?: boolean
   tag?: string
   title?: string
-  titleItemClass?: ClassValue
+  titleItemAttrs?: Readonly<AttrsValue>
   titleLinkAttrs?: Readonly<AttrsValue>
-  titleLinkClass?: ClassValue
 }
 
 export interface BTabsProps {
-  activeNavItemClass?: ClassValue
-  activeNavLinkClass?: ClassValue
-  activeTabClass?: ClassValue
+  activeNavItemAttrs?: Readonly<AttrsValue>
+  activeNavLinkAttrs?: Readonly<AttrsValue>
+  activeTabAttrs?: Readonly<AttrsValue>
   align?: AlignmentJustifyContent
   card?: boolean
-  contentClass?: ClassValue
+  contentAttrs?: Readonly<AttrsValue>
   end?: boolean
   fill?: boolean
   id?: string
   index?: number
-  inactiveNavItemClass?: ClassValue
-  inactiveNavLinkClass?: ClassValue
-  inactiveTabClass?: ClassValue
+  inactiveNavItemAttrs?: Readonly<AttrsValue>
+  inactiveNavLinkAttrs?: Readonly<AttrsValue>
+  inactiveTabAttrs?: Readonly<AttrsValue>
   justified?: boolean
   lazy?: boolean
   modelValue?: string
-  navClass?: ClassValue
-  navItemClass?: ClassValue
-  navWrapperClass?: ClassValue
+  navAttrs?: Readonly<AttrsValue>
+  navItemAttrs?: Readonly<AttrsValue>
+  navWrapperAttrs?: Readonly<AttrsValue>
   noTransition?: boolean
   noKeyNav?: boolean
   noNavStyle?: boolean
   pills?: boolean
   small?: boolean
   tag?: string
-  tabClass?: ClassValue
+  tabAttrs?: Readonly<AttrsValue>
   underline?: boolean
   vertical?: boolean
 }
