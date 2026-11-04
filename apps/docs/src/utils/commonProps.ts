@@ -373,11 +373,11 @@ const commonProps = () =>
       default: false,
       description: 'Renders the feedback text in a rudimentary tooltip style',
     },
-    validated: {
-      type: 'boolean',
+    validate: {
+      type: "boolean | 'valid'",
       default: false,
       description:
-        "When set, adds the Bootstrap class 'was-validated' on the form, triggering the native browser validation states",
+        "Opts the form in to Bootstrap's client-side validation styles by rendering `data-bs-validate`: controls show `:user-invalid` styling once the user has interacted with them. Set to `'valid'` (`data-bs-validate=\"valid\"`) to also show `:user-valid` success styling. Combine with `novalidate` to replace the browser's native validation bubbles",
     },
     valueField: {
       type: 'string',

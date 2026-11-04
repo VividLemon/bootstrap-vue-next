@@ -45,6 +45,7 @@ describe('form-invalid-feedback', () => {
       props: {tooltip: true},
     })
     expect(wrapper.classes()).toContain('invalid-tooltip')
+    expect(wrapper.classes()).toContain('tooltip')
     await wrapper.setProps({tooltip: false})
     expect(wrapper.classes()).not.toContain('invalid-tooltip')
   })

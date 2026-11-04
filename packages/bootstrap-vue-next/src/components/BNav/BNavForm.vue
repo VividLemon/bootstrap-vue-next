@@ -6,7 +6,7 @@
       :floating="props.floating"
       :role="props.role"
       :novalidate="props.novalidate"
-      :validated="props.validated"
+      :validate="props.validate"
       class="d-flex"
       :class="props.formClass"
       @submit.prevent="submitted"
@@ -34,7 +34,7 @@ const _props = withDefaults(defineProps<BNavFormProps>(), {
   floating: undefined,
   id: undefined,
   novalidate: undefined,
-  validated: undefined,
+  validate: undefined,
   // End BForm props
 })
 const props = useDefaults(_props, 'BNavForm')

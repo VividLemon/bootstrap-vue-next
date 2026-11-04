@@ -269,7 +269,7 @@ export interface BDropdownDividerProps extends ColorExtendables {
 export interface BDropdownFormProps {
   formClass?: ClassValue
   novalidate?: boolean
-  validated?: boolean
+  validate?: boolean | 'valid'
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
@@ -1293,7 +1293,7 @@ export interface BFormProps {
   floating?: boolean
   id?: string
   novalidate?: boolean
-  validated?: boolean
+  validate?: boolean | 'valid'
 }
 
 export interface BTableSimpleProps extends ColorExtendables {

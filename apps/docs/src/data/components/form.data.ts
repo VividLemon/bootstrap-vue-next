@@ -32,7 +32,7 @@ export default {
         'floating',
         'id',
         'novalidate',
-        'validated',
+        'validate',
       ]) satisfies PropRecord<keyof BFormProps>,
       emits: {},
       slots: {
