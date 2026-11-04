@@ -8,7 +8,7 @@
 
     <BRow>
       <BCol>
-        <BAlert :model-value="true" theme="warning" show fade dismissible>
+        <BAlert :model-value="true" theme="warning" show dismissible>
           <strong>Holy guacamole!</strong> You should check in on some of those fields below.
         </BAlert>
       </BCol>

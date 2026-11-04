@@ -87,4 +87,12 @@ describe('placeholder', () => {
     await wrapper.setProps({animation: undefined})
     expect(wrapper.classes()).not.toContain('placeholder-glow')
   })
+
+  it('has class placeholder-pulse when prop animation is pulse', () => {
+    const wrapper = mount(BPlaceholder, {
+      props: {animation: 'pulse'},
+    })
+    expect(wrapper.classes()).toContain('placeholder-pulse')
+    expect(wrapper.find('.placeholder').exists()).toBe(true)
+  })
 })

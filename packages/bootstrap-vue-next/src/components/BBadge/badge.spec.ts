@@ -304,6 +304,8 @@ describe('badge', () => {
       expect(wrapper.classes()).toContain('border')
       expect(wrapper.classes()).toContain('border-bg')
       expect(wrapper.classes()).toContain('rounded-circle')
+      // v6 badges have a min-height, the dot must be able to shrink below it
+      expect(wrapper.classes()).toContain('min-h-0')
     })
 
     it('removes dot indicator classes when dotIndicator becomes false', async () => {
@@ -474,6 +476,42 @@ describe('badge', () => {
       expect(wrapper.classes()).toContain('theme-primary')
       expect(wrapper.classes()).toContain('rounded-pill')
       expect(wrapper.classes()).toContain('badge')
+    })
+  })
+
+  describe('variant', () => {
+    it('has no badge variant class by default', () => {
+      const wrapper = mount(BBadge)
+      expect(wrapper.classes()).not.toContain('badge-subtle')
+      expect(wrapper.classes()).not.toContain('badge-outline')
+    })
+
+    it('has class badge-subtle when variant is subtle', () => {
+      const wrapper = mount(BBadge, {props: {variant: 'subtle'}})
+      expect(wrapper.classes()).toContain('badge-subtle')
+      expect(wrapper.classes()).toContain('theme-secondary')
+    })
+
+    it('has class badge-outline when variant is outline', async () => {
+      const wrapper = mount(BBadge, {props: {variant: 'outline', theme: 'primary'}})
+      expect(wrapper.classes()).toContain('badge-outline')
+      expect(wrapper.classes()).toContain('theme-primary')
+      await wrapper.setProps({variant: null})
+      expect(wrapper.classes()).not.toContain('badge-outline')
+    })
+  })
+
+  describe('size', () => {
+    it('has no size class by default', () => {
+      const wrapper = mount(BBadge)
+      expect(wrapper.classes()).not.toContain('badge-lg')
+    })
+
+    it('has class badge-lg when size is lg', async () => {
+      const wrapper = mount(BBadge, {props: {size: 'lg'}})
+      expect(wrapper.classes()).toContain('badge-lg')
+      await wrapper.setProps({size: 'md'})
+      expect(wrapper.classes()).not.toContain('badge-lg')
     })
   })
 })

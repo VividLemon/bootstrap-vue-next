@@ -40,22 +40,22 @@ describe('spinner', () => {
     expect(wrapper.classes()).not.toContain('spinner-border')
   })
 
-  it('has class spinner-border-sm when both prop type border and prop small', async () => {
+  it('has class spinner-sm when prop type is border and prop small', async () => {
     const wrapper = mount(BSpinner, {
       props: {type: 'border', small: true},
     })
-    expect(wrapper.classes()).toContain('spinner-border-sm')
-    await wrapper.setProps({type: 'grow'})
-    expect(wrapper.classes()).not.toContain('spinner-border-sm')
+    expect(wrapper.classes()).toContain('spinner-sm')
+    await wrapper.setProps({small: false})
+    expect(wrapper.classes()).not.toContain('spinner-sm')
   })
 
-  it('has class spinner-grow-sm when prop type is grow and prop small', async () => {
+  it('has class spinner-sm when prop type is grow and prop small', async () => {
     const wrapper = mount(BSpinner, {
       props: {type: 'grow', small: true},
     })
-    expect(wrapper.classes()).toContain('spinner-grow-sm')
-    await wrapper.setProps({type: 'border'})
-    expect(wrapper.classes()).not.toContain('spinner-grow-sm')
+    expect(wrapper.classes()).toContain('spinner-sm')
+    await wrapper.setProps({small: false})
+    expect(wrapper.classes()).not.toContain('spinner-sm')
   })
 
   it('has class spinner-grow when prop type is grow', async () => {
@@ -71,18 +71,18 @@ describe('spinner', () => {
     const wrapper = mount(BSpinner, {
       props: {type: 'border', small: false},
     })
-    expect(wrapper.classes()).not.toContain('spinner-border-sm')
+    expect(wrapper.classes()).not.toContain('spinner-sm')
   })
 
   it('small prop is reactive', async () => {
     const wrapper = mount(BSpinner, {
       props: {type: 'border', small: false},
     })
-    expect(wrapper.classes()).not.toContain('spinner-border-sm')
+    expect(wrapper.classes()).not.toContain('spinner-sm')
     await wrapper.setProps({small: true})
-    expect(wrapper.classes()).toContain('spinner-border-sm')
+    expect(wrapper.classes()).toContain('spinner-sm')
     await wrapper.setProps({small: false})
-    expect(wrapper.classes()).not.toContain('spinner-border-sm')
+    expect(wrapper.classes()).not.toContain('spinner-sm')
   })
 
   it('has class theme-{type} when prop theme', async () => {
@@ -261,18 +261,19 @@ describe('spinner', () => {
       props: {type: 'grow', small: true},
     })
     expect(wrapper.classes()).toContain('spinner-grow')
-    expect(wrapper.classes()).toContain('spinner-grow-sm')
+    expect(wrapper.classes()).toContain('spinner-sm')
   })
 
-  it('type prop is reactive for small class', async () => {
+  it('keeps spinner-sm when the type changes', async () => {
     const wrapper = mount(BSpinner, {
       props: {type: 'border', small: true},
     })
-    expect(wrapper.classes()).toContain('spinner-border-sm')
-    expect(wrapper.classes()).not.toContain('spinner-grow-sm')
+    expect(wrapper.classes()).toContain('spinner-border')
+    expect(wrapper.classes()).toContain('spinner-sm')
     await wrapper.setProps({type: 'grow'})
-    expect(wrapper.classes()).toContain('spinner-grow-sm')
-    expect(wrapper.classes()).not.toContain('spinner-border-sm')
+    expect(wrapper.classes()).toContain('spinner-grow')
+    expect(wrapper.classes()).toContain('spinner-sm')
+    expect(wrapper.classes()).not.toContain('spinner-border')
   })
 
   it('multiple props - all classes correct', () => {
@@ -280,7 +281,7 @@ describe('spinner', () => {
       props: {theme: 'warning', type: 'grow', small: true},
     })
     expect(wrapper.classes()).toContain('spinner-grow')
-    expect(wrapper.classes()).toContain('spinner-grow-sm')
+    expect(wrapper.classes()).toContain('spinner-sm')
     expect(wrapper.classes()).toContain('theme-warning')
   })
 })

@@ -54,6 +54,18 @@ they take precedence over the `theme` prop. See the
 [registering custom themes](/docs/components/button#custom-themes) to add your own themes.
 :::
 
+## Variants
+
+Set the `variant` prop to `subtle` for a subtle theme background (`.badge-subtle`), or to `outline` for a theme-colored border on a transparent background (`.badge-outline`). Both use the badge's `theme`.
+
+<<< DEMO ./demo/BadgeVariants.vue#template{vue-html}
+
+## Sizes
+
+Set `size="lg"` for a larger badge (`.badge-lg`).
+
+<<< DEMO ./demo/BadgeSizes.vue#template{vue-html}
+
 ## Pill badges
 
 Use the `pill` prop to make badges more rounded with a larger border-radius.

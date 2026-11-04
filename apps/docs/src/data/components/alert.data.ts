@@ -27,14 +27,12 @@ export default {
             [
               'bg',
               'body',
-              'bodyClass',
-              'closeClass',
+              'bodyAttrs',
               'closeContent',
               'closeLabel',
               'closeColor',
               'closeVariant',
               'fg',
-              'headerClass',
               'headerTag',
               'id',
               'interval',
@@ -47,15 +45,26 @@ export default {
               'title',
             ],
           ),
-          alertClass: {
-            type: 'ClassValue',
+          alertAttrs: {
+            type: 'Readonly<AttrsValue>',
             default: undefined,
-            description: 'CSS class (or classes) to add to the alert wrapper element',
+            description:
+              "Attributes to be applied to the alert element. `class` and `style` are merged with the component's own",
+          },
+          closeAttrs: {
+            type: 'Readonly<AttrsValue>',
+            default: undefined,
+            description: 'Attributes to be applied to the close button',
           },
           dismissible: {
             type: 'boolean',
             default: false,
             description: 'When set, enables the close button',
+          },
+          headerAttrs: {
+            type: 'Readonly<AttrsValue>',
+            default: undefined,
+            description: 'Attributes to be applied to the alert heading (rendered for `title`)',
           },
           modelValue: {
             type: 'boolean | number',

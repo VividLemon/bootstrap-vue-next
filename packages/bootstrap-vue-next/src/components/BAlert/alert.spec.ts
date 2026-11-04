@@ -1,26 +1,26 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vitest'
 import BAlert from './BAlert.vue'
 import BCloseButton from '../BButton/BCloseButton.vue'
 import BButton from '../BButton/BButton.vue'
 import BLink from '../BLink/BLink.vue'
 import BProgress from '../BProgress/BProgress.vue'
-import {Transition} from 'vue'
 
 describe('alert', () => {
   enableAutoUnmount(afterEach)
 
-  it('has Transition', () => {
+  it('renders nothing by default', () => {
     const wrapper = mount(BAlert)
-    const $transition = wrapper.findComponent(Transition)
-    expect($transition.exists()).toBe(true)
+    expect(wrapper.find('div').exists()).toBe(false)
   })
 
-  it('there is a hidden div by default', () => {
-    const wrapper = mount(BAlert)
-    const $div = wrapper.find('div')
-    expect($div.exists()).toBe(true)
-    expect($div.attributes().style).toContain('display: none;')
+  it('stacks its content vertically', () => {
+    const wrapper = mount(BAlert, {
+      props: {modelValue: true},
+    })
+    const $div = wrapper.get('div')
+    expect($div.classes()).toContain('flex-column')
+    expect($div.classes()).toContain('align-items-stretch')
   })
 
   it('there is a div when modelValue true', async () => {
@@ -120,12 +120,12 @@ describe('alert', () => {
     expect($div.classes()).toContain('fg-emphasis-danger')
   })
 
-  it('nested div has class alert-dismissible when prop dismissible', () => {
+  it('nested div does not have class alert-dismissible when prop dismissible', () => {
     const wrapper = mount(BAlert, {
       props: {modelValue: true, dismissible: true},
     })
     const $div = wrapper.get('div')
-    expect($div.classes()).toContain('alert-dismissible')
+    expect($div.classes()).not.toContain('alert-dismissible')
   })
 
   it('nested div does not have class alert-dismissible when not prop dismissible', () => {
@@ -304,14 +304,30 @@ describe('alert', () => {
     expect(wrapper.emitted()).toHaveProperty('close')
   })
 
-  it('nested div BCloseButton has class when prop closeClass', () => {
+  it('nested div BCloseButton merges closeAttrs', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeClass: 'foobar'},
+      props: {
+        modelValue: true,
+        dismissible: true,
+        closeAttrs: {'class': 'foobar', 'data-foo': 'bar'},
+      },
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
     const $bclosebutton = $div.getComponent(BCloseButton)
     expect($bclosebutton.classes()).toContain('foobar')
+    expect($bclosebutton.classes()).toContain('btn-close')
+    expect($bclosebutton.classes()).toContain('ms-auto')
+    expect($bclosebutton.attributes('data-foo')).toBe('bar')
+  })
+
+  it('nested div BCloseButton has class ms-auto', () => {
+    const wrapper = mount(BAlert, {
+      props: {modelValue: true, dismissible: true, title: 'Title'},
+      slots: {default: 'foobar'},
+    })
+    const $bclosebutton = wrapper.getComponent(BCloseButton)
+    expect($bclosebutton.classes()).toContain('ms-auto')
   })
 
   it('nested div BCloseButton has no class when no slot close', () => {
@@ -395,14 +411,16 @@ describe('alert', () => {
     expect(wrapper.emitted()).toHaveProperty('close')
   })
 
-  it('nested div BButton has class when prop closeClass', () => {
+  it('nested div BButton merges closeAttrs', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeClass: 'foobar'},
+      props: {modelValue: true, dismissible: true, closeAttrs: {class: 'foobar'}},
       slots: {close: 'foobar', default: 'foobar'},
     })
     const $div = wrapper.get('div')
     const $bbutton = $div.getComponent(BButton)
     expect($bbutton.classes()).toContain('foobar')
+    expect($bbutton.classes()).toContain('btn-close-custom')
+    expect($bbutton.classes()).toContain('ms-auto')
   })
 
   it('nested div BButton has class when slot close', () => {
@@ -449,16 +467,23 @@ describe('alert', () => {
     expect($div.attributes('id')).toBeUndefined()
   })
 
-  // alertClass prop
-  it('nested div has alertClass when prop alertClass is set', () => {
+  // alertAttrs prop
+  it('nested div merges alertAttrs', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, alertClass: 'custom-alert-class'},
+      props: {
+        modelValue: true,
+        alertAttrs: {'class': 'custom-alert-class', 'style': 'color: red;', 'data-foo': 'bar'},
+      },
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('custom-alert-class')
+    expect($div.classes()).toContain('alert')
+    expect($div.classes()).toContain('theme-info')
+    expect($div.attributes('style')).toContain('color: red;')
+    expect($div.attributes('data-foo')).toBe('bar')
   })
 
-  it('nested div does not have extra class when alertClass not set', () => {
+  it('nested div does not have extra class when alertAttrs not set', () => {
     const wrapper = mount(BAlert, {
       props: {modelValue: true},
     })
@@ -488,12 +513,36 @@ describe('alert', () => {
   })
 
   // noTransition prop
-  it('nested div does not have class fade when prop noTransition is true', () => {
+  it('nested div has class alert-instant when prop noTransition is true', async () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, noTransition: true},
+      props: {modelValue: false, noTransition: true},
     })
+    await wrapper.setProps({modelValue: true})
     const $div = wrapper.get('div')
+    expect($div.classes()).toContain('alert-instant')
     expect($div.classes()).not.toContain('fade')
+  })
+
+  it('nested div does not have class alert-instant after a show when noTransition is false', async () => {
+    const wrapper = mount(BAlert, {
+      props: {modelValue: false},
+    })
+    await wrapper.setProps({modelValue: true})
+    const $div = wrapper.get('div')
+    expect($div.classes()).not.toContain('alert-instant')
+  })
+
+  it('adds class hiding while hiding, then removes the alert after hidden', async () => {
+    const wrapper = mount(BAlert, {
+      props: {modelValue: true, dismissible: true},
+      slots: {default: 'content'},
+    })
+    await vi.waitFor(() => expect(wrapper.emitted('shown')).toBeDefined())
+    await wrapper.getComponent(BCloseButton).trigger('click')
+    expect(wrapper.get('div').classes()).toContain('hiding')
+    await vi.waitFor(() => expect(wrapper.emitted('hidden')).toBeDefined())
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('div').exists()).toBe(false)
   })
 
   // body prop
@@ -514,14 +563,15 @@ describe('alert', () => {
   })
 
   // bodyClass prop
-  it('body element has bodyClass when prop bodyClass is set', () => {
+  it('body element merges bodyAttrs', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, bodyClass: 'custom-body'},
+      props: {modelValue: true, bodyAttrs: {'class': 'custom-body', 'data-foo': 'bar'}},
       slots: {default: 'content'},
     })
     const $body = wrapper.find('.alert-body')
     expect($body.exists()).toBe(true)
     expect($body.classes()).toContain('custom-body')
+    expect($body.attributes('data-foo')).toBe('bar')
   })
 
   // alert-body class
@@ -590,13 +640,15 @@ describe('alert', () => {
   })
 
   // headerClass prop
-  it('title header has headerClass when prop headerClass is set', () => {
+  it('title header merges headerAttrs', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, title: 'Title', headerClass: 'custom-header'},
+      props: {modelValue: true, title: 'Title', headerAttrs: {class: 'custom-header'}},
       slots: {default: 'content'},
     })
     const $heading = wrapper.find('.alert-heading')
     expect($heading.classes()).toContain('custom-header')
+    expect($heading.classes()).toContain('alert-heading')
+    expect($heading.classes()).toContain('d-flex')
   })
 
   // closeContent prop rendering
@@ -772,13 +824,14 @@ describe('alert', () => {
   })
 
   // show class behavior
-  it('nested div has class show when visible', async () => {
+  it('nested div has neither show nor hiding when visible', async () => {
     const wrapper = mount(BAlert, {
       props: {modelValue: true},
     })
     await wrapper.vm.$nextTick()
     const $div = wrapper.get('div')
-    expect($div.classes()).toContain('show')
+    expect($div.classes()).not.toContain('show')
+    expect($div.classes()).not.toContain('hiding')
   })
 
   // BLink rendering
@@ -817,5 +870,27 @@ describe('alert', () => {
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('theme-warning')
+  })
+
+  it('hides itself when a numeric modelValue counts down', async () => {
+    const wrapper = mount(BAlert, {
+      props: {modelValue: 50, interval: 10},
+      slots: {default: 'content'},
+    })
+    expect(wrapper.find('div').exists()).toBe(true)
+    await vi.waitFor(() => expect(wrapper.emitted('hidden')).toBeDefined(), {timeout: 1000})
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([0])
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('div').exists()).toBe(false)
+  })
+
+  it('renders the countdown progress bar full width', () => {
+    const wrapper = mount(BAlert, {
+      props: {modelValue: 5000, progressProps: {}},
+      slots: {default: 'content'},
+    })
+    // the progress is a direct child of the column flex container
+    const $progress = wrapper.get('.alert > .progress')
+    expect($progress.exists()).toBe(true)
   })
 })

@@ -42,7 +42,7 @@ const computedClasses = computed(() => [
   `spinner-${props.type}`,
   colorClasses.value,
   {
-    [`spinner-${props.type}-sm`]: props.small,
+    'spinner-sm': props.small,
   },
 ])
 

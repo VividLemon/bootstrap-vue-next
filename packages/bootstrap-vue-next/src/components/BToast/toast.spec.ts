@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vitest'
 import {nextTick} from 'vue'
 import BToast from './BToast.vue'
 import BCloseButton from '../BButton/BCloseButton.vue'
@@ -27,7 +27,7 @@ describe('toast', () => {
     await nextTick()
     await nextTick()
 
-    expect(wrapper.element.tagName).toBe('TRANSITION-STUB')
+    expect(wrapper.element.tagName).toBe('DIV')
 
     expect(wrapper.find('.toast').exists()).toBe(true)
 
@@ -69,11 +69,9 @@ describe('toast', () => {
     expect($div.classes()).toContain('toast')
   })
 
-  it('there is a hidden div by default', () => {
+  it('renders nothing by default', () => {
     const wrapper = mount(BToast)
-    const $div = wrapper.find('div')
-    expect($div.exists()).toBe(true)
-    expect($div.attributes().style).toContain('display: none;')
+    expect(wrapper.find('div').exists()).toBe(false)
   })
 
   it('there is a div when modelValue true', async () => {
@@ -84,7 +82,8 @@ describe('toast', () => {
     await nextTick()
     const $div = wrapper.find('div')
     expect($div.exists()).toBe(true)
-    expect($div.attributes().style).not.toContain('display: none')
+    expect($div.classes()).toContain('show')
+    expect($div.attributes('style')).toBeUndefined()
   })
 
   it('there is a div when modelValue is number > 0', () => {
@@ -157,17 +156,24 @@ describe('toast', () => {
     expect($div.attributes('aria-atomic')).toBe('true')
   })
 
-  // toastClass prop
-  it('nested div has toastClass when prop toastClass is set', () => {
+  // toastAttrs prop
+  it('nested div merges toastAttrs', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, toastClass: 'custom-toast-class'},
+      props: {
+        modelValue: true,
+        toastAttrs: {'class': 'custom-toast-class', 'style': 'color: red;', 'data-foo': 'bar'},
+      },
       slots: {default: 'content'},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('custom-toast-class')
+    expect($div.classes()).toContain('toast')
+    expect($div.classes()).toContain('show')
+    expect($div.attributes('style')).toContain('color: red;')
+    expect($div.attributes('data-foo')).toBe('bar')
   })
 
-  it('nested div does not have extra class when toastClass not set', () => {
+  it('nested div does not have extra class when toastAttrs not set', () => {
     const wrapper = mount(BToast, {
       props: {modelValue: true},
       slots: {default: 'content'},
@@ -196,13 +202,66 @@ describe('toast', () => {
   })
 
   // noTransition prop
-  it('nested div does not have class fade when prop noTransition is true', () => {
+  it('nested div has class toast-instant when prop noTransition is true', async () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, noTransition: true},
+      props: {modelValue: false, noTransition: true},
       slots: {default: 'content'},
     })
+    await wrapper.setProps({modelValue: true})
     const $div = wrapper.get('div')
+    expect($div.classes()).toContain('toast-instant')
     expect($div.classes()).not.toContain('fade')
+  })
+
+  it('nested div does not have class toast-instant after a show when noTransition is false', async () => {
+    const wrapper = mount(BToast, {
+      props: {modelValue: false},
+      slots: {default: 'content'},
+    })
+    await wrapper.setProps({modelValue: true})
+    const $div = wrapper.get('div')
+    expect($div.classes()).not.toContain('toast-instant')
+    expect($div.classes()).toContain('show')
+  })
+
+  it('removes class show on hide, then unmounts after hidden', async () => {
+    const wrapper = mount(BToast, {
+      props: {modelValue: true},
+      slots: {default: 'content'},
+    })
+    await vi.waitFor(() => expect(wrapper.emitted('shown')).toBeDefined())
+    await wrapper.getComponent(BCloseButton).trigger('click')
+    expect(wrapper.get('div').classes()).not.toContain('show')
+    await vi.waitFor(() => expect(wrapper.emitted('hidden')).toBeDefined())
+    await nextTick()
+    expect(wrapper.find('div').exists()).toBe(false)
+  })
+
+  it('hides itself when a numeric modelValue counts down', async () => {
+    const wrapper = mount(BToast, {
+      props: {modelValue: 50, interval: 10},
+      slots: {default: 'content'},
+    })
+    expect(wrapper.get('div').classes()).toContain('show')
+    await vi.waitFor(() => expect(wrapper.emitted('hidden')).toBeDefined(), {timeout: 1000})
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([0])
+  })
+
+  // translucent prop
+  it('nested div has class toast-translucent when prop translucent', () => {
+    const wrapper = mount(BToast, {
+      props: {modelValue: true, translucent: true},
+      slots: {default: 'content'},
+    })
+    expect(wrapper.get('div').classes()).toContain('toast-translucent')
+  })
+
+  it('nested div does not have class toast-translucent by default', () => {
+    const wrapper = mount(BToast, {
+      props: {modelValue: true},
+      slots: {default: 'content'},
+    })
+    expect(wrapper.get('div').classes()).not.toContain('toast-translucent')
   })
 
   // body prop
@@ -223,14 +282,16 @@ describe('toast', () => {
   })
 
   // bodyClass prop
-  it('body element has bodyClass when prop bodyClass is set', () => {
+  it('body element merges bodyAttrs', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, bodyClass: 'custom-body'},
+      props: {modelValue: true, bodyAttrs: {'class': 'custom-body', 'data-foo': 'bar'}},
       slots: {default: 'content'},
     })
     const $body = wrapper.find('.toast-body')
     expect($body.exists()).toBe(true)
     expect($body.classes()).toContain('custom-body')
+    expect($body.classes()).toContain('toast-body')
+    expect($body.attributes('data-foo')).toBe('bar')
   })
 
   // toast-body class
@@ -319,13 +380,14 @@ describe('toast', () => {
   })
 
   // headerClass prop
-  it('title header has headerClass when prop headerClass is set', () => {
+  it('title header merges headerAttrs', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, title: 'Title', headerClass: 'custom-header'},
+      props: {modelValue: true, title: 'Title', headerAttrs: {class: 'custom-header'}},
       slots: {default: 'content'},
     })
     const $header = wrapper.find('.toast-header')
     expect($header.classes()).toContain('custom-header')
+    expect($header.classes()).toContain('toast-header')
   })
 
   // Close button (BCloseButton variant - default behavior)
@@ -432,22 +494,26 @@ describe('toast', () => {
   })
 
   // closeClass prop
-  it('BCloseButton has class from closeClass prop', () => {
+  it('BCloseButton merges closeAttrs', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeClass: 'custom-close'},
+      props: {modelValue: true, closeAttrs: {'class': 'custom-close', 'data-foo': 'bar'}},
       slots: {default: 'content'},
     })
     const $bclosebutton = wrapper.getComponent(BCloseButton)
     expect($bclosebutton.classes()).toContain('custom-close')
+    expect($bclosebutton.classes()).toContain('btn-close')
+    expect($bclosebutton.classes()).toContain('ms-auto')
+    expect($bclosebutton.attributes('data-foo')).toBe('bar')
   })
 
-  it('BButton has class from closeClass prop', () => {
+  it('BButton merges closeAttrs', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeClass: 'custom-close', closeContent: 'X'},
+      props: {modelValue: true, closeAttrs: {class: 'custom-close'}, closeContent: 'X'},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)
     expect($bbutton.classes()).toContain('custom-close')
+    expect($bbutton.classes()).toContain('ms-auto')
   })
 
   // closeVariant prop
@@ -856,13 +922,13 @@ describe('toast', () => {
     expect($bbutton.exists()).toBe(false)
   })
 
-  // style display block
-  it('nested div has style display block', () => {
+  // display is owned by Bootstrap's `.toast` / `.toast.show` CSS
+  it('nested div has no inline display style', () => {
     const wrapper = mount(BToast, {
       props: {modelValue: true},
       slots: {default: 'content'},
     })
     const $div = wrapper.get('div')
-    expect($div.attributes('style')).toContain('display: block')
+    expect($div.attributes('style')).toBeUndefined()
   })
 })

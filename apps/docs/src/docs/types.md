@@ -45,6 +45,26 @@ type AttrsValue = Record<string, any>
 
 </BCard>
 
+## BadgeSize
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type BadgeSize = 'md' | 'lg'
+```
+
+</BCard>
+
+## BadgeVariant
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type BadgeVariant = 'subtle' | 'outline'
+```
+
+</BCard>
+
 ## BgColor
 
 Applied with a `bg-<value>` class (`bg` props).
@@ -587,6 +607,16 @@ type SelectValue =
 
 ```ts
 type Size = 'sm' | 'md' | 'lg'
+```
+
+</BCard>
+
+## PlaceholderAnimation
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type PlaceholderAnimation = 'wave' | 'pulse' | 'glow'
 ```
 
 </BCard>
