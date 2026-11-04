@@ -283,8 +283,8 @@ describe('tooltip', () => {
   })
 
   describe('classes', () => {
-    it('does not have fade class when noFade is true', () => {
-      const wrapper = mount(BTooltip, {props: {modelValue: true, noFade: true}})
+    it('does not have fade class when noTransition is true', () => {
+      const wrapper = mount(BTooltip, {props: {modelValue: true, noTransition: true}})
       const $div = wrapper.get('div.tooltip')
       expect($div.classes()).not.toContain('fade')
     })

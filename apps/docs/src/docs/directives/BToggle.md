@@ -15,7 +15,7 @@ Things to know when using the toggle directive:
 - Target components are specified by their `id` attribute
 - Multiple targets can be toggled simultaneously
 - The directive automatically manages ARIA accessibility attributes
-- The trigger element receives `collapsed` and `not-collapsed` CSS classes based on target state
+- The trigger element's `aria-expanded` attribute reflects the target state (there are no trigger state classes)
 - Disabled buttons will not trigger toggle events
 
 ## Target Specification
@@ -70,14 +70,15 @@ When the directive is applied to an `<a>` tag or `BLink`, the target can be spec
 Without `@click.prevent`, clicking the link will change the browser URL and may scroll the page. Add `@click.prevent` to prevent this behavior.
 :::
 
-## Conditional CSS Classes
+## Conditional CSS
 
-The directive automatically adds CSS classes to the trigger element based on the target's visibility state:
+The trigger element's `aria-expanded` attribute reflects the target's visibility state:
 
-- `collapsed` - Added when the target is hidden
-- `not-collapsed` - Added when the target is visible
+- `aria-expanded="false"` - The target is hidden
+- `aria-expanded="true"` - The target is visible
 
-You can use these classes to conditionally show/hide content:
+Bootstrap v6 has no `collapsed` / `not-collapsed` trigger classes. Use attribute selectors on
+`aria-expanded` to conditionally show/hide content:
 
 <<< DEMO ./demo/BToggleConditionalCSS.vue
 
@@ -145,7 +146,7 @@ The target component (BCollapse, BOffcanvas, etc.) manages:
 
 - `aria-expanded` - Reflects current visibility state (`'true'` or `'false'`)
 
-The directive itself handles the CSS classes (`collapsed`/`not-collapsed`) and click event handlers on the trigger element.
+The directive itself handles `aria-controls`; the target registers the click handler on the trigger element.
 
 This separation of responsibilities ensures consistent accessibility across all show/hide components. For detailed information, see the [ARIA Visibility Architecture documentation](/docs/reference/accessibility#aria-trigger-registration-for-component-visibility).
 

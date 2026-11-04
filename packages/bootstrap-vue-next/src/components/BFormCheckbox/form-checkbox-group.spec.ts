@@ -500,7 +500,7 @@ describe('form-checkbox-group', () => {
       const wrapper = mount(BFormCheckboxGroup, {
         props: {
           buttons: true,
-          buttonTheme: 'danger',
+          buttonColor: {theme: 'danger'},
           options: ['a'],
         },
       })

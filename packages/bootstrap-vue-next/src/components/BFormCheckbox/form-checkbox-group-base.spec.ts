@@ -511,7 +511,7 @@ describe('form-checkbox-group-base', () => {
       const wrapper = mount(BFormCheckboxGroupBase, {
         props: {
           buttons: true,
-          buttonTheme: 'primary',
+          buttonColor: {theme: 'primary'},
           options: [{text: 'A', value: 'a', disabled: false}],
         },
       })

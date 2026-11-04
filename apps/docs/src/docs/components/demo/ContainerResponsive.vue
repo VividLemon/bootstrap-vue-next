@@ -4,5 +4,6 @@
   <BContainer fluid="md"> 100% wide until medium breakpoint </BContainer>
   <BContainer fluid="lg"> 100% wide until large breakpoint </BContainer>
   <BContainer fluid="xl"> 100% wide until extra large breakpoint </BContainer>
+  <BContainer fluid="2xl"> 100% wide until 2x extra large breakpoint </BContainer>
   <!-- #endregion template -->
 </template>

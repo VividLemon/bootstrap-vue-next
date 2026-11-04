@@ -95,7 +95,7 @@ const responsiveStyles = computed<StyleValue | undefined>(() =>
 )
 const responsiveClasses = computed(() => ({
   'table-responsive': props.responsive === true,
-  [`table-responsive-${props.responsive}`]: typeof props.responsive === 'string',
+  [`${props.responsive}:table-responsive`]: typeof props.responsive === 'string',
   'b-table-sticky-header': stickyIsValid.value,
 }))
 </script>

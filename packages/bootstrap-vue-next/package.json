@@ -147,7 +147,7 @@
     "@vue/tsconfig": "^0.9.1",
     "@vueuse/integrations": "^14.4.0",
     "@vueuse/shared": "^14.4.0",
-    "bootstrap": "^5.3.8",
+    "bootstrap": "^6.0.0-alpha.1",
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-oxlint": "^1.78.0",

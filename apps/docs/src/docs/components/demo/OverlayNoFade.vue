@@ -1,5 +1,5 @@
 <template>
-  <BOverlay no-fade :show="show" rounded="sm">
+  <BOverlay no-transition :show="show" rounded="sm">
     <BCard title="Card with overlay" :aria-hidden="show ? 'true' : null">
       <BCardText>Laborum consequat non elit enim exercitation cillum.</BCardText>
       <BCardText>Click the button to toggle the overlay:</BCardText>

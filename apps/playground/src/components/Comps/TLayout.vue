@@ -19,7 +19,7 @@
     <div>
       <h4 class="my-3">Row columns</h4>
       <div class="bd-example-row">
-        <BRow cols="1" cols-sm="2" cols-md="4">
+        <BRow :cols="{ xs: 1, sm: 2, md: 4 }">
           <BCol>Column</BCol>
           <BCol>Column</BCol>
           <BCol>Column</BCol>
@@ -30,15 +30,15 @@
     <div>
       <h4 class="my-3">Variable width content</h4>
       <div class="bd-example-row">
-        <BRow align-h="center">
-          <BCol lg="2">1 of 3</BCol>
-          <BCol md="auto">Variable width content</BCol>
-          <BCol lg="2">3 of 3</BCol>
+        <BRow :align-h="{ xs: 'center' }">
+          <BCol :cols="{ lg: 2 }">1 of 3</BCol>
+          <BCol :cols="{ md: 'auto' }">Variable width content</BCol>
+          <BCol :cols="{ lg: 2 }">3 of 3</BCol>
         </BRow>
         <BRow>
           <BCol>1 of 3</BCol>
-          <BCol md="auto">Variable width content</BCol>
-          <BCol lg="2">3 of 3</BCol>
+          <BCol :cols="{ md: 'auto' }">Variable width content</BCol>
+          <BCol :cols="{ lg: 2 }">3 of 3</BCol>
         </BRow>
       </div>
     </div>

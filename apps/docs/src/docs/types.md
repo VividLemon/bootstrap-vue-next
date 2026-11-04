@@ -11,7 +11,7 @@ Use this page as a quick reference for shared TypeScript types exposed throughou
 <BCard class="bg-body-tertiary">
 
 ```ts
-type AlignmentCommon = 'start' | 'end' | 'center' | 'fill'
+type AlignmentCommon = 'start' | 'end' | 'center'
 type AlignmentContent = AlignmentCommon | 'between' | 'around' | 'stretch'
 type AlignmentHorizontal = AlignmentCommon | 'between' | 'around'
 type AlignmentJustifyContent = 'start' | 'end' | 'center' | 'between' | 'around' | 'evenly'
@@ -137,8 +137,10 @@ type BreadcrumbItemRaw = BreadcrumbItem | string
 <BCard class="bg-body-tertiary">
 
 ```ts
-type Breakpoint = 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
+type Breakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 ```
+
+Bootstrap v6 breakpoint widths: `sm` 576px, `md` 768px, `lg` 1024px, `xl` 1280px, `2xl` 1536px.
 
 </BCard>
 
@@ -241,27 +243,19 @@ type ColorExtendables = {
 export type ColsBaseNumbers = 1 | 2 | 3 | 4 | 5 | '1' | '2' | '3' | '4' | '5'
 
 export type ColsNumbers =
-  | ColsBaseNumbers
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
-  | 11
-  | 12
-  | '6'
-  | '7'
-  | '8'
-  | '9'
-  | '10'
-  | '11'
-  | '12'
+  ColsBaseNumbers | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '6' | '7' | '8' | '9' | '10' | '11' | '12'
 
-export type GutterNumbers = ColsBaseNumbers | 0 | '0'
+// `true` renders an equal-width column (`col`, `md:col`)
+export type ColsValue = boolean | ColsNumbers | 'auto'
 
-export type ColsOrderNumbers = ColsBaseNumbers | 'first' | 'last'
+// 0 to 12, passed straight through to the spacing scale (`gx-0` … `gx-12`)
+export type GutterNumbers = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '0' | '1' /* … */ | '12'
 
-export type ColsOffsetNumbers = ColsNumbers | 0 | '0'
+export type RowColsNumbers = 1 | 2 | 3 | 4 | 5 | 6 | '1' | '2' | '3' | '4' | '5' | '6' | 'auto'
+
+export type ColsOrderNumbers = ColsBaseNumbers | 0 | '0' | 'first' | 'last'
+
+export type ColsOffsetNumbers = Exclude<ColsNumbers, 12 | '12'> | 0 | '0'
 ```
 
 </BCard>
@@ -448,6 +442,22 @@ type Placement =
   | 'left-end'
   | 'right-start'
   | 'right-end'
+```
+
+</BCard>
+
+## Responsive
+
+Per-breakpoint values for props such as `BCol` `cols` or `BRow` `gutterX`. The keys are the Bootstrap v6
+class prefixes; `xs` means "no prefix". Only the object form is accepted.
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type ResponsiveKey = 'xs' | Breakpoint
+type Responsive<T> = Partial<Record<ResponsiveKey, T>>
+
+// <BCol :cols="{ xs: 12, md: 6, '2xl': 4 }" /> renders col-12 md:col-6 2xl:col-4
 ```
 
 </BCard>

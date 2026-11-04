@@ -89,15 +89,7 @@ export default {
               default: 'header',
             },
           }),
-          [
-            'ariaDescribedby',
-            'headerBg',
-            'headerClass',
-            'headerFg',
-            'headerTag',
-            'headerTheme',
-            'id',
-          ],
+          ['ariaDescribedby', 'headerColor', 'headerClass', 'headerTag', 'id'],
         ),
         header: {
           type: 'string',

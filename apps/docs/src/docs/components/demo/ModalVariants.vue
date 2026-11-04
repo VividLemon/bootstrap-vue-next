@@ -5,22 +5,19 @@
     <BModal
       v-model="show"
       title="Modal Variants"
-      :header-bg="headerBg"
-      :header-fg="headerFg"
-      :body-bg="bodyBg"
-      :body-fg="bodyFg"
-      :footer-bg="footerBg"
-      :footer-fg="footerFg"
+      :header-color="{ bg: headerBg, fg: headerFg }"
+      :body-color="{ bg: bodyBg, fg: bodyFg }"
+      :footer-color="{ bg: footerBg, fg: footerFg }"
     >
       <BContainer fluid>
         <BRow class="mb-1 text-center">
-          <BCol cols="3" />
+          <BCol :cols="{ xs: 3 }" />
           <BCol>Background</BCol>
           <BCol>Text</BCol>
         </BRow>
 
         <BRow class="mb-1">
-          <BCol cols="3">Header</BCol>
+          <BCol :cols="{ xs: 3 }">Header</BCol>
           <BCol>
             <BFormSelect v-model="headerBg" :options="bgColors" />
           </BCol>
@@ -30,7 +27,7 @@
         </BRow>
 
         <BRow class="mb-1">
-          <BCol cols="3">Body</BCol>
+          <BCol :cols="{ xs: 3 }">Body</BCol>
           <BCol>
             <BFormSelect v-model="bodyBg" :options="bgColors" />
           </BCol>
@@ -40,7 +37,7 @@
         </BRow>
 
         <BRow>
-          <BCol cols="3">Footer</BCol>
+          <BCol :cols="{ xs: 3 }">Footer</BCol>
           <BCol>
             <BFormSelect v-model="footerBg" :options="bgColors" />
           </BCol>

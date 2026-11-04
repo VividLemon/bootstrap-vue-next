@@ -47,16 +47,13 @@ const _props = withDefaults(defineProps<BDropdownItemProps>(), {
   icon: undefined,
   opacity: undefined,
   stretched: false,
-  opacityHover: undefined,
   rel: undefined,
   replace: undefined,
   routerComponentName: undefined,
   target: undefined,
   to: undefined,
   underlineOffset: undefined,
-  underlineOffsetHover: undefined,
   underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
   underlineTheme: undefined,
   // End link props
 })

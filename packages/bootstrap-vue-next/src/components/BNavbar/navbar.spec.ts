@@ -58,8 +58,8 @@ describe('navbar', () => {
     expect(wrapper.classes()).toContain('navbar-expand-lg')
     await wrapper.setProps({toggleable: 'xl'})
     expect(wrapper.classes()).toContain('navbar-expand-xl')
-    await wrapper.setProps({toggleable: 'xxl'})
-    expect(wrapper.classes()).toContain('navbar-expand-xxl')
+    await wrapper.setProps({toggleable: '2xl'})
+    expect(wrapper.classes()).toContain('navbar-expand-2xl')
   })
 
   it('contains role navigation when is not tag nav', () => {
@@ -145,17 +145,18 @@ describe('navbar', () => {
     expect($div.exists()).toBe(false)
   })
 
-  it('contains container-{breakpoint} class when container prop is a breakpoint', async () => {
+  it('contains {breakpoint}:container class when container prop is a breakpoint', async () => {
     const wrapper = mount(BNavbar, {props: {container: 'sm'}})
-    expect(wrapper.get('div').classes()).toContain('container-sm')
+    expect(wrapper.get('div').classes()).toContain('sm:container')
     await wrapper.setProps({container: 'md'})
-    expect(wrapper.get('div').classes()).toContain('container-md')
+    expect(wrapper.get('div').classes()).toContain('md:container')
     await wrapper.setProps({container: 'lg'})
-    expect(wrapper.get('div').classes()).toContain('container-lg')
+    expect(wrapper.get('div').classes()).toContain('lg:container')
     await wrapper.setProps({container: 'xl'})
-    expect(wrapper.get('div').classes()).toContain('container-xl')
-    await wrapper.setProps({container: 'xxl'})
-    expect(wrapper.get('div').classes()).toContain('container-xxl')
+    expect(wrapper.get('div').classes()).toContain('xl:container')
+    await wrapper.setProps({container: '2xl'})
+    expect(wrapper.get('div').classes()).toContain('2xl:container')
+    expect(wrapper.get('div').classes()).not.toContain('container')
   })
 
   it('renders default slot content when container prop is false', () => {

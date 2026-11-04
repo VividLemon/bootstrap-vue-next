@@ -107,7 +107,7 @@ const dynamicModal = computed<ModalOrchestratorCreateParamBase>({
 
     body: 'my body',
     title: 'my title',
-    okTheme: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ThemeColor,
+    okColor: {theme: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ThemeColor},
   }),
   set: (value) => {
     dynamicModalModelValue.value = value.modelValue ?? dynamicModalModelValue.value
@@ -118,14 +118,14 @@ const showFns = {
   basicNoReactive: async () => {
     await using _ = await create({
       title: 'foobar',
-      okTheme: 'danger',
+      okColor: {theme: 'danger'},
     }).show()
     return _
   },
   basicCustomComponent: async () => {
     await using _ = await create({
       slots: {default: () => markRaw(h('div', null, {default: () => 'foobar!'}))},
-      okTheme: 'info',
+      okColor: {theme: 'info'},
     }).show()
     return _
   },

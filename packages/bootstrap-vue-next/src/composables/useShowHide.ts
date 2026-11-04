@@ -1,348 +1,64 @@
 import {
   type ComponentInternalInstance,
   computed,
+  type ComputedRef,
   type EmitFn,
   getCurrentInstance,
   inject,
   nextTick,
   onBeforeUnmount,
   onMounted,
-  onUnmounted,
   readonly,
-  ref,
   type Ref,
-  type TransitionProps,
+  ref,
   watch,
 } from 'vue'
 import {showHideRegistryKey} from '../utils/keys'
 import {BvTriggerableEvent} from '../utils'
-import {useEventListener, useThrottleFn} from '@vueuse/core'
-import {noop} from '../utils/functions'
 
-export const fadeBaseTransitionProps = {
-  name: 'fade',
-  enterActiveClass: '',
-  enterFromClass: 'showing',
-  enterToClass: '',
-  leaveActiveClass: '',
-  leaveFromClass: '',
-  leaveToClass: 'showing',
-  css: true,
-} as const satisfies TransitionProps
-
-export const useShowHide = (
-  {
-    modelValue,
-    element,
-    props,
-    emit,
-    id,
-  }: {
-    modelValue: Ref<boolean | number>
-    props: {
-      visible?: boolean
-      show?: boolean
-      noAnimation?: boolean
-      noFade?: boolean
-      noCloseOnBackdrop?: boolean
-      noCloseOnEsc?: boolean
-      transitionProps?: TransitionProps
-      lazy?: boolean
-      initialAnimation?: boolean
-      delay?:
-        | number
-        | {
-            show: number
-            hide: number
-          }
-    } & Record<string, unknown>
-    emit: EmitFn
-    element: Ref<HTMLElement | null>
-    id: Ref<string>
-  },
-  options: {
-    transitionProps?: TransitionProps
-    showFn?: () => void
-    hideFn?: () => void
-  } = {
-    transitionProps: {},
-    showFn: () => {},
-    hideFn: () => {},
-  }
-) => {
-  let noAction = false
-  const initialShow = (!!modelValue.value && !props.initialAnimation) || props.visible || false
-  const showRef = ref<boolean>(initialShow)
-  const renderRef = ref<boolean>(initialShow)
-  const renderBackdropRef = ref<boolean>(initialShow)
-
-  let isCountdown = typeof modelValue.value !== 'boolean'
-
-  watch(modelValue, () => {
-    isCountdown = typeof modelValue.value !== 'boolean'
-    if (noAction) {
-      noAction = false
-      return
-    }
-    if (modelValue.value) {
-      show()
-    } else {
-      hide('modelValue', true)
-    }
-  })
-
-  const localNoAnimation = ref(initialShow)
-  const localTemporaryHide = ref(false)
-  const computedNoAnimation = computed(
-    () => props.noAnimation || props.noFade || localNoAnimation.value || false
-  )
-  let isMounted = false
-  onMounted(() => {
-    isMounted = true
-    if (!props.show && initialShow) {
-      // show without delay or animation
-      const event = buildTriggerableEvent('show', {cancelable: true})
-      emit('show', event)
-
-      if (event.defaultPrevented) {
-        emit('show-prevented', buildTriggerableEvent('show-prevented'))
-        return
-      }
-      localNoAnimation.value = true
-      if (!modelValue.value) {
-        noAction = true
-        modelValue.value = true
-      }
-      renderRef.value = true
-      renderBackdropRef.value = true
-      isVisible.value = true
-      backdropVisible.value = true
-      backdropReady.value = true
-      showRef.value = true
-      options.showFn?.()
-    } else if (props.show || (!!modelValue.value && props.initialAnimation)) {
-      show()
-    }
-  })
-
-  watch(
-    () => props.visible,
-    (newVal) => {
-      localNoAnimation.value = true
-
-      nextTick(() => {
-        if (newVal) isVisible.value = true
-        if (newVal) {
-          show()
-        } else {
-          hide('visible-prop', true)
-        }
-      })
-    }
-  )
-  watch(
-    () => props.show,
-    (newVal) => {
-      if (newVal) {
-        show()
-      } else {
-        hide('show-prop', true)
-      }
-    }
-  )
-  // todo: remove
-  useEventListener(
-    element,
-    'bv-toggle',
-    () => {
-      modelValue.value = !modelValue.value
-    },
-    {passive: true}
-  )
-
-  const buildTriggerableEvent = (
-    type: string,
-    opts: Readonly<Partial<BvTriggerableEvent>> = {}
-  ): BvTriggerableEvent =>
-    new BvTriggerableEvent(type, {
-      cancelable: false,
-      target: element?.value || null,
-      relatedTarget: null,
-      trigger: null,
-      ...opts,
-      componentId: id?.value,
-    })
-
-  let showTimeout: ReturnType<typeof setTimeout> | undefined
-  let hideTimeout: ReturnType<typeof setTimeout> | undefined
-  let _Resolve: ((value: boolean | string) => void) | undefined
-  let _Promise: Promise<boolean | string> | undefined
-  let _resolveOnHide: boolean | undefined
-  const show = (resolveOnHide: boolean = false): Promise<boolean | string> => {
-    if (showRef.value && !hideTimeout && !_Promise) return Promise.resolve(true)
-    _resolveOnHide = resolveOnHide
-    if (showRef.value && !hideTimeout && _Promise) return _Promise
-
-    _Promise = new Promise<boolean | string>((resolve) => {
-      _Resolve = resolve
-    })
-
-    const event = buildTriggerableEvent('show', {cancelable: true})
-    emit('show', event)
-
-    if (event.defaultPrevented) {
-      emit('show-prevented', buildTriggerableEvent('show-prevented'))
-      if (isVisible.value) {
-        isVisible.value = false
-      }
-      if (modelValue.value && !isCountdown) {
-        noAction = true
-        nextTick(() => {
-          modelValue.value = false
-        })
-      }
-      _Resolve?.('show-prevented')
-      return _Promise
-    }
-    if (hideTimeout) {
-      clearTimeout(hideTimeout)
-      hideTimeout = undefined
-    }
-    renderRef.value = true
-    renderBackdropRef.value = true
-    requestAnimationFrame(() => {
-      if (localNoAnimation.value || props.delay === undefined) {
-        if (!isMounted) return
-        showTimeout = undefined
-        showRef.value = true
-        options.showFn?.()
-        if (!modelValue.value) {
-          noAction = true
-          nextTick(() => {
-            modelValue.value = true
-          })
-        }
-        return
-      }
-      showTimeout = setTimeout(
-        () => {
-          if (!isMounted) return
-          showTimeout = undefined
-          showRef.value = true
-          options.showFn?.()
-          if (!modelValue.value) {
-            noAction = true
-            nextTick(() => {
-              modelValue.value = true
-            })
-          }
-        },
-        typeof props.delay === 'number' ? props.delay : props.delay?.show || 0
-      )
-    })
-    return _Promise
-  }
-
-  let leaveTrigger: string | undefined
-  const hide = (trigger?: string, noTriggerEmit?: boolean): Promise<string> => {
-    if (!showRef.value && !showTimeout && !renderRef.value) return Promise.resolve('')
-    if (!_Promise)
-      _Promise = new Promise<string>((resolve) => {
-        ;(_Resolve as (value: string | PromiseLike<string>) => void) = resolve
-      })
-    if (typeof trigger !== 'string') trigger = undefined
-    leaveTrigger = trigger
-    const event = buildTriggerableEvent('hide', {cancelable: true, trigger})
-    const event2 = buildTriggerableEvent(trigger || 'ignore', {cancelable: true, trigger})
-    if (
-      (trigger === 'backdrop' && props.noCloseOnBackdrop) ||
-      (trigger === 'esc' && props.noCloseOnEsc)
-    ) {
-      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
-      _Resolve?.('hide-prevented')
-      return _Promise as Promise<string>
-    }
-    if (showTimeout) {
-      clearTimeout(showTimeout)
-      showTimeout = undefined
-    }
-    if (trigger && !noTriggerEmit) {
-      emit(trigger, event2)
-    }
-    emit('hide', event)
-
-    if (event.defaultPrevented || event2.defaultPrevented) {
-      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
-      if (!modelValue.value) {
-        nextTick(() => {
-          noAction = true
-          modelValue.value = true
-        })
-      }
-      _Resolve?.('hide-prevented')
-      return _Promise as Promise<string>
-    }
-    trapActive.value = false
-    if (showTimeout) {
-      clearTimeout(showTimeout)
-      showTimeout = undefined
-      if (!localTemporaryHide.value) renderRef.value = false
-      renderBackdropRef.value = false
-    }
-    hideTimeout = setTimeout(
-      () => {
-        if (!isMounted) return
-        hideTimeout = undefined
-        isLeaving.value = true
-        showRef.value = false
-        options.hideFn?.()
-        if (modelValue.value) {
-          noAction = true
-          modelValue.value = isCountdown ? 0 : false
-        }
-      },
-      localNoAnimation.value
-        ? 0
-        : typeof props.delay === 'number'
-          ? props.delay
-          : props.delay?.hide || 0
-    )
-    return _Promise as Promise<string>
-  }
-  const throttleHide = useThrottleFn((a) => hide(a), 500)
-  const throttleShow = useThrottleFn(() => show(), 500)
-
-  const toggle = (resolveOnHide: boolean = false): Promise<boolean | string> => {
-    const e = buildTriggerableEvent('toggle', {cancelable: true})
-    emit('toggle', e)
-    if (e.defaultPrevented) {
-      emit('toggle-prevented', buildTriggerableEvent('toggle-prevented'))
-      return Promise.resolve('toggle-prevented')
-    }
-    if (showRef.value) {
-      return hide('toggle-function', true)
-    }
-    return show(resolveOnHide)
-  }
-  const triggerToggle = () => {
-    const e = buildTriggerableEvent('toggle', {cancelable: true})
-    emit('toggle', e)
-    if (e.defaultPrevented) {
-      emit('toggle-prevented', buildTriggerableEvent('toggle-prevented'))
-      return
-    }
-    if (showRef.value) {
-      hide('toggle-trigger', true)
-    } else {
-      show()
-    }
-  }
+/**
+ * Registers a show/hide component in the app-wide show/hide registry (used by `useToggle`,
+ * `v-b-toggle`, `v-b-modal`, ...) and manages the triggers registered through it.
+ *
+ * Registered triggers get a listener for their event and an `aria-expanded` attribute that
+ * follows `isExpanded`. `aria-controls` is owned by the directive that registers the trigger.
+ *
+ * Shared by `useShowHide` and the deprecated `useLegacyShowHide`.
+ *
+ * @internal
+ */
+export const useShowHideRegistration = ({
+  id,
+  isExpanded,
+  value,
+  show,
+  hide,
+  toggle,
+  triggerToggle,
+}: {
+  id: Readonly<Ref<string>>
+  /** Drives `aria-expanded` on registered triggers */
+  isExpanded: () => boolean
+  /** Exposed as `value` in the registry (`useToggle().value`) */
+  value: Readonly<Ref<boolean>>
+  show: (resolveOnHide?: boolean) => Promise<boolean | string>
+  hide: (trigger?: string) => Promise<boolean | string>
+  toggle: (resolveOnHide?: boolean) => Promise<boolean | string>
+  /** Listener added to registered triggers */
+  triggerToggle: () => void
+}) => {
   const triggerRegistry: {trigger: string; el: Element}[] = []
+
+  const updateTrigger = (el: Element) => {
+    el.setAttribute('aria-expanded', isExpanded() ? 'true' : 'false')
+  }
+
   const registerTrigger = (trigger: string, el: Element) => {
     triggerRegistry.push({trigger, el})
     el.addEventListener(trigger, triggerToggle)
-    checkVisibility(el)
+    updateTrigger(el)
   }
+
   const unregisterTrigger = (trigger: string, el: Element, clean = true) => {
     const idx = triggerRegistry.findIndex((t) => t?.trigger === trigger && t.el === el)
     if (idx > -1) {
@@ -350,8 +66,6 @@ export const useShowHide = (
       el.removeEventListener(trigger, triggerToggle)
       if (clean) {
         el.removeAttribute('aria-expanded')
-        el.classList.remove('collapsed')
-        el.classList.remove('not-collapsed')
       }
     }
   }
@@ -361,20 +75,15 @@ export const useShowHide = (
     toggle,
     show,
     hide,
-    value: readonly(showRef),
+    value,
     registerTrigger,
     unregisterTrigger,
     component: getCurrentInstance() as ComponentInternalInstance,
   })
-  const checkVisibility = (el: Element) => {
-    el.setAttribute('aria-expanded', modelValue.value ? 'true' : 'false')
-    el.classList.toggle('collapsed', !modelValue.value)
-    el.classList.toggle('not-collapsed', !!modelValue.value)
-  }
 
-  watch(modelValue, () => {
+  watch(isExpanded, () => {
     triggerRegistry.forEach((t) => {
-      checkVisibility(t.el)
+      updateTrigger(t.el)
     })
   })
 
@@ -388,195 +97,374 @@ export const useShowHide = (
       t.el.removeEventListener(t.trigger, triggerToggle)
     })
   })
-  onUnmounted(() => {
-    isMounted = false
-    clearTimeout(showTimeout)
-    clearTimeout(hideTimeout)
-    showTimeout = undefined
-    hideTimeout = undefined
-  })
 
-  const lazyLoadCompleted = ref(false)
-  const markLazyLoadCompleted = () => {
-    if (props.lazy === true) lazyLoadCompleted.value = true
+  return {registerTrigger, unregisterTrigger}
+}
+
+/**
+ * Props read by `useShowHide`. Components pass their whole props object.
+ */
+export interface UseShowHideProps {
+  /** Initially shown without transition; changes show/hide without transition */
+  visible?: boolean
+  /** Shows on mount (with transition); changes show/hide */
+  show?: boolean
+  /** When `modelValue` is initially truthy, show with a transition on mount instead of instantly */
+  initialAnimation?: boolean
+  /** Content is not rendered until first shown (see `contentShowing`) */
+  lazy?: boolean
+  /** With `lazy`, content is unmounted again after `hidden` */
+  unmountLazy?: boolean
+  /** `hide('backdrop')` is prevented */
+  noCloseOnBackdrop?: boolean
+  /** `hide('esc')` is prevented */
+  noCloseOnEsc?: boolean
+  /** Waits before the state flips, after the `show` / `hide` event */
+  delay?: number | {show: number; hide: number}
+}
+
+export interface UseShowHideOptions {
+  /**
+   * Called right after `visible` flipped (the component's state class is about to be patched).
+   * Resolve `true` once the component's CSS transition finished and this call is still the
+   * latest, `false` when it was superseded. Pass `() => run()` from `useCssTransition`.
+   *
+   * Defaults to resolving `true` after `nextTick`, for components without motion.
+   */
+  transition?: (visible: boolean) => Promise<boolean>
+}
+
+export interface UseShowHideReturn {
+  /**
+   * Target visibility. Flips at the start of a show / hide (after the cancelable event and any
+   * `delay`). Bind the component's state class to it (`.show`, or `.hiding` on `!visible`), it
+   * drives `aria-expanded` on registered triggers and is the `visible` slot prop.
+   */
+  visible: Readonly<Ref<boolean>>
+  /**
+   * `true` from the start of a show until `hidden` fired, i.e. while anything is on screen.
+   * Use it to keep transient elements mounted (`v-if`) until their hide transition ended.
+   */
+  isActive: Readonly<Ref<boolean>>
+  /**
+   * `true` while the current change must skip the transition: the initial render of an
+   * initially shown component, and changes of the `visible` prop. Add the component's
+   * `-instant` class while it is set (`props.noTransition || instant.value`).
+   */
+  instant: Readonly<Ref<boolean>>
+  /**
+   * Whether the default content should be rendered, honouring `lazy` / `unmountLazy`.
+   * Lazy content mounts when a show starts and unmounts only after `hidden`.
+   */
+  contentShowing: ComputedRef<boolean>
+  /**
+   * Shows the component. Emits `show` (cancelable → `show-prevented`), flips `visible`,
+   * updates `modelValue`, awaits the transition and emits `shown`.
+   *
+   * Resolves `true` after `shown`, `'show-prevented'`, or `false` when superseded by a newer
+   * show / hide.
+   */
+  show: () => Promise<boolean | string>
+  /**
+   * Hides the component. Emits the `trigger` event (unless `noTriggerEmit`) and `hide`, both
+   * cancelable (→ `hide-prevented`), flips `visible`, updates `modelValue`, awaits the
+   * transition and emits `hidden` (with `trigger`).
+   *
+   * Resolves `trigger ?? ''` after `hidden`, `'hide-prevented'`, or `false` when superseded.
+   */
+  hide: (trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>
+  /**
+   * Emits `toggle` (cancelable → `toggle-prevented`), then hides with trigger
+   * `'toggle-function'` or shows.
+   */
+  toggle: () => Promise<boolean | string>
+  buildTriggerableEvent: (
+    type: string,
+    opts?: Readonly<Partial<BvTriggerableEvent>>
+  ) => BvTriggerableEvent
+  registerTrigger: (trigger: string, el: Element) => void
+  unregisterTrigger: (trigger: string, el: Element, clean?: boolean) => void
+}
+
+/**
+ * State, `v-model` and events for show/hide components on the native Bootstrap v6 transition
+ * path. It holds **no class and no timing logic**: the component maps `visible` / `instant` to
+ * its v6 classes and passes a `transition` callback (normally `useCssTransition().run`) that
+ * resolves when its CSS transition ended.
+ *
+ * Event order for a show: `show` (cancelable) → `visible = true` + `update:modelValue` → CSS
+ * transition → `shown`. For a hide: `[trigger]` + `hide` (cancelable) → `visible = false` +
+ * `update:modelValue` → CSS transition → `hidden`. A newer show / hide supersedes a pending one:
+ * the older one never emits its `shown` / `hidden` and its promise resolves `false`.
+ *
+ * Adopting it in a component:
+ *
+ * ```ts
+ * const element = useTemplateRef<HTMLElement>('_element')
+ * const {run} = useCssTransition(element)
+ * const {visible, isActive, instant, contentShowing, show, hide, toggle} = useShowHide(
+ *   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
+ *   {transition: () => run()}
+ * )
+ * // template: <div v-if="isActive" ref="_element" class="toast" :class="classes">
+ * const classes = computed(() => ({
+ *   'show': visible.value,
+ *   'toast-instant': props.noTransition || instant.value,
+ * }))
+ * ```
+ */
+export const useShowHide = (
+  {
+    modelValue,
+    element,
+    props,
+    emit,
+    id,
+  }: {
+    modelValue: Ref<boolean | number>
+    props: UseShowHideProps & Record<string, unknown>
+    emit: EmitFn
+    element: Readonly<Ref<HTMLElement | null>>
+    id: Readonly<Ref<string>>
+  },
+  options: UseShowHideOptions = {}
+): UseShowHideReturn => {
+  const initialShow = (!!modelValue.value && !props.initialAnimation) || !!props.visible
+  const visible = ref(initialShow)
+  const isActive = ref(initialShow)
+  const instant = ref(initialShow)
+  const lazyLoaded = ref(initialShow)
+
+  const buildTriggerableEvent = (
+    type: string,
+    opts: Readonly<Partial<BvTriggerableEvent>> = {}
+  ): BvTriggerableEvent =>
+    new BvTriggerableEvent(type, {
+      cancelable: false,
+      target: element.value || null,
+      relatedTarget: null,
+      trigger: null,
+      ...opts,
+      componentId: id.value,
+    })
+
+  let operation = 0
+  let delayTimer: ReturnType<typeof setTimeout> | undefined
+  let pending:
+    | {visible: boolean; promise: Promise<boolean | string>; resolve: (v: boolean | string) => void}
+    | undefined
+
+  /** The state the component is heading to, including a pending (delayed) change */
+  const targetVisible = () => (pending ? pending.visible : visible.value)
+
+  const syncModelValue = (value: boolean) => {
+    if (value && !modelValue.value) {
+      modelValue.value = true
+    } else if (!value && modelValue.value) {
+      modelValue.value = typeof modelValue.value === 'number' ? 0 : false
+    }
   }
 
-  const isLeaving = ref(false)
-  const isActive = ref(initialShow)
-  const isVisible = ref(initialShow)
+  const getDelay = (value: boolean) =>
+    typeof props.delay === 'number' ? props.delay : (props.delay?.[value ? 'show' : 'hide'] ?? 0)
 
-  const onBeforeEnter: TransitionProps['onBeforeEnter'] = [
-    ...[
-      options.transitionProps?.onBeforeEnter ?? noop,
-      props.transitionProps?.onBeforeEnter ?? noop,
-    ].flat(),
-    () => {
-      isActive.value = true
-    },
-  ]
+  const settle = (value: boolean | string) => {
+    const current = pending
+    pending = undefined
+    current?.resolve(value)
+  }
 
-  const onEnter: TransitionProps['onEnter'] = [
-    () => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          // sometimes one just isn't enough (offcanvas on the first load after refresh)
-          isVisible.value = true
-        })
-      })
-    },
-    ...[options.transitionProps?.onEnter ?? noop, props.transitionProps?.onEnter ?? noop].flat(),
-  ]
-  const onAfterEnter: TransitionProps['onAfterEnter'] = [
-    markLazyLoadCompleted,
-    ...[
-      options.transitionProps?.onAfterEnter ?? noop,
-      props.transitionProps?.onAfterEnter ?? noop,
-    ].flat(),
-    () => {
-      if (localNoAnimation.value) {
-        requestAnimationFrame(() => {
-          localNoAnimation.value = false
-        })
+  const start = (value: boolean, trigger?: string): Promise<boolean | string> => {
+    const op = ++operation
+    clearTimeout(delayTimer)
+    delayTimer = undefined
+    // A superseded change never emits its `shown` / `hidden`
+    settle(false)
+
+    let resolve!: (v: boolean | string) => void
+    const promise = new Promise<boolean | string>((res) => {
+      resolve = res
+    })
+    pending = {visible: value, promise, resolve}
+
+    const apply = async () => {
+      delayTimer = undefined
+      if (op !== operation) return
+      visible.value = value
+      if (value) {
+        isActive.value = true
+        lazyLoaded.value = true
       }
-      if (localTemporaryHide.value) {
-        localTemporaryHide.value = false
-      }
-      requestAnimationFrame(() => {
-        trapActive.value = true
-        nextTick(() => {
-          emit('shown', buildTriggerableEvent('shown', {cancelable: false}))
-        })
-      })
-      if (!_resolveOnHide) {
-        _Resolve?.(true)
-        _Promise = undefined
-        _Resolve = undefined
-      }
-    },
-  ]
+      syncModelValue(value)
 
-  const onBeforeLeave: TransitionProps['onBeforeLeave'] = [
-    () => {
-      if (!isLeaving.value) isLeaving.value = true
-    },
-    ...[
-      options.transitionProps?.onBeforeLeave ?? noop,
-      props.transitionProps?.onBeforeLeave ?? noop,
-    ].flat(),
-    () => {
-      trapActive.value = false
-    },
-  ]
+      const finished = await (options.transition
+        ? options.transition(value)
+        : nextTick().then(() => true))
+      if (op !== operation || !finished) return
 
-  const onLeave: TransitionProps['onLeave'] = [
-    () => {
-      isVisible.value = false
-    },
-    ...[options.transitionProps?.onLeave ?? noop, props.transitionProps?.onLeave ?? noop].flat(),
-  ]
-
-  const onAfterLeave: TransitionProps['onAfterLeave'] = [
-    () => {
-      emit('hidden', buildTriggerableEvent('hidden', {trigger: leaveTrigger, cancelable: false}))
-    },
-    ...[
-      options.transitionProps?.onAfterLeave ?? noop,
-      props.transitionProps?.onAfterLeave ?? noop,
-    ].flat(),
-    () => {
-      isLeaving.value = false
-      isActive.value = false
-      if (localNoAnimation.value) {
-        requestAnimationFrame(() => {
-          localNoAnimation.value = false
-        })
+      instant.value = false
+      if (value) {
+        emit('shown', buildTriggerableEvent('shown'))
+      } else {
+        isActive.value = false
+        emit('hidden', buildTriggerableEvent('hidden', {trigger}))
       }
-      requestAnimationFrame(() => {
-        if (!localTemporaryHide.value) renderRef.value = false
-      })
-      _Resolve?.(leaveTrigger || '')
-      _Promise = undefined
-      _Resolve = undefined
-      leaveTrigger = undefined
-    },
-  ]
+      settle(value ? true : (trigger ?? ''))
+    }
+
+    const delay = instant.value ? 0 : getDelay(value)
+    if (delay > 0) {
+      delayTimer = setTimeout(apply, delay)
+    } else {
+      apply()
+    }
+    return promise
+  }
+
+  const show = (): Promise<boolean | string> => {
+    if (pending?.visible === true) return pending.promise
+    if (visible.value && !pending) return Promise.resolve(true)
+
+    const event = buildTriggerableEvent('show', {cancelable: true})
+    emit('show', event)
+    if (event.defaultPrevented) {
+      emit('show-prevented', buildTriggerableEvent('show-prevented'))
+      instant.value = false
+      // Revert a v-model change that asked for the show
+      if (!targetVisible()) syncModelValue(false)
+      return Promise.resolve('show-prevented')
+    }
+    return start(true)
+  }
+
+  const hide = (trigger?: string, noTriggerEmit = false): Promise<boolean | string> => {
+    if (typeof trigger !== 'string') trigger = undefined
+    if (pending?.visible === false) return pending.promise
+    if (!visible.value && !pending) return Promise.resolve('')
+
+    if (
+      (trigger === 'backdrop' && props.noCloseOnBackdrop) ||
+      (trigger === 'esc' && props.noCloseOnEsc)
+    ) {
+      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
+      return Promise.resolve('hide-prevented')
+    }
+
+    let prevented = false
+    if (trigger && !noTriggerEmit) {
+      const triggerEvent = buildTriggerableEvent(trigger, {cancelable: true, trigger})
+      emit(trigger, triggerEvent)
+      prevented = triggerEvent.defaultPrevented
+    }
+    const event = buildTriggerableEvent('hide', {cancelable: true, trigger})
+    emit('hide', event)
+    if (prevented || event.defaultPrevented) {
+      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
+      instant.value = false
+      // Revert a v-model change that asked for the hide
+      if (targetVisible()) syncModelValue(true)
+      return Promise.resolve('hide-prevented')
+    }
+    return start(false, trigger)
+  }
+
+  const runToggle = (hideTrigger: string): Promise<boolean | string> => {
+    const event = buildTriggerableEvent('toggle', {cancelable: true})
+    emit('toggle', event)
+    if (event.defaultPrevented) {
+      emit('toggle-prevented', buildTriggerableEvent('toggle-prevented'))
+      return Promise.resolve('toggle-prevented')
+    }
+    return targetVisible() ? hide(hideTrigger, true) : show()
+  }
+  const toggle = () => runToggle('toggle-function')
+  const triggerToggle = () => {
+    runToggle('toggle-trigger')
+  }
+
+  watch(modelValue, (value) => {
+    if (!!value === targetVisible()) return
+    if (value) {
+      show()
+    } else {
+      hide('modelValue', true)
+    }
+  })
+
+  watch(
+    () => props.visible,
+    (value) => {
+      if (!!value === targetVisible()) return
+      instant.value = true
+      if (value) {
+        show()
+      } else {
+        hide('visible-prop', true)
+      }
+    }
+  )
+
+  watch(
+    () => props.show,
+    (value) => {
+      if (value) {
+        show()
+      } else {
+        hide('show-prop', true)
+      }
+    }
+  )
+
+  onMounted(() => {
+    if (initialShow) {
+      // Already rendered as shown: announce it, then let the instant "transition" settle
+      const event = buildTriggerableEvent('show', {cancelable: true})
+      emit('show', event)
+      if (event.defaultPrevented) {
+        emit('show-prevented', buildTriggerableEvent('show-prevented'))
+        visible.value = false
+        isActive.value = false
+        instant.value = false
+        syncModelValue(false)
+        return
+      }
+      start(true)
+    } else if (props.show || (!!modelValue.value && props.initialAnimation)) {
+      show()
+    }
+  })
+
+  onBeforeUnmount(() => {
+    operation++
+    clearTimeout(delayTimer)
+    delayTimer = undefined
+    settle(false)
+  })
+
+  const {registerTrigger, unregisterTrigger} = useShowHideRegistration({
+    id,
+    isExpanded: () => visible.value,
+    value: readonly(visible),
+    show,
+    hide: (trigger?: string) => hide(trigger),
+    toggle,
+    triggerToggle,
+  })
 
   const contentShowing = computed(
-    () =>
-      localTemporaryHide.value === true ||
-      isActive.value === true ||
-      props.lazy === false ||
-      (props.lazy === true && lazyLoadCompleted.value === true && props.unmountLazy === false)
+    () => !props.lazy || isActive.value || (lazyLoaded.value && props.unmountLazy !== true)
   )
-  const trapActive = ref(false)
-  const backdropVisible = ref(false)
-  const backdropReady = ref(false)
 
-  const transitionFunctions = {
-    ...options.transitionProps,
-    onBeforeEnter,
-    onEnter,
-    onAfterEnter,
-    onBeforeLeave,
-    onLeave,
-    onAfterLeave,
-  } satisfies TransitionProps
   return {
-    showRef: readonly(showRef),
-    renderRef: readonly(renderRef),
-    renderBackdropRef: readonly(renderBackdropRef),
-    isVisible: readonly(isVisible),
+    visible: readonly(visible),
     isActive: readonly(isActive),
-    trapActive: readonly(trapActive),
+    instant: readonly(instant),
+    contentShowing,
     show,
     hide,
     toggle,
-    throttleHide,
-    throttleShow,
     buildTriggerableEvent,
-    computedNoAnimation,
-    localNoAnimation: readonly(localNoAnimation),
-    setLocalNoAnimation: (value: boolean) => {
-      localNoAnimation.value = value
-    },
-    localTemporaryHide: readonly(localTemporaryHide),
-    setLocalTemporaryHide: (value: boolean) => {
-      localTemporaryHide.value = value
-    },
-    isLeaving: readonly(isLeaving),
-    transitionProps: {
-      ...fadeBaseTransitionProps,
-      ...props.transitionProps,
-      ...transitionFunctions,
-    } satisfies TransitionProps,
-
-    lazyLoadCompleted: readonly(lazyLoadCompleted),
-    markLazyLoadCompleted,
-    contentShowing,
-    backdropReady: readonly(backdropReady),
-    backdropVisible: readonly(backdropVisible),
-    backdropTransitionProps: {
-      ...fadeBaseTransitionProps,
-      onBeforeEnter: () => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            backdropVisible.value = true
-          })
-        })
-        backdropReady.value = false
-      },
-      onAfterEnter: () => {
-        backdropReady.value = true
-      },
-      onBeforeLeave: () => {
-        backdropVisible.value = false
-      },
-      onAfterLeave: () => {
-        backdropReady.value = false
-        requestAnimationFrame(() => {
-          renderBackdropRef.value = false
-        })
-      },
-    } satisfies TransitionProps,
+    registerTrigger,
+    unregisterTrigger,
   }
 }

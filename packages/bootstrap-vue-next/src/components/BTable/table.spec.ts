@@ -2524,7 +2524,7 @@ describe('noSelectOnClick', () => {
   })
 })
 
-describe('selectionTheme', () => {
+describe('selectionColor', () => {
   it('applies correct theme class to selected rows', async () => {
     const items = [
       {id: 1, name: 'Alice'},
@@ -2535,7 +2535,7 @@ describe('selectionTheme', () => {
         items,
         'selectable': true,
         'selectMode': 'multi' as const,
-        'selectionTheme': 'success',
+        'selectionColor': {theme: 'success'},
         'selectedItems': [],
         'onUpdate:selectedItems': (value: unknown) =>
           wrapper.setProps({selectedItems: value as typeof items}),

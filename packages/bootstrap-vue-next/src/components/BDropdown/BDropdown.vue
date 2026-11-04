@@ -8,9 +8,9 @@
       :id="computedId"
       ref="_splitButton"
       :variant="props.splitVariant || props.variant"
-      :theme="props.splitTheme || props.theme"
-      :bg="props.splitBg || props.bg"
-      :fg="props.splitFg || props.fg"
+      :theme="props.splitColor?.theme || props.theme"
+      :bg="props.splitColor?.bg || props.bg"
+      :fg="props.splitColor?.fg || props.fg"
       :size="props.size"
       :class="buttonClasses"
       :disabled="props.splitDisabled || props.disabled"
@@ -121,7 +121,7 @@ import ConditionalTeleport from '../ConditionalTeleport.vue'
 import {isBoundary, isRootBoundary, resolveBootstrapCaret} from '../../utils/floatingUi'
 import {getElement} from '../../utils/getElement'
 import {buttonGroupKey, dropdownInjectionKey, inputGroupKey} from '../../utils/keys'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import type {BDropdownEmits, BDropdownProps, BDropdownSlots} from '../../types'
 import {getSafeDocument} from '../../utils/dom'
 
@@ -141,7 +141,7 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   lazy: false,
   menuClass: undefined,
   noCaret: false,
-  noFade: false,
+  noTransition: false,
   noFlip: false,
   noShift: false,
   noSize: false,
@@ -153,21 +153,18 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   split: false,
   splitButtonType: 'button',
   splitClass: undefined,
+  splitColor: undefined,
   splitDisabled: undefined,
   splitHref: undefined,
   splitTo: undefined,
   placement: 'bottom-start',
   splitVariant: undefined,
-  splitTheme: undefined,
-  splitBg: null,
-  splitFg: null,
   strategy: 'absolute',
   text: undefined,
   show: false,
   toggleAttrs: undefined,
   toggleClass: undefined,
   toggleText: 'Toggle dropdown',
-  transProps: undefined,
   variant: 'solid',
   theme: 'secondary',
   bg: null,
@@ -216,7 +213,7 @@ const {
   contentShowing,
   isVisible,
   isActive,
-} = useShowHide(
+} = useLegacyShowHide(
   {modelValue, props, emit: emit as EmitFn, element: referenceElement, id: computedId},
   {
     showFn: () => {

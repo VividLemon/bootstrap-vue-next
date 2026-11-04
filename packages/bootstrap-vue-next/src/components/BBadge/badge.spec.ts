@@ -164,14 +164,17 @@ describe('badge', () => {
       {name: 'disabled', props: {href: '/abc', disabled: true}, expected: true},
       {name: 'replace', props: {to: '/abc', replace: true}, expected: true},
       {name: 'stretched', props: {href: '/abc', stretched: true}, expected: true},
-      {name: 'opacity', props: {href: '/abc', opacity: '70'}, expected: '70'},
-      {name: 'opacityHover', props: {href: '/abc', opacityHover: '100'}, expected: '100'},
+      {
+        name: 'opacity',
+        props: {href: '/abc', opacity: {xs: '70', hover: '100'}},
+        expected: {xs: '70', hover: '100'},
+      },
     ] as const)('passes $name prop to BLink', ({name, props, expected}) => {
       const wrapper = mount(BBadge, {
         props: {...props},
       })
       const $blink = wrapper.findComponent(BLink)
-      expect($blink.props(name)).toBe(expected)
+      expect($blink.props(name)).toStrictEqual(expected)
     })
   })
 

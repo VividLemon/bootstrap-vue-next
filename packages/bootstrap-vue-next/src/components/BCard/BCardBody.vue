@@ -9,7 +9,7 @@
     <BCardSubtitle
       v-if="!!props.subtitle || hasSubtitleSlot"
       :tag="props.subtitleTag"
-      :fg="props.subtitleFg"
+      :fg="props.subtitleColor?.fg"
     >
       <slot name="subtitle">
         {{ props.subtitle }}
@@ -35,8 +35,8 @@ const _props = withDefaults(defineProps<BCardBodyProps>(), {
   border: null,
   overlay: false,
   subtitle: undefined,
+  subtitleColor: undefined,
   subtitleTag: 'h4',
-  subtitleFg: undefined,
   tag: 'div',
   text: undefined,
   title: undefined,

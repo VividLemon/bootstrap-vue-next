@@ -1,4 +1,4 @@
-import type {BCollapseEmits, BCollapseProps, BCollapseSlots} from 'bootstrap-vue-next'
+import type { BCollapseEmits, BCollapseProps, BCollapseSlots } from 'bootstrap-vue-next'
 import type {
   ComponentReference,
   EmitRecord,
@@ -7,9 +7,9 @@ import type {
   SlotRecord,
   SlotScopeReference,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {bvTriggerableEventArg, showHideEmits, showHideProps} from '../../utils/showHideData'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { bvTriggerableEventArg, showHideEmits, showHideProps } from '../../utils/showHideData'
+import { buildCommonProps } from '../../utils/commonProps'
 
 const sharedSlotsScope: SlotScopeReference = {
   hide: {
@@ -63,7 +63,7 @@ export default {
             },
           },
         },
-        'toggle': {
+        toggle: {
           description: 'Emitted when collapse has started to toggle',
           args: {
             value: bvTriggerableEventArg,
@@ -88,16 +88,23 @@ export default {
       } satisfies SlotRecord<keyof BCollapseSlots>,
       exposed: {
         show: {
-          type: '() => void',
-          description: 'Shows the collapse',
+          type: '() => Promise<boolean | string>',
+          description:
+            "Shows the collapse. Resolves `true` after 'shown', `'show-prevented'` when prevented, or `false` when interrupted by a newer show/hide",
         },
         hide: {
-          type: '() => void',
-          description: 'Hides the collapse',
+          type: '(trigger?: string) => Promise<boolean | string>',
+          description:
+            "Hides the collapse. Resolves with the trigger (or `''`) after 'hidden', `'hide-prevented'` when prevented, or `false` when interrupted by a newer show/hide",
         },
         toggle: {
-          type: '() => void',
+          type: '() => Promise<boolean | string>',
           description: 'Toggles the visibility of the collapse',
+        },
+        visible: {
+          type: 'Readonly<Ref<boolean>>',
+          description:
+            'Whether the collapse is (being) shown. Changes when a show/hide starts, before its transition',
         },
       } satisfies ExposedRecord,
     },

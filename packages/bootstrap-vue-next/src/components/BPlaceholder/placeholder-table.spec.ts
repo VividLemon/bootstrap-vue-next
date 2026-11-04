@@ -143,9 +143,9 @@ describe('placeholder-table', () => {
     expect($placeholder.props('size')).toBeUndefined()
   })
 
-  it('child thead child tr has child th child BPlaceholder has prop theme to be prop headerTheme', () => {
+  it('child thead child tr has child th child BPlaceholder has prop theme to be prop headerColor.theme', () => {
     const wrapper = mount(BPlaceholderTable, {
-      props: {headerColumns: 1, headerTheme: 'danger'},
+      props: {headerColumns: 1, headerColor: {theme: 'danger'}},
     })
     const $tablesimple = wrapper.getComponent(BTableSimple)
     const $thead = $tablesimple.get('thead')
@@ -645,9 +645,9 @@ describe('placeholder-table', () => {
     expect($placeholder.props('size')).toBeUndefined()
   })
 
-  it('child tfoot child tr child th child BPlaceholder has prop theme to be prop footerTheme', () => {
+  it('child tfoot child tr child th child BPlaceholder has prop theme to be prop footerColor.theme', () => {
     const wrapper = mount(BPlaceholderTable, {
-      props: {showFooter: true, footerTheme: 'danger'},
+      props: {showFooter: true, footerColor: {theme: 'danger'}},
     })
     const $tablesimple = wrapper.getComponent(BTableSimple)
     const $tfoot = $tablesimple.get('tfoot')

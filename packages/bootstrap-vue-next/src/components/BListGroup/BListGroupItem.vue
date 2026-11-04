@@ -36,7 +36,6 @@ const _props = withDefaults(defineProps<BListGroupItemProps>(), {
   href: undefined,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   stretched: false,
   rel: undefined,
   replace: undefined,
@@ -44,9 +43,7 @@ const _props = withDefaults(defineProps<BListGroupItemProps>(), {
   target: undefined,
   to: undefined,
   underlineOffset: undefined,
-  underlineOffsetHover: undefined,
   underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
   underlineTheme: undefined,
   theme: undefined,
   // End link props

@@ -99,7 +99,7 @@ The default slot scope properties are as follows:
 | Property           | Type                          | Description                                                                                                                                            |
 | ------------------ | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `addButtonText`    | `string`                      | The value of the `add-button-text` prop                                                                                                                |
-| `addButtonTheme`   | `ThemeColor \| null`          | The value of the `add-button-theme` prop                                                                                                               |
+| `addButtonColor`   | `ColorExtendables`            | The value of the `add-button-color` prop, merged with its default (`{ theme: 'secondary' }`)                                                           |
 | `addButtonVariant` | `ButtonVariant \| null`       | The value of the `add-button-variant` prop (button style)                                                                                              |
 | `addTag`           | `(tag?: string) => void`      | Method to add a new tag. Assumes the tag is the value of the input, but optionally accepts one argument which is the tag value to be added             |
 | `disableAddButton` | `boolean`                     | Will be `true` if the tag(s) in the input cannot be added (all invalid and/or duplicates)                                                              |
@@ -128,7 +128,7 @@ The default slot scope properties are as follows:
 | `tagClass`         | `ClassValue`                  | The value of the `tag-class` prop. Class (or classes) to apply to the tag elements                                                                   |
 | `tagPills`         | `boolean`                     | The value of the `tag-pills` prop                                                                                                                      |
 | `tagRemoveLabel`   | `string`                      | Value of the `tag-remove-label` prop. Used as the `aria-label` attribute on the remove button of tags                                                  |
-| `tagTheme`         | `ThemeColor \| null`          | Value of the `tag-theme` prop                                                                                                                          |
+| `tagColor`         | `ColorExtendables`            | Value of the `tag-color` prop, merged with its default (`{ theme: 'secondary' }`)                                                                      |
 | `tags`             | `string[]`                    | Array of current tag strings                                                                                                                           |
 
 #### `inputAttrs` object properties

@@ -1,35 +1,28 @@
 <template>
   <slot name="header" v-bind="sharedSlots" />
-  <Transition
-    v-if="renderRef || contentShowing"
-    v-bind="transitionProps"
-    :enter-active-class="computedNoAnimation ? '' : 'collapsing'"
-    :leave-active-class="computedNoAnimation ? '' : 'collapsing'"
-    :appear="modelValue || props.visible"
+  <component
+    :is="props.tag"
+    :id="computedId"
+    ref="_element"
+    class="collapse"
+    :class="computedClasses"
+    :style="computedStyle"
+    :is-nav="props.isNav"
+    v-bind="$attrs"
   >
-    <component
-      :is="props.tag"
-      v-show="showRef"
-      :id="computedId"
-      ref="_element"
-      class="collapse"
-      :class="computedClasses"
-      :is-nav="props.isNav"
-      v-bind="$attrs"
-    >
-      <slot v-if="contentShowing" v-bind="sharedSlots" />
-    </component>
-  </Transition>
+    <slot v-if="contentShowing" v-bind="sharedSlots" />
+  </component>
   <slot name="footer" v-bind="sharedSlots" />
 </template>
 
 <script setup lang="ts">
-import {computed, type EmitFn, provide, readonly, toRef, useTemplateRef} from 'vue'
+import {computed, type EmitFn, provide, toRef, useTemplateRef} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {collapseInjectionKey} from '../../utils/keys'
 import type {BCollapseEmits, BCollapseProps, BCollapseSlots, ShowHideSlotsData} from '../../types'
 import {useShowHide} from '../../composables/useShowHide'
+import {useCssTransition} from '../../composables/useCssTransition'
 
 defineOptions({
   inheritAttrs: false,
@@ -41,7 +34,7 @@ const _props = withDefaults(defineProps<Omit<BCollapseProps, 'modelValue'>>(), {
   initialAnimation: false,
   isNav: false,
   lazy: false,
-  noAnimation: false,
+  noTransition: false,
   unmountLazy: false,
   tag: 'div',
   show: false,
@@ -59,94 +52,39 @@ const computedId = useId(() => props.id, 'collapse')
 
 const element = useTemplateRef<HTMLElement | null>('_element')
 
-let inCollapse = false
-const onEnter = (el: Element) => {
-  inCollapse = true
-  requestAnimationFrame(() => {
-    if (props.horizontal) {
-      ;(el as HTMLElement).style.width = `${(el as HTMLElement).scrollWidth}px`
-    } else {
-      ;(el as HTMLElement).style.height = `${(el as HTMLElement).scrollHeight}px`
-    }
-  })
-}
-const onBeforeLeave = (el: Element) => {
-  if (inCollapse) {
-    return
-  }
-  if (props.horizontal) {
-    ;(el as HTMLElement).style.width = `${el.scrollWidth}px`
-  } else {
-    ;(el as HTMLElement).style.height = `${el.scrollHeight}px`
-  }
+// Bootstrap v6 animates the collapse purely in CSS: the element always keeps `.collapse` and
+// only `.show` is toggled. `shown` / `hidden` fire once the element's own transition ended.
+const {run} = useCssTransition(element)
 
-  // oxlint-disable-next-line no-unused-expressions
-  ;(el as HTMLElement).offsetHeight // force reflow
-}
-const onLeave = (el: Element) => {
-  requestAnimationFrame(() => {
-    if (props.horizontal) {
-      ;(el as HTMLElement).style.width = ``
-    } else {
-      ;(el as HTMLElement).style.height = ``
-    }
-  })
-}
-
-const onAfterEnter = (el: Element) => {
-  ;(el as HTMLElement).style.height = ``
-  ;(el as HTMLElement).style.width = ``
-  inCollapse = false
-}
-
-const onAfterLeave = (el: Element) => {
-  ;(el as HTMLElement).style.height = ``
-  ;(el as HTMLElement).style.width = ``
-  inCollapse = false
-}
-
-const {
-  showRef,
-  renderRef,
-  hide,
-  show,
-  toggle,
-  isActive,
-  computedNoAnimation,
-  contentShowing,
-  transitionProps,
-} = useShowHide(
+const {visible, isActive, instant, contentShowing, show, hide, toggle} = useShowHide(
   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
-  {
-    // addShowClass: false,
-    transitionProps: {
-      onBeforeLeave,
-      onEnter,
-      onLeave,
-      onAfterEnter,
-      onAfterLeave,
-      enterToClass: '',
-      leaveToClass: '',
-      enterFromClass: '',
-      leaveFromClass: '',
-      enterActiveClass: '',
-      leaveActiveClass: '',
-    },
-  }
+  {transition: () => run()}
 )
 
+const isInstant = computed(() => props.noTransition || instant.value)
+
 const computedClasses = computed(() => ({
-  'show': isActive.value,
+  'show': visible.value,
   'navbar-collapse': props.isNav,
   'collapse-horizontal': props.horizontal,
+  // Bootstrap v6 has no `collapse-instant` class; its collapse JS treats `transition-none`
+  // (zero computed duration) as "no transition"
+  'transition-none': isInstant.value,
 }))
+
+// Bootstrap 6.0.0-alpha.1 ships the `.collapse` transition outside any cascade layer, so it
+// beats the layered `transition-none` utility. Zeroing v6's own duration token inline works
+// regardless of layers. Remove once upstream layers `_transitions.scss`.
+const computedStyle = computed(() =>
+  isInstant.value ? {'--bs-transition-collapse-duration': '0s'} : undefined
+)
 
 const sharedSlots = computed<ShowHideSlotsData>(() => ({
   toggle,
   show,
   hide,
   id: computedId.value,
-  visible: showRef.value,
+  visible: visible.value,
   active: isActive.value,
 }))
 
@@ -155,7 +93,7 @@ defineExpose({
   isNav: props.isNav,
   show,
   toggle,
-  visible: readonly(showRef),
+  visible,
 })
 
 provide(collapseInjectionKey, {
@@ -163,7 +101,7 @@ provide(collapseInjectionKey, {
   hide,
   show,
   toggle,
-  visible: readonly(showRef),
+  visible,
   isNav: toRef(() => props.isNav),
 })
 </script>

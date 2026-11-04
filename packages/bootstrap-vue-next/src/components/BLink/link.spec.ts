@@ -278,20 +278,41 @@ describe('link', () => {
 
   // --- opacity ---
 
-  it('has class link-{value} when opacity is set', () => {
+  it('has class link-{value} when opacity.xs is set', () => {
     const wrapper = mount(BLink, {
-      props: {opacity: 70 as const},
+      props: {opacity: {xs: 70 as const}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('link-70')
+    expect(wrapper.classes().some((c) => c.startsWith('hover:'))).toBe(false)
   })
 
-  it('has class hover:link-{value} when opacityHover is set', () => {
+  it('has class hover:link-{value} when opacity.hover is set', () => {
     const wrapper = mount(BLink, {
-      props: {opacityHover: 100 as const},
+      props: {opacity: {hover: 100 as const}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('hover:link-100')
+    expect(wrapper.classes()).not.toContain('link-100')
+  })
+
+  it('has classes link-{xs} and hover:link-{hover} when both opacity keys are set', () => {
+    const wrapper = mount(BLink, {
+      props: {opacity: {xs: 50 as const, hover: 100 as const}},
+      global: {plugins: [router]},
+    })
+    expect(wrapper.classes()).toContain('link-50')
+    expect(wrapper.classes()).toContain('hover:link-100')
+  })
+
+  it('updates opacity classes reactively', async () => {
+    const wrapper = mount(BLink, {
+      props: {opacity: {xs: 50 as const}},
+      global: {plugins: [router]},
+    })
+    await wrapper.setProps({opacity: {hover: 20 as const}})
+    expect(wrapper.classes()).not.toContain('link-50')
+    expect(wrapper.classes()).toContain('hover:link-20')
   })
 
   // --- underline classes ---
@@ -304,34 +325,35 @@ describe('link', () => {
     expect(wrapper.classes()).toContain('underline-primary')
   })
 
-  it('has class underline-offset-{value} when underlineOffset is set', () => {
+  it('has class underline-offset-{value} when underlineOffset.xs is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineOffset: 3 as const},
+      props: {underlineOffset: {xs: 3 as const}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('underline-offset-3')
   })
 
-  it('has class hover:underline-offset-{value} when underlineOffsetHover is set', () => {
+  it('has class hover:underline-offset-{value} when underlineOffset.hover is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineOffsetHover: 2 as const},
+      props: {underlineOffset: {hover: 2 as const}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('hover:underline-offset-2')
+    expect(wrapper.classes()).not.toContain('underline-offset-2')
   })
 
-  it('has class underline-{value} when underlineOpacity is set', () => {
+  it('has class underline-{value} when underlineOpacity.xs is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineOpacity: 50 as const},
+      props: {underlineOpacity: {xs: 50 as const}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('underline-50')
     expect(wrapper.classes()).not.toContain('link-underline')
   })
 
-  it('has class hover:underline-{value} when underlineOpacityHover is set', () => {
+  it('has class hover:underline-{value} when underlineOpacity.hover is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineOpacityHover: 70 as const},
+      props: {underlineOpacity: {hover: 70 as const}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('hover:underline-70')

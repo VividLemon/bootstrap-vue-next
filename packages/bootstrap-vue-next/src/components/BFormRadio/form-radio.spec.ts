@@ -476,7 +476,7 @@ describe('form-radio', () => {
 
   it('child label has class btn-{type} when prop button and prop buttonVariant', () => {
     const wrapper = mount(BFormRadio, {
-      props: {button: true, buttonTheme: 'danger', plain: false},
+      props: {button: true, buttonColor: {theme: 'danger'}, plain: false},
     })
     const $label = wrapper.get('label')
     expect($label.classes()).toContain('theme-danger')
@@ -484,7 +484,7 @@ describe('form-radio', () => {
 
   it('child label does not have class btn-{type} when prop button false and prop buttonVariant', () => {
     const wrapper = mount(BFormRadio, {
-      props: {button: false, buttonTheme: 'danger', plain: false},
+      props: {button: false, buttonColor: {theme: 'danger'}, plain: false},
     })
     const $label = wrapper.get('label')
     expect($label.classes()).not.toContain('theme-danger')
@@ -552,7 +552,7 @@ describe('form-radio', () => {
     it('inherits buttonVariant from parent when not explicitly set', () => {
       const wrapper = mount(BFormRadioGroup, {
         props: {
-          buttonTheme: 'primary',
+          buttonColor: {theme: 'primary'},
           buttons: true,
         },
         slots: {
@@ -572,11 +572,11 @@ describe('form-radio', () => {
     it('child buttonVariant overrides parent buttonVariant when explicitly set', () => {
       const wrapper = mount(BFormRadioGroup, {
         props: {
-          buttonTheme: 'primary',
+          buttonColor: {theme: 'primary'},
           buttons: true,
         },
         slots: {
-          default: '<BFormRadio value="1" button-theme="danger">Radio 1</BFormRadio>',
+          default: '<BFormRadio value="1" :button-color="{theme: \'danger\'}">Radio 1</BFormRadio>',
           option: () => {},
         },
         global: {
@@ -887,7 +887,7 @@ describe('form-radio', () => {
             [radioGroupKey as symbol]: {
               modelValue: ref<RadioValue>(null),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -915,7 +915,7 @@ describe('form-radio', () => {
             [radioGroupKey as symbol]: {
               modelValue: ref<RadioValue>(null),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('parent-name'),
               state: ref(undefined),
@@ -943,7 +943,7 @@ describe('form-radio', () => {
             [radioGroupKey as symbol]: {
               modelValue: ref<RadioValue>(null),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref('parent-form'),
               name: ref('test-group'),
               state: ref(undefined),
@@ -971,7 +971,7 @@ describe('form-radio', () => {
             [radioGroupKey as symbol]: {
               modelValue: ref<RadioValue>(null),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -999,7 +999,7 @@ describe('form-radio', () => {
             [radioGroupKey as symbol]: {
               modelValue: ref<RadioValue>(null),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('parent-name'),
               state: ref(undefined),
@@ -1027,7 +1027,7 @@ describe('form-radio', () => {
             [radioGroupKey as symbol]: {
               modelValue: ref<RadioValue>(null),
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref('parent-form'),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1056,7 +1056,7 @@ describe('form-radio', () => {
             [radioGroupKey as symbol]: {
               modelValue: parentModelValue,
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),
@@ -1085,7 +1085,7 @@ describe('form-radio', () => {
             [radioGroupKey as symbol]: {
               modelValue: parentModelValue,
               buttonVariant: ref('solid'),
-              buttonTheme: ref('secondary'),
+              buttonColor: ref({theme: 'secondary' as const}),
               form: ref(undefined),
               name: ref('test-group'),
               state: ref(undefined),

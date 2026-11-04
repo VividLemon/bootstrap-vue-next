@@ -24,7 +24,7 @@
               <BFormGroup
                 label="Search tags"
                 label-for="tag-search-input"
-                label-cols-md="auto"
+                :label-cols="{ md: 'auto' }"
                 class="mb-0"
                 label-size="sm"
                 :description="searchDesc"

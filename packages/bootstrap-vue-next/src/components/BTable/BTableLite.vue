@@ -5,16 +5,16 @@
     </colgroup>
     <BThead
       v-show="showComputedHeaders"
-      :theme="props.headTheme"
-      :bg="props.headBg"
-      :fg="props.headFg"
+      :theme="props.headColor?.theme"
+      :bg="props.headColor?.bg"
+      :fg="props.headColor?.fg"
       :class="props.theadClass"
     >
       <slot name="thead-top" :columns="computedFieldsTotal" :fields="computedFields" />
       <BTr
-        :theme="props.headRowTheme"
-        :bg="props.headRowBg"
-        :fg="props.headRowFg"
+        :theme="props.headRowColor?.theme"
+        :bg="props.headRowColor?.bg"
+        :fg="props.headRowColor?.fg"
         :class="props.theadTrClass"
       >
         <BTh
@@ -187,9 +187,9 @@
     </BTbody>
     <BTfoot v-if="props.footClone" v-bind="footerProps">
       <BTr
-        :theme="props.footRowTheme ?? props.headRowTheme"
-        :bg="props.footRowBg ?? props.headRowBg"
-        :fg="props.footRowFg ?? props.headRowFg"
+        :theme="props.footRowColor?.theme ?? props.headRowColor?.theme"
+        :bg="props.footRowColor?.bg ?? props.headRowColor?.bg"
+        :fg="props.footRowColor?.fg ?? props.headRowColor?.fg"
         :class="props.tfootTrClass ?? props.theadTrClass"
       >
         <BTh
@@ -287,18 +287,10 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   fieldColumnClass: undefined,
   tbodyTrClass: undefined,
   detailsTdClass: undefined,
-  headTheme: undefined,
-  headBg: undefined,
-  headFg: undefined,
-  headRowTheme: undefined,
-  headRowBg: undefined,
-  headRowFg: undefined,
-  footRowTheme: undefined,
-  footRowBg: undefined,
-  footRowFg: undefined,
-  footTheme: undefined,
-  footBg: undefined,
-  footFg: undefined,
+  headColor: undefined,
+  headRowColor: undefined,
+  footRowColor: undefined,
+  footColor: undefined,
   modelValue: undefined,
   primaryKey: undefined,
   tbodyClass: undefined,
@@ -446,9 +438,9 @@ const getCellComponent = (field: Readonly<TableField>) => {
 }
 
 const footerProps = computed(() => ({
-  theme: props.footTheme ?? props.headTheme,
-  bg: props.footBg ?? props.headBg,
-  fg: props.footFg ?? props.headFg,
+  theme: props.footColor?.theme ?? props.headColor?.theme,
+  bg: props.footColor?.bg ?? props.headColor?.bg,
+  fg: props.footColor?.fg ?? props.headColor?.fg,
   class: props.tfootClass ?? props.theadClass,
 }))
 

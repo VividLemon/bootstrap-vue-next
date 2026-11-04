@@ -6,8 +6,8 @@
           <th v-for="(_, i) in computedHeaderColumnsLength" :key="i">
             <BPlaceholder
               :size="props.headerSize"
-              :bg="props.headerBg ?? getThemeColor(props.headerTheme)"
-              :fg="props.headerFg"
+              :bg="props.headerColor?.bg ?? getThemeColor(props.headerColor?.theme)"
+              :fg="props.headerColor?.fg"
               :animation="props.headerAnimation"
               :width="props.headerCellWidth"
             />
@@ -36,8 +36,8 @@
           <th v-for="(_, l) in computedFooterColumnsLength" :key="l">
             <BPlaceholder
               :size="props.footerSize"
-              :bg="props.footerBg ?? getThemeColor(props.footerTheme)"
-              :fg="props.footerFg"
+              :bg="props.footerColor?.bg ?? getThemeColor(props.footerColor?.theme)"
+              :fg="props.footerColor?.fg"
               :animation="props.footerAnimation"
               :width="props.footerCellWidth"
             />
@@ -63,18 +63,14 @@ const _props = withDefaults(defineProps<BPlaceholderTableProps>(), {
   columns: 5,
   footerAnimation: undefined,
   footerCellWidth: 100,
+  footerColor: undefined,
   footerColumns: undefined,
   footerSize: undefined,
-  footerTheme: undefined,
-  footerBg: null,
-  footerFg: null,
   headerAnimation: undefined,
   headerCellWidth: 100,
+  headerColor: undefined,
   headerColumns: undefined,
   headerSize: undefined,
-  headerTheme: undefined,
-  headerBg: null,
-  headerFg: null,
   noHeader: false,
   rows: 3,
   showFooter: false,

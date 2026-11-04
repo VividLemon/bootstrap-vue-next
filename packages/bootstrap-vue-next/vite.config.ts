@@ -123,7 +123,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         charset: false,
-        silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import'],
+        silenceDeprecations: ['color-functions', 'global-builtin', 'import'],
       },
     },
   },

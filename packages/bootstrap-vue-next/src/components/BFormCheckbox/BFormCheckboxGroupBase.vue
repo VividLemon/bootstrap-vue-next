@@ -20,6 +20,7 @@
 
 <script setup lang="ts">
 import {computed, provide, toRef, useTemplateRef} from 'vue'
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import type {
   BFormCheckboxGroupExposes,
   BFormCheckboxGroupBaseProps,
@@ -36,9 +37,7 @@ const _props = withDefaults(defineProps<Omit<BFormCheckboxGroupBaseProps, 'model
   ariaInvalid: undefined,
   autofocus: false,
   buttonVariant: 'solid',
-  buttonTheme: 'secondary',
-  buttonBg: null,
-  buttonFg: null,
+  buttonColor: undefined,
   buttons: false,
   disabled: false,
   form: undefined,
@@ -75,11 +74,7 @@ provide(checkboxGroupKey, {
   >,
   switch: toRef(() => props.switches),
   buttonVariant: toRef(() => props.buttonVariant),
-  buttonTheme: computed(() => ({
-    theme: props.buttonTheme,
-    bg: props.buttonBg,
-    fg: props.buttonFg,
-  })),
+  buttonColor: computed(() => resolvePartColor(props.buttonColor, {theme: 'secondary'})),
   form: toRef(() => props.form),
   name: computedName,
   state: toRef(() => props.state),

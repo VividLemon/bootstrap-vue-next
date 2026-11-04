@@ -6,7 +6,7 @@
           <h1>{{ title }}</h1>
         </slot>
       </BCol>
-      <BCol v-if="href" cols="4" class="text-md-right">
+      <BCol v-if="href" :cols="{ xs: 4 }" class="text-md-right">
         <ViewSourceButton :href />
       </BCol>
     </BRow>

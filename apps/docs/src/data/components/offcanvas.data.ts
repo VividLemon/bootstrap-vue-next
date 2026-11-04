@@ -30,9 +30,8 @@ export default {
             'bodyAttrs',
             'bodyClass',
             'footerClass',
-            'headerCloseBg',
+            'headerCloseColor',
             'headerClass',
-            'headerCloseFg',
             'id',
             'noBackdrop',
             'noHeader',
@@ -74,11 +73,11 @@ export default {
           default: 'Close',
           description: 'Accessibility label for the header close button',
         },
-        headerCloseTheme: {
-          type: 'ThemeProp | null',
-          default: 'secondary',
+        headerCloseColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'secondary' },
           description:
-            'Theme color to use for the header close button when using a custom close slot',
+            'Color object for the header close button when using the `header-close` slot: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
         },
         headerCloseVariant: {
           type: 'ButtonVariant | null',

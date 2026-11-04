@@ -103,41 +103,41 @@ describe('list-group', () => {
       expect(wrapper.classes()).toContain('list-group-horizontal')
     })
 
-    it('has class list-group-horizontal-sm when horizontal is sm', () => {
+    it('has class sm:list-group-horizontal when horizontal is sm', () => {
       const wrapper = mount(BListGroup, {
         props: {horizontal: 'sm'},
       })
-      expect(wrapper.classes()).toContain('list-group-horizontal-sm')
+      expect(wrapper.classes()).toContain('sm:list-group-horizontal')
       expect(wrapper.classes()).not.toContain('list-group-horizontal')
     })
 
-    it('has class list-group-horizontal-md when horizontal is md', () => {
+    it('has class md:list-group-horizontal when horizontal is md', () => {
       const wrapper = mount(BListGroup, {
         props: {horizontal: 'md'},
       })
-      expect(wrapper.classes()).toContain('list-group-horizontal-md')
+      expect(wrapper.classes()).toContain('md:list-group-horizontal')
       expect(wrapper.classes()).not.toContain('list-group-horizontal')
     })
 
-    it('has class list-group-horizontal-lg when horizontal is lg', () => {
+    it('has class lg:list-group-horizontal when horizontal is lg', () => {
       const wrapper = mount(BListGroup, {
         props: {horizontal: 'lg'},
       })
-      expect(wrapper.classes()).toContain('list-group-horizontal-lg')
+      expect(wrapper.classes()).toContain('lg:list-group-horizontal')
     })
 
-    it('has class list-group-horizontal-xl when horizontal is xl', () => {
+    it('has class xl:list-group-horizontal when horizontal is xl', () => {
       const wrapper = mount(BListGroup, {
         props: {horizontal: 'xl'},
       })
-      expect(wrapper.classes()).toContain('list-group-horizontal-xl')
+      expect(wrapper.classes()).toContain('xl:list-group-horizontal')
     })
 
-    it('has class list-group-horizontal-xxl when horizontal is xxl', () => {
+    it('has class 2xl:list-group-horizontal when horizontal is 2xl', () => {
       const wrapper = mount(BListGroup, {
-        props: {horizontal: 'xxl'},
+        props: {horizontal: '2xl'},
       })
-      expect(wrapper.classes()).toContain('list-group-horizontal-xxl')
+      expect(wrapper.classes()).toContain('2xl:list-group-horizontal')
     })
 
     it('horizontal prop is reactive', async () => {
@@ -146,7 +146,7 @@ describe('list-group', () => {
       })
       expect(wrapper.classes()).toContain('list-group-horizontal')
       await wrapper.setProps({horizontal: 'md'})
-      expect(wrapper.classes()).toContain('list-group-horizontal-md')
+      expect(wrapper.classes()).toContain('md:list-group-horizontal')
       expect(wrapper.classes()).not.toContain('list-group-horizontal')
     })
   })
@@ -195,7 +195,7 @@ describe('list-group', () => {
         props: {horizontal: 'lg', flush: true},
       })
       expect(wrapper.classes()).toContain('list-group-flush')
-      expect(wrapper.classes()).not.toContain('list-group-horizontal-lg')
+      expect(wrapper.classes()).not.toContain('lg:list-group-horizontal')
       expect(wrapper.classes()).not.toContain('list-group-horizontal')
     })
 

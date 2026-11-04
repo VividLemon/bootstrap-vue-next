@@ -1,8 +1,7 @@
 <template>
   <!-- #region template -->
   <BFormGroup
-    label-cols="4"
-    label-cols-lg="2"
+    :label-cols="{ xs: 4, lg: 2 }"
     label-size="sm"
     label="Small"
     label-for="input-sm"
@@ -14,8 +13,7 @@
     />
   </BFormGroup>
   <BFormGroup
-    label-cols="4"
-    label-cols-lg="2"
+    :label-cols="{ xs: 4, lg: 2 }"
     label="Default"
     label-for="input-default"
     class="my-1"
@@ -23,8 +21,7 @@
     <BFormInput id="input-default" />
   </BFormGroup>
   <BFormGroup
-    label-cols="4"
-    label-cols-lg="2"
+    :label-cols="{ xs: 4, lg: 2 }"
     label-size="lg"
     label="Large"
     label-for="input-lg"

@@ -15,7 +15,7 @@ Things to know when using the modal directive:
 - Target modals are specified by their `id` attribute
 - Multiple modals can be shown simultaneously
 - The directive automatically manages ARIA accessibility attributes
-- The trigger element receives `collapsed` and `not-collapsed` CSS classes based on modal state
+- The trigger element's `aria-expanded` attribute reflects the modal state (there are no trigger state classes)
 - Disabled buttons will not trigger modal events
 - `v-b-modal` is an alias for `v-b-toggle` - both work identically but `v-b-modal` is semantically clearer for modals
 
@@ -71,14 +71,15 @@ When the directive is applied to an `<a>` tag or `BLink`, the target can be spec
 Without `@click.prevent`, clicking the link will change the browser URL. Add `@click.prevent` to prevent this behavior while still showing the modal.
 :::
 
-## Conditional CSS Classes
+## Conditional CSS
 
-The directive automatically adds CSS classes to the trigger element based on the modal's visibility state:
+The trigger element's `aria-expanded` attribute reflects the modal's visibility state:
 
-- `collapsed` - Added when the modal is hidden
-- `not-collapsed` - Added when the modal is visible
+- `aria-expanded="false"` - The modal is hidden
+- `aria-expanded="true"` - The modal is visible
 
-You can use these classes to conditionally style the trigger:
+There are no `collapsed` / `not-collapsed` trigger classes. Use attribute selectors on
+`aria-expanded` to conditionally style the trigger:
 
 <<< FRAGMENT ./demo/ModalDirectiveCSSClasses.html#css{css}
 
@@ -140,7 +141,7 @@ The modal component manages:
 
 - `aria-expanded` - Reflects current visibility state (`'true'` or `'false'`)
 
-The directive itself handles the CSS classes (`collapsed`/`not-collapsed`) and click event handlers on the trigger element.
+The directive itself handles `aria-controls`; the modal registers the click handler on the trigger element.
 
 This separation of responsibilities ensures consistent accessibility across all show/hide components. For detailed information, see the [ARIA Visibility Architecture documentation](/docs/reference/accessibility#aria-trigger-registration-for-component-visibility).
 

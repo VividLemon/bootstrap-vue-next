@@ -89,9 +89,11 @@
 </template>
 
 <script setup lang="ts">
-import {breakpointsBootstrapV5, onKeyStroke, unrefElement, useBreakpoints} from '@vueuse/core'
+import {onKeyStroke, unrefElement, useBreakpoints} from '@vueuse/core'
+import {breakpointWidths} from '../../utils/responsive'
 import {useActivatedFocusTrap} from '../../composables/useActivatedFocusTrap'
 import {computed, type EmitFn, nextTick, onMounted, ref, useTemplateRef, watch} from 'vue'
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import type {
@@ -105,7 +107,7 @@ import BCloseButton from '../BButton/BCloseButton.vue'
 import ConditionalTeleport from '../ConditionalTeleport.vue'
 import {useSafeScrollLock} from '../../composables/useSafeScrollLock'
 import {isEmptySlot} from '../../utils/dom'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import {getElement} from '../../utils/getElement'
 
 // TODO once the responsive stuff may be implemented correctly,
@@ -130,15 +132,13 @@ const _props = withDefaults(defineProps<Omit<BOffcanvasProps, 'modelValue'>>(), 
   headerAttrs: undefined,
   headerClass: undefined,
   headerCloseClass: undefined,
+  headerCloseColor: undefined,
   headerCloseLabel: 'Close',
-  headerCloseTheme: 'secondary',
-  headerCloseBg: null,
-  headerCloseFg: null,
   headerCloseVariant: 'solid',
   id: undefined,
   initialAnimation: false,
   lazy: false,
-  noAnimation: false,
+  noTransition: false,
   noBackdrop: false,
   noCloseOnBackdrop: false,
   noCloseOnEsc: false,
@@ -206,7 +206,7 @@ const {
   isLeaving,
   trapActive,
   setLocalNoAnimation,
-} = useShowHide(
+} = useLegacyShowHide(
   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
   {
     transitionProps: {
@@ -221,7 +221,7 @@ const {
   }
 )
 
-const breakpoints = useBreakpoints(breakpointsBootstrapV5)
+const breakpoints = useBreakpoints(breakpointWidths)
 const smallerThanBreakpoint = breakpoints.smaller(() => props.responsive ?? 'xs')
 // Initialize with SSR-safe default value to prevent hydration mismatches
 // The actual breakpoint evaluation is deferred to onMounted (client-side only)
@@ -274,11 +274,14 @@ const headerCloseClasses = computed(() => [
   {'fg-reset': !hasHeaderCloseSlot.value},
   props.headerCloseClass,
 ])
+const headerCloseColor = computed(() =>
+  resolvePartColor(props.headerCloseColor, {theme: 'secondary'})
+)
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
-  theme: hasHeaderCloseSlot.value ? props.headerCloseTheme : undefined,
-  bg: hasHeaderCloseSlot.value ? props.headerCloseBg : undefined,
-  fg: hasHeaderCloseSlot.value ? props.headerCloseFg : undefined,
+  theme: hasHeaderCloseSlot.value ? headerCloseColor.value.theme : undefined,
+  bg: hasHeaderCloseSlot.value ? headerCloseColor.value.bg : undefined,
+  fg: hasHeaderCloseSlot.value ? headerCloseColor.value.fg : undefined,
   class: headerCloseClasses.value,
 }))
 

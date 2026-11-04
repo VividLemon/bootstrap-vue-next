@@ -48,17 +48,15 @@ const _props = withDefaults(defineProps<BOverlayProps>(), {
   blur: '2px',
   fixed: false,
   noCenter: false,
-  noFade: false,
+  noTransition: false,
   noSpinner: false,
   noWrap: false,
   opacity: 0.85,
   overlayTag: 'div',
   show: false,
+  spinnerColor: undefined,
   spinnerSmall: false,
   spinnerType: 'border',
-  spinnerTheme: undefined,
-  spinnerBg: null,
-  spinnerFg: null,
   bg: 'body',
   wrapTag: 'div',
   zIndex: 10,
@@ -76,7 +74,7 @@ defineSlots<BOverlaySlots>()
 
 const positionStyles = {top: 0, left: 0, bottom: 0, right: 0} as const
 
-const {transitionProps: fadeTransitions} = useFadeTransition(() => !props.noFade)
+const {transitionProps: fadeTransitions} = useFadeTransition(() => !props.noTransition)
 
 const {classes: radiusElementClasses} = useRadiusElementClasses(
   computed(() => ({
@@ -92,9 +90,9 @@ const computedAriaBusy = computed(() => (props.show ? true : null))
 
 const spinnerAttrs = computed(() => ({
   type: props.spinnerType,
-  theme: props.spinnerTheme,
-  bg: props.spinnerBg,
-  fg: props.spinnerFg,
+  theme: props.spinnerColor?.theme,
+  bg: props.spinnerColor?.bg,
+  fg: props.spinnerColor?.fg,
   small: props.spinnerSmall,
 }))
 

@@ -79,7 +79,7 @@
             <col />
             <col />
           </colgroup>
-          <BThead head-theme="inverse">
+          <BThead theme="inverse">
             <BTr>
               <BTh colspan="2">Region</BTh>
               <BTh colspan="3">Clothes</BTh>
@@ -169,7 +169,7 @@
             <col />
             <col />
           </colgroup>
-          <BThead head-theme="inverse">
+          <BThead theme="inverse">
             <BTr>
               <BTh colspan="2">Region</BTh>
               <BTh colspan="3">Clothes</BTh>

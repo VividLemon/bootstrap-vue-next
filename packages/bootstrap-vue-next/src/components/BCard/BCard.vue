@@ -7,11 +7,11 @@
     </template>
     <BCardHeader
       v-if="props.header || hasHeaderSlot"
-      :bg="props.headerBg"
-      :theme="props.headerTheme"
-      :border="props.headerBorder"
+      :theme="props.headerColor?.theme"
+      :bg="props.headerColor?.bg"
+      :fg="props.headerColor?.fg"
+      :border="props.headerColor?.border"
       :tag="props.headerTag"
-      :fg="props.headerFg"
       :class="props.headerClass"
     >
       <slot name="header">
@@ -21,13 +21,14 @@
     <BCardBody
       v-if="!props.noBody"
       :overlay="props.imgPlacement === 'overlay'"
-      :bg="props.bodyBg"
-      :border="props.bodyBorder"
+      :theme="props.bodyColor?.theme"
+      :bg="props.bodyColor?.bg"
+      :fg="props.bodyColor?.fg"
+      :border="props.bodyColor?.border"
       :tag="props.bodyTag"
-      :fg="props.bodyFg"
       :subtitle="props.subtitle"
       :subtitle-tag="props.subtitleTag"
-      :subtitle-fg="props.subtitleFg"
+      :subtitle-color="props.subtitleColor"
       :title="props.title"
       :title-tag="props.titleTag"
       :class="props.bodyClass"
@@ -41,11 +42,11 @@
     </slot>
     <BCardFooter
       v-if="props.footer || hasFooterSlot"
-      :bg="props.footerBg"
-      :border="props.footerBorder"
-      :theme="props.footerTheme"
+      :theme="props.footerColor?.theme"
+      :bg="props.footerColor?.bg"
+      :fg="props.footerColor?.fg"
+      :border="props.footerColor?.border"
       :tag="props.footerTag"
-      :fg="props.footerFg"
       :class="props.footerClass"
     >
       <slot name="footer">
@@ -73,27 +74,19 @@ import type {BCardProps, BCardSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BCardProps>(), {
   align: undefined,
-  bodyBg: undefined,
-  bodyBorder: undefined,
   bodyClass: undefined,
+  bodyColor: undefined,
   bodyTag: 'div',
   bodyText: '',
-  bodyFg: undefined,
   border: null,
   footer: undefined,
-  footerBg: undefined,
-  footerBorder: undefined,
   footerClass: undefined,
+  footerColor: undefined,
   footerTag: 'div',
-  footerFg: undefined,
-  footerTheme: null,
   header: undefined,
-  headerBg: undefined,
-  headerBorder: undefined,
   headerClass: undefined,
+  headerColor: undefined,
   headerTag: 'div',
-  headerFg: undefined,
-  headerTheme: null,
   imgAlt: undefined,
   imgAttrs: undefined,
   imgPlacement: 'top',
@@ -102,8 +95,8 @@ const _props = withDefaults(defineProps<BCardProps>(), {
   imgWidth: undefined,
   noBody: false,
   subtitle: undefined,
+  subtitleColor: undefined,
   subtitleTag: 'h6',
-  subtitleFg: '2',
   tag: 'div',
   title: undefined,
   titleTag: 'h4',

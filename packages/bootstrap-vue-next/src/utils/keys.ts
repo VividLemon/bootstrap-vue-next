@@ -5,7 +5,14 @@ import type {Numberish, ValidationState} from '../types/CommonTypes'
 import type {LiteralUnion} from '../types/LiteralUnion'
 import type {Size} from '../types/Size'
 import type {RadiusElementExtendables} from '../types/RadiusElement'
-import type {BgColor, ButtonVariant, FgColor, MaybeArray, ThemeProp} from '../types/ColorTypes'
+import type {
+  BgColor,
+  ButtonVariant,
+  ColorExtendables,
+  FgColor,
+  MaybeArray,
+  ThemeProp,
+} from '../types/ColorTypes'
 import type {CheckboxValue} from '../types/CheckboxTypes'
 import type {RadioValue} from '../types/RadioTypes'
 import type {BreadcrumbItemRaw} from '../types/BreadcrumbTypes'
@@ -39,7 +46,7 @@ export const carouselInjectionKey: InjectionKey<{
 export const tabsInjectionKey: InjectionKey<{
   lazy: Readonly<Ref<boolean>>
   card: Readonly<Ref<boolean>>
-  noFade: Readonly<Ref<boolean>>
+  noTransition: Readonly<Ref<boolean>>
   registerTab: (tab: ComputedRef<TabType>) => string
   unregisterTab: (id: string) => void
   activateTab: (id: string | undefined) => void
@@ -92,13 +99,7 @@ export const checkboxGroupKey: InjectionKey<{
   modelValue: Ref<readonly CheckboxValue[]>
   switch: Readonly<Ref<boolean>>
   buttonVariant: Readonly<Ref<ButtonVariant | null>>
-  buttonTheme: Readonly<
-    Ref<{
-      theme: ThemeProp | null
-      bg: MaybeArray<BgColor> | null
-      fg: MaybeArray<FgColor> | null
-    }>
-  >
+  buttonColor: Readonly<Ref<ColorExtendables>>
   form: Readonly<Ref<string | undefined>>
   name: Readonly<Ref<string>>
   state: Readonly<Ref<ValidationState | undefined>>
@@ -114,13 +115,7 @@ export const checkboxGroupKey: InjectionKey<{
 export const radioGroupKey: InjectionKey<{
   modelValue: Ref<RadioValue>
   buttonVariant: Readonly<Ref<ButtonVariant | null>>
-  buttonTheme: Readonly<
-    Ref<{
-      theme: ThemeProp | null
-      bg: MaybeArray<BgColor> | null
-      fg: MaybeArray<FgColor> | null
-    }>
-  >
+  buttonColor: Readonly<Ref<ColorExtendables>>
   form: Readonly<Ref<string | undefined>>
   name: Readonly<Ref<string>>
   buttons: Readonly<Ref<boolean>>

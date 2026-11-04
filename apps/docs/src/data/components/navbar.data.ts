@@ -36,7 +36,7 @@ export default {
           type: "boolean | 'fluid' | Breakpoint",
           default: 'fluid',
           description:
-            "Use the container option to change the layout of the navbar. By default, the navbar is a fluid container. Use 'fluid' for a full width navbar, or a responsive breakpoint for a container width navbar.",
+            "Use the container option to change the layout of the navbar. By default, the navbar is a fluid container. Use 'fluid' for a full width navbar (`container-fluid`), `true` for a fixed-width container (`container`), or a breakpoint for a navbar that is full width until that breakpoint (`container=\"md\"` renders `md:container`).",
         },
         fixed: {
           type: "'top' | 'bottom'",
@@ -65,7 +65,7 @@ export default {
           type: 'boolean | Breakpoint',
           default: false, // TODO item not in string format
           description:
-            "Set to 'true' for an always collapsed navbar, or to a specific breakpoint at which point the navbar will be expanded: 'sm', 'md', 'lg', 'xl', or 'xxl'",
+            "Set to 'true' for an always collapsed navbar, or to a specific breakpoint at which point the navbar will be expanded: 'sm', 'md', 'lg', 'xl', or '2xl'",
         },
       } satisfies PropRecord<keyof BNavbarProps>,
       slots: {

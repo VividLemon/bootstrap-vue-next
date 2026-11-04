@@ -34,7 +34,6 @@ const _props = withDefaults(defineProps<BBadgeProps>(), {
   href: undefined,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   rel: undefined,
   replace: undefined,
   routerComponentName: undefined,
@@ -42,9 +41,7 @@ const _props = withDefaults(defineProps<BBadgeProps>(), {
   target: undefined,
   to: undefined,
   underlineOffset: undefined,
-  underlineOffsetHover: undefined,
   underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
   underlineTheme: undefined,
   // End link props
   // ColorExtendables props
@@ -65,7 +62,6 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props, [
   'icon',
   'noRel',
   'opacity',
-  'opacityHover',
   'noPrefetch',
   'prefetch',
   'prefetchOn',
@@ -77,9 +73,7 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props, [
   'target',
   'to',
   'underlineOffset',
-  'underlineOffsetHover',
   'underlineOpacity',
-  'underlineOpacityHover',
   'underlineTheme',
 ])
 

@@ -33,9 +33,9 @@
             :class="[props.closeClass]"
             class="ms-auto"
             :variant="props.closeVariant"
-            :theme="props.closeTheme"
-            :bg="props.closeBg"
-            :fg="props.closeFg"
+            :theme="closeColor.theme"
+            :bg="closeColor.bg"
+            :fg="closeColor.fg"
             @click.stop.prevent="hide('close')"
           >
             <slot name="close" v-bind="sharedSlots">
@@ -72,9 +72,9 @@
               :class="[props.closeClass]"
               class="ms-auto btn-close-custom"
               :variant="props.closeVariant"
-              :theme="props.closeTheme"
-              :bg="props.closeBg"
-              :fg="props.closeFg"
+              :theme="closeColor.theme"
+              :bg="closeColor.bg"
+              :fg="closeColor.fg"
               @click.stop.prevent="hide('close')"
             >
               <slot name="close" v-bind="sharedSlots">
@@ -115,11 +115,11 @@ import BCloseButton from '../BButton/BCloseButton.vue'
 import BLink from '../BLink/BLink.vue'
 import BProgress from '../BProgress/BProgress.vue'
 import {useCountdown} from '../../composables/useCountdown'
-import {useThemeClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {useCountdownHover} from '../../composables/useCountdownHover'
 import {useId} from '../../composables/useId'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import BButton from '../BButton/BButton.vue'
 
 const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
@@ -129,9 +129,7 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   closeClass: undefined,
   closeContent: undefined,
   closeLabel: 'Close',
-  closeTheme: 'secondary',
-  closeBg: null,
-  closeFg: null,
+  closeColor: undefined,
   closeVariant: 'solid',
   headerClass: undefined,
   headerTag: 'div',
@@ -141,7 +139,7 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   isStatus: false,
   lazy: false,
   noCloseButton: false,
-  noFade: false,
+  noTransition: false,
   noHoverPause: false,
   noProgress: false,
   noResumeOnHoverLeave: false,
@@ -153,7 +151,6 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   fg: null,
   title: undefined,
   toastClass: undefined,
-  transProps: undefined,
   visible: false,
   // Link props
   // All others use defaults
@@ -165,7 +162,6 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   href: undefined,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   stretched: false,
   rel: undefined,
   replace: undefined,
@@ -173,14 +169,13 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   target: undefined,
   to: undefined,
   underlineOffset: undefined,
-  underlineOffsetHover: undefined,
   underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
   underlineTheme: undefined,
   theme: undefined,
   // End link props
 })
 const props = useDefaults(_props, 'BToast')
+const closeColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
 const emit = defineEmits<BToastEmits>()
 const slots = defineSlots<BToastSlots>()
 
@@ -202,7 +197,7 @@ const {
   isVisible,
   transitionProps,
   contentShowing,
-} = useShowHide({modelValue, props, emit: emit as EmitFn, element, id: computedId})
+} = useLegacyShowHide({modelValue, props, emit: emit as EmitFn, element, id: computedId})
 
 // TODO solid is never used
 const countdownLength = computed(() =>

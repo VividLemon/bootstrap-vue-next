@@ -6,13 +6,17 @@
         <BCard
           border="primary"
           header="Primary"
-          header-bg="primary"
-          header-fg="white"
+          :header-color="{ bg: 'primary', fg: 'white' }"
           align="center"
         >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard border="secondary" header="Secondary" header-border="secondary" align="center">
+        <BCard
+          border="secondary"
+          header="Secondary"
+          :header-color="{ border: 'secondary' }"
+          align="center"
+        >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
         <BCard border="success" header="Success" align="center">
@@ -33,8 +37,7 @@
         <BCard
           border="danger"
           header="Danger"
-          header-border="danger"
-          header-fg="danger"
+          :header-color="{ border: 'danger', fg: 'danger' }"
           align="center"
         >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>

@@ -122,7 +122,7 @@ export default {
           type: 'boolean | Breakpoint',
           default: false,
           description:
-            "Makes the table responsive in width, adding a horizontal scrollbar. Set to true for always responsive or set to one of the breakpoints to switch from responsive to normal: 'sm', 'md', 'lg', 'xl'",
+            "Makes the table responsive in width, adding a horizontal scrollbar. Set to true for always responsive (`table-responsive`) or set to one of the breakpoints to switch from responsive to normal: 'sm', 'md', 'lg', 'xl', '2xl' (`responsive=\"md\"` renders `md:table-responsive`)",
         },
         small: {
           type: 'boolean',
@@ -166,16 +166,7 @@ export default {
 
     const BTableLite = {
       props: {
-        ...pick(buildCommonProps(), [
-          'footBg',
-          'footFg',
-          'footRowBg',
-          'footRowFg',
-          'headBg',
-          'headFg',
-          'headRowBg',
-          'headRowFg',
-        ]),
+        ...pick(buildCommonProps(), ['footColor', 'footRowColor', 'headColor', 'headRowColor']),
         align: {
           type: 'VerticalAlign',
           default: undefined,
@@ -203,28 +194,6 @@ export default {
           type: 'boolean',
           default: false,
           description: 'Enable the footer of the table, and clone the header content by default',
-        },
-        footRowTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-          description:
-            'Apply a theme color to the tr element in the tfoot. Falls back to head-row-theme',
-        },
-        footTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-          description:
-            'Apply a theme color to the foot, falls back to head-theme if that prop is specified. May take precedence over foot-row-theme',
-        },
-        headRowTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-          description: 'Apply a theme color to the tr element in the thead',
-        },
-        headTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-          description: 'Apply a theme color to the head. May take precedence over head-row-theme',
         },
         items: {
           type: 'readonly Item[]',
@@ -604,7 +573,6 @@ export default {
         | 'update:current-page'
       >,
       props: {
-        ...pick(buildCommonProps(), ['selectionBg', 'selectionFg']),
         busy: {
           type: 'boolean',
           default: false,
@@ -748,11 +716,11 @@ export default {
           type: 'boolean | string',
           default: true,
         },
-        selectionTheme: {
-          type: 'ThemeProp | null',
-          default: 'primary',
+        selectionColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'primary' },
           description:
-            'Theme color to set selected rows to. Use any of the registered theme colors. Set to `null` to not apply a theme',
+            'Color object for selected rows: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
         },
         selectMode: {
           type: "'multi' | 'single' | 'range'",

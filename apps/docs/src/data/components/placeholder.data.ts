@@ -52,7 +52,7 @@ export default {
     BPlaceholderCard: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.card' },
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'footerBg', 'footerFg', 'headerBg', 'headerFg']),
+        ...pick(buildCommonProps(), ['bg', 'fg', 'footerColor', 'headerColor']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -65,10 +65,6 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        footerTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-        },
         footerWidth: {
           type: 'Numberish',
           default: 100,
@@ -79,10 +75,6 @@ export default {
         },
         headerSize: {
           type: 'PlaceholderSize',
-          default: undefined,
-        },
-        headerTheme: {
-          type: 'ThemeProp | null',
           default: undefined,
         },
         headerWidth: {
@@ -153,7 +145,7 @@ export default {
     BPlaceholderWrapper: {
       styleSpec: { kind: StyleKind.None },
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'footerBg', 'footerFg', 'headerBg', 'headerFg']),
+        ...pick(buildCommonProps(), ['bg', 'fg', 'footerColor', 'headerColor']),
         loading: {
           description: 'Determines whether the loading slot is displayed',
           type: 'boolean',
@@ -175,7 +167,7 @@ export default {
     BPlaceholderTable: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.table' },
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'footerBg', 'footerFg', 'headerBg', 'headerFg']),
+        ...pick(buildCommonProps(), ['bg', 'fg', 'footerColor', 'headerColor']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -204,10 +196,6 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        footerTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-        },
         headerAnimation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -222,10 +210,6 @@ export default {
         },
         headerSize: {
           type: 'PlaceholderSize',
-          default: undefined,
-        },
-        headerTheme: {
-          type: 'ThemeProp | null',
           default: undefined,
         },
         noHeader: {

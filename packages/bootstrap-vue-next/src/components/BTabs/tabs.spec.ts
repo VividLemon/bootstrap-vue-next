@@ -1153,11 +1153,11 @@ describe('tabs', () => {
     expect($ul.text()).toContain('end')
   })
 
-  // --- noFade provided to children ---
+  // --- noTransition provided to children ---
 
-  it('tab panes have fade class when noFade is false', async () => {
+  it('tab panes have fade class when noTransition is false', async () => {
     const wrapper = mount(BTabs, {
-      props: {noFade: false},
+      props: {noTransition: false},
       slots: {
         default: () => [h(BTab, {id: 'tab-1', title: 'First'}, () => 'one')],
       },
@@ -1167,9 +1167,9 @@ describe('tabs', () => {
     expect(pane.classes()).toContain('fade')
   })
 
-  it('tab panes do not have fade class when noFade is true', async () => {
+  it('tab panes do not have fade class when noTransition is true', async () => {
     const wrapper = mount(BTabs, {
-      props: {noFade: true},
+      props: {noTransition: true},
       slots: {
         default: () => [h(BTab, {id: 'tab-1', title: 'First'}, () => 'one')],
       },

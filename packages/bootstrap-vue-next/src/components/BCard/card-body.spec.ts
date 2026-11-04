@@ -332,20 +332,20 @@ describe('card-body', () => {
     expect(wrapper.getComponent(BCardSubtitle).props('tag')).toBe('h3')
   })
 
-  it('BCardSubtitle has prop fg as prop subtitleFg', () => {
+  it('BCardSubtitle has prop fg as prop subtitleColor.fg', () => {
     const wrapper = mount(BCardBody, {
-      props: {subtitle: 'foobar', subtitleFg: 'primary'},
+      props: {subtitle: 'foobar', subtitleColor: {fg: 'primary'}},
     })
     const $cardsubtitle = wrapper.getComponent(BCardSubtitle)
     expect($cardsubtitle.props('fg')).toBe('primary')
   })
 
-  it('subtitleFg is reactive', async () => {
+  it('subtitleColor.fg is reactive', async () => {
     const wrapper = mount(BCardBody, {
-      props: {subtitle: 'foobar', subtitleFg: 'primary'},
+      props: {subtitle: 'foobar', subtitleColor: {fg: 'primary'}},
     })
     expect(wrapper.getComponent(BCardSubtitle).props('fg')).toBe('primary')
-    await wrapper.setProps({subtitleFg: 'danger'})
+    await wrapper.setProps({subtitleColor: {fg: 'danger'}})
     expect(wrapper.getComponent(BCardSubtitle).props('fg')).toBe('danger')
   })
 

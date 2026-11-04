@@ -34,8 +34,23 @@ export default {
       props: {
         ...pick(
           buildCommonProps({
+            bodyColor: {
+              type: 'ColorBorderExtendables',
+              description:
+                'Color object for the body: `theme`, `bg`, `fg` and `border` keys render `theme-*`, `bg-*`, `fg-*` and `border-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+            },
             border: {
               default: null,
+            },
+            footerColor: {
+              type: 'ColorBorderExtendables',
+              description:
+                'Color object for the footer: `theme`, `bg`, `fg` and `border` keys render `theme-*`, `bg-*`, `fg-*` and `border-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+            },
+            headerColor: {
+              type: 'ColorBorderExtendables',
+              description:
+                'Color object for the header: `theme`, `bg`, `fg` and `border` keys render `theme-*`, `bg-*`, `fg-*` and `border-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
             },
             theme: {
               default: null,
@@ -43,30 +58,21 @@ export default {
           }),
           [
             'bg',
-            'bodyBg',
-            'bodyBorder',
+            'bodyColor',
             'bodyClass',
-            'bodyFg',
             'bodyTag',
-            'bodyTheme',
             'border',
             'fg',
             'footer',
-            'footerBg',
-            'footerBorder',
+            'footerColor',
             'footerClass',
-            'footerFg',
             'footerTag',
-            'footerTheme',
             'header',
-            'headerBg',
-            'headerBorder',
+            'headerColor',
             'headerClass',
-            'headerFg',
             'headerTag',
-            'headerTheme',
             'subtitle',
-            'subtitleFg',
+            'subtitleColor',
             'subtitleTag',
             'tag',
             'theme',
@@ -145,7 +151,7 @@ export default {
           'border',
           'fg',
           'subtitle',
-          'subtitleFg',
+          'subtitleColor',
           'subtitleTag',
           'tag',
           'theme',

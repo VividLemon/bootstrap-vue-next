@@ -50,32 +50,25 @@ accessible name via `aria-label` (or a visually hidden `<label>`).
 By default, the label appears above the input element(s), but you may optionally render horizontal
 (label to the left of the input) at the various standard Bootstrap breakpoints.
 
-The props `label-cols` and `label-cols-{breakpoint}` allow you to specify how many columns the label
-should occupy in the row. The input will fill the rest of the row width. The value must be a number
-greater than `0`. Or you can set the prop to `true` to make the label and input(s) each occupy half
-of the width of the rendered row (handy if you have custom Bootstrap with an odd number of columns),
-or set the value to `'auto'` so that the label occupies only the width that is needed.
+The `label-cols` prop allows you to specify how many columns the label should occupy in the row.
+The input will fill the rest of the row width. It takes a responsive object keyed by breakpoint
+(`xs`, `sm`, `md`, `lg`, `xl`, `2xl`), where `xs` applies to all screen sizes and every other key
+applies to that breakpoint and up. Each value must be a number from `1` to `12`, `true` to make the
+label and input(s) each occupy an equal share of the row width (handy if you have custom Bootstrap
+with an odd number of columns), or `'auto'` so that the label occupies only the width that is needed.
 
-It is also possible to specify how many columns the content should
-occupy in the row via the `content-cols` and `content-cols-{breakpoint}` props.
+It is also possible to specify how many columns the content should occupy in the row via the
+`content-cols` prop, which takes the same responsive object.
 
 When using both, the `label-cols` and `content-cols` props, make sure that the total amount of
 columns does not exceed `12`.
 
 See the [Grid System](/docs/components/grid-system#how-it-works) docs for further information.
 
-| Prop              | Description                       |
-| ----------------- | --------------------------------- |
-| `label-cols`      | Applies to breakpoint `xs` up     |
-| `label-cols-sm`   | Applies to breakpoint `sm` and up |
-| `label-cols-md`   | Applies to breakpoint `md` and up |
-| `label-cols-lg`   | Applies to breakpoint `lg` and up |
-| `label-cols-xl`   | Applies to breakpoint `xl` and up |
-| `content-cols`    | Applies to breakpoint `xs` up     |
-| `content-cols-sm` | Applies to breakpoint `sm` and up |
-| `content-cols-md` | Applies to breakpoint `md` and up |
-| `content-cols-lg` | Applies to breakpoint `lg` and up |
-| `content-cols-xl` | Applies to breakpoint `xl` and up |
+```vue-html
+<BFormGroup :label-cols="{ xs: 12, sm: 4, lg: 3 }" :content-cols="{ sm: true, lg: 7 }">
+<!-- label: col-12 sm:col-4 lg:col-3, content: sm:col lg:col-7 -->
+```
 
 <<< DEMO ./demo/FormGroupHorizontalLayout.vue#template{vue-html}
 
@@ -91,16 +84,9 @@ for both horizontal and non-horizontal form groups.
 
 ### Label text alignment
 
-The label text may also optionally be aligned `start`, `center` or `end` by setting the respective
-value via the prop `label-text-align` and/or `label-align-{breakpoint}`.
-
-| Prop             | Description                       |
-| ---------------- | --------------------------------- |
-| `label-align`    | Applies to breakpoint `xs` up     |
-| `label-align-sm` | Applies to breakpoint `sm` and up |
-| `label-align-md` | Applies to breakpoint `md` and up |
-| `label-align-lg` | Applies to breakpoint `lg` and up |
-| `label-align-xl` | Applies to breakpoint `xl` and up |
+The label text may also optionally be aligned `start`, `center` or `end` via the `label-align` prop.
+It takes a responsive object keyed by breakpoint, and renders Bootstrap v6 prefix classes:
+`:label-align="{ xs: 'center', md: 'end' }"` renders `text-center md:text-end`.
 
 Alignment has no effect if the `label-visually-hidden` prop is set.
 
@@ -220,7 +206,7 @@ You can make a floating label by setting the property `floating` to true and spe
 
 Floating labels have a few restrictions.
 
-- Floating labels do not work in horizontal layout. Horizontal layout precedes the `floating` property. Do not set any of the `content-cols-` or `label-cols-` properties if you want floating labels.
+- Floating labels do not work in horizontal layout. Horizontal layout precedes the `floating` property. Do not set the `content-cols` or `label-cols` properties if you want floating labels.
 - The `BFormInput` must have a placeholder property set.
 
 ## Accessibility

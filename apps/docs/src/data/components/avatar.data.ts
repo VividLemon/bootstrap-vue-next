@@ -60,26 +60,17 @@ export default {
             description:
               'When `true` shows an empty badge on the avatar, alternatively set to a string for content in the badge',
           },
-          badgeBg: {
-            type: 'MaybeArray<BgColor> | null',
-            default: null,
-            description: 'Applies a background color (`BgColor`) to the badge',
+          badgeColor: {
+            type: 'ColorExtendables',
+            default: { theme: 'primary' },
+            description:
+              'Color object for the badge: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
           },
           badgeDotIndicator: {
             type: 'boolean',
             default: false,
             description:
               'When `true` shows a small dot indicator on the Avatar. All of the badge props are applied to the dot. `badge-dot-indicator` takes precedence over `badge`',
-          },
-          badgeFg: {
-            type: 'MaybeArray<FgColor> | null',
-            default: null,
-            description: 'Applies a foreground (text) color (`FgColor`) to the badge',
-          },
-          badgeTheme: {
-            type: 'ThemeProp | null',
-            default: 'primary',
-            description: 'Applies one of the theme colors to the badge',
           },
           badgePlacement: {
             type: 'CombinedPlacement',

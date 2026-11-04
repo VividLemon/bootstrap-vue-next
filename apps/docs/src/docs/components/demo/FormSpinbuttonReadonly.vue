@@ -2,7 +2,7 @@
   <!-- #region template -->
   <BRow>
     <BCol
-      md="6"
+      :cols="{ md: 6 }"
       class="mb-2"
     >
       <label for="sb-disabled">Disabled spin button</label>
@@ -13,7 +13,7 @@
       />
     </BCol>
     <BCol
-      md="6"
+      :cols="{ md: 6 }"
       class="mb-2"
     >
       <label

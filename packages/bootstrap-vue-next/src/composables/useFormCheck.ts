@@ -3,7 +3,7 @@ import {computed, type MaybeRef, readonly, toRef, toValue} from 'vue'
 import {useAriaInvalid} from './useAriaInvalid'
 import {useStateClass} from './useStateClass'
 import type {Size} from '../types/Size'
-import type {BgColor, ButtonVariant, FgColor, MaybeArray, ThemeProp} from '../types/ColorTypes'
+import type {ButtonVariant, ColorExtendables} from '../types/ColorTypes'
 import {useButtonThemeClasses} from './useThemeClasses'
 import type {ValidationState} from '../types/CommonTypes'
 
@@ -59,9 +59,7 @@ interface LabelClasesItemsInput {
   plain?: boolean
   button?: boolean
   buttonVariant?: ButtonVariant | null
-  buttonTheme?: ThemeProp | null
-  buttonBg?: MaybeArray<BgColor> | null
-  buttonFg?: MaybeArray<FgColor> | null
+  buttonColor?: ColorExtendables
   size?: Size
 }
 
@@ -71,9 +69,9 @@ const useFormCheckLabelClasses = (items: MaybeRef<LabelClasesItemsInput>) => {
       const resolvedItems = toValue(items)
       return {
         variant: resolvedItems.buttonVariant,
-        theme: resolvedItems.buttonTheme,
-        bg: resolvedItems.buttonBg,
-        fg: resolvedItems.buttonFg,
+        theme: resolvedItems.buttonColor?.theme,
+        bg: resolvedItems.buttonColor?.bg,
+        fg: resolvedItems.buttonColor?.fg,
       }
     })
   )

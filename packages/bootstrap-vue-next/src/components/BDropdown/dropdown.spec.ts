@@ -127,9 +127,9 @@ describe('dropdown', () => {
     expect($bbutton.attributes('id')).toContain('foobar')
   })
 
-  it('first child BButton prop theme to be prop splitTheme', () => {
+  it('first child BButton prop theme to be prop splitColor.theme', () => {
     const wrapper = mount(BDropdown, {
-      props: {splitTheme: 'danger'},
+      props: {splitColor: {theme: 'danger'}},
     })
     const $bbutton = wrapper.getComponent(BButton)
     expect($bbutton.props('theme')).toBe('danger')
@@ -152,9 +152,14 @@ describe('dropdown', () => {
     expect($bbutton.props('theme')).toBe('danger')
   })
 
-  it('first child BButton props prefer splitVariant/splitTheme over variant/theme', () => {
+  it('first child BButton props prefer splitVariant/splitColor.theme over variant/theme', () => {
     const wrapper = mount(BDropdown, {
-      props: {splitVariant: 'outline', splitTheme: 'danger', variant: 'solid', theme: 'secondary'},
+      props: {
+        splitVariant: 'outline',
+        splitColor: {theme: 'danger'},
+        variant: 'solid',
+        theme: 'secondary',
+      },
     })
     const $bbutton = wrapper.getComponent(BButton)
     expect($bbutton.props('variant')).toBe('outline')
@@ -713,7 +718,7 @@ describe('dropdown', () => {
 
     it('has class show when dropdown is open and not split', async () => {
       const wrapper = mount(BDropdown, {
-        props: {modelValue: true, noAnimation: true},
+        props: {modelValue: true, noTransition: true},
       })
       await new Promise((resolve) => setTimeout(resolve, 30))
       const $bbutton = wrapper.getComponent(BButton)

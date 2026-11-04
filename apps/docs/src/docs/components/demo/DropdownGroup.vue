@@ -7,7 +7,7 @@
       <BDropdownItemButton>First Grouped item</BDropdownItemButton>
       <BDropdownItemButton>Second Grouped Item</BDropdownItemButton>
     </BDropdownGroup>
-    <BDropdownGroup header="Group 2" header-theme="primary">
+    <BDropdownGroup header="Group 2" :header-color="{ theme: 'primary' }">
       <BDropdownItemButton>First Grouped item</BDropdownItemButton>
       <BDropdownItemButton>Second Grouped Item</BDropdownItemButton>
     </BDropdownGroup>

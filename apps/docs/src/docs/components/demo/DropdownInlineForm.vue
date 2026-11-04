@@ -8,8 +8,8 @@
       <BFormGroup
         label="Email:"
         label-for="email-inline"
-        label-cols="3"
-        label-align="end"
+        :label-cols="{ xs: 3 }"
+        :label-align="{ xs: 'end' }"
       >
         <BFormInput
           id="email-inline"
@@ -21,8 +21,8 @@
       <BFormGroup
         label="Password:"
         label-for="password-inline"
-        label-cols="4"
-        label-align="end"
+        :label-cols="{ xs: 4 }"
+        :label-align="{ xs: 'end' }"
       >
         <BFormInput
           id="password-inline"
