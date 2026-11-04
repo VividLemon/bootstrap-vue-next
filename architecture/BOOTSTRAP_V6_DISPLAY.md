@@ -4,13 +4,13 @@
 
 Research for the display group of the v6 new-components migration: Accordion, Avatar, Carousel, Stepper, Prose. Read-only; no code changed.
 
-| Component | Approach                                                                                                                                                                                  | Size of change                                                         |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Accordion | Redesign on native `<details>` / `<summary>`. No `BCollapse`, no Bootstrap JS. Exclusivity through the native `name` attribute                                                            | Rewrite of both components; most `BCollapse`-derived props go          |
-| Avatar    | Redesign on v6 `.avatar` / `.avatar-img` / `.avatar-status` / `.avatar-stack`. Delete the library `_avatar.scss`                                                                          | Rewrite; `b-avatar*` classes, rounding and inline sizing go            |
-| Carousel  | Redesign on v6 scroll-snap markup. Reimplement `carousel.ts` behavior in Vue (do not wrap Bootstrap's class). Remove `<TransitionGroup>`                                                  | Full rewrite; props map to v6 options (`autoplay`, `ends`, `pause`)    |
-| Stepper   | New: `BStepper` + `BStepperItem` (CSS only in v6)                                                                                                                                         | New, small                                                             |
-| Prose     | Recommend docs only (`.prose` / `.not-prose` classes); no component                                                                                                                       | Docs only                                                              |
+| Component | Approach                                                                                                                                 | Size of change                                                      |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Accordion | Redesign on native `<details>` / `<summary>`. No `BCollapse`, no Bootstrap JS. Exclusivity through the native `name` attribute           | Rewrite of both components; most `BCollapse`-derived props go       |
+| Avatar    | Redesign on v6 `.avatar` / `.avatar-img` / `.avatar-status` / `.avatar-stack`. Delete the library `_avatar.scss`                         | Rewrite; `b-avatar*` classes, rounding and inline sizing go         |
+| Carousel  | Redesign on v6 scroll-snap markup. Reimplement `carousel.ts` behavior in Vue (do not wrap Bootstrap's class). Remove `<TransitionGroup>` | Full rewrite; props map to v6 options (`autoplay`, `ends`, `pause`) |
+| Stepper   | New: `BStepper` + `BStepperItem` (CSS only in v6)                                                                                        | New, small                                                          |
+| Prose     | Recommend docs only (`.prose` / `.not-prose` classes); no component                                                                      | Docs only                                                           |
 
 No new third-party dependency. `useCarousel` is not worth a public API (Q7). One foundation change is needed: `useCssTransition` cannot see the accordion's `::details-content` transition (see Cross-group dependencies).
 
@@ -47,43 +47,43 @@ No new third-party dependency. `useCarousel` is not worth a public API (Q7). One
 
 ### Disposition: `BAccordion` props / models
 
-| Prop            | Disposition                         | Notes                                                                                           |
-| --------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `flush`         | keep (v6 equivalent)                | `.accordion-flush`                                                                              |
-| `free`          | keep (small additive)               | Omits the generated `name` on items (v6 "always open"). Name kept: no v6 prop exists (Q2)        |
-| `id`            | keep                                | Also seeds the generated `name`                                                                 |
-| `index` (model) | remove                              | Q2. Removes the DOM-position sorting machinery                                                  |
-| `initialAnimation` | remove                           | `open` is rendered (and SSR'd) as an attribute; animating on mount is not v6 behavior            |
-| `lazy`          | Q3                                  | Recommend keep as item-inherited default                                                        |
-| `modelValue`    | keep (Q2)                           | Open item ids: `string \| undefined` (exclusive) or `string[]` (`free`)                          |
-| `unmountLazy`   | remove (Q3)                         |                                                                                                 |
-| new `gap`       | add (v6)                            | `.accordion-gap`                                                                                |
-| new `size`      | add (v6)                            | `'sm' \| 'md'`, `sm` → `.accordion-sm` (mirrors `BadgeSize`)                                     |
-| new `theme`     | add (v6)                            | `ThemeProp \| null` → `.theme-*` via `useThemeClasses`; colors open items                         |
-| new `noTransition` | add (convention)                 | Inline token reset, see Implementation notes                                                    |
-| new `name`      | add (small additive)                | Override the generated group name (e.g. to group items across two `BAccordion`s). Low value; optional |
+| Prop               | Disposition           | Notes                                                                                                 |
+| ------------------ | --------------------- | ----------------------------------------------------------------------------------------------------- |
+| `flush`            | keep (v6 equivalent)  | `.accordion-flush`                                                                                    |
+| `free`             | keep (small additive) | Omits the generated `name` on items (v6 "always open"). Name kept: no v6 prop exists (Q2)             |
+| `id`               | keep                  | Also seeds the generated `name`                                                                       |
+| `index` (model)    | remove                | Q2. Removes the DOM-position sorting machinery                                                        |
+| `initialAnimation` | remove                | `open` is rendered (and SSR'd) as an attribute; animating on mount is not v6 behavior                 |
+| `lazy`             | Q3                    | Recommend keep as item-inherited default                                                              |
+| `modelValue`       | keep (Q2)             | Open item ids: `string \| undefined` (exclusive) or `string[]` (`free`)                               |
+| `unmountLazy`      | remove (Q3)           |                                                                                                       |
+| new `gap`          | add (v6)              | `.accordion-gap`                                                                                      |
+| new `size`         | add (v6)              | `'sm' \| 'md'`, `sm` → `.accordion-sm` (mirrors `BadgeSize`)                                          |
+| new `theme`        | add (v6)              | `ThemeProp \| null` → `.theme-*` via `useThemeClasses`; colors open items                             |
+| new `noTransition` | add (convention)      | Inline token reset, see Implementation notes                                                          |
+| new `name`         | add (small additive)  | Override the generated group name (e.g. to group items across two `BAccordion`s). Low value; optional |
 
 ### Disposition: `BAccordionItem` props
 
-| Prop                         | Disposition                     | Notes                                                                       |
-| ---------------------------- | ------------------------------- | --------------------------------------------------------------------------- |
-| `bodyAttrs`                  | keep                            | `.accordion-body`                                                           |
-| `bodyClass`                  | remove → `bodyAttrs`            | Part attrs rule                                                             |
-| `buttonAttrs`                | replace → `headerAttrs`         | The `<summary>` is both header and button                                   |
-| `buttonClass`                | remove → `headerAttrs`          |                                                                             |
-| `collapseClass`              | remove                          | No collapse element                                                         |
-| `headerAttrs`                | keep, retargeted to `<summary>` |                                                                             |
-| `headerClass`                | remove → `headerAttrs`          |                                                                             |
-| `headerTag`                  | remove                          | Heading semantics inside `<summary>` are not reliably exposed; v6 has none  |
-| `horizontal`, `isNav`, `tag` | remove                          | `BCollapse` leftovers; root is always `<details>`                           |
-| `id`                         | keep                            | `<details id>`; key in the parent model                                     |
-| `lazy`                       | Q3                              |                                                                             |
-| `modelValue`                 | keep                            | Boolean `open`                                                              |
-| `noTransition`               | keep                            |                                                                             |
-| `show`, `visible`            | remove                          | `ShowHideProps`; use `v-model` / initial `true`                              |
-| `title`                      | keep                            | Text in `<summary>`                                                         |
-| `unmountLazy`                | remove (Q3)                     |                                                                             |
-| `wrapperAttrs`               | remove                          | Root is the `<details>`; plain attrs fall through (`inheritAttrs: true`)    |
+| Prop                         | Disposition                     | Notes                                                                      |
+| ---------------------------- | ------------------------------- | -------------------------------------------------------------------------- |
+| `bodyAttrs`                  | keep                            | `.accordion-body`                                                          |
+| `bodyClass`                  | remove → `bodyAttrs`            | Part attrs rule                                                            |
+| `buttonAttrs`                | replace → `headerAttrs`         | The `<summary>` is both header and button                                  |
+| `buttonClass`                | remove → `headerAttrs`          |                                                                            |
+| `collapseClass`              | remove                          | No collapse element                                                        |
+| `headerAttrs`                | keep, retargeted to `<summary>` |                                                                            |
+| `headerClass`                | remove → `headerAttrs`          |                                                                            |
+| `headerTag`                  | remove                          | Heading semantics inside `<summary>` are not reliably exposed; v6 has none |
+| `horizontal`, `isNav`, `tag` | remove                          | `BCollapse` leftovers; root is always `<details>`                          |
+| `id`                         | keep                            | `<details id>`; key in the parent model                                    |
+| `lazy`                       | Q3                              |                                                                            |
+| `modelValue`                 | keep                            | Boolean `open`                                                             |
+| `noTransition`               | keep                            |                                                                            |
+| `show`, `visible`            | remove                          | `ShowHideProps`; use `v-model` / initial `true`                            |
+| `title`                      | keep                            | Text in `<summary>`                                                        |
+| `unmountLazy`                | remove (Q3)                     |                                                                            |
+| `wrapperAttrs`               | remove                          | Root is the `<details>`; plain attrs fall through (`inheritAttrs: true`)   |
 
 Slots: `title` keep; `default` keep (body); new `icon` (replaces the default `<svg class="accordion-icon">`). `BAccordion` `default` keep.
 
@@ -98,8 +98,17 @@ Exposed: today none on `BAccordionItem` (the `BCollapse` inside exposes `show/hi
   <details id="acc-item-1" class="accordion-item" name="acc" open>
     <summary class="accordion-header">
       Title
-      <svg class="accordion-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor"
-        stroke-linecap="round" stroke-linejoin="round"><path d="m2 5 6 6 6-6" /></svg>
+      <svg
+        class="accordion-icon"
+        aria-hidden="true"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m2 5 6 6 6-6" />
+      </svg>
     </summary>
     <div class="accordion-body">…</div>
   </details>
@@ -154,31 +163,31 @@ None. The show/hide registry (`useToggle`, `v-b-toggle`) no longer reaches accor
 
 ### Disposition: `BAvatar`
 
-| Prop / group                                                                                                                                                     | Disposition                          | Notes                                                                                                   |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `alt`                                                                                                                                                            | keep                                 | `<img alt>`; default stays `'avatar'`                                                                   |
-| `src`                                                                                                                                                            | keep (small additive)                | Renders `<img class="avatar-img">`                                                                      |
-| `text`                                                                                                                                                           | keep (small additive)                | Initials; fallback when the image fails                                                                 |
-| `size`                                                                                                                                                           | keep, retyped                        | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` → class; any other string/number → inline `--bs-avatar-size`       |
-| `theme`                                                                                                                                                          | keep                                 | Default changes `'secondary'` → `null` (v6 neutral `--bs-bg-2`)                                          |
-| `bg`, `fg`                                                                                                                                                       | keep                                 | Root color props stay flat (cross-cutting rule); note `bg-*` overrides the token look                    |
-| new `variant`                                                                                                                                                    | add (v6)                             | `'subtle' \| null` → `.avatar-subtle`; mirrors `BBadge.variant` from #167                               |
-| new `status`, `statusLabel`                                                                                                                                      | add (v6)                             | `'online' \| 'offline' \| 'busy' \| 'away'`; label defaults to the capitalized status (i18n via label)    |
-| `badge`, `badgeColor`, `badgePlacement`, `badgePill`, `badgeDotIndicator`                                                                                         | Q4                                   | v6 replaced the dot badge with `status`. Recommend remove; keep a `badge` slot only                      |
-| `button`, `buttonType`, link props (`active`, `activeClass`, `disabled`, `exactActiveClass`, `href`, `noRel`, `opacity`, `prefetch*`, `noPrefetch`, `prefetchedClass`, `rel`, `replace`, `routerComponentName`, `stretched`, `target`, `to`, `underline*`) | Q4                                   | Recommend keep link (`href`/`to`) and `button` as small additive, drop decoration props                 |
-| `rounded`, `roundedTop`, `roundedBottom`, `roundedStart`, `roundedEnd`, `square`                                                                                  | remove                               | Utilities round `.avatar` but `.avatar-img` follows `--bs-avatar-border-radius`, so corners would mismatch. Docs: `style="--bs-avatar-border-radius: …"` |
+| Prop / group                                                                                                                                                                                                                                               | Disposition           | Notes                                                                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `alt`                                                                                                                                                                                                                                                      | keep                  | `<img alt>`; default stays `'avatar'`                                                                                                                    |
+| `src`                                                                                                                                                                                                                                                      | keep (small additive) | Renders `<img class="avatar-img">`                                                                                                                       |
+| `text`                                                                                                                                                                                                                                                     | keep (small additive) | Initials; fallback when the image fails                                                                                                                  |
+| `size`                                                                                                                                                                                                                                                     | keep, retyped         | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` → class; any other string/number → inline `--bs-avatar-size`                                                      |
+| `theme`                                                                                                                                                                                                                                                    | keep                  | Default changes `'secondary'` → `null` (v6 neutral `--bs-bg-2`)                                                                                          |
+| `bg`, `fg`                                                                                                                                                                                                                                                 | keep                  | Root color props stay flat (cross-cutting rule); note `bg-*` overrides the token look                                                                    |
+| new `variant`                                                                                                                                                                                                                                              | add (v6)              | `'subtle' \| null` → `.avatar-subtle`; mirrors `BBadge.variant` from #167                                                                                |
+| new `status`, `statusLabel`                                                                                                                                                                                                                                | add (v6)              | `'online' \| 'offline' \| 'busy' \| 'away'`; label defaults to the capitalized status (i18n via label)                                                   |
+| `badge`, `badgeColor`, `badgePlacement`, `badgePill`, `badgeDotIndicator`                                                                                                                                                                                  | Q4                    | v6 replaced the dot badge with `status`. Recommend remove; keep a `badge` slot only                                                                      |
+| `button`, `buttonType`, link props (`active`, `activeClass`, `disabled`, `exactActiveClass`, `href`, `noRel`, `opacity`, `prefetch*`, `noPrefetch`, `prefetchedClass`, `rel`, `replace`, `routerComponentName`, `stretched`, `target`, `to`, `underline*`) | Q4                    | Recommend keep link (`href`/`to`) and `button` as small additive, drop decoration props                                                                  |
+| `rounded`, `roundedTop`, `roundedBottom`, `roundedStart`, `roundedEnd`, `square`                                                                                                                                                                           | remove                | Utilities round `.avatar` but `.avatar-img` follows `--bs-avatar-border-radius`, so corners would mismatch. Docs: `style="--bs-avatar-border-radius: …"` |
 
 Emits: `click` keep only with Q4 = A/B (link/button); `img-error` keep (drives the fallback). Slots: `default` keep (custom content, e.g. an icon); `badge` per Q4; new `status` slot not needed.
 
 ### Disposition: `BAvatarGroup`
 
-| Prop                                    | Disposition            | Notes                                                                                                                                                                  |
-| --------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `size`                                  | keep                   | Literal → `.avatar-stack-{size}`; custom → injected to children (an inline variable on the stack does not reach children, `.avatar` redeclares `--bs-avatar-size`) |
-| `overlap`                               | keep (small additive)  | Inline `--bs-avatar-stack-spacing: -{overlap}` on each avatar (also redeclared on `.avatar`). Default `0.3` = v6                                                    |
-| `tag`                                   | keep                   |                                                                                                                                                                        |
-| `theme`, `bg`, `fg`                     | remove                 | `class="theme-primary"` on the stack already colors children (`--bs-theme-*` inherit); `bg`/`fg` would color the container, not avatars                              |
-| `square`, `rounded*`                    | remove                 | As on `BAvatar`                                                                                                                                                        |
+| Prop                 | Disposition           | Notes                                                                                                                                                              |
+| -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `size`               | keep                  | Literal → `.avatar-stack-{size}`; custom → injected to children (an inline variable on the stack does not reach children, `.avatar` redeclares `--bs-avatar-size`) |
+| `overlap`            | keep (small additive) | Inline `--bs-avatar-stack-spacing: -{overlap}` on each avatar (also redeclared on `.avatar`). Default `0.3` = v6                                                   |
+| `tag`                | keep                  |                                                                                                                                                                    |
+| `theme`, `bg`, `fg`  | remove                | `class="theme-primary"` on the stack already colors children (`--bs-theme-*` inherit); `bg`/`fg` would color the container, not avatars                            |
+| `square`, `rounded*` | remove                | As on `BAvatar`                                                                                                                                                    |
 
 Markup: `<div class="avatar-stack avatar-stack-lg" role="group">` with avatars as direct children (the `.b-avatar-group-inner` wrapper goes; v6 needs `.avatar` as flex children). `role="group"` stays; docs recommend an `aria-label`.
 
@@ -186,11 +195,11 @@ Markup: `<div class="avatar-stack avatar-stack-lg" role="group">` with avatars a
 
 ```html
 <span class="avatar avatar-lg avatar-subtle theme-primary">
-  <img class="avatar-img" src="…" alt="mdo">
+  <img class="avatar-img" src="…" alt="mdo" />
   <span class="avatar-status status-online" role="img" aria-label="Online"></span>
 </span>
 <!-- link avatar (Q4 = A): .avatar on the <a> itself -->
-<a class="avatar" href="/u/mdo"><img class="avatar-img" src="…" alt="mdo"></a>
+<a class="avatar" href="/u/mdo"><img class="avatar-img" src="…" alt="mdo" /></a>
 ```
 
 Content priority: default slot → `src` image (falls back on `error`) → `text` → empty. The default person icon is dropped (not in v6).
@@ -238,59 +247,59 @@ Pure render; image fallback state starts from `src` on both sides. No browser AP
 
 ### Disposition: `BCarousel` props
 
-| Prop                                  | Disposition                     | Notes                                                                                               |
-| ------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `background`                          | remove                          | v4 leftover inline background                                                                       |
-| `controls`                            | keep                            | Renders the default prev/next buttons (Q5 decides the layout)                                       |
-| `controlsNextText`, `controlsPrevText`| keep                            | Visually hidden labels                                                                              |
-| `fade`                                | keep (v6)                       | `.carousel-fade`                                                                                    |
-| `id`                                  | keep                            | Also `data-bs-target="#id"` on indicators (v6 CSS selects `[data-bs-target]`)                        |
-| `imgHeight`, `imgWidth`               | remove                          | With the slide `img*` props (Q6)                                                                    |
-| `indicators`                          | keep                            |                                                                                                     |
-| `indicatorsButtonLabel`               | keep                            | Becomes 1-based (`Slide 1`) as v6; today it is 0-based                                              |
-| `labelIndicators`                     | keep (small additive)           | `aria-label` on the indicator group                                                                 |
-| `interval`                            | keep (v6)                       |                                                                                                     |
-| `keyboard`                            | keep (v6)                       |                                                                                                     |
-| `modelValue`                          | keep                            | Active index; updated when the active slide settles (also on user swipe)                             |
-| `noTransition`                        | keep (convention)               | Scroll: instant jump. Fade: inline `--bs-carousel-fade-duration: 0s`. No v6 `-instant` class        |
-| `noHoverPause`                        | replace → `pause`               | `pause: 'hover' \| false` (v6 option), default `'hover'`                                            |
-| `noTouch`                             | remove                          | Native scroll owns touch; no v6 switch                                                              |
-| `noWrap`                              | replace → `ends`                | `'loop' \| 'wrap' \| 'stop'`, default `'loop'`                                                      |
-| `ride`                                | replace → `autoplay`            | Boolean. v5 "start after first interaction" (`ride: true`) has no v6 equivalent                     |
-| `rideReverse`                         | remove                          | No v6 equivalent                                                                                    |
-| `touchThreshold`                      | remove                          | No swipe threshold with scroll-snap                                                                 |
-| new `overlay`                         | add (v6)                        | `.carousel-overlay` + `.carousel-overlay-controls` bar                                              |
-| new `center`, `auto`                  | add (v6)                        | `.carousel-center`, `.carousel-auto`                                                                |
-| new `playPause`                       | add (v6)                        | Renders `.carousel-control-play-pause` (recommended with `autoplay`, WCAG 2.2.2); labels `playLabel` / `pauseLabel` |
-| items / gap / peek                    | no props                        | CSS variables: `:style="{'--bs-carousel-items': 3, '--bs-carousel-items-gap': '1rem'}"` (docs)      |
+| Prop                                   | Disposition           | Notes                                                                                                               |
+| -------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `background`                           | remove                | v4 leftover inline background                                                                                       |
+| `controls`                             | keep                  | Renders the default prev/next buttons (Q5 decides the layout)                                                       |
+| `controlsNextText`, `controlsPrevText` | keep                  | Visually hidden labels                                                                                              |
+| `fade`                                 | keep (v6)             | `.carousel-fade`                                                                                                    |
+| `id`                                   | keep                  | Also `data-bs-target="#id"` on indicators (v6 CSS selects `[data-bs-target]`)                                       |
+| `imgHeight`, `imgWidth`                | remove                | With the slide `img*` props (Q6)                                                                                    |
+| `indicators`                           | keep                  |                                                                                                                     |
+| `indicatorsButtonLabel`                | keep                  | Becomes 1-based (`Slide 1`) as v6; today it is 0-based                                                              |
+| `labelIndicators`                      | keep (small additive) | `aria-label` on the indicator group                                                                                 |
+| `interval`                             | keep (v6)             |                                                                                                                     |
+| `keyboard`                             | keep (v6)             |                                                                                                                     |
+| `modelValue`                           | keep                  | Active index; updated when the active slide settles (also on user swipe)                                            |
+| `noTransition`                         | keep (convention)     | Scroll: instant jump. Fade: inline `--bs-carousel-fade-duration: 0s`. No v6 `-instant` class                        |
+| `noHoverPause`                         | replace → `pause`     | `pause: 'hover' \| false` (v6 option), default `'hover'`                                                            |
+| `noTouch`                              | remove                | Native scroll owns touch; no v6 switch                                                                              |
+| `noWrap`                               | replace → `ends`      | `'loop' \| 'wrap' \| 'stop'`, default `'loop'`                                                                      |
+| `ride`                                 | replace → `autoplay`  | Boolean. v5 "start after first interaction" (`ride: true`) has no v6 equivalent                                     |
+| `rideReverse`                          | remove                | No v6 equivalent                                                                                                    |
+| `touchThreshold`                       | remove                | No swipe threshold with scroll-snap                                                                                 |
+| new `overlay`                          | add (v6)              | `.carousel-overlay` + `.carousel-overlay-controls` bar                                                              |
+| new `center`, `auto`                   | add (v6)              | `.carousel-center`, `.carousel-auto`                                                                                |
+| new `playPause`                        | add (v6)              | Renders `.carousel-control-play-pause` (recommended with `autoplay`, WCAG 2.2.2); labels `playLabel` / `pauseLabel` |
+| items / gap / peek                     | no props              | CSS variables: `:style="{'--bs-carousel-items': 3, '--bs-carousel-items-gap': '1rem'}"` (docs)                      |
 
 ### `BCarouselSlide`
 
-| Prop                                                                                     | Disposition           | Notes                                                    |
-| ---------------------------------------------------------------------------------------- | --------------------- | -------------------------------------------------------- |
-| `background`                                                                             | remove                |                                                          |
-| `caption`, `captionTag`, `text`, `textTag`, `contentTag`, `contentVisibleUp`              | remove                | `.carousel-caption` is gone; content goes in the slot    |
-| `id`                                                                                     | keep                  |                                                          |
-| `imgAlt`, `imgSrc`, `imgSrcset`, `imgWidth`, `imgHeight`, `imgBlank`, `imgBlankColor`     | Q6                    | Recommend keep `imgSrc`, `imgSrcset`, `imgAlt`, drop the rest |
-| `interval`                                                                               | keep (v6)             | Per-item `data-bs-interval`; drop the `'requestAnimationFrame'` literal from the type |
+| Prop                                                                                  | Disposition | Notes                                                                                 |
+| ------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------- |
+| `background`                                                                          | remove      |                                                                                       |
+| `caption`, `captionTag`, `text`, `textTag`, `contentTag`, `contentVisibleUp`          | remove      | `.carousel-caption` is gone; content goes in the slot                                 |
+| `id`                                                                                  | keep        |                                                                                       |
+| `imgAlt`, `imgSrc`, `imgSrcset`, `imgWidth`, `imgHeight`, `imgBlank`, `imgBlankColor` | Q6          | Recommend keep `imgSrc`, `imgSrcset`, `imgAlt`, drop the rest                         |
+| `interval`                                                                            | keep (v6)   | Per-item `data-bs-interval`; drop the `'requestAnimationFrame'` literal from the type |
 
 Slots: `default` keep, `img` keep (Q6 = A) or remove (Q6 = B), `caption` / `text` remove.
 
 ### Emits, slots, exposed
 
-| Item                  | Disposition                                                                                          |
-| --------------------- | ---------------------------------------------------------------------------------------------------- |
-| `slide`               | keep, now **cancelable** (v6). `BvCarouselEvent` keeps `from`, `to`, `direction`, `relatedTarget`     |
-| `slid`                | keep. In scroll mode fires when the observer settles; a multi-slide jump may emit intermediate `slid` (v6) |
-| `prev-click`, `next-click` | remove (cancel through `slide`)                                                                   |
-| `update:modelValue`   | keep                                                                                                 |
-| slot `default`        | keep (slides)                                                                                        |
-| new slot `controls`   | Replaces the default bar. Props `{prev, next, to, cycle, pause, togglePlay, playing, index, count, canPrev, canNext}` |
-| new slots `prev-icon`, `next-icon` | optional; low value, can wait                                                           |
-| exposed `next`, `prev`, `pause` | keep                                                                                       |
-| exposed `resume`      | rename → `cycle` (v6)                                                                                |
-| exposed `slideTo`     | rename → `to` (v6)                                                                                   |
-| new exposed           | `nextWhenVisible`, `playing` (readonly ref)                                                           |
+| Item                               | Disposition                                                                                                           |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `slide`                            | keep, now **cancelable** (v6). `BvCarouselEvent` keeps `from`, `to`, `direction`, `relatedTarget`                     |
+| `slid`                             | keep. In scroll mode fires when the observer settles; a multi-slide jump may emit intermediate `slid` (v6)            |
+| `prev-click`, `next-click`         | remove (cancel through `slide`)                                                                                       |
+| `update:modelValue`                | keep                                                                                                                  |
+| slot `default`                     | keep (slides)                                                                                                         |
+| new slot `controls`                | Replaces the default bar. Props `{prev, next, to, cycle, pause, togglePlay, playing, index, count, canPrev, canNext}` |
+| new slots `prev-icon`, `next-icon` | optional; low value, can wait                                                                                         |
+| exposed `next`, `prev`, `pause`    | keep                                                                                                                  |
+| exposed `resume`                   | rename → `cycle` (v6)                                                                                                 |
+| exposed `slideTo`                  | rename → `to` (v6)                                                                                                    |
+| new exposed                        | `nextWhenVisible`, `playing` (readonly ref)                                                                           |
 
 `slide` is emitted only for navigation the component starts (controls, keyboard, indicators, `to`, autoplay, model change), not for free scrolling by the user, as in v6. A prevented `slide` caused by a `v-model` change reverts the model.
 
@@ -299,20 +308,42 @@ Slots: `default` keep, `img` keep (Q6 = A) or remove (Q6 = B), `caption` / `text
 ```html
 <div id="c1" class="carousel" role="region" aria-roledescription="carousel" aria-label="…">
   <div class="carousel-inner" aria-live="polite">
-    <div id="c1-s0" class="carousel-item active" role="group" aria-roledescription="slide" aria-label="1 of 3">…</div>
+    <div
+      id="c1-s0"
+      class="carousel-item active"
+      role="group"
+      aria-roledescription="slide"
+      aria-label="1 of 3"
+    >
+      …
+    </div>
     <div class="carousel-item" role="group" aria-roledescription="slide" aria-label="2 of 3">…</div>
   </div>
   <div class="d-flex justify-content-between align-items-center">
     <div class="carousel-indicators" aria-label="Select a slide to display">
-      <button type="button" data-bs-target="#c1" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button
+        type="button"
+        data-bs-target="#c1"
+        class="active"
+        aria-current="true"
+        aria-label="Slide 1"
+      ></button>
       …
     </div>
     <div>
-      <button type="button" class="btn-icon btn-sm carousel-control-play-pause" aria-label="Pause"> <!-- playPause only -->
-        <span class="carousel-icon-pause" aria-hidden="true"></span><span class="carousel-icon-play" aria-hidden="true"></span>
+      <button type="button" class="btn-icon btn-sm carousel-control-play-pause" aria-label="Pause">
+        <!-- playPause only -->
+        <span class="carousel-icon-pause" aria-hidden="true"></span
+        ><span class="carousel-icon-play" aria-hidden="true"></span>
       </button>
-      <button type="button" class="btn-icon btn-sm"><span class="carousel-icon-prev" aria-hidden="true"></span><span class="visually-hidden">Previous</span></button>
-      <button type="button" class="btn-icon btn-sm"><span class="carousel-icon-next" aria-hidden="true"></span><span class="visually-hidden">Next</span></button>
+      <button type="button" class="btn-icon btn-sm">
+        <span class="carousel-icon-prev" aria-hidden="true"></span
+        ><span class="visually-hidden">Previous</span>
+      </button>
+      <button type="button" class="btn-icon btn-sm">
+        <span class="carousel-icon-next" aria-hidden="true"></span
+        ><span class="visually-hidden">Next</span>
+      </button>
     </div>
   </div>
 </div>
@@ -359,22 +390,22 @@ Not `useShowHide`: a carousel is not show/hide. Fade mode toggles `.active`; `us
 
 `BStepper`
 
-| Prop         | Type                     | Notes                                                                                           |
-| ------------ | ------------------------ | ----------------------------------------------------------------------------------------------- |
-| `modelValue` | `number \| undefined`    | Current step (0-based). Items with index ≤ value get `.active`; the current one `aria-current="step"` |
-| `horizontal` | `boolean \| Breakpoint`  | `true` → `.stepper-horizontal`; `'md'` → `md:stepper-horizontal` (needs a container, see below) |
-| `overflow`   | `boolean`                | Wraps in `<div class="stepper-overflow">` (also a query container)                              |
-| `tag`        | `string`                 | `'ol'`; `'div'` for interactive items                                                           |
+| Prop         | Type                    | Notes                                                                                                 |
+| ------------ | ----------------------- | ----------------------------------------------------------------------------------------------------- |
+| `modelValue` | `number \| undefined`   | Current step (0-based). Items with index ≤ value get `.active`; the current one `aria-current="step"` |
+| `horizontal` | `boolean \| Breakpoint` | `true` → `.stepper-horizontal`; `'md'` → `md:stepper-horizontal` (needs a container, see below)       |
+| `overflow`   | `boolean`               | Wraps in `<div class="stepper-overflow">` (also a query container)                                    |
+| `tag`        | `string`                | `'ol'`; `'div'` for interactive items                                                                 |
 
 `BStepperItem`
 
-| Prop               | Type                 | Notes                                                              |
-| ------------------ | -------------------- | ------------------------------------------------------------------ |
-| `active`           | `boolean \| undefined` | Overrides the parent-derived state                               |
-| `current`          | `boolean \| undefined` | Overrides `aria-current="step"`                                  |
-| `theme`            | `ThemeProp \| null`  | `.theme-*`                                                         |
-| `tag`              | `string`             | `'li'`                                                             |
-| `href`, `to`, `button` | link / button    | Optional interactive item (BLink or `<button type="button">`); clicking an item does not change `modelValue` unless the user handles `click` |
+| Prop                   | Type                   | Notes                                                                                                                                        |
+| ---------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `active`               | `boolean \| undefined` | Overrides the parent-derived state                                                                                                           |
+| `current`              | `boolean \| undefined` | Overrides `aria-current="step"`                                                                                                              |
+| `theme`                | `ThemeProp \| null`    | `.theme-*`                                                                                                                                   |
+| `tag`                  | `string`               | `'li'`                                                                                                                                       |
+| `href`, `to`, `button` | link / button          | Optional interactive item (BLink or `<button type="button">`); clicking an item does not change `modelValue` unless the user handles `click` |
 
 Slots: `BStepper` `default`; `BStepperItem` `default`. Emits: `BStepperItem` `click` when interactive. `BStepper` never changes the step itself, so `modelValue` can be a plain prop (`step`) instead of a model; implementation choice.
 
@@ -408,16 +439,16 @@ Recommendation (Q10): docs only. A `BProse` would only add a class and a `tag` (
 
 ## Cross-group dependencies
 
-| Item                                                     | Direction | Detail                                                                                                                                       |
-| -------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `useCssTransition` pseudo-element support                | G5 → #164 | Needed only if Accordion keeps `shown`/`hidden` or `unmountLazy` (Q1 = B or Q3 = B). Add `{pseudoElement}` option                              |
-| Show/hide registry                                       | G5 → all  | Under Q1 = A accordion items leave the registry (`v-b-toggle` / `useToggle` stop working on them). Note for whoever owns `useToggle` docs        |
-| `BCollapse` usage                                        | G5        | `BAccordionItem` stops rendering `BCollapse`; nothing else in G5 depends on Collapse. The `collapsed` class issue disappears with it              |
-| Badge (#167)                                             | G5 ← #167 | `BAvatar.variant: 'subtle'` mirrors `BBadge.variant`; `BAccordion.size` mirrors `BadgeSize`. If Q4 keeps a badge, it uses #167's `BBadge`       |
-| `.btn-icon` on `BButton`                                 | G5 ↔ G1–G4 | Carousel controls render plain `<button class="btn-icon btn-sm">`. When `BButton` gets a `.btn-icon` prop (migration plan "Deferred features"), the carousel can switch; not required |
-| Container queries                                        | G5 ← G6   | `BStepper` responsive `horizontal` needs a query container; follow G6's container-query helper decision                                        |
-| `Breakpoint` prefix props                                | G5 ↔ G3   | `BStepper.horizontal: boolean \| Breakpoint` follows the same pattern as Navbar `toggleable` / Drawer `responsive`; keep them consistent       |
-| `BvCarouselEvent`                                        | G5        | Stays in `utils/classes.ts`; becomes cancelable for `slide`. No other group uses it                                                           |
+| Item                                      | Direction  | Detail                                                                                                                                                                                |
+| ----------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useCssTransition` pseudo-element support | G5 → #164  | Needed only if Accordion keeps `shown`/`hidden` or `unmountLazy` (Q1 = B or Q3 = B). Add `{pseudoElement}` option                                                                     |
+| Show/hide registry                        | G5 → all   | Under Q1 = A accordion items leave the registry (`v-b-toggle` / `useToggle` stop working on them). Note for whoever owns `useToggle` docs                                             |
+| `BCollapse` usage                         | G5         | `BAccordionItem` stops rendering `BCollapse`; nothing else in G5 depends on Collapse. The `collapsed` class issue disappears with it                                                  |
+| Badge (#167)                              | G5 ← #167  | `BAvatar.variant: 'subtle'` mirrors `BBadge.variant`; `BAccordion.size` mirrors `BadgeSize`. If Q4 keeps a badge, it uses #167's `BBadge`                                             |
+| `.btn-icon` on `BButton`                  | G5 ↔ G1–G4 | Carousel controls render plain `<button class="btn-icon btn-sm">`. When `BButton` gets a `.btn-icon` prop (migration plan "Deferred features"), the carousel can switch; not required |
+| Container queries                         | G5 ← G6    | `BStepper` responsive `horizontal` needs a query container; follow G6's container-query helper decision                                                                               |
+| `Breakpoint` prefix props                 | G5 ↔ G3    | `BStepper.horizontal: boolean \| Breakpoint` follows the same pattern as Navbar `toggleable` / Drawer `responsive`; keep them consistent                                              |
+| `BvCarouselEvent`                         | G5         | Stays in `utils/classes.ts`; becomes cancelable for `slide`. No other group uses it                                                                                                   |
 
 ## Questions for the maintainer
 
@@ -513,7 +544,10 @@ Recommendation: **A**.
 
 ## Decisions
 
-_Pending maintainer answers._
+Answered by the maintainer on 2026-11-03. Where an answer differs from the proposal above, the answer wins.
+
+- **Q1 — A. Native only.** `BAccordionItem` state syncs from the native `toggle` event into `v-model`; `show` / `shown` / `hide` / `hidden` / `*-prevented` are removed and items leave the show/hide registry (`v-b-toggle` / `useToggle` no longer target them). No `pseudoElement` option is needed in `useCssTransition` unless Q3 = C.
+- Q2–Q10: _Pending._
 
 ## Implementation split
 

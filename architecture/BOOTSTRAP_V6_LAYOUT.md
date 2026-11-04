@@ -30,13 +30,13 @@ All classes and variables cited below were checked against `dist/css/bootstrap.c
 
 `ScrollSpy` (`js/src/scrollspy.ts`) is placed on the **scroll container** (`data-bs-spy="scroll"`). `target` points at the nav.
 
-| Option         | Type                | Default | Notes                                                                                                                  |
-| -------------- | ------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `topMargin`    | `string`            | `'12%'` | Activation line measured from the top of the root; `%` or `px`. A `px` line rebuilds the observer on resize (100 ms debounce) |
-| `rootMargin`   | `string \| null`    | `null`  | Raw IntersectionObserver `rootMargin`; when set it overrides `topMargin`                                                |
-| `threshold`    | `number[] \| string` | `[0]`   | Passed to the observer                                                                                                 |
-| `smoothScroll` | `boolean`           | `false` | Delegated click on the target's `[href]` links; scrolls smoothly, then on `scrollend` (or a 100 ms idle fallback) calls `history.replaceState` with the hash and focuses the section (`tabindex="-1"` added if missing). With reduced motion or when already in place, it settles at once |
-| `target`       | `string \| Element` | `null`  | Nav wrapper; falls back to `document.body`                                                                             |
+| Option         | Type                 | Default | Notes                                                                                                                                                                                                                                                                                     |
+| -------------- | -------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `topMargin`    | `string`             | `'12%'` | Activation line measured from the top of the root; `%` or `px`. A `px` line rebuilds the observer on resize (100 ms debounce)                                                                                                                                                             |
+| `rootMargin`   | `string \| null`     | `null`  | Raw IntersectionObserver `rootMargin`; when set it overrides `topMargin`                                                                                                                                                                                                                  |
+| `threshold`    | `number[] \| string` | `[0]`   | Passed to the observer                                                                                                                                                                                                                                                                    |
+| `smoothScroll` | `boolean`            | `false` | Delegated click on the target's `[href]` links; scrolls smoothly, then on `scrollend` (or a 100 ms idle fallback) calls `history.replaceState` with the hash and focuses the section (`tabindex="-1"` added if missing). With reduced motion or when already in place, it settles at once |
+| `target`       | `string \| Element`  | `null`  | Nav wrapper; falls back to `document.body`                                                                                                                                                                                                                                                |
 
 Behavior:
 
@@ -58,74 +58,74 @@ The current model is **content-driven**: sections are `content.querySelectorAll(
 
 Defects to fix in the rebuild:
 
-| Defect                                                                                                                                               | Effect                                                              |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Active section picked by scroll direction with thresholds `[0.1, 0.5, 1]` (v5 approach)                                                              | Flicker between sections; no reliable bottom-of-page result         |
-| Directive `updated: bind` disposes and re-creates the instance on every host re-render                                                               | Observers torn down and rebuilt constantly                          |
-| Directive calls the composable outside any effect scope                                                                                              | vueuse watchers and observers are never collected (relies on `cleanup`) |
-| `classList` mutation on component-rendered links                                                                                                     | Vue's `patchClass` replaces `className` when the link's class binding changes, so a re-render silently drops the scrollspy `.active` (and the spy won't re-add it because the active id hasn't changed) |
-| Parent activation walks `previousSibling` (can be a text node) and matches `.dropdown` / `.dropdown-toggle`                                           | Breaks with whitespace nodes; doesn't match v6 `.menu` markup       |
-| `scrollIntoView` uses `document.querySelector(href)` and `el.offsetTop`                                                                              | Throws on ids with `.` / `:`; offset relative to `offsetParent`, not the scroller |
-| `watchChanges` watches `childList` on the content only                                                                                               | Nav changes (new links) are not picked up                           |
+| Defect                                                                                                      | Effect                                                                                                                                                                                                  |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Active section picked by scroll direction with thresholds `[0.1, 0.5, 1]` (v5 approach)                     | Flicker between sections; no reliable bottom-of-page result                                                                                                                                             |
+| Directive `updated: bind` disposes and re-creates the instance on every host re-render                      | Observers torn down and rebuilt constantly                                                                                                                                                              |
+| Directive calls the composable outside any effect scope                                                     | vueuse watchers and observers are never collected (relies on `cleanup`)                                                                                                                                 |
+| `classList` mutation on component-rendered links                                                            | Vue's `patchClass` replaces `className` when the link's class binding changes, so a re-render silently drops the scrollspy `.active` (and the spy won't re-add it because the active id hasn't changed) |
+| Parent activation walks `previousSibling` (can be a text node) and matches `.dropdown` / `.dropdown-toggle` | Breaks with whitespace nodes; doesn't match v6 `.menu` markup                                                                                                                                           |
+| `scrollIntoView` uses `document.querySelector(href)` and `el.offsetTop`                                     | Throws on ids with `.` / `:`; offset relative to `offsetParent`, not the scroller                                                                                                                       |
+| `watchChanges` watches `childList` on the content only                                                      | Nav changes (new links) are not picked up                                                                                                                                                               |
 
 ### Disposition: `useScrollspy` options
 
-| Option         | Disposition                                         | Notes                                                                                                                         |
-| -------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `contentQuery` | **Keep (small additive), renamed `sections`** — Q1  | Only used when there's no `target` (content-driven mode, docs TOC). If Q1 = A, remove                                          |
-| `targetQuery`  | **Remove**                                          | v6 always uses `[href]`; the docs pass `':scope [href]'`, which is the same                                                   |
-| `manual`       | **Keep (small additive)**                           | Don't touch the DOM; bind `current` yourself. The recommended mode for library nav components (see Q3)                        |
-| `root`         | **Remove**                                          | v6 derives the root (content if scrollable, else viewport). The `UseScrollspyCustomRoot` demo goes                             |
-| `rootMargin`   | **Replace with v6 equivalent**                      | Default `null`; overrides `topMargin` when set (was `'0px 0px -25%'`)                                                          |
-| `threshold`    | **Replace with v6 equivalent**                      | Default `[0]` (was `[0.1, 0.5, 1]`); `number \| number[]`                                                                      |
-| `watchChanges` | **Keep (small additive)**                           | v6 needs a manual `refresh()`; Vue content changes all the time. Now observes content **and** target (`childList`, `subtree`, `attributes: ['href', 'id']`), batched to one `refresh()` per tick, ignoring the sentinel's own insertion |
-| —              | **New** `topMargin` (`'12%'`), `smoothScroll` (`false`) | From v6                                                                                                                    |
+| Option         | Disposition                                             | Notes                                                                                                                                                                                                                                   |
+| -------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `contentQuery` | **Keep (small additive), renamed `sections`** — Q1      | Only used when there's no `target` (content-driven mode, docs TOC). If Q1 = A, remove                                                                                                                                                   |
+| `targetQuery`  | **Remove**                                              | v6 always uses `[href]`; the docs pass `':scope [href]'`, which is the same                                                                                                                                                             |
+| `manual`       | **Keep (small additive)**                               | Don't touch the DOM; bind `current` yourself. The recommended mode for library nav components (see Q3)                                                                                                                                  |
+| `root`         | **Remove**                                              | v6 derives the root (content if scrollable, else viewport). The `UseScrollspyCustomRoot` demo goes                                                                                                                                      |
+| `rootMargin`   | **Replace with v6 equivalent**                          | Default `null`; overrides `topMargin` when set (was `'0px 0px -25%'`)                                                                                                                                                                   |
+| `threshold`    | **Replace with v6 equivalent**                          | Default `[0]` (was `[0.1, 0.5, 1]`); `number \| number[]`                                                                                                                                                                               |
+| `watchChanges` | **Keep (small additive)**                               | v6 needs a manual `refresh()`; Vue content changes all the time. Now observes content **and** target (`childList`, `subtree`, `attributes: ['href', 'id']`), batched to one `refresh()` per tick, ignoring the sentinel's own insertion |
+| —              | **New** `topMargin` (`'12%'`), `smoothScroll` (`false`) | From v6                                                                                                                                                                                                                                 |
 
 ### Disposition: `useScrollspy` return values
 
-| Return           | Disposition                                    | Notes                                                                                                                       |
-| ---------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `current`        | **Keep**                                       | `Readonly<Ref<string \| null>>`, id of the active section                                                                    |
-| `list`           | **Keep, renamed `sections`** — Q1              | `{id, el, text, link}`; `visible` is dropped (v6 has "crossing the line", not visibility, and it changes on every scroll tick) |
-| `content`, `target` | **Keep**                                    | Resolved elements, readonly                                                                                                 |
+| Return                  | Disposition                                       | Notes                                                                                                                                                                |
+| ----------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `current`               | **Keep**                                          | `Readonly<Ref<string \| null>>`, id of the active section                                                                                                            |
+| `list`                  | **Keep, renamed `sections`** — Q1                 | `{id, el, text, link}`; `visible` is dropped (v6 has "crossing the line", not visibility, and it changes on every scroll tick)                                       |
+| `content`, `target`     | **Keep**                                          | Resolved elements, readonly                                                                                                                                          |
 | `scrollIntoView(event)` | **Replace** with `scrollTo(idOrEvent, {smooth?})` | Same settle as v6 `smoothScroll` (scroll root, `replaceState` hash, focus). Needed in manual / content-driven mode, where there are no links to delegate clicks from |
-| `updateList`     | **Replace** with `refresh()`                   | v6 method name                                                                                                              |
-| `cleanup`        | **Replace** with `dispose()`                   | v6 method name; also runs automatically through `tryOnScopeDispose`                                                         |
+| `updateList`            | **Replace** with `refresh()`                      | v6 method name                                                                                                                                                       |
+| `cleanup`               | **Replace** with `dispose()`                      | v6 method name; also runs automatically through `tryOnScopeDispose`                                                                                                  |
 
 ### Disposition: `vBScrollspy`
 
-| Today                                             | Disposition                                                                        |
-| ------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Placed on the nav; arg or value = content         | **Replace** (Q2): placed on the scroll container; arg or value = target, as `data-bs-spy` |
-| Value object forwards options (incl. `element` alias) | **Keep** (options as above); **remove** `content` / `element` aliases           |
-| `updated` re-binds every render                   | **Replace**: re-bind only when the binding value changes (JSON compare, as `vBTooltip` does in `directives/utils.ts`) |
+| Today                                                 | Disposition                                                                                                           |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Placed on the nav; arg or value = content             | **Replace** (Q2): placed on the scroll container; arg or value = target, as `data-bs-spy`                             |
+| Value object forwards options (incl. `element` alias) | **Keep** (options as above); **remove** `content` / `element` aliases                                                 |
+| `updated` re-binds every render                       | **Replace**: re-bind only when the binding value changes (JSON compare, as `vBTooltip` does in `directives/utils.ts`) |
 
 ### Proposed API
 
 ```ts
 interface UseScrollspyOptions {
-  topMargin?: string // '12%'; '%' or 'px'
-  rootMargin?: string | null // null; overrides topMargin
-  threshold?: number | number[] // [0]
-  smoothScroll?: boolean // false
-  manual?: boolean // false: don't touch link classes
-  watchChanges?: boolean // true
-  sections?: string // Q1: content-driven selector, used when target is null
+  topMargin?: string; // '12%'; '%' or 'px'
+  rootMargin?: string | null; // null; overrides topMargin
+  threshold?: number | number[]; // [0]
+  smoothScroll?: boolean; // false
+  manual?: boolean; // false: don't touch link classes
+  watchChanges?: boolean; // true
+  sections?: string; // Q1: content-driven selector, used when target is null
 }
 
 declare function useScrollspy(
   content: MaybeRefOrGetter<string | ComponentPublicInstance | HTMLElement | null>,
   target?: MaybeRefOrGetter<string | ComponentPublicInstance | HTMLElement | null>,
-  options?: MaybeRefOrGetter<UseScrollspyOptions> // re-reads on change, then refresh()
+  options?: MaybeRefOrGetter<UseScrollspyOptions>, // re-reads on change, then refresh()
 ): {
-  current: Readonly<Ref<string | null>>
-  sections: Readonly<Ref<readonly ScrollspySection[]>> // {id, el, text, link: HTMLElement | null}
-  content: Readonly<Ref<HTMLElement | null>>
-  target: Readonly<Ref<HTMLElement | null>>
-  scrollTo: (idOrEvent: string | Event, opts?: {smooth?: boolean}) => void
-  refresh: () => void
-  dispose: () => void
-}
+  current: Readonly<Ref<string | null>>;
+  sections: Readonly<Ref<readonly ScrollspySection[]>>; // {id, el, text, link: HTMLElement | null}
+  content: Readonly<Ref<HTMLElement | null>>;
+  target: Readonly<Ref<HTMLElement | null>>;
+  scrollTo: (idOrEvent: string | Event, opts?: { smooth?: boolean }) => void;
+  refresh: () => void;
+  dispose: () => void;
+};
 ```
 
 ```vue-html
@@ -189,17 +189,17 @@ The algorithm is about 200 lines with no third-party dependency. Port it faithfu
 
 ### v6 overview
 
-| Piece                         | v6                                                                                                                        |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `.grid`                       | `display: grid; container-type: inline-size; grid-template-rows: repeat(var(--bs-rows), 1fr); grid-template-columns: repeat(var(--bs-columns), 1fr); gap: var(--bs-gap)`; defaults `--bs-columns: 12`, `--bs-rows: 1`, `--bs-gap: 1.5rem` |
-| `.g-col-{1..12}`              | `grid-column: auto / span N`                                                                                              |
-| `.g-start-{1..11}`            | `grid-column-start: N`                                                                                                    |
-| `{bp}:g-col-*`, `{bp}:g-start-*` | **`@container (width >= …)`**: items respond to the width of their `.grid`, not the viewport                           |
-| Children without `g-col-*`    | One track each (auto placement)                                                                                           |
-| Nesting                       | Nested `.grid` inherits `--bs-columns` / `--bs-rows` / `--bs-gap` unless overridden                                       |
-| Grid utilities                | `grid-cols-{1,2,3,4,6,subgrid}` (sets `grid-template-columns` directly), `grid-cols-fill` (`grid-column: 1 / -1`), `grid-auto-flow-{row,column,dense}`; all responsive through **viewport** `@media` |
-| Gap utilities                 | `gap-*`, `row-gap-*`, `column-gap-*`, responsive through viewport `@media`; the utilities layer beats `.grid`'s `gap`    |
-| Sass                          | `$enable-cssgrid` is `true` in alpha.1 `_config.scss` and the dist CSS includes `.grid`. The v6 docs page still says it is opt-in; treat the installed CSS as authoritative and note that users who disable it get an unstyled `BGrid` |
+| Piece                            | v6                                                                                                                                                                                                                                        |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.grid`                          | `display: grid; container-type: inline-size; grid-template-rows: repeat(var(--bs-rows), 1fr); grid-template-columns: repeat(var(--bs-columns), 1fr); gap: var(--bs-gap)`; defaults `--bs-columns: 12`, `--bs-rows: 1`, `--bs-gap: 1.5rem` |
+| `.g-col-{1..12}`                 | `grid-column: auto / span N`                                                                                                                                                                                                              |
+| `.g-start-{1..11}`               | `grid-column-start: N`                                                                                                                                                                                                                    |
+| `{bp}:g-col-*`, `{bp}:g-start-*` | **`@container (width >= …)`**: items respond to the width of their `.grid`, not the viewport                                                                                                                                              |
+| Children without `g-col-*`       | One track each (auto placement)                                                                                                                                                                                                           |
+| Nesting                          | Nested `.grid` inherits `--bs-columns` / `--bs-rows` / `--bs-gap` unless overridden                                                                                                                                                       |
+| Grid utilities                   | `grid-cols-{1,2,3,4,6,subgrid}` (sets `grid-template-columns` directly), `grid-cols-fill` (`grid-column: 1 / -1`), `grid-auto-flow-{row,column,dense}`; all responsive through **viewport** `@media`                                      |
+| Gap utilities                    | `gap-*`, `row-gap-*`, `column-gap-*`, responsive through viewport `@media`; the utilities layer beats `.grid`'s `gap`                                                                                                                     |
+| Sass                             | `$enable-cssgrid` is `true` in alpha.1 `_config.scss` and the dist CSS includes `.grid`. The v6 docs page still says it is opt-in; treat the installed CSS as authoritative and note that users who disable it get an unstyled `BGrid`    |
 
 The `.row` grid (`BRow` / `BCol`) is unchanged and uses viewport media queries (`make-grid-columns` → `media-breakpoint-up`).
 
@@ -211,24 +211,24 @@ No counterpart. `BGrid` was deferred in part one (`BOOTSTRAP_V6_MIGRATION.md` �
 
 `BGrid`:
 
-| Prop      | Type                                 | Default | Renders                                                                           |
-| --------- | ------------------------------------ | ------- | --------------------------------------------------------------------------------- |
-| `tag`     | `string`                             | `'div'` | —                                                                                 |
-| `columns` | `Numberish`                          | —       | `style="--bs-columns: N"`                                                         |
-| `rows`    | `Numberish`                          | —       | `style="--bs-rows: N"`                                                            |
-| `gap`     | `string`                             | —       | `style="--bs-gap: …"` (any CSS length or `row column` pair) — Q6                  |
-| `flow`    | `Responsive<'row' \| 'column' \| 'dense'>` | — | `grid-auto-flow-dense md:grid-auto-flow-column`                                   |
+| Prop      | Type                                       | Default | Renders                                                          |
+| --------- | ------------------------------------------ | ------- | ---------------------------------------------------------------- |
+| `tag`     | `string`                                   | `'div'` | —                                                                |
+| `columns` | `Numberish`                                | —       | `style="--bs-columns: N"`                                        |
+| `rows`    | `Numberish`                                | —       | `style="--bs-rows: N"`                                           |
+| `gap`     | `string`                                   | —       | `style="--bs-gap: …"` (any CSS length or `row column` pair) — Q6 |
+| `flow`    | `Responsive<'row' \| 'column' \| 'dense'>` | —       | `grid-auto-flow-dense md:grid-auto-flow-column`                  |
 
 Slot: `default`. No emits. Class `grid` always.
 
 `BGridItem`:
 
-| Prop    | Type                              | Default | Renders                                                            |
-| ------- | --------------------------------- | ------- | ------------------------------------------------------------------ |
-| `tag`   | `string`                          | `'div'` | —                                                                  |
-| `cols`  | `Responsive<ColsNumbers>`         | —       | `g-col-6 md:g-col-4` (container queries)                           |
-| `start` | `Responsive<GridStartNumbers>`    | —       | `g-start-2 lg:g-start-4` (`GridStartNumbers` = 1…11)               |
-| `fill`  | `Responsive<boolean>`             | —       | `grid-cols-fill md:grid-cols-fill` (viewport, from the utility)    |
+| Prop    | Type                           | Default | Renders                                                         |
+| ------- | ------------------------------ | ------- | --------------------------------------------------------------- |
+| `tag`   | `string`                       | `'div'` | —                                                               |
+| `cols`  | `Responsive<ColsNumbers>`      | —       | `g-col-6 md:g-col-4` (container queries)                        |
+| `start` | `Responsive<GridStartNumbers>` | —       | `g-start-2 lg:g-start-4` (`GridStartNumbers` = 1…11)            |
+| `fill`  | `Responsive<boolean>`          | —       | `grid-cols-fill md:grid-cols-fill` (viewport, from the utility) |
 
 Slot: `default`. Named `cols` (not `span`) to match `BCol`. Plain children work too: auto columns need no `BGridItem`.
 
@@ -264,16 +264,16 @@ Pure markup and classes: no ARIA, no client-only code, SSR-identical. Docs note 
 
 ### Which v6 classes use container queries
 
-| Container query (needs a query-container **ancestor**)                                                    | Container provided by v6?                                  | Library component                       |
-| --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | --------------------------------------- |
-| `{bp}:g-col-*`, `{bp}:g-start-*`                                                                          | Yes: `.grid`                                               | `BGridItem` (new)                       |
-| `{bp}:table-stacked`                                                                                      | Yes: `.table-responsive` (`container-type: inline-size`)   | `BTable` / `BTableSimple`: always wraps since #166 |
-| `{bp}:navbar-expand`                                                                                      | `.navbar` is a container, but it queries the nearest **ancestor** container | `BNavbar` (G3)                   |
-| `{bp}:list-group-horizontal`                                                                              | No: wrap in `.contains-inline`                             | `BListGroup horizontal` (#168 documents it) |
-| `.card-group` row layout (≥ sm)                                                                           | No                                                         | `BCardGroup` (card demos already wrap)  |
-| `{bp}:hstack` / `{bp}:vstack`                                                                             | `.stack-container` helper                                  | none (no `BStack`)                      |
-| `{bp}:stepper-horizontal`                                                                                 | `.stepper-overflow`                                        | Stepper (G5)                            |
-| `.nav-overflow`                                                                                           | Yes: itself                                                | Nav overflow (G2)                       |
+| Container query (needs a query-container **ancestor**) | Container provided by v6?                                                   | Library component                                  |
+| ------------------------------------------------------ | --------------------------------------------------------------------------- | -------------------------------------------------- |
+| `{bp}:g-col-*`, `{bp}:g-start-*`                       | Yes: `.grid`                                                                | `BGridItem` (new)                                  |
+| `{bp}:table-stacked`                                   | Yes: `.table-responsive` (`container-type: inline-size`)                    | `BTable` / `BTableSimple`: always wraps since #166 |
+| `{bp}:navbar-expand`                                   | `.navbar` is a container, but it queries the nearest **ancestor** container | `BNavbar` (G3)                                     |
+| `{bp}:list-group-horizontal`                           | No: wrap in `.contains-inline`                                              | `BListGroup horizontal` (#168 documents it)        |
+| `.card-group` row layout (≥ sm)                        | No                                                                          | `BCardGroup` (card demos already wrap)             |
+| `{bp}:hstack` / `{bp}:vstack`                          | `.stack-container` helper                                                   | none (no `BStack`)                                 |
+| `{bp}:stepper-horizontal`                              | `.stepper-overflow`                                                         | Stepper (G5)                                       |
+| `.nav-overflow`                                        | Yes: itself                                                                 | Nav overflow (G2)                                  |
 
 Everything else uses viewport `@media`: all responsive utilities (`md:d-none`, `md:gap-3`, `md:grid-cols-3`, …), `.row` / `col-*`, containers, Dialog fullscreen, Drawer responsive, position helpers.
 
@@ -281,13 +281,13 @@ Utilities: `.contains-inline` (`container-type: inline-size`), `.contains-size` 
 
 ### Existing viewport JS in the library
 
-| Code                                                                   | Verdict                                                                                                                                           |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BOffcanvas` `responsive`: `useBreakpoints(breakpointWidths)` (vueuse) | Correct as viewport: v6 Drawer's responsive styles use `media-breakpoint-down`. Stays viewport in the Drawer redesign (G1)                         |
-| `BTable` stacked                                                       | Pure CSS since #166; no JS                                                                                                                        |
-| `BListGroup horizontal`                                                | Pure CSS since #168; no JS                                                                                                                        |
-| `BNavbar` `toggleable`                                                 | Class only; G3 decides the `{bp}:navbar-expand` markup                                                                                            |
-| Docs `Layout.vue`: `useMediaQuery('(min-width: 992px)')`               | v5 `lg` width; should be `1024px` (docs cleanup, not library)                                                                                     |
+| Code                                                                   | Verdict                                                                                                                    |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `BOffcanvas` `responsive`: `useBreakpoints(breakpointWidths)` (vueuse) | Correct as viewport: v6 Drawer's responsive styles use `media-breakpoint-down`. Stays viewport in the Drawer redesign (G1) |
+| `BTable` stacked                                                       | Pure CSS since #166; no JS                                                                                                 |
+| `BListGroup horizontal`                                                | Pure CSS since #168; no JS                                                                                                 |
+| `BNavbar` `toggleable`                                                 | Class only; G3 decides the `{bp}:navbar-expand` markup                                                                     |
+| Docs `Layout.vue`: `useMediaQuery('(min-width: 992px)')`               | v5 `lg` width; should be `1024px` (docs cleanup, not library)                                                              |
 
 There is no public `useBreakpoints` in the library, and `breakpointWidths` is internal.
 
@@ -306,15 +306,15 @@ Why no `useContainerBreakpoint`: nothing in the library needs JS container break
 
 ## CSS-only helpers and utilities
 
-| Helper                  | v6 classes (verified)                                                                                       | Proposal                                                                                                                                                   |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Hover lift              | `.hover-lift`; tokens `--bs-hover-lift-transform`, `-box-shadow`, `-transition-duration`, `-transition-timing`; lifts on `:hover` and `:focus-visible` | Docs only (`class="hover-lift"` on `BCard`, `BButton`, `BLink`). A card demo shows it. No prop (Q8)                         |
-| Theme utilities         | `.theme-{primary,accent,success,danger,warning,info,inverse,secondary}`, `.theme-contrast`, `.theme-subtle`, `.theme-muted`, `.theme-border`, `.theme-reset` | Already covered: the `theme` prop (`ThemeProp`, modifiers `contrast` / `subtle` / `muted` / `border` / `reset` in `useThemeClasses.ts`). Docs cross-link only |
-| Color scheme            | `.color-scheme-light`, `.color-scheme-dark`, `.color-scheme-auto` (CSS `color-scheme`)                     | Docs only. Different from `data-bs-theme` (`useColorMode` / `vBColorMode`); the docs should explain both: `color-scheme` changes UA controls and scrollbars, `data-bs-theme` changes Bootstrap tokens |
-| Motion                  | `.transition-none`, `.animation-none`, `.animation-shake`, `.animation-pop`                                 | Docs only. `transition-none` is already the documented escape hatch (and `BCollapse` uses it for `noTransition`). `animation-shake` on invalid submit belongs to G4 if anywhere |
-| Space                   | `space-x-*`, `space-y-*` (`> :not(:last-child)` margins), responsive (viewport)                             | Docs only                                                                                                                                                  |
-| Divide                  | `divide-x`, `divide-y`, `divide-x-0`, `divide-y-0`, responsive (viewport)                                   | Docs only                                                                                                                                                  |
-| Container queries       | `.contains-inline`, `.contains-size`                                                                        | See above                                                                                                                                                  |
+| Helper            | v6 classes (verified)                                                                                                                                        | Proposal                                                                                                                                                                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hover lift        | `.hover-lift`; tokens `--bs-hover-lift-transform`, `-box-shadow`, `-transition-duration`, `-transition-timing`; lifts on `:hover` and `:focus-visible`       | Docs only (`class="hover-lift"` on `BCard`, `BButton`, `BLink`). A card demo shows it. No prop (Q8)                                                                                                   |
+| Theme utilities   | `.theme-{primary,accent,success,danger,warning,info,inverse,secondary}`, `.theme-contrast`, `.theme-subtle`, `.theme-muted`, `.theme-border`, `.theme-reset` | Already covered: the `theme` prop (`ThemeProp`, modifiers `contrast` / `subtle` / `muted` / `border` / `reset` in `useThemeClasses.ts`). Docs cross-link only                                         |
+| Color scheme      | `.color-scheme-light`, `.color-scheme-dark`, `.color-scheme-auto` (CSS `color-scheme`)                                                                       | Docs only. Different from `data-bs-theme` (`useColorMode` / `vBColorMode`); the docs should explain both: `color-scheme` changes UA controls and scrollbars, `data-bs-theme` changes Bootstrap tokens |
+| Motion            | `.transition-none`, `.animation-none`, `.animation-shake`, `.animation-pop`                                                                                  | Docs only. `transition-none` is already the documented escape hatch (and `BCollapse` uses it for `noTransition`). `animation-shake` on invalid submit belongs to G4 if anywhere                       |
+| Space             | `space-x-*`, `space-y-*` (`> :not(:last-child)` margins), responsive (viewport)                                                                              | Docs only                                                                                                                                                                                             |
+| Divide            | `divide-x`, `divide-y`, `divide-x-0`, `divide-y-0`, responsive (viewport)                                                                                    | Docs only                                                                                                                                                                                             |
+| Container queries | `.contains-inline`, `.contains-size`                                                                                                                         | See above                                                                                                                                                                                             |
 
 None of these is a component state the library manages, so a prop would only rename a class.
 
@@ -322,14 +322,14 @@ None of these is a component state the library manages, so a prop would only ren
 
 ## Cross-group dependencies
 
-| With                 | Item                                                                                                                                                                                                                                                                                                                                     |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| G2 Menus             | Scrollspy parent activation for `.menu-item` looks for `closest('.menu').previousElementSibling` matching `[data-bs-toggle="menu"]`. If the Vue Menu toggle doesn't render `data-bs-toggle="menu"`, either G2 adds that attribute (harmless, and it helps users copying v6 markup) or the port matches a library class such as `.menu-toggle`. **G6 recommends G2 render `data-bs-toggle="menu"` on the toggle**, with the `.menu` as its next element sibling. Also: Menu items should keep `.menu-item` and accept `href` (anchor items) |
-| G2 Nav overflow      | Overflowed links move into a menu; scrollspy in DOM mode needs `watchChanges` to pick up moved links (covered by observing the target subtree)                                                                                                                                                                                            |
-| G3 Navbar            | `{bp}:navbar-expand` is a container query against the navbar's ancestor container; G3 decides markup. G6 docs page lists it. Navbar + scrollspy demo (v6 docs example) needs the G3 + G2 markup                                                                                                                                        |
-| G1 Drawer            | `responsive` stays viewport (`useBreakpoints(breakpointWidths)`), matching v6 media queries. Not a container-query case                                                                                                                                                                                                                  |
-| G5 Stepper           | `{bp}:stepper-horizontal` is container-based; reuse the G6 shared docs sentence                                                                                                                                                                                                                                                          |
-| Docs app             | `Layout.vue` is the main `useScrollspy` consumer (content-driven, manual). Q1 decides whether it keeps working with a rename or must switch to rendering links first                                                                                                                                                                      |
+| With            | Item                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| G2 Menus        | Scrollspy parent activation for `.menu-item` looks for `closest('.menu').previousElementSibling` matching `[data-bs-toggle="menu"]`. If the Vue Menu toggle doesn't render `data-bs-toggle="menu"`, either G2 adds that attribute (harmless, and it helps users copying v6 markup) or the port matches a library class such as `.menu-toggle`. **G6 recommends G2 render `data-bs-toggle="menu"` on the toggle**, with the `.menu` as its next element sibling. Also: Menu items should keep `.menu-item` and accept `href` (anchor items) |
+| G2 Nav overflow | Overflowed links move into a menu; scrollspy in DOM mode needs `watchChanges` to pick up moved links (covered by observing the target subtree)                                                                                                                                                                                                                                                                                                                                                                                             |
+| G3 Navbar       | `{bp}:navbar-expand` is a container query against the navbar's ancestor container; G3 decides markup. G6 docs page lists it. Navbar + scrollspy demo (v6 docs example) needs the G3 + G2 markup                                                                                                                                                                                                                                                                                                                                            |
+| G1 Drawer       | `responsive` stays viewport (`useBreakpoints(breakpointWidths)`), matching v6 media queries. Not a container-query case                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| G5 Stepper      | `{bp}:stepper-horizontal` is container-based; reuse the G6 shared docs sentence                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Docs app        | `Layout.vue` is the main `useScrollspy` consumer (content-driven, manual). Q1 decides whether it keeps working with a rename or must switch to rendering links first                                                                                                                                                                                                                                                                                                                                                                       |
 
 ## Questions for the maintainer
 
@@ -337,11 +337,11 @@ None of these is a component state the library manages, so a prop would only ren
 
 Context: v6 derives sections from the target's links. The library derives them from `contentQuery` and exposes `list` so users (and the docs sidebar) can build the nav from the headings. Rule 1 allows only small additives.
 
-| Option                                                                                                                       | Pros                                                                                     | Cons                                                                                                                               |
-| ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| A. v6 only: sections from links                                                                                              | Pure v6; smallest API                                                                    | Breaks "build a TOC from headings" (the docs sidebar would have to render links first and couldn't read heading text from the composable) |
-| B. v6 by default, plus one `sections` selector option used when `target` is null; return `sections` with `text`             | Keeps the docs TOC and the common Vue pattern with one option; algorithm is identical either way | One extra option and mode to document and test                                                                                  |
-| C. Keep today's content-driven model and add v6 options on top                                                               | Least migration                                                                          | Not Bootstrap's model; contradicts rule 1                                                                                          |
+| Option                                                                                                          | Pros                                                                                             | Cons                                                                                                                                      |
+| --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| A. v6 only: sections from links                                                                                 | Pure v6; smallest API                                                                            | Breaks "build a TOC from headings" (the docs sidebar would have to render links first and couldn't read heading text from the composable) |
+| B. v6 by default, plus one `sections` selector option used when `target` is null; return `sections` with `text` | Keeps the docs TOC and the common Vue pattern with one option; algorithm is identical either way | One extra option and mode to document and test                                                                                            |
+| C. Keep today's content-driven model and add v6 options on top                                                  | Least migration                                                                                  | Not Bootstrap's model; contradicts rule 1                                                                                                 |
 
 Recommendation: **B**.
 
@@ -349,11 +349,11 @@ Recommendation: **B**.
 
 Context: v6 puts `data-bs-spy` on the scroll container with `target` = nav. The library directive sits on the nav with content as arg.
 
-| Option                                                              | Pros                                                   | Cons                                                                    |
-| ------------------------------------------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------- |
-| A. Keep; move to the content element, value/arg = target (v6)       | Mirrors v6 markup and docs; `@activate` on the spied element as in v6 | Breaking for every directive user                                  |
-| B. Keep on the nav (today)                                          | No migration                                           | Diverges from v6 docs and examples                                      |
-| C. Remove the directive; composable only                            | One API                                                | Loses the zero-script path v6 offers with `data-bs-spy`                 |
+| Option                                                        | Pros                                                                  | Cons                                                    |
+| ------------------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------- |
+| A. Keep; move to the content element, value/arg = target (v6) | Mirrors v6 markup and docs; `@activate` on the spied element as in v6 | Breaking for every directive user                       |
+| B. Keep on the nav (today)                                    | No migration                                                          | Diverges from v6 docs and examples                      |
+| C. Remove the directive; composable only                      | One API                                                               | Loses the zero-script path v6 offers with `data-bs-spy` |
 
 Recommendation: **A**.
 
@@ -361,11 +361,11 @@ Recommendation: **A**.
 
 Context: v6 mutates `.active` on links. On Vue-rendered links (`BNavItem`, `BListGroupItem`) a re-render that changes the class binding replaces `className` and drops the spy's class.
 
-| Option                                                                                                          | Pros                                                     | Cons                                                                       |
-| --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------- |
-| A. DOM mode by default (v6 parity, incl. nested parents), `manual` for reactive binding; docs recommend `manual` + `:active` for dynamic library navs | Works with plain v6 markup; one documented escape hatch  | The clobbering edge case remains in DOM mode                               |
-| B. Reactive only (no DOM writes); users always bind `current`                                                    | No conflict with Vue                                     | Directive becomes nearly useless; nested parents become the user's job    |
-| C. A, plus library nav components (`BNavItem`, `BListGroupItem`, Menu item) inject a scrollspy context and compute `active` themselves | Correct with library components and no DOM writes        | Cross-component coupling and more API surface; touches G2 / navigation components |
+| Option                                                                                                                                                | Pros                                                    | Cons                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| A. DOM mode by default (v6 parity, incl. nested parents), `manual` for reactive binding; docs recommend `manual` + `:active` for dynamic library navs | Works with plain v6 markup; one documented escape hatch | The clobbering edge case remains in DOM mode                                      |
+| B. Reactive only (no DOM writes); users always bind `current`                                                                                         | No conflict with Vue                                    | Directive becomes nearly useless; nested parents become the user's job            |
+| C. A, plus library nav components (`BNavItem`, `BListGroupItem`, Menu item) inject a scrollspy context and compute `active` themselves                | Correct with library components and no DOM writes       | Cross-component coupling and more API surface; touches G2 / navigation components |
 
 Recommendation: **A** (revisit C only if users report the edge case).
 
@@ -373,20 +373,20 @@ Recommendation: **A** (revisit C only if users report the edge case).
 
 Context: v6 sets no ARIA. `BListGroupItem active` already renders `aria-current="true"`.
 
-| Option                                                         | Pros                                                       | Cons                              |
-| -------------------------------------------------------------- | ---------------------------------------------------------- | --------------------------------- |
-| A. DOM mode also sets `aria-current="location"`                | Screen readers announce the current section; small additive | Not in v6                         |
-| B. Classes only, as v6                                         | Pure v6                                                    | Active state is visual only       |
+| Option                                          | Pros                                                        | Cons                        |
+| ----------------------------------------------- | ----------------------------------------------------------- | --------------------------- |
+| A. DOM mode also sets `aria-current="location"` | Screen readers announce the current section; small additive | Not in v6                   |
+| B. Classes only, as v6                          | Pure v6                                                     | Active state is visual only |
 
 Recommendation: **A**.
 
 ### Q5 — CSS Grid component shape (High)
 
-| Option                                                                         | Pros                                                                                     | Cons                                                                                 |
-| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| A. New `BGrid` + `BGridItem`                                                   | Clear mapping to `.grid` / `g-col-*`; container-query semantics stay separate from `BRow` / `BCol` | Two new components                                                    |
-| B. `BRow grid` prop; `BCol` injects it and emits `g-col-*` / `g-start-*` instead of `col-*` / `offset-*` | No new components                                                | Same prop means viewport or container depending on the parent; `offset` vs `start` semantics differ; `BRow` gutter / `alignH` props become no-ops |
-| C. Docs only (`class="grid"`, `class="g-col-6 md:g-col-4"`)                     | Zero API                                                                                 | Loses `Responsive<T>` consistency; the plan lists `BGrid` as a deferred component    |
+| Option                                                                                                   | Pros                                                                                               | Cons                                                                                                                                              |
+| -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A. New `BGrid` + `BGridItem`                                                                             | Clear mapping to `.grid` / `g-col-*`; container-query semantics stay separate from `BRow` / `BCol` | Two new components                                                                                                                                |
+| B. `BRow grid` prop; `BCol` injects it and emits `g-col-*` / `g-start-*` instead of `col-*` / `offset-*` | No new components                                                                                  | Same prop means viewport or container depending on the parent; `offset` vs `start` semantics differ; `BRow` gutter / `alignH` props become no-ops |
+| C. Docs only (`class="grid"`, `class="g-col-6 md:g-col-4"`)                                              | Zero API                                                                                           | Loses `Responsive<T>` consistency; the plan lists `BGrid` as a deferred component                                                                 |
 
 Recommendation: **A**.
 
@@ -394,36 +394,40 @@ Recommendation: **A**.
 
 Context: `columns` / `rows` / `gap` can be inline CSS variables (any value; nested grids inherit) or utilities (`grid-cols-*` only 1/2/3/4/6 and viewport-based; `gap-*` on the spacing scale, viewport-based).
 
-| Option                                                                                          | Pros                                                                     | Cons                                                                     |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| A. CSS variables: `columns` / `rows` (`Numberish`), `gap` (CSS string); `flow` as `Responsive<…>` | Matches the v6 CSS Grid docs; any value; inheritance works               | `gap` isn't on the spacing scale and isn't responsive                    |
-| B. Utilities: `columns: Responsive<1\|2\|3\|4\|6\|'subgrid'>`, `gap: Responsive<GutterNumbers>`  | Responsive and on the spacing scale, like `BRow` gutters                 | Limited column counts; viewport-based while items are container-based; `grid-cols-*` doesn't update `--bs-columns` |
-| C. A plus a `Responsive` `gap` through `gap-*` classes                                          | Both                                                                     | Two ways to set the gap                                                  |
+| Option                                                                                            | Pros                                                       | Cons                                                                                                               |
+| ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| A. CSS variables: `columns` / `rows` (`Numberish`), `gap` (CSS string); `flow` as `Responsive<…>` | Matches the v6 CSS Grid docs; any value; inheritance works | `gap` isn't on the spacing scale and isn't responsive                                                              |
+| B. Utilities: `columns: Responsive<1\|2\|3\|4\|6\|'subgrid'>`, `gap: Responsive<GutterNumbers>`   | Responsive and on the spacing scale, like `BRow` gutters   | Limited column counts; viewport-based while items are container-based; `grid-cols-*` doesn't update `--bs-columns` |
+| C. A plus a `Responsive` `gap` through `gap-*` classes                                            | Both                                                       | Two ways to set the gap                                                                                            |
 
 Recommendation: **A** (users can still add `md:gap-3` or `grid-cols-*` as classes).
 
 ### Q7 — Public container-query helper (Medium)
 
-| Option                                                                                                          | Pros                                                      | Cons                                                                                         |
-| --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| A. Docs only (`.contains-inline`, shared docs sentence on container-based props)                                | No API; v6-native; works on any ancestor                  | Users must read the docs to know a wrapper is needed                                         |
-| B. `contained` / `queryContainer` prop on `BContainer`, `BRow`, `BCol`, `BCard`                                  | Discoverable                                              | Just renames a class; cannot help the component that needs it (can't query itself)          |
-| C. `useContainerBreakpoint(el)` composable (ResizeObserver + `breakpointWidths`)                                 | JS access to container breakpoints                        | No library consumer; trivial with `useElementSize`; another public API to maintain           |
+| Option                                                                           | Pros                                     | Cons                                                                               |
+| -------------------------------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------- |
+| A. Docs only (`.contains-inline`, shared docs sentence on container-based props) | No API; v6-native; works on any ancestor | Users must read the docs to know a wrapper is needed                               |
+| B. `contained` / `queryContainer` prop on `BContainer`, `BRow`, `BCol`, `BCard`  | Discoverable                             | Just renames a class; cannot help the component that needs it (can't query itself) |
+| C. `useContainerBreakpoint(el)` composable (ResizeObserver + `breakpointWidths`) | JS access to container breakpoints       | No library consumer; trivial with `useElementSize`; another public API to maintain |
 
 Recommendation: **A**.
 
 ### Q8 — Expose any CSS-only helper as a prop (Low)
 
-| Option                                                         | Pros                                     | Cons                                                   |
-| -------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------ |
-| A. None; docs only                                             | No API growth; classes fall through      | Less discoverable                                      |
-| B. `hoverLift` on `BCard` (and maybe `BButton` / `BLink`)       | Discoverable for the most common use     | Renames one class; sets a precedent for every utility |
+| Option                                                    | Pros                                 | Cons                                                  |
+| --------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------- |
+| A. None; docs only                                        | No API growth; classes fall through  | Less discoverable                                     |
+| B. `hoverLift` on `BCard` (and maybe `BButton` / `BLink`) | Discoverable for the most common use | Renames one class; sets a precedent for every utility |
 
 Recommendation: **A**.
 
 ## Decisions
 
-_Pending maintainer answers._
+Answered by the maintainer on 2026-11-03. Where an answer differs from the proposal above, the answer wins.
+
+- **Q5 — A.** New `BGrid` + `BGridItem`.
+- **Q6 — A** (accepted with Q5). `BGrid` `columns` / `rows` / `gap` as inline `--bs-*` variables plus a responsive `flow`; `BGridItem` `cols` / `start` / `fill` as `Responsive<T>` objects. Docs state that `md:g-col-*` follows the grid's width while `BCol` and utilities follow the viewport.
+- Q1–Q4, Q7, Q8: _Pending._
 
 ## Implementation split
 
