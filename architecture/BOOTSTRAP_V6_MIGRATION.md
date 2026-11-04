@@ -23,21 +23,21 @@ It is the single source of truth for the migration: implementation work follows 
 
 ## Implementation progress
 
-Last updated: 2026-11-01. `bootstrap-v6` is local and not pushed.
+Last updated: 2026-11-03. `bootstrap-v6` is local and not pushed.
 
 ### Phase 2b batches
 
 Each batch runs as an agent in its own git worktree under `.claude/worktrees/agent-<id>/` on branch `worktree-agent-<id>`, branched from `9380edda`. Uncommitted work stays in the worktree if the agent stops; check with `git -C .claude/worktrees/agent-<id> status`.
 
-| Wave | Batch                                                | Plan section        | Worktree branch                    | State                                                                                  |
-| ---- | ---------------------------------------------------- | ------------------- | ---------------------------------- | -------------------------------------------------------------------------------------- |
-| 1    | Forms and checks                                     | Forms               | `worktree-agent-a6179c069c2f5495c` | Running, uncommitted work in progress                                                  |
-| 1    | Tables                                               | Content             | `worktree-agent-a893a70706bdb896b` | Done in `d37aec0f`, all checks pass; awaiting review and merge                         |
-| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `worktree-agent-a50e69ba3623a816a` | Running, uncommitted work in progress                                                  |
-| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `worktree-agent-a30fb2b266fa71b4e` | Done in `434ab6ac`, `c5d79b3a`, `e148bdfa`, all checks pass; awaiting review and merge |
-| 2    | Buttons                                              | Buttons             | —                                  | Not started                                                                            |
-| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                                  | Not started                                                                            |
-| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                                  | Not started                                                                            |
+| Wave | Batch                                                | Plan section        | Worktree branch                    | State                                                                                                                                                               |
+| ---- | ---------------------------------------------------- | ------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | Forms and checks                                     | Forms               | `worktree-agent-a6179c069c2f5495c` | Stopped by the usage limit before committing: 47 uncommitted files; it had just started the full unit tests and lint                                                |
+| 1    | Tables                                               | Content             | `worktree-agent-a893a70706bdb896b` | Done in `d37aec0f`, all checks pass; awaiting review and merge                                                                                                      |
+| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `worktree-agent-a50e69ba3623a816a` | Stopped by the usage limit: `6b596223` (BAlert, BToast native transitions and markup) and `01431c7a` (BSpinner) committed; BBadge and BPlaceholder work uncommitted |
+| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `worktree-agent-a30fb2b266fa71b4e` | Done in `434ab6ac`, `c5d79b3a`, `e148bdfa`, all checks pass; awaiting review and merge                                                                              |
+| 2    | Buttons                                              | Buttons             | —                                  | Not started                                                                                                                                                         |
+| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                                  | Not started                                                                                                                                                         |
+| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                                  | Not started                                                                                                                                                         |
 
 Known merge overlap: the navigation batch changed `BNavForm` (`formClass` → `formAttrs`, `validated` left alone), and the forms batch adds `validate` to the same file; expect a small conflict there.
 
