@@ -14,9 +14,10 @@ describe('form-select-base', () => {
     expect(wrapper.element.tagName).toBe('SELECT')
   })
 
-  it('has form-select class by default', () => {
+  it('has form-control class by default', () => {
     const wrapper = mount(BFormSelectBase)
-    expect(wrapper.classes()).toContain('form-select')
+    expect(wrapper.classes()).toContain('form-control')
+    expect(wrapper.classes()).not.toContain('form-select')
   })
 
   it('has auto-generated id attribute', () => {
@@ -48,38 +49,20 @@ describe('form-select-base', () => {
     {
       name: 'select with default size',
       props: {},
-      expectedClasses: ['form-select'],
-      absentClasses: ['form-control', 'form-select-md'],
+      expectedClasses: ['form-control'],
+      absentClasses: ['form-select', 'form-control-sm', 'form-control-lg'],
     },
     {
       name: 'select with small size',
       props: {size: 'sm'},
-      expectedClasses: ['form-select', 'form-select-sm'],
-      absentClasses: ['form-control', 'form-select-lg'],
+      expectedClasses: ['form-control', 'form-control-sm'],
+      absentClasses: ['form-select', 'form-select-sm', 'form-control-lg'],
     },
     {
       name: 'select with large size',
       props: {size: 'lg'},
-      expectedClasses: ['form-select', 'form-select-lg'],
-      absentClasses: ['form-control', 'form-select-sm'],
-    },
-    {
-      name: 'plain select with default size',
-      props: {plain: true},
-      expectedClasses: ['form-control'],
-      absentClasses: ['form-select', 'form-control-md'],
-    },
-    {
-      name: 'plain select with small size',
-      props: {plain: true, size: 'sm'},
-      expectedClasses: ['form-control', 'form-control-sm'],
-      absentClasses: ['form-select', 'form-control-lg'],
-    },
-    {
-      name: 'plain select with large size',
-      props: {plain: true, size: 'lg'},
       expectedClasses: ['form-control', 'form-control-lg'],
-      absentClasses: ['form-select', 'form-control-sm'],
+      absentClasses: ['form-select', 'form-select-lg', 'form-control-sm'],
     },
   ])('$name has the expected base and size classes', ({props, expectedClasses, absentClasses}) => {
     const wrapper = mount(BFormSelectBase, {props})
@@ -132,27 +115,15 @@ describe('form-select-base', () => {
     const wrapper = mount(BFormSelectBase, {
       props: {size: 'sm'},
     })
-    expect(wrapper.classes()).toContain('form-select-sm')
+    expect(wrapper.classes()).toContain('form-control-sm')
 
     await wrapper.setProps({size: 'lg'})
-    expect(wrapper.classes()).toContain('form-select-lg')
-    expect(wrapper.classes()).not.toContain('form-select-sm')
+    expect(wrapper.classes()).toContain('form-control-lg')
+    expect(wrapper.classes()).not.toContain('form-control-sm')
 
     await wrapper.setProps({size: undefined})
-    expect(wrapper.classes()).not.toContain('form-select-lg')
-    expect(wrapper.classes()).not.toContain('form-select-md')
-  })
-
-  it('plain class is reactive', async () => {
-    const wrapper = mount(BFormSelectBase, {
-      props: {plain: false},
-    })
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).not.toContain('form-control')
-
-    await wrapper.setProps({plain: true})
-    expect(wrapper.classes()).toContain('form-control')
-    expect(wrapper.classes()).not.toContain('form-select')
+    expect(wrapper.classes()).not.toContain('form-control-lg')
+    expect(wrapper.classes()).not.toContain('form-control-sm')
   })
 
   // --- Attributes ---
@@ -242,9 +213,9 @@ describe('form-select-base', () => {
     expect(wrapper.attributes('multiple')).toBeUndefined()
   })
 
-  it('has HTML size attribute when selectSize > 0 and plain is false', () => {
+  it('has HTML size attribute when selectSize > 0', () => {
     const wrapper = mount(BFormSelectBase, {
-      props: {selectSize: 5, plain: false},
+      props: {selectSize: 5},
     })
     expect(wrapper.attributes('size')).toBe('5')
   })
@@ -252,13 +223,6 @@ describe('form-select-base', () => {
   it('does not have HTML size attribute when selectSize is 0', () => {
     const wrapper = mount(BFormSelectBase, {
       props: {selectSize: 0},
-    })
-    expect(wrapper.attributes('size')).toBeUndefined()
-  })
-
-  it('does not have HTML size attribute when plain is true', () => {
-    const wrapper = mount(BFormSelectBase, {
-      props: {selectSize: 5, plain: true},
     })
     expect(wrapper.attributes('size')).toBeUndefined()
   })

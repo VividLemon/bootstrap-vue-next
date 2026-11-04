@@ -63,7 +63,6 @@ const _props = withDefaults(defineProps<Omit<BFormSelectBaseProps, 'modelValue'>
   name: undefined,
   options: () => [],
   optionsField: 'options',
-  plain: false,
   required: false,
   selectSize: 0,
   size: undefined,
@@ -95,16 +94,14 @@ const {focused} = useFocus(input, {
 
 const computedClasses = computed(() => [
   stateClass.value,
+  'form-control',
   {
-    'form-control': props.plain,
-    [`form-control-${props.size}`]: props.size !== undefined && props.plain,
-    'form-select': !props.plain,
-    [`form-select-${props.size}`]: props.size !== undefined && !props.plain,
+    [`form-control-${props.size}`]: props.size !== undefined,
   },
 ])
 
 const computedSelectSize = computed(() =>
-  !props.plain && selectSizeNumber.value > 0 ? selectSizeNumber.value : undefined
+  selectSizeNumber.value > 0 ? selectSizeNumber.value : undefined
 )
 
 const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(

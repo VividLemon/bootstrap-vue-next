@@ -11,7 +11,8 @@ describe('BFormSelect', () => {
   it('has expected default structure', () => {
     const wrapper = mount(BFormSelect)
     expect(wrapper.element.tagName).toBe('SELECT')
-    expect(wrapper.classes()).toContain('form-select')
+    expect(wrapper.classes()).toContain('form-control')
+    expect(wrapper.classes()).not.toContain('form-select')
   })
 
   it('renders options from simple array', () => {
@@ -233,42 +234,28 @@ describe('BFormSelect', () => {
 
   // --- CSS Classes ---
 
-  it('has form-select-sm class when size is sm', () => {
+  it('has form-control-sm class when size is sm', () => {
     const wrapper = mount(BFormSelect, {
       props: {size: 'sm'},
     })
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).toContain('form-select-sm')
+    expect(wrapper.classes()).toContain('form-control')
+    expect(wrapper.classes()).toContain('form-control-sm')
+    expect(wrapper.classes()).not.toContain('form-select-sm')
   })
 
-  it('has form-select-lg class when size is lg', () => {
+  it('has form-control-lg class when size is lg', () => {
     const wrapper = mount(BFormSelect, {
       props: {size: 'lg'},
     })
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).toContain('form-select-lg')
+    expect(wrapper.classes()).toContain('form-control')
+    expect(wrapper.classes()).toContain('form-control-lg')
   })
 
   it('does not have size class when size is undefined (default)', () => {
     const wrapper = mount(BFormSelect)
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).not.toContain('form-select-md')
-  })
-
-  it('has form-control class when plain is true', () => {
-    const wrapper = mount(BFormSelect, {
-      props: {plain: true},
-    })
     expect(wrapper.classes()).toContain('form-control')
-    expect(wrapper.classes()).not.toContain('form-select')
-  })
-
-  it('has form-control-sm when plain is true and size is sm', () => {
-    const wrapper = mount(BFormSelect, {
-      props: {plain: true, size: 'sm'},
-    })
-    expect(wrapper.classes()).toContain('form-control')
-    expect(wrapper.classes()).toContain('form-control-sm')
+    expect(wrapper.classes()).not.toContain('form-control-sm')
+    expect(wrapper.classes()).not.toContain('form-control-lg')
   })
 
   it('has is-valid class when state is true', () => {

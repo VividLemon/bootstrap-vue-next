@@ -616,7 +616,6 @@ export interface BFormSelectBaseProps {
     | readonly SelectOptionRaw[]
     | readonly ComplexSelectOptionRaw[]
   optionsField?: string
-  plain?: boolean
   required?: boolean
   selectSize?: Numberish
   size?: Size
@@ -653,7 +652,6 @@ export interface BFormSelectProps<
   // Options array - generic parameter captures the specific array type
   options?: Options
   optionsField?: string
-  plain?: boolean
   required?: boolean
   selectSize?: Numberish
   size?: Size
