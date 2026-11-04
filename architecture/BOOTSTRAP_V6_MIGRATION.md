@@ -29,15 +29,15 @@ Last updated: 2026-11-03. `bootstrap-v6` is local and not pushed.
 
 Each batch runs as an agent in its own git worktree under `.claude/worktrees/agent-<id>/` on branch `worktree-agent-<id>`, branched from `9380edda`. Uncommitted work stays in the worktree if the agent stops; check with `git -C .claude/worktrees/agent-<id> status`.
 
-| Wave | Batch                                                | Plan section        | Worktree branch                    | State                                                                                                                |
-| ---- | ---------------------------------------------------- | ------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| 1    | Forms and checks                                     | Forms               | `worktree-agent-a6179c069c2f5495c` | Stopped by the usage limit before committing: 47 uncommitted files; it had just started the full unit tests and lint |
-| 1    | Tables                                               | Content             | `worktree-agent-a893a70706bdb896b` | Done in `d37aec0f`, all checks pass; awaiting review and merge                                                       |
-| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `worktree-agent-a50e69ba3623a816a` | Done in `6b596223`, `01431c7a`, `0ceaf2f3`, `ecd1bcee`, all checks pass; awaiting review and merge                   |
-| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `worktree-agent-a30fb2b266fa71b4e` | Done in `434ab6ac`, `c5d79b3a`, `e148bdfa`, all checks pass; awaiting review and merge                               |
-| 2    | Buttons                                              | Buttons             | —                                  | Not started                                                                                                          |
-| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                                  | Not started                                                                                                          |
-| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                                  | Not started                                                                                                          |
+| Wave | Batch                                                | Plan section        | Worktree branch                    | State                                                                                                                      |
+| ---- | ---------------------------------------------------- | ------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 1    | Forms and checks                                     | Forms               | `worktree-agent-a6179c069c2f5495c` | Done in `d4017e98`, `37133c92`, `623a742c`, `b7b89b11`, `7f1875a8`, `95100f61`, all checks pass; awaiting review and merge |
+| 1    | Tables                                               | Content             | `worktree-agent-a893a70706bdb896b` | Done in `d37aec0f`, all checks pass; awaiting review and merge                                                             |
+| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `worktree-agent-a50e69ba3623a816a` | Done in `6b596223`, `01431c7a`, `0ceaf2f3`, `ecd1bcee`, all checks pass; awaiting review and merge                         |
+| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `worktree-agent-a30fb2b266fa71b4e` | Done in `434ab6ac`, `c5d79b3a`, `e148bdfa`, all checks pass; awaiting review and merge                                     |
+| 2    | Buttons                                              | Buttons             | —                                  | Not started                                                                                                                |
+| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                                  | Not started                                                                                                                |
+| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                                  | Not started                                                                                                                |
 
 Known merge overlap: the navigation batch changed `BNavForm` (`formClass` → `formAttrs`, `validated` left alone), and the forms batch adds `validate` to the same file; expect a small conflict there.
 
@@ -60,6 +60,15 @@ Feedback batch follow-ups (from its report):
 - v6 `.alert` has no bottom margin, so consecutive alerts sit flush. Native behavior; mention it in the migration notes.
 - `showOnPause` on `BAlert` / `BToast` has no effect (before or after). Decide whether to remove it.
 - Expect a merge conflict in `architecture/ARIA_VISIBILITY.md` (native/legacy table) with the floating UI batch.
+
+Forms batch follow-ups (from its report):
+
+- Also removed: `buttonGroup` on checks (only skipped the wrapper div, which no longer exists) and `BFormCheckbox` `inputClass` → `inputAttrs`. `BFormRadio` still sends all attributes, `class` included, to the input.
+- Non-stacked check/radio groups use `d-flex flex-wrap column-gap-5` because v6 has no inline check class; standalone docs examples use the same utilities. Mention in the migration notes.
+- A plain switch renders `<div class="switch">` around the input; button mode wins over `switch`.
+- `BFormFile`'s custom control now carries `.form-control` to pick up v6 tokens, sizes and validation borders; its `plain` mode is kept.
+- `BDropdownForm` gained `validate`; `formClass` on `BNavForm` / `BDropdownForm` is left to the navigation (done) and dropdown (deferred) batches.
+- Not checked: dark mode, docs demos visually, input-group checkbox addon demos (`me-n2`) against the v6 `.form-field` gap.
 
 ### Resuming
 
