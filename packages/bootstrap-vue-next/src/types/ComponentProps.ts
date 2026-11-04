@@ -1666,14 +1666,13 @@ export interface BFormGroupProps {
   id?: string
   invalidFeedback?: string
   label?: string
-  labelClass?: ClassValue
+  labelAttrs?: Readonly<AttrsValue>
   labelFor?: string
   labelSize?: string
   labelVisuallyHidden?: boolean
   state?: ValidationState
   tooltip?: boolean
   validFeedback?: string
-  validated?: boolean
 }
 
 export interface BTimeFieldProps {

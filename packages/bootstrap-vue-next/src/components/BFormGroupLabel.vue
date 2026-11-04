@@ -1,7 +1,7 @@
 <template>
   <BCol
     v-if="isHorizontal"
-    v-bind="labelColProps"
+    v-bind="{...labelAttrs, ...labelColProps}"
     :id="labelId"
     :tag="labelTag"
     :for="computedLabelFor || null"
@@ -14,6 +14,7 @@
   <component
     :is="labelTag"
     v-else
+    v-bind="labelAttrs"
     :id="labelId"
     :for="computedLabelFor || null"
     :tabindex="isFieldset ? '-1' : null"
@@ -25,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import type {ClassValue} from '../types/AnyValuedAttributes'
+import type {AttrsValue, ClassValue} from '../types/AnyValuedAttributes'
 import BCol from './BContainer/BCol.vue'
 
 defineProps<{
@@ -38,6 +39,7 @@ defineProps<{
   labelColProps: Record<string, unknown>
   labelAlignClasses: string[]
   labelClasses: ClassValue
+  labelAttrs: Readonly<AttrsValue> | undefined
 }>()
 
 const emit = defineEmits<{

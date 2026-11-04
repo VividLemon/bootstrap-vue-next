@@ -90,29 +90,32 @@ describe('form-group', () => {
     expect(wrapper.classes()).not.toContain('is-invalid')
   })
 
-  it('has class was-validated when prop validated true', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {validated: true},
-    })
-    expect(wrapper.classes()).toContain('was-validated')
-  })
-
-  it('does not have class was-validated when prop validated false', () => {
-    const wrapper = mount(BFormGroup, {
-      props: {validated: false},
-    })
+  it('never has class was-validated', () => {
+    const wrapper = mount(BFormGroup)
     expect(wrapper.classes()).not.toContain('was-validated')
   })
 
-  it('validated class is reactive', async () => {
+  it('has class form-field in stacked mode', () => {
     const wrapper = mount(BFormGroup, {
-      props: {validated: false},
+      props: {label: 'foo'},
     })
-    expect(wrapper.classes()).not.toContain('was-validated')
-    await wrapper.setProps({validated: true})
-    expect(wrapper.classes()).toContain('was-validated')
-    await wrapper.setProps({validated: false})
-    expect(wrapper.classes()).not.toContain('was-validated')
+    expect(wrapper.classes()).toContain('form-field')
+  })
+
+  it('has class form-field in floating mode', () => {
+    const wrapper = mount(BFormGroup, {
+      props: {label: 'foo', floating: true},
+    })
+    expect(wrapper.classes()).toContain('form-field')
+  })
+
+  it('does not have class form-field in horizontal mode', async () => {
+    const wrapper = mount(BFormGroup, {
+      props: {label: 'foo', labelCols: {xs: 3}},
+    })
+    expect(wrapper.classes()).not.toContain('form-field')
+    await wrapper.setProps({labelCols: undefined})
+    expect(wrapper.classes()).toContain('form-field')
   })
 
   it('attr id is defined by default', () => {
@@ -924,20 +927,46 @@ describe('form-group', () => {
       expect(wrapper.find('legend').classes()).not.toContain('visually-hidden')
     })
 
-    it('applies custom labelClass', () => {
+    it('merges labelAttrs class with the component classes', () => {
       const wrapper = mount(BFormGroup, {
-        props: {label: 'foo', labelClass: 'my-custom-class'},
+        props: {label: 'foo', labelAttrs: {class: 'my-custom-class', title: 'bar'}},
       })
-      expect(wrapper.find('legend').classes()).toContain('my-custom-class')
+      const legend = wrapper.find('legend')
+      expect(legend.classes()).toContain('my-custom-class')
+      expect(legend.classes()).toContain('col-form-label')
+      expect(legend.attributes('title')).toBe('bar')
     })
 
-    it('applies array labelClass', () => {
+    it('merges array labelAttrs class and style', () => {
       const wrapper = mount(BFormGroup, {
-        props: {label: 'foo', labelClass: ['class-a', 'class-b']},
+        props: {
+          label: 'foo',
+          labelAttrs: {class: ['class-a', 'class-b'], style: {color: 'red'}},
+        },
       })
       const legend = wrapper.find('legend')
       expect(legend.classes()).toContain('class-a')
       expect(legend.classes()).toContain('class-b')
+      expect(legend.attributes('style')).toContain('color: red')
+    })
+
+    it('merges labelAttrs class in horizontal mode', () => {
+      const wrapper = mount(BFormGroup, {
+        props: {label: 'foo', labelCols: {xs: 3}, labelAttrs: {class: 'my-custom-class'}},
+      })
+      const legend = wrapper.find('legend')
+      expect(legend.classes()).toContain('my-custom-class')
+      expect(legend.classes()).toContain('col-3')
+      expect(legend.classes()).toContain('col-form-label')
+    })
+
+    it('merges labelAttrs class in floating mode', () => {
+      const wrapper = mount(BFormGroup, {
+        props: {label: 'foo', floating: true, labelAttrs: {class: 'my-custom-class'}},
+      })
+      const label = wrapper.find('.form-floating > label')
+      expect(label.classes()).toContain('my-custom-class')
+      expect(label.classes()).not.toContain('d-block')
     })
 
     it('label has col-form-label class in horizontal mode', () => {
@@ -1217,7 +1246,7 @@ describe('form-group', () => {
       expect(wrapper.find('.form-floating').exists()).toBe(false)
     })
 
-    it('in floating mode, label comes after default slot content', async () => {
+    it('in floating mode, label comes before default slot content', async () => {
       const wrapper = mount(BFormGroup, {
         props: {floating: true, label: 'Email'},
         slots: {
@@ -1227,10 +1256,10 @@ describe('form-group', () => {
       await nextTick()
       const floatingDiv = wrapper.find('.form-floating')
       const {children} = floatingDiv.element
-      // Input should be before label in the DOM for floating labels
+      // Bootstrap v6 floating labels precede the control in the DOM
       // When child BFormInput provides its id, labelTag becomes 'label' instead of 'legend'
-      expect(children[0].tagName).toBe('INPUT')
-      expect(children[1].tagName).toBe('LABEL')
+      expect(children[0].tagName).toBe('LABEL')
+      expect(children[1].tagName).toBe('INPUT')
     })
 
     it('renders a label (not legend) from the first render in floating mode', () => {
