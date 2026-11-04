@@ -21,16 +21,16 @@
 
 What v6 does for both components, and how the Vue port maps it:
 
-| v6 behavior                                                                                                                       | Vue port                                                                                                                                                                                                                                         |
-| --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `show()`: cancelable `show`, then `showModal()` (modal) or `show()`; adds `dialog-open` to `<html>` when it locks scroll          | `useShowHide` emits `show`; the `transition` callback awaits `nextTick` (lazy content is patched), calls `showModal()` / `show()` if `!el.open`, then `run()`                                                                                   |
+| v6 behavior                                                                                                                                                  | Vue port                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `show()`: cancelable `show`, then `showModal()` (modal) or `show()`; adds `dialog-open` to `<html>` when it locks scroll                                     | `useShowHide` emits `show`; the `transition` callback awaits `nextTick` (lazy content is patched), calls `showModal()` / `show()` if `!el.open`, then `run()`                                                                                            |
 | `hide()`: cancelable `hide`, adds `.hiding`, `close()` now (Drawer) or after the transition (Dialog, `_shouldDeferClose`), removes `.hiding`, fires `hidden` | `:class="{hiding: !visible && isActive}"`; the callback calls `close()` before `run()` (Drawer, or `-instant`) or after `run()` resolves `true` (animated Dialog). `isActive` goes `false` after that, so `.hiding` is removed after `close()`, as in v6 |
-| Escape: native `cancel` (modal) / `keydown` Escape (non-modal), `preventDefault()`; `keyboard: false` → static bounce + `hidePrevented` | Same listeners on the `<dialog>`; route to `hide('esc')` or the bounce                                                                                                                                                                          |
-| Backdrop click: `click` with `event.target === dialog` and modal; `backdrop: 'static'` → bounce                                   | Same, with a `pointerdown` target check so a drag that starts inside and ends on the backdrop doesn't close (the current `mousedown.self` behavior)                                                                                              |
-| Static bounce: `hidePrevented` (cancelable), add `.dialog-static` / `.drawer-static`, remove after the transition                  | A `bouncing` ref bound to the class; a second `useCssTransition` instance awaits it                                                                                                                                                              |
-| Scroll lock: `:root.dialog-open {overflow: hidden}`; removed only when no `dialog[open]:modal` remains                             | Same class through `getSafeDocument()`, checked after each `close()`. Replaces `useSafeScrollLock` / `useScrollLock`                                                                                                                              |
-| `dispose()` while open: `close()` and restore the scroll lock                                                                      | `onBeforeUnmount`: same                                                                                                                                                                                                                           |
-| Hides child tooltips, popovers and toasts on hide                                                                                 | Not needed for components rendered in the dialog (they unmount or stay inside). See the cross-group notes on orchestrated popovers and toasts                                                                                                     |
+| Escape: native `cancel` (modal) / `keydown` Escape (non-modal), `preventDefault()`; `keyboard: false` → static bounce + `hidePrevented`                      | Same listeners on the `<dialog>`; route to `hide('esc')` or the bounce                                                                                                                                                                                   |
+| Backdrop click: `click` with `event.target === dialog` and modal; `backdrop: 'static'` → bounce                                                              | Same, with a `pointerdown` target check so a drag that starts inside and ends on the backdrop doesn't close (the current `mousedown.self` behavior)                                                                                                      |
+| Static bounce: `hidePrevented` (cancelable), add `.dialog-static` / `.drawer-static`, remove after the transition                                            | A `bouncing` ref bound to the class; a second `useCssTransition` instance awaits it                                                                                                                                                                      |
+| Scroll lock: `:root.dialog-open {overflow: hidden}`; removed only when no `dialog[open]:modal` remains                                                       | Same class through `getSafeDocument()`, checked after each `close()`. Replaces `useSafeScrollLock` / `useScrollLock`                                                                                                                                     |
+| `dispose()` while open: `close()` and restore the scroll lock                                                                                                | `onBeforeUnmount`: same                                                                                                                                                                                                                                  |
+| Hides child tooltips, popovers and toasts on hide                                                                                                            | Not needed for components rendered in the dialog (they unmount or stay inside). See the cross-group notes on orchestrated popovers and toasts                                                                                                            |
 
 The browser can also close the dialog without going through `hide()`: Chrome's close-watcher anti-abuse rule makes a second Escape without user activation non-cancelable, and `<form method="dialog">` or an Invoker Command `command="close"` closes it directly. So the port also listens to the native **`close`** event: if `visible` is still `true`, it syncs the state through `hide(trigger, true)` without a transition (the dialog is already closed) so `v-model`, `hidden` and the `useModal` promise still settle. A `<form method="dialog">` submit is intercepted on `submit` (`preventDefault`) and routed to `hide('submit')`, with the submitter's `value` as the result `value`, so the exit transition still plays (see Q4).
 
@@ -54,92 +54,92 @@ The browser can also close the dialog without going through `hide()`: Chrome's c
 
 ### Prop disposition
 
-| Prop                                                                           | Disposition                                                       | Notes                                                                                                                                       |
-| ------------------------------------------------------------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| `modelValue`                                                                   | keep                                                              | `v-model`                                                                                                                                    |
-| `id`                                                                           | keep                                                              |                                                                                                                                             |
-| `show`, `visible`, `initialAnimation`, `lazy`, `unmountLazy`                   | keep (shared `ShowHideProps`)                                     | `lazy` covers the content only; the `<dialog>` element always stays mounted                                                                 |
-| `noTransition`                                                                 | keep                                                              | → `.dialog-instant`                                                                                                                          |
-| `noBackdrop`                                                                   | replace with v6 `backdrop`                                        | v6 always renders `::backdrop` for a modal dialog; a non-modal dialog (`modal: false`) has none. To hide it visually, set `--bs-dialog-backdrop-bg` |
-| `noCloseOnBackdrop`                                                            | replace with v6 `backdrop: 'static'` (bounce) or `backdrop: false` | `backdrop?: boolean \| 'static'`, default `true`                                                                                            |
-| `noCloseOnEsc`                                                                 | replace with v6 `keyboard` (default `true`)                       | `false` → bounce + `hide-prevented`                                                                                                          |
-| —                                                                              | **new** `modal` (default `true`)                                  | `show()` + `.dialog-nonmodal` when `false`                                                                                                   |
-| —                                                                              | **new** `slide?: 'down' \| 'up'`                                  | → `.dialog-slide-down` / `.dialog-slide-up`                                                                                                  |
-| `size`                                                                         | keep, retype                                                      | `'sm' \| 'lg' \| 'xl'` → `.dialog-{size}` (no `md`)                                                                                         |
-| `fullscreen`                                                                   | keep                                                              | `true` → `.dialog-fullscreen`; `Breakpoint` → `{bp}-down:dialog-fullscreen`. Stays `boolean \| Breakpoint`, not `Responsive<T>`: it is a single "below bp" switch |
-| `scrollable`                                                                   | keep                                                              | → `.dialog-scrollable`                                                                                                                       |
-| `centered`                                                                     | remove                                                            | Always centered natively                                                                                                                     |
-| `teleportTo`, `teleportDisabled`                                               | remove (Q6)                                                       | Top layer                                                                                                                                    |
-| `noTrap`                                                                       | remove                                                            | Native; use `modal: false` for no containment                                                                                                |
-| `bodyScrolling`                                                                | remove                                                            | v6: a modal dialog locks scroll, a non-modal one doesn't                                                                                     |
-| `backdropFirst`                                                                | remove                                                            | `::backdrop` belongs to the dialog                                                                                                           |
-| `noStacking`                                                                   | remove (Q5)                                                       |                                                                                                                                             |
-| `focus`                                                                        | keep reduced (Q8)                                                 | `'ok' \| 'cancel' \| 'close'` → `autofocus` on that built-in button; other targets use `autofocus` in content                                |
-| `title`, `titleTag`                                                            | keep                                                              | `titleTag` default `'h5'`                                                                                                                    |
-| `body`                                                                         | keep                                                              | Plain-text body for programmatic dialogs (`create({title, body})`)                                                                           |
-| `titleVisuallyHidden`                                                          | remove (Q8)                                                       | `titleAttrs: {class: 'visually-hidden'}`                                                                                                    |
-| `noHeader`, `noHeaderClose`, `headerCloseLabel`                                | keep                                                              | Small additives; `headerCloseLabel` is i18n                                                                                                  |
-| `headerCloseVariant`, `headerCloseColor`                                       | remove                                                            | The `header-close` slot replaces the whole button (see slots); style the slotted button directly                                            |
-| `noFooter`                                                                     | depends on Q2                                                     |                                                                                                                                             |
-| `okTitle`, `okOnly`, `okDisabled`, `cancelTitle`, `cancelDisabled`              | depends on Q2 (recommended keep)                                  |                                                                                                                                             |
-| `okVariant`, `okColor`, `cancelVariant`, `cancelColor`, `buttonSize`            | depends on Q2 (recommended → `okAttrs` / `cancelAttrs`)           | BButton props through attrs                                                                                                                  |
-| `busy`                                                                         | remove (Q2)                                                       | Same as `okDisabled` + `cancelDisabled`                                                                                                      |
-| `headerColor`, `bodyColor`, `footerColor`                                      | keep                                                              | Rule 5 (`<part>Color` objects)                                                                                                               |
-| `headerAttrs`, `bodyAttrs`                                                     | keep                                                              |                                                                                                                                             |
-| `headerClass`, `bodyClass`, `footerClass`, `titleClass`                        | replace with `headerAttrs` / `bodyAttrs` / `footerAttrs` / `titleAttrs` | Rule 5                                                                                                                                 |
-| `headerCloseClass`                                                             | replace with `headerCloseAttrs`                                   |                                                                                                                                             |
-| `okClass`, `cancelClass`                                                       | replace with `okAttrs`, `cancelAttrs`                             |                                                                                                                                             |
-| `modalClass`, `dialogClass`, `contentClass`                                    | remove                                                            | The `<dialog>` is the only wrapper; `class` / `$attrs` land on it                                                                            |
+| Prop                                                                 | Disposition                                                             | Notes                                                                                                                                                             |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `modelValue`                                                         | keep                                                                    | `v-model`                                                                                                                                                         |
+| `id`                                                                 | keep                                                                    |                                                                                                                                                                   |
+| `show`, `visible`, `initialAnimation`, `lazy`, `unmountLazy`         | keep (shared `ShowHideProps`)                                           | `lazy` covers the content only; the `<dialog>` element always stays mounted                                                                                       |
+| `noTransition`                                                       | keep                                                                    | → `.dialog-instant`                                                                                                                                               |
+| `noBackdrop`                                                         | replace with v6 `backdrop`                                              | v6 always renders `::backdrop` for a modal dialog; a non-modal dialog (`modal: false`) has none. To hide it visually, set `--bs-dialog-backdrop-bg`               |
+| `noCloseOnBackdrop`                                                  | replace with v6 `backdrop: 'static'` (bounce) or `backdrop: false`      | `backdrop?: boolean \| 'static'`, default `true`                                                                                                                  |
+| `noCloseOnEsc`                                                       | replace with v6 `keyboard` (default `true`)                             | `false` → bounce + `hide-prevented`                                                                                                                               |
+| —                                                                    | **new** `modal` (default `true`)                                        | `show()` + `.dialog-nonmodal` when `false`                                                                                                                        |
+| —                                                                    | **new** `slide?: 'down' \| 'up'`                                        | → `.dialog-slide-down` / `.dialog-slide-up`                                                                                                                       |
+| `size`                                                               | keep, retype                                                            | `'sm' \| 'lg' \| 'xl'` → `.dialog-{size}` (no `md`)                                                                                                               |
+| `fullscreen`                                                         | keep                                                                    | `true` → `.dialog-fullscreen`; `Breakpoint` → `{bp}-down:dialog-fullscreen`. Stays `boolean \| Breakpoint`, not `Responsive<T>`: it is a single "below bp" switch |
+| `scrollable`                                                         | keep                                                                    | → `.dialog-scrollable`                                                                                                                                            |
+| `centered`                                                           | remove                                                                  | Always centered natively                                                                                                                                          |
+| `teleportTo`, `teleportDisabled`                                     | remove (Q6)                                                             | Top layer                                                                                                                                                         |
+| `noTrap`                                                             | remove                                                                  | Native; use `modal: false` for no containment                                                                                                                     |
+| `bodyScrolling`                                                      | remove                                                                  | v6: a modal dialog locks scroll, a non-modal one doesn't                                                                                                          |
+| `backdropFirst`                                                      | remove                                                                  | `::backdrop` belongs to the dialog                                                                                                                                |
+| `noStacking`                                                         | remove (Q5)                                                             |                                                                                                                                                                   |
+| `focus`                                                              | keep reduced (Q8)                                                       | `'ok' \| 'cancel' \| 'close'` → `autofocus` on that built-in button; other targets use `autofocus` in content                                                     |
+| `title`, `titleTag`                                                  | keep                                                                    | `titleTag` default `'h5'`                                                                                                                                         |
+| `body`                                                               | keep                                                                    | Plain-text body for programmatic dialogs (`create({title, body})`)                                                                                                |
+| `titleVisuallyHidden`                                                | remove (Q8)                                                             | `titleAttrs: {class: 'visually-hidden'}`                                                                                                                          |
+| `noHeader`, `noHeaderClose`, `headerCloseLabel`                      | keep                                                                    | Small additives; `headerCloseLabel` is i18n                                                                                                                       |
+| `headerCloseVariant`, `headerCloseColor`                             | remove                                                                  | The `header-close` slot replaces the whole button (see slots); style the slotted button directly                                                                  |
+| `noFooter`                                                           | depends on Q2                                                           |                                                                                                                                                                   |
+| `okTitle`, `okOnly`, `okDisabled`, `cancelTitle`, `cancelDisabled`   | depends on Q2 (recommended keep)                                        |                                                                                                                                                                   |
+| `okVariant`, `okColor`, `cancelVariant`, `cancelColor`, `buttonSize` | depends on Q2 (recommended → `okAttrs` / `cancelAttrs`)                 | BButton props through attrs                                                                                                                                       |
+| `busy`                                                               | remove (Q2)                                                             | Same as `okDisabled` + `cancelDisabled`                                                                                                                           |
+| `headerColor`, `bodyColor`, `footerColor`                            | keep                                                                    | Rule 5 (`<part>Color` objects)                                                                                                                                    |
+| `headerAttrs`, `bodyAttrs`                                           | keep                                                                    |                                                                                                                                                                   |
+| `headerClass`, `bodyClass`, `footerClass`, `titleClass`              | replace with `headerAttrs` / `bodyAttrs` / `footerAttrs` / `titleAttrs` | Rule 5                                                                                                                                                            |
+| `headerCloseClass`                                                   | replace with `headerCloseAttrs`                                         |                                                                                                                                                                   |
+| `okClass`, `cancelClass`                                             | replace with `okAttrs`, `cancelAttrs`                                   |                                                                                                                                                                   |
+| `modalClass`, `dialogClass`, `contentClass`                          | remove                                                                  | The `<dialog>` is the only wrapper; `class` / `$attrs` land on it                                                                                                 |
 
 ### Slots, emits, exposed
 
-| Item                                        | Disposition                                                                                                       |
-| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| slots `default`, `header`, `title`, `footer` | keep                                                                                                              |
-| slot `header-close`                         | keep; replaces the close button entirely (today its content goes inside a `BButton`)                              |
-| slots `ok`, `cancel`                        | keep if Q2 keeps the built-in footer                                                                              |
-| slot `backdrop`                             | remove (`::backdrop` is a pseudo-element)                                                                         |
-| slot props                                  | `id`, `visible`, `active`, `show`, `hide(trigger?, value?)`, `toggle`, `ok(value?)`, `cancel()`, `close()`        |
-| emits `show`, `shown`, `hide`, `hidden`, `show-prevented`, `hide-prevented`, `toggle`, `toggle-prevented`, `update:modelValue` | keep (`hide-prevented` covers v6 `hidePrevented`) |
-| emits `ok`, `cancel`, `close`, `esc`, `backdrop` | Q3                                                                                                           |
-| exposed `show`, `hide`, `toggle`, `id`, `visible` | keep. `hide(trigger?, value?)`. v6 `handleUpdate()` isn't needed                                            |
+| Item                                                                                                                           | Disposition                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| slots `default`, `header`, `title`, `footer`                                                                                   | keep                                                                                                       |
+| slot `header-close`                                                                                                            | keep; replaces the close button entirely (today its content goes inside a `BButton`)                       |
+| slots `ok`, `cancel`                                                                                                           | keep if Q2 keeps the built-in footer                                                                       |
+| slot `backdrop`                                                                                                                | remove (`::backdrop` is a pseudo-element)                                                                  |
+| slot props                                                                                                                     | `id`, `visible`, `active`, `show`, `hide(trigger?, value?)`, `toggle`, `ok(value?)`, `cancel()`, `close()` |
+| emits `show`, `shown`, `hide`, `hidden`, `show-prevented`, `hide-prevented`, `toggle`, `toggle-prevented`, `update:modelValue` | keep (`hide-prevented` covers v6 `hidePrevented`)                                                          |
+| emits `ok`, `cancel`, `close`, `esc`, `backdrop`                                                                               | Q3                                                                                                         |
+| exposed `show`, `hide`, `toggle`, `id`, `visible`                                                                              | keep. `hide(trigger?, value?)`. v6 `handleUpdate()` isn't needed                                           |
 
 ### Proposed API
 
 ```ts
 export interface BDialogProps extends ShowHideProps {
-  id?: string
-  modelValue?: boolean
-  modal?: boolean // true
-  backdrop?: boolean | 'static' // true
-  keyboard?: boolean // true
-  size?: 'sm' | 'lg' | 'xl'
-  fullscreen?: boolean | Breakpoint
-  scrollable?: boolean
-  slide?: 'down' | 'up'
-  title?: string
-  titleTag?: string // 'h5'
-  body?: string
-  focus?: 'ok' | 'cancel' | 'close'
-  noHeader?: boolean
-  noHeaderClose?: boolean
-  headerCloseLabel?: string // 'Close'
-  noFooter?: boolean // Q2
-  okTitle?: string // 'OK', Q2
-  okOnly?: boolean
-  okDisabled?: boolean
-  cancelTitle?: string // 'Cancel'
-  cancelDisabled?: boolean
-  okAttrs?: Readonly<AttrsValue> // BButton props too: {variant, theme, size, class}
-  cancelAttrs?: Readonly<AttrsValue>
-  headerColor?: ColorBorderExtendables
-  bodyColor?: ColorExtendables
-  footerColor?: ColorBorderExtendables
-  headerAttrs?: Readonly<AttrsValue>
-  titleAttrs?: Readonly<AttrsValue>
-  headerCloseAttrs?: Readonly<AttrsValue>
-  bodyAttrs?: Readonly<AttrsValue>
-  footerAttrs?: Readonly<AttrsValue>
+  id?: string;
+  modelValue?: boolean;
+  modal?: boolean; // true
+  backdrop?: boolean | "static"; // true
+  keyboard?: boolean; // true
+  size?: "sm" | "lg" | "xl";
+  fullscreen?: boolean | Breakpoint;
+  scrollable?: boolean;
+  slide?: "down" | "up";
+  title?: string;
+  titleTag?: string; // 'h5'
+  body?: string;
+  focus?: "ok" | "cancel" | "close";
+  noHeader?: boolean;
+  noHeaderClose?: boolean;
+  headerCloseLabel?: string; // 'Close'
+  noFooter?: boolean; // Q2
+  okTitle?: string; // 'OK', Q2
+  okOnly?: boolean;
+  okDisabled?: boolean;
+  cancelTitle?: string; // 'Cancel'
+  cancelDisabled?: boolean;
+  okAttrs?: Readonly<AttrsValue>; // BButton props too: {variant, theme, size, class}
+  cancelAttrs?: Readonly<AttrsValue>;
+  headerColor?: ColorBorderExtendables;
+  bodyColor?: ColorExtendables;
+  footerColor?: ColorBorderExtendables;
+  headerAttrs?: Readonly<AttrsValue>;
+  titleAttrs?: Readonly<AttrsValue>;
+  headerCloseAttrs?: Readonly<AttrsValue>;
+  bodyAttrs?: Readonly<AttrsValue>;
+  footerAttrs?: Readonly<AttrsValue>;
 }
 ```
 
@@ -201,37 +201,37 @@ export interface BDialogProps extends ShowHideProps {
 
 ### Prop disposition
 
-| Prop                                                                     | Disposition                                                 | Notes                                                                                 |
-| ------------------------------------------------------------------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `modelValue`, `id`                                                       | keep                                                        |                                                                                       |
-| `show`, `visible`, `initialAnimation`, `lazy`, `unmountLazy`             | keep (shared)                                               | Lazy content still renders while inline (responsive)                                  |
-| `noTransition`                                                           | keep                                                        | → `.drawer-instant`                                                                   |
-| `placement`                                                              | keep, retype                                                | `'start' \| 'end' \| 'top' \| 'bottom' \| 'fullscreen'`, default `'start'`, always rendered |
-| `responsive`                                                             | keep                                                        | `Breakpoint` → `{bp}:drawer` instead of `drawer`; CSS-only                            |
-| `noBackdrop`, `noCloseOnBackdrop`                                        | replace with v6 `backdrop?: boolean \| 'static'`            |                                                                                       |
-| `noCloseOnEsc`                                                           | replace with v6 `keyboard`                                  |                                                                                       |
-| `bodyScrolling`                                                          | replace with v6 `scroll`                                    | `scroll && !backdrop` → non-modal `show()`                                             |
-| —                                                                        | **new** `sheet`, `translucent`                              | → `.drawer-sheet`, `.drawer-translucent` (`translucent` matches BToast / BCard)        |
-| `backdropFirst`, `noTrap`, `teleportTo`, `teleportDisabled`              | remove                                                      | As for Dialog (Q6)                                                                    |
-| `shadow`                                                                 | remove                                                      | v6 drawer has `--bs-drawer-box-shadow`; utilities through `class`                      |
-| `width`                                                                  | remove (Q8)                                                 | `style="--bs-drawer-width: 20rem"` (and `--bs-drawer-height` for top/bottom)          |
-| `focus`                                                                  | keep reduced (Q8)                                           | `'close'` → `autofocus` on the close button                                           |
-| `title`                                                                  | keep                                                        | Renders `h5.drawer-title`                                                             |
-| `noHeader`, `noHeaderClose`, `headerCloseLabel`                          | keep                                                        |                                                                                       |
-| `headerCloseVariant`, `headerCloseColor`                                 | remove                                                      | As for Dialog                                                                         |
-| `headerAttrs`, `bodyAttrs`                                               | keep                                                        |                                                                                       |
-| `headerClass`, `bodyClass`, `footerClass`, `headerCloseClass`            | replace with `headerAttrs`, `bodyAttrs`, `footerAttrs`, `headerCloseAttrs` |                                                                         |
+| Prop                                                          | Disposition                                                                | Notes                                                                                       |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `modelValue`, `id`                                            | keep                                                                       |                                                                                             |
+| `show`, `visible`, `initialAnimation`, `lazy`, `unmountLazy`  | keep (shared)                                                              | Lazy content still renders while inline (responsive)                                        |
+| `noTransition`                                                | keep                                                                       | → `.drawer-instant`                                                                         |
+| `placement`                                                   | keep, retype                                                               | `'start' \| 'end' \| 'top' \| 'bottom' \| 'fullscreen'`, default `'start'`, always rendered |
+| `responsive`                                                  | keep                                                                       | `Breakpoint` → `{bp}:drawer` instead of `drawer`; CSS-only                                  |
+| `noBackdrop`, `noCloseOnBackdrop`                             | replace with v6 `backdrop?: boolean \| 'static'`                           |                                                                                             |
+| `noCloseOnEsc`                                                | replace with v6 `keyboard`                                                 |                                                                                             |
+| `bodyScrolling`                                               | replace with v6 `scroll`                                                   | `scroll && !backdrop` → non-modal `show()`                                                  |
+| —                                                             | **new** `sheet`, `translucent`                                             | → `.drawer-sheet`, `.drawer-translucent` (`translucent` matches BToast / BCard)             |
+| `backdropFirst`, `noTrap`, `teleportTo`, `teleportDisabled`   | remove                                                                     | As for Dialog (Q6)                                                                          |
+| `shadow`                                                      | remove                                                                     | v6 drawer has `--bs-drawer-box-shadow`; utilities through `class`                           |
+| `width`                                                       | remove (Q8)                                                                | `style="--bs-drawer-width: 20rem"` (and `--bs-drawer-height` for top/bottom)                |
+| `focus`                                                       | keep reduced (Q8)                                                          | `'close'` → `autofocus` on the close button                                                 |
+| `title`                                                       | keep                                                                       | Renders `h5.drawer-title`                                                                   |
+| `noHeader`, `noHeaderClose`, `headerCloseLabel`               | keep                                                                       |                                                                                             |
+| `headerCloseVariant`, `headerCloseColor`                      | remove                                                                     | As for Dialog                                                                               |
+| `headerAttrs`, `bodyAttrs`                                    | keep                                                                       |                                                                                             |
+| `headerClass`, `bodyClass`, `footerClass`, `headerCloseClass` | replace with `headerAttrs`, `bodyAttrs`, `footerAttrs`, `headerCloseAttrs` |                                                                                             |
 
-| Slot / emit / exposed                                                    | Disposition                                                                                      |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| slots `default`, `header`, `title`, `header-close`, `footer`             | keep; `footer` renders `.drawer-footer` (today a bare `<div>`)                                    |
-| slot `backdrop`                                                          | remove                                                                                           |
-| slot props                                                               | `id`, `visible`, `active`, `show`, `hide`, `toggle`, `placement`                                  |
-| emits `show` … `toggle-prevented`, `update:modelValue`                   | keep                                                                                             |
-| emits `close`, `esc`, `backdrop`                                         | follow Q3                                                                                        |
-| emit `breakpoint`                                                        | remove: the inline state is CSS; use `useBreakpoints` / `useMediaQuery` from `@vueuse/core`       |
-| exposed `isOpenByBreakpoint`                                             | remove                                                                                           |
-| exposed `show`, `hide`, `toggle`                                         | keep; add `id`, `visible` (as Dialog)                                                            |
+| Slot / emit / exposed                                        | Disposition                                                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| slots `default`, `header`, `title`, `header-close`, `footer` | keep; `footer` renders `.drawer-footer` (today a bare `<div>`)                              |
+| slot `backdrop`                                              | remove                                                                                      |
+| slot props                                                   | `id`, `visible`, `active`, `show`, `hide`, `toggle`, `placement`                            |
+| emits `show` … `toggle-prevented`, `update:modelValue`       | keep                                                                                        |
+| emits `close`, `esc`, `backdrop`                             | follow Q3                                                                                   |
+| emit `breakpoint`                                            | remove: the inline state is CSS; use `useBreakpoints` / `useMediaQuery` from `@vueuse/core` |
+| exposed `isOpenByBreakpoint`                                 | remove                                                                                      |
+| exposed `show`, `hide`, `toggle`                             | keep; add `id`, `visible` (as Dialog)                                                       |
 
 ### Markup
 
@@ -274,13 +274,14 @@ export interface BDialogProps extends ShowHideProps {
 
   ```ts
   interface DialogResult<T = string> {
-    trigger: string | null // 'ok' | 'cancel' | 'close' | 'esc' | 'backdrop' | 'submit' | custom | null
-    ok: boolean | null // trigger 'ok' → true, 'cancel' → false, else null
-    value?: T // hide(trigger, value) / ok(value) / <form method="dialog"> submitter value (native returnValue)
+    trigger: string | null; // 'ok' | 'cancel' | 'close' | 'esc' | 'backdrop' | 'submit' | custom | null
+    ok: boolean | null; // trigger 'ok' → true, 'cancel' → false, else null
+    value?: T; // hide(trigger, value) / ok(value) / <form method="dialog"> submitter value (native returnValue)
   }
   ```
 
   It is built in `BOrchestrator` from `hidden` (or `hide` with `resolveOnHide`), replacing `setEventOk`, which mutates `BvTriggerableEvent.ok`. `BvTriggerableEvent.ok` can then be removed.
+
 - Remove `show(id)`, `hide(trigger, id)`, `get(id)` and `current()`: they duplicate `useToggle(id)` / `useToggle()` (nearest parent), which works for every show/hide component. Keep `hideAll(trigger?)` (Q5). `useModal` becomes `{create, hideAll}`.
 - Rename it with the component (Q1).
 
@@ -325,15 +326,15 @@ Dependency changes: remove the `focus-trap` and `@vueuse/integrations` peer and 
 
 ## Cross-group dependencies
 
-| Item                                                     | Owner          | Note                                                                                                                                                                                                                                                                                       |
-| -------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Navbar collapsed menu                                    | G3 Navbar      | Uses `BDrawer` with `responsive` (`lg:drawer`), CSS-only. Drawer's resize guard hides an open drawer once it is inline. v6's `.navbar` `ResizeObserver` and the navbar `:not([open])` transition-kill rule (the reason `.hiding` is added before `close()`) are G3's to check |
-| Menus / Combobox inside a dialog                         | G2 Menus       | Anything teleported out of the `<dialog>` (to `body`) is under the top layer and inert. Menus inside a modal dialog must render inside the dialog (v6 `tooltip.ts` redirects its `container` to `closest('dialog[open]')`) or use the popover API                                          |
-| Tooltips / popovers (Floating UI batch)                  | wave 2         | Same rule. `BPopover` renders in place by default (fine), but `usePopover` items rendered in `BOrchestrator` are behind an open modal dialog                                                                                                                                                 |
-| Toasts / orchestrator toast container                    | Toast owner    | Orchestrated toasts render behind an open modal dialog and are inert. Option: make each toast container `popover="manual"` and call `showPopover()` when a toast appears (it then enters the top layer above earlier dialogs). Also replace `<TransitionGroup name="b-list">` with the native path |
-| `Responsive<T>` vs `fullscreen: Breakpoint`              | all            | `fullscreen` keeps a single breakpoint (`{bp}-down:` is a "below" switch), the same pattern as Drawer `responsive` and Navbar `toggleable`                                                                                                                                                   |
-| `backdrop` / `keyboard` names in `useShowHide`           | foundations    | `useShowHide` reads `noCloseOnBackdrop` / `noCloseOnEsc`; after this change no component sets them. Dialog / Drawer check `backdrop` / `keyboard` before calling `hide()`, and the two props can be removed from `UseShowHideProps`                                                         |
-| `BvTriggerableEvent.ok`                                  | foundations    | Only `BOrchestrator.setEventOk` writes it; remove with Q4                                                                                                                                                                                                                                   |
+| Item                                           | Owner       | Note                                                                                                                                                                                                                                                                                               |
+| ---------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Navbar collapsed menu                          | G3 Navbar   | Uses `BDrawer` with `responsive` (`lg:drawer`), CSS-only. Drawer's resize guard hides an open drawer once it is inline. v6's `.navbar` `ResizeObserver` and the navbar `:not([open])` transition-kill rule (the reason `.hiding` is added before `close()`) are G3's to check                      |
+| Menus / Combobox inside a dialog               | G2 Menus    | Anything teleported out of the `<dialog>` (to `body`) is under the top layer and inert. Menus inside a modal dialog must render inside the dialog (v6 `tooltip.ts` redirects its `container` to `closest('dialog[open]')`) or use the popover API                                                  |
+| Tooltips / popovers (Floating UI batch)        | wave 2      | Same rule. `BPopover` renders in place by default (fine), but `usePopover` items rendered in `BOrchestrator` are behind an open modal dialog                                                                                                                                                       |
+| Toasts / orchestrator toast container          | Toast owner | Orchestrated toasts render behind an open modal dialog and are inert. Option: make each toast container `popover="manual"` and call `showPopover()` when a toast appears (it then enters the top layer above earlier dialogs). Also replace `<TransitionGroup name="b-list">` with the native path |
+| `Responsive<T>` vs `fullscreen: Breakpoint`    | all         | `fullscreen` keeps a single breakpoint (`{bp}-down:` is a "below" switch), the same pattern as Drawer `responsive` and Navbar `toggleable`                                                                                                                                                         |
+| `backdrop` / `keyboard` names in `useShowHide` | foundations | `useShowHide` reads `noCloseOnBackdrop` / `noCloseOnEsc`; after this change no component sets them. Dialog / Drawer check `backdrop` / `keyboard` before calling `hide()`, and the two props can be removed from `UseShowHideProps`                                                                |
+| `BvTriggerableEvent.ok`                        | foundations | Only `BOrchestrator.setEventOk` writes it; remove with Q4                                                                                                                                                                                                                                          |
 
 ## Questions for the maintainer
 
@@ -409,8 +410,8 @@ Chrome makes a second Escape without user activation non-cancelable, so `keyboar
 
 Rule 1 allows a handful of small additives. Proposed:
 
-| Keep                                                                            | Remove                                                                                    |
-| ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Keep                                                                                                                                                   | Remove                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | `title`, `titleTag`, `body`, `noHeader`, `noHeaderClose`, `headerCloseLabel`, `lazy` / `unmountLazy`, `focus` reduced to `'ok' \| 'cancel' \| 'close'` | `centered`, `titleVisuallyHidden`, `width` / `shadow` (Drawer), `busy`, the element / selector / `false` forms of `focus`, `breakpoint` emit |
 
 - **A. As proposed.**
@@ -429,7 +430,15 @@ Rule 1 allows a handful of small additives. Proposed:
 
 ## Decisions
 
-_Pending maintainer answers._
+Answered by the maintainer on 2026-11-03. Where an answer differs from the proposal above, the answer wins.
+
+| Q     | Decision                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Q1    | **A. Rename everything:** `BModal` → `BDialog`, `BOffcanvas` → `BDrawer`, `useModal` → `useDialog`; remove `vBModal` (`v-b-toggle` covers it). No aliases.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Q2    | **Remove the built-in footer from `BDialog`, and add a small separate `BDialogActions` helper.** `BDialog` loses every `ok*` / `cancel*` / `buttonSize` / `busy` prop and the `ok` / `cancel` slots; the footer is user markup, as in v6. The `footer` slot (and the other slots) get `hide(trigger?, value?)`, `ok(value?)` and `cancel()`. `BDialogActions` renders OK / Cancel buttons wired to the enclosing dialog's `ok()` / `hide('cancel')` (through injection) for message and confirm boxes and `useDialog().create(...)`; its own API is decided at implementation (keep it to a handful of props such as the two titles, `okOnly` and per-button attrs). |
+| Q3    | **B.** `hide` (cancelable, with `trigger`), `ok` (cancelable, fired when `ok()` is called, for validate-before-close) and `cancel` with the v6 meaning (Escape / close request). Remove `close`, `esc`, `backdrop` and the Cancel-button meaning of `cancel`; read those from `hide`'s `trigger`. Drawer follows the same rule without `ok` and `cancel`.                                                                                                                                                                                                                                                                                                            |
+| Q4    | **A.** `show()` resolves with a plain `{trigger, ok, value?: T}` object; `value` comes from `hide(trigger, value)`, `ok(value)` or a `<form method="dialog">` submitter (submits intercepted so the exit transition plays). Remove `BvTriggerableEvent.ok` and `setEventOk`.                                                                                                                                                                                                                                                                                                                                                                                         |
+| Q5–Q9 | _Pending._                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 ## Exports, docs and migration notes
 
