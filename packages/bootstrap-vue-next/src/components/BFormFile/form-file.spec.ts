@@ -509,12 +509,13 @@ describe('form-file', () => {
 
     it('has label when label slot defined in plain mode', () => {
       const wrapper = mount(BFormFile, {
-        props: {labelClass: 'labelClass', plain: true},
+        props: {labelAttrs: {class: 'labelClass'}, plain: true},
         slots: {label: 'foo'},
       })
       const $label = wrapper.get('label')
       expect($label).not.toBeUndefined()
-      expect($label.attributes('class')?.includes('labelClass')).toBe(true)
+      expect($label.classes()).toContain('labelClass')
+      expect($label.classes()).toContain('form-label')
     })
 
     it('label for attribute matches input id in plain mode', () => {
@@ -542,12 +543,13 @@ describe('form-file', () => {
 
     it('has label when label slot defined in custom mode', () => {
       const wrapper = mount(BFormFile, {
-        props: {labelClass: 'labelClass'},
+        props: {labelAttrs: {class: 'labelClass'}},
         slots: {label: 'foo'},
       })
       const $label = wrapper.get('label')
       expect($label).not.toBeUndefined()
-      expect($label.attributes('class')?.includes('labelClass')).toBe(true)
+      expect($label.classes()).toContain('labelClass')
+      expect($label.classes()).toContain('form-label')
     })
   })
 
@@ -938,10 +940,21 @@ describe('form-file', () => {
       expect($label.classes()).toContain('form-label')
     })
 
-    it('label has labelClass when provided', () => {
-      const wrapper = mount(BFormFile, {props: {label: 'Upload', labelClass: 'fw-bold'}})
+    it('label merges labelAttrs class and style when provided', () => {
+      const wrapper = mount(BFormFile, {
+        props: {label: 'Upload', labelAttrs: {class: 'fw-bold', style: {color: 'red'}}},
+      })
       const $label = wrapper.find('label')
       expect($label.classes()).toContain('fw-bold')
+      expect($label.classes()).toContain('form-label')
+      expect($label.attributes('style')).toContain('color: red')
+    })
+
+    it('custom control has class form-control', () => {
+      const wrapper = mount(BFormFile, {props: {size: 'sm'}})
+      const $control = wrapper.find('.b-form-file-control')
+      expect($control.classes()).toContain('form-control')
+      expect($control.classes()).toContain('form-control-sm')
     })
 
     it('label for attribute matches browse button id in custom mode', () => {
@@ -1596,11 +1609,11 @@ describe('form-file', () => {
       expect(wrapper.find('label').text()).toBe('Second Label')
     })
 
-    it('updates labelClass when labelClass prop changes', async () => {
-      const wrapper = mount(BFormFile, {props: {label: 'Upload', labelClass: 'fw-bold'}})
+    it('updates label class when labelAttrs prop changes', async () => {
+      const wrapper = mount(BFormFile, {props: {label: 'Upload', labelAttrs: {class: 'fw-bold'}}})
       expect(wrapper.find('label').classes()).toContain('fw-bold')
 
-      await wrapper.setProps({labelClass: 'text-danger'})
+      await wrapper.setProps({labelAttrs: {class: 'text-danger'}})
       expect(wrapper.find('label').classes()).not.toContain('fw-bold')
       expect(wrapper.find('label').classes()).toContain('text-danger')
     })

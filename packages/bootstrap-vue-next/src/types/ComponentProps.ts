@@ -466,7 +466,7 @@ export interface BFormFileProps {
   form?: string
   id?: string
   label?: string
-  labelClass?: ClassValue
+  labelAttrs?: Readonly<AttrsValue>
   modelValue?: readonly File[] | File | null
   multiple?: boolean
   name?: string
