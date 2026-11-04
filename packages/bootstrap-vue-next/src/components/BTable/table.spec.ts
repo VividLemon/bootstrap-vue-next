@@ -593,7 +593,7 @@ describe('object-persistence', () => {
       })
       const $table = wrapper.get('table')
       expect($table.classes()).toContain('b-table-busy')
-      expect($table.attributes('ariabusy')).toBe('true')
+      expect($table.attributes('aria-busy')).toBe('true')
     })
   })
 
@@ -644,7 +644,7 @@ describe('object-persistence', () => {
         const tds = tr.findAll('td')
         tds.forEach((td, colIndex) => {
           const field = fields[colIndex]
-          expect(td.attributes('data-label')).toBe(field.label)
+          expect(td.attributes('data-cell')).toBe(field.label)
         })
       })
     })
@@ -695,58 +695,32 @@ describe('object-persistence', () => {
         const tds = tr.findAll('td')
         tds.forEach((td, colIndex) => {
           const field = fields[colIndex]
-          expect(td.attributes('data-label')).toBe(field.label)
+          expect(td.attributes('data-cell')).toBe(field.label)
         })
       })
     })
 
-    it('does not have duplicate labels when both labelstacked and label', () => {
-      const fields = [
-        {
-          key: 'id',
-          label: 'The ID',
-        },
-        {
-          key: 'first_name',
-          label: 'this is the first name',
-        },
-        {
-          key: 'last_name',
-          label: 'this is the last name',
-        },
-      ]
-
-      const items = [
-        {
-          id: 1,
-          first_name: 'Ringo',
-          last_name: 'Starr',
-        },
-        {
-          id: 2,
-          first_name: 'John',
-          last_name: 'Lennon',
-        },
-        {
-          id: 3,
-          first_name: 'Paul',
-          last_name: 'McCartney',
-        },
-      ]
-
+    it('does not render the removed stacked label elements or data-label', () => {
       const wrapper = mount(BTable, {
         props: {
-          fields,
-          items,
+          fields: ['id', 'name'],
+          items: [{id: 1, name: 'Ringo'}],
           stacked: true,
-          labelStacked: true,
         },
       })
+      expect(wrapper.findAll('label').length).toBe(0)
+      expect(wrapper.findAll('[data-label]').length).toBe(0)
+      expect(wrapper.findAll('[data-cell]').length).toBe(2)
+    })
 
-      const labels = wrapper.findAll('label')
-      expect(labels.length).toBe(9)
-      const dataLabels = wrapper.findAll('[data-label]')
-      expect(dataLabels.length).toBe(0)
+    it('does not add data-cell when not stacked', () => {
+      const wrapper = mount(BTable, {
+        props: {
+          fields: ['id', {key: 'name', label: 'Name'}],
+          items: [{id: 1, name: 'Ringo'}],
+        },
+      })
+      expect(wrapper.findAll('[data-cell]').length).toBe(0)
     })
   })
 })
@@ -2908,52 +2882,108 @@ describe('BTable additional event emissions', () => {
   })
 })
 
-describe('tbodyTrClass as function', () => {
-  it('calls tbodyTrClass function with item and row type', () => {
-    const trClassFn = vi.fn<(item: {name: string} | null) => string>(
-      (item: {name: string} | null) => (item ? 'has-item' : 'no-item')
+describe('tbodyTrAttrs', () => {
+  it('calls the tbodyTrAttrs function with item and row type', () => {
+    const trAttrsFn = vi.fn<(item: {name: string} | null) => {class: string}>(
+      (item: {name: string} | null) => ({class: item ? 'has-item' : 'no-item'})
     )
-    mount(BTable, {
+    const wrapper = mount(BTable, {
       props: {
         items: [{name: 'test'}],
         fields: ['name'],
-        tbodyTrClass: trClassFn,
+        tbodyTrAttrs: trAttrsFn,
       },
     })
-    expect(trClassFn).toHaveBeenCalled()
-    const [rowCall] = trClassFn.mock.calls.filter((c) => c[0] !== null)
+    expect(trAttrsFn).toHaveBeenCalled()
+    const [rowCall] = trAttrsFn.mock.calls.filter((c) => c[0] !== null)
     expect(rowCall).toBeDefined()
     expect(rowCall?.[0]).toEqual({name: 'test'})
+    expect(wrapper.get('tbody tr').classes()).toContain('has-item')
   })
 
-  it('calls tbodyTrClass with null and "table-busy" for busy row', () => {
-    const trClassFn = vi.fn<() => string>(() => 'custom-class')
-    mount(BTable, {
+  it('calls tbodyTrAttrs with null and "table-busy" for the busy row', () => {
+    const trAttrsFn = vi.fn<() => {class: string}>(() => ({class: 'custom-class'}))
+    const wrapper = mount(BTable, {
       props: {
         items: [{name: 'test'}],
         fields: ['name'],
         busy: true,
-        tbodyTrClass: trClassFn,
+        tbodyTrAttrs: trAttrsFn,
       },
       slots: {
         'table-busy': '<div>Loading...</div>',
       },
     })
-    expect(trClassFn).toHaveBeenCalledWith(null, 'table-busy')
+    expect(trAttrsFn).toHaveBeenCalledWith(null, 'table-busy')
+    const $busy = wrapper.get('tbody tr.b-table-busy-slot')
+    expect($busy.classes()).toContain('custom-class')
   })
 
-  it('applies string tbodyTrClass to all rows', () => {
+  it('merges a static tbodyTrAttrs class into all rows', () => {
     const wrapper = mount(BTable, {
       props: {
         items: [{name: 'Alice'}, {name: 'Bob'}],
         fields: ['name'],
-        tbodyTrClass: 'custom-row-class',
+        tbodyTrAttrs: {'class': 'custom-row-class', 'data-foo': 'bar'},
       },
     })
     const rows = wrapper.findAll('tbody tr')
     rows.forEach((row) => {
       expect(row.classes()).toContain('custom-row-class')
+      expect(row.attributes('data-foo')).toBe('bar')
     })
+  })
+
+  it('merges the user class with the selection classes', async () => {
+    const items = [{name: 'Alice'}, {name: 'Bob'}]
+    const wrapper = mount(BTable, {
+      props: {
+        items,
+        fields: ['name'],
+        selectable: true,
+        selectedItems: [items[0]],
+        tbodyTrAttrs: (item: {name: string} | null) => ({class: `row-${item?.name}`}),
+      },
+    })
+    const [first, second] = wrapper.findAll('tbody tr')
+    expect(first.classes()).toContain('row-Alice')
+    expect(first.classes()).toContain('selected')
+    expect(first.classes()).toContain('theme-primary')
+    expect(second.classes()).toContain('row-Bob')
+    expect(second.classes()).not.toContain('selected')
+  })
+})
+
+describe('BTable attrs merging', () => {
+  it('merges tableAttrs with its own classes and aria-busy', () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: [{name: 'test'}],
+        fields: ['name'],
+        busy: true,
+        selectable: true,
+        tableAttrs: {'class': 'custom-table', 'data-foo': 'bar'},
+      },
+    })
+    const $table = wrapper.get('table')
+    expect($table.classes()).toContain('custom-table')
+    expect($table.classes()).toContain('b-table-busy')
+    expect($table.classes()).toContain('b-table-selectable')
+    expect($table.attributes('aria-busy')).toBe('true')
+    expect($table.attributes('data-foo')).toBe('bar')
+  })
+
+  it('merges fieldColumnAttrs with the sortable column class', () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: [{name: 'test'}],
+        fields: [{key: 'name', sortable: true}],
+        fieldColumnAttrs: (field: {key: string}) => ({class: `col-${field.key}`}),
+      },
+    })
+    const $th = wrapper.get('thead th')
+    expect($th.classes()).toContain('col-name')
+    expect($th.classes()).toContain('b-table-sortable-column')
   })
 })
 
@@ -2990,7 +3020,7 @@ describe('busy state aria-busy', () => {
         busy: true,
       },
     })
-    expect(wrapper.get('table').attributes('ariabusy')).toBe('true')
+    expect(wrapper.get('table').attributes('aria-busy')).toBe('true')
   })
 
   it('does not set aria-busy when not busy', () => {
@@ -3001,7 +3031,7 @@ describe('busy state aria-busy', () => {
         busy: false,
       },
     })
-    expect(wrapper.get('table').attributes('ariabusy')).toBe('false')
+    expect(wrapper.get('table').attributes('aria-busy')).toBe('false')
   })
 
   it('applies b-table-busy class when busy', () => {

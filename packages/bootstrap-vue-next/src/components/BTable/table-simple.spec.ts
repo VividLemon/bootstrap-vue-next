@@ -38,6 +38,40 @@ describe('BTableSimple', () => {
   })
 
   describe('responsive structure', () => {
+    it('wraps a stacked table in a table-responsive query container', () => {
+      const wrapper = mount(BTableSimple, {
+        props: {stacked: 'md'},
+      })
+      const div = wrapper.get('div')
+      expect(div.classes()).toContain('table-responsive')
+      expect(div.get('table').classes()).toContain('md:table-stacked')
+    })
+
+    it('wraps an always-stacked table in a table-responsive query container', () => {
+      const wrapper = mount(BTableSimple, {
+        props: {stacked: true},
+      })
+      expect(wrapper.get('div').classes()).toContain('table-responsive')
+    })
+
+    it('uses the responsive class as the query container when stacked and responsive', () => {
+      const wrapper = mount(BTableSimple, {
+        props: {stacked: 'md', responsive: 'lg'},
+      })
+      const div = wrapper.get('div')
+      expect(div.classes()).toContain('lg:table-responsive')
+      expect(div.classes()).not.toContain('table-responsive')
+    })
+
+    it('adds table-responsive to the sticky header wrapper when stacked', () => {
+      const wrapper = mount(BTableSimple, {
+        props: {stacked: 'md', stickyHeader: true},
+      })
+      const div = wrapper.get('div')
+      expect(div.classes()).toContain('b-table-sticky-header')
+      expect(div.classes()).toContain('table-responsive')
+    })
+
     it('wraps table in a div when responsive is true', () => {
       const wrapper = mount(BTableSimple, {
         props: {responsive: true},
@@ -262,18 +296,31 @@ describe('BTableSimple', () => {
       expect(table.classes()).not.toContain('table-hover')
     })
 
-    it('has class b-table-stacked when stacked prop set', async () => {
+    it('has class table-stacked when stacked prop set', async () => {
       const wrapper = mount(BTableSimple, {
         props: {stacked: true},
       })
-      const table = wrapper.get('table')
-      expect(table.classes()).toContain('b-table-stacked')
+      expect(wrapper.get('table').classes()).toContain('table-stacked')
       await wrapper.setProps({stacked: 'lg'})
-      expect(table.classes()).toContain('b-table-stacked-lg')
+      expect(wrapper.get('table').classes()).toContain('lg:table-stacked')
+      expect(wrapper.get('table').classes()).not.toContain('table-stacked')
       await wrapper.setProps({stacked: false})
-      expect(table.classes()).not.toContain('b-table-stacked')
-      expect(table.classes()).not.toContain('b-table-stacked-lg')
+      expect(wrapper.get('table').classes()).not.toContain('table-stacked')
+      expect(wrapper.get('table').classes()).not.toContain('lg:table-stacked')
     })
+
+    it.each(['sm', 'md', 'lg', 'xl', '2xl'] as const)(
+      'has %s:table-stacked class and no v5 b-table-stacked class',
+      (bp) => {
+        const wrapper = mount(BTableSimple, {
+          props: {stacked: bp},
+        })
+        const table = wrapper.get('table')
+        expect(table.classes()).toContain(`${bp}:table-stacked`)
+        expect(table.classes()).not.toContain(`b-table-stacked-${bp}`)
+        expect(table.classes()).not.toContain('b-table-stacked')
+      }
+    )
 
     it('has class table-striped when striped prop is set', async () => {
       const wrapper = mount(BTableSimple, {
@@ -342,21 +389,20 @@ describe('BTableSimple', () => {
       expect(table.classes()).not.toContain('b-table-no-border-collapse')
     })
 
-    it('applies tableClass prop', () => {
+    it('merges tableAttrs class and style with its own classes', () => {
       const wrapper = mount(BTableSimple, {
-        props: {tableClass: 'foo'},
+        props: {
+          striped: true,
+          tableAttrs: {'class': ['class-a', 'class-b'], 'style': {color: 'red'}, 'data-foo': 'bar'},
+        },
       })
       const table = wrapper.get('table')
-      expect(table.classes()).toContain('foo')
-    })
-
-    it('applies tableClass as array', () => {
-      const wrapper = mount(BTableSimple, {
-        props: {tableClass: ['class-a', 'class-b']},
-      })
-      const table = wrapper.get('table')
+      expect(table.classes()).toContain('table')
+      expect(table.classes()).toContain('table-striped')
       expect(table.classes()).toContain('class-a')
       expect(table.classes()).toContain('class-b')
+      expect(table.attributes('style')).toContain('color: red')
+      expect(table.attributes('data-foo')).toBe('bar')
     })
 
     it('supports multiple boolean classes at once', () => {

@@ -72,7 +72,6 @@ import type {
   TableFieldRaw,
   TablePrimaryKey,
   TableRowType,
-  TableStrictClassValue,
   TableThScope,
 } from './TableTypes'
 import type {PopoverPlacement} from './PopoverPlacement'
@@ -1315,21 +1314,13 @@ export interface BTableSimpleProps extends ColorExtendables {
   striped?: boolean
   stripedColumns?: boolean
   tableAttrs?: Readonly<AttrsValue>
-  tableClass?: ClassValue
 }
 
 export interface BTableLiteProps<Item> extends BTableSimpleProps {
   align?: VerticalAlign
   caption?: string
-  detailsTdClass?: ClassValue
-  fieldColumnClass?:
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | ((field: TableField<Item>) => readonly Record<string, any>[])
-    | string
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | Readonly<Record<PropertyKey, any>>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | readonly any[]
+  detailsTdAttrs?: Readonly<AttrsValue>
+  fieldColumnAttrs?: ((field: TableField<Item>) => AttrsValue) | Readonly<AttrsValue>
   fields?: readonly TableFieldRaw<Item>[]
   footClone?: boolean
   footColor?: ColorExtendables
@@ -1337,26 +1328,22 @@ export interface BTableLiteProps<Item> extends BTableSimpleProps {
   headColor?: ColorExtendables
   headRowColor?: ColorExtendables
   items?: readonly Item[]
-  labelStacked?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modelValue?: any
   expandedItems?: readonly Item[]
   // primaryKey?: Item extends object ? TablePrimaryKey<Item> : string
   primaryKey?: TablePrimaryKey<Item>
-  tbodyClass?: ClassValue
+  tbodyAttrs?: Readonly<AttrsValue>
   tbodyTrAttrs?: ((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue
   // tbodyTransitionHandlers
   // tbodyTransitionProps
-  tbodyTrClass?:
-    ((item: Item | null, type: TableRowType) => TableStrictClassValue) | TableStrictClassValue
-  tfootClass?: ClassValue
-  tfootTrClass?: ClassValue
-  theadClass?: ClassValue
-  theadTrClass?: ClassValue
+  tfootAttrs?: Readonly<AttrsValue>
+  tfootTrAttrs?: Readonly<AttrsValue>
+  theadAttrs?: Readonly<AttrsValue>
+  theadTrAttrs?: Readonly<AttrsValue>
 }
 
-export interface BTableProps<Item>
-  extends Omit<BTableLiteProps<Item>, 'tableClass'>, FormDebounceOptions {
+export interface BTableProps<Item> extends BTableLiteProps<Item>, FormDebounceOptions {
   provider?: BTableProvider<Item>
   noProvider?: readonly NoProviderTypes[]
   noProviderPaging?: boolean
@@ -1404,7 +1391,6 @@ export type BTfootProps = ColorExtendables
 export interface BTdProps extends ColorExtendables {
   colspan?: Numberish
   rowspan?: Numberish
-  stackedHeading?: string
   stickyColumn?: boolean
 }
 
@@ -1413,7 +1399,6 @@ export type BTbodyProps = ColorExtendables
 export interface BThProps extends ColorExtendables {
   colspan?: Numberish
   rowspan?: Numberish
-  stackedHeading?: string
   stickyColumn?: boolean
   scope?: TableThScope
 }

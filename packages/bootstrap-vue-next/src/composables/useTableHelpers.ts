@@ -33,24 +33,22 @@ import {
 } from '../types/TableTypes'
 import {deepEqual, set} from '../utils/object'
 import {startCase} from '../utils/stringUtils'
-import {formatItem, getDataLabelAttr, getWithGetter, type StackedProps} from '../utils/tableUtils'
+import {formatItem, getDataCellAttr, getWithGetter} from '../utils/tableUtils'
 import {useDebounceFn} from '../utils/debounce'
 import {useItemTracker} from './useTableLiteHelpers'
+import type {Breakpoint} from '../types/BreakpointProps'
 
 export const useTableMapper = <Item>({
   fields,
   items,
-  stackedProps,
+  stacked,
   provider,
   events,
   pagination,
 }: {
   items: MaybeRefOrGetter<readonly Item[]>
   fields: MaybeRefOrGetter<readonly TableFieldRaw<Item>[]>
-  stackedProps: {
-    stacked: MaybeRefOrGetter<StackedProps['stacked']>
-    labelStacked: MaybeRefOrGetter<StackedProps['labelStacked']>
-  }
+  stacked: MaybeRefOrGetter<boolean | Breakpoint | undefined>
   pagination: {
     perPage: MaybeRefOrGetter<number>
     currentPage: Ref<number>
@@ -92,13 +90,7 @@ export const useTableMapper = <Item>({
         return {
           key: el as string,
           label,
-          tdAttr: getDataLabelAttr(
-            {
-              stacked: toValue(stackedProps.stacked),
-              labelStacked: toValue(stackedProps.labelStacked),
-            },
-            label
-          ),
+          tdAttr: getDataCellAttr(toValue(stacked), label),
         }
       }
 

@@ -82,7 +82,7 @@
       <BTr
         v-if="busyModel && slots['table-busy']"
         class="b-table-busy-slot"
-        :class="getBusyRowClasses"
+        v-bind="callTbodyTrAttrs(null, 'table-busy')"
       >
         <BTd :colspan="scope.fields.length">
           <slot name="table-busy" />
@@ -113,17 +113,12 @@
 <script setup lang="ts" generic="Item">
 import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import {useToNumber} from '@vueuse/core'
-import {computed, readonly, toRef, watch} from 'vue'
+import {computed, mergeProps, readonly, toRef, watch} from 'vue'
 import BTableLite from './BTableLite.vue'
 import BTd from './BTd.vue'
 import BTr from './BTr.vue'
 import type {BTableEmits, BTableLiteEmits, BTableProps, BTableSlots, CamelCase} from '../../types'
-import {
-  type TableField,
-  type TableFieldRaw,
-  type TableRowType,
-  type TableStrictClassValue,
-} from '../../types'
+import {type TableField, type TableFieldRaw, type TableRowType} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import {pick} from '../../utils/object'
 import {bTableLiteProps, bTableSimpleProps, getTableFieldHeadLabel} from '../../utils/tableUtils'
@@ -177,27 +172,27 @@ const _props = withDefaults(
     caption: undefined,
     align: undefined,
     footClone: undefined,
-    labelStacked: undefined,
     showEmpty: false,
     emptyText: 'There are no records to show',
     emptyFilteredText: 'There are no records matching your request',
-    fieldColumnClass: undefined,
-    tbodyTrClass: undefined,
-    detailsTdClass: undefined,
+    fieldColumnAttrs: undefined,
+    tbodyTrAttrs: undefined,
+    detailsTdAttrs: undefined,
     headColor: undefined,
     headRowColor: undefined,
     footRowColor: undefined,
     footColor: undefined,
     modelValue: undefined,
     primaryKey: undefined,
-    tbodyClass: undefined,
-    tfootClass: undefined,
-    tfootTrClass: undefined,
-    theadClass: undefined,
-    theadTrClass: undefined,
+    tbodyAttrs: undefined,
+    tfootAttrs: undefined,
+    tfootTrAttrs: undefined,
+    theadAttrs: undefined,
+    theadTrAttrs: undefined,
     // End BTableLite props
     // BTableSimple props
     border: undefined,
+    tableAttrs: undefined,
     theme: undefined,
     bordered: undefined,
     borderless: undefined,
@@ -345,10 +340,7 @@ const {
       sortNullLast: () => props.sortNullLast,
     },
   },
-  stackedProps: {
-    stacked: () => props.stacked,
-    labelStacked: () => props.labelStacked,
-  },
+  stacked: () => props.stacked,
 })
 const selectedItemsController = useTableSelectedItems({
   selectable: () => props.selectable,
@@ -380,39 +372,40 @@ const tableClasses = computed(() => ({
   'b-table-no-border-collapse': props.noBorderCollapse,
   'b-table-no-sort-icon': props.noSortableIcon,
 }))
-const getBusyRowClasses = computed(() => [
-  props.tbodyTrClass
-    ? typeof props.tbodyTrClass === 'function'
-      ? props.tbodyTrClass(null, 'table-busy')
-      : props.tbodyTrClass
-    : null,
-])
-const getFieldColumnClasses = (field: TableField) => [
-  {
-    'b-table-sortable-column': sortController.isSortable.value && field.sortable,
-  },
-]
-// TODO this class has issues if the table has a variant already applied
-// Also the row should technically have aria-selected. Both things could probably just use a function with tbodyTrAttrs
-// But functional tbodyTrAttrs are not supported yet
-// Also the stuff for resolving functions could probably be made a util
-const getRowClasses = (item: Item | null, type: TableRowType): TableStrictClassValue => [
-  {
-    selected: props.selectable && !!item && selectedItemsController.has(item),
-  },
-  props.selectable && !!item && selectedItemsController.has(item)
-    ? [
-        toColorClasses('theme', selectionColor.value.theme),
-        toColorClasses('bg', selectionColor.value.bg),
-        toColorClasses('fg', selectionColor.value.fg),
-      ]
-    : null,
-  props.tbodyTrClass
-    ? typeof props.tbodyTrClass === 'function'
-      ? props.tbodyTrClass(item, type)
-      : props.tbodyTrClass
-    : null,
-]
+const callTbodyTrAttrs = (item: Item | null, type: TableRowType) =>
+  (typeof props.tbodyTrAttrs === 'function'
+    ? props.tbodyTrAttrs(item, type)
+    : props.tbodyTrAttrs) ?? {}
+const getFieldColumnAttrs = (field: TableField<Item>) =>
+  mergeProps(
+    {
+      class: {
+        'b-table-sortable-column': sortController.isSortable.value && field.sortable,
+      },
+    },
+    (typeof props.fieldColumnAttrs === 'function'
+      ? props.fieldColumnAttrs(field)
+      : props.fieldColumnAttrs) ?? {}
+  )
+// TODO the row should technically have aria-selected
+const getRowAttrs = (item: Item | null, type: TableRowType) => {
+  const isSelected = props.selectable && !!item && selectedItemsController.has(item)
+  return mergeProps(
+    {
+      class: [
+        {selected: isSelected},
+        isSelected
+          ? [
+              toColorClasses('theme', selectionColor.value.theme),
+              toColorClasses('bg', selectionColor.value.bg),
+              toColorClasses('fg', selectionColor.value.fg),
+            ]
+          : null,
+      ],
+    },
+    callTbodyTrAttrs(item, type)
+  )
+}
 
 const boundBTableLiteEmits = {
   onHeadClicked: ({key, field, event, isFooter = false}) => {
@@ -445,14 +438,14 @@ const boundBTableLiteEmits = {
 }
 const computedLiteProps = computed(() => ({
   ...pick(props, [...bTableLiteProps, ...bTableSimpleProps]),
-  tableAttrs: {
-    ariaBusy: busyModel.value,
-  },
+  tableAttrs: mergeProps(
+    {'aria-busy': busyModel.value, 'class': tableClasses.value},
+    props.tableAttrs ?? {}
+  ),
   items: computedDisplayItems.value,
   fields: computedFields.value as TableFieldRaw<Item>[],
-  tableClass: tableClasses.value,
-  tbodyTrClass: getRowClasses,
-  fieldColumnClass: getFieldColumnClasses,
+  tbodyTrAttrs: getRowAttrs,
+  fieldColumnAttrs: getFieldColumnAttrs,
   id: computedId.value,
   ...boundBTableLiteEmits,
 }))

@@ -204,7 +204,7 @@ details.
 | `fixed`              | boolean               | Generate a table with equal fixed-width columns (`table-layout: fixed;`)                                                                                                                                                                                                                                                                                                         |
 | `responsive`         | boolean \| Breakpoint | Generate a responsive table to make it scroll horizontally. Set to `true` for an always responsive table, or set it to one of the [breakpoints](/docs/types#breakpoint) `'sm'`, `'md'`, `'lg'`, `'xl'` or `'2xl'` to make the table responsive (horizontally scroll) only on screens smaller than the breakpoint (`responsive="md"` renders `md:table-responsive`). See [Responsive tables](#responsive-tables) below for details. |
 | `sticky-header`      | boolean \| Numberish  | Generates a vertically scrollable table with sticky headers. Set to `true` to enable sticky headers (default table max-height of `300px`), or set it to a string containing a height (with CSS units) to specify a maximum height other than `300px`. See the [Sticky header](#sticky-headers) section below for details.                                                        |
-| `stacked`            | boolean \| Breakpoint | Generate a responsive stacked table. Set to `true` for an always stacked table, or set it to one of the [breakpoints](/docs/types#breakpoint) `'sm'`, `'md'`, `'lg'`, `'xl'` or `'2xl'` to make the table visually stacked only on screens smaller than the breakpoint. See [Stacked tables](#stacked-tables) below for details.                                                 |
+| `stacked`            | boolean \| Breakpoint | Generate a Bootstrap stacked table (`table-stacked`). Set to `true` for an always stacked table, or set it to one of the [breakpoints](/docs/types#breakpoint) `'sm'`, `'md'`, `'lg'`, `'xl'` or `'2xl'` to stack the table only while its container is narrower than the breakpoint (`stacked="md"` renders `md:table-stacked`). See [Stacked tables](#stacked-tables) below for details. |
 | `caption-top`        | boolean \| Numberish  | If the table has a caption, and this prop is set to `true`, the caption will be visually placed above the table. If `false` (the default), the caption will be visually placed below the table.                                                                                                                                                                                  |
 | `theme`              | ThemeColor \| null    | Give the table an overall theme color (class `theme-<theme>`).                                                                                                                                                                                                                                                                                                                                   |
 | `head-theme`         | ThemeColor \| null    | Make the table head a theme color different from the table                                                                                                                                                                                                                                                                                                                       |
@@ -215,8 +215,9 @@ details.
 | `no-border-collapse` | Boolean               | Disables the default of collapsing of the table borders. Mainly for use with [sticky headers](#sticky-headers) and/or [sticky columns](#sticky-columns). Will cause the appearance of double borders in some situations.                                                                                                                                                         |
 
 ::: info NOTE
-The table style options `fixed`, `stacked`, `no-border-collapse`, sticky
+The table style options `fixed`, `no-border-collapse`, sticky
 headers, sticky columns and the table sorting feature, all require BootstrapVueNext's custom CSS.
+Stacked tables use Bootstrap's own `table-stacked` CSS.
 :::
 
 <<< DEMO ./demo/TableBasicStyles.vue
@@ -229,14 +230,14 @@ The `fixed` prop generates a table with equal fixed-width columns using `table-l
 
 ### Row styling and attributes
 
-You can also style every row using the `tbody-tr-class` prop, and optionally supply additional attributes via the `tbody-tr-attr` prop:
+You can style every row, and supply additional attributes, via the `tbody-tr-attrs` prop. Its
+`class` and `style` are merged with the classes the table adds itself (row colors, selection):
 
-| Property         | Type                                                                                           | Description                                         |
-| ---------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| `tbody-tr-class` | `((item: Item \| null, type: TableRowType) => TableStrictClassValue) \| TableStrictClassValue` | Classes to be applied to every row on the table.    |
-| `tbody-tr-attr`  | `((item: Item \| null, type: TableRowType) => AttrsValue) \| AttrsValue`                       | Attributes to be applied to every row on the table. |
+| Property         | Type                                                                     | Description                                                     |
+| ---------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| `tbody-tr-attrs` | `((item: Item \| null, type: TableRowType) => AttrsValue) \| AttrsValue` | Attributes (including `class`) to be applied to every row on the table. |
 
-When passing a function reference to `tbody-tr-class` or `tbody-tr-attr`, the function's arguments
+When passing a function reference to `tbody-tr-attrs`, the function's arguments
 will be as follows:
 
 - `item` - The item record data associated with the row. For rows that are not associated with an
@@ -281,35 +282,40 @@ breakpoint.
 
 ### Stacked tables
 
-An alternative to responsive tables, BootstrapVueNext includes the stacked table option (using custom
-SCSS/CSS), which allow tables to be rendered in a visually stacked format. Make any table stacked
-across _all viewports_ by setting the prop `stacked` to `true`. Or, alternatively, set a breakpoint
-at which the table will return to normal table format by setting the prop `stacked` to one of the
-breakpoint values `'sm'`, `'md'`, `'lg'`, or `'xl'`.
+An alternative to responsive tables, the `stacked` prop renders Bootstrap's
+[stacked tables](https://getbootstrap.com/docs/6.0/content/tables/#stacked-tables), which convert
+each body row into a vertical block. Make any table stacked at all widths by setting the prop
+`stacked` to `true` (`table-stacked`). Or set it to one of the breakpoint values `'sm'`, `'md'`,
+`'lg'`, `'xl'` or `'2xl'` to only stack the table while it is narrower than that breakpoint
+(`stacked="md"` renders `md:table-stacked`).
 
-Column header labels will be rendered to the left of each field value using a CSS `::before` pseudo
-element, with a width of 40%.
+Bootstrap's stacked tables use container queries, so the breakpoint is compared against the width of
+the table's wrapper rather than the viewport. A stacked table is therefore always rendered inside a
+`table-responsive` wrapper `<div>` (or the `{breakpoint}:table-responsive` wrapper when `responsive`
+is also set), which acts as the query container.
 
-The `stacked` prop takes precedence over the [`sticky-header`](#sticky-headers) prop and the
-[`stickyColumn`](#sticky-columns) field definition property.
+Each body cell gets a `data-cell` attribute holding the field's label, which Bootstrap renders as a
+label above the value. The first cell of each row is shown as a bold title without a label.
 
 <<< DEMO ./demo/TableStacked.vue
 
 **Note: When the table is visually stacked:**
 
-- The table header will be hidden. The table footer will remain visible if `foot-clone` or `custom-foot` slots are used.
+- The table header is visually hidden (it stays available to assistive technology). The table footer
+  is not stacked and remains visible as a normal row if `foot-clone` or the `custom-foot` slot is
+  used.
 - Custom rendered header slots will not be shown, rather, the fields' `label` will be used.
+- Only `<td>` cells are stacked and labelled. Fields rendered as row headers (`isRowHeader`, which
+  renders a `<th>`) are not stacked by Bootstrap's CSS.
+- Rows with a single spanning cell (row details, the busy and empty rows) render their cell as the
+  bold first cell.
 - The table **cannot** be sorted by clicking the rendered field labels. You will need to provide an
   external control to select the field to sort by and the sort direction. See the
   [Sorting](#sorting) section below for sorting control information, as well as the
   [complete example](#complete-example) at the bottom of this page for an example of controlling
   sorting via the use of form controls.
-- The slots `top-row` and `bottom-row` will be hidden when visually stacked.
-- The table caption, if provided, will always appear at the top of the table when visually stacked.
-- In an always stacked table, the table header and the fixed top and bottom row slots
-  will not be rendered.
-
-BootstrapVueNext's custom CSS is required in order to support stacked tables.
+- The slots `top-row` and `bottom-row` are not rendered when the `stacked` prop is set (at any
+  width).
 
 ### Table caption
 
@@ -1045,22 +1051,19 @@ Since `BTableSimple` is just a wrapper component, of which you will need to rend
 
 <<< DEMO ./demo/TableSimpleOverview.vue#template{vue-html}
 
-When in responsive or sticky-header mode, the `<table>` element is wrapped inside a `<div>` element. If you need to apply additional classes or attributes to the `<table>` element, use the table-classes and table-attrs, respectively.
+When in responsive, stacked or sticky-header mode, the `<table>` element is wrapped inside a `<div>` element. If you need to apply additional classes or attributes to the `<table>` element, use the `table-attrs` prop (its `class` and `style` are merged with the table's own).
 
 ### Simple tables and stacked mode
 
-A bit of additional markup is required on your `BTableSimple` body cells when the table is in stacked mode. Specifically, BootstrapVueNext uses a special data attribute to create the cell's heading, of which you can supply to `BTd` or `BTh` via the stacked-heading prop. Only plain strings are supported (not HTML markup), as we use the pseudo element ::before and css content property.
+A bit of additional markup is required on your `BTableSimple` body cells when the table is in stacked mode. Bootstrap's `table-stacked` CSS reads each cell's label from a `data-cell` attribute, which you set directly on `BTd` (it falls through to the `<td>`). Only plain strings are supported (not HTML markup), as Bootstrap uses the `::before` pseudo element and the CSS `content` property.
 
-Here is the same table as above, set to be always stacked, which has the extra markup to handle stacked mode (specifically for generating the cell headings):
+Bootstrap only stacks `<td>` cells: the first cell of each row becomes the row's bold title (its `data-cell` is not shown), and `<th>` cells in the body (row headers) are not stacked, so use `BTd` for every body cell of a stacked table.
+
+Here is a table set to be stacked below the `md` breakpoint, with the extra markup to generate the cell headings:
 
 <<< DEMO ./demo/TableSimpleStacked.vue#template{vue-html}
 
-Like `BTable` and `BTableLite`, table headers (`<thead>`) and footers (`<tfoot>`) are visually hidden when the table is visually stacked. If you need a header or footer, you can do so by creating an extra `BTr` inside of the `BTbody` component (or in a second `BTbody` component), and set a role of columnheader on the child `BTh` cells, and use Bootstrap v5 responsive display utility classes to hide the extra row (or `BTbody`) above a certain breakpoint when the table is no longer visually stacked (the breakpoint should match the stacked table breakpoint you have set), i.e. `<BTr class="d-md-none">` would hide the row on medium and wider screens, while `<BTbody class="d-md-none">` would hide the row group on medium and wider screens.
-
-::: info NOTE
-Note: stacked mode with `BTableSimple` requires that you use the BootstrapVueNext [table helper components](#table-helper-components).
-Use of the regular `<tbody>`, `<tr>`, `<td>` and `<th>` element tags will not work as expected, nor will they automatically apply any of the required accessibility attributes.
-:::
+Like `BTable` and `BTableLite`, the table header (`<thead>`) is visually hidden when the table is visually stacked, and the footer (`<tfoot>`) is not stacked.
 
 ### Simple tables and sticky columns
 

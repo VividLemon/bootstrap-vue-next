@@ -8,14 +8,14 @@
       :theme="props.headColor?.theme"
       :bg="props.headColor?.bg"
       :fg="props.headColor?.fg"
-      :class="props.theadClass"
+      v-bind="props.theadAttrs"
     >
       <slot name="thead-top" :columns="computedFieldsTotal" :fields="computedFields" />
       <BTr
         :theme="props.headRowColor?.theme"
         :bg="props.headRowColor?.bg"
         :fg="props.headRowColor?.fg"
-        :class="props.theadTrClass"
+        v-bind="props.theadTrAttrs"
       >
         <BTh
           v-for="field in computedFields"
@@ -29,7 +29,7 @@
           :abbr="field.headerAbbr"
           :style="field.thStyle"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
-          v-bind="callThAttr(null, field, 'top')"
+          v-bind="mergeProps(callFieldColumnAttrs(field), callThAttr(null, field, 'top') ?? {})"
           @click="keyboardController.headerClicked(field, $event)"
           @keydown="keyboardController.handleHeaderKeydown(field, $event)"
         >
@@ -62,18 +62,14 @@
         </BTd>
       </BTr>
     </BThead>
-    <BTbody :class="props.tbodyClass">
+    <BTbody v-bind="props.tbodyAttrs">
       <slot
         name="custom-body"
         :fields="computedFields"
         :items="props.items"
         :columns="computedFieldsTotal"
       >
-        <BTr
-          v-if="!props.stacked && slots['top-row']"
-          :class="getRowClasses(null, 'row-top')"
-          v-bind="callTbodyTrAttrs(null, 'row-top')"
-        >
+        <BTr v-if="!props.stacked && slots['top-row']" v-bind="callTbodyTrAttrs(null, 'row-top')">
           <slot name="top-row" :columns="computedFieldsTotal" :fields="computedFields" />
         </BTr>
 
@@ -91,7 +87,6 @@
                 ? generateTableRowId(getWithGetter(item, props.primaryKey) as string)
                 : undefined
             "
-            :class="getRowClasses(item, 'row')"
             :theme="isTableItem(item) ? item._rowTheme : undefined"
             :bg="isTableItem(item) ? item._rowBg : undefined"
             :fg="isTableItem(item) ? item._rowFg : undefined"
@@ -132,9 +127,6 @@
                 ...itemAttributes(item, field),
               }"
             >
-              <label v-if="props.stacked && props.labelStacked" class="b-table-stacked-label">
-                {{ getTableFieldHeadLabel(field) }}
-              </label>
               <slot
                 :name="slots[`cell(${field.key})`] ? (`cell(${field.key})` as 'cell()') : 'cell()'"
                 :value="formatItem(item, field)"
@@ -156,13 +148,12 @@
           <template v-if="expandedItemsController.has(item) && slots['row-expansion']">
             <BTr aria-hidden="true" role="presentation" class="d-none" />
             <BTr
-              :class="getRowClasses(item, 'row-expansion')"
               :theme="isTableItem(item) ? item._rowTheme : undefined"
               :bg="isTableItem(item) ? item._rowBg : undefined"
               :fg="isTableItem(item) ? item._rowFg : undefined"
               v-bind="callTbodyTrAttrs(item, 'row-expansion')"
             >
-              <BTd :colspan="computedFieldsTotal" :class="detailsTdClass">
+              <BTd :colspan="computedFieldsTotal" v-bind="props.detailsTdAttrs">
                 <slot
                   name="row-expansion"
                   :item="item"
@@ -178,7 +169,6 @@
         <BTr
           v-if="!props.stacked && slots['bottom-row']"
           class="bottom-row"
-          :class="getRowClasses(null, 'row-bottom')"
           v-bind="callTbodyTrAttrs(null, 'row-bottom')"
         >
           <slot name="bottom-row" :columns="computedFieldsTotal" :fields="computedFields" />
@@ -190,7 +180,7 @@
         :theme="props.footRowColor?.theme ?? props.headRowColor?.theme"
         :bg="props.footRowColor?.bg ?? props.headRowColor?.bg"
         :fg="props.footRowColor?.fg ?? props.headRowColor?.fg"
-        :class="props.tfootTrClass ?? props.theadTrClass"
+        v-bind="props.tfootTrAttrs ?? props.theadTrAttrs"
       >
         <BTh
           v-for="field in computedFields"
@@ -204,7 +194,7 @@
           :bg="field.bg"
           :fg="field.fg"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
-          v-bind="callThAttr(null, field, 'bottom')"
+          v-bind="mergeProps(callFieldColumnAttrs(field), callThAttr(null, field, 'bottom') ?? {})"
           @click="keyboardController.headerClicked(field, $event, true)"
           @keydown="keyboardController.handleHeaderKeydown(field, $event, true)"
         >
@@ -245,7 +235,7 @@
 
 <script setup lang="ts" generic="Item">
 import {toColorClasses} from '../../composables/useThemeClasses'
-import {computed, readonly, toRef} from 'vue'
+import {computed, mergeProps, readonly, toRef} from 'vue'
 import {
   isTableItem,
   type TableField,
@@ -283,25 +273,23 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   fields: () => [],
   footClone: false,
   items: () => [],
-  labelStacked: false,
-  fieldColumnClass: undefined,
-  tbodyTrClass: undefined,
-  detailsTdClass: undefined,
+  fieldColumnAttrs: undefined,
+  detailsTdAttrs: undefined,
   headColor: undefined,
   headRowColor: undefined,
   footRowColor: undefined,
   footColor: undefined,
   modelValue: undefined,
   primaryKey: undefined,
-  tbodyClass: undefined,
+  tbodyAttrs: undefined,
   tbodyTrAttrs: undefined,
-  tfootClass: undefined,
-  tfootTrClass: undefined,
-  theadClass: undefined,
-  theadTrClass: undefined,
+  tfootAttrs: undefined,
+  tfootTrAttrs: undefined,
+  theadAttrs: undefined,
+  theadTrAttrs: undefined,
   // BTableSimpleProps props
   border: undefined,
-  tableClass: undefined,
+  tableAttrs: undefined,
   theme: undefined,
   bg: undefined,
   fg: undefined,
@@ -362,10 +350,7 @@ const {
 } = useTableFieldsMapper({
   fields: () => props.fields,
   items: () => props.items,
-  stackedProps: {
-    labelStacked: () => props.labelStacked,
-    stacked: () => props.stacked,
-  },
+  stacked: () => props.stacked,
 })
 
 const calculatedFooterSlot = (key: string): keyof typeof slots =>
@@ -377,24 +362,20 @@ const calculatedFooterSlot = (key: string): keyof typeof slots =>
         ? `head(${key})`
         : 'head()'
 
-const computedTableClasses = computed(() => [
-  props.tableClass,
-  {
-    [`align-${props.align}`]: props.align !== undefined,
-  },
-])
+const computedTableAttrs = computed(() =>
+  mergeProps({class: {[`align-${props.align}`]: props.align !== undefined}}, props.tableAttrs ?? {})
+)
 const getFieldColumnClasses = (field: TableField) => [
   field.class,
   field.thClass,
   {
     'b-table-sticky-column': field.stickyColumn,
   },
-  props.fieldColumnClass
-    ? typeof props.fieldColumnClass === 'function'
-      ? props.fieldColumnClass(field)
-      : props.fieldColumnClass
-    : null,
 ]
+const callFieldColumnAttrs = (field: TableField<Item>) =>
+  (typeof props.fieldColumnAttrs === 'function'
+    ? props.fieldColumnAttrs(field)
+    : props.fieldColumnAttrs) ?? {}
 const getFieldRowClasses = (field: Readonly<TableField>, tr: Item) => [
   field.class,
   typeof field.tdClass === 'function'
@@ -405,13 +386,6 @@ const getFieldRowClasses = (field: Readonly<TableField>, tr: Item) => [
     'b-table-sticky-column': field.stickyColumn,
   },
 ]
-const getRowClasses = (item: Item | null, type: TableRowType) =>
-  props.tbodyTrClass
-    ? typeof props.tbodyTrClass === 'function'
-      ? props.tbodyTrClass(item, type)
-      : props.tbodyTrClass
-    : null
-
 const itemAttributes = (item: Item, field: TableField) =>
   field.tdAttr && typeof field.tdAttr === 'function'
     ? field.tdAttr({value: getByFieldKey(item, field), key: field.key, item})
@@ -441,12 +415,12 @@ const footerProps = computed(() => ({
   theme: props.footColor?.theme ?? props.headColor?.theme,
   bg: props.footColor?.bg ?? props.headColor?.bg,
   fg: props.footColor?.fg ?? props.headColor?.fg,
-  class: props.tfootClass ?? props.theadClass,
+  ...(props.tfootAttrs ?? props.theadAttrs),
 }))
 
 const computedSimpleProps = computed(() => ({
   ...pick(props, bTableSimpleProps),
-  tableClass: computedTableClasses.value,
+  tableAttrs: computedTableAttrs.value,
   id: computedId.value,
 }))
 

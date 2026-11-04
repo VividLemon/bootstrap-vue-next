@@ -76,47 +76,23 @@ describe('td', () => {
     })
   })
 
-  describe('stackedHeading prop', () => {
-    it('has data-label attribute when stackedHeading is set', () => {
+  describe('stacked mode', () => {
+    it('passes a data-cell attribute through to the cell', () => {
       const wrapper = mount(BTd, {
-        props: {stackedHeading: '5'},
+        attrs: {'data-cell': 'Label'},
+        slots: {default: 'content'},
       })
-      expect(wrapper.attributes('data-label')).toBe('5')
+      expect(wrapper.attributes('data-cell')).toBe('Label')
     })
 
-    it('does not have data-label attribute when stackedHeading is not set', () => {
-      const wrapper = mount(BTd)
+    it('does not render data-label or wrap slot content in a div', () => {
+      const wrapper = mount(BTd, {
+        attrs: {'data-cell': 'Label'},
+        slots: {default: 'content'},
+      })
       expect(wrapper.attributes('data-label')).toBeUndefined()
-    })
-
-    it('wraps slot content in a div when stackedHeading is set', () => {
-      const wrapper = mount(BTd, {
-        props: {stackedHeading: 'Heading'},
-        slots: {default: 'content'},
-      })
-      const $div = wrapper.find('div')
-      expect($div.exists()).toBe(true)
-      expect($div.text()).toBe('content')
-    })
-
-    it('does not wrap slot content in a div when stackedHeading is not set', () => {
-      const wrapper = mount(BTd, {
-        slots: {default: 'content'},
-      })
       expect(wrapper.find('div').exists()).toBe(false)
       expect(wrapper.text()).toBe('content')
-    })
-
-    it('stackedHeading is reactive', async () => {
-      const wrapper = mount(BTd, {
-        props: {stackedHeading: 'first'},
-        slots: {default: 'content'},
-      })
-      expect(wrapper.attributes('data-label')).toBe('first')
-      expect(wrapper.find('div').exists()).toBe(true)
-      await wrapper.setProps({stackedHeading: 'second'})
-      expect(wrapper.attributes('data-label')).toBe('second')
-      expect(wrapper.find('div').exists()).toBe(true)
     })
   })
 
@@ -182,36 +158,15 @@ describe('td', () => {
       expect(wrapper.classes()).not.toContain('b-table-sticky-column')
     })
 
-    it('has class table-b-table-default when stickyColumn is true and no theme', () => {
+    it('never adds the removed table-b-table-default class', async () => {
       const wrapper = mount(BTd, {
         props: {stickyColumn: true},
       })
-      expect(wrapper.classes()).toContain('table-b-table-default')
-    })
-
-    it('does not have table-b-table-default when stickyColumn is false', () => {
-      const wrapper = mount(BTd, {
-        props: {stickyColumn: false},
-      })
-      expect(wrapper.classes()).not.toContain('table-b-table-default')
-    })
-
-    it('does not have table-b-table-default when stickyColumn is true but theme is set', () => {
-      const wrapper = mount(BTd, {
-        props: {stickyColumn: true, theme: 'secondary'},
-      })
-      expect(wrapper.classes()).not.toContain('table-b-table-default')
-      expect(wrapper.classes()).toContain('theme-secondary')
       expect(wrapper.classes()).toContain('b-table-sticky-column')
-    })
-
-    it('table-b-table-default appears when theme is removed from sticky column', async () => {
-      const wrapper = mount(BTd, {
-        props: {stickyColumn: true, theme: 'primary'},
-      })
       expect(wrapper.classes()).not.toContain('table-b-table-default')
-      await wrapper.setProps({theme: undefined})
-      expect(wrapper.classes()).toContain('table-b-table-default')
+      await wrapper.setProps({theme: 'secondary'})
+      expect(wrapper.classes()).toContain('theme-secondary')
+      expect(wrapper.classes()).not.toContain('table-b-table-default')
     })
   })
 
@@ -225,16 +180,16 @@ describe('td', () => {
       expect(wrapper.classes()).toContain('theme-success')
     })
 
-    it('supports stackedHeading with stickyColumn and theme', () => {
+    it('supports data-cell with stickyColumn and theme', () => {
       const wrapper = mount(BTd, {
-        props: {stackedHeading: 'Label', stickyColumn: true, theme: 'info'},
+        props: {stickyColumn: true, theme: 'info'},
+        attrs: {'data-cell': 'Label'},
         slots: {default: 'value'},
       })
-      expect(wrapper.attributes('data-label')).toBe('Label')
+      expect(wrapper.attributes('data-cell')).toBe('Label')
       expect(wrapper.classes()).toContain('b-table-sticky-column')
       expect(wrapper.classes()).toContain('theme-info')
-      expect(wrapper.classes()).not.toContain('table-b-table-default')
-      expect(wrapper.find('div').text()).toBe('value')
+      expect(wrapper.text()).toBe('value')
     })
   })
 })
