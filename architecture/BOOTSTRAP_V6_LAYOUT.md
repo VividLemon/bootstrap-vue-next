@@ -427,7 +427,8 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 
 - **Q5 — A.** New `BGrid` + `BGridItem`.
 - **Q6 — A** (accepted with Q5). `BGrid` `columns` / `rows` / `gap` as inline `--bs-*` variables plus a responsive `flow`; `BGridItem` `cols` / `start` / `fill` as `Responsive<T>` objects. Docs state that `md:g-col-*` follows the grid's width while `BCol` and utilities follow the viewport.
-- Q1–Q4, Q7, Q8: _Pending._
+- **Q1 — A. Links only, as v6.** Sections come from the target nav's links; the heading-based mode is removed. The docs "On this page" sidebar (`apps/docs/.vitepress/theme/Layout.vue`) must render its nav first and spy on it.
+- Q2–Q4, Q7, Q8: _Pending._
 
 ## Implementation split
 

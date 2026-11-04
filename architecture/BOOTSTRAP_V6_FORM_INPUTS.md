@@ -511,7 +511,9 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 
 - **Q1 — B. v6 names everywhere:** `BFormGroup` → `BFormField`, `BFormTags` / `BFormTag` → `BFormChips` + `BChip`, the six date/time components → `BDatepicker`, plus new `BFormRange`, `BFormStrength`, `BFormAdorn`; `BFormOtp` keeps its name (already matches). No aliases. Cross-group rule: redesigned components take their v6 names (`BDialog`, `BDrawer`, `BMenu`).
 - **Q2 — B. Library-owned popup** using G2's shared Menu mechanism (rendered in place, Floating UI, `teleportTo` opt-in), with vanilla-calendar-pro mounted inline inside it, so the datepicker works inside native dialogs.
-- Q3–Q8: _Pending._
+- **Q3 — A. ISO strings.** `'YYYY-MM-DD'`: `string | null` (single), `string[]` (multiple), `[start, end]` tuple (range).
+- **Q4 — A.** `BTimeField` / `BTimeRangeField` are removed with no replacement component; docs show `<BFormInput type="time">` (two inputs for a range).
+- Q5–Q8: _Pending._
 
 ## Implementation split
 
