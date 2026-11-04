@@ -24,14 +24,16 @@
 Markup: the toggle and the `.menu` are siblings. The JS finds the menu next to or before the toggle, or inside the closest ancestor that contains one. That ancestor is the "wrapper": it gets `.show` and is the `reference: 'parent'` anchor.
 
 ```html
-<button class="btn-solid theme-primary" type="button" data-bs-toggle="menu" aria-expanded="false">Toggle</button>
+<button class="btn-solid theme-primary" type="button" data-bs-toggle="menu" aria-expanded="false">
+  Toggle
+</button>
 <div class="menu">
   <h6 class="menu-header">Header</h6>
   <button class="menu-item" type="button">Action</button>
   <a class="menu-item active" href="#" aria-current="true">Active link</a>
   <a class="menu-item disabled" aria-disabled="true">Disabled</a>
   <span class="menu-text">Text</span>
-  <hr class="menu-divider">
+  <hr class="menu-divider" />
   <div class="submenu">
     <button class="menu-item" type="button">More</button>
     <div class="menu">…</div>
@@ -39,21 +41,21 @@ Markup: the toggle and the `.menu` are siblings. The JS finds the menu next to o
 </div>
 ```
 
-| Area          | v6 behavior (verified)                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Classes       | `.menu`, `.menu-item` (`.active`, `.selected`, `.disabled`, `theme-*`), `.menu-item-icon`, `.menu-item-content`, `.menu-item-description`, `.menu-item-check` (visible on `.selected`), `.menu-header`, `.menu-text`, `.menu-divider`, `.submenu`, `.menu-translucent`, `.menu-scrollable`, `.menu-toggle-split`. There is **no** `.dropdown*`, caret class, `.dropup` / `.dropend`, `.menu-instant` or `.menu-end`                                                                     |
-| Show state    | `.show` on the menu, on the toggle and on the wrapper. `aria-expanded` on the toggle                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Transition    | `.menu` is `display: none; opacity: 0; transform: scale(.95)`. `.menu.show` is `display: flex`. `@starting-style` plus a discrete `display` transition, `--menu-transition-{property,duration,timing}`. `transform-origin` follows `[data-bs-placement]`, which the JS writes on the menu. Everything is in `@layer components`, so the `transition-none` utility wins. The JS waits on the computed duration, then fires `shown` / `hidden`                                                 |
-| Positioning   | `@floating-ui/dom` `computePosition` + `autoUpdate`. Middleware: `offset` (`[skidding, distance]`, default `[0, 2]`), `flip` with a fixed fallback map and `fallbackStrategy: 'initialPlacement'`, `shift({boundary})`. **No `size` middleware.** Writes `position`, `left`, `top`, `margin: 0` inline (no `transform`, which CSS uses for the animation). `display: 'static'` skips positioning                                                                                           |
-| Placement     | Physical (`top`, `bottom-end`, …) and logical (`start`, `end`, `end-start`, …; resolved for RTL). Responsive strings such as `"bottom-start md:bottom-end"` use `matchMedia` listeners on the v6 breakpoints                                                                                                                                                                                                                                                                              |
-| Layering      | `z-index: var(--menu-zindex)` = `--z-menu` (1000). `container` (`false` / `true` / element) appends the menu elsewhere while shown and restores it after `hidden`. **No Popover API, no top layer**                                                                                                                                                                                                                                                                                        |
-| Auto-close    | `autoClose: true \| false \| 'inside' \| 'outside'` through a document click/keyup handler. Clicks on form controls, or anywhere inside a `<form>` in the menu, never close it. A keyup `Tab` inside the menu doesn't close it; a Tab elsewhere does. Esc always closes, even with `autoClose: false`                                                                                                                                                                                    |
-| Submenus      | `.submenu > .menu-item + .menu`. Positioned `end-start` (fallbacks `start-start`, `end-end`, `start-end`), `offset({mainAxis: 0, crossAxis: -4})`, `shift({padding: 8})`. Open on hover, click or both (`submenuTrigger`, default `'both'`). Close after `submenuDelay` (100 ms), with a "safe triangle" hover intent. Siblings close each other. Triggers get `aria-haspopup="true"` and `aria-expanded` from init                                                                        |
-| Keyboard      | ↑/↓ open the menu and move focus (no wrap, except that entering from outside the list goes to the first or last item). Home/End. →/← enter or exit a submenu (mirrored in RTL). Enter/Space on a submenu trigger opens it and focuses its first item. Esc closes the innermost submenu first, then the menu, and refocuses the toggle. Tab closes. Arrow keys are ignored in inputs and contenteditable                                                                                  |
-| ARIA          | The docs say Bootstrap does **not** add `role="menu"` / `menuitem` ("menus are designed to be generic"). It sets `aria-expanded` on the toggle and `aria-haspopup` / `aria-expanded` on submenu triggers. Use `aria-current` on active items                                                                                                                                                                                                                                              |
-| Focus         | `show()` focuses the toggle (`focusVisible: false`). No focus trap. On touch devices it adds no-op `mouseover` listeners to `body` children (an iOS click-delegation workaround), except inside `.navbar-nav`                                                                                                                                                                                                                                                                            |
-| Events        | `show` (cancelable), `shown`, `hide` (cancelable), `hidden` (with `clickEvent` when a click closed it). Methods `show` / `hide` / `toggle` / `update` / `dispose`                                                                                                                                                                                                                                                                                                                          |
-| Groups        | Split: `.btn-group` > button + `button.menu-toggle-split` (chevron SVG + `.visually-hidden` text) + `.menu`. `.btn-group` and `.input-group` CSS expect the `.menu` as a **direct sibling** (`:has(+ .menu)`, `.menu-toggle-split`, `.input-group > .menu`). `.nav-tabs .menu` and `.nav-tabs .nav-item.show .nav-link` style nav menus                                                                                                                                              |
+| Area        | v6 behavior (verified)                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Classes     | `.menu`, `.menu-item` (`.active`, `.selected`, `.disabled`, `theme-*`), `.menu-item-icon`, `.menu-item-content`, `.menu-item-description`, `.menu-item-check` (visible on `.selected`), `.menu-header`, `.menu-text`, `.menu-divider`, `.submenu`, `.menu-translucent`, `.menu-scrollable`, `.menu-toggle-split`. There is **no** `.dropdown*`, caret class, `.dropup` / `.dropend`, `.menu-instant` or `.menu-end`                          |
+| Show state  | `.show` on the menu, on the toggle and on the wrapper. `aria-expanded` on the toggle                                                                                                                                                                                                                                                                                                                                                         |
+| Transition  | `.menu` is `display: none; opacity: 0; transform: scale(.95)`. `.menu.show` is `display: flex`. `@starting-style` plus a discrete `display` transition, `--menu-transition-{property,duration,timing}`. `transform-origin` follows `[data-bs-placement]`, which the JS writes on the menu. Everything is in `@layer components`, so the `transition-none` utility wins. The JS waits on the computed duration, then fires `shown` / `hidden` |
+| Positioning | `@floating-ui/dom` `computePosition` + `autoUpdate`. Middleware: `offset` (`[skidding, distance]`, default `[0, 2]`), `flip` with a fixed fallback map and `fallbackStrategy: 'initialPlacement'`, `shift({boundary})`. **No `size` middleware.** Writes `position`, `left`, `top`, `margin: 0` inline (no `transform`, which CSS uses for the animation). `display: 'static'` skips positioning                                             |
+| Placement   | Physical (`top`, `bottom-end`, …) and logical (`start`, `end`, `end-start`, …; resolved for RTL). Responsive strings such as `"bottom-start md:bottom-end"` use `matchMedia` listeners on the v6 breakpoints                                                                                                                                                                                                                                 |
+| Layering    | `z-index: var(--menu-zindex)` = `--z-menu` (1000). `container` (`false` / `true` / element) appends the menu elsewhere while shown and restores it after `hidden`. **No Popover API, no top layer**                                                                                                                                                                                                                                          |
+| Auto-close  | `autoClose: true \| false \| 'inside' \| 'outside'` through a document click/keyup handler. Clicks on form controls, or anywhere inside a `<form>` in the menu, never close it. A keyup `Tab` inside the menu doesn't close it; a Tab elsewhere does. Esc always closes, even with `autoClose: false`                                                                                                                                        |
+| Submenus    | `.submenu > .menu-item + .menu`. Positioned `end-start` (fallbacks `start-start`, `end-end`, `start-end`), `offset({mainAxis: 0, crossAxis: -4})`, `shift({padding: 8})`. Open on hover, click or both (`submenuTrigger`, default `'both'`). Close after `submenuDelay` (100 ms), with a "safe triangle" hover intent. Siblings close each other. Triggers get `aria-haspopup="true"` and `aria-expanded` from init                          |
+| Keyboard    | ↑/↓ open the menu and move focus (no wrap, except that entering from outside the list goes to the first or last item). Home/End. →/← enter or exit a submenu (mirrored in RTL). Enter/Space on a submenu trigger opens it and focuses its first item. Esc closes the innermost submenu first, then the menu, and refocuses the toggle. Tab closes. Arrow keys are ignored in inputs and contenteditable                                      |
+| ARIA        | The docs say Bootstrap does **not** add `role="menu"` / `menuitem` ("menus are designed to be generic"). It sets `aria-expanded` on the toggle and `aria-haspopup` / `aria-expanded` on submenu triggers. Use `aria-current` on active items                                                                                                                                                                                                 |
+| Focus       | `show()` focuses the toggle (`focusVisible: false`). No focus trap. On touch devices it adds no-op `mouseover` listeners to `body` children (an iOS click-delegation workaround), except inside `.navbar-nav`                                                                                                                                                                                                                                |
+| Events      | `show` (cancelable), `shown`, `hide` (cancelable), `hidden` (with `clickEvent` when a click closed it). Methods `show` / `hide` / `toggle` / `update` / `dispose`                                                                                                                                                                                                                                                                            |
+| Groups      | Split: `.btn-group` > button + `button.menu-toggle-split` (chevron SVG + `.visually-hidden` text) + `.menu`. `.btn-group` and `.input-group` CSS expect the `.menu` as a **direct sibling** (`:has(+ .menu)`, `.menu-toggle-split`, `.input-group > .menu`). `.nav-tabs .menu` and `.nav-tabs .nav-item.show .nav-link` style nav menus                                                                                                      |
 
 ### Current library
 
@@ -67,44 +69,44 @@ Markup: the toggle and the `.menu` are siblings. The JS finds the menu next to o
 
 "Replace" = replaced by the named v6 equivalent; "keep" = small additive on top of v6 behavior (rule 1); "remove" = gone with no replacement.
 
-| Prop                           | Disposition         | Notes                                                                                                                                                                                       |
-| ------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `modelValue` (v-model)         | keep                | Visibility. `useShowHide`                                                                                                                                                                   |
-| `id`                           | keep                | Toggle id; the menu gets `${id}-menu`                                                                                                                                                       |
-| `text`                         | keep                | Toggle text (with a `toggle` slot)                                                                                                                                                          |
-| `disabled`                     | keep                | v6 skips disabled toggles                                                                                                                                                                   |
-| `placement`                    | replace             | v6 placements, including logical `start` / `end` sides, plus the responsive object (see API). Default `'bottom-start'` (unchanged)                                                       |
-| `offset`                       | replace             | v6 `[skidding, distance]` tuple or a function `({placement, reference, floating}) => [x, y]`; default `[0, 2]` (was `0`). Drop string / number / axis-object forms                         |
-| `boundary`                     | replace             | v6 default `'clippingParents'` (maps to Floating UI `clippingAncestors`) or an element. Used for `shift` only, as v6. `RootBoundary` values go                                             |
-| `boundaryPadding`              | remove              | v6 has none; use `floatingConfig`                                                                                                                                                           |
-| `strategy`                     | keep                | `'absolute' \| 'fixed'` (v6 option)                                                                                                                                                         |
-| `floatingMiddleware`           | replace             | `floatingConfig`: an object, or a function that refines the default config (v6)                                                                                                             |
-| `noFlip`, `noShift`, `noSize`  | remove              | v6 always flips and shifts and never sizes. Use `floatingConfig`, `scrollable` or `--bs-menu-max-height`                                                                                   |
-| `autoClose`                    | keep                | Same values as v6, plus v6's form exemption and Tab handling                                                                                                                                |
-| `teleportTo`, `teleportDisabled` | replace           | v6 `container`. Keep the library name `teleportTo` (`string \| HTMLElement`). Default: no teleport. Drop `teleportDisabled` (an unset `teleportTo` means "in place"). See Q6                 |
-| `lazy`, `unmountLazy`          | keep                | Library additive from `ShowHideProps`; `useShowHide` handles it                                                                                                                             |
-| `show`, `visible`, `initialAnimation` | keep         | `ShowHideProps`, unchanged semantics                                                                                                                                                        |
-| `noTransition`                 | keep                | Adds the **`transition-none`** utility to `.menu` (no `menu-instant` in v6). Layered, so it wins; no inline workaround needed, unlike `BCollapse`                                           |
-| `noCaret`                      | remove              | v6 toggles have no caret. Remove the `.dropdown-toggle-no-caret` rules from `styles.scss` (Q4)                                                                                              |
-| `split`                        | keep                | v6 split-button pattern                                                                                                                                                                     |
-| `splitHref`, `splitTo`, `splitButtonType`, `splitDisabled` | keep | Behavior of the main split button                                                                                                                                                  |
-| `splitVariant`, `splitColor`   | keep                | Style of the main split button (`splitColor` landed in part one)                                                                                                                           |
-| `splitClass`                   | replace             | `splitAttrs`                                                                                                                                                                                |
-| `toggleClass`                  | replace             | merged into `toggleAttrs` (already exists)                                                                                                                                                  |
-| `menuClass`                    | replace             | `menuAttrs`                                                                                                                                                                                 |
-| `wrapperClass`                 | replace             | `wrapperAttrs` (Q3 decides whether a wrapper exists by default)                                                                                                                            |
-| `noWrapper`                    | replace             | Settled by Q3                                                                                                                                                                               |
-| `toggleText`                   | keep                | Visually hidden label of the split toggle. Default `'Toggle menu'` (v6 wording)                                                                                                            |
-| `ariaLabel`                    | remove              | Use `toggleAttrs: {'aria-label': …}`                                                                                                                                                        |
-| `variant`, `theme`, `bg`, `fg`, `size` | keep        | Toggle `BButton` style (`btn-solid theme-secondary` by default, matching v6 examples)                                                                                                       |
-| `icon`                         | remove              | Link-variant `icon-link` styling is unrelated to menus; put icons in the `toggle` slot                                                                                                      |
-| `isNav`                        | remove              | Replaced by `BNavItemMenu` (below), which renders `li.nav-item` + `button.nav-link`                                                                                                         |
-| `role`                         | remove              | v6 sets no menu roles. Use `menuAttrs: {role: 'menu'}` (Q5)                                                                                                                                 |
-| _new_ `reference`              | add (v6)            | `'toggle' \| 'parent' \| HTMLElement \| VirtualElement`                                                                                                                                     |
-| _new_ `display`                | add (v6)            | `'dynamic' \| 'static'`; static skips Floating UI (menus inside navbars or drawers)                                                                                                         |
-| _new_ `submenuTrigger`, `submenuDelay` | add (v6)    | Defaults `'both'`, `100`                                                                                                                                                                     |
-| _new_ `translucent`, `scrollable` | add (v6 classes) | `.menu-translucent`, `.menu-scrollable`                                                                                                                                                     |
-| _new_ `splitAttrs`, `menuAttrs`, `wrapperAttrs` | add | Part attrs rule                                                                                                                                                                            |
+| Prop                                                       | Disposition      | Notes                                                                                                                                                                        |
+| ---------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `modelValue` (v-model)                                     | keep             | Visibility. `useShowHide`                                                                                                                                                    |
+| `id`                                                       | keep             | Toggle id; the menu gets `${id}-menu`                                                                                                                                        |
+| `text`                                                     | keep             | Toggle text (with a `toggle` slot)                                                                                                                                           |
+| `disabled`                                                 | keep             | v6 skips disabled toggles                                                                                                                                                    |
+| `placement`                                                | replace          | v6 placements, including logical `start` / `end` sides, plus the responsive object (see API). Default `'bottom-start'` (unchanged)                                           |
+| `offset`                                                   | replace          | v6 `[skidding, distance]` tuple or a function `({placement, reference, floating}) => [x, y]`; default `[0, 2]` (was `0`). Drop string / number / axis-object forms           |
+| `boundary`                                                 | replace          | v6 default `'clippingParents'` (maps to Floating UI `clippingAncestors`) or an element. Used for `shift` only, as v6. `RootBoundary` values go                               |
+| `boundaryPadding`                                          | remove           | v6 has none; use `floatingConfig`                                                                                                                                            |
+| `strategy`                                                 | keep             | `'absolute' \| 'fixed'` (v6 option)                                                                                                                                          |
+| `floatingMiddleware`                                       | replace          | `floatingConfig`: an object, or a function that refines the default config (v6)                                                                                              |
+| `noFlip`, `noShift`, `noSize`                              | remove           | v6 always flips and shifts and never sizes. Use `floatingConfig`, `scrollable` or `--bs-menu-max-height`                                                                     |
+| `autoClose`                                                | keep             | Same values as v6, plus v6's form exemption and Tab handling                                                                                                                 |
+| `teleportTo`, `teleportDisabled`                           | replace          | v6 `container`. Keep the library name `teleportTo` (`string \| HTMLElement`). Default: no teleport. Drop `teleportDisabled` (an unset `teleportTo` means "in place"). See Q6 |
+| `lazy`, `unmountLazy`                                      | keep             | Library additive from `ShowHideProps`; `useShowHide` handles it                                                                                                              |
+| `show`, `visible`, `initialAnimation`                      | keep             | `ShowHideProps`, unchanged semantics                                                                                                                                         |
+| `noTransition`                                             | keep             | Adds the **`transition-none`** utility to `.menu` (no `menu-instant` in v6). Layered, so it wins; no inline workaround needed, unlike `BCollapse`                            |
+| `noCaret`                                                  | remove           | v6 toggles have no caret. Remove the `.dropdown-toggle-no-caret` rules from `styles.scss` (Q4)                                                                               |
+| `split`                                                    | keep             | v6 split-button pattern                                                                                                                                                      |
+| `splitHref`, `splitTo`, `splitButtonType`, `splitDisabled` | keep             | Behavior of the main split button                                                                                                                                            |
+| `splitVariant`, `splitColor`                               | keep             | Style of the main split button (`splitColor` landed in part one)                                                                                                             |
+| `splitClass`                                               | replace          | `splitAttrs`                                                                                                                                                                 |
+| `toggleClass`                                              | replace          | merged into `toggleAttrs` (already exists)                                                                                                                                   |
+| `menuClass`                                                | replace          | `menuAttrs`                                                                                                                                                                  |
+| `wrapperClass`                                             | replace          | `wrapperAttrs` (Q3 decides whether a wrapper exists by default)                                                                                                              |
+| `noWrapper`                                                | replace          | Settled by Q3                                                                                                                                                                |
+| `toggleText`                                               | keep             | Visually hidden label of the split toggle. Default `'Toggle menu'` (v6 wording)                                                                                              |
+| `ariaLabel`                                                | remove           | Use `toggleAttrs: {'aria-label': …}`                                                                                                                                         |
+| `variant`, `theme`, `bg`, `fg`, `size`                     | keep             | Toggle `BButton` style (`btn-solid theme-secondary` by default, matching v6 examples)                                                                                        |
+| `icon`                                                     | remove           | Link-variant `icon-link` styling is unrelated to menus; put icons in the `toggle` slot                                                                                       |
+| `isNav`                                                    | remove           | Replaced by `BNavItemMenu` (below), which renders `li.nav-item` + `button.nav-link`                                                                                          |
+| `role`                                                     | remove           | v6 sets no menu roles. Use `menuAttrs: {role: 'menu'}` (Q5)                                                                                                                  |
+| _new_ `reference`                                          | add (v6)         | `'toggle' \| 'parent' \| HTMLElement \| VirtualElement`                                                                                                                      |
+| _new_ `display`                                            | add (v6)         | `'dynamic' \| 'static'`; static skips Floating UI (menus inside navbars or drawers)                                                                                          |
+| _new_ `submenuTrigger`, `submenuDelay`                     | add (v6)         | Defaults `'both'`, `100`                                                                                                                                                     |
+| _new_ `translucent`, `scrollable`                          | add (v6 classes) | `.menu-translucent`, `.menu-scrollable`                                                                                                                                      |
+| _new_ `splitAttrs`, `menuAttrs`, `wrapperAttrs`            | add              | Part attrs rule                                                                                                                                                              |
 
 Slots: `button-content` → `toggle` (renamed: it is the toggle's content in both modes, including the main button in split mode; see Q1), `toggle-text` → kept as `split-toggle` (content of the split toggle; default: v6 chevron SVG plus the visually hidden `toggleText`), `default` keeps its slot props (`id`, `show`, `hide`, `toggle`, `visible`, `active`; drop `click`).
 
@@ -114,57 +116,60 @@ Exposed: `show`, `hide`, `toggle` (keep); add `update()` (v6: recompute the posi
 
 ### Disposition: subcomponents
 
-| Current               | v6                                  | Disposition                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| --------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BDropdownItem`       | `a.menu-item` / `button.menu-item`  | **Merge** with `BDropdownItemButton` into one item. It renders `BLink` / `<a>` when `href` / `to` is set, otherwise `<button type="button">`. Keep: BLink props, `active` (adds `aria-current="true"`), `disabled`, `theme` (v6 `theme-*` on `.menu-item`). Remove: the `<li>` wrapper and `wrapperAttrs`, `linkClass` (attrs fall through to the item), `role="menuitem"`, `bg` / `fg` (v6 items only take `theme-*`). Add: `selected` (`.selected` + `.menu-item-check`), `description` prop/slot (`.menu-item-content` + `.menu-item-description`), an `icon` slot (`.menu-item-icon`). Emits `click`, then closes the menu (as now) |
-| `BDropdownItemButton` | —                                   | **Remove** (merged)                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `BDropdownHeader`     | `.menu-header`                      | Keep as a header: `tag` (default `h6`), `text`. Remove `<li>`, `wrapperAttrs`, `headerClass` and all colors (`theme` / `bg` / `fg`; v6 styles headers with `--menu-header-color`)                                                                                                                                                                                                                                                           |
-| `BDropdownDivider`    | `hr.menu-divider`                   | Keep: `<hr class="menu-divider">`. Remove `<li>`, `wrapperAttrs`, `dividerClass`, `tag`, `role` / `aria-orientation` (`<hr>` already has separator semantics), and the inherited `ColorExtendables` (unused today)                                                                                                                                                                                                                                 |
-| `BDropdownText`       | `.menu-text`                        | Keep: `tag` (default `span`), `text`. Remove `<li>`, `wrapperAttrs`, `textClass`, colors                                                                                                                                                                                                                                                                                                                                                        |
-| `BDropdownGroup`      | — (headers + dividers)              | **Remove.** v6 groups are a `.menu-header` followed by items. A `role="group"` wrapper breaks the `.menu` flex gap and v6's `:scope > .menu-item` navigation                                                                                                                                                                                                                                                                                    |
-| `BDropdownForm`       | `<form>` inside `.menu`             | **Remove.** Put a `BForm` (with `validate`, #165) in the menu. Auto-close already exempts forms                                                                                                                                                                                                                                                                                                                                                 |
-| `BNavItemDropdown`    | `li.nav-item` > `button.nav-link` + `.menu` | **Redesign as `BNavItemMenu`** (Q1): the `li` is the v6 wrapper and gets `.show` (needed by `.nav-tabs .nav-item.show .nav-link`). Same props as the menu except `split*`, `variant`, `size`, the button colors and `wrapperAttrs` (the `li` takes fallthrough `class`)                                                                                                                                                                           |
-| _new_                 | `.submenu`                          | **Add `BSubmenu`**: `div.submenu` > `button.menu-item` (`text` prop / `toggle` slot) + nested `.menu` (default slot). Registers with the parent menu for hover, click and keyboard handling. No v-model in the first pass                                                                                                                                                                                                                         |
+| Current               | v6                                          | Disposition                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| --------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BDropdownItem`       | `a.menu-item` / `button.menu-item`          | **Merge** with `BDropdownItemButton` into one item. It renders `BLink` / `<a>` when `href` / `to` is set, otherwise `<button type="button">`. Keep: BLink props, `active` (adds `aria-current="true"`), `disabled`, `theme` (v6 `theme-*` on `.menu-item`). Remove: the `<li>` wrapper and `wrapperAttrs`, `linkClass` (attrs fall through to the item), `role="menuitem"`, `bg` / `fg` (v6 items only take `theme-*`). Add: `selected` (`.selected` + `.menu-item-check`), `description` prop/slot (`.menu-item-content` + `.menu-item-description`), an `icon` slot (`.menu-item-icon`). Emits `click`, then closes the menu (as now) |
+| `BDropdownItemButton` | —                                           | **Remove** (merged)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `BDropdownHeader`     | `.menu-header`                              | Keep as a header: `tag` (default `h6`), `text`. Remove `<li>`, `wrapperAttrs`, `headerClass` and all colors (`theme` / `bg` / `fg`; v6 styles headers with `--menu-header-color`)                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `BDropdownDivider`    | `hr.menu-divider`                           | Keep: `<hr class="menu-divider">`. Remove `<li>`, `wrapperAttrs`, `dividerClass`, `tag`, `role` / `aria-orientation` (`<hr>` already has separator semantics), and the inherited `ColorExtendables` (unused today)                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `BDropdownText`       | `.menu-text`                                | Keep: `tag` (default `span`), `text`. Remove `<li>`, `wrapperAttrs`, `textClass`, colors                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `BDropdownGroup`      | — (headers + dividers)                      | **Remove.** v6 groups are a `.menu-header` followed by items. A `role="group"` wrapper breaks the `.menu` flex gap and v6's `:scope > .menu-item` navigation                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `BDropdownForm`       | `<form>` inside `.menu`                     | **Remove.** Put a `BForm` (with `validate`, #165) in the menu. Auto-close already exempts forms                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `BNavItemDropdown`    | `li.nav-item` > `button.nav-link` + `.menu` | **Redesign as `BNavItemMenu`** (Q1): the `li` is the v6 wrapper and gets `.show` (needed by `.nav-tabs .nav-item.show .nav-link`). Same props as the menu except `split*`, `variant`, `size`, the button colors and `wrapperAttrs` (the `li` takes fallthrough `class`)                                                                                                                                                                                                                                                                                                                                                                 |
+| _new_                 | `.submenu`                                  | **Add `BSubmenu`**: `div.submenu` > `button.menu-item` (`text` prop / `toggle` slot) + nested `.menu` (default slot). Registers with the parent menu for hover, click and keyboard handling. No v-model in the first pass                                                                                                                                                                                                                                                                                                                                                                                                               |
 
 ### Proposed API
 
 Component names follow Q1 (recommended: `BMenu`, `BMenuItem`, `BMenuHeader`, `BMenuText`, `BMenuDivider`, `BSubmenu`, `BNavItemMenu`).
 
 ```ts
-type MenuSide = 'top' | 'bottom' | 'left' | 'right' | 'start' | 'end'
-type MenuPlacement = MenuSide | `${MenuSide}-${'start' | 'end'}`
+type MenuSide = "top" | "bottom" | "left" | "right" | "start" | "end";
+type MenuPlacement = MenuSide | `${MenuSide}-${"start" | "end"}`;
 
 interface BMenuProps extends ShowHideProps, ColorExtendables {
-  id?: string
-  text?: string
-  disabled?: boolean
-  placement?: MenuPlacement | Responsive<MenuPlacement> // object-only responsive form, see Q2
-  offset?: readonly [number, number] | ((s: {placement: Placement; reference: Rect; floating: Rect}) => [number, number])
-  boundary?: 'clippingParents' | HTMLElement
-  strategy?: 'absolute' | 'fixed'
-  reference?: 'toggle' | 'parent' | HTMLElement | VirtualElement
-  display?: 'dynamic' | 'static'
-  floatingConfig?: Partial<ComputePositionConfig> | ((d: ComputePositionConfig) => ComputePositionConfig)
-  autoClose?: boolean | 'inside' | 'outside'
-  teleportTo?: string | HTMLElement
-  submenuTrigger?: 'click' | 'hover' | 'both'
-  submenuDelay?: number
-  translucent?: boolean
-  scrollable?: boolean
-  split?: boolean
-  splitHref?: string
-  splitTo?: RouteLocationRaw
-  splitButtonType?: ButtonType
-  splitDisabled?: boolean
-  splitVariant?: ButtonVariant | null
-  splitColor?: ColorExtendables
-  toggleText?: string
-  variant?: ButtonVariant | null
-  size?: Size
-  toggleAttrs?: AttrsValue
-  splitAttrs?: AttrsValue
-  menuAttrs?: AttrsValue
-  wrapperAttrs?: AttrsValue
+  id?: string;
+  text?: string;
+  disabled?: boolean;
+  placement?: MenuPlacement | Responsive<MenuPlacement>; // object-only responsive form, see Q2
+  offset?:
+    | readonly [number, number]
+    | ((s: { placement: Placement; reference: Rect; floating: Rect }) => [number, number]);
+  boundary?: "clippingParents" | HTMLElement;
+  strategy?: "absolute" | "fixed";
+  reference?: "toggle" | "parent" | HTMLElement | VirtualElement;
+  display?: "dynamic" | "static";
+  floatingConfig?:
+    Partial<ComputePositionConfig> | ((d: ComputePositionConfig) => ComputePositionConfig);
+  autoClose?: boolean | "inside" | "outside";
+  teleportTo?: string | HTMLElement;
+  submenuTrigger?: "click" | "hover" | "both";
+  submenuDelay?: number;
+  translucent?: boolean;
+  scrollable?: boolean;
+  split?: boolean;
+  splitHref?: string;
+  splitTo?: RouteLocationRaw;
+  splitButtonType?: ButtonType;
+  splitDisabled?: boolean;
+  splitVariant?: ButtonVariant | null;
+  splitColor?: ColorExtendables;
+  toggleText?: string;
+  variant?: ButtonVariant | null;
+  size?: Size;
+  toggleAttrs?: AttrsValue;
+  splitAttrs?: AttrsValue;
+  menuAttrs?: AttrsValue;
+  wrapperAttrs?: AttrsValue;
 }
 ```
 
@@ -174,11 +179,23 @@ interface BMenuProps extends ShowHideProps, ColorExtendables {
 
 ```html
 <!-- default (wrapper per Q3) -->
-<div class="d-inline-flex [show]">                       <!-- wrapperAttrs -->
-  <button id="m1" class="btn-solid theme-secondary [show]" type="button"
-          aria-expanded="false" aria-controls="m1-menu">Text</button>
-  <div id="m1-menu" class="menu [show] [transition-none]" data-bs-placement="bottom-start"
-       style="position:absolute;left:…px;top:…px;margin:0">
+<div class="d-inline-flex [show]">
+  <!-- wrapperAttrs -->
+  <button
+    id="m1"
+    class="btn-solid theme-secondary [show]"
+    type="button"
+    aria-expanded="false"
+    aria-controls="m1-menu"
+  >
+    Text
+  </button>
+  <div
+    id="m1-menu"
+    class="menu [show] [transition-none]"
+    data-bs-placement="bottom-start"
+    style="position:absolute;left:…px;top:…px;margin:0"
+  >
     <button class="menu-item" type="button">Action</button>
   </div>
 </div>
@@ -186,7 +203,12 @@ interface BMenuProps extends ShowHideProps, ColorExtendables {
 <!-- split -->
 <div class="btn-group">
   <button class="btn-solid theme-secondary" type="button">Split</button>
-  <button class="btn-solid theme-secondary menu-toggle-split" type="button" aria-expanded="false" aria-controls="m2-menu">
+  <button
+    class="btn-solid theme-secondary menu-toggle-split"
+    type="button"
+    aria-expanded="false"
+    aria-controls="m2-menu"
+  >
     <svg aria-hidden="true">…chevron…</svg><span class="visually-hidden">Toggle menu</span>
   </button>
   <div class="menu">…</div>
@@ -234,14 +256,23 @@ None public. Internals: a `useMenuKeyboard` and a `useMenuPosition` (Floating UI
 ```html
 <div class="form-field">
   <label for="cb" class="form-label">Country</label>
-  <input type="hidden" name="country" value="us">                       <!-- JS-inserted when name -->
-  <button id="cb" class="form-control combobox-toggle [form-control-sm|lg] [show]" type="button"
-          aria-haspopup="listbox" aria-expanded="false">
+  <input type="hidden" name="country" value="us" />
+  <!-- JS-inserted when name -->
+  <button
+    id="cb"
+    class="form-control combobox-toggle [form-control-sm|lg] [show]"
+    type="button"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+  >
     <span class="combobox-value [combobox-placeholder]">Pick a country…</span>
     <svg class="combobox-caret">…</svg>
   </button>
-  <div class="menu">                                                    <!-- --menu-max-height: 300px; overflow auto -->
-    <div class="combobox-search"><input class="form-control combobox-search-input" aria-label="Search…"></div>
+  <div class="menu">
+    <!-- --menu-max-height: 300px; overflow auto -->
+    <div class="combobox-search">
+      <input class="form-control combobox-search-input" aria-label="Search…" />
+    </div>
     <div class="menu-header">Group</div>
     <button class="menu-item [selected]" type="button" data-bs-value="us" aria-selected="true">
       United States <svg class="menu-item-check">…</svg>
@@ -267,14 +298,14 @@ None public. Internals: a `useMenuKeyboard` and a `useMenuPosition` (Floating UI
 
 `BAutocomplete` is **removed**, with its specs, SCSS (`_autocomplete.scss`), types (`BAutocompleteProps` / `Emits` / `Slots`, the `AcceptableValue` import), docs page, data file and demos. `BCombobox` is new. Where a `BCombobox` prop has the same name, it comes from v6 or from library-wide form conventions (`BFormSelect`), not from `BAutocomplete`.
 
-| `BAutocomplete` prop / slot / emit                  | Disposition                                    |
-| --------------------------------------------------- | ---------------------------------------------- |
-| `multiple`, `name`, `placeholder`, `disabled`, `id`, `size`, `state`, `options`, `textField`, `valueField`, `disabledField`, `form`, `required` | replaced by the `BCombobox` prop of the same name (v6 option or `BFormSelect` convention) |
-| `modelValue` (`AcceptableValue`)                    | replaced: `BCombobox` `v-model` (shape below)  |
-| `search` (`v-model:search`), `filterFunction`, `open` (`v-model:open`) | replaced by `search: boolean` (v6). Async / custom filtering per Q8 |
-| `formatter`, `lazyFormatter`, `autocomplete`, `autofocus`, `openOnFocus`, `resetSearchTermOnBlur`, `resetSearchTermOnSelect`, `noClearButton`, `noToggle`, `tags`, `plaintext`, `readonly`, `ariaInvalid`, `by`, `dir`, `teleportTo` | removed (free-text or reka-only behavior; Q7) |
-| Slots `input`, `tags`, `toggle`, `toggle-icon`, `option-indicator`, `empty`, `default`, `option` | removed; `BCombobox` has its own slots (below) |
-| Emits `blur`, `focus`, `clear`, `change`            | removed; `BCombobox` emits `change` (v6) and the show/hide events |
+| `BAutocomplete` prop / slot / emit                                                                                                                                                                                                   | Disposition                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| `multiple`, `name`, `placeholder`, `disabled`, `id`, `size`, `state`, `options`, `textField`, `valueField`, `disabledField`, `form`, `required`                                                                                      | replaced by the `BCombobox` prop of the same name (v6 option or `BFormSelect` convention) |
+| `modelValue` (`AcceptableValue`)                                                                                                                                                                                                     | replaced: `BCombobox` `v-model` (shape below)                                             |
+| `search` (`v-model:search`), `filterFunction`, `open` (`v-model:open`)                                                                                                                                                               | replaced by `search: boolean` (v6). Async / custom filtering per Q8                       |
+| `formatter`, `lazyFormatter`, `autocomplete`, `autofocus`, `openOnFocus`, `resetSearchTermOnBlur`, `resetSearchTermOnSelect`, `noClearButton`, `noToggle`, `tags`, `plaintext`, `readonly`, `ariaInvalid`, `by`, `dir`, `teleportTo` | removed (free-text or reka-only behavior; Q7)                                             |
+| Slots `input`, `tags`, `toggle`, `toggle-icon`, `option-indicator`, `empty`, `default`, `option`                                                                                                                                     | removed; `BCombobox` has its own slots (below)                                            |
+| Emits `blur`, `focus`, `clear`, `change`                                                                                                                                                                                             | removed; `BCombobox` emits `change` (v6) and the show/hide events                         |
 
 ### Proposed API (`BCombobox`)
 
@@ -347,17 +378,17 @@ v6's DOM cloning and moving can't run on Vue-owned nodes. Proposal:
 
 ### Proposed API (feature on `BNav`, Q10)
 
-| `BNav` prop        | Type                                | Default        | v6 option          |
-| ------------------ | ----------------------------------- | -------------- | ------------------ |
-| `overflow`         | `boolean`                           | `false`        | `data-bs-toggle="nav-overflow"` |
-| `collapseBelow`    | `number \| Breakpoint`              | `0`            | `collapseBelow` (breakpoint resolved from `breakpointWidths`, not CSS) |
-| `threshold`        | `number`                            | `0`            | `threshold`        |
-| `moreText`         | `string`                            | `'More'`       | `moreText` (`''` = icon only, `aria-label` falls back to `'More'`) |
-| `moreIconPlacement`| `'start' \| 'end'`                  | `'start'`      | `iconPlacement`    |
-| `overflowPlacement`| `MenuPlacement`                     | `'bottom-end'` | `menuPlacement`    |
-| `overflowStrategy` | `'absolute' \| 'fixed'`             | `'absolute'`   | `menuStrategy`     |
-| `overflowAttrs`    | `AttrsValue`                        | —              | attrs on the `.nav-overflow` wrapper |
-| `BNavItem` / `BNavItemMenu` `keep` | `boolean`           | `false`        | `.nav-overflow-keep` |
+| `BNav` prop                        | Type                    | Default        | v6 option                                                              |
+| ---------------------------------- | ----------------------- | -------------- | ---------------------------------------------------------------------- |
+| `overflow`                         | `boolean`               | `false`        | `data-bs-toggle="nav-overflow"`                                        |
+| `collapseBelow`                    | `number \| Breakpoint`  | `0`            | `collapseBelow` (breakpoint resolved from `breakpointWidths`, not CSS) |
+| `threshold`                        | `number`                | `0`            | `threshold`                                                            |
+| `moreText`                         | `string`                | `'More'`       | `moreText` (`''` = icon only, `aria-label` falls back to `'More'`)     |
+| `moreIconPlacement`                | `'start' \| 'end'`      | `'start'`      | `iconPlacement`                                                        |
+| `overflowPlacement`                | `MenuPlacement`         | `'bottom-end'` | `menuPlacement`                                                        |
+| `overflowStrategy`                 | `'absolute' \| 'fixed'` | `'absolute'`   | `menuStrategy`                                                         |
+| `overflowAttrs`                    | `AttrsValue`            | —              | attrs on the `.nav-overflow` wrapper                                   |
+| `BNavItem` / `BNavItemMenu` `keep` | `boolean`               | `false`        | `.nav-overflow-keep`                                                   |
 
 - Slots on `BNav`: `more-icon` (replaces the sanitized `moreIcon` string and the `[data-bs-overflow-icon]` element; default v6 three-dots SVG), `more` (the whole toggle content).
 - Emits on `BNav`: `overflow` (`{overflowCount, visibleCount}`). `update` is dropped: it fires on every measurement and only exists for the imperative API.
@@ -380,14 +411,14 @@ The server renders `div.nav-overflow` **without** `.nav-overflow-initialized`. v
 
 ## Cross-group dependencies
 
-| Item                                    | Direction | Note                                                                                                                                                                                                                       |
-| --------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| G3 Navbar                               | G2 → G3   | Navbar uses `BNavItemMenu`, `display: 'static'` for menus inside an expanded `[class*="drawer"]`, and `BNav overflow`. The naming (Q1) and wrapper (Q3) answers apply to the navbar menus                              |
-| G1 Overlays (Dialog / Drawer)           | G1 ↔ G2   | Native `<dialog>` is in the top layer. A menu teleported to `body` from inside a dialog or drawer renders **behind** it. Default must stay in place (v6 `container: false`); docs must warn. v6 `dialog-base._hideChildComponents` hides tooltips and popovers but not menus: closing a dialog should close open `BMenu`s inside it (`useShowHide` unmount handles it if the dialog content unmounts; otherwise G1 should call into the registry) |
-| G4 Form inputs                          | G2 ↔ G4   | `BCombobox` sits in Field (`.form-field`, `BFormGroup` label `for`). Datepicker in v6 positions with `--z-menu` and Floating UI: it could reuse `useMenuPosition`. Dropping reka-ui needs G4's OTP and Datepicker replacements too |
-| G6 Scrollspy                            | G2 → G6   | `useScrollspy` marks `.dropdown-toggle` active inside `.dropdown`; it must look for the menu wrapper's toggle (`[aria-controls]` of a `.menu`) instead                                                                    |
-| `BTableLite` (`filterEvent`)            | G2        | `.dropdown-menu` → `.menu`                                                                                                                                                                                                 |
-| `BPopover` (part one)                   | G2        | Keeps its own Floating UI config; the shared parts are only the `floatingConfig` naming. Consider aligning `BPopover.floatingMiddleware` → `floatingConfig` in a later pass for consistency (not required by rule 1)        |
+| Item                          | Direction | Note                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ----------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| G3 Navbar                     | G2 → G3   | Navbar uses `BNavItemMenu`, `display: 'static'` for menus inside an expanded `[class*="drawer"]`, and `BNav overflow`. The naming (Q1) and wrapper (Q3) answers apply to the navbar menus                                                                                                                                                                                                                                                         |
+| G1 Overlays (Dialog / Drawer) | G1 ↔ G2   | Native `<dialog>` is in the top layer. A menu teleported to `body` from inside a dialog or drawer renders **behind** it. Default must stay in place (v6 `container: false`); docs must warn. v6 `dialog-base._hideChildComponents` hides tooltips and popovers but not menus: closing a dialog should close open `BMenu`s inside it (`useShowHide` unmount handles it if the dialog content unmounts; otherwise G1 should call into the registry) |
+| G4 Form inputs                | G2 ↔ G4   | `BCombobox` sits in Field (`.form-field`, `BFormGroup` label `for`). Datepicker in v6 positions with `--z-menu` and Floating UI: it could reuse `useMenuPosition`. Dropping reka-ui needs G4's OTP and Datepicker replacements too                                                                                                                                                                                                                |
+| G6 Scrollspy                  | G2 → G6   | `useScrollspy` marks `.dropdown-toggle` active inside `.dropdown`; it must look for the menu wrapper's toggle (`[aria-controls]` of a `.menu`) instead                                                                                                                                                                                                                                                                                            |
+| `BTableLite` (`filterEvent`)  | G2        | `.dropdown-menu` → `.menu`                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `BPopover` (part one)         | G2        | Keeps its own Floating UI config; the shared parts are only the `floatingConfig` naming. Consider aligning `BPopover.floatingMiddleware` → `floatingConfig` in a later pass for consistency (not required by rule 1)                                                                                                                                                                                                                              |
 
 ## Docs and playground (must change)
 
@@ -485,7 +516,14 @@ Context: v6 shows groups as `.menu-header` + dividers. `BFormSelect` supports `{
 
 ## Decisions
 
-_Pending maintainer answers._
+Answered by the maintainer on 2026-11-03. Where an answer differs from the proposal above, the answer wins.
+
+- **Q1 — A. Rename to Menu:** `BMenu`, `BMenuItem`, `BMenuHeader`, `BMenuText`, `BMenuDivider`, `BSubmenu`, `BNavItemMenu`; the `BDropdown*` names are deleted with no aliases. This follows the cross-group naming rule: redesigned components take their v6 names (`BDialog`, `BDrawer`, `BFormField`, …).
+- **Q6 — A. In place by default.** Menus render next to their toggle (as v6), positioned by Floating UI; `teleportTo` stays opt-in, with a docs warning that a teleported menu renders below an open native dialog. This is the shared popup mechanism for every floating popup in the new components: G4's Datepicker reuses it (vanilla-calendar-pro mounted inline inside a library-owned popup).
+- **Q7 — A. `BCombobox` as v6 (select-only).** Free-text users go to `BFormInput` + `BFormDatalist`, tag input to Chips (G4).
+- **Q8 — A. Small additives:** `v-model:search` and `filter?: false | fn`, so custom and async filtering work.
+- **Q10 — B. Separate `BNavOverflow` wrapper component around a `BNav`** (mirrors v6's `.nav-overflow` wrapper; `BNav` itself stays simple). Item registration and measuring still work as proposed, but the wrapper owns them; rework the "Proposed API (feature on `BNav`)" section into a `BNavOverflow` API at implementation.
+- Q2–Q5, Q9, Q11, Q12: _Pending._
 
 ## Implementation split
 

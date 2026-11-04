@@ -26,15 +26,15 @@ Findings:
 
 ## Shared decisions (all components in this group)
 
-| Topic | Decision |
-| --- | --- |
-| JS behavior | Reimplement in Vue. Bootstrap's plugins query and mutate DOM they did not render, register document-level data-API listeners on import (not SSR-safe), and read their config once. |
-| v-model | Each control has a `defineModel` value. v6 `change.bs.*` events map to `update:modelValue`. Cancelable v6 events (`add.bs.chips`, `remove.bs.chips`) become cancelable `BvEvent` emits. |
-| Field integration | Every new control registers with `useProvideFormGroupData` (the same way `BFormInput` does) so that `BFormGroup` auto-resolves `labelFor`, `state` and `disabled`. |
-| Validation | `state` renders `.is-valid` / `.is-invalid` on the element v6 expects (input, `.form-ghost`, `.form-range-input`, or the `.otp` wrapper). The `data-bs-validate` CSS from #165 covers native `:user-invalid`. |
-| Colors | Root `theme` emits `.theme-{color}` (v6 recolors `.form-range`, `.chip`, `.chip-input` through `--theme-*`). |
-| Attrs | `*Attrs` for inner parts; no `*Class` props. |
-| SSR | All markup renders on the server. Only Datepicker creates a third-party instance, and only in `onMounted`. Document listeners (`selectionchange` for OTP) go through `useEventListener(getSafeDocument(), …)`. |
+| Topic             | Decision                                                                                                                                                                                                       |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| JS behavior       | Reimplement in Vue. Bootstrap's plugins query and mutate DOM they did not render, register document-level data-API listeners on import (not SSR-safe), and read their config once.                             |
+| v-model           | Each control has a `defineModel` value. v6 `change.bs.*` events map to `update:modelValue`. Cancelable v6 events (`add.bs.chips`, `remove.bs.chips`) become cancelable `BvEvent` emits.                        |
+| Field integration | Every new control registers with `useProvideFormGroupData` (the same way `BFormInput` does) so that `BFormGroup` auto-resolves `labelFor`, `state` and `disabled`.                                             |
+| Validation        | `state` renders `.is-valid` / `.is-invalid` on the element v6 expects (input, `.form-ghost`, `.form-range-input`, or the `.otp` wrapper). The `data-bs-validate` CSS from #165 covers native `:user-invalid`.  |
+| Colors            | Root `theme` emits `.theme-{color}` (v6 recolors `.form-range`, `.chip`, `.chip-input` through `--theme-*`).                                                                                                   |
+| Attrs             | `*Attrs` for inner parts; no `*Class` props.                                                                                                                                                                   |
+| SSR               | All markup renders on the server. Only Datepicker creates a third-party instance, and only in `onMounted`. Document listeners (`selectionchange` for OTP) go through `useEventListener(getSafeDocument(), …)`. |
 
 ## Field (`BFormGroup`)
 
@@ -50,24 +50,24 @@ Root is always `<fieldset class="b-form-group">`, plus `.form-field` when not ho
 
 All props compose Field markup; none duplicate a v6 JS behavior. Field is CSS only, so rule 1 changes markup, not the API.
 
-| Prop / slot | Disposition | Note |
-| --- | --- | --- |
-| `id`, `ariaInvalid`, `disabled`, `state` | keep | |
-| `label`, `labelFor`, `labelAttrs`, `labelVisuallyHidden`, `labelSize` | keep | `labelSize` → `col-form-label-{sm,lg}` (exists in v6) |
-| `labelCols`, `contentCols`, `labelAlign` | keep | `Responsive<…>` since #165; horizontal mode |
-| `description` | keep | renders `.form-text` |
-| `invalidFeedback`, `validFeedback`, `tooltip`, `feedbackAriaLive` | keep | |
-| `floating` | keep | |
-| slots `default` (scoped), `label`, `description`, `invalid-feedback`, `valid-feedback` | keep | |
+| Prop / slot                                                                            | Disposition | Note                                                  |
+| -------------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------- |
+| `id`, `ariaInvalid`, `disabled`, `state`                                               | keep        |                                                       |
+| `label`, `labelFor`, `labelAttrs`, `labelVisuallyHidden`, `labelSize`                  | keep        | `labelSize` → `col-form-label-{sm,lg}` (exists in v6) |
+| `labelCols`, `contentCols`, `labelAlign`                                               | keep        | `Responsive<…>` since #165; horizontal mode           |
+| `description`                                                                          | keep        | renders `.form-text`                                  |
+| `invalidFeedback`, `validFeedback`, `tooltip`, `feedbackAriaLive`                      | keep        |                                                       |
+| `floating`                                                                             | keep        |                                                       |
+| slots `default` (scoped), `label`, `description`, `invalid-feedback`, `valid-feedback` | keep        |                                                       |
 
 ### Proposed markup
 
-| Mode | Root | Label |
-| --- | --- | --- |
-| Single control (explicit or auto-detected `labelFor`) | `<div class="form-field">` | `<label class="form-label" for>` |
-| Group (no single target: checks, radios, several inputs) | `<fieldset class="form-group">` | `<legend class="form-label">` |
-| Floating | `<div class="form-field">` > `.form-floating` (label before control, as #165) | `<label for>` |
-| Horizontal | `<div class="row">` / `<fieldset class="row">` (unchanged) | `col-form-label` (`pt-0` only on a horizontal `legend`, as the v6 docs show) |
+| Mode                                                     | Root                                                                          | Label                                                                        |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Single control (explicit or auto-detected `labelFor`)    | `<div class="form-field">`                                                    | `<label class="form-label" for>`                                             |
+| Group (no single target: checks, radios, several inputs) | `<fieldset class="form-group">`                                               | `<legend class="form-label">`                                                |
+| Floating                                                 | `<div class="form-field">` > `.form-floating` (label before control, as #165) | `<label for>`                                                                |
+| Horizontal                                               | `<div class="row">` / `<fieldset class="row">` (unchanged)                    | `col-form-label` (`pt-0` only on a horizontal `legend`, as the v6 docs show) |
 
 - Drop the v5 leftovers `bv-no-focus-ring`, `d-block`, and `col-form-label pt-0` on stacked legends.
 - `b-form-group` stays as a library hook class.
@@ -94,16 +94,16 @@ The v6 range is a wrapper with generated children (bubble, ticks, fill variable)
 
 ### Proposed API
 
-| Prop | Type | Default | Note |
-| --- | --- | --- | --- |
-| `modelValue` | `number` | `50` (midpoint like native) | `v-model`, numeric |
-| `min` / `max` / `step` | `Numberish` | `0` / `100` / `1` | |
-| `bubble` | `boolean` | `false` | v6 option |
-| `formatter` | `(value: number) => string` | `String` | v6 option; bubble and tick labels |
-| `ticks` | `readonly (number \| {value: number; label?: string})[]` | — | Replaces `list` + `<datalist>`; renders the ticks grid **and** a real `<datalist>` (`list` on the input) for native snapping/a11y |
-| `theme` | `ColorVariant` | — | `.theme-*` on the wrapper |
-| `id`, `name`, `form`, `disabled`, `required`, `state`, `ariaInvalid` | | | standard |
-| `wrapperAttrs` | `AttrsValue` | — | root `.form-range` |
+| Prop                                                                 | Type                                                     | Default                     | Note                                                                                                                              |
+| -------------------------------------------------------------------- | -------------------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `modelValue`                                                         | `number`                                                 | `50` (midpoint like native) | `v-model`, numeric                                                                                                                |
+| `min` / `max` / `step`                                               | `Numberish`                                              | `0` / `100` / `1`           |                                                                                                                                   |
+| `bubble`                                                             | `boolean`                                                | `false`                     | v6 option                                                                                                                         |
+| `formatter`                                                          | `(value: number) => string`                              | `String`                    | v6 option; bubble and tick labels                                                                                                 |
+| `ticks`                                                              | `readonly (number \| {value: number; label?: string})[]` | —                           | Replaces `list` + `<datalist>`; renders the ticks grid **and** a real `<datalist>` (`list` on the input) for native snapping/a11y |
+| `theme`                                                              | `ColorVariant`                                           | —                           | `.theme-*` on the wrapper                                                                                                         |
+| `id`, `name`, `form`, `disabled`, `required`, `state`, `ariaInvalid` |                                                          |                             | standard                                                                                                                          |
+| `wrapperAttrs`                                                       | `AttrsValue`                                             | —                           | root `.form-range`                                                                                                                |
 
 - `$attrs` (and `class`) go to the input (`inheritAttrs: false`), the same way `BFormInput` treats attrs.
 - Emits: `update:modelValue` on `input`, `change` on `change`.
@@ -135,66 +135,67 @@ Standalone `.chip` (`.chip-icon`, `.chip-img`, `.chip-dismiss`, `.active`, `.dis
 
 ### Disposition: `BFormTags`
 
-| Prop | Disposition | v6 / new |
-| --- | --- | --- |
-| `modelValue` | keep | `string[]` |
-| `disabled`, `placeholder`, `state`, `autofocus` | keep | ghost input |
-| `name`, `form`, `required` | keep (small additive) | `name` renders one hidden input per value. `required` sits on the ghost input only while there are no chips |
-| `inputAttrs` | keep | ghost input |
-| `inputClass` | remove | use `inputAttrs.class` (already planned) |
-| `inputId` | replace | `id` targets the ghost input, so `BFormGroup` `labelFor` works |
-| `inputType` | remove | v6 ghost is text |
-| `separator` (`string \| string[]`) | replace | v6 `separator: string \| null`, default `','` (was "none") |
-| `limit` | replace | `maxChips` |
-| `noTagRemove` | replace | `dismissible` (default `true`) |
-| `tagRemoveLabel` | replace | `dismissLabel` (default `'Remove'`, rendered as `"Remove {value}"`) |
-| `tagColor` | replace | root `theme` (chips inherit) + per-chip color through the `chip` slot / `BChip` |
-| `tagClass` | replace | `chipAttrs?: (value: string, index: number) => AttrsValue` (function-valued, as #166) |
-| `tagPills` | remove | chips are always pills |
-| `tagValidator` | replace | cancelable `add` event (v6) |
-| `addOnChange` | replace | `createOnBlur` (default `true`) |
-| `noAddOnEnter` | remove | Enter always adds (v6) |
-| `removeOnDelete` | remove | v6 Backspace behavior is built in |
-| `addButtonText`, `addButtonVariant`, `addButtonColor` | remove | v6 has no add button |
-| `duplicateTagText`, `invalidTagText`, `limitTagsText`, `feedbackAriaLive` | remove | v6 rejects silently; show messages through `BFormGroup` feedback driven by the `add` event (Q8) |
-| `ignoreInputFocusSelector`, `noOuterFocus` | remove | v6 focuses the input only on a background click |
-| `size` | remove | v6 has no chip sizes |
-| `tagRemovedLabel` | keep, renamed `removedLabel` | built-in live region (v6 docs promise announcements but `chips.ts` has none) |
-| new | add | `allowDuplicates`, `theme` |
+| Prop                                                                      | Disposition                  | v6 / new                                                                                                    |
+| ------------------------------------------------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `modelValue`                                                              | keep                         | `string[]`                                                                                                  |
+| `disabled`, `placeholder`, `state`, `autofocus`                           | keep                         | ghost input                                                                                                 |
+| `name`, `form`, `required`                                                | keep (small additive)        | `name` renders one hidden input per value. `required` sits on the ghost input only while there are no chips |
+| `inputAttrs`                                                              | keep                         | ghost input                                                                                                 |
+| `inputClass`                                                              | remove                       | use `inputAttrs.class` (already planned)                                                                    |
+| `inputId`                                                                 | replace                      | `id` targets the ghost input, so `BFormGroup` `labelFor` works                                              |
+| `inputType`                                                               | remove                       | v6 ghost is text                                                                                            |
+| `separator` (`string \| string[]`)                                        | replace                      | v6 `separator: string \| null`, default `','` (was "none")                                                  |
+| `limit`                                                                   | replace                      | `maxChips`                                                                                                  |
+| `noTagRemove`                                                             | replace                      | `dismissible` (default `true`)                                                                              |
+| `tagRemoveLabel`                                                          | replace                      | `dismissLabel` (default `'Remove'`, rendered as `"Remove {value}"`)                                         |
+| `tagColor`                                                                | replace                      | root `theme` (chips inherit) + per-chip color through the `chip` slot / `BChip`                             |
+| `tagClass`                                                                | replace                      | `chipAttrs?: (value: string, index: number) => AttrsValue` (function-valued, as #166)                       |
+| `tagPills`                                                                | remove                       | chips are always pills                                                                                      |
+| `tagValidator`                                                            | replace                      | cancelable `add` event (v6)                                                                                 |
+| `addOnChange`                                                             | replace                      | `createOnBlur` (default `true`)                                                                             |
+| `noAddOnEnter`                                                            | remove                       | Enter always adds (v6)                                                                                      |
+| `removeOnDelete`                                                          | remove                       | v6 Backspace behavior is built in                                                                           |
+| `addButtonText`, `addButtonVariant`, `addButtonColor`                     | remove                       | v6 has no add button                                                                                        |
+| `duplicateTagText`, `invalidTagText`, `limitTagsText`, `feedbackAriaLive` | remove                       | v6 rejects silently; show messages through `BFormGroup` feedback driven by the `add` event (Q8)             |
+| `ignoreInputFocusSelector`, `noOuterFocus`                                | remove                       | v6 focuses the input only on a background click                                                             |
+| `size`                                                                    | remove                       | v6 has no chip sizes                                                                                        |
+| `tagRemovedLabel`                                                         | keep, renamed `removedLabel` | built-in live region (v6 docs promise announcements but `chips.ts` has none)                                |
+| new                                                                       | add                          | `allowDuplicates`, `theme`                                                                                  |
 
-| Slot / emit / expose | Disposition |
-| --- | --- |
-| slot `default` (full custom UI scope) | remove. The `FormTagsDropdown` / `FormTagsSelect` / `FormTagsCustom` / `FormTagsNative` demos must be rewritten or dropped |
-| slot `tag` | replace → `chip` `{value, index, selected, remove}` |
-| slot `add-button-text` | remove |
-| new slot `dismiss-icon` | replaces v6 `dismissIcon` HTML (no sanitizer needed) |
-| emits `focus`, `blur`, `focusin`, `focusout` | remove (listeners via `inputAttrs`, native root listeners fall through) |
-| emit `tag-added` | replace → `add` (cancelable `BvEvent`, `value`) |
-| emit `tag-state` | remove |
-| new emits | `remove` (cancelable), `select` (`string[]`) |
+| Slot / emit / expose                            | Disposition                                                                                                                |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| slot `default` (full custom UI scope)           | remove. The `FormTagsDropdown` / `FormTagsSelect` / `FormTagsCustom` / `FormTagsNative` demos must be rewritten or dropped |
+| slot `tag`                                      | replace → `chip` `{value, index, selected, remove}`                                                                        |
+| slot `add-button-text`                          | remove                                                                                                                     |
+| new slot `dismiss-icon`                         | replaces v6 `dismissIcon` HTML (no sanitizer needed)                                                                       |
+| emits `focus`, `blur`, `focusin`, `focusout`    | remove (listeners via `inputAttrs`, native root listeners fall through)                                                    |
+| emit `tag-added`                                | replace → `add` (cancelable `BvEvent`, `value`)                                                                            |
+| emit `tag-state`                                | remove                                                                                                                     |
+| new emits                                       | `remove` (cancelable), `select` (`string[]`)                                                                               |
 | expose `focus`, `blur`, `element`, `inputValue` | replace → `focus()`, `blur()`, `add(value)`, `remove(value)`, `clear()`, `clearSelection()`, `removeSelected()`, `element` |
 
 ### Disposition: `BFormTag`
 
-| Prop / emit | Disposition |
-| --- | --- |
-| `id`, `disabled`, `tag` (default `span`) | keep |
-| `theme` / `bg` / `fg` | keep (root color props stay flat) |
-| `noRemove` | replace → `dismissible` (default `false` for a standalone chip) |
-| `removeLabel` | replace → `dismissLabel` |
-| `pill` | remove |
-| `title` | remove (falls through as a native attribute) |
-| emit `remove` | keep |
-| new | `active` (`.active`), slots `icon` (`.chip-icon`), `img` (`.chip-img`), `dismiss-icon` |
+| Prop / emit                              | Disposition                                                                            |
+| ---------------------------------------- | -------------------------------------------------------------------------------------- |
+| `id`, `disabled`, `tag` (default `span`) | keep                                                                                   |
+| `theme` / `bg` / `fg`                    | keep (root color props stay flat)                                                      |
+| `noRemove`                               | replace → `dismissible` (default `false` for a standalone chip)                        |
+| `removeLabel`                            | replace → `dismissLabel`                                                               |
+| `pill`                                   | remove                                                                                 |
+| `title`                                  | remove (falls through as a native attribute)                                           |
+| emit `remove`                            | keep                                                                                   |
+| new                                      | `active` (`.active`), slots `icon` (`.chip-icon`), `img` (`.chip-img`), `dismiss-icon` |
 
 ### Proposed markup
 
 ```html
 <div class="chip-input theme-primary" role="group">
-  <span class="chip" tabindex="0" data-bs-chip-value="React">React
+  <span class="chip" tabindex="0" data-bs-chip-value="React"
+    >React
     <button type="button" class="chip-dismiss" tabindex="-1" aria-label="Remove React">…</button>
   </span>
-  <input type="text" class="form-ghost" id="…">
+  <input type="text" class="form-ghost" id="…" />
   <span class="visually-hidden" aria-live="polite">…</span>
 </div>
 ```
@@ -218,22 +219,22 @@ One real `<input class="otp-input">` (`maxlength`, `inputmode`, `pattern`, `auto
 
 ### Disposition (rule 2: new API; overlaps listed for migration notes)
 
-| Old prop | New |
-| --- | --- |
-| `modelValue: string[]` | `modelValue: string` |
-| `length` | `length` (v6) |
-| `type: 'text' \| 'number'` | `type: 'numeric' \| 'alphanumeric' \| 'alpha'` (v6) |
-| `mask` (password inputs) | `mask` (v6 `•` in slots, value untouched) |
-| `separator` (documented, did nothing) | `separator` + new `groups` (v6) |
-| `otp` | removed; `autocomplete="one-time-code"` always (override through attrs) |
-| `placeholder`, `plaintext`, `dir` | removed |
-| `size` | `size` → `.otp-sm` / `.otp-lg` |
-| `state`, `ariaInvalid` | `.is-*` on `.otp`, `aria-invalid` on the input |
-| `ariaLabel` | single accessible name on the one input (was "Pin n of m" per input) |
-| `id`, `name`, `form`, `disabled`, `readonly`, `required`, `autofocus` | standard attributes on the one input |
-| new | `connected` (`.otp-connected`) |
-| emit `complete: string[]` | `complete: string` |
-| new expose | `focus()`, `blur()`, `clear()`, `element` |
+| Old prop                                                              | New                                                                     |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `modelValue: string[]`                                                | `modelValue: string`                                                    |
+| `length`                                                              | `length` (v6)                                                           |
+| `type: 'text' \| 'number'`                                            | `type: 'numeric' \| 'alphanumeric' \| 'alpha'` (v6)                     |
+| `mask` (password inputs)                                              | `mask` (v6 `•` in slots, value untouched)                               |
+| `separator` (documented, did nothing)                                 | `separator` + new `groups` (v6)                                         |
+| `otp`                                                                 | removed; `autocomplete="one-time-code"` always (override through attrs) |
+| `placeholder`, `plaintext`, `dir`                                     | removed                                                                 |
+| `size`                                                                | `size` → `.otp-sm` / `.otp-lg`                                          |
+| `state`, `ariaInvalid`                                                | `.is-*` on `.otp`, `aria-invalid` on the input                          |
+| `ariaLabel`                                                           | single accessible name on the one input (was "Pin n of m" per input)    |
+| `id`, `name`, `form`, `disabled`, `readonly`, `required`, `autofocus` | standard attributes on the one input                                    |
+| new                                                                   | `connected` (`.otp-connected`)                                          |
+| emit `complete: string[]`                                             | `complete: string`                                                      |
+| new expose                                                            | `focus()`, `blur()`, `clear()`, `element`                               |
 
 ### Implementation notes
 
@@ -258,17 +259,17 @@ One real `<input class="otp-input">` (`maxlength`, `inputmode`, `pattern`, `auto
 
 ### vanilla-calendar-pro
 
-| Aspect | Finding |
-| --- | --- |
-| Dependency of Bootstrap | **Required** peer of `bootstrap@6.0.0-alpha.1` (with `@floating-ui/dom`). In this workspace pnpm auto-installs it (lockfile 3.4.0). BVN does not list it today. |
-| Size / deps | Zero dependencies; `index.mjs` about 82 KB unminified-ish single file; `sideEffects` only CSS. Extensions: `months`, `time`, `weeks`, `annotations`, `motion`. |
-| SSR | `import('vanilla-calendar-pro')` succeeds in Node (verified), so a static import is safe. `new Calendar()` / `init()` must run only in `onMounted`. |
-| Locale / i18n | `locale: string \| {months, weekdays}` (BCP 47 or an explicit name table). UI strings via `labels` (aria labels, navigation). `firstWeekday`. |
-| Value format | `selectedDates: (Date \| number \| string)[]`, context returns `YYYY-MM-DD` strings. Ranges are `[start, end]` with `selectionDatesMode: 'multiple-ranged'` (VCP fills the in-between dates; take first and last). |
-| Disabling | `disableDates`, `disableWeekdays`, `disableDatesPast`, `enableDates`, `disableAllDates`; no predicate function. |
-| Time | `time` extension (`selectionTimeMode: 12 \| 24`, `selectedTime`, min/max hour/minute, step) is part of the calendar layout, so there is **no time-only mode**. Bootstrap does not style it. |
-| a11y | Grid roles, `aria-selected`, `aria-current="date"`, `aria-disabled`, arrow-key navigation, Escape, live region on the header. |
-| Positioning | Input mode appends the popup to the root node's `body` (or shadow root) and positions it absolutely. Inside a modal `<dialog>` (top layer) a body-level popup is always behind the dialog, whatever its z-index. |
+| Aspect                  | Finding                                                                                                                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Dependency of Bootstrap | **Required** peer of `bootstrap@6.0.0-alpha.1` (with `@floating-ui/dom`). In this workspace pnpm auto-installs it (lockfile 3.4.0). BVN does not list it today.                                                    |
+| Size / deps             | Zero dependencies; `index.mjs` about 82 KB unminified-ish single file; `sideEffects` only CSS. Extensions: `months`, `time`, `weeks`, `annotations`, `motion`.                                                     |
+| SSR                     | `import('vanilla-calendar-pro')` succeeds in Node (verified), so a static import is safe. `new Calendar()` / `init()` must run only in `onMounted`.                                                                |
+| Locale / i18n           | `locale: string \| {months, weekdays}` (BCP 47 or an explicit name table). UI strings via `labels` (aria labels, navigation). `firstWeekday`.                                                                      |
+| Value format            | `selectedDates: (Date \| number \| string)[]`, context returns `YYYY-MM-DD` strings. Ranges are `[start, end]` with `selectionDatesMode: 'multiple-ranged'` (VCP fills the in-between dates; take first and last). |
+| Disabling               | `disableDates`, `disableWeekdays`, `disableDatesPast`, `enableDates`, `disableAllDates`; no predicate function.                                                                                                    |
+| Time                    | `time` extension (`selectionTimeMode: 12 \| 24`, `selectedTime`, min/max hour/minute, step) is part of the calendar layout, so there is **no time-only mode**. Bootstrap does not style it.                        |
+| a11y                    | Grid roles, `aria-selected`, `aria-current="date"`, `aria-disabled`, arrow-key navigation, Escape, live region on the header.                                                                                      |
+| Positioning             | Input mode appends the popup to the root node's `body` (or shadow root) and positions it absolutely. Inside a modal `<dialog>` (top layer) a body-level popup is always behind the dialog, whatever its z-index.   |
 
 ### Current library
 
@@ -281,42 +282,42 @@ No docs pages exist, only `datePicker.data.ts`, `dateField.data.ts`, `timeField.
 
 ### Disposition (rule 2: everything replaced; mapping for the migration notes)
 
-| Old prop(s) (any of the six) | New |
-| --- | --- |
-| `modelValue` (`DateValue` / `DateRange` / `TimeValue` / `TimeRange`) | `modelValue` ISO `YYYY-MM-DD` strings (Q3) |
-| `minValue` / `maxValue` | `dateMin` / `dateMax` |
-| `numberOfMonths` | `displayMonthsCount` |
-| `weekStartsOn` | `firstWeekday` |
-| `locale` | `locale` |
-| `open`, `defaultOpen` (`v-model:open`) | `v-model:open` (through `useShowHide`) |
-| `isDateDisabled`, `isDateUnavailable` | `vcpOptions.disableDates` / `disableWeekdays` / `disableDatesPast` (no predicates) |
-| `id`, `name`, `disabled`, `readonly`, `required`, `size`, `state` | same names on the trigger input |
-| `defaultValue`, `defaultPlaceholder`, `placeholder` (calendar month), `v-model:placeholder` | removed (`vcpOptions.selectedMonth` / `selectedYear`); `placeholder` becomes the input placeholder text |
-| `closeOnSelect`, `preventDeselect`, `fixedWeeks`, `pagedNavigation`, `weekdayFormat`, `modal`, `dir` | removed |
-| `granularity`, `hourCycle`, `hideTimeZone`, `step`, `stepSnapping` | removed (no time; Q4) |
-| `allowNonContiguousRanges`, `fixedDate`, `maximumDays`, `isDateHighlightable` | removed |
-| slots `field`, `calendar`, `trigger-icon`, `prev-icon`, `next-icon`, field `default` (segments) | removed; new `display` slot (button trigger) |
-| emits `update:placeholder`, `update:startValue` | removed |
+| Old prop(s) (any of the six)                                                                         | New                                                                                                     |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `modelValue` (`DateValue` / `DateRange` / `TimeValue` / `TimeRange`)                                 | `modelValue` ISO `YYYY-MM-DD` strings (Q3)                                                              |
+| `minValue` / `maxValue`                                                                              | `dateMin` / `dateMax`                                                                                   |
+| `numberOfMonths`                                                                                     | `displayMonthsCount`                                                                                    |
+| `weekStartsOn`                                                                                       | `firstWeekday`                                                                                          |
+| `locale`                                                                                             | `locale`                                                                                                |
+| `open`, `defaultOpen` (`v-model:open`)                                                               | `v-model:open` (through `useShowHide`)                                                                  |
+| `isDateDisabled`, `isDateUnavailable`                                                                | `vcpOptions.disableDates` / `disableWeekdays` / `disableDatesPast` (no predicates)                      |
+| `id`, `name`, `disabled`, `readonly`, `required`, `size`, `state`                                    | same names on the trigger input                                                                         |
+| `defaultValue`, `defaultPlaceholder`, `placeholder` (calendar month), `v-model:placeholder`          | removed (`vcpOptions.selectedMonth` / `selectedYear`); `placeholder` becomes the input placeholder text |
+| `closeOnSelect`, `preventDeselect`, `fixedWeeks`, `pagedNavigation`, `weekdayFormat`, `modal`, `dir` | removed                                                                                                 |
+| `granularity`, `hourCycle`, `hideTimeZone`, `step`, `stepSnapping`                                   | removed (no time; Q4)                                                                                   |
+| `allowNonContiguousRanges`, `fixedDate`, `maximumDays`, `isDateHighlightable`                        | removed                                                                                                 |
+| slots `field`, `calendar`, `trigger-icon`, `prev-icon`, `next-icon`, field `default` (segments)      | removed; new `display` slot (button trigger)                                                            |
+| emits `update:placeholder`, `update:startValue`                                                      | removed                                                                                                 |
 
 ### Proposed API: `BDatepicker`
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `modelValue` | `string \| null` (single), `string[]` (multiple), `[string, string] \| []` (range), typed by a `Mode` generic | `null` / `[]` |
-| `selectionMode` | `'single' \| 'multiple' \| 'multiple-ranged'` | `'single'` |
-| `dateMin`, `dateMax` | `string \| Date` | — |
-| `dateFormat` | `Intl.DateTimeFormatOptions \| (date: Date, locale?: string) => string` | — |
-| `locale` | `string` | — (see SSR) |
-| `firstWeekday` | `0…6` | `1` |
-| `displayMonthsCount` | `1…12` | `1` |
-| `inline` | `boolean` | `false` |
-| `button` | `boolean` | `false` (button trigger, `.btn-outline theme-secondary`, text in the `display` slot) |
-| `placement` | VCP `PositionToInput` or Floating UI placement (Q2) | `'bottom-start'` |
-| `datepickerTheme` | `'light' \| 'dark' \| 'auto'` | inherit |
-| `vcpOptions` | VCP `Options` (minus the keys the component owns) | `{}` |
-| `open` | `boolean` (`v-model:open`) | `false` |
-| `noTransition` | `boolean` | `false` |
-| `id`, `name`, `form`, `placeholder`, `disabled`, `readonly`, `required`, `size`, `state`, `ariaInvalid`, `autocomplete` (`'off'`) | | |
+| Prop                                                                                                                              | Type                                                                                                          | Default                                                                              |
+| --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `modelValue`                                                                                                                      | `string \| null` (single), `string[]` (multiple), `[string, string] \| []` (range), typed by a `Mode` generic | `null` / `[]`                                                                        |
+| `selectionMode`                                                                                                                   | `'single' \| 'multiple' \| 'multiple-ranged'`                                                                 | `'single'`                                                                           |
+| `dateMin`, `dateMax`                                                                                                              | `string \| Date`                                                                                              | —                                                                                    |
+| `dateFormat`                                                                                                                      | `Intl.DateTimeFormatOptions \| (date: Date, locale?: string) => string`                                       | —                                                                                    |
+| `locale`                                                                                                                          | `string`                                                                                                      | — (see SSR)                                                                          |
+| `firstWeekday`                                                                                                                    | `0…6`                                                                                                         | `1`                                                                                  |
+| `displayMonthsCount`                                                                                                              | `1…12`                                                                                                        | `1`                                                                                  |
+| `inline`                                                                                                                          | `boolean`                                                                                                     | `false`                                                                              |
+| `button`                                                                                                                          | `boolean`                                                                                                     | `false` (button trigger, `.btn-outline theme-secondary`, text in the `display` slot) |
+| `placement`                                                                                                                       | VCP `PositionToInput` or Floating UI placement (Q2)                                                           | `'bottom-start'`                                                                     |
+| `datepickerTheme`                                                                                                                 | `'light' \| 'dark' \| 'auto'`                                                                                 | inherit                                                                              |
+| `vcpOptions`                                                                                                                      | VCP `Options` (minus the keys the component owns)                                                             | `{}`                                                                                 |
+| `open`                                                                                                                            | `boolean` (`v-model:open`)                                                                                    | `false`                                                                              |
+| `noTransition`                                                                                                                    | `boolean`                                                                                                     | `false`                                                                              |
+| `id`, `name`, `form`, `placeholder`, `disabled`, `readonly`, `required`, `size`, `state`, `ariaInvalid`, `autocomplete` (`'off'`) |                                                                                                               |                                                                                      |
 
 - Emits: `update:modelValue`, `update:open`, `change` (`{dates}`), `show` / `shown` / `hide` / `hidden` (cancelable show/hide, `useShowHide`).
 - Expose: `show()`, `hide()`, `toggle()`, `element`.
@@ -383,54 +384,54 @@ CSS only. `<label class="form-control [form-control-sm|lg] form-adorn [form-ador
 
 ## Composables
 
-| Candidate | Decision |
-| --- | --- |
-| `usePasswordStrength` | **Public.** Pure, adaptable inputs, typed options. Export from `composables/index.ts` and add a docs page under composables. |
-| `useDatepicker` / date helpers | Internal only (see Datepicker). |
-| Chip selection, OTP caret logic | Internal composables (`useChipSelection`, `useOtpInput`) if it keeps the components small; not exported. |
+| Candidate                       | Decision                                                                                                                     |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `usePasswordStrength`           | **Public.** Pure, adaptable inputs, typed options. Export from `composables/index.ts` and add a docs page under composables. |
+| `useDatepicker` / date helpers  | Internal only (see Datepicker).                                                                                              |
+| Chip selection, OTP caret logic | Internal composables (`useChipSelection`, `useOtpInput`) if it keeps the components small; not exported.                     |
 
 ## Exports, docs and cleanup
 
-| Area | Change |
-| --- | --- |
-| `components/index.ts`, `types/BootstrapVueOptions.ts` | Add `BFormRange`, `BFormStrength`, `BFormAdorn`, `BChip`, chip input (name per Q1), `BDatepicker`. Remove `BDatePicker`, `BDateRangePicker`, `BDateField`, `BDateRangeField`, `BTimeField`, `BTimeRangeField`, `BFormTags` / `BFormTag` (if renamed). |
-| `types/ComponentProps.ts`, `ComponentSlots.ts`, `ComponentEmits.ts` | Remove every `reka-ui` type import (`AcceptableValue` goes with G2), `TimeRange` and the date types; add the new interfaces. |
-| `styles/styles.scss` | Remove `form-input`, `form-otp`, `time-field`, `date-field`, `date-range-field`, `time-range-field`, `date-picker`, `date-range-picker` partials. `form-tags` → whatever little chip-input CSS is needed (probably none). |
-| `package.json` | Remove `reka-ui` (dependency + optional peer) and `@internationalized/date` (optional peer + dev) once G2's Combobox lands. Add `vanilla-calendar-pro` per Q5. |
-| `vite.config.ts` | `external` is only `['vue']` today, so every other dependency, `reka-ui` included, is bundled into `dist`. Add `vanilla-calendar-pro` to `external` (Q5). |
-| Docs data | Update `formGroup.data.ts`, `formInput.data.ts`, `formOtp.data.ts`, `formTags.data.ts` (→ chips); add `formRange`, `formStrength`, `formAdorn`, `datepicker`; delete `datePicker`, `dateField`, `timeField`. |
-| Docs pages | Edit `form-group.md`, `form-input.md` (drop range section, add native date/time note), `form-otp.md`, `form-tags.md` (→ chips); add `form-range.md`, `form-strength.md`, `form-adorn.md`, `datepicker.md`, `composables/usePasswordStrength.md`; `ComponentReference.vue` lists. Demos: rewrite `FormTags*`, `FormOtp*`, `FormInputRange*`; check `InputGroupXPend.vue` and `OverlayBackdropColor.vue` (use `type="range"`). |
-| Playground | `TFormTags.vue`, `TFormGroup.vue`, `TFormInput.vue` (range). |
-| Migration notes | `bformtags.md` (exists), `bformotp.md` (archived `bdbd7fd3` has one), `bcalendar.md` / `bformdatepicker.md` / `btime.md` point to `BDatepicker`; new notes for the six removed date/time components and for `BFormInput type="range"`. |
+| Area                                                                | Change                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `components/index.ts`, `types/BootstrapVueOptions.ts`               | Add `BFormRange`, `BFormStrength`, `BFormAdorn`, `BChip`, chip input (name per Q1), `BDatepicker`. Remove `BDatePicker`, `BDateRangePicker`, `BDateField`, `BDateRangeField`, `BTimeField`, `BTimeRangeField`, `BFormTags` / `BFormTag` (if renamed).                                                                                                                                                                        |
+| `types/ComponentProps.ts`, `ComponentSlots.ts`, `ComponentEmits.ts` | Remove every `reka-ui` type import (`AcceptableValue` goes with G2), `TimeRange` and the date types; add the new interfaces.                                                                                                                                                                                                                                                                                                 |
+| `styles/styles.scss`                                                | Remove `form-input`, `form-otp`, `time-field`, `date-field`, `date-range-field`, `time-range-field`, `date-picker`, `date-range-picker` partials. `form-tags` → whatever little chip-input CSS is needed (probably none).                                                                                                                                                                                                    |
+| `package.json`                                                      | Remove `reka-ui` (dependency + optional peer) and `@internationalized/date` (optional peer + dev) once G2's Combobox lands. Add `vanilla-calendar-pro` per Q5.                                                                                                                                                                                                                                                               |
+| `vite.config.ts`                                                    | `external` is only `['vue']` today, so every other dependency, `reka-ui` included, is bundled into `dist`. Add `vanilla-calendar-pro` to `external` (Q5).                                                                                                                                                                                                                                                                    |
+| Docs data                                                           | Update `formGroup.data.ts`, `formInput.data.ts`, `formOtp.data.ts`, `formTags.data.ts` (→ chips); add `formRange`, `formStrength`, `formAdorn`, `datepicker`; delete `datePicker`, `dateField`, `timeField`.                                                                                                                                                                                                                 |
+| Docs pages                                                          | Edit `form-group.md`, `form-input.md` (drop range section, add native date/time note), `form-otp.md`, `form-tags.md` (→ chips); add `form-range.md`, `form-strength.md`, `form-adorn.md`, `datepicker.md`, `composables/usePasswordStrength.md`; `ComponentReference.vue` lists. Demos: rewrite `FormTags*`, `FormOtp*`, `FormInputRange*`; check `InputGroupXPend.vue` and `OverlayBackdropColor.vue` (use `type="range"`). |
+| Playground                                                          | `TFormTags.vue`, `TFormGroup.vue`, `TFormInput.vue` (range).                                                                                                                                                                                                                                                                                                                                                                 |
+| Migration notes                                                     | `bformtags.md` (exists), `bformotp.md` (archived `bdbd7fd3` has one), `bcalendar.md` / `bformdatepicker.md` / `btime.md` point to `BDatepicker`; new notes for the six removed date/time components and for `BFormInput type="range"`.                                                                                                                                                                                       |
 
 ## reka-ui usage (full list, for confirming removal)
 
-| File | Import | Removed by |
-| --- | --- | --- |
-| `components/BAutocomplete/BAutocomplete.vue` | `AcceptableValue` (type) + components | G2 (Combobox) |
-| `components/BAutocomplete/BAutocomplete.spec.ts` | reka-ui | G2 |
-| `components/BFormOtp/BFormOtp.vue` | `PinInputInput`, `PinInputRoot` | G4 OTP |
-| `components/BFormOtp/form-otp.spec.ts` | reka-ui | G4 OTP |
-| `components/BDatePicker/BDatePicker.vue`, `BDateRangePicker.vue` | calendar/popover primitives | G4 Datepicker |
-| `components/BDateField/BDateField.vue`, `BDateRangeField.vue`, `BTimeRangeField.vue` | field primitives | G4 Datepicker |
-| `components/BTimeField/BTimeField.vue` | `TimeFieldInput`, `TimeFieldRoot` | G4 Datepicker |
-| `types/ComponentProps.ts` | `AcceptableValue, DateRange, DateValue, TimeValue` | G2 + G4 |
-| `types/ComponentSlots.ts` | `DateRange, DateValue, SegmentPart, TimeValue` | G4 |
-| `types/ComponentEmits.ts` | `AcceptableValue, DateValue, TimeValue` | G2 + G4 |
-| `package.json` | `dependencies` `^2.10.3` **and** optional peer `*` | after both |
-| `apps/docs/src/docs/components/autocomplete.md` | prose mention | G2 |
+| File                                                                                 | Import                                             | Removed by    |
+| ------------------------------------------------------------------------------------ | -------------------------------------------------- | ------------- |
+| `components/BAutocomplete/BAutocomplete.vue`                                         | `AcceptableValue` (type) + components              | G2 (Combobox) |
+| `components/BAutocomplete/BAutocomplete.spec.ts`                                     | reka-ui                                            | G2            |
+| `components/BFormOtp/BFormOtp.vue`                                                   | `PinInputInput`, `PinInputRoot`                    | G4 OTP        |
+| `components/BFormOtp/form-otp.spec.ts`                                               | reka-ui                                            | G4 OTP        |
+| `components/BDatePicker/BDatePicker.vue`, `BDateRangePicker.vue`                     | calendar/popover primitives                        | G4 Datepicker |
+| `components/BDateField/BDateField.vue`, `BDateRangeField.vue`, `BTimeRangeField.vue` | field primitives                                   | G4 Datepicker |
+| `components/BTimeField/BTimeField.vue`                                               | `TimeFieldInput`, `TimeFieldRoot`                  | G4 Datepicker |
+| `types/ComponentProps.ts`                                                            | `AcceptableValue, DateRange, DateValue, TimeValue` | G2 + G4       |
+| `types/ComponentSlots.ts`                                                            | `DateRange, DateValue, SegmentPart, TimeValue`     | G4            |
+| `types/ComponentEmits.ts`                                                            | `AcceptableValue, DateValue, TimeValue`            | G2 + G4       |
+| `package.json`                                                                       | `dependencies` `^2.10.3` **and** optional peer `*` | after both    |
+| `apps/docs/src/docs/components/autocomplete.md`                                      | prose mention                                      | G2            |
 
 There is no reka-ui usage in `apps/` code, the playground or `packages/nuxt` (only CHANGELOG). After G2 and G4, `reka-ui` and `@internationalized/date` can both go.
 
 ## Cross-group dependencies
 
-| With | Topic |
-| --- | --- |
-| G1 Overlays | Native modal `<dialog>` / drawer are top-layer. Any popup appended to `body` (VCP input mode, today's reka popovers) renders behind them. Datepicker must use the same top-layer strategy G1/G2 settle on (Q2). Naming policy: if G1 renames `BModal` → `BDialog` / `BOffcanvas` → `BDrawer`, apply the same principle to Q1. |
-| G2 Menus | Datepicker popup can reuse Menu's popup/positioning mechanism (Floating UI, popover attribute, outside dismiss). Combobox sits inside `BFormGroup` (`.form-field`) and `BFormAdorn` (ghost injection), so G2 should register with `useProvideFormGroupData` and honor `formAdornKey`. reka-ui removal needs G2's Combobox. |
-| G5 Display | `BChip` `img` slot vs `BAvatar`: `.chip-img` is a plain image; no avatar coupling. Badge and chip stay separate (`BFormTag` was a `.badge`). |
-| Wave 2 Floating UI batch | v6 z-index scale (`--bs-z-menu` 1000 … `--bs-z-tooltip` 1060); the library's hard-coded 1050 for date pickers goes away with this group. |
-| Forms (#165) | Builds on `.form-field`, `validate`, `useProvideFormGroupData`; no change requested to #165. |
+| With                     | Topic                                                                                                                                                                                                                                                                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| G1 Overlays              | Native modal `<dialog>` / drawer are top-layer. Any popup appended to `body` (VCP input mode, today's reka popovers) renders behind them. Datepicker must use the same top-layer strategy G1/G2 settle on (Q2). Naming policy: if G1 renames `BModal` → `BDialog` / `BOffcanvas` → `BDrawer`, apply the same principle to Q1. |
+| G2 Menus                 | Datepicker popup can reuse Menu's popup/positioning mechanism (Floating UI, popover attribute, outside dismiss). Combobox sits inside `BFormGroup` (`.form-field`) and `BFormAdorn` (ghost injection), so G2 should register with `useProvideFormGroupData` and honor `formAdornKey`. reka-ui removal needs G2's Combobox.    |
+| G5 Display               | `BChip` `img` slot vs `BAvatar`: `.chip-img` is a plain image; no avatar coupling. Badge and chip stay separate (`BFormTag` was a `.badge`).                                                                                                                                                                                  |
+| Wave 2 Floating UI batch | v6 z-index scale (`--bs-z-menu` 1000 … `--bs-z-tooltip` 1060); the library's hard-coded 1050 for date pickers goes away with this group.                                                                                                                                                                                      |
+| Forms (#165)             | Builds on `.form-field`, `validate`, `useProvideFormGroupData`; no change requested to #165.                                                                                                                                                                                                                                  |
 
 ## Questions for the maintainer
 
@@ -506,7 +507,11 @@ Recommendation: **A**.
 
 ## Decisions
 
-_Pending maintainer answers._
+Answered by the maintainer on 2026-11-03. Where an answer differs from the proposal above, the answer wins.
+
+- **Q1 — B. v6 names everywhere:** `BFormGroup` → `BFormField`, `BFormTags` / `BFormTag` → `BFormChips` + `BChip`, the six date/time components → `BDatepicker`, plus new `BFormRange`, `BFormStrength`, `BFormAdorn`; `BFormOtp` keeps its name (already matches). No aliases. Cross-group rule: redesigned components take their v6 names (`BDialog`, `BDrawer`, `BMenu`).
+- **Q2 — B. Library-owned popup** using G2's shared Menu mechanism (rendered in place, Floating UI, `teleportTo` opt-in), with vanilla-calendar-pro mounted inline inside it, so the datepicker works inside native dialogs.
+- Q3–Q8: _Pending._
 
 ## Implementation split
 
