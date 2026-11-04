@@ -387,16 +387,6 @@ describe('form-checkbox-group', () => {
       expect(wrapper.classes()).not.toContain('btn-group')
     })
 
-    it('forwards validated prop to base', () => {
-      const wrapper = mount(BFormCheckboxGroup, {
-        props: {
-          validated: true,
-          options: ['a'],
-        },
-      })
-      expect(wrapper.classes()).toContain('was-validated')
-    })
-
     it('forwards size prop to base', () => {
       const wrapper = mount(BFormCheckboxGroup, {
         props: {
@@ -435,7 +425,7 @@ describe('form-checkbox-group', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).toContain('form-switch')
+      expect(checkbox.find('.switch').exists()).toBe(true)
     })
 
     it('forwards plain prop to child checkboxes', () => {
@@ -446,18 +436,7 @@ describe('form-checkbox-group', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).not.toContain('form-check')
-    })
-
-    it('forwards reverse prop to child checkboxes', () => {
-      const wrapper = mount(BFormCheckboxGroup, {
-        props: {
-          reverse: true,
-          options: ['a'],
-        },
-      })
-      const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).toContain('form-check-reverse')
+      expect(checkbox.classes()).not.toContain('form-field')
     })
 
     it('forwards name prop to child checkboxes', () => {

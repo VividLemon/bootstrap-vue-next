@@ -64,13 +64,11 @@ const props = withDefaults(defineProps<Omit<BFormCheckboxGroupProps<Options>, 'm
   options: () => [] as unknown as Options,
   plain: false,
   required: false,
-  reverse: false,
   size: undefined,
   stacked: false,
   state: null,
   switches: false,
   textField: 'text',
-  validated: false,
   valueField: 'value',
 })
 defineSlots<BFormCheckboxGroupSlots>()
@@ -118,12 +116,10 @@ const forwardedProps = computed(() => ({
   stacked: props.stacked,
   disabled: props.disabled,
   required: props.required,
-  validated: props.validated,
   autofocus: props.autofocus,
   form: props.form,
   ariaInvalid: props.ariaInvalid,
   plain: props.plain,
-  reverse: props.reverse,
   switches: props.switches,
 }))
 

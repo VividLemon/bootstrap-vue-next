@@ -45,17 +45,6 @@ describe('form-radio-group', () => {
     expect($formradio.exists()).toBe(false)
   })
 
-  it('has class was-validated when prop validated', async () => {
-    const wrapper = mount(BFormRadioGroup, {
-      props: {validated: true},
-    })
-    expect(wrapper.classes()).toContain('was-validated')
-    await wrapper.setProps({validated: false})
-    expect(wrapper.classes()).not.toContain('was-validated')
-    await wrapper.setProps({validated: undefined})
-    expect(wrapper.classes()).not.toContain('was-validated')
-  })
-
   it('has class btn-group when prop buttons', async () => {
     const wrapper = mount(BFormRadioGroup, {
       props: {buttons: true},
@@ -502,14 +491,6 @@ describe('form-radio-group', () => {
       expect(base.props('stacked')).toBe(true)
     })
 
-    it('forwards validated prop', () => {
-      const wrapper = mount(BFormRadioGroup, {
-        props: {validated: true},
-      })
-      const base = wrapper.findComponent(BFormRadioGroupBase)
-      expect(base.props('validated')).toBe(true)
-    })
-
     it('forwards size prop', () => {
       const wrapper = mount(BFormRadioGroup, {
         props: {size: 'lg'},
@@ -540,14 +521,6 @@ describe('form-radio-group', () => {
       })
       const base = wrapper.findComponent(BFormRadioGroupBase)
       expect(base.props('plain')).toBe(true)
-    })
-
-    it('forwards reverse prop', () => {
-      const wrapper = mount(BFormRadioGroup, {
-        props: {reverse: true},
-      })
-      const base = wrapper.findComponent(BFormRadioGroupBase)
-      expect(base.props('reverse')).toBe(true)
     })
 
     it('forwards name prop', () => {

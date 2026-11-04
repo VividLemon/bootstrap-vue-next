@@ -41,14 +41,8 @@ describe('form-checkbox-group-base', () => {
   })
 
   describe('validation classes', () => {
-    it('has class was-validated when prop validated', async () => {
-      const wrapper = mount(BFormCheckboxGroupBase, {
-        props: {validated: true},
-      })
-      expect(wrapper.classes()).toContain('was-validated')
-      await wrapper.setProps({validated: false})
-      expect(wrapper.classes()).not.toContain('was-validated')
-      await wrapper.setProps({validated: undefined})
+    it('never has class was-validated', () => {
+      const wrapper = mount(BFormCheckboxGroupBase)
       expect(wrapper.classes()).not.toContain('was-validated')
     })
   })
@@ -357,31 +351,45 @@ describe('form-checkbox-group-base', () => {
   })
 
   describe('stacked prop', () => {
-    it('child checkboxes are inline when stacked is false', () => {
+    it('lays out child checkboxes inline with flex utilities when stacked is false', () => {
       const wrapper = mount(BFormCheckboxGroupBase, {
         props: {
           stacked: false,
           options: [{text: 'A', value: 'a', disabled: false}],
         },
       })
+      expect(wrapper.classes()).toEqual(
+        expect.arrayContaining(['d-flex', 'flex-wrap', 'column-gap-5'])
+      )
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).toContain('form-check-inline')
+      expect(checkbox.classes()).toContain('form-field')
+      expect(checkbox.classes()).not.toContain('form-check-inline')
     })
 
-    it('child checkboxes are not inline when stacked is true', () => {
+    it('does not use flex utilities when stacked is true', () => {
       const wrapper = mount(BFormCheckboxGroupBase, {
         props: {
           stacked: true,
           options: [{text: 'A', value: 'a', disabled: false}],
         },
       })
-      const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).not.toContain('form-check-inline')
+      expect(wrapper.classes()).not.toContain('d-flex')
+    })
+
+    it('does not use flex utilities in button mode', () => {
+      const wrapper = mount(BFormCheckboxGroupBase, {
+        props: {
+          buttons: true,
+          options: [{text: 'A', value: 'a', disabled: false}],
+        },
+      })
+      expect(wrapper.classes()).not.toContain('d-flex')
+      expect(wrapper.classes()).toContain('btn-group')
     })
   })
 
   describe('switches prop', () => {
-    it('child checkboxes have form-switch class when switches is true', () => {
+    it('child checkboxes render a switch when switches is true', () => {
       const wrapper = mount(BFormCheckboxGroupBase, {
         props: {
           switches: true,
@@ -389,10 +397,10 @@ describe('form-checkbox-group-base', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).toContain('form-switch')
+      expect(checkbox.find('.switch > input[role="switch"]').exists()).toBe(true)
     })
 
-    it('child checkboxes do not have form-switch class when switches is false', () => {
+    it('child checkboxes do not render a switch when switches is false', () => {
       const wrapper = mount(BFormCheckboxGroupBase, {
         props: {
           switches: false,
@@ -400,7 +408,7 @@ describe('form-checkbox-group-base', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).not.toContain('form-switch')
+      expect(checkbox.find('.switch').exists()).toBe(false)
     })
   })
 
@@ -413,8 +421,10 @@ describe('form-checkbox-group-base', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      const input = checkbox.get('input')
-      expect(input.classes()).toContain('btn-check')
+      // Button mode renders <label class="btn btn-check"><input></label> as the child root
+      expect(checkbox.element.tagName).toBe('LABEL')
+      expect(checkbox.classes()).toContain('btn-check')
+      expect(checkbox.element.parentElement).toBe(wrapper.element)
     })
 
     it('child checkboxes do not have btn-check class when buttons is false', () => {
@@ -425,8 +435,7 @@ describe('form-checkbox-group-base', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      const input = checkbox.get('input')
-      expect(input.classes()).not.toContain('btn-check')
+      expect(checkbox.find('.btn-check').exists()).toBe(false)
     })
   })
 
@@ -439,20 +448,7 @@ describe('form-checkbox-group-base', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).not.toContain('form-check')
-    })
-  })
-
-  describe('reverse prop', () => {
-    it('child checkboxes inherit reverse from group', () => {
-      const wrapper = mount(BFormCheckboxGroupBase, {
-        props: {
-          reverse: true,
-          options: [{text: 'A', value: 'a', disabled: false}],
-        },
-      })
-      const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).toContain('form-check-reverse')
+      expect(checkbox.classes()).not.toContain('form-field')
     })
   })
 
@@ -465,7 +461,7 @@ describe('form-checkbox-group-base', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).toContain('form-control-lg')
+      expect(checkbox.get('input').classes()).toContain('check-lg')
     })
 
     it('child checkboxes inherit size sm from group', () => {
@@ -476,7 +472,7 @@ describe('form-checkbox-group-base', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).toContain('form-control-sm')
+      expect(checkbox.get('input').classes()).toContain('check-sm')
     })
   })
 

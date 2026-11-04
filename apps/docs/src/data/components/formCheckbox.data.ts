@@ -29,13 +29,8 @@ export default {
         button: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'When set, renders the checkbox with the appearance of a button',
-        },
-        buttonGroup: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
           description:
-            "When set, renders the checkbox as part of a button group (it doesn't enclose the checkbox and label with a div). It is not necessary to set this to true if this is part of a CheckboxGroup as it is handled internally",
+            'When set, renders the checkbox as a toggle button: `<label class="btn btn-check …">` wrapping the input, with no wrapper `<div>`',
         },
         buttonColor: {
           type: 'ColorExtendables',
@@ -55,16 +50,11 @@ export default {
           description:
             'Set to true to show the checkbox as indeterminate, false to show its normal checked/unchecked.',
         },
-        inline: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description:
-            'When set, renders the checkbox as an inline element rather than as a 100% width block',
-        },
-        inputClass: {
-          type: 'ClassValue',
+        inputAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Class to be applied to the body of the checkbox item',
+          description:
+            'Attributes to apply to the `<input>` element. `class` and `style` merge with the component classes (`check`, `check-{size}`, state classes)',
         },
         modelValue: {
           type: 'CheckboxValue | readonly CheckboxValue[]',
@@ -72,15 +62,11 @@ export default {
           description:
             'The current value of the checkbox(es). Must be an array when there are multiple checkboxes bound to the same v-model.',
         },
-        reverse: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'When set, renders the checkbox or switch on the opposite side',
-        },
         switch: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'When set, renders the checkbox with the appearance of a switch',
+          description:
+            'When set, renders the checkbox as a switch: the input (with `role="switch"`) is wrapped in a `<div class="switch">`',
         },
         uncheckedValue: {
           type: 'CheckboxValue',
@@ -180,25 +166,16 @@ export default {
           default: '() => []',
           // description: 'Array of options to render as checkboxes in the group' // TODO missing description
         },
-        reverse: {
-          type: 'boolean',
-          default: 'false', // TODO item not in string format
-          description: 'When set, renders the checkboxes and switches on the opposite side',
-        },
         stacked: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'When set, renders the checkbox group in stacked mode',
+          description:
+            'When set, renders the checkbox group in stacked mode. When not set, the checkboxes are laid out inline using the `d-flex flex-wrap column-gap-5` utilities (or as a `btn-group` in `buttons` mode)',
         },
         switches: {
           type: 'boolean',
           default: false, // TODO item not in string format
           description: 'When set, renders the checkboxes in the group with switch styling',
-        },
-        validated: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'When set, adds the Bootstrap class `was-validated` to the group wrapper',
         },
       } satisfies PropRecord<keyof BFormCheckboxGroupProps>,
       emits: {

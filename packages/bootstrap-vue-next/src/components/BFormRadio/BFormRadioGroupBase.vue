@@ -52,11 +52,9 @@ const _props = withDefaults(defineProps<Omit<BFormRadioGroupBaseProps, 'modelVal
   options: () => [],
   plain: false,
   required: false,
-  reverse: false,
   size: undefined,
   stacked: false,
   state: null,
-  validated: false,
 })
 const props = useDefaults(_props, 'BFormRadioGroup')
 defineSlots<BFormRadioGroupSlots>()
@@ -103,8 +101,6 @@ provide(radioGroupKey, {
   state: toRef(() => props.state),
   plain: toRef(() => props.plain),
   size: toRef(() => props.size),
-  inline: toRef(() => !props.stacked),
-  reverse: toRef(() => props.reverse),
   required: toRef(() => props.required),
   disabled: toRef(() => props.disabled),
 })
@@ -113,7 +109,6 @@ const classesObject = computed(() => ({
   required: props.required,
   ariaInvalid: props.ariaInvalid,
   state: props.state,
-  validated: props.validated,
   buttons: props.buttons,
   stacked: props.stacked,
   size: props.size,

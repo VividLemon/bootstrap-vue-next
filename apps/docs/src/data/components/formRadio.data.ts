@@ -35,13 +35,8 @@ export default {
         button: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'When set, renders the radio button with the appearance of a button',
-        },
-        buttonGroup: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
           description:
-            "When set, renders the radio button as part of a button group (it doesn't enclose the radio and label with a div). It is not necessary to set this to true if this is part of a RadioGroup as it is handled internally",
+            'When set, renders the radio as a toggle button: `<label class="btn btn-check …">` wrapping the input, with no wrapper `<div>`',
         },
         buttonColor: {
           type: 'ColorExtendables',
@@ -55,22 +50,11 @@ export default {
           description:
             "Sets the button style ('solid', 'outline', 'subtle', 'text' or 'link') when in `button` mode",
         },
-        inline: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description:
-            'When set, renders the radio button as an inline element rather than as a 100% width block',
-        },
         modelValue: {
           type: 'RadioValue | undefined',
           default: undefined,
           description:
             'The current value of the radio. Looking for `checked` - use `modelValue` instead.',
-        },
-        reverse: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'When set, renders the radio button on the opposite side',
         },
         value: {
           type: 'RadioValue | undefined',
@@ -151,20 +135,11 @@ export default {
           description:
             'The current value of the checked radio in the group. Looking for `checked` - use `modelValue` instead.',
         },
-        reverse: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'When set, renders the radio buttons on the opposite side',
-        },
         stacked: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'When set, renders the radio button group in stacked mode',
-        },
-        validated: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'When set, adds the Bootstrap class `was-validated` to the group wrapper',
+          description:
+            'When set, renders the radio button group in stacked mode. When not set, the radios are laid out inline using the `d-flex flex-wrap column-gap-5` utilities (or as a `btn-group` in `buttons` mode)',
         },
       } satisfies PropRecord<keyof BFormRadioGroupProps>,
       emits: {

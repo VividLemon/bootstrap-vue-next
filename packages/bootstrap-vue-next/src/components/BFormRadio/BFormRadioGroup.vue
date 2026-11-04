@@ -62,12 +62,10 @@ const props = withDefaults(defineProps<Omit<BFormRadioGroupProps<Options>, 'mode
   options: () => [] as unknown as Options,
   plain: false,
   required: false,
-  reverse: false,
   size: undefined,
   stacked: false,
   state: null,
   textField: 'text',
-  validated: false,
   valueField: 'value',
 })
 
@@ -115,12 +113,10 @@ const forwardedProps = computed(() => ({
   stacked: props.stacked,
   disabled: props.disabled,
   required: props.required,
-  validated: props.validated,
   autofocus: props.autofocus,
   form: props.form,
   ariaInvalid: props.ariaInvalid,
   plain: props.plain,
-  reverse: props.reverse,
 }))
 
 const base = useTemplateRef('_base')

@@ -445,7 +445,7 @@ describe('form-group', () => {
         await nextTick()
         expect(wrapper.find('legend').exists()).toBe(true)
         expect(wrapper.find('label.form-label').exists()).toBe(false)
-        expect(wrapper.find('label.form-check-label').exists()).toBe(true)
+        expect(wrapper.find('.form-field > label[for]').exists()).toBe(true)
       })
     })
 
@@ -472,7 +472,7 @@ describe('form-group', () => {
         await nextTick()
         expect(wrapper.find('legend').exists()).toBe(true)
         expect(wrapper.find('label.form-label').exists()).toBe(false)
-        expect(wrapper.find('label.form-check-label').exists()).toBe(true)
+        expect(wrapper.find('.form-field > label[for]').exists()).toBe(true)
       })
     })
 

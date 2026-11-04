@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="mb-2">
-      <BFormCheckbox v-model="stickyHeader" inline>Sticky header</BFormCheckbox>
-      <BFormCheckbox v-model="noCollapse" inline>No border collapse</BFormCheckbox>
+    <div class="mb-2 d-flex flex-wrap column-gap-5">
+      <BFormCheckbox v-model="stickyHeader">Sticky header</BFormCheckbox>
+      <BFormCheckbox v-model="noCollapse">No border collapse</BFormCheckbox>
     </div>
     <BTable
       :sticky-header="stickyHeader"

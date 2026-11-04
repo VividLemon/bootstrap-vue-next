@@ -10,23 +10,18 @@ import type {ValidationState} from '../types/CommonTypes'
 interface ClassesItemsInput {
   plain?: boolean
   button?: boolean
-  inline?: boolean
-  reverse?: boolean
-  switch?: boolean
-  size?: Size
   hasDefaultSlot?: boolean
 }
 
+/**
+ * Classes for the `.form-field` wrapper that lays out a check/radio/switch next to its label.
+ * Button mode has no wrapper (the `<label class="btn btn-check">` is the root).
+ */
 const useFormCheckClasses = (items: MaybeRef<ClassesItemsInput>) => {
   const classes = computed(() => {
     const resolvedItems = toValue(items)
     return {
-      'form-check': !resolvedItems.plain && !resolvedItems.button && resolvedItems.hasDefaultSlot,
-      'form-check-reverse': resolvedItems.reverse === true,
-      'form-check-inline': resolvedItems.inline === true,
-      'form-switch': resolvedItems.switch === true,
-      [`form-control-${resolvedItems.size}`]:
-        resolvedItems.size !== undefined && !resolvedItems.button,
+      'form-field': !resolvedItems.plain && !resolvedItems.button && resolvedItems.hasDefaultSlot,
     }
   })
 
@@ -34,35 +29,68 @@ const useFormCheckClasses = (items: MaybeRef<ClassesItemsInput>) => {
 }
 
 interface InputClassesItemsInput {
+  type: 'check' | 'radio'
   plain?: boolean
   button?: boolean
+  switch?: boolean
+  size?: Size
   state?: ValidationState
 }
 
+/**
+ * Classes for the `<input>`: `.check` / `.radio` (+ `check-sm` / `radio-lg`) live on the input itself.
+ * A switch input carries no class: the visuals are on its `.switch` wrapper.
+ */
 const useFormCheckInputClasses = (items: MaybeRef<InputClassesItemsInput>) => {
   const resolvedItems = readonly(toRef(items))
 
   const {stateClass} = useStateClass(() => resolvedItems.value.state ?? null)
 
-  const classes = computed(() => [
-    stateClass.value,
-    {
-      'form-check-input': !resolvedItems.value.plain && !resolvedItems.value.button,
-      'btn-check': resolvedItems.value.button === true,
-    },
-  ])
+  const classes = computed(() => {
+    const {type, plain, button, switch: isSwitch, size} = resolvedItems.value
+    const styled = !plain && !button && !isSwitch
+    return [
+      stateClass.value,
+      {
+        [type]: styled,
+        [`${type}-${size}`]: styled && size !== undefined,
+      },
+    ]
+  })
+
+  return {classes}
+}
+
+interface SwitchClassesItemsInput {
+  size?: Size
+}
+
+/**
+ * Classes for the `<div class="switch">` that wraps a switch input
+ */
+const useFormCheckSwitchClasses = (items: MaybeRef<SwitchClassesItemsInput>) => {
+  const classes = computed(() => {
+    const resolvedItems = toValue(items)
+    return {
+      switch: true,
+      [`switch-${resolvedItems.size}`]: resolvedItems.size !== undefined,
+    }
+  })
 
   return {classes}
 }
 
 interface LabelClasesItemsInput {
-  plain?: boolean
   button?: boolean
   buttonVariant?: ButtonVariant | null
   buttonColor?: ColorExtendables
   size?: Size
 }
 
+/**
+ * Classes for the button-mode `<label class="btn btn-check …">` that wraps the input.
+ * Non-button labels carry no class in Bootstrap v6.
+ */
 const useFormCheckLabelClasses = (items: MaybeRef<LabelClasesItemsInput>) => {
   const {classes: buttonThemeClasses} = useButtonThemeClasses(
     computed(() => {
@@ -78,11 +106,12 @@ const useFormCheckLabelClasses = (items: MaybeRef<LabelClasesItemsInput>) => {
 
   const classes = computed(() => {
     const resolvedItems = toValue(items)
+    if (resolvedItems.button !== true) return {}
     return {
-      'form-check-label': !resolvedItems.plain && !resolvedItems.button,
-      'btn': resolvedItems.button === true,
-      ...(resolvedItems.button === true ? buttonThemeClasses.value : {}),
-      [`btn-${resolvedItems.size}`]: resolvedItems.button && resolvedItems.size !== undefined,
+      'btn': true,
+      'btn-check': true,
+      ...buttonThemeClasses.value,
+      [`btn-${resolvedItems.size}`]: resolvedItems.size !== undefined,
     }
   })
 
@@ -110,20 +139,25 @@ const useFormCheckGroupAttr = (items: MaybeRef<GroupAttrItemsInput>) => {
 }
 
 interface GroupClassesItemsInput {
-  validated?: boolean
   buttons?: boolean
   stacked?: boolean
   size?: Size
 }
 
+/**
+ * Group root classes. Bootstrap v6 has no inline check modifier, so a non-stacked group of
+ * `.form-field`s is laid out with flex utilities instead.
+ */
 const useFormCheckGroupClasses = (items: MaybeRef<GroupClassesItemsInput>) => {
   const classes = computed(() => {
     const resolvedItems = toValue(items)
+    const buttons = resolvedItems.buttons === true
+    const stacked = resolvedItems.stacked === true
     return {
-      'was-validated': resolvedItems.validated === true,
-      'btn-group': resolvedItems.buttons === true && resolvedItems.stacked === false,
-      'btn-group-vertical': resolvedItems.stacked === true && resolvedItems.buttons === true,
+      'btn-group': buttons && !stacked,
+      'btn-group-vertical': buttons && stacked,
       [`btn-group-${resolvedItems.size}`]: resolvedItems.size !== undefined,
+      'd-flex flex-wrap column-gap-5': !buttons && !stacked,
     }
   })
 
@@ -133,6 +167,7 @@ const useFormCheckGroupClasses = (items: MaybeRef<GroupClassesItemsInput>) => {
 export {
   useFormCheckClasses,
   useFormCheckInputClasses,
+  useFormCheckSwitchClasses,
   useFormCheckLabelClasses,
   useFormCheckGroupAttr,
   useFormCheckGroupClasses,
