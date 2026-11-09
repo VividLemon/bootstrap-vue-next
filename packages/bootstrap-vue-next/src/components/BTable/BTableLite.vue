@@ -187,9 +187,9 @@
     </BTbody>
     <BTfoot v-if="props.footClone" v-bind="footerProps">
       <BTr
-        :theme="props.footRowColor?.theme ?? props.headRowColor?.theme"
-        :bg="props.footRowColor?.bg ?? props.headRowColor?.bg"
-        :fg="props.footRowColor?.fg ?? props.headRowColor?.fg"
+        :theme="footRowColor.theme"
+        :bg="footRowColor.bg"
+        :fg="footRowColor.fg"
         :class="props.tfootTrClass ?? props.theadTrClass"
       >
         <BTh
@@ -244,7 +244,7 @@
 </template>
 
 <script setup lang="ts" generic="Item">
-import {toColorClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import {computed, readonly, toRef} from 'vue'
 import {
   isTableItem,
@@ -437,10 +437,14 @@ const getCellComponent = (field: Readonly<TableField>) => {
   return BTd
 }
 
+// The cloned footer falls back to the head colors key by key; `null` clears the fallback
+const footColor = computed(() => resolvePartColor(props.footColor, props.headColor ?? {}))
+const footRowColor = computed(() => resolvePartColor(props.footRowColor, props.headRowColor ?? {}))
+
 const footerProps = computed(() => ({
-  theme: props.footColor?.theme ?? props.headColor?.theme,
-  bg: props.footColor?.bg ?? props.headColor?.bg,
-  fg: props.footColor?.fg ?? props.headColor?.fg,
+  theme: footColor.value.theme,
+  bg: footColor.value.bg,
+  fg: footColor.value.fg,
   class: props.tfootClass ?? props.theadClass,
 }))
 
