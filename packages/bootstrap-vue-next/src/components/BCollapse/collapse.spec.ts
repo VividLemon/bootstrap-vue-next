@@ -1,8 +1,10 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, beforeEach, describe, expect, it} from 'vitest'
-import {h, nextTick, Transition} from 'vue'
+import {defineComponent, h, nextTick, Transition} from 'vue'
 import BCollapse from './BCollapse.vue'
 import type {BvTriggerableEvent} from '../../utils'
+import {useToggle} from '../../composables/useToggle'
+import {createBootstrap} from '../../plugins'
 
 /** Let Vue patch and a few animation frames pass */
 const flush = async (frames = 3) => {
@@ -475,6 +477,41 @@ describe('collapse', () => {
     const wrapper = mount(BCollapse)
     await flush()
     await expect(wrapper.vm.hide()).resolves.toBe('')
+  })
+
+  it('useToggle().hide(trigger) does not emit the trigger event', async () => {
+    let toggle!: ReturnType<typeof useToggle>
+    const App = defineComponent({
+      setup() {
+        toggle = useToggle('toggle-collapse')
+        return () => h(BCollapse, {id: 'toggle-collapse', modelValue: true})
+      },
+    })
+    const wrapper = mount(App, {global: {plugins: [createBootstrap()]}})
+    await flush()
+    await expect(toggle.hide('foo')).resolves.toBe('foo')
+    const $collapse = wrapper.findComponent(BCollapse)
+    expect($collapse.emitted('foo')).toBeUndefined()
+    expect($collapse.emitted('hidden')).toHaveLength(1)
+  })
+
+  it('useToggle().show(true) resolves with the trigger once hidden', async () => {
+    let toggle!: ReturnType<typeof useToggle>
+    const App = defineComponent({
+      setup() {
+        toggle = useToggle('resolve-collapse')
+        return () => h(BCollapse, {id: 'resolve-collapse'})
+      },
+    })
+    mount(App, {global: {plugins: [createBootstrap()]}})
+    await flush()
+    let resolved: boolean | string | undefined
+    toggle.show(true).then((value) => (resolved = value))
+    await flush()
+    expect(resolved).toBeUndefined()
+    await toggle.hide('done')
+    await flush()
+    expect(resolved).toBe('done')
   })
 
   // --- visible / show / initialAnimation props ---
