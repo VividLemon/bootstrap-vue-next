@@ -180,4 +180,59 @@ describe('useShowHide', () => {
     expect(count(emit, 'hide-prevented')).toBe(0)
     mounted.wrapper.unmount()
   })
+
+  describe('event.signal', () => {
+    it('stays live while the request is prevented and aborts once a hide is committed', () => {
+      const events: BvTriggerableEvent[] = []
+      const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name, event) => {
+        events.push(event)
+        if (name === 'ok') event.preventDefault()
+      })
+      const {state, wrapper} = mountShowHide(emit, {noCloseOnBackdrop: true}, true)
+
+      state.hide('ok')
+      const ok = events.find((e) => e.eventType === 'ok') as BvTriggerableEvent
+      expect(ok.signal).toBeInstanceOf(AbortSignal)
+      expect(ok.signal?.aborted).toBe(false)
+
+      // a refused backdrop click does not abort it
+      state.hide('backdrop')
+      expect(ok.signal?.aborted).toBe(false)
+
+      state.hide('cancel')
+      expect(ok.signal?.aborted).toBe(true)
+      wrapper.unmount()
+    })
+
+    it('is already aborted after a request that is not prevented', () => {
+      const events: BvTriggerableEvent[] = []
+      const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((_, event) => {
+        events.push(event)
+      })
+      const {state, wrapper} = mountShowHide(emit, {}, true)
+
+      state.hide('ok')
+      expect(events.find((e) => e.eventType === 'hide')?.signal?.aborted).toBe(true)
+      wrapper.unmount()
+    })
+
+    it('aborts when the component unmounts', () => {
+      const events: BvTriggerableEvent[] = []
+      const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name, event) => {
+        events.push(event)
+        if (name === 'ok') event.preventDefault()
+      })
+      const {state, wrapper} = mountShowHide(emit, {}, true)
+
+      state.hide('ok')
+      const {signal} = events.find((e) => e.eventType === 'ok') as BvTriggerableEvent
+      expect(signal?.aborted).toBe(false)
+      wrapper.unmount()
+      expect(signal?.aborted).toBe(true)
+    })
+
+    it('is null on events built outside a show or hide request', () => {
+      expect(new BvTriggerableEvent('hidden').signal).toBeNull()
+    })
+  })
 })

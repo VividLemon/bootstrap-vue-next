@@ -1,6 +1,11 @@
 import {type ComponentPublicInstance, inject, nextTick, provide, readonly, type Ref, ref} from 'vue'
-import type {ComponentController, ControllerKey, PromiseWithController} from '../../types'
-import type {BvTriggerableEvent} from '../../utils'
+import type {
+  ComponentController,
+  ControllerKey,
+  OrchestratorShowOptions,
+  PromiseWithController,
+} from '../../types'
+import {BvTriggerableEvent} from '../../utils'
 import {orchestratorRegistryKey, type OrchestratorStoreObject} from '../../utils/keys'
 
 /* oxlint-disable-next-line no-explicit-any */
@@ -30,28 +35,36 @@ export const buildController = <
   const controller = {
     id,
     ref: null as RefWithMethods | null,
-    async show() {
-      const currentModelValue = controller.get()?.value.props.modelValue
-      if (currentModelValue) {
-        const event = await basePromise
-        return Object.assign(Object.create(event), {
+    async show({signal}: OrchestratorShowOptions = {}) {
+      const withDispose = (event: BvTriggerableEvent) =>
+        Object.assign(Object.create(event), {
           [Symbol.asyncDispose]: controller.destroy,
         })
+      const currentModelValue = controller.get()?.value.props.modelValue
+      if (signal?.aborted && !currentModelValue) {
+        return withDispose(new BvTriggerableEvent('hidden', {trigger: 'abort', ok: null}))
       }
-      const refWithMethods = controller.ref
-      if (
-        refWithMethods !== null &&
-        'show' in refWithMethods &&
-        typeof refWithMethods.show === 'function'
-      ) {
-        refWithMethods.show()
-      } else {
-        controller.set({modelValue: true})
+      const abort = () => controller.hide('abort')
+      signal?.addEventListener('abort', abort, {once: true})
+      try {
+        if (signal?.aborted) {
+          abort()
+        } else if (!currentModelValue) {
+          const refWithMethods = controller.ref
+          if (
+            refWithMethods !== null &&
+            'show' in refWithMethods &&
+            typeof refWithMethods.show === 'function'
+          ) {
+            refWithMethods.show()
+          } else {
+            controller.set({modelValue: true})
+          }
+        }
+        return withDispose(await basePromise)
+      } finally {
+        signal?.removeEventListener('abort', abort)
       }
-      const event = await basePromise
-      return Object.assign(Object.create(event), {
-        [Symbol.asyncDispose]: controller.destroy,
-      })
     },
     hide(trigger?: string) {
       const refWithMethods = controller.ref
