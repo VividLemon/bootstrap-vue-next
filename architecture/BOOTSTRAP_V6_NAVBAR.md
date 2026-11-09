@@ -386,7 +386,9 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 
 - **Q1 — C. Both.** `BDrawer` placed directly inside `BNavbar` works (`BNavbar` provides the context that wires `BNavbarToggle` and auto-close), and a convenience `BNavbarDrawer` renders `BDrawer` with the navbar defaults (plain `.drawer`, no `responsive`, no teleport). Docs show both.
 - **Q2 — A.** `toggleable` is replaced by `expand?: boolean | Breakpoint`, default `true` (`.navbar-expand`); a breakpoint renders `.{bp}:navbar-expand`; `false` renders no class (always collapsed).
-- Q3–Q5: _Pending._
+- **Q3 — B. Remove `noAutoClose`** and the auto-close behavior; docs show a `router.afterEach` / `@click` recipe that hides the drawer. (The Q1 navbar context still wires `BNavbarToggle`; it no longer closes the drawer on navigation.)
+- **Q4 — A.** `BNavbarToggle` `target: string` only.
+- **Q5 — A.** Docs use the plain `data-bs-theme` attribute; `vBColorMode` gets `getSSRProps` as a cross-cutting fix.
 - Cross-group (G1, answered): `BOffcanvas` is renamed `BDrawer`, `useModal` → `useDialog`; read assumptions D1–D9 with those names.
 
 ## Migration notes (for `bnavbar.md` / navbar docs)

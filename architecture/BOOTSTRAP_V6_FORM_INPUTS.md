@@ -513,7 +513,8 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - **Q2 — B. Library-owned popup** using G2's shared Menu mechanism (rendered in place, Floating UI, `teleportTo` opt-in), with vanilla-calendar-pro mounted inline inside it, so the datepicker works inside native dialogs.
 - **Q3 — A. ISO strings.** `'YYYY-MM-DD'`: `string | null` (single), `string[]` (multiple), `[start, end]` tuple (range).
 - **Q4 — A.** `BTimeField` / `BTimeRangeField` are removed with no replacement component; docs show `<BFormInput type="time">` (two inputs for a range).
-- Q5–Q8: _Pending._
+- **Q5 — A.** `vanilla-calendar-pro` is a required peer dependency (`^3.4.0`), externalized in `vite.config`, imported statically.
+- Q6–Q8: _Pending._
 
 ## Implementation split
 
