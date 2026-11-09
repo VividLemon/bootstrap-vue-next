@@ -86,13 +86,17 @@ Recommendation: **standardize `BCarousel` on ids in the v6 rewrite; keep `BStepp
 
 ## Decisions
 
-_Pending maintainer answers._
+Answered by the maintainer on 2026-11-09.
+
+- **Q1 — A.** `BCarousel` switches to slide ids in the v6 rewrite: `v-model` holds the active slide id (generated when a slide has none), `to(id)`; `next()` / `prev()` / autoplay stay positional internally. This overrides the index-based model and `to(index)` in the G5 Display research.
+- **Q2 — A.** `BStepper` keeps an index-based model (0-based current step), documented as the one ordered-progress exception to rule 1.
+- **Q3 — B.** Event payloads carry ids as the primary fields and keep indexes as read-only extras: `BTabs` `activate-tab` stays as is; `BvCarouselEvent` gains `fromId` / `toId` next to `from` / `to`.
 
 ## Implementation split
 
 1. **`BTabs` id-only model** (independent of the new-components work; can go on the v6 branch after #168): remove `index`, refactor selection onto `activeId`, update specs, `tabs.data.ts`, demos, playground, `tabs.md` and the `btabs.md` migration notes.
 2. **`BAccordion`**: with the v6 Accordion rewrite (G5), already decided.
-3. **`BCarousel`** (if Q1 = A): with the v6 Carousel rewrite (G5); update `carousel.data.ts` ("The index of the currently active slide") and the migration notes.
+3. **`BCarousel`**: with the v6 Carousel rewrite (G5); update `carousel.data.ts` ("The index of the currently active slide") and the migration notes.
 4. **`BStepper`**: built per Q2 in its G5 PR.
 
 Required checks: those in `BOOTSTRAP_V6_MIGRATION.md` ("Required checks").
