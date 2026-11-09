@@ -178,6 +178,27 @@ export const useShowHide = (
   let _Resolve: ((value: boolean | string) => void) | undefined
   let _Promise: Promise<boolean | string> | undefined
   let _resolveOnHide: boolean | undefined
+
+  /**
+   * The show or hide that was last committed. Committing the next one aborts it, which cancels its
+   * pending frame and timer, so a superseded show can't reveal the component after a hide (or the
+   * reverse). It stays 'hide' after the component is hidden, so repeated hides are ignored until
+   * the next show
+   */
+  let transition: {type: 'show' | 'hide'; controller: AbortController} | undefined
+  const beginTransition = (type: 'show' | 'hide'): AbortSignal => {
+    transition?.controller.abort()
+    const controller = new AbortController()
+    transition = {type, controller}
+    return controller.signal
+  }
+  const afterFrame = (signal: AbortSignal, fn: () => void) => {
+    const frame = requestAnimationFrame(() => {
+      if (!signal.aborted) fn()
+    })
+    signal.addEventListener('abort', () => cancelAnimationFrame(frame), {once: true})
+  }
+
   const show = (resolveOnHide: boolean = false): Promise<boolean | string> => {
     if (showRef.value && !hideTimeout && !_Promise) return Promise.resolve(true)
     _resolveOnHide = resolveOnHide
@@ -204,40 +225,37 @@ export const useShowHide = (
       _Resolve?.('show-prevented')
       return _Promise
     }
-    if (hideTimeout) {
-      clearTimeout(hideTimeout)
-      hideTimeout = undefined
-    }
+    const signal = beginTransition('show')
     renderRef.value = true
     renderBackdropRef.value = true
-    requestAnimationFrame(() => {
+    const reveal = () => {
+      if (!isMounted) return
+      showTimeout = undefined
+      showRef.value = true
+      options.showFn?.()
+      if (!modelValue.value) {
+        noAction = true
+        nextTick(() => {
+          modelValue.value = true
+        })
+      }
+    }
+    afterFrame(signal, () => {
       if (localNoAnimation.value || props.delay === undefined) {
-        if (!isMounted) return
-        showTimeout = undefined
-        showRef.value = true
-        options.showFn?.()
-        if (!modelValue.value) {
-          noAction = true
-          nextTick(() => {
-            modelValue.value = true
-          })
-        }
+        reveal()
         return
       }
       showTimeout = setTimeout(
-        () => {
-          if (!isMounted) return
-          showTimeout = undefined
-          showRef.value = true
-          options.showFn?.()
-          if (!modelValue.value) {
-            noAction = true
-            nextTick(() => {
-              modelValue.value = true
-            })
-          }
-        },
+        reveal,
         typeof props.delay === 'number' ? props.delay : props.delay?.show || 0
+      )
+      signal.addEventListener(
+        'abort',
+        () => {
+          clearTimeout(showTimeout)
+          showTimeout = undefined
+        },
+        {once: true}
       )
     })
     return _Promise
@@ -245,50 +263,60 @@ export const useShowHide = (
 
   let leaveTrigger: string | undefined
   const hide = (trigger?: string, noTriggerEmit?: boolean): Promise<string> => {
+    // A hide is already committed: report on it rather than emitting the hide events again
+    if (transition?.type === 'hide') {
+      return (_Promise as Promise<string> | undefined) ?? Promise.resolve('')
+    }
     if (!showRef.value && !showTimeout && !renderRef.value) return Promise.resolve('')
+    // The promise may belong to a show (still entering, or show(true) waiting for the hide).
+    // A prevented hide must leave that one alone
+    const ownsPromise = !_Promise
     if (!_Promise)
       _Promise = new Promise<string>((resolve) => {
         ;(_Resolve as (value: string | PromiseLike<string>) => void) = resolve
       })
     if (typeof trigger !== 'string') trigger = undefined
-    leaveTrigger = trigger
+    const transitionBefore = transition
+    const prevented = (): Promise<string> => {
+      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
+      if (!ownsPromise) return Promise.resolve('hide-prevented')
+      // Settle and drop this hide's promise, so the next hide gets its own
+      const promise = _Promise as Promise<string>
+      _Resolve?.('hide-prevented')
+      _Promise = undefined
+      _Resolve = undefined
+      return promise
+    }
     const event = buildTriggerableEvent('hide', {cancelable: true, trigger})
     const event2 = buildTriggerableEvent(trigger || 'ignore', {cancelable: true, trigger})
     if (
       (trigger === 'backdrop' && props.noCloseOnBackdrop) ||
       (trigger === 'esc' && props.noCloseOnEsc)
     ) {
-      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
-      _Resolve?.('hide-prevented')
-      return _Promise as Promise<string>
+      return prevented()
     }
-    if (showTimeout) {
-      clearTimeout(showTimeout)
-      showTimeout = undefined
-    }
+    // A listener hid the component itself (for example `@ok="modal.hide()"`). That hide is the one
+    // that counts
+    const hiddenByListener = () => transition !== transitionBefore && transition?.type === 'hide'
     if (trigger && !noTriggerEmit) {
       emit(trigger, event2)
+      if (hiddenByListener()) return _Promise as Promise<string>
     }
     emit('hide', event)
+    if (hiddenByListener()) return _Promise as Promise<string>
 
     if (event.defaultPrevented || event2.defaultPrevented) {
-      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
       if (!modelValue.value) {
         nextTick(() => {
           noAction = true
           modelValue.value = true
         })
       }
-      _Resolve?.('hide-prevented')
-      return _Promise as Promise<string>
+      return prevented()
     }
+    leaveTrigger = trigger
     trapActive.value = false
-    if (showTimeout) {
-      clearTimeout(showTimeout)
-      showTimeout = undefined
-      if (!localTemporaryHide.value) renderRef.value = false
-      renderBackdropRef.value = false
-    }
+    const signal = beginTransition('hide')
     hideTimeout = setTimeout(
       () => {
         if (!isMounted) return
@@ -306,6 +334,14 @@ export const useShowHide = (
         : typeof props.delay === 'number'
           ? props.delay
           : props.delay?.hide || 0
+    )
+    signal.addEventListener(
+      'abort',
+      () => {
+        clearTimeout(hideTimeout)
+        hideTimeout = undefined
+      },
+      {once: true}
     )
     return _Promise as Promise<string>
   }
@@ -390,10 +426,8 @@ export const useShowHide = (
   })
   onUnmounted(() => {
     isMounted = false
-    clearTimeout(showTimeout)
-    clearTimeout(hideTimeout)
-    showTimeout = undefined
-    hideTimeout = undefined
+    // Cancels whichever frame or timer the last show or hide still has pending
+    transition?.controller.abort()
   })
 
   const lazyLoadCompleted = ref(false)
