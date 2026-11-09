@@ -526,7 +526,10 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - **Q2 — B.** `placement: MenuPlacement` (string) plus optional `responsivePlacement?: Responsive<MenuPlacement>` that overrides per breakpoint.
 - **Q3 — B. Fragment root.** `BMenu` / `BCombobox` render the toggle and the `.menu` with no wrapper (exact v6 markup, including inside `.btn-group` / `.input-group`); `inheritAttrs: false`, fallthrough attrs go to the toggle; `wrapperAttrs` and `noWrapper` are removed. Split mode: decide at implementation whether `.btn-group` is rendered by the component or left to the user, and note that there is no stable `$el`.
 - **Q4 — A. No caret**, as v6; remove `noCaret` and the `.dropdown-toggle-no-caret` CSS; users add an icon in the `toggle` slot.
-- Q5, Q9, Q11, Q12: _Pending._
+- **Q5 — A. Follow v6:** no menu roles by default; `aria-expanded` + `aria-controls` (disclosure pattern); users opt in through `menuAttrs: {role: 'menu'}` and their own item roles. The `role` prop is removed.
+- **Q9 — A.** `BCombobox` accepts `BFormSelect`-style `{label, options}` groups and renders a `.menu-header` per group.
+- **Q11 — A.** No nav overflow in `BTabs` in the first pass; revisit after `BNavOverflow` lands.
+- **Q12 — A.** `useNavOverflow` stays internal for now.
 
 ## Implementation split
 
