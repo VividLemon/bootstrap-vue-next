@@ -548,7 +548,8 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 
 - **Q1 — A. Native only.** `BAccordionItem` state syncs from the native `toggle` event into `v-model`; `show` / `shown` / `hide` / `hidden` / `*-prevented` are removed and items leave the show/hide registry (`v-b-toggle` / `useToggle` no longer target them). No `pseudoElement` option is needed in `useCssTransition` unless Q3 = C.
 - **Q4 — C. Pure v6 avatar.** No `href` / `to` / `button` and no badge props or slot; `BAvatar` renders v6 `.avatar` / `.avatar-img` / `.avatar-status` only (plus the v6 status additions). Users compose links, buttons and badges themselves; docs must note that wrapping an avatar in a link breaks `.avatar-stack`.
-- Q2, Q3, Q5–Q10: _Pending._
+- **Q2 — A.** `BAccordion` v-model holds open item ids only; `v-model:index` is removed; `free` keeps its name.
+- Q3, Q5–Q10: _Pending._
 
 ## Implementation split
 

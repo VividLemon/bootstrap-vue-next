@@ -514,7 +514,9 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - **Q3 — A. ISO strings.** `'YYYY-MM-DD'`: `string | null` (single), `string[]` (multiple), `[start, end]` tuple (range).
 - **Q4 — A.** `BTimeField` / `BTimeRangeField` are removed with no replacement component; docs show `<BFormInput type="time">` (two inputs for a range).
 - **Q5 — A.** `vanilla-calendar-pro` is a required peer dependency (`^3.4.0`), externalized in `vite.config`, imported statically.
-- Q6–Q8: _Pending._
+- **Q6 — A.** New `BFormRange` (wrapper root, `number` v-model, `bubble` / `ticks` / `theme`, server-rendered fill); range handling is removed from `BFormInput`.
+- **Q7 — A.** `BFormAdorn` wrapper with `start` / `end` slots that injects `.form-ghost` into child controls.
+- **Q8 — A.** `BFormChips` keeps `name` / `form` hidden inputs, `required`, `state`, `autofocus`, `inputAttrs` and a live region; everything else listed in Q8 is removed (`tagValidator` → cancelable `add` event; validation messages go in `BFormField` feedback).
 
 ## Implementation split
 
