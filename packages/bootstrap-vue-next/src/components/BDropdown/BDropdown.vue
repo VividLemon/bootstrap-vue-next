@@ -8,9 +8,9 @@
       :id="computedId"
       ref="_splitButton"
       :variant="props.splitVariant || props.variant"
-      :theme="splitColor.theme"
-      :bg="splitColor.bg"
-      :fg="splitColor.fg"
+      :theme="computedSplitColor.theme"
+      :bg="computedSplitColor.bg"
+      :fg="computedSplitColor.fg"
       :size="props.size"
       :class="buttonClasses"
       :disabled="props.splitDisabled || props.disabled"
@@ -374,7 +374,7 @@ const computedClasses = computed(() => [
   },
 ])
 
-const splitColor = computed(() =>
+const computedSplitColor = computed(() =>
   resolvePartColor(props.splitColor, {theme: props.theme, bg: props.bg, fg: props.fg})
 )
 

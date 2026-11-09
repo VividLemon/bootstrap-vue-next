@@ -187,9 +187,9 @@
     </BTbody>
     <BTfoot v-if="props.footClone" v-bind="footerProps">
       <BTr
-        :theme="footRowColor.theme"
-        :bg="footRowColor.bg"
-        :fg="footRowColor.fg"
+        :theme="computedFootRowColor.theme"
+        :bg="computedFootRowColor.bg"
+        :fg="computedFootRowColor.fg"
         :class="props.tfootTrClass ?? props.theadTrClass"
       >
         <BTh
@@ -438,13 +438,15 @@ const getCellComponent = (field: Readonly<TableField>) => {
 }
 
 // The cloned footer falls back to the head colors key by key; `null` clears the fallback
-const footColor = computed(() => resolvePartColor(props.footColor, props.headColor ?? {}))
-const footRowColor = computed(() => resolvePartColor(props.footRowColor, props.headRowColor ?? {}))
+const computedFootColor = computed(() => resolvePartColor(props.footColor, props.headColor ?? {}))
+const computedFootRowColor = computed(() =>
+  resolvePartColor(props.footRowColor, props.headRowColor ?? {})
+)
 
 const footerProps = computed(() => ({
-  theme: footColor.value.theme,
-  bg: footColor.value.bg,
-  fg: footColor.value.fg,
+  theme: computedFootColor.value.theme,
+  bg: computedFootColor.value.bg,
+  fg: computedFootColor.value.fg,
   class: props.tfootClass ?? props.theadClass,
 }))
 
