@@ -20,6 +20,7 @@ Sources, so the orchestrator can mine them for test cases:
 - bootstrap-vue-next/bootstrap-vue-next#3371: repeated hides during a modal's delay or fade emitted `ok`/`hide` twice and overwrote the `hidden` trigger.
 - bootstrap-vue-next/bootstrap-vue-next#3372 (Copilot fix): a `hideInProgress` flag. Review found it could leave a modal impossible to close.
 - VividLemon/bootstrap-vue-next#173 (branch `fix/show-hide-abort-signal-v2`, based on upstream `main` after 1.2.3): the alternative fix plus a public `AbortSignal` API, and five rounds of review fixes. All of it targets the **legacy** composable (`useShowHide.ts` on `main`, which is `useLegacyShowHide.ts` on v6), the orchestrator and BTooltip. 5,599 unit tests pass.
+- bootstrap-vue-next/bootstrap-vue-next#3374 (head `VividLemon:main`, at 992d1da38): the upstream PR for the same work, squashed from #173 plus one review-fix commit. Its review added rows 20–26 below.
 
 #173 is the most complete record of what goes wrong. Its tests (`useShowHide.spec.ts`, `orchestratorShared/index.spec.ts`, `useModal.spec.ts`) are effectively the edge-case catalog below. Port the cases, not the code: its code is still patches on the legacy design.
 
@@ -27,27 +28,34 @@ Sources, so the orchestrator can mine them for test cases:
 
 Every row should become a row in the machine's test table.
 
-| #   | Situation                                                                                | Wrong behavior                                                                                    |
-| --- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| 1   | `hide()` twice during the hide delay or leave                                            | `ok`/`hide` emitted twice, `hidden` trigger overwritten (#3371)                                   |
-| 2   | `show(); hide()` in the same frame                                                       | show's `requestAnimationFrame` reopened it after the hide; with #3372, it could never close again |
-| 3   | `hide()` while a show waits for its frame or `delay`                                     | no leave ran, so `isLeaving` stuck `true`, the backdrop stayed with `backdropFirst`, no `hidden`  |
-| 4   | `show()` during a leave, then `hide()` before the show's frame                           | `hidden` emitted twice, the second with the old trigger                                           |
-| 5   | `@ok="modal.hide()"` (hide from inside a trigger listener)                               | `hide` emitted twice                                                                              |
-| 6   | Listener hides while a show is pending, outer `hide()` continues                         | outer `hide()` returned `undefined`                                                               |
-| 7   | `hidden` listener calls `show()`                                                         | the new show's promise was resolved with the old hide's trigger                                   |
-| 8   | Prevented hide (validation in `@ok`) while `show(true)` waits                            | the show promise settled `'hide-prevented'`; the eventual real close was never reported           |
-| 9   | Prevented hide                                                                           | it also cancelled a pending delayed show                                                          |
-| 10  | Second hide after a prevented hide                                                       | got the already-settled `'hide-prevented'` promise                                                |
-| 11  | `@hide` prevents, then calls `hide('cancel')`                                            | nested call swallowed                                                                             |
-| 12  | Orchestrated item: component closes itself (Esc, close button, its own trigger, timeout) | store `modelValue` still `true`, so `controller.show()` never reopened it                         |
-| 13  | Orchestrated item shown again after a close                                              | `show()` returned the first close's event at once (one promise per controller lifetime)           |
-| 14  | Orchestrated item dismissed before it mounts                                             | promise never settled (upstream fix `awaitDismissal`); synthesized event lost the trigger         |
-| 15  | `show({signal})` where an `onShow` listener aborts during the show request               | the abort's `hide()` was a no-op, then the show committed                                         |
-| 16  | Already-aborted `show({signal})` on a component shown through its own `show()`           | store said "hidden", so the modal stayed open                                                     |
-| 17  | `destroy()` while the store is stale or a show is pending                                | item removed mid-hide, `show()` promise pending forever                                           |
-| 18  | Component wrapper drops arguments (BTooltip `hide: () => popover.hide()`)                | trigger lost through the wrapper                                                                  |
-| 19  | Disabled dropdown with an open menu (bootstrap-vue-next/bootstrap-vue-next#3373)         | `disabled` only disables buttons; `show()`, `v-model` and injected `show` still open it           |
+| #   | Situation                                                                                        | Wrong behavior                                                                                         |
+| --- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| 1   | `hide()` twice during the hide delay or leave                                                    | `ok`/`hide` emitted twice, `hidden` trigger overwritten (#3371)                                        |
+| 2   | `show(); hide()` in the same frame                                                               | show's `requestAnimationFrame` reopened it after the hide; with #3372, it could never close again      |
+| 3   | `hide()` while a show waits for its frame or `delay`                                             | no leave ran, so `isLeaving` stuck `true`, the backdrop stayed with `backdropFirst`, no `hidden`       |
+| 4   | `show()` during a leave, then `hide()` before the show's frame                                   | `hidden` emitted twice, the second with the old trigger                                                |
+| 5   | `@ok="modal.hide()"` (hide from inside a trigger listener)                                       | `hide` emitted twice                                                                                   |
+| 6   | Listener hides while a show is pending, outer `hide()` continues                                 | outer `hide()` returned `undefined`                                                                    |
+| 7   | `hidden` listener calls `show()`                                                                 | the new show's promise was resolved with the old hide's trigger                                        |
+| 8   | Prevented hide (validation in `@ok`) while `show(true)` waits                                    | the show promise settled `'hide-prevented'`; the eventual real close was never reported                |
+| 9   | Prevented hide                                                                                   | it also cancelled a pending delayed show                                                               |
+| 10  | Second hide after a prevented hide                                                               | got the already-settled `'hide-prevented'` promise                                                     |
+| 11  | `@hide` prevents, then calls `hide('cancel')`                                                    | nested call swallowed                                                                                  |
+| 12  | Orchestrated item: component closes itself (Esc, close button, its own trigger, timeout)         | store `modelValue` still `true`, so `controller.show()` never reopened it                              |
+| 13  | Orchestrated item shown again after a close                                                      | `show()` returned the first close's event at once (one promise per controller lifetime)                |
+| 14  | Orchestrated item dismissed before it mounts                                                     | promise never settled (upstream fix `awaitDismissal`); synthesized event lost the trigger              |
+| 15  | `show({signal})` where an `onShow` listener aborts during the show request                       | the abort's `hide()` was a no-op, then the show committed                                              |
+| 16  | Already-aborted `show({signal})` on a component shown through its own `show()`                   | store said "hidden", so the modal stayed open                                                          |
+| 17  | `destroy()` while the store is stale or a show is pending                                        | item removed mid-hide, `show()` promise pending forever                                                |
+| 18  | Component wrapper drops arguments (BTooltip `hide: () => popover.hide()`)                        | trigger lost through the wrapper                                                                       |
+| 19  | Disabled dropdown with an open menu (bootstrap-vue-next/bootstrap-vue-next#3373)                 | `disabled` only disables buttons; `show()`, `v-model` and injected `show` still open it                |
+| 20  | Orchestrated item whose `onShow` prevents the show, then `destroy()`                             | `show()` waited forever and `destroy()` never removed the item                                         |
+| 21  | `show-prevented` from another entry point while an accepted show is still pending                | must **not** settle the pending show's cycle (attribute the prevention to the request it answers)      |
+| 22  | `resolveOnHide`, `await show()`, then `destroy()` right away                                     | the cycle was already settled on `hide`; `destroy()`'s new wait was never settled by `hidden`          |
+| 23  | A modal and a toast created with the same `id`                                                   | the store sync looked the id up across all stores and updated the wrong item                           |
+| 24  | Unmounted item: `show(); hide('cancel'); show()`                                                 | the second `show()` joined the first, already-dismissed cycle (cleared asynchronously)                 |
+| 25  | Item not mounted yet; its mount-time `onShow` aborts the `show({signal})`                        | the abort's hide ran before the show committed, so the modal opened anyway                             |
+| 26  | During a pending show, an `ok` listener hides (finishes at once) and a `hidden` listener reopens | the outer hide only yielded to a newer **hide**, so it cancelled the reopen and emitted `hidden` again |
 
 ## Root causes
 
@@ -75,7 +83,7 @@ Still open. Each item below was first found by reading the code; the [verificati
 - **`noCloseOnBackdrop` / `noCloseOnEsc` still live in the core** (the overlays doc already plans to move them to Dialog/Drawer).
 - **No cancellation signal** for async work started from listeners, and no `signal` on the controller (#173 added both on the legacy path).
 - **Implicit states remain:** `visible`, `isActive`, `instant`, `pending` and `delayTimer` together encode the state. Simpler than legacy, but still inferred.
-- **Orchestrator unchanged on the v6 branches:** `bootstrap-v6-foundations` has neither upstream's `awaitDismissal` (1.2.3) nor #173's store sync and per-cycle promise, so #12–#17 apply there.
+- **Orchestrator unchanged on the v6 branches:** `bootstrap-v6-foundations` has neither upstream's `awaitDismissal` (1.2.3) nor #3374's store sync and per-cycle promise, so #12–#17 and #20–#25 apply there.
 
 ### Verification on `bootstrap-v6-foundations`
 
@@ -91,7 +99,7 @@ Run on 2026-11-09 at `ba09b1407` with a throwaway spec that mounts a host compon
 | #7 `@hidden` listener calls `show()`              | **Bug.** The hide's promise resolves `false` instead of `'close'`: `apply()` emits `hidden` before `settle()`, and the nested show's `start()` settles the hide as superseded                               |
 | #11 `@hide` prevents, then calls `hide('cancel')` | **Bug.** The nested hide runs and the component closes (`hidden` with `'cancel'`), but the outer call then emits `hide-prevented` (`'ok'`) and resolves `'hide-prevented'`, which contradicts what happened |
 
-The orchestrator rows (#12–#17) apply unchanged: `orchestratorShared` on the v6 branches has neither `awaitDismissal` nor any `signal` handling.
+The orchestrator rows (#12–#17, #20–#25) apply unchanged: `orchestratorShared` on the v6 branches has neither `awaitDismissal` nor any `signal` handling, nor #3374's fixes. #26 was not run against the native composable; it is the same nested-request pattern as #5 / #6, and S1's table covers it either way.
 
 ## Goal
 
@@ -141,7 +149,7 @@ Open choices to settle in the table, not in code: whether `hide` during `showing
 
 ### Emit discipline
 
-- Request phase (cancelable events): emit with the machine still in its old state. If a listener made a new request meanwhile, the outer request yields to it: return the newer operation's promise, emit nothing more (#5, #6, #11).
+- Request phase (cancelable events): emit with the machine still in its old state. If a listener made **any** new request that committed (a hide, or a show started from that hide's `hidden`), the outer request yields to it: return the newer operation's promise, emit nothing more (#5, #6, #11, #26).
 - Commit phase: update state first, then emit. Finish events (`shown`/`hidden`) are emitted after the operation is settled and removed, so a listener that calls `show()`/`hide()` starts a clean new operation (#7).
 
 ### Completion contract
@@ -166,7 +174,11 @@ Open choices to settle in the table, not in code: whether `hide` during `showing
 ### Orchestrator
 
 - **One owner:** the controller reads the mounted component's machine state (through the exposed instance or the show/hide registry), not a copy in the store. #173 instead syncs the store from `update:modelValue` in `BOrchestrator`. That works, but it is still a mirror; prefer reading the source.
-- Per-cycle results (#13); dismissal before mount (#14) settles with the trigger used; `destroy()` disposes through the machine (#17).
+- Per-cycle results (#13); dismissal before mount (#14) settles with the trigger used; `destroy()` disposes through the machine (#17, #20, #22).
+- A prevented show ends the cycle that requested it, and only that cycle (#20, #21). Attribute outcomes to requests (each request's own promise), not to events that any entry point can emit.
+- Cycles are cleared at the moment they settle, never in a later continuation (#24).
+- Cancellation must apply to a show that hasn't committed yet: an abort during the request or the mount-time show must still prevent or undo it (#15, #25). In the machine this is "abort while a request is in its cancelable phase = prevent it".
+- Lookups by id are scoped to the item's own store or component kind (#23). Better still: the controller holds a direct handle to its machine, with no lookup at all.
 - `DialogResult {trigger, ok, value?}` (overlays Q4) is built from the cycle's completion, not by mutating an event (`setEventOk` goes away, as already decided).
 - Wrappers like BTooltip must forward all arguments (#18). A `defineExpose` helper that re-exports the machine API would prevent it.
 
@@ -208,20 +220,20 @@ The machine is its own stacked PR, **S1 "Show/hide machine"**, on `bootstrap-v6-
 
 ### Sequence
 
-| Step | PR / batch                             | Show/hide work                                                                                                                                                                                                                                                                                                                                                 |
-| ---- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| S1   | Show/hide machine (new, after #164)    | Machine + transition table + generated tests; `useShowHide` delegates to it; operation objects with `AbortController`; emit discipline; `sync` requests for `v-model` / `visible` / `show`; `dispose`; `disabled` guard; `event.signal`; read-only `state`; `noCloseOnBackdrop` / `noCloseOnEsc` removed from `UseShowHideProps` (no native adopter sets them) |
-| —    | #167 feedback, BPopover/BTooltip batch | Adopt the native `useShowHide` as already planned; nothing machine-specific. BPopover/BTooltip forward all `hide` arguments (#18)                                                                                                                                                                                                                              |
-| G1.1 | Dialog core (`BDialog`)                | Native `<dialog>` `close` becomes `sync(false, {trigger, alreadyClosed: true})`; Escape / backdrop are checked in `useDialogBase` before `hide()`; the `transition` callback calls `showModal()` / `show()`                                                                                                                                                    |
-| G1.2 | Orchestrator and `useDialog`           | The controller reads the machine through the show/hide registry instead of the store's `modelValue`; per-cycle results (`DialogResult`); dismissal before mount; `destroy()` → `dispose`; `controller.show({signal})`; `controller.state`. Covers #12–#17. Upstream `awaitDismissal` and #173 are not ported; their tests are                                  |
-| G1.3 | Drawer (`BDrawer`)                     | Same base as Dialog; nothing extra                                                                                                                                                                                                                                                                                                                             |
-| G2   | Menu                                   | Adopts the native path with the `disabled` guard (#19)                                                                                                                                                                                                                                                                                                         |
-| G1.4 | Cleanup                                | Delete `useLegacyShowHide` once BDropdown/Menu, BModal and BOffcanvas are gone                                                                                                                                                                                                                                                                                 |
+| Step | PR / batch                             | Show/hide work                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| S1   | Show/hide machine (new, after #164)    | Machine + transition table + generated tests; `useShowHide` delegates to it; operation objects with `AbortController`; emit discipline; `sync` requests for `v-model` / `visible` / `show`; `dispose`; `disabled` guard; `event.signal`; read-only `state`; `noCloseOnBackdrop` / `noCloseOnEsc` removed from `UseShowHideProps` (no native adopter sets them)                                                                    |
+| —    | #167 feedback, BPopover/BTooltip batch | Adopt the native `useShowHide` as already planned; nothing machine-specific. BPopover/BTooltip forward all `hide` arguments (#18)                                                                                                                                                                                                                                                                                                 |
+| G1.1 | Dialog core (`BDialog`)                | Native `<dialog>` `close` becomes `sync(false, {trigger, alreadyClosed: true})`; Escape / backdrop are checked in `useDialogBase` before `hide()`; the `transition` callback calls `showModal()` / `show()`                                                                                                                                                                                                                       |
+| G1.2 | Orchestrator and `useDialog`           | The controller reads the machine through the show/hide registry instead of the store's `modelValue`; per-cycle results (`DialogResult`); dismissal before mount; `destroy()` → `dispose`; `controller.show({signal})`; `controller.state`; the controller holds a direct handle to its item's machine (no id lookup, #23). Covers #12–#17 and #20–#25. Upstream `awaitDismissal` and #173 / #3374 are not ported; their tests are |
+| G1.3 | Drawer (`BDrawer`)                     | Same base as Dialog; nothing extra                                                                                                                                                                                                                                                                                                                                                                                                |
+| G2   | Menu                                   | Adopts the native path with the `disabled` guard (#19)                                                                                                                                                                                                                                                                                                                                                                            |
+| G1.4 | Cleanup                                | Delete `useLegacyShowHide` once BDropdown/Menu, BModal and BOffcanvas are gone                                                                                                                                                                                                                                                                                                                                                    |
 
 ### S1 scope and checks
 
 - Files: `src/composables/useShowHide.ts` (delegates), a new internal `src/composables/showHideMachine.ts` (name open), `useShowHide.spec.ts` rewritten around the generated table, `BvTriggerableEvent` (`signal`), `ShowHideProps` / docs data for the removed `noCloseOn*` props and the new `state`, `architecture/ARIA_VISIBILITY.md` (event order guarantees).
-- The table covers catalog rows #1–#11 by construction. #18 and #19 get component tests in their batches, and #12–#17 get orchestrator tests in G1.2.
+- The table covers catalog rows #1–#11 and #26 by construction. #18 and #19 get component tests in their batches, and #12–#17 and #20–#25 get orchestrator tests in G1.2.
 - Required checks from `BOOTSTRAP_V6_MIGRATION.md`, plus the BCollapse / BAccordion specs and (after #167) the BAlert / BToast specs unchanged except for event-order assertions.
 
 ## Decisions
