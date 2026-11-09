@@ -523,7 +523,10 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - **Q7 — A. `BCombobox` as v6 (select-only).** Free-text users go to `BFormInput` + `BFormDatalist`, tag input to Chips (G4).
 - **Q8 — A. Small additives:** `v-model:search` and `filter?: false | fn`, so custom and async filtering work.
 - **Q10 — B. Separate `BNavOverflow` wrapper component around a `BNav`** (mirrors v6's `.nav-overflow` wrapper; `BNav` itself stays simple). Item registration and measuring still work as proposed, but the wrapper owns them; rework the "Proposed API (feature on `BNav`)" section into a `BNavOverflow` API at implementation.
-- Q2–Q5, Q9, Q11, Q12: _Pending._
+- **Q2 — B.** `placement: MenuPlacement` (string) plus optional `responsivePlacement?: Responsive<MenuPlacement>` that overrides per breakpoint.
+- **Q3 — B. Fragment root.** `BMenu` / `BCombobox` render the toggle and the `.menu` with no wrapper (exact v6 markup, including inside `.btn-group` / `.input-group`); `inheritAttrs: false`, fallthrough attrs go to the toggle; `wrapperAttrs` and `noWrapper` are removed. Split mode: decide at implementation whether `.btn-group` is rendered by the component or left to the user, and note that there is no stable `$el`.
+- **Q4 — A. No caret**, as v6; remove `noCaret` and the `.dropdown-toggle-no-caret` CSS; users add an icon in the `toggle` slot.
+- Q5, Q9, Q11, Q12: _Pending._
 
 ## Implementation split
 
