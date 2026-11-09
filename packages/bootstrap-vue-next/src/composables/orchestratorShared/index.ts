@@ -19,12 +19,6 @@ export const buildController = <
   id: ControllerKey,
   store: TStore
 ): PromiseWithController<TComponent, ValueInMapRecord<TStore['value']>> => {
-  let resolveFunc: (value: BvTriggerableEvent) => void = () => {}
-
-  const basePromise = new Promise<BvTriggerableEvent>((resolve) => {
-    resolveFunc = resolve
-  })
-
   type RefWithMethods = ComponentPublicInstance<TComponent> & {
     show?: () => void
     hide?: (trigger?: string, noEmit?: boolean) => void
@@ -34,25 +28,35 @@ export const buildController = <
   const findItem = () => store.value.get(id)
 
   /**
-   * True from a show() request until the component reports its dismissal. The stored modelValue
-   * can't tell us this: it is not updated when the component is shown through its own show(), and
-   * a show can still be waiting for its frame or delay
+   * True from a show() request until the component reports its dismissal. The store only learns
+   * that the component is open once its show is revealed, and a show can still be waiting for its
+   * frame or delay
    */
   let showRequested = false
-  const settle = (event: BvTriggerableEvent) => {
-    showRequested = false
-    resolveFunc(event)
+  /**
+   * The dismissal the current show/hide cycle is waiting for. Each cycle gets its own, so a
+   * controller can be shown again after it was dismissed
+   */
+  let dismissal:
+    {promise: Promise<BvTriggerableEvent>; resolve: (e: BvTriggerableEvent) => void} | undefined
+  const nextDismissal = (): Promise<BvTriggerableEvent> => {
+    if (!dismissal) {
+      let resolve: (e: BvTriggerableEvent) => void = () => {}
+      const promise = new Promise<BvTriggerableEvent>((r) => {
+        resolve = r
+      })
+      dismissal = {promise, resolve}
+    }
+    return dismissal.promise
   }
   /**
-   * Hides the component. One that has not mounted can't emit a hidden event, so settle for it
+   * Called with the component's hide or hidden event (or one made up when the component can't emit)
    */
-  const dismiss = (trigger: string) => {
-    if (controller.ref === null) {
-      controller.set({modelValue: false})
-      settle(new BvTriggerableEvent('hidden', {trigger, ok: null}))
-      return
-    }
-    controller.hide(trigger)
+  const settle = (event: BvTriggerableEvent) => {
+    showRequested = false
+    const current = dismissal
+    dismissal = undefined
+    current?.resolve(event)
   }
 
   const controller = {
@@ -73,7 +77,9 @@ export const buildController = <
       if (signal?.aborted && !isShown) {
         return withDispose(new BvTriggerableEvent('hidden', {trigger: 'abort', ok: null}))
       }
-      const abort = () => dismiss('abort')
+      // Taken before anything below can settle it
+      const dismissed = nextDismissal()
+      const abort = () => controller.hide('abort')
       signal?.addEventListener('abort', abort, {once: true})
       try {
         if (signal?.aborted) {
@@ -94,7 +100,7 @@ export const buildController = <
           // anything to hide. Hide now that the show is committed
           if (signal?.aborted) abort()
         }
-        return withDispose(await basePromise)
+        return withDispose(await dismissed)
       } finally {
         signal?.removeEventListener('abort', abort)
       }
@@ -109,6 +115,10 @@ export const buildController = <
         refWithMethods.hide(trigger, true)
       } else {
         controller.set({modelValue: false})
+        // A component that has not mounted can't emit a hidden event, so settle for it
+        if (refWithMethods === null) {
+          settle(new BvTriggerableEvent('hidden', {trigger: trigger ?? null, ok: null}))
+        }
       }
     },
     toggle() {
@@ -144,8 +154,9 @@ export const buildController = <
       if (!item) return
       try {
         if (item.value.props.modelValue || showRequested) {
-          dismiss('destroy')
-          await basePromise
+          const dismissed = nextDismissal()
+          controller.hide('destroy')
+          await dismissed
           await nextTick()
         }
       } finally {

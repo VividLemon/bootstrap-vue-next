@@ -359,6 +359,43 @@ describe('buildController', () => {
     expect((await showPromise).trigger).toBe('destroy')
   })
 
+  it('show waits for a new dismissal each time the component is shown again', async () => {
+    const store = newStore()
+    const _self = Symbol('test-modal')
+    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    pushItem(store, _self, {modelValue: false})
+
+    const first = controller.show()
+    resolve(new BvTriggerableEvent('hidden', {trigger: 'ok'}))
+    expect((await first).trigger).toBe('ok')
+    controller.set({modelValue: false} as never) // as the orchestrator does when the component hides
+
+    let secondSettled = false
+    const second = controller.show().then((e) => {
+      secondSettled = true
+      return e
+    })
+    await Promise.resolve()
+    expect(secondSettled).toBe(false)
+    resolve(new BvTriggerableEvent('hidden', {trigger: 'cancel'}))
+    expect((await second).trigger).toBe('cancel')
+  })
+
+  it('hide settles a show whose component has not mounted', async () => {
+    const store = newStore()
+    const _self = Symbol('test-modal')
+    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    pushItem(store, _self, {modelValue: false})
+
+    const showPromise = controller.show()
+    controller.hide('cancel')
+
+    expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+    const result = await showPromise
+    expect(result.trigger).toBe('cancel')
+    expect(result.ok).toBeNull()
+  })
+
   it('hide sets modelValue to false in the store', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
