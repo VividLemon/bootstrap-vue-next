@@ -553,7 +553,9 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - **Q5 — A.** One control bar below the slides; `overlay` switches to `.carousel-overlay-controls`; a `controls` slot replaces the bar.
 - **Q6 — A.** `BCarouselSlide` keeps `imgSrc` / `imgSrcset` / `imgAlt` and the `img` slot; width / height / blank props are removed.
 - **Q7 — A.** No public `useCarousel`; template-ref methods and slot props cover programmatic control.
-- Q8–Q10: _Pending._
+- **Q8 — B. Match v6 markup only**; no extra WAI-ARIA carousel attributes beyond what v6 renders.
+- **Q9 — A.** `BStepper` (v-model of the current step, `horizontal: boolean | Breakpoint`, `overflow`, `tag`) + `BStepperItem` (`active` / `current` overrides, `theme`, `tag`, optional link or button). Breakpoint values need a query-container parent (G6).
+- **Q10 — A.** Prose is docs only (`.prose` / `.not-prose`).
 
 ## Implementation split
 
