@@ -29,6 +29,7 @@ export const buildController = <
     show?: () => void
     hide?: (trigger?: string, noEmit?: boolean) => void
     toggle?: () => void
+    visible?: boolean
   }
   const findItem = () => store.value.get(id)
 
@@ -41,7 +42,11 @@ export const buildController = <
           [Symbol.asyncDispose]: controller.destroy,
         })
       const currentModelValue = controller.get()?.value.props.modelValue
-      if (signal?.aborted && !currentModelValue) {
+      // The stored modelValue misses visibility changes made through the component's own show(),
+      // which this method uses once the component is mounted, so also ask the component
+      const isShown =
+        !!currentModelValue || (controller.ref as RefWithMethods | null)?.visible === true
+      if (signal?.aborted && !isShown) {
         return withDispose(new BvTriggerableEvent('hidden', {trigger: 'abort', ok: null}))
       }
       const abort = () => controller.hide('abort')
