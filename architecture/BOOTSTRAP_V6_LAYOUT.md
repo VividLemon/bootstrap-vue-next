@@ -429,7 +429,10 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - **Q6 — A** (accepted with Q5). `BGrid` `columns` / `rows` / `gap` as inline `--bs-*` variables plus a responsive `flow`; `BGridItem` `cols` / `start` / `fill` as `Responsive<T>` objects. Docs state that `md:g-col-*` follows the grid's width while `BCol` and utilities follow the viewport.
 - **Q1 — A. Links only, as v6.** Sections come from the target nav's links; the heading-based mode is removed. The docs "On this page" sidebar (`apps/docs/.vitepress/theme/Layout.vue`) must render its nav first and spy on it.
 - **Q2 — C. Remove `vBScrollspy`**; `useScrollspy` is the only API.
-- Q3, Q4, Q7, Q8: _Pending._
+- **Q3 — B (asked again after Q2 removed the directive). Reactive only:** `useScrollspy` writes nothing to the DOM; it returns the current section id and the active parent chain, and users bind `:active` (and `aria-current`). `manual` is no longer needed as an option.
+- **Q4 — A.** Wherever the library applies the active state it also sets `aria-current="location"`; with reactive-only scrollspy that means the docs show binding it, and any library-applied state follows the same rule.
+- **Q7 — A.** Container queries are docs only: `.contains-inline` plus one shared docs note on every container-based prop.
+- **Q8 — B.** Add a `hoverLift` boolean on `BCard` (renders v6 hover lift). No other CSS-only helper becomes a prop; extending it to `BButton` / `BLink` is not decided.
 
 ## Implementation split
 

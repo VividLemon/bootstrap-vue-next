@@ -102,14 +102,14 @@ Public, non-UI composables that could come with a component, for new and existin
 
 Each group runs as one read-only research subagent. Components sharing a v6 base stay together so the shared design is decided once.
 
-| Group                  | Scope                                                                     | Depends on                                                                   | Output                                     | State          |
-| ---------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------ | -------------- |
-| G1 Overlays            | Dialog, Drawer, `useModal` redesign                                       | #164 transition core                                                         | `architecture/BOOTSTRAP_V6_OVERLAYS.md`    | Decided        |
-| G2 Menus               | Menu, Combobox, Nav overflow                                              | #164; Menu is the base for the other two                                     | `architecture/BOOTSTRAP_V6_MENUS.md`       | Decided        |
-| G3 Navbar              | Navbar                                                                    | References G1 (Drawer) and G2 (Menu) decisions; research can run in parallel | `architecture/BOOTSTRAP_V6_NAVBAR.md`      | Decided        |
-| G4 Form inputs         | Field, Range, Chips, OTP input, Datepicker, Password strength, Form adorn | #165 forms                                                                   | `architecture/BOOTSTRAP_V6_FORM_INPUTS.md` | Decided        |
-| G5 Display             | Accordion, Avatar, Carousel, Stepper, Prose                               | #164 (Collapse), #167 (Badge)                                                | `architecture/BOOTSTRAP_V6_DISPLAY.md`     | Decided        |
-| G6 Layout and behavior | Scrollspy, CSS Grid, container-query helpers                              | #164 (breakpoints, responsive)                                               | `architecture/BOOTSTRAP_V6_LAYOUT.md`      | Questions open |
+| Group                  | Scope                                                                     | Depends on                                                                   | Output                                     | State   |
+| ---------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------ | ------- |
+| G1 Overlays            | Dialog, Drawer, `useModal` redesign                                       | #164 transition core                                                         | `architecture/BOOTSTRAP_V6_OVERLAYS.md`    | Decided |
+| G2 Menus               | Menu, Combobox, Nav overflow                                              | #164; Menu is the base for the other two                                     | `architecture/BOOTSTRAP_V6_MENUS.md`       | Decided |
+| G3 Navbar              | Navbar                                                                    | References G1 (Drawer) and G2 (Menu) decisions; research can run in parallel | `architecture/BOOTSTRAP_V6_NAVBAR.md`      | Decided |
+| G4 Form inputs         | Field, Range, Chips, OTP input, Datepicker, Password strength, Form adorn | #165 forms                                                                   | `architecture/BOOTSTRAP_V6_FORM_INPUTS.md` | Decided |
+| G5 Display             | Accordion, Avatar, Carousel, Stepper, Prose                               | #164 (Collapse), #167 (Badge)                                                | `architecture/BOOTSTRAP_V6_DISPLAY.md`     | Decided |
+| G6 Layout and behavior | Scrollspy, CSS Grid, container-query helpers                              | #164 (breakpoints, responsive)                                               | `architecture/BOOTSTRAP_V6_LAYOUT.md`      | Decided |
 
 ## Orchestrator handoff
 
