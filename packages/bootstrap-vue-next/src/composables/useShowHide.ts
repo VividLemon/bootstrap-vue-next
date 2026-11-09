@@ -101,13 +101,15 @@ export const useShowHide = (
     isMounted = true
     if (!props.show && initialShow) {
       // show without delay or animation
-      const event = buildTriggerableEvent('show', {cancelable: true})
+      const requestSignal = currentRequestSignal()
+      const event = buildTriggerableEvent('show', {cancelable: true, signal: requestSignal})
       emit('show', event)
 
       if (event.defaultPrevented) {
-        emit('show-prevented', buildTriggerableEvent('show-prevented'))
+        emit('show-prevented', buildTriggerableEvent('show-prevented', {signal: requestSignal}))
         return
       }
+      endRequests()
       localNoAnimation.value = true
       if (!modelValue.value) {
         noAction = true
@@ -186,12 +188,25 @@ export const useShowHide = (
    * the next show
    */
   let transition: {type: 'show' | 'hide'; controller: AbortController} | undefined
+  /**
+   * Backs `event.signal` on show and hide request events. Requests share it until the component
+   * commits to a show or hide (or unmounts), which aborts it. A prevented request leaves it running,
+   * so async work started for it stops only once the component actually changes state
+   */
+  let requestScope: AbortController | undefined
+  const currentRequestSignal = (): AbortSignal => (requestScope ??= new AbortController()).signal
+  const endRequests = () => {
+    requestScope?.abort()
+    requestScope = undefined
+  }
   const beginTransition = (type: 'show' | 'hide'): AbortSignal => {
+    endRequests()
     transition?.controller.abort()
     const controller = new AbortController()
     transition = {type, controller}
     return controller.signal
   }
+
   const afterFrame = (signal: AbortSignal, fn: () => void) => {
     const frame = requestAnimationFrame(() => {
       if (!signal.aborted) fn()
@@ -208,11 +223,12 @@ export const useShowHide = (
       _Resolve = resolve
     })
 
-    const event = buildTriggerableEvent('show', {cancelable: true})
+    const requestSignal = currentRequestSignal()
+    const event = buildTriggerableEvent('show', {cancelable: true, signal: requestSignal})
     emit('show', event)
 
     if (event.defaultPrevented) {
-      emit('show-prevented', buildTriggerableEvent('show-prevented'))
+      emit('show-prevented', buildTriggerableEvent('show-prevented', {signal: requestSignal}))
       if (isVisible.value) {
         isVisible.value = false
       }
@@ -277,8 +293,12 @@ export const useShowHide = (
       })
     if (typeof trigger !== 'string') trigger = undefined
     const transitionBefore = transition
+    const requestSignal = currentRequestSignal()
     const prevented = (): Promise<string> => {
-      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
+      emit(
+        'hide-prevented',
+        buildTriggerableEvent('hide-prevented', {trigger, signal: requestSignal})
+      )
       if (!ownsPromise) return Promise.resolve('hide-prevented')
       // Settle and drop this hide's promise, so the next hide gets its own
       const promise = _Promise as Promise<string>
@@ -287,8 +307,12 @@ export const useShowHide = (
       _Resolve = undefined
       return promise
     }
-    const event = buildTriggerableEvent('hide', {cancelable: true, trigger})
-    const event2 = buildTriggerableEvent(trigger || 'ignore', {cancelable: true, trigger})
+    const event = buildTriggerableEvent('hide', {cancelable: true, trigger, signal: requestSignal})
+    const event2 = buildTriggerableEvent(trigger || 'ignore', {
+      cancelable: true,
+      trigger,
+      signal: requestSignal,
+    })
     if (
       (trigger === 'backdrop' && props.noCloseOnBackdrop) ||
       (trigger === 'esc' && props.noCloseOnEsc)
@@ -428,6 +452,7 @@ export const useShowHide = (
     isMounted = false
     // Cancels whichever frame or timer the last show or hide still has pending
     transition?.controller.abort()
+    endRequests()
   })
 
   const lazyLoadCompleted = ref(false)

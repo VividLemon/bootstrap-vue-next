@@ -173,6 +173,76 @@ describe('buildController', () => {
     expect(store.value.size).toBe(0)
   })
 
+  describe('show({signal})', () => {
+    type RefWithMethods = ComponentPublicInstance<unknown> & {
+      show?: () => void
+      hide?: (trigger?: string, noEmit?: boolean) => void
+      toggle?: () => void
+    }
+
+    it('does not show and resolves with trigger abort when the signal is already aborted', async () => {
+      const store = newStore()
+      const _self = Symbol('test-modal')
+      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      pushItem(store, _self, {modelValue: false})
+
+      const result = await controller.show({signal: AbortSignal.abort()})
+
+      expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+      expect(result).toBeInstanceOf(BvTriggerableEvent)
+      expect(result.trigger).toBe('abort')
+      expect(result.ok).toBeNull()
+      expect(typeof result[Symbol.asyncDispose]).toBe('function')
+    })
+
+    it('hides the component with trigger abort when the signal aborts', async () => {
+      const store = newStore()
+      const _self = Symbol('test-modal')
+      const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>()
+      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      pushItem(store, _self, {modelValue: false})
+      controller.ref = {show: vi.fn<() => void>(), hide: hideMock} as unknown as RefWithMethods
+
+      const scope = new AbortController()
+      const showPromise = controller.show({signal: scope.signal})
+      scope.abort()
+
+      expect(hideMock).toHaveBeenCalledExactlyOnceWith('abort', true)
+      resolve(new BvTriggerableEvent('hidden', {trigger: 'abort'}))
+      expect((await showPromise).trigger).toBe('abort')
+    })
+
+    it('hides an already visible component when the signal is already aborted', async () => {
+      const store = newStore()
+      const _self = Symbol('test-modal')
+      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      pushItem(store, _self, {modelValue: true})
+
+      const showPromise = controller.show({signal: AbortSignal.abort()})
+
+      expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+      resolve(new BvTriggerableEvent('hidden', {trigger: 'abort'}))
+      expect((await showPromise).trigger).toBe('abort')
+    })
+
+    it('stops listening once the promise settles', async () => {
+      const store = newStore()
+      const _self = Symbol('test-modal')
+      const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>()
+      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      pushItem(store, _self, {modelValue: false})
+      controller.ref = {show: vi.fn<() => void>(), hide: hideMock} as unknown as RefWithMethods
+
+      const scope = new AbortController()
+      const showPromise = controller.show({signal: scope.signal})
+      resolve(new BvTriggerableEvent('hidden', {trigger: 'ok'}))
+      await showPromise
+      scope.abort()
+
+      expect(hideMock).not.toHaveBeenCalled()
+    })
+  })
+
   it('hide sets modelValue to false in the store', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
