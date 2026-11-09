@@ -549,7 +549,11 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - **Q1 — A. Native only.** `BAccordionItem` state syncs from the native `toggle` event into `v-model`; `show` / `shown` / `hide` / `hidden` / `*-prevented` are removed and items leave the show/hide registry (`v-b-toggle` / `useToggle` no longer target them). No `pseudoElement` option is needed in `useCssTransition` unless Q3 = C.
 - **Q4 — C. Pure v6 avatar.** No `href` / `to` / `button` and no badge props or slot; `BAvatar` renders v6 `.avatar` / `.avatar-img` / `.avatar-status` only (plus the v6 status additions). Users compose links, buttons and badges themselves; docs must note that wrapping an avatar in a link breaks `.avatar-stack`.
 - **Q2 — A.** `BAccordion` v-model holds open item ids only; `v-model:index` is removed; `free` keeps its name.
-- Q3, Q5–Q10: _Pending._
+- **Q3 — B.** Keep `lazy` (body renders on first open); remove `unmountLazy`.
+- **Q5 — A.** One control bar below the slides; `overlay` switches to `.carousel-overlay-controls`; a `controls` slot replaces the bar.
+- **Q6 — A.** `BCarouselSlide` keeps `imgSrc` / `imgSrcset` / `imgAlt` and the `img` slot; width / height / blank props are removed.
+- **Q7 — A.** No public `useCarousel`; template-ref methods and slot props cover programmatic control.
+- Q8–Q10: _Pending._
 
 ## Implementation split
 
