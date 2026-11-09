@@ -291,6 +291,8 @@ export const useShowHide = (
       _Promise = new Promise<string>((resolve) => {
         ;(_Resolve as (value: string | PromiseLike<string>) => void) = resolve
       })
+    // Captured because a hide started by a listener may settle and clear _Promise before we return
+    const hidePromise = _Promise as Promise<string>
     if (typeof trigger !== 'string') trigger = undefined
     const transitionBefore = transition
     const requestSignal = currentRequestSignal()
@@ -324,10 +326,10 @@ export const useShowHide = (
     const hiddenByListener = () => transition !== transitionBefore && transition?.type === 'hide'
     if (trigger && !noTriggerEmit) {
       emit(trigger, event2)
-      if (hiddenByListener()) return _Promise as Promise<string>
+      if (hiddenByListener()) return hidePromise
     }
     emit('hide', event)
-    if (hiddenByListener()) return _Promise as Promise<string>
+    if (hiddenByListener()) return hidePromise
 
     if (event.defaultPrevented || event2.defaultPrevented) {
       if (!modelValue.value) {
@@ -340,23 +342,31 @@ export const useShowHide = (
     }
     // The show is still waiting for its frame or delay, so nothing was revealed
     const showWasPending = transition?.type === 'show' && !showRef.value
+    // That show began while the previous hide's leave transition was still running
+    const leaveIsRunning = showWasPending && isLeaving.value
     trapActive.value = false
     const signal = beginTransition('hide')
+    if (showWasPending && modelValue.value) {
+      noAction = true
+      modelValue.value = isCountdown ? 0 : false
+    }
+    if (leaveIsRunning) {
+      // The running leave finishes this hide too: it emits hidden and settles the promise
+      leaveTrigger = trigger
+      return hidePromise
+    }
     if (showWasPending) {
       // No leave transition will run to finish this hide, so finish it here. Leaving isLeaving
       // false matters: with backdropFirst the backdrop stays visible while it is true
       if (!localTemporaryHide.value) renderRef.value = false
       renderBackdropRef.value = false
-      if (modelValue.value) {
-        noAction = true
-        modelValue.value = isCountdown ? 0 : false
-      }
-      emit('hidden', buildTriggerableEvent('hidden', {trigger, cancelable: false}))
-      const promise = _Promise as Promise<string>
-      _Resolve?.(trigger || '')
+      // Settle before emitting: a hidden listener may call show(), which replaces _Promise
+      const resolve = _Resolve
       _Promise = undefined
       _Resolve = undefined
-      return promise
+      emit('hidden', buildTriggerableEvent('hidden', {trigger, cancelable: false}))
+      resolve?.(trigger || '')
+      return hidePromise
     }
     leaveTrigger = trigger
     hideTimeout = setTimeout(

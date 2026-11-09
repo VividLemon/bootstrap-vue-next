@@ -33,6 +33,28 @@ export const buildController = <
   }
   const findItem = () => store.value.get(id)
 
+  /**
+   * True from a show() request until the component reports its dismissal. The stored modelValue
+   * can't tell us this: it is not updated when the component is shown through its own show(), and
+   * a show can still be waiting for its frame or delay
+   */
+  let showRequested = false
+  const settle = (event: BvTriggerableEvent) => {
+    showRequested = false
+    resolveFunc(event)
+  }
+  /**
+   * Hides the component. One that has not mounted can't emit a hidden event, so settle for it
+   */
+  const dismiss = (trigger: string) => {
+    if (controller.ref === null) {
+      controller.set({modelValue: false})
+      settle(new BvTriggerableEvent('hidden', {trigger, ok: null}))
+      return
+    }
+    controller.hide(trigger)
+  }
+
   const controller = {
     id,
     ref: null as RefWithMethods | null,
@@ -45,16 +67,19 @@ export const buildController = <
       // The stored modelValue misses visibility changes made through the component's own show(),
       // which this method uses once the component is mounted, so also ask the component
       const isShown =
-        !!currentModelValue || (controller.ref as RefWithMethods | null)?.visible === true
+        !!currentModelValue ||
+        showRequested ||
+        (controller.ref as RefWithMethods | null)?.visible === true
       if (signal?.aborted && !isShown) {
         return withDispose(new BvTriggerableEvent('hidden', {trigger: 'abort', ok: null}))
       }
-      const abort = () => controller.hide('abort')
+      const abort = () => dismiss('abort')
       signal?.addEventListener('abort', abort, {once: true})
       try {
         if (signal?.aborted) {
           abort()
         } else if (!currentModelValue) {
+          showRequested = true
           const refWithMethods = controller.ref
           if (
             refWithMethods !== null &&
@@ -65,6 +90,9 @@ export const buildController = <
           } else {
             controller.set({modelValue: true})
           }
+          // A show listener may have aborted while the show was being requested, before there was
+          // anything to hide. Hide now that the show is committed
+          if (signal?.aborted) abort()
         }
         return withDispose(await basePromise)
       } finally {
@@ -115,13 +143,15 @@ export const buildController = <
       const item = findItem()
       if (!item) return
       try {
-        if (item.value.props.modelValue) {
-          controller.hide('destroy')
+        if (item.value.props.modelValue || showRequested) {
+          dismiss('destroy')
           await basePromise
           await nextTick()
         }
       } finally {
         store.value.delete(id)
+        // Nothing can emit for a removed item, so settle a show() that is still waiting
+        settle(new BvTriggerableEvent('hidden', {trigger: 'destroy', ok: null}))
       }
     },
     [Symbol.asyncDispose]() {
@@ -131,7 +161,7 @@ export const buildController = <
 
   return {
     controller,
-    resolve: resolveFunc,
+    resolve: settle,
   }
 }
 
