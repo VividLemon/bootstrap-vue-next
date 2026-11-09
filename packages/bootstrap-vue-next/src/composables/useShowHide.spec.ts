@@ -260,4 +260,64 @@ describe('useShowHide', () => {
     expect(hidden?.trigger).toBe('esc')
     wrapper.unmount()
   })
+
+  it('returns the hide promise when a listener hides the component while its show is pending', async () => {
+    vi.useFakeTimers()
+    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name) => {
+      if (name === 'ok') mounted.state.hide()
+    })
+    const mounted = mountShowHide(emit)
+
+    mounted.state.show()
+    const hidden = mounted.state.hide('ok')
+    expect(hidden).toBeInstanceOf(Promise)
+    expect(await hidden).toBe('')
+    expect(count(emit, 'hidden')).toBe(1)
+    mounted.wrapper.unmount()
+  })
+
+  it('lets a running leave finish a hide that cancels a show started during it', async () => {
+    vi.useFakeTimers()
+    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>()
+    const {state, wrapper} = mountShowHide(emit, {}, true)
+
+    state.hide('ok')
+    await vi.advanceTimersByTimeAsync(1) // hide timer ran: the leave transition is running
+    expect(state.isLeaving.value).toBe(true)
+
+    const shown = state.show()
+    const hidden = state.hide('cancel') // before the show's frame
+    expect(count(emit, 'hidden')).toBe(0)
+
+    for (const hook of state.transitionProps.onAfterLeave as (() => void)[]) hook()
+    const hiddenEvents = emit.mock.calls.filter(([name]) => name === 'hidden')
+    expect(hiddenEvents).toHaveLength(1)
+    expect(hiddenEvents[0]?.[1].trigger).toBe('cancel')
+    expect(await hidden).toBe('cancel')
+    expect(await shown).toBe('cancel')
+    wrapper.unmount()
+  })
+
+  it('does not settle a show started from a hidden listener with the finished hide', async () => {
+    vi.useFakeTimers()
+    let reopened: Promise<boolean | string> | undefined
+    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name) => {
+      if (name === 'hidden' && !reopened) reopened = mounted.state.show()
+    })
+    const mounted = mountShowHide(emit)
+
+    const shown = mounted.state.show()
+    const hidden = mounted.state.hide('ok') // before the show's frame
+    expect(await hidden).toBe('ok')
+    expect(await shown).toBe('ok')
+
+    let reopenedSettled = false
+    reopened?.then(() => {
+      reopenedSettled = true
+    })
+    await vi.advanceTimersByTimeAsync(0)
+    expect(reopened).toBeInstanceOf(Promise)
+    expect(reopenedSettled).toBe(false)
+    mounted.wrapper.unmount()
+  })
 })
