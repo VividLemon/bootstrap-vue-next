@@ -137,10 +137,16 @@ describe('useShowHide', () => {
     const {state, wrapper} = mountShowHide(emit)
 
     // show() defers revealing to requestAnimationFrame; hide() lands before that frame
-    state.show()
-    state.hide('ok')
+    const shown = state.show()
+    const hidden = state.hide('ok')
     await vi.runAllTimersAsync()
     expect(state.showRef.value).toBe(false)
+    // no leave transition runs, so the hide finishes on its own and leaves nothing behind
+    expect(state.isLeaving.value).toBe(false)
+    expect(state.renderBackdropRef.value).toBe(false)
+    expect(count(emit, 'hidden')).toBe(1)
+    expect(await hidden).toBe('ok')
+    expect(await shown).toBe('ok')
 
     // and the next show/hide cycle still works
     state.show()
@@ -234,5 +240,24 @@ describe('useShowHide', () => {
     it('is null on events built outside a show or hide request', () => {
       expect(new BvTriggerableEvent('hidden').signal).toBeNull()
     })
+  })
+
+  it('finishes a hide that lands during a delayed show without leaving a backdrop', async () => {
+    vi.useFakeTimers()
+    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>()
+    const {state, wrapper} = mountShowHide(emit, {delay: {show: 500, hide: 0}})
+
+    state.show()
+    await vi.advanceTimersByTimeAsync(100) // frame has run, delay still pending
+    expect(state.renderBackdropRef.value).toBe(true)
+    state.hide('esc')
+    await vi.runAllTimersAsync()
+
+    expect(state.showRef.value).toBe(false)
+    expect(state.isLeaving.value).toBe(false)
+    expect(state.renderBackdropRef.value).toBe(false)
+    const hidden = emit.mock.calls.find(([name]) => name === 'hidden')?.[1]
+    expect(hidden?.trigger).toBe('esc')
+    wrapper.unmount()
   })
 })

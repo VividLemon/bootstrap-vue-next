@@ -225,6 +225,22 @@ describe('buildController', () => {
       expect((await showPromise).trigger).toBe('abort')
     })
 
+    it('hides a component shown through its own show() when the signal is already aborted', async () => {
+      const store = newStore()
+      const _self = Symbol('test-modal')
+      const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>()
+      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      // mounted and visible, but the stored modelValue was never updated
+      pushItem(store, _self, {modelValue: false})
+      controller.ref = {visible: true, hide: hideMock} as unknown as RefWithMethods
+
+      const showPromise = controller.show({signal: AbortSignal.abort()})
+
+      expect(hideMock).toHaveBeenCalledExactlyOnceWith('abort', true)
+      resolve(new BvTriggerableEvent('hidden', {trigger: 'abort'}))
+      expect((await showPromise).trigger).toBe('abort')
+    })
+
     it('stops listening once the promise settles', async () => {
       const store = newStore()
       const _self = Symbol('test-modal')

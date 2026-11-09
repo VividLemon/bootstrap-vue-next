@@ -338,9 +338,27 @@ export const useShowHide = (
       }
       return prevented()
     }
-    leaveTrigger = trigger
+    // The show is still waiting for its frame or delay, so nothing was revealed
+    const showWasPending = transition?.type === 'show' && !showRef.value
     trapActive.value = false
     const signal = beginTransition('hide')
+    if (showWasPending) {
+      // No leave transition will run to finish this hide, so finish it here. Leaving isLeaving
+      // false matters: with backdropFirst the backdrop stays visible while it is true
+      if (!localTemporaryHide.value) renderRef.value = false
+      renderBackdropRef.value = false
+      if (modelValue.value) {
+        noAction = true
+        modelValue.value = isCountdown ? 0 : false
+      }
+      emit('hidden', buildTriggerableEvent('hidden', {trigger, cancelable: false}))
+      const promise = _Promise as Promise<string>
+      _Resolve?.(trigger || '')
+      _Promise = undefined
+      _Resolve = undefined
+      return promise
+    }
+    leaveTrigger = trigger
     hideTimeout = setTimeout(
       () => {
         if (!isMounted) return
