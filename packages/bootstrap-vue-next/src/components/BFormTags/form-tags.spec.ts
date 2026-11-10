@@ -295,7 +295,7 @@ describe('form-tags', () => {
         props: {modelValue: ['apple'], tagColor: {theme: 'primary'}},
       })
       const tag = wrapper.findComponent(BFormTag)
-      expect(tag.props('theme')).toBe('primary')
+      expect(tag.props('color')?.theme).toBe('primary')
     })
 
     it('defaults to secondary theme', () => {
@@ -303,7 +303,7 @@ describe('form-tags', () => {
         props: {modelValue: ['apple']},
       })
       const tag = wrapper.findComponent(BFormTag)
-      expect(tag.props('theme')).toBe('secondary')
+      expect(tag.props('color')?.theme).toBe('secondary')
     })
   })
 

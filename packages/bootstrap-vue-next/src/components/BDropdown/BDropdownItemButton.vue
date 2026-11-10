@@ -15,12 +15,12 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import type {
   BDropdownItemButtonEmits,
   BDropdownItemButtonProps,
   BDropdownItemButtonSlots,
 } from '../../types'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed, useAttrs} from 'vue'
 
@@ -33,12 +33,11 @@ const _props = withDefaults(defineProps<BDropdownItemButtonProps>(), {
   activeClass: 'active',
   buttonClass: undefined,
   disabled: false,
-  theme: null,
-  bg: null,
-  fg: null,
   wrapperAttrs: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BDropdownItemButton')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 const emit = defineEmits<BDropdownItemButtonEmits>()
 defineSlots<BDropdownItemButtonSlots>()
 const attrs = useAttrs()
@@ -50,9 +49,9 @@ const processedAttrs = computed(() => {
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [

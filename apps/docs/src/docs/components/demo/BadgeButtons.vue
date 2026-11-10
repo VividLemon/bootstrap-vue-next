@@ -1,9 +1,9 @@
 <template>
   <!-- #region template -->
 
-  <BButton theme="primary">
+  <BButton :color="{ theme: 'primary' }">
     Notifications
-    <BBadge theme="secondary">4</BBadge>
+    <BBadge :color="{ theme: 'secondary' }">4</BBadge>
   </BButton>
   <!-- #endregion template -->
 </template>

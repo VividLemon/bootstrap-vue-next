@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BDropdown text="Block Level Dropdown" theme="primary" class="d-grid gap-2 mb-2">
+  <BDropdown text="Block Level Dropdown" :color="{ theme: 'primary' }" class="d-grid gap-2 mb-2">
     <BDropdownItem>Action</BDropdownItem>
     <BDropdownItem>Another action</BDropdownItem>
     <BDropdownItem>Something else here</BDropdownItem>
@@ -11,7 +11,7 @@
       split
       split-variant="outline"
       :split-color="{ theme: 'primary' }"
-      theme="primary"
+      :color="{ theme: 'primary' }"
       split-class="w-100"
     >
       <BDropdownItem>Action</BDropdownItem>

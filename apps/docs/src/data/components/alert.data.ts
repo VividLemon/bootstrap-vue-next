@@ -20,12 +20,12 @@ export default {
           ...omit(showHideProps, ['modelValue']),
           ...pick(
             buildCommonProps({
-              theme: {
-                default: 'info',
+              color: {
+                default: { theme: 'info' },
               },
             }),
             [
-              'bg',
+              'color',
               'body',
               'bodyClass',
               'closeClass',
@@ -33,7 +33,6 @@ export default {
               'closeLabel',
               'closeColor',
               'closeVariant',
-              'fg',
               'headerClass',
               'headerTag',
               'id',
@@ -43,7 +42,6 @@ export default {
               'noResumeOnHoverLeave',
               'progressProps',
               'showOnPause',
-              'theme',
               'title',
             ],
           ),

@@ -19,7 +19,7 @@
       <BFormCheckbox id="remember" name="remember" value="remember" checked>
         Remember me</BFormCheckbox
       >
-      <BButton type="submit" theme="primary">Sign In</BButton>
+      <BButton type="submit" :color="{ theme: 'primary' }">Sign In</BButton>
     </BDropdownForm>
     <BDropdownDivider />
     <BDropdownItemButton>New around here? Sign up</BDropdownItemButton>

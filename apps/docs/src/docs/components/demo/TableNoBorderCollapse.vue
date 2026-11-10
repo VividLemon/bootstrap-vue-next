@@ -17,7 +17,7 @@
       />
     </div>
 
-    <BAlert id="table-no-border-collapse-alert" theme="info" show class="mt-3">
+    <BAlert id="table-no-border-collapse-alert" :color="{ theme: 'info' }" show class="mt-3">
       <strong>No border collapse</strong> is mainly useful with sticky headers or sticky columns to
       prevent borders from appearing incorrectly. Toggle the checkbox to see how borders behave
       differently when scrolling with sticky headers.

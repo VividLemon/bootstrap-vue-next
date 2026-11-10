@@ -147,11 +147,11 @@ export default {
       props: {
         ...pick(
           buildCommonProps({
-            fg: {
-              default: '2',
+            color: {
+              default: { fg: '2' },
             },
           }),
-          ['fg', 'id', 'tag'],
+          ['color', 'id', 'tag'],
         ),
         inline: {
           type: 'boolean',

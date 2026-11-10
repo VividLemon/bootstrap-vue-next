@@ -15,11 +15,11 @@ export default {
     BOverlay: {
       styleSpec: { kind: StyleKind.BsvnClass },
       props: {
-        bgColor: {
+        bgCss: {
           type: 'string',
           default: undefined,
           description:
-            'CSS color to use as the opaque overlay backdrop color. If set, overrides the `bg` prop',
+            'CSS color to use as the opaque overlay backdrop color. If set, overrides `color.bg`',
         },
         blur: {
           type: 'string | null',
@@ -81,11 +81,11 @@ export default {
           description:
             "Type of the default spinner to show. Current supported types are 'border' and 'grow'",
         },
-        bg: {
-          type: 'MaybeArray<BgColor> | null',
-          default: 'body',
+        color: {
+          type: "Pick<ColorExtendables, 'bg'> | null",
+          default: { bg: 'body' },
           description:
-            'Applies a background color (`BgColor`) to the overlay backdrop. Set to `null` to apply no background class',
+            'Colors the overlay backdrop: `bg` renders a `bg-*` class. Set `bg` to `null` to apply no background class',
         },
         wrapTag: {
           type: 'string',
@@ -102,7 +102,7 @@ export default {
         ...pick(
           buildCommonProps({
             spinnerColor: {
-              type: "Pick<BSpinnerProps, 'theme' | 'bg' | 'fg'>",
+              type: "BSpinnerProps['color']",
               description:
                 'Color object for the default spinner: `theme` (a theme color only, no modifiers), `bg` and `fg` keys. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
             },

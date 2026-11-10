@@ -88,17 +88,17 @@ describe('card-subtitle', () => {
 
   it('has class fg-{type} when prop fg', async () => {
     const wrapper = mount(BCardSubtitle, {
-      props: {fg: 'primary'},
+      props: {color: {fg: 'primary'}},
     })
     expect(wrapper.classes()).toContain('fg-primary')
-    await wrapper.setProps({fg: undefined})
+    await wrapper.setProps({color: {fg: undefined}})
     expect(wrapper.classes()).not.toContain('fg-primary')
     expect(wrapper.classes()).toContain('fg-2')
   })
 
   it('does not have fg-2 when fg is null', () => {
     const wrapper = mount(BCardSubtitle, {
-      props: {fg: null},
+      props: {color: {fg: null}},
     })
     expect(wrapper.classes()).not.toContain('fg-2')
     expect(wrapper.classes()).not.toContain('fg-null')

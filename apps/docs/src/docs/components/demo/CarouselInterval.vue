@@ -6,8 +6,8 @@
   </BCarousel>
 
   <BButtonGroup>
-    <BButton theme="danger" @click="slideInterval = slideInterval - 1000"> Minus 1000 </BButton>
-    <BButton theme="success" @click="slideInterval = slideInterval + 1000"> Plus 1000 </BButton>
+    <BButton :color="{ theme: 'danger' }" @click="slideInterval = slideInterval - 1000"> Minus 1000 </BButton>
+    <BButton :color="{ theme: 'success' }" @click="slideInterval = slideInterval + 1000"> Plus 1000 </BButton>
   </BButtonGroup>
 
   Current Interval Speed: {{ slideInterval }} ms

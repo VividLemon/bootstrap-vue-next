@@ -63,10 +63,10 @@ describe('placeholder', () => {
 
   it('has class bg-{type} when prop bg', async () => {
     const wrapper = mount(BPlaceholder, {
-      props: {bg: 'info'},
+      props: {color: {bg: 'info'}},
     })
     expect(wrapper.find('.placeholder').classes()).toContain('bg-info')
-    await wrapper.setProps({bg: undefined})
+    await wrapper.setProps({color: {bg: undefined}})
     expect(wrapper.find('.placeholder').classes()).not.toContain('bg-info')
   })
 

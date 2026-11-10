@@ -38,11 +38,11 @@ describe('nav-item-dropdown', () => {
 
   it('passes variant and theme props to BDropdown', () => {
     const wrapper = mount(BNavItemDropdown, {
-      props: {variant: 'outline', theme: 'primary'},
+      props: {variant: 'outline', color: {theme: 'primary'}},
     })
     const $bdropdown = wrapper.findComponent(BDropdown)
     expect($bdropdown.props('variant')).toBe('outline')
-    expect($bdropdown.props('theme')).toBe('primary')
+    expect($bdropdown.props('color')?.theme).toBe('primary')
   })
 
   it('passes split prop to BDropdown', async () => {

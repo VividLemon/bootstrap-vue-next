@@ -82,7 +82,7 @@
       :no-border-collapse="noCollapse"
       :items="items"
       :fields="fields"
-      :theme="theme"
+      :color="{ theme: theme }"
       :head-color="{ theme: headTheme }"
       :foot-color="{ theme: footTheme }"
     />

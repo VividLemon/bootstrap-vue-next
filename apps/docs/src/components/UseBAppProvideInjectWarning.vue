@@ -1,5 +1,5 @@
 <template>
-  <BAlert theme="warning" :model-value="true">
+  <BAlert :color="{ theme: 'warning' }" :model-value="true">
     <strong>Vue Provide/Inject Limitation</strong>
     <p>
       Due to how Vue's provide/inject system works, composables like

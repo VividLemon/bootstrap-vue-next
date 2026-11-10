@@ -44,10 +44,10 @@ describe('progress-bar', () => {
 
   it('has class theme-{theme} when prop theme', async () => {
     const wrapper = mount(BProgressBar, {
-      props: {theme: 'success'},
+      props: {color: {theme: 'success'}},
     })
     expect(wrapper.classes()).toContain('theme-success')
-    await wrapper.setProps({theme: 'danger'})
+    await wrapper.setProps({color: {theme: 'danger'}})
     expect(wrapper.classes()).toContain('theme-danger')
     expect(wrapper.classes()).not.toContain('theme-success')
   })
@@ -60,20 +60,20 @@ describe('progress-bar', () => {
 
   it('has class bg-{bg} when prop bg', async () => {
     const wrapper = mount(BProgressBar, {
-      props: {bg: 'primary'},
+      props: {color: {bg: 'primary'}},
     })
     expect(wrapper.classes()).toContain('bg-primary')
-    await wrapper.setProps({bg: 'warning'})
+    await wrapper.setProps({color: {bg: 'warning'}})
     expect(wrapper.classes()).toContain('bg-warning')
     expect(wrapper.classes()).not.toContain('bg-primary')
   })
 
   it('has class fg-{fg} when prop fg', async () => {
     const wrapper = mount(BProgressBar, {
-      props: {fg: 'black'},
+      props: {color: {fg: 'black'}},
     })
     expect(wrapper.classes()).toContain('fg-black')
-    await wrapper.setProps({fg: 'white'})
+    await wrapper.setProps({color: {fg: 'white'}})
     expect(wrapper.classes()).toContain('fg-white')
     expect(wrapper.classes()).not.toContain('fg-black')
   })

@@ -39,18 +39,18 @@ describe('card-header', () => {
 
   it('gives prop bg to child', () => {
     const wrapper = mount(BCardHeader, {
-      props: {bg: 'danger'},
+      props: {color: {bg: 'danger'}},
     })
     const $headfoot = wrapper.getComponent(BCardHeadFoot)
-    expect($headfoot.props('bg')).toBe('danger')
+    expect($headfoot.props('color')?.bg).toBe('danger')
   })
 
   it('gives prop border to child', () => {
     const wrapper = mount(BCardHeader, {
-      props: {border: 'danger'},
+      props: {color: {border: 'danger'}},
     })
     const $headfoot = wrapper.getComponent(BCardHeadFoot)
-    expect($headfoot.props('border')).toBe('danger')
+    expect($headfoot.props('color')?.border).toBe('danger')
   })
 
   it('gives prop tag to child', () => {
@@ -63,18 +63,18 @@ describe('card-header', () => {
 
   it('gives prop fg to child', () => {
     const wrapper = mount(BCardHeader, {
-      props: {fg: 'danger'},
+      props: {color: {fg: 'danger'}},
     })
     const $headfoot = wrapper.getComponent(BCardHeadFoot)
-    expect($headfoot.props('fg')).toBe('danger')
+    expect($headfoot.props('color')?.fg).toBe('danger')
   })
 
   it('gives prop theme to child', () => {
     const wrapper = mount(BCardHeader, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
     })
     const $headfoot = wrapper.getComponent(BCardHeadFoot)
-    expect($headfoot.props('theme')).toBe('primary')
+    expect($headfoot.props('color')?.theme).toBe('primary')
   })
 
   it('renders default slot', () => {
@@ -102,28 +102,28 @@ describe('card-header', () => {
 
   it('has class fg-{type} when prop fg', async () => {
     const wrapper = mount(BCardHeader, {
-      props: {fg: 'primary'},
+      props: {color: {fg: 'primary'}},
     })
     expect(wrapper.classes()).toContain('fg-primary')
-    await wrapper.setProps({fg: undefined})
+    await wrapper.setProps({color: {fg: undefined}})
     expect(wrapper.classes()).not.toContain('fg-primary')
   })
 
   it('has class bg-{type} when prop bg', async () => {
     const wrapper = mount(BCardHeader, {
-      props: {bg: 'primary'},
+      props: {color: {bg: 'primary'}},
     })
     expect(wrapper.classes()).toContain('bg-primary')
-    await wrapper.setProps({bg: undefined})
+    await wrapper.setProps({color: {bg: undefined}})
     expect(wrapper.classes()).not.toContain('bg-primary')
   })
 
   it('has class border-{type} when prop border', async () => {
     const wrapper = mount(BCardHeader, {
-      props: {border: 'primary'},
+      props: {color: {border: 'primary'}},
     })
     expect(wrapper.classes()).toContain('border-primary')
-    await wrapper.setProps({border: undefined})
+    await wrapper.setProps({color: {border: undefined}})
     expect(wrapper.classes()).not.toContain('border-primary')
   })
 })

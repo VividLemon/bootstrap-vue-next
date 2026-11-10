@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BNavbar v-b-color-mode="'dark'" theme="inverse">
+  <BNavbar v-b-color-mode="'dark'" :color="{ theme: 'inverse' }">
     <BNavbarNav>
       <BNavItem href="#navbar-item-dropdown">Home</BNavItem>
       <BNavItemDropdown text="Lang" right>

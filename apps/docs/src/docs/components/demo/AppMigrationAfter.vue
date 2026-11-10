@@ -1,6 +1,6 @@
 <!-- App.vue -->
 <template>
-  <BApp :defaults="{ BButton: { theme: 'primary' } }">
+  <BApp :defaults="{ BButton: { color: { theme: 'primary' } } }">
     <RouterView />
   </BApp>
 </template>

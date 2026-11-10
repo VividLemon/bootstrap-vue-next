@@ -160,14 +160,14 @@ describe('placeholder-card', () => {
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholder = $card.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBe('danger')
+    expect($placeholder.props('color')?.bg).toBe('danger')
   })
 
   it('placeholder has prop theme to be default undefined', () => {
     const wrapper = mount(BPlaceholderCard)
     const $card = wrapper.getComponent(BCard)
     const $placeholder = $card.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBeNull()
+    expect($placeholder.props('color')?.bg).toBeUndefined()
   })
 
   it('placeholder has prop animation to be prop headerWidth', () => {
@@ -384,7 +384,7 @@ describe('placeholder-card', () => {
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholder = $card.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBeNull()
+    expect($placeholder.props('color')?.bg).toBeUndefined()
   })
 
   it('BPlaceholder is given prop theme to be prop footerColor.theme', () => {
@@ -394,7 +394,7 @@ describe('placeholder-card', () => {
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholder = $card.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBe('danger')
+    expect($placeholder.props('color')?.bg).toBe('danger')
   })
 
   it('BPlaceholderButton is given prop width to be 100 by default', () => {
@@ -444,7 +444,7 @@ describe('placeholder-card', () => {
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholderbutton = $card.getComponent(BPlaceholderButton)
-    expect($placeholderbutton.props('theme')).toBe('primary')
+    expect($placeholderbutton.get('.btn').classes()).toContain('theme-primary')
   })
 
   it('BPlaceholderButton is given prop theme to be prop footerColor.theme', () => {
@@ -454,7 +454,7 @@ describe('placeholder-card', () => {
     })
     const $card = wrapper.getComponent(BCard)
     const $placeholderbutton = $card.getComponent(BPlaceholderButton)
-    expect($placeholderbutton.props('theme')).toBe('danger')
+    expect($placeholderbutton.props('color')?.theme).toBe('danger')
   })
 
   it('renders all in correct order', () => {

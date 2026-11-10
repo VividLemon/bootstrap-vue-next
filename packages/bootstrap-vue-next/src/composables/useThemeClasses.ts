@@ -1,4 +1,4 @@
-import {computed, type MaybeRef, unref} from 'vue'
+import {computed, type MaybeRef, type MaybeRefOrGetter, toValue, unref} from 'vue'
 import type {
   BorderColor,
   ButtonVariant,
@@ -70,10 +70,10 @@ export const resolvePartColor = <
  * `.theme-<theme>`, `.bg-<bg>`, `.fg-<fg>` and `.border-<border>`
  */
 export const useThemeClasses = (
-  obj: MaybeRef<ColorExtendables & {border?: MaybeArray<BorderColor> | null}>
+  obj: MaybeRefOrGetter<ColorExtendables & {border?: MaybeArray<BorderColor> | null}>
 ) => {
   const classes = computed(() => {
-    const props = unref(obj)
+    const props = toValue(obj)
     return {
       ...toColorClasses('theme', props.theme),
       ...toColorClasses('bg', props.bg),

@@ -6,21 +6,21 @@
         <div class="fw-bold">Subheading</div>
         Cras justo odio
       </div>
-      <BBadge theme="primary" pill>14</BBadge>
+      <BBadge :color="{ theme: 'primary' }" pill>14</BBadge>
     </BListGroupItem>
     <BListGroupItem class="d-flex justify-content-between align-items-start">
       <div class="ms-2 me-auto">
         <div class="fw-bold">Subheading</div>
         Dapibus ac facilisis in
       </div>
-      <BBadge theme="primary" pill>2</BBadge>
+      <BBadge :color="{ theme: 'primary' }" pill>2</BBadge>
     </BListGroupItem>
     <BListGroupItem class="d-flex justify-content-between align-items-start">
       <div class="ms-2 me-auto">
         <div class="fw-bold">Subheading</div>
         Morbi leo risus
       </div>
-      <BBadge theme="primary" pill>1</BBadge>
+      <BBadge :color="{ theme: 'primary' }" pill>1</BBadge>
     </BListGroupItem>
   </BListGroup>
   <!-- #endregion template -->

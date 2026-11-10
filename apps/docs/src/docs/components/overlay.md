@@ -33,15 +33,15 @@ the overlay.
 
 ### Overlay backdrop color
 
-You can control the backdrop background color via the `bg` prop. The value is translated into
-one of Bootstrap v6's `bg-<value>` utility classes (for example `bg="primary"`, `bg="subtle-primary"` or `bg="black"`; see [Color Themes](/docs/reference/color-variants#background-foreground-and-border-values)). Registering your own themes is covered in [custom themes](/docs/components/button#custom-themes).
+You can control the backdrop background color via the `color` prop's `bg` key. The value is translated into
+one of Bootstrap v6's `bg-<value>` utility classes (for example `:color="{ bg: 'primary' }"`, `{ bg: 'subtle-primary' }` or `{ bg: 'black' }`; see [Color Themes](/docs/reference/color-variants#background-foreground-and-border-values)). Registering your own themes is covered in [custom themes](/docs/components/button#custom-themes).
 Control the opacity of the backdrop via the `opacity` prop (opacity values can range from `0` to
 `1`). And background blurring can be controlled via the `blur` prop.
 
 <<< DEMO ./demo/OverlayBackdropColor.vue
 
-As an alternative to the `bg` prop, you can specify a CSS color string value via the `bg-color`
-prop. When a value is provided for `bg-color`, the `bg` prop value is ignored.
+As an alternative to `color.bg`, you can specify a CSS color string value via the `bg-css`
+prop. When a value is provided for `bg-css`, `color.bg` is ignored.
 
 **Notes:**
 
