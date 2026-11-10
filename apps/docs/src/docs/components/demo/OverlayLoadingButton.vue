@@ -8,7 +8,12 @@
     class="d-inline-block"
     @hidden="onBuzyHidden"
   >
-    <BButton ref="buzyButton" :disabled="loadingBuzy" :color="{ theme: 'primary' }" @click="setBuzyClick">
+    <BButton
+      ref="buzyButton"
+      :disabled="loadingBuzy"
+      :color="{ theme: 'primary' }"
+      @click="setBuzyClick"
+    >
       Do something
     </BButton>
   </BOverlay>

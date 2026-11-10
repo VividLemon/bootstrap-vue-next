@@ -12,7 +12,9 @@
             <BButton :color="{ theme: 'danger' }" size="sm" @click="() => scope.hide()">
               Close (slot function)
             </BButton>
-            <BButton :color="{ theme: 'secondary' }" size="sm" @click="closeFromCode"> Close (v-model) </BButton>
+            <BButton :color="{ theme: 'secondary' }" size="sm" @click="closeFromCode">
+              Close (v-model)
+            </BButton>
           </div>
         </BCard>
       </template>

@@ -3,7 +3,9 @@
     <BCard title="Card with custom overlay content" :aria-hidden="show ? 'true' : null">
       <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
       <BCardText>Click the button to toggle the overlay:</BCardText>
-      <BButton :disabled="show" :color="{ theme: 'primary' }" @click="show = true"> Show overlay </BButton>
+      <BButton :disabled="show" :color="{ theme: 'primary' }" @click="show = true">
+        Show overlay
+      </BButton>
     </BCard>
     <template #overlay>
       <div class="text-center">
