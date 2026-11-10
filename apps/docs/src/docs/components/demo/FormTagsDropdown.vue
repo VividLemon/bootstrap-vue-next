@@ -5,7 +5,7 @@
         <template #default="{ tags, disabled, addTag, removeTag }">
           <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
             <li v-for="tag in tags" :key="tag" class="list-inline-item">
-              <BFormTag :title="tag" :disabled="disabled" theme="info" @remove="removeTag(tag)">{{
+              <BFormTag :title="tag" :disabled="disabled" :color="{ theme: 'info' }" @remove="removeTag(tag)">{{
                 tag
               }}</BFormTag>
             </li>
@@ -14,7 +14,7 @@
           <BDropdown
             size="sm"
             variant="outline"
-            theme="secondary"
+            :color="{ theme: 'secondary' }"
             block
             menu-class="w-100"
             no-caret

@@ -288,28 +288,15 @@ describe('form-rating', () => {
   })
 
   describe('color and variant', () => {
-    it('applies color as inline style when color prop is set', () => {
-      const wrapper = mount(BFormRating, {props: {color: 'pink'}})
-      const svg = wrapper.find('.b-form-rating-item svg')
-      expect(svg.attributes('style')).toContain('color: pink')
-    })
-
-    it('updates color reactively', async () => {
-      const wrapper = mount(BFormRating, {props: {color: 'pink'}})
-      expect(wrapper.find('.b-form-rating-item svg').attributes('style')).toContain('color: pink')
-      await wrapper.setProps({color: 'blue'})
-      expect(wrapper.find('.b-form-rating-item svg').attributes('style')).toContain('color: blue')
-    })
-
     it('applies fg-{theme} class when theme prop is set', () => {
-      const wrapper = mount(BFormRating, {props: {theme: 'danger'}})
+      const wrapper = mount(BFormRating, {props: {color: {theme: 'danger'}}})
       expect(wrapper.find('.b-form-rating-item svg').classes()).toContain('fg-danger')
     })
 
     it('updates theme class reactively', async () => {
-      const wrapper = mount(BFormRating, {props: {theme: 'danger'}})
+      const wrapper = mount(BFormRating, {props: {color: {theme: 'danger'}}})
       expect(wrapper.find('.b-form-rating-item svg').classes()).toContain('fg-danger')
-      await wrapper.setProps({theme: 'success'})
+      await wrapper.setProps({color: {theme: 'success'}})
       expect(wrapper.find('.b-form-rating-item svg').classes()).toContain('fg-success')
       expect(wrapper.find('.b-form-rating-item svg').classes()).not.toContain('fg-danger')
     })
@@ -327,7 +314,7 @@ describe('form-rating', () => {
     })
 
     it('does not apply theme class when disabled', () => {
-      const wrapper = mount(BFormRating, {props: {disabled: true, theme: 'danger'}})
+      const wrapper = mount(BFormRating, {props: {disabled: true, color: {theme: 'danger'}}})
       const svg = wrapper.find('.b-form-rating-item svg')
       expect(svg.classes()).toContain('is-disabled')
       expect(svg.classes()).not.toContain('fg-danger')

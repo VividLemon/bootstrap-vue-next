@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BNavbar v-b-color-mode="'dark'" theme="primary">
+  <BNavbar v-b-color-mode="'dark'" :color="{ theme: 'primary' }">
     <BNavForm>
       <BInputGroup prepend="@">
         <BFormInput placeholder="Username" />

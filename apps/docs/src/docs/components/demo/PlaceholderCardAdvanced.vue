@@ -8,8 +8,8 @@
 
     <template #default>
       <BPlaceholder />
-      <BPlaceholder width="65" bg="danger" />
-      <BPlaceholder cols="6" bg="info" />
+      <BPlaceholder width="65" :color="{ bg: 'danger' }" />
+      <BPlaceholder cols="6" :color="{ bg: 'info' }" />
     </template>
   </BPlaceholderCard>
 </template>

@@ -53,7 +53,7 @@
             content.
           </BCardText>
 
-          <BButton href="#" theme="primary">Go somewhere</BButton>
+          <BButton href="#" :color="{ theme: 'primary' }">Go somewhere</BButton>
         </BCard>
       </BCol>
       <BCol :cols="{ xs: 6 }">

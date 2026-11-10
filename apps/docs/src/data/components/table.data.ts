@@ -32,7 +32,7 @@ import {
   StyleKind,
 } from '../../types'
 import { pick } from '../../utils/objectUtils'
-import { buildCommonProps } from '../../utils/commonProps'
+import { buildCommonProps, colorBorderProp } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => {
@@ -75,7 +75,7 @@ export default {
         },
       } satisfies SlotRecord<keyof BTableSimpleSlots>,
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'id', 'theme']),
+        ...pick(buildCommonProps(colorBorderProp), ['color', 'id']),
         bordered: {
           type: 'boolean',
           default: false,
@@ -85,11 +85,6 @@ export default {
           type: 'boolean',
           default: false,
           description: 'Removes all borders from cells',
-        },
-        border: {
-          type: 'MaybeArray<BorderColor> | null',
-          default: null,
-          description: 'Applies a border color (`BorderColor`) to the table',
         },
         captionTop: {
           type: 'boolean',
@@ -1046,7 +1041,7 @@ export default {
       },
       BTbody: {
         styleSpec: { kind: StyleKind.Tag, value: 'tbody' },
-        props: pick(buildCommonProps(), ['bg', 'fg', 'theme']) satisfies PropRecord<
+        props: pick(buildCommonProps(), ['color']) satisfies PropRecord<
           keyof BTbodyProps
         >,
         slots: {
@@ -1058,7 +1053,7 @@ export default {
       BTd: {
         styleSpec: { kind: StyleKind.Tag, value: 'td' },
         props: {
-          ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
+          ...pick(buildCommonProps(), ['color']),
           colspan: {
             type: 'Numberish',
             default: undefined,
@@ -1084,7 +1079,7 @@ export default {
       },
       BTfoot: {
         styleSpec: { kind: StyleKind.Tag, value: 'tfoot' },
-        props: pick(buildCommonProps(), ['bg', 'fg', 'theme']) satisfies PropRecord<
+        props: pick(buildCommonProps(), ['color']) satisfies PropRecord<
           keyof BTfootProps
         >,
         slots: {
@@ -1096,7 +1091,7 @@ export default {
       BTh: {
         styleSpec: { kind: StyleKind.Tag, value: 'th' },
         props: {
-          ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
+          ...pick(buildCommonProps(), ['color']),
           colspan: {
             type: 'Numberish',
             default: undefined,
@@ -1126,11 +1121,7 @@ export default {
       BThead: {
         styleSpec: { kind: StyleKind.Tag, value: 'thead' },
         props: {
-          ...pick(buildCommonProps(), ['bg', 'fg']),
-          theme: {
-            type: 'ThemeProp | null',
-            default: null,
-          },
+          ...pick(buildCommonProps(), ['color']),
         } satisfies PropRecord<keyof BTheadProps>,
         emits: {},
         slots: {
@@ -1143,11 +1134,7 @@ export default {
       BTr: {
         styleSpec: { kind: StyleKind.Tag, value: 'tr' },
         props: {
-          ...pick(buildCommonProps(), ['bg', 'fg']),
-          theme: {
-            type: 'ThemeProp | null',
-            default: null,
-          },
+          ...pick(buildCommonProps(), ['color']),
         } satisfies PropRecord<keyof BTrProps>,
         emits: {},
         slots: {

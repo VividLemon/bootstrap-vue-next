@@ -2,7 +2,7 @@
   <!-- #region template -->
   <BListGroup>
     <BListGroupItem>
-      <BAvatar href="#foo" theme="primary" text="FF" class="align-baseline" />
+      <BAvatar href="#foo" :color="{ theme: 'primary' }" text="FF" class="align-baseline" />
       Link Text Avatar
     </BListGroupItem>
     <BListGroupItem>

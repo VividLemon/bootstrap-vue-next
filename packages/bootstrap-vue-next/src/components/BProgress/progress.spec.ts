@@ -177,32 +177,32 @@ describe('progress', () => {
 
   it('BProgressBar has prop theme to be prop theme', async () => {
     const wrapper = mount(BProgress, {
-      props: {theme: 'danger'},
+      props: {color: {theme: 'danger'}},
     })
     const $progressbar = wrapper.getComponent(BProgressBar)
-    expect($progressbar.props('theme')).toBe('danger')
-    await wrapper.setProps({theme: 'secondary'})
-    expect($progressbar.props('theme')).toBe('secondary')
+    expect($progressbar.props('color')?.theme).toBe('danger')
+    await wrapper.setProps({color: {theme: 'secondary'}})
+    expect($progressbar.props('color')?.theme).toBe('secondary')
   })
 
   it('BProgressBar has prop bg to be prop bg', async () => {
     const wrapper = mount(BProgress, {
-      props: {bg: 'danger'},
+      props: {color: {bg: 'danger'}},
     })
     const $progressbar = wrapper.getComponent(BProgressBar)
-    expect($progressbar.props('bg')).toBe('danger')
-    await wrapper.setProps({bg: 'success'})
-    expect($progressbar.props('bg')).toBe('success')
+    expect($progressbar.props('color')?.bg).toBe('danger')
+    await wrapper.setProps({color: {bg: 'success'}})
+    expect($progressbar.props('color')?.bg).toBe('success')
   })
 
   it('BProgressBar has prop fg to be prop fg', async () => {
     const wrapper = mount(BProgress, {
-      props: {fg: 'primary'},
+      props: {color: {fg: 'primary'}},
     })
     const $progressbar = wrapper.getComponent(BProgressBar)
-    expect($progressbar.props('fg')).toBe('primary')
-    await wrapper.setProps({fg: 'warning'})
-    expect($progressbar.props('fg')).toBe('warning')
+    expect($progressbar.props('color')?.fg).toBe('primary')
+    await wrapper.setProps({color: {fg: 'warning'}})
+    expect($progressbar.props('color')?.fg).toBe('warning')
   })
 
   it('provides progressInjectionKey with animated', () => {

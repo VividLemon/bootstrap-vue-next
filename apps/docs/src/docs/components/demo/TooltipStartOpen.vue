@@ -2,7 +2,7 @@
   <div class="text-center">
     <BTooltip show>
       <template #target>
-        <BButton theme="primary">Button</BButton>
+        <BButton :color="{ theme: 'primary' }">Button</BButton>
       </template>
       I start <strong>open</strong>
     </BTooltip>

@@ -99,7 +99,7 @@ describe('th', () => {
   describe('theme prop', () => {
     it('has class theme-{type} when theme is set', () => {
       const wrapper = mount(BTh, {
-        props: {theme: 'primary'},
+        props: {color: {theme: 'primary'}},
       })
       expect(wrapper.classes()).toContain('theme-primary')
     })
@@ -111,20 +111,20 @@ describe('th', () => {
 
     it('theme class is reactive', async () => {
       const wrapper = mount(BTh, {
-        props: {theme: 'primary'},
+        props: {color: {theme: 'primary'}},
       })
       expect(wrapper.classes()).toContain('theme-primary')
-      await wrapper.setProps({theme: 'danger'})
+      await wrapper.setProps({color: {theme: 'danger'}})
       expect(wrapper.classes()).not.toContain('theme-primary')
       expect(wrapper.classes()).toContain('theme-danger')
     })
 
     it('theme class is removed when theme is set to undefined', async () => {
       const wrapper = mount(BTh, {
-        props: {theme: 'primary'},
+        props: {color: {theme: 'primary'}},
       })
       expect(wrapper.classes()).toContain('theme-primary')
-      await wrapper.setProps({theme: undefined})
+      await wrapper.setProps({color: {theme: undefined}})
       expect(wrapper.classes()).not.toContain('theme-primary')
     })
   })
@@ -164,7 +164,7 @@ describe('th', () => {
       })
       expect(wrapper.classes()).toContain('b-table-sticky-column')
       expect(wrapper.classes()).not.toContain('table-b-table-default')
-      await wrapper.setProps({theme: 'secondary'})
+      await wrapper.setProps({color: {theme: 'secondary'}})
       expect(wrapper.classes()).toContain('theme-secondary')
       expect(wrapper.classes()).not.toContain('table-b-table-default')
     })
@@ -245,7 +245,7 @@ describe('th', () => {
   describe('multiple props combined', () => {
     it('supports colspan, rowspan, and theme together', () => {
       const wrapper = mount(BTh, {
-        props: {colspan: 3, rowspan: 2, theme: 'success'},
+        props: {colspan: 3, rowspan: 2, color: {theme: 'success'}},
       })
       expect(wrapper.attributes('colspan')).toBe('3')
       expect(wrapper.attributes('rowspan')).toBe('2')
@@ -255,7 +255,7 @@ describe('th', () => {
 
     it('supports data-cell with stickyColumn and theme', () => {
       const wrapper = mount(BTh, {
-        props: {stickyColumn: true, theme: 'info'},
+        props: {stickyColumn: true, color: {theme: 'info'}},
         attrs: {'data-cell': 'Label'},
         slots: {default: 'value'},
       })

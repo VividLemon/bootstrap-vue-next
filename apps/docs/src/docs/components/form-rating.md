@@ -25,19 +25,21 @@ Readonly mode is used for displaying an aggregated rating, and supports `half` i
 
 ### Theme and color
 
-Easily apply one of the Bootstrap theme colors to the rating icon via the `theme` prop (rendered as `.fg-<theme>`).
-The default is to use the default form control text color.
+Easily apply one of the Bootstrap theme colors to the rating icons with the `color` prop's `theme` key
+(`:color="{ theme: 'warning' }"`, rendered as `.fg-<theme>`). The default is to use the default form
+control text color.
 
 <<< DEMO ./demo/RatingVariant.vue
 
-To apply a _custom color_, use the `color` prop which accepts a standard CSS color name, HEX color
-value (`#...`) or RGB/RGBA (`rgb(...)`/`rgba(...)`) color value:
+To apply a _custom color_, set the CSS `color` with the `style` attribute (or a class). The icons use
+the current text color, so any CSS color name, HEX value (`#...`) or RGB/RGBA (`rgb(...)`/`rgba(...)`)
+value works:
 
 <<< DEMO ./demo/RatingCustomColor.vue
 
 **Notes:**
 
-- The prop `color` takes precedence over the `theme` prop
+- A CSS `color` set through `style` or a class is overridden by the `theme`, `bg` and `fg` keys
 - Themes translate to the `fg-{theme}` utility class on the icon
 
 ### Number of items
@@ -129,7 +131,7 @@ By default, `BFormRating` uses built-in star-shaped SVG icons:
 
 #### Default icons styling
 
-When using the default icons, you can style them with the `theme`, `color`, and `size` props. These props apply Bootstrap classes and styles to the built-in SVG icons.
+When using the default icons, you can style them with the `color` and `size` props (or a CSS `color` through `style`). These props apply Bootstrap classes and styles to the built-in SVG icons.
 
 #### Custom icons
 
@@ -139,7 +141,7 @@ To use completely custom icons, use the default scoped slot which provides acces
 
 **Important notes for custom icons:**
 
-- The `theme`, `color`, and `size` props **do not apply** to custom icons provided via scoped slots
+- The `color` and `size` props **do not apply** to custom icons provided via scoped slots
 - You must handle all styling (colors, sizes, hover effects) yourself in your custom CSS
 - You're responsible for implementing click handlers if needed: `@click="rating = itemIndex"`
 - Custom icons completely replace the default icon rendering

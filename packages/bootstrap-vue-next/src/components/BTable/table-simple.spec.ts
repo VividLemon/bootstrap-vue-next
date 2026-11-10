@@ -344,17 +344,17 @@ describe('BTableSimple', () => {
 
     it('has class theme-x when theme prop set', async () => {
       const wrapper = mount(BTableSimple, {
-        props: {theme: 'primary'},
+        props: {color: {theme: 'primary'}},
       })
       const table = wrapper.get('table')
       expect(table.classes()).toContain('theme-primary')
-      await wrapper.setProps({theme: 'secondary'})
+      await wrapper.setProps({color: {theme: 'secondary'}})
       expect(table.classes()).toContain('theme-secondary')
     })
 
     it('has class border-x when border prop set', () => {
       const wrapper = mount(BTableSimple, {
-        props: {border: 'danger'},
+        props: {color: {border: 'danger'}},
       })
       expect(wrapper.get('table').classes()).toContain('border-danger')
     })

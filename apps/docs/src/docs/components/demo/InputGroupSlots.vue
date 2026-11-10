@@ -6,7 +6,7 @@
     </template>
     <BFormInput />
     <template #append>
-      <BDropdown text="Dropdown" theme="success">
+      <BDropdown text="Dropdown" :color="{ theme: 'success' }">
         <BDropdownItem>Action A</BDropdownItem>
         <BDropdownItem>Action B</BDropdownItem>
       </BDropdown>

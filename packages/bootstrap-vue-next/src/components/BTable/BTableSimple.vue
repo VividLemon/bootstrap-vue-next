@@ -12,19 +12,15 @@
 
 <script setup lang="ts">
 import {computed, mergeProps, type StyleValue} from 'vue'
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useId} from '../../composables/useId'
 import type {BTableSimpleProps, BTableSimpleSlots} from '../../types'
 
 const defaultStickyHeaderHeight = '300px'
 
 const _props = withDefaults(defineProps<BTableSimpleProps>(), {
-  border: null,
-  theme: null,
-  bg: null,
-  fg: null,
   bordered: false,
   borderless: false,
   captionTop: false,
@@ -40,18 +36,20 @@ const _props = withDefaults(defineProps<BTableSimpleProps>(), {
   small: false,
   stickyHeader: false,
   tableAttrs: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BTableSimple')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BTableSimpleSlots>()
 
 const computedId = useId(() => props.id)
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    border: props.border,
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    border: computedColor.value.border,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [

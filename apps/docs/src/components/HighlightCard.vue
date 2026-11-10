@@ -10,7 +10,7 @@
           v-if="hasFileContent"
           size="sm"
           variant="outline"
-          theme="primary"
+          :color="{ theme: 'primary' }"
           :loading="isLoading"
           :loading-text="'Opening...'"
           title="Open in StackBlitz"

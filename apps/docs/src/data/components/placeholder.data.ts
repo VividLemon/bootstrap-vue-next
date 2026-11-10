@@ -16,7 +16,7 @@ export default {
   load: (): ComponentReference => ({
     BPlaceholder: {
       props: {
-        ...pick(buildCommonProps(), ['fg']),
+        ...pick(buildCommonProps(), ['color']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -33,9 +33,10 @@ export default {
           type: 'string',
           default: 'span',
         },
-        bg: {
-          type: 'MaybeArray<BgColor> | null',
-          default: null,
+        color: {
+          type: "Pick<ColorExtendables, 'bg' | 'fg'> | null",
+          default: undefined,
+          description: 'Colors the placeholder: `bg` renders `bg-*` and `fg` renders `fg-*`',
         },
         width: {
           type: 'Numberish',
@@ -52,7 +53,7 @@ export default {
     BPlaceholderCard: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.card' },
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'footerColor', 'headerColor']),
+        ...pick(buildCommonProps(), ['color', 'footerColor', 'headerColor']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -117,9 +118,11 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        theme: {
-          type: 'ThemeProp | null',
+        color: {
+          type: 'ColorExtendables | null',
           default: undefined,
+          description:
+            'Colors the body placeholders: `bg` and `fg` keys, or a `theme` whose color is used as the background',
         },
       } satisfies PropRecord<keyof BPlaceholderCardProps>,
       emits: {},
@@ -145,7 +148,7 @@ export default {
     BPlaceholderWrapper: {
       styleSpec: { kind: StyleKind.None },
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'footerColor', 'headerColor']),
+        ...pick(buildCommonProps(), ['color', 'footerColor', 'headerColor']),
         loading: {
           description: 'Determines whether the loading slot is displayed',
           type: 'boolean',
@@ -167,7 +170,7 @@ export default {
     BPlaceholderTable: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.table' },
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'footerColor', 'headerColor']),
+        ...pick(buildCommonProps(), ['color', 'footerColor', 'headerColor']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -228,9 +231,11 @@ export default {
           type: 'PlaceholderSize',
           default: undefined,
         },
-        theme: {
-          type: 'ThemeProp | null',
+        color: {
+          type: 'ColorExtendables | null',
           default: undefined,
+          description:
+            'Colors the body placeholders: `bg` and `fg` keys, or a `theme` whose color is used as the background',
         },
       } satisfies PropRecord<keyof BPlaceholderTableProps>,
       emits: {},
@@ -252,7 +257,7 @@ export default {
     BPlaceholderButton: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.placeholder.btn' },
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg']),
+        ...pick(buildCommonProps(), ['color']),
         animation: {
           type: 'PlaceholderAnimation',
           default: undefined,
@@ -265,9 +270,10 @@ export default {
           type: 'string',
           default: 'div',
         },
-        theme: {
-          type: 'ThemeProp | null',
-          default: 'primary',
+        color: {
+          type: 'ColorExtendables | null',
+          default: { theme: 'primary' },
+          description: 'Colors the button placeholder: `theme`, `bg` and `fg` keys',
         },
         width: {
           type: 'Numberish',

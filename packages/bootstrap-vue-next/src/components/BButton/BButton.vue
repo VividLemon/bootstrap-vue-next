@@ -33,6 +33,7 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useButtonThemeClasses} from '../../composables/useThemeClasses'
 import {computed, useTemplateRef} from 'vue'
 import BSpinner from '../BSpinner/BSpinner.vue'
 import {useBLinkHelper} from '../../composables/useBLinkHelper'
@@ -40,7 +41,6 @@ import BLink from '../BLink/BLink.vue'
 import {useLinkClasses} from '../../composables/useLinkClasses'
 import {onKeyStroke} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
-import {useButtonThemeClasses} from '../../composables/useThemeClasses'
 import type {BButtonEmits, BButtonProps, BButtonSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
@@ -56,7 +56,6 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   // Link props
   active: false, // Why is this active: false?
   variant: 'solid',
-  theme: 'secondary',
   // All others use defaults
   activeClass: undefined,
   disabled: undefined,
@@ -73,12 +72,11 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   to: undefined,
   underlineOffset: undefined,
   underlineOpacity: undefined,
-  underlineTheme: null,
-  bg: null,
-  fg: null,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BButton')
+const computedColor = computed(() => resolvePartColor(props.color, {theme: 'secondary'}))
 const emit = defineEmits<BButtonEmits>()
 defineSlots<BButtonSlots>()
 
@@ -121,15 +119,19 @@ const {classes: linkValueClasses} = useLinkClasses(
           opacity: props.opacity,
           underlineOffset: props.underlineOffset,
           underlineOpacity: props.underlineOpacity,
-          underlineTheme: props.underlineTheme,
-          theme: null,
-          bg: props.bg,
-          fg: props.fg,
+          color: {
+            underline: computedColor.value.underline,
+            theme: null,
+            bg: computedColor.value.bg,
+            fg: computedColor.value.fg,
+          },
         }
       : undefined),
   }))
 )
-const {classes: buttonThemeClasses} = useButtonThemeClasses(props)
+const {classes: buttonThemeClasses} = useButtonThemeClasses(
+  computed(() => ({...computedColor.value, variant: props.variant, styled: props.styled}))
+)
 const computedClasses = computed(() => [
   variantIsLinkType.value === true && computedLink.value === false
     ? linkValueClasses.value

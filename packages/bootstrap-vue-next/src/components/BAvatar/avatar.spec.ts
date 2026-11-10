@@ -226,17 +226,17 @@ describe('avatar', () => {
   })
 
   it('has theme-{theme} class when prop theme is set', () => {
-    const wrapper = mount(BAvatar, {props: {theme: 'primary'}})
+    const wrapper = mount(BAvatar, {props: {color: {theme: 'primary'}}})
     expect(wrapper.classes()).toContain('theme-primary')
   })
 
   it('has bg-{bg} class when prop bg is set', () => {
-    const wrapper = mount(BAvatar, {props: {bg: 'danger'}})
+    const wrapper = mount(BAvatar, {props: {color: {bg: 'danger'}}})
     expect(wrapper.classes()).toContain('bg-danger')
   })
 
   it('has fg-{fg} class when prop fg is set', () => {
-    const wrapper = mount(BAvatar, {props: {fg: 'white'}})
+    const wrapper = mount(BAvatar, {props: {color: {fg: 'white'}}})
     expect(wrapper.classes()).toContain('fg-white')
   })
 
@@ -263,7 +263,7 @@ describe('avatar', () => {
   })
 
   it('has btn-solid and theme class when prop button is true', () => {
-    const wrapper = mount(BAvatar, {props: {button: true, theme: 'primary'}})
+    const wrapper = mount(BAvatar, {props: {button: true, color: {theme: 'primary'}}})
     expect(wrapper.classes()).toContain('btn-solid')
     expect(wrapper.classes()).toContain('theme-primary')
   })
@@ -358,13 +358,15 @@ describe('avatar', () => {
     {
       name: 'badgeColor.theme to theme',
       props: {badge: true, badgeColor: {theme: 'danger'}},
-      prop: 'theme',
+      prop: 'color',
+      key: 'theme',
       expected: 'danger',
     },
     {
       name: 'default badgeColor.theme of primary to theme',
       props: {badge: true},
-      prop: 'theme',
+      prop: 'color',
+      key: 'theme',
       expected: 'primary',
     },
     {
@@ -406,19 +408,25 @@ describe('avatar', () => {
     {
       name: 'badgeColor.bg to bg',
       props: {badge: true, badgeColor: {bg: 'success'}},
-      prop: 'bg',
+      prop: 'color',
+      key: 'bg',
       expected: 'success',
     },
     {
       name: 'badgeColor.fg to fg',
       props: {badge: true, badgeColor: {fg: 'white'}},
-      prop: 'fg',
+      prop: 'color',
+      key: 'fg',
       expected: 'white',
     },
-  ] as const)('passes to BBadge: $name', ({props, prop, expected}) => {
+  ] as const)('passes to BBadge: $name', (testCase) => {
+    const {props, prop, expected} = testCase
     const wrapper = mount(BAvatar, {props: {...props}})
     const $badge = wrapper.getComponent(BBadge)
-    expect($badge.props(prop)).toBe(expected)
+    const value = $badge.props(prop)
+    expect('key' in testCase ? (value as Record<string, unknown>)?.[testCase.key] : value).toBe(
+      expected
+    )
   })
 
   it('renders badge slot content', () => {
@@ -449,7 +457,7 @@ describe('avatar', () => {
   // badge class with default slot
   it('has badge class when theme is set and has default slot', () => {
     const wrapper = mount(BAvatar, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
       slots: {default: 'Custom'},
     })
     expect(wrapper.classes()).toContain('badge')
@@ -457,7 +465,7 @@ describe('avatar', () => {
 
   it('does not have badge class when button is true even with default slot', () => {
     const wrapper = mount(BAvatar, {
-      props: {button: true, theme: 'primary'},
+      props: {button: true, color: {theme: 'primary'}},
       slots: {default: 'Custom'},
     })
     expect(wrapper.classes()).not.toContain('badge')

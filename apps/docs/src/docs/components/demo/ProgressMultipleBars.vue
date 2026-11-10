@@ -2,8 +2,8 @@
   <!-- #region template -->
   <BProgress>
     <BProgressBar :value="15" />
-    <BProgressBar :value="30" theme="success" />
-    <BProgressBar :value="20" theme="info" />
+    <BProgressBar :value="30" :color="{ theme: 'success' }" />
+    <BProgressBar :value="20" :color="{ theme: 'info' }" />
   </BProgress>
   <!-- #endregion template -->
 </template>

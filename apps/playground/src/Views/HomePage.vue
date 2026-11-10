@@ -9,14 +9,14 @@
         </BRow>
         <BRow>
           <BCol>
-            <BButton theme="danger" @click="clearActiveList">Clear all</BButton>
-            <BButton theme="danger" @click="addAllToActiveList">Add all</BButton>
+            <BButton :color="{ theme: 'danger' }" @click="clearActiveList">Clear all</BButton>
+            <BButton :color="{ theme: 'danger' }" @click="addAllToActiveList">Add all</BButton>
             <BButton
               v-for="(comp, index) in filteredSearch"
               :key="index"
               class="m-1"
               :disabled="comp.disabled"
-              :theme="active.includes(comp.name) ? 'primary' : 'secondary'"
+              :color="{ theme: active.includes(comp.name) ? 'primary' : 'secondary' }"
               @click="switchActive(comp.name)"
             >
               {{ comp.name }}

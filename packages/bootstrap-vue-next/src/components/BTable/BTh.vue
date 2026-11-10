@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import {toColorClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
 import type {BThProps, BThSlots} from '../../types'
@@ -19,18 +19,17 @@ const _props = withDefaults(defineProps<BThProps>(), {
   colspan: undefined,
   rowspan: undefined,
   stickyColumn: false,
-  theme: null,
-  bg: null,
-  fg: null,
   scope: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BTh')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BThSlots>()
 
 const computedClasses = computed(() => [
-  toColorClasses('theme', props.theme),
-  toColorClasses('bg', props.bg),
-  toColorClasses('fg', props.fg),
+  toColorClasses('theme', computedColor.value.theme),
+  toColorClasses('bg', computedColor.value.bg),
+  toColorClasses('fg', computedColor.value.fg),
   {
     'b-table-sticky-column': props.stickyColumn,
   },

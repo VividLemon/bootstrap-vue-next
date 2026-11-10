@@ -7,7 +7,7 @@
     v-bind="computedLinkProps"
     :type="props.button && !computedLink ? props.buttonType : undefined"
     :disabled="props.disabled || null"
-    :theme="null"
+    :color="computedLink ? {underline: computedColor.underline} : null"
     @click="clicked"
   >
     <span v-if="hasDefaultSlot" class="b-avatar-custom">
@@ -35,9 +35,7 @@
       v-if="showBadge"
       :pill="props.badgePill"
       :dot-indicator="props.badgeDotIndicator || badgeImplicitlyDot"
-      :theme="badgeColor.theme"
-      :bg="badgeColor.bg"
-      :fg="badgeColor.fg"
+      :color="badgeColor"
       :style="badgeStyle"
       :placement="props.badgePlacement"
     >
@@ -75,7 +73,6 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   src: undefined,
   text: undefined,
   // Link props
-  theme: 'secondary',
   // All others use defaults
   active: undefined,
   activeClass: undefined,
@@ -90,13 +87,8 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   target: undefined,
   underlineOffset: undefined,
   underlineOpacity: undefined,
-  underlineTheme: undefined,
   // End link props
-  // ColorExtendables props
   // Theme is here as well
-  bg: null,
-  fg: null,
-  // End ColorExtendables props
   // RadiusElementExtendables props
   rounded: 'circle',
   roundedBottom: undefined,
@@ -104,8 +96,10 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   roundedStart: undefined,
   roundedTop: undefined,
   // End RadiusElementExtendables props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BAvatar')
+const computedColor = computed(() => resolvePartColor(props.color, {theme: 'secondary'}))
 const badgeColor = computed(() => resolvePartColor(props.badgeColor, {theme: 'primary'}))
 const emit = defineEmits<BAvatarEmits>()
 const slots = defineSlots<BAvatarSlots>()
@@ -152,7 +146,7 @@ const computedSizeIsLiteralSize = computed(
   () => !!computedSize.value && SIZES.has(computedSize.value)
 )
 
-const computedTheme = computed(() => parentData?.theme.value ?? props.theme)
+const computedTheme = computed(() => parentData?.theme.value ?? computedColor.value.theme)
 const computedRounded = computed(() => parentData?.roundedProps.value.rounded ?? props.rounded)
 const computedRoundedTop = computed(
   () => parentData?.roundedProps.value.roundedTop ?? props.roundedTop
@@ -182,8 +176,8 @@ const badgeImplicitlyDot = computed(() => !badgeText.value && !hasBadgeSlot.valu
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    bg: parentData?.bg.value ?? props.bg,
-    fg: parentData?.fg.value ?? props.fg,
+    bg: parentData?.bg.value ?? computedColor.value.bg,
+    fg: parentData?.fg.value ?? computedColor.value.fg,
     theme: computedTheme.value,
   }))
 )

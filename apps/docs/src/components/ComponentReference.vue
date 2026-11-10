@@ -50,7 +50,7 @@
                     <h5>
                       <BLink
                         :id="buildCompReferenceLink(`${component.component}-Properties`).slice(1)"
-                        theme="info"
+                        :color="{ theme: 'info' }"
                         :to="buildCompReferenceLink(`${component.component}-Properties`)"
                       >
                         Properties
@@ -163,7 +163,7 @@
                     <h5>
                       <BLink
                         :id="buildCompReferenceLink(`${component.component}-Events`).slice(1)"
-                        theme="info"
+                        :color="{ theme: 'info' }"
                         :to="buildCompReferenceLink(`${component.component}-Events`)"
                       >
                         Events
@@ -207,7 +207,7 @@
                     <h5>
                       <BLink
                         :id="buildCompReferenceLink(`${component.component}-Slots`).slice(1)"
-                        theme="info"
+                        :color="{ theme: 'info' }"
                         :to="buildCompReferenceLink(`${component.component}-Slots`)"
                       >
                         Slots
@@ -251,7 +251,7 @@
                     <h5>
                       <BLink
                         :id="buildCompReferenceLink(`${component.component}-Exposed`).slice(1)"
-                        theme="info"
+                        :color="{ theme: 'info' }"
                         :to="buildCompReferenceLink(`${component.component}-Exposed`)"
                       >
                         Exposed

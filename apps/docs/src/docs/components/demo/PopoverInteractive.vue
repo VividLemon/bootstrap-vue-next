@@ -9,7 +9,7 @@
       @hidden="onHidden"
     >
       <template #target>
-        <BButton ref="targetButton" theme="primary"> Interactive Popover </BButton>
+        <BButton ref="targetButton" :color="{ theme: 'primary' }"> Interactive Popover </BButton>
       </template>
 
       <template #title>
@@ -61,7 +61,7 @@
           />
         </BFormGroup>
 
-        <BAlert v-if="input1 || input2" theme="info" class="small mb-2">
+        <BAlert v-if="input1 || input2" :color="{ theme: 'info' }" class="small mb-2">
           <strong>Current Values:</strong><br />
           Name: <strong>{{ input1 || '(empty)' }}</strong
           ><br />
@@ -69,8 +69,8 @@
         </BAlert>
 
         <div class="d-flex gap-2">
-          <BButton size="sm" theme="secondary" @click="onClose">Cancel</BButton>
-          <BButton size="sm" theme="primary" @click="onOk">Ok</BButton>
+          <BButton size="sm" :color="{ theme: 'secondary' }" @click="onClose">Cancel</BButton>
+          <BButton size="sm" :color="{ theme: 'primary' }" @click="onOk">Ok</BButton>
         </div>
       </div>
     </BPopover>

@@ -96,7 +96,7 @@ wide (fluid) until particular breakpoint is reached at which point a `max-width`
 example, setting prop `fluid` to `'md'` will render a container that is 100% wide to start until the
 `'md'` breakpoint is reached, at which point it will become a standard non-fluid container.
 
-<<< FRAGMENT ./demo/ContainerResponsive.vue#template{vue-html}
+<<< FRAGMENT ./demo/ContainerResponsive.vue
 
 Setting the fluid prop to a breakpoint name translates to the Bootstrap v6 class
 `.{breakpoint}:container` (for example `fluid="md"` renders `md:container`).

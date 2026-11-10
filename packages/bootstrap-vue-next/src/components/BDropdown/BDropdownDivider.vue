@@ -24,6 +24,7 @@ const _props = withDefaults(defineProps<BDropdownDividerProps>(), {
   dividerClass: undefined,
   tag: 'hr',
   wrapperAttrs: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BDropdownDivider')
 const attrs = useAttrs()
