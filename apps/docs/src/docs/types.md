@@ -269,7 +269,8 @@ export type ColsNumbers =
 export type ColsValue = boolean | ColsNumbers | 'auto'
 
 // 0 to 12, passed straight through to the spacing scale (`gx-0` … `gx-12`)
-export type GutterNumbers = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '0' | '1' /* … */ | '12'
+export type GutterNumbers =
+  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '0' | '1' /* … */ | '12'
 
 export type RowColsNumbers = 1 | 2 | 3 | 4 | 5 | 6 | '1' | '2' | '3' | '4' | '5' | '6' | 'auto'
 
@@ -334,8 +335,27 @@ The documented Bootstrap color opacity utilities, accepted as numbers or numeric
 <BCard class="bg-body-tertiary">
 
 ```ts
-type ColorOpacity = 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100
-  | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'
+type ColorOpacity =
+  | 10
+  | 20
+  | 30
+  | 40
+  | 50
+  | 60
+  | 70
+  | 80
+  | 90
+  | 100
+  | '10'
+  | '20'
+  | '30'
+  | '40'
+  | '50'
+  | '60'
+  | '70'
+  | '80'
+  | '90'
+  | '100'
 ```
 
 </BCard>
@@ -512,12 +532,7 @@ type RadioOptionRaw = string | number | (Partial<RadioOption> & Record<string, u
 
 ```ts
 type RadioValue =
-  | boolean
-  | string
-  | readonly unknown[]
-  | Readonly<Record<string, unknown>>
-  | number
-  | null
+  boolean | string | readonly unknown[] | Readonly<Record<string, unknown>> | number | null
 ```
 
 </BCard>
@@ -591,12 +606,7 @@ type ScrollspyList = ScrollspyListItem[]
 
 ```ts
 type SelectValue =
-  | boolean
-  | string
-  | readonly unknown[]
-  | Readonly<Record<string, unknown>>
-  | number
-  | null
+  boolean | string | readonly unknown[] | Readonly<Record<string, unknown>> | number | null
 ```
 
 </BCard>
@@ -846,10 +856,7 @@ The type of `theme` keys. A single theme color or modifier, or an array where an
 <BCard class="bg-body-tertiary">
 
 ```ts
-type ThemeProp =
-  | ThemeValue
-  | readonly [ThemeColor, ...ThemeModifier[]]
-  | readonly ThemeModifier[]
+type ThemeProp = ThemeValue | readonly [ThemeColor, ...ThemeModifier[]] | readonly ThemeModifier[]
 ```
 
 </BCard>

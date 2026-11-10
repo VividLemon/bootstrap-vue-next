@@ -278,7 +278,7 @@ describe('spinner', () => {
 
   it('multiple props - all classes correct', () => {
     const wrapper = mount(BSpinner, {
-      props: { type: 'grow', small: true, color: {theme: 'warning'}},
+      props: {type: 'grow', small: true, color: {theme: 'warning'}},
     })
     expect(wrapper.classes()).toContain('spinner-grow')
     expect(wrapper.classes()).toContain('spinner-sm')

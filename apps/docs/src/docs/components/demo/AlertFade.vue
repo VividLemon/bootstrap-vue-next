@@ -11,7 +11,7 @@
     v-model="dismissCountDown"
     dismissible
     :color="{ theme: 'warning' }"
-    :progress-props="{ theme: 'warning' }"
+    :progress-props="{ color: { theme: 'warning' } }"
     @close-countdown="countdown = $event"
   >
     <p>This alert fades out after {{ Math.ceil(countdown / 1000) }} seconds...</p>
