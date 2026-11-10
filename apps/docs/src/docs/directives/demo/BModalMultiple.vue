@@ -3,7 +3,9 @@
   <div>
     <div class="d-flex gap-2 mb-3">
       <BButton v-b-modal.modal-1.modal-2 :color="{ theme: 'primary' }">Using Modifiers</BButton>
-      <BButton v-b-modal="'modal-1 modal-2'" :color="{ theme: 'success' }">Space-separated String</BButton>
+      <BButton v-b-modal="'modal-1 modal-2'" :color="{ theme: 'success' }"
+        >Space-separated String</BButton
+      >
       <BButton v-b-modal="['modal-1', 'modal-2']" :color="{ theme: 'info' }">Array Value</BButton>
     </div>
     <BModal id="modal-1" title="First Modal">

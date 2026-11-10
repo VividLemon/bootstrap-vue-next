@@ -155,13 +155,7 @@ export default {
     },
     BDropdownItemButton: {
       props: {
-        ...pick(buildCommonProps(), [
-          'active',
-          'activeClass',
-          'color',
-          'disabled',
-          'wrapperAttrs',
-        ]),
+        ...pick(buildCommonProps(), ['active', 'activeClass', 'color', 'disabled', 'wrapperAttrs']),
         buttonClass: {
           type: 'ClassValue',
           default: undefined,
