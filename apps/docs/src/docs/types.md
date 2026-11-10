@@ -627,24 +627,30 @@ interface TableField<T = Record<string, unknown>> {
   accessor?: string | ((item: T) => unknown)
   label?: string
   class?: ClassValue
+  color?: ColorExtendables | null
   filterByFormatted?: boolean | TableFieldFormatter<T>
   formatter?: TableFieldFormatter<T>
-  headerAbbr?: string
-  headerTitle?: string
-  initialSortDirection?: BTableInitialSortDirection
+  header?: {title?: string; abbr?: string}
   isRowHeader?: boolean
-  sortable?: boolean
-  sortByFormatted?: boolean | TableFieldFormatter<T>
-  sortCompare?: BTableSortByComparerFunction<T>
+  sort?: boolean | TableFieldSort<T>
   stickyColumn?: boolean
-  tdAttr?: AttrsValue | ((obj: {value: unknown; key: string; item: T}) => AttrsValue)
-  tdClass?: ClassValue
-  thAttr?:
-    | AttrsValue
-    | ((obj: {value: unknown; key: string; item: T | null; type: TableRowThead}) => AttrsValue)
-  thClass?: ClassValue
-  thStyle?: StyleValue
-  theme?: ThemeColor | null
+  td?: {
+    class?: TableStrictClassValue | ((value: unknown, key: string, item: T) => TableStrictClassValue)
+    attr?: AttrsValue | ((obj: {value: unknown; key: string; item: T}) => AttrsValue)
+  }
+  th?: {
+    class?: ClassValue
+    style?: StyleValue
+    attr?:
+      | AttrsValue
+      | ((obj: {value: unknown; key: string; item: T | null; type: TableRowThead}) => AttrsValue)
+  }
+}
+type TableFieldSort<T = any> = {
+  direction?: string
+  initialDirection?: BTableInitialSortDirection
+  byFormatted?: boolean | TableFieldFormatter<T>
+  compare?: BTableSortByComparerFunction<T>
 }
 type TableFieldRaw<T = Record<string, unknown>> = string | TableField<T>
 ```
@@ -657,8 +663,8 @@ type TableFieldRaw<T = Record<string, unknown>> = string | TableField<T>
 
 ```ts
 type TableItem<T = Record<string, unknown>> = T & {
-  _rowTheme?: ThemeColor | null
-  _cellThemes?: Partial<Record<keyof T, ThemeColor>>
+  _rowColor?: ColorExtendables | null
+  _cellColors?: Partial<Record<keyof T, ColorExtendables>>
 }
 ```
 

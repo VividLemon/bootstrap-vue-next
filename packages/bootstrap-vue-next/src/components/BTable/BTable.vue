@@ -73,7 +73,7 @@
         :clear-selected="selectedItemsController.clear"
       >
         {{ getTableFieldHeadLabel(field) }}
-        <span v-if="sortController.isSortable.value && field.sortable" class="visually-hidden">{{
+        <span v-if="sortController.isSortable.value && field.sort" class="visually-hidden">{{
           getSortLabel(field)
         }}</span>
       </slot>
@@ -97,10 +97,10 @@
           <div role="alert" aria-live="polite">
             <div class="text-center my-2">
               <slot v-if="showEmptyFiltered" name="empty-filtered" v-bind="emptySlotScope">
-                {{ props.emptyFilteredText }}
+                {{ computedEmpty.filteredText }}
               </slot>
               <slot v-else name="empty" v-bind="emptySlotScope">
-                {{ props.emptyText }}
+                {{ computedEmpty.text }}
               </slot>
             </div>
           </div>
@@ -161,9 +161,7 @@ const _props = withDefaults(
     sortCompare: undefined,
     sortNullLast: false,
     noFooterSorting: false,
-    labelSortAsc: 'Click to sort ascending',
-    labelSortClear: 'Click to clear sorting',
-    labelSortDesc: 'Click to sort descending',
+    labels: undefined,
     debounce: 0,
     debounceMaxWait: Number.NaN,
     // BTableLite props
@@ -173,27 +171,17 @@ const _props = withDefaults(
     align: undefined,
     footClone: undefined,
     showEmpty: false,
-    emptyText: 'There are no records to show',
-    emptyFilteredText: 'There are no records matching your request',
+    empty: undefined,
     fieldColumnAttrs: undefined,
-    tbodyTrAttrs: undefined,
     detailsTdAttrs: undefined,
-    headColor: undefined,
-    headRowColor: undefined,
-    footRowColor: undefined,
-    footColor: undefined,
     modelValue: undefined,
     primaryKey: undefined,
-    tbodyAttrs: undefined,
-    tfootAttrs: undefined,
-    tfootTrAttrs: undefined,
-    theadAttrs: undefined,
-    theadTrAttrs: undefined,
+    tbody: undefined,
+    tfoot: undefined,
+    thead: undefined,
     // End BTableLite props
     // BTableSimple props
-    border: undefined,
     tableAttrs: undefined,
-    theme: undefined,
     bordered: undefined,
     borderless: undefined,
     captionTop: undefined,
@@ -373,14 +361,14 @@ const tableClasses = computed(() => ({
   'b-table-no-sort-icon': props.noSortableIcon,
 }))
 const callTbodyTrAttrs = (item: Item | null, type: TableRowType) =>
-  (typeof props.tbodyTrAttrs === 'function'
-    ? props.tbodyTrAttrs(item, type)
-    : props.tbodyTrAttrs) ?? {}
+  (typeof props.tbody?.trAttrs === 'function'
+    ? props.tbody.trAttrs(item, type)
+    : props.tbody?.trAttrs) ?? {}
 const getFieldColumnAttrs = (field: TableField<Item>) =>
   mergeProps(
     {
       class: {
-        'b-table-sortable-column': sortController.isSortable.value && field.sortable,
+        'b-table-sortable-column': sortController.isSortable.value && !!field.sort,
       },
     },
     (typeof props.fieldColumnAttrs === 'function'
@@ -444,15 +432,15 @@ const computedLiteProps = computed(() => ({
   ),
   items: computedDisplayItems.value,
   fields: computedFields.value as TableFieldRaw<Item>[],
-  tbodyTrAttrs: getRowAttrs,
+  tbody: {...props.tbody, trAttrs: getRowAttrs},
   fieldColumnAttrs: getFieldColumnAttrs,
   id: computedId.value,
   ...boundBTableLiteEmits,
 }))
 
 const emptySlotScope = computed(() => ({
-  emptyFilteredText: props.emptyFilteredText,
-  emptyText: props.emptyText,
+  emptyFilteredText: computedEmpty.value.filteredText,
+  emptyText: computedEmpty.value.text,
   fields: computedFields.value,
   items: computedItems.value,
 }))
@@ -463,15 +451,25 @@ const showEmptyFiltered = computed(
   () => isFilterableTable.value && props.filter !== undefined && props.filter !== ''
 )
 
+const computedLabels = computed(() => ({
+  sortAsc: props.labels?.sortAsc ?? 'Click to sort ascending',
+  sortDesc: props.labels?.sortDesc ?? 'Click to sort descending',
+  sortClear: props.labels?.sortClear ?? 'Click to clear sorting',
+}))
+const computedEmpty = computed(() => ({
+  text: props.empty?.text ?? 'There are no records to show',
+  filteredText: props.empty?.filteredText ?? 'There are no records matching your request',
+}))
+
 // Compute sr-only sort label for each field based on current sort state
 const getSortLabel = (field: TableField<Item>): string => {
-  if (!sortController.isSortable.value || !field.sortable) return ''
+  if (!sortController.isSortable.value || !field.sort) return ''
   const currentSort = sortByModel.value?.find((s) => s.key === field.key)
   if (!currentSort || currentSort.order === undefined) {
-    return props.labelSortAsc
+    return computedLabels.value.sortAsc
   }
   if (currentSort.order === 'asc') {
-    return props.labelSortDesc
+    return computedLabels.value.sortDesc
   }
   // Currently sorted descending
   const mustSortValue = props.mustSort
@@ -479,9 +477,9 @@ const getSortLabel = (field: TableField<Item>): string => {
     mustSortValue ||
     (Array.isArray(mustSortValue) && mustSortValue.includes(field.key as string))
   ) {
-    return props.labelSortAsc
+    return computedLabels.value.sortAsc
   }
-  return props.labelSortClear
+  return computedLabels.value.sortClear
 }
 
 // Emit context-changed event when context (filter, sortBy, currentPage, perPage) changes

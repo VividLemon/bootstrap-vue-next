@@ -157,7 +157,6 @@ export default {
 
     const BTableLite = {
       props: {
-        ...pick(buildCommonProps(), ['footColor', 'footRowColor', 'headColor', 'headRowColor']),
         align: {
           type: 'VerticalAlign',
           default: undefined,
@@ -209,39 +208,23 @@ export default {
           description:
             'Name of a table field that contains a guaranteed unique value per row. For row expansion and selection to persist across item updates. Also speeds up table rendering and enables proper item tracking.',
         },
-        tbodyAttrs: {
-          type: 'Readonly<AttrsValue>',
-          default: undefined,
-          description: 'Attributes (including `class` and `style`) to apply to the tbody element',
-        },
-        tbodyTrAttrs: {
-          type: '((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue',
+        thead: {
+          type: 'TableHeadSection',
           default: undefined,
           description:
-            'Attributes (including `class` and `style`) to apply to every tbody row. Pass a function to compute them per row and row type',
+            'The table head: `attrs` (attributes, including `class` and `style`, for the `<thead>` element), `trAttrs` (attributes for its row), `color` and `rowColor` (color objects for the section and its row: `theme`, `bg`, `fg`)',
         },
-        tfootAttrs: {
-          type: 'Readonly<AttrsValue>',
+        tfoot: {
+          type: 'TableHeadSection',
           default: undefined,
           description:
-            'Attributes (including `class` and `style`) to apply to the tfoot element. Defaults to `thead-attrs`',
+            'The table foot (shown with `foot-clone`): `attrs` (attributes, including `class` and `style`, for the `<tfoot>` element), `trAttrs` (attributes for its row), `color` and `rowColor` (color objects for the section and its row: `theme`, `bg`, `fg`). Each key left out falls back to the matching `thead` key',
         },
-        tfootTrAttrs: {
-          type: 'Readonly<AttrsValue>',
+        tbody: {
+          type: 'TableBodySection<Item>',
           default: undefined,
           description:
-            'Attributes (including `class` and `style`) to apply to the tr in the tfoot element. Defaults to `thead-tr-attrs`',
-        },
-        theadAttrs: {
-          type: 'Readonly<AttrsValue>',
-          default: undefined,
-          description: 'Attributes (including `class` and `style`) to apply to the thead element',
-        },
-        theadTrAttrs: {
-          type: 'Readonly<AttrsValue>',
-          default: undefined,
-          description:
-            'Attributes (including `class` and `style`) to apply to the tr in the thead element',
+            'The table body: `attrs` (attributes, including `class` and `style`, for the `<tbody>` element) and `trAttrs` (attributes for every body row; pass a function `(item, type) => AttrsValue` to compute them per row and row type)',
         },
       } satisfies PropRecord,
       slots: {
@@ -608,16 +591,14 @@ export default {
           default: undefined,
           description: 'Array of fields to include when filtering.',
         },
-        emptyFilteredText: {
-          type: 'string',
-          default: 'There are no records matching your request',
+        empty: {
+          type: '{ text?: string; filteredText?: string }',
+          default: {
+            text: 'There are no records to show',
+            filteredText: 'There are no records matching your request',
+          },
           description:
-            'Text to display when no items are present in the `items` array after filtering',
-        },
-        emptyText: {
-          type: 'string',
-          default: 'There are no records to show',
-          description: 'Text to display when no items are present in the `items` array',
+            'Text to display when there are no items: `text` when the `items` array is empty, `filteredText` when filtering leaves no items. Keys left out keep their default',
         },
         initialSortDirection: {
           type: 'BTableInitialSortDirection',
@@ -739,23 +720,15 @@ export default {
           description:
             'When set, null and undefined values will always be sorted to the end of the list, regardless of sort direction. Only applies to the internal sort routine (not custom sortCompare functions)',
         },
-        labelSortAsc: {
-          type: 'string',
-          default: 'Click to sort ascending',
+        labels: {
+          type: '{ sortAsc?: string; sortDesc?: string; sortClear?: string }',
+          default: {
+            sortAsc: 'Click to sort ascending',
+            sortDesc: 'Click to sort descending',
+            sortClear: 'Click to clear sorting',
+          },
           description:
-            'Visually hidden label for a sortable column header when clicking will sort ascending',
-        },
-        labelSortClear: {
-          type: 'string',
-          default: 'Click to clear sorting',
-          description:
-            'Visually hidden label for a sortable column header when clicking will clear sorting',
-        },
-        labelSortDesc: {
-          type: 'string',
-          default: 'Click to sort descending',
-          description:
-            'Visually hidden label for a sortable column header when clicking will sort descending',
+            'Visually hidden labels for a sortable column header, for when clicking will sort ascending (`sortAsc`), sort descending (`sortDesc`) or clear sorting (`sortClear`). Keys left out keep their default',
         },
         stickySelect: {
           type: 'boolean',

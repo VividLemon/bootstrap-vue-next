@@ -25,6 +25,7 @@ import {
   type BTableSelectMode,
   type BTableSortByComparerFunction,
   type BTableSortByOrder,
+  getFieldSort,
   isTableField,
   isTableItem,
   type NoProviderTypes,
@@ -90,13 +91,13 @@ export const useTableMapper = <Item>({
         return {
           key: el as string,
           label,
-          tdAttr: getDataCellAttr(toValue(stacked), label),
+          td: {attr: getDataCellAttr(toValue(stacked), label)},
         }
       }
 
       const value = sortByModelResolved.value?.find((sb) => el.key === sb.key)
       const sortValue =
-        !el.sortable || isSortableResolved.value === false
+        !el.sort || isSortableResolved.value === false
           ? undefined
           : value === undefined
             ? 'none'
@@ -108,22 +109,28 @@ export const useTableMapper = <Item>({
 
       return {
         ...(el as TableField<Item>),
-        thAttr: {
-          'aria-sort': sortValue,
-          ...el.thAttr,
-        },
-        thClass: [
-          el.thClass,
-          {
-            'b-table-sort-icon-left': toValue(pagination.sort.iconLeft) && sortValue !== undefined,
+        th: {
+          ...el.th,
+          attr: {
+            'aria-sort': sortValue,
+            ...el.th?.attr,
           },
-        ],
+          class: [
+            el.th?.class,
+            {
+              'b-table-sort-icon-left':
+                toValue(pagination.sort.iconLeft) && sortValue !== undefined,
+            },
+          ],
+        },
       }
     })
   )
 
   const getFormatter = (value: TableField<Item>): TableFieldFormatter<Item> | undefined =>
-    typeof value.sortByFormatted === 'function' ? value.sortByFormatted : value.formatter
+    typeof getFieldSort(value).byFormatted === 'function'
+      ? (getFieldSort(value).byFormatted as TableFieldFormatter<Item>)
+      : value.formatter
 
   const getFilterFormatter = (value: TableField<Item>): TableFieldFormatter<Item> | undefined =>
     typeof value.filterByFormatted === 'function' ? value.filterByFormatted : value.formatter
@@ -140,7 +147,7 @@ export const useTableMapper = <Item>({
       isTableField(sortField) && sortField.accessor
         ? getWithGetter(ob, sortField.accessor)
         : getWithGetter(ob, key)
-    if (isTableField(sortField) && !!sortField.sortByFormatted) {
+    if (isTableField(sortField) && !!getFieldSort(sortField).byFormatted) {
       const formatter = getFormatter(sortField)
       if (formatter) {
         return String(formatItem(ob, {...sortField, formatter}))
@@ -244,7 +251,7 @@ export const useTableMapper = <Item>({
           if (value === undefined) continue
           const {key, order} = value
           const field = fieldByKey.value.get(key)
-          const comparer = field?.sortCompare || sortCompareValue
+          const comparer = getFieldSort(field).compare || sortCompareValue
 
           // Handle sortNullLast: null/undefined values always sort last, regardless of sort direction
           // Only applies to internal sort (no custom comparer)
@@ -642,16 +649,14 @@ export const useTableSort = <Item>({
   const isSortable = computed(
     () =>
       sortBy.value !== undefined ||
-      toValue(fields).some(
-        (field) => typeof field === 'object' && field !== null && field.sortable === true
-      )
+      toValue(fields).some((field) => typeof field === 'object' && field !== null && !!field.sort)
   )
 
   const handleFieldSorting = (field: TableField<Item>) => {
     if (!isSortable.value) return
 
     const fieldKey = typeof field === 'object' && field !== null ? field.key : field
-    const fieldSortable = typeof field === 'object' && field !== null ? field.sortable : false
+    const fieldSortable = typeof field === 'object' && field !== null ? !!field.sort : false
 
     if (!(isSortable.value === true && fieldSortable === true)) return
 
@@ -667,11 +672,12 @@ export const useTableSort = <Item>({
     // Determine initial sort direction for new sorts
     const getInitialSortDirection = (): BTableSortByOrder => {
       // Handle field-level prop
-      if (typeof field === 'object' && field !== null && field.initialSortDirection) {
-        if (field.initialSortDirection === 'last') {
+      const fieldInitialDirection = getFieldSort(field).initialDirection
+      if (fieldInitialDirection) {
+        if (fieldInitialDirection === 'last') {
           return getLastSortDirection()
         }
-        return field.initialSortDirection
+        return fieldInitialDirection
       }
       const initialSortDirectionValue = toValue(initialSortDirection)
       // Handle table-level prop

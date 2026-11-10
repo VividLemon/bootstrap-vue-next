@@ -3,25 +3,18 @@
     <colgroup v-if="slots['table-colgroup']">
       <slot name="table-colgroup" :fields="computedFields" />
     </colgroup>
-    <BThead
-      v-show="showComputedHeaders"
-      :color="props.headColor"
-      v-bind="props.theadAttrs"
-    >
+    <BThead v-show="showComputedHeaders" :color="props.thead?.color" v-bind="props.thead?.attrs">
       <slot name="thead-top" :columns="computedFieldsTotal" :fields="computedFields" />
-      <BTr
-        :color="props.headRowColor"
-        v-bind="props.theadTrAttrs"
-      >
+      <BTr :color="props.thead?.rowColor" v-bind="props.thead?.trAttrs">
         <BTh
           v-for="field in computedFields"
           :key="field.key"
           :scope="field.scope"
           :class="getFieldColumnClasses(field)"
-          :title="field.headerTitle"
-          :color="{theme: field.theme, bg: field.bg, fg: field.fg}"
-          :abbr="field.headerAbbr"
-          :style="field.thStyle"
+          :title="field.header?.title"
+          :color="field.color"
+          :abbr="field.header?.abbr"
+          :style="field.th?.style"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
           v-bind="mergeProps(callFieldColumnAttrs(field), callThAttr(null, field, 'top') ?? {})"
           @click="keyboardController.headerClicked(field, $event)"
@@ -45,8 +38,8 @@
           v-for="field in computedFields"
           :key="field.key"
           scope="col"
-          :color="{theme: field.theme, bg: field.bg, fg: field.fg}"
-          :class="[field.class, field.thClass]"
+          :color="field.color"
+          :class="[field.class, field.th?.class]"
         >
           <slot name="thead-sub" :items="props.items" :fields="computedFields" :field>
             {{ field.label }}
@@ -54,7 +47,7 @@
         </BTd>
       </BTr>
     </BThead>
-    <BTbody v-bind="props.tbodyAttrs">
+    <BTbody v-bind="props.tbody?.attrs">
       <slot
         name="custom-body"
         :fields="computedFields"
@@ -79,7 +72,7 @@
                 ? generateTableRowId(getWithGetter(item, props.primaryKey) as string)
                 : undefined
             "
-            :color="{theme: isTableItem(item) ? item._rowTheme : undefined, bg: isTableItem(item) ? item._rowBg : undefined, fg: isTableItem(item) ? item._rowFg : undefined}"
+            :color="isTableItem(item) ? item._rowColor : undefined"
             :tabindex="keyboardController.shouldRowBeFocusable.value ? '0' : undefined"
             v-bind="callTbodyTrAttrs(item, 'row')"
             @click="
@@ -106,13 +99,7 @@
               :is="getCellComponent(field)"
               v-for="field in computedFields"
               :key="field.key"
-              :color="{
-                theme: (isTableItem(item) ? item._cellThemes?.[field.key] : false)
-                  ? null
-                  : field.theme,
-                bg: (isTableItem(item) ? item._cellBgs?.[field.key] : undefined) ?? field.bg,
-                fg: (isTableItem(item) ? item._cellFgs?.[field.key] : undefined) ?? field.fg,
-              }"
+              :color="getCellColor(item, field)"
               :class="getFieldRowClasses(field, item)"
               v-bind="{
                 ...(field.isRowHeader ? {scope: 'row'} : undefined),
@@ -140,7 +127,7 @@
           <template v-if="expandedItemsController.has(item) && slots['row-expansion']">
             <BTr aria-hidden="true" role="presentation" class="d-none" />
             <BTr
-              :color="{theme: isTableItem(item) ? item._rowTheme : undefined, bg: isTableItem(item) ? item._rowBg : undefined, fg: isTableItem(item) ? item._rowFg : undefined}"
+              :color="isTableItem(item) ? item._rowColor : undefined"
               v-bind="callTbodyTrAttrs(item, 'row-expansion')"
             >
               <BTd :colspan="computedFieldsTotal" v-bind="props.detailsTdAttrs">
@@ -166,19 +153,16 @@
       </slot>
     </BTbody>
     <BTfoot v-if="props.footClone" v-bind="footerProps">
-      <BTr
-        :color="computedFootRowColor"
-        v-bind="props.tfootTrAttrs ?? props.theadTrAttrs"
-      >
+      <BTr :color="computedFootRowColor" v-bind="props.tfoot?.trAttrs ?? props.thead?.trAttrs">
         <BTh
           v-for="field in computedFields"
           :key="field.key"
           scope="col"
           :class="getFieldColumnClasses(field)"
-          :title="field.headerTitle"
-          :abbr="field.headerAbbr"
-          :style="field.thStyle"
-          :color="{theme: field.theme, bg: field.bg, fg: field.fg}"
+          :title="field.header?.title"
+          :abbr="field.header?.abbr"
+          :style="field.th?.style"
+          :color="field.color"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
           v-bind="mergeProps(callFieldColumnAttrs(field), callThAttr(null, field, 'bottom') ?? {})"
           @click="keyboardController.headerClicked(field, $event, true)"
@@ -220,7 +204,7 @@
 </template>
 
 <script setup lang="ts" generic="Item">
-import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import {computed, mergeProps, readonly, toRef} from 'vue'
 import {
   isTableItem,
@@ -261,18 +245,11 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   items: () => [],
   fieldColumnAttrs: undefined,
   detailsTdAttrs: undefined,
-  headColor: undefined,
-  headRowColor: undefined,
-  footRowColor: undefined,
-  footColor: undefined,
   modelValue: undefined,
   primaryKey: undefined,
-  tbodyAttrs: undefined,
-  tbodyTrAttrs: undefined,
-  tfootAttrs: undefined,
-  tfootTrAttrs: undefined,
-  theadAttrs: undefined,
-  theadTrAttrs: undefined,
+  tbody: undefined,
+  tfoot: undefined,
+  thead: undefined,
   // BTableSimpleProps props
   tableAttrs: undefined,
   bordered: undefined,
@@ -350,7 +327,7 @@ const computedTableAttrs = computed(() =>
 )
 const getFieldColumnClasses = (field: TableField) => [
   field.class,
-  field.thClass,
+  field.th?.class,
   {
     'b-table-sticky-column': field.stickyColumn,
   },
@@ -361,27 +338,26 @@ const callFieldColumnAttrs = (field: TableField<Item>) =>
     : props.fieldColumnAttrs) ?? {}
 const getFieldRowClasses = (field: Readonly<TableField>, tr: Item) => [
   field.class,
-  typeof field.tdClass === 'function'
-    ? field.tdClass(getByFieldKey(tr, field), field.key, tr)
-    : field.tdClass,
-  isTableItem(tr) ? toColorClasses('theme', tr._cellThemes?.[field.key]) : null,
+  typeof field.td?.class === 'function'
+    ? field.td.class(getByFieldKey(tr, field), field.key, tr)
+    : field.td?.class,
   {
     'b-table-sticky-column': field.stickyColumn,
   },
 ]
 const itemAttributes = (item: Item, field: TableField) =>
-  field.tdAttr && typeof field.tdAttr === 'function'
-    ? field.tdAttr({value: getByFieldKey(item, field), key: field.key, item})
-    : field.tdAttr
+  field.td?.attr && typeof field.td.attr === 'function'
+    ? field.td.attr({value: getByFieldKey(item, field), key: field.key, item})
+    : field.td?.attr
 const callThAttr = (item: Item | null, field: TableField<Item>, type: TableRowThead) =>
-  field.thAttr && typeof field.thAttr === 'function'
-    ? field.thAttr({value: getByFieldKey(item, field), key: field.key, item, type})
-    : field.thAttr
+  field.th?.attr && typeof field.th.attr === 'function'
+    ? field.th.attr({value: getByFieldKey(item, field), key: field.key, item, type})
+    : field.th?.attr
 const callTbodyTrAttrs = (item: Item | null, type: TableRowType) =>
-  props.tbodyTrAttrs
-    ? typeof props.tbodyTrAttrs === 'function'
-      ? props.tbodyTrAttrs(item, type)
-      : props.tbodyTrAttrs
+  props.tbody?.trAttrs
+    ? typeof props.tbody.trAttrs === 'function'
+      ? props.tbody.trAttrs(item, type)
+      : props.tbody.trAttrs
     : null
 
 const generateTableRowId = (primaryKeyValue: string) =>
@@ -395,14 +371,20 @@ const getCellComponent = (field: Readonly<TableField>) => {
 }
 
 // The cloned footer falls back to the head colors key by key; `null` clears the fallback
-const computedFootColor = computed(() => resolvePartColor(props.footColor, props.headColor ?? {}))
-const computedFootRowColor = computed(() =>
-  resolvePartColor(props.footRowColor, props.headRowColor ?? {})
+const computedFootColor = computed(() =>
+  resolvePartColor(props.tfoot?.color, props.thead?.color ?? {})
 )
+const computedFootRowColor = computed(() =>
+  resolvePartColor(props.tfoot?.rowColor, props.thead?.rowColor ?? {})
+)
+
+// A cell's color: its `_cellColors` entry, falling back to the field's color key by key
+const getCellColor = (item: Item, field: TableField<Item>) =>
+  resolvePartColor(isTableItem(item) ? item._cellColors?.[field.key] : undefined, field.color ?? {})
 
 const footerProps = computed(() => ({
   color: computedFootColor.value,
-  ...(props.tfootAttrs ?? props.theadAttrs),
+  ...(props.tfoot?.attrs ?? props.thead?.attrs),
 }))
 
 const computedSimpleProps = computed(() => ({

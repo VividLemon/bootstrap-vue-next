@@ -173,13 +173,13 @@
       <BContainer class="py-5">
         <!-- User Interface controls -->
         <BRow>
-          <BCol :cols="{ lg: 6 }" class="my-1">
+          <BCol :cols="{lg: 6}" class="my-1">
             <BFormGroup
               v-slot="{ariaDescribedby}"
               label="Sort"
               label-for="sort-by-select"
-              :label-cols="{ sm: 3 }"
-              :label-align="{ sm: 'end' }"
+              :label-cols="{sm: 3}"
+              :label-align="{sm: 'end'}"
               label-size="sm"
               class="mb-0"
             >
@@ -211,12 +211,12 @@
             </BFormGroup>
           </BCol>
 
-          <BCol :cols="{ lg: 6 }" class="my-1">
+          <BCol :cols="{lg: 6}" class="my-1">
             <BFormGroup
               label="Filter"
               label-for="filter-input"
-              :label-cols="{ sm: 3 }"
-              :label-align="{ sm: 'end' }"
+              :label-cols="{sm: 3}"
+              :label-align="{sm: 'end'}"
               label-size="sm"
               class="mb-0"
             >
@@ -235,14 +235,14 @@
             </BFormGroup>
           </BCol>
 
-          <BCol :cols="{ lg: 6 }" class="my-1">
+          <BCol :cols="{lg: 6}" class="my-1">
             <BFormGroup
               v-slot="{ariaDescribedby}"
               v-model="sortDirection"
               label="Filter On"
               description="Leave all unchecked to filter on all data"
-              :label-cols="{ sm: 3 }"
-              :label-align="{ sm: 'end' }"
+              :label-cols="{sm: 3}"
+              :label-align="{sm: 'end'}"
               label-size="sm"
               class="mb-0"
             >
@@ -263,12 +263,12 @@
             </BFormGroup>
           </BCol>
 
-          <BCol :cols="{ sm: 5, md: 6 }" class="my-1">
+          <BCol :cols="{sm: 5, md: 6}" class="my-1">
             <BFormGroup
               label="Per page"
               label-for="per-page-select"
-              :label-cols="{ sm: 6, md: 4, lg: 3 }"
-              :label-align="{ sm: 'end' }"
+              :label-cols="{sm: 6, md: 4, lg: 3}"
+              :label-align="{sm: 'end'}"
               label-size="sm"
               class="mb-0"
             >
@@ -281,7 +281,7 @@
             </BFormGroup>
           </BCol>
 
-          <BCol :cols="{ sm: 7, md: 6 }" class="my-1">
+          <BCol :cols="{sm: 7, md: 6}" class="my-1">
             <BPagination
               v-model="currentPage"
               :total-rows="totalRows"
@@ -382,8 +382,8 @@ const items: TableItem[] = [
     age: 89,
     first_name: 'Michael',
     last_name: 'Jordan',
-    _rowTheme: 'primary',
-    _cellThemes: {last_name: 'danger'},
+    _rowColor: {theme: 'primary'},
+    _cellColors: {last_name: {theme: 'danger'}},
   },
   {age: 38, first_name: 'Jami', last_name: 'Carney'},
 ]
@@ -391,7 +391,6 @@ const selection = ref<TableItem[]>([])
 const showSelectBox = ref(false)
 const selectionMode = ref<'single' | 'range' | 'multi'>('single')
 const selectClick = (selected: TableItem[]) => {
-   
   console.log(selected)
   selection.value = selected
 }
@@ -440,7 +439,7 @@ const itemsTyped: TableItem<Person>[] = [
     isActive: false,
     age: 9,
     name: {first: 'Mini', last: 'Navarro'},
-    _rowTheme: 'success' as ThemeColor,
+    _rowColor: {theme: 'success' as ThemeColor},
   },
   {isActive: false, age: 89, name: {first: 'Geneva', last: 'Wilson'}},
   {isActive: true, age: 38, name: {first: 'Jami', last: 'Carney'}},
@@ -450,7 +449,7 @@ const itemsTyped: TableItem<Person>[] = [
     isActive: true,
     age: 87,
     name: {first: 'Larsen', last: 'Shaw'},
-    _cellThemes: {age: 'danger', isActive: 'warning'},
+    _cellColors: {age: {theme: 'danger'}, isActive: {theme: 'warning'}},
   },
   {isActive: false, age: 26, name: {first: 'Mitzi', last: 'Navarro'}},
   {isActive: false, age: 22, name: {first: 'Genevieve', last: 'Wilson'}},
@@ -462,26 +461,22 @@ const fieldsTyped: Exclude<TableFieldRaw<Person>, string>[] = [
   {
     key: 'name',
     label: 'Person full name',
-    sortable: true,
-    sortDirection: 'desc',
+    sort: {direction: 'desc'},
   },
   {
     key: 'sortableName',
     label: 'Person sortable name',
-    sortable: true,
-    sortDirection: 'desc',
+    sort: {direction: 'desc', byFormatted: true},
     formatter: (_value: unknown, _key?: LiteralUnion<keyof Person>, item?: Person) =>
       item ? `${item.name.last}, ${item.name.first}` : 'Something went wrong',
-    sortByFormatted: true,
     filterByFormatted: true,
   },
-  {key: 'age', label: 'Person age', sortable: true, class: 'text-center'},
+  {key: 'age', label: 'Person age', sort: true, class: 'text-center'},
   {
     key: 'isActive',
     label: 'Is Active',
     formatter: (value: unknown) => (value ? 'Yes' : 'No'),
-    sortable: true,
-    sortByFormatted: true,
+    sort: {byFormatted: true},
     filterByFormatted: true,
   },
   {key: 'actions', label: 'Actions'},
@@ -513,7 +508,7 @@ const infoModal = reactive({
 
 // Create an options list from our fields
 const sortOptions = computed(() =>
-  fieldsTyped.filter((f) => f.sortable).map((f) => ({text: f.label, value: f.key}))
+  fieldsTyped.filter((f) => f.sort).map((f) => ({text: f.label, value: f.key}))
 )
 
 function info(item: TableItem<Person>, index: number) {
@@ -533,28 +528,25 @@ function onFiltered(filteredItems: readonly TableItem<Person>[]) {
   currentPage.value = 1
 
   // The following lines are just to prove that typing is working
-    filteredItems.forEach((item) => {
-      console.log(
-        `${item.name.first} ${item.name.last} is ${item.age} years old and is active = ${item.isActive}`
-      )
-    })
+  filteredItems.forEach((item) => {
+    console.log(
+      `${item.name.first} ${item.name.last} is ${item.age} years old and is active = ${item.isActive}`
+    )
+  })
 }
 
 function onRowClicked({
   index,
   item,
 }: TableRowEventObject<TableItem<Person>, Readonly<MouseEvent> | Readonly<KeyboardEvent>>) {
-   
   console.log(`clicked on row ${index}: ${item.name.first} ${item.name.last}`)
 }
 
 function onSorted(sortby: BTableSortBy) {
-   
   console.log(`sorted: ${JSON.stringify(sortby)}`)
 }
 
 function onSortUpdate(sortby: readonly BTableSortBy[] | undefined) {
-   
   console.log(`sort-by:update: ${JSON.stringify(sortby)}`)
 }
 

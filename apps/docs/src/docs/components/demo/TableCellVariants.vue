@@ -12,13 +12,13 @@ const items = [
     age: 89,
     first_name: 'Geneva',
     last_name: 'Wilson',
-    _rowTheme: 'danger',
+    _rowColor: { theme: 'danger' },
   },
   {
     age: 40,
     first_name: 'Thor',
     last_name: 'MacDonald',
-    _cellThemes: { age: 'info', first_name: 'warning' },
+    _cellColors: { age: { theme: 'info' }, first_name: { theme: 'warning' } },
   },
   { age: 29, first_name: 'Dick', last_name: 'Dunlap' },
 ]

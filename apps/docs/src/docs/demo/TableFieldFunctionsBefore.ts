@@ -6,9 +6,11 @@ const fields: TableField[] = [
   {
     key: 'status',
     formatter: (value) => String(value.value).toUpperCase(),
-    tdAttr: (value) => ({
-      class: value.value === 'active' ? 'text-success' : '',
-    }),
+    td: {
+      attr: (value) => ({
+        class: value.value === 'active' ? 'text-success' : '',
+      }),
+    },
   },
 ]
 // #endregion snippet

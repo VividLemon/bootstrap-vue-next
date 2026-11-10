@@ -56,7 +56,7 @@ export const useTableFieldsMapper = <Item>({
             return {
               key: k,
               label,
-              tdAttr: getDataCellAttr(stackedValue, label),
+              td: {attr: getDataCellAttr(stackedValue, label)},
             }
           }),
         }
@@ -71,25 +71,26 @@ export const useTableFieldsMapper = <Item>({
         if (isTableField(f)) {
           const label = f.label ?? startCase(f.key as string)
           const dataCellAttr = getDataCellAttr(stackedValue, label)
+          const fieldTdAttr = f.td?.attr
           const tdAttr =
-            typeof f.tdAttr === 'function'
+            typeof fieldTdAttr === 'function'
               ? (obj: unknown) => ({
                   ...dataCellAttr,
-                  ...(f.tdAttr as (obj: unknown) => AttrsValue)(obj),
+                  ...(fieldTdAttr as (obj: unknown) => AttrsValue)(obj),
                 })
-              : dataCellAttr || f.tdAttr
-                ? {...dataCellAttr, ...f.tdAttr}
+              : dataCellAttr || fieldTdAttr
+                ? {...dataCellAttr, ...fieldTdAttr}
                 : undefined
           return {
             ...(f as TableField),
-            tdAttr,
+            td: {...f.td, attr: tdAttr},
           }
         }
         const label = startCase(f as string)
         return {
           key: f as string,
           label,
-          tdAttr: getDataCellAttr(stackedValue, label),
+          td: {attr: getDataCellAttr(stackedValue, label)},
         }
       }),
     }
@@ -256,7 +257,7 @@ export const useTableKeyboardNavigation = <Item>(
   // Keyboard navigation support
   const shouldHeaderBeFocusable = (field: TableField) =>
     keyboardNavigation
-      ? !!(keyboardNavigation.headerNavigation.value && field.sortable === true)
+      ? !!(keyboardNavigation.headerNavigation.value && !!field.sort)
       : hasHeadClickedHandler.value
 
   const shouldRowBeFocusable = computed(() =>

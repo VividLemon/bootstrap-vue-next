@@ -24,20 +24,19 @@ const multiSort: TableItem<SimplePerson>[] = [
 ]
 
 const simpleFields: Exclude<TableField<SimplePerson>, string>[] = [
-  {key: 'first_name', label: 'First Name', sortable: true},
-  {key: 'age', label: 'Age', sortable: true},
+  {key: 'first_name', label: 'First Name', sort: true},
+  {key: 'age', label: 'Age', sort: true},
 ]
 
 const formattedFields: Exclude<TableField<SimplePerson>, string>[] = [
   {
     key: 'is_adult',
     label: 'Adult?',
-    sortable: true,
-    sortByFormatted: true,
+    sort: {byFormatted: true},
     formatter: ({item}) => (item ? (item.age >= 18 ? 'Yes' : 'No') : 'Something went wrong'),
   },
-  {key: 'first_name', label: 'First Name', sortable: true},
-  {key: 'age', label: 'Age', sortable: true},
+  {key: 'first_name', label: 'First Name', sort: true},
+  {key: 'age', label: 'Age', sort: true},
 ]
 
 class Person {
@@ -307,10 +306,9 @@ describe('single-sort', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        sortByFormatted: ({value}) => (value as string).slice(1),
+        sort: {byFormatted: ({value}) => (value as string).slice(1)},
       },
-      {key: 'age', label: 'Age', sortable: true},
+      {key: 'age', label: 'Age', sort: true},
     ]
 
     const wrapper = mount(BTable, {
@@ -557,8 +555,8 @@ describe('object-persistence', () => {
               {id: 4, text: 'D'},
             ],
             'fields': [
-              {key: 'id', sortable: true},
-              {key: 'text', sortable: true},
+              {key: 'id', sort: true},
+              {key: 'text', sort: true},
             ],
             'selectedItems': [],
             'onUpdate:selectedItems': (value) => wrapper.setProps({selectedItems: value}),
@@ -786,10 +784,9 @@ describe('custom sort comparers', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        sortCompare: fieldLevelCompare,
+        sort: {compare: fieldLevelCompare},
       },
-      {key: 'age', label: 'Age', sortable: true},
+      {key: 'age', label: 'Age', sort: true},
     ]
 
     const wrapper = mount(BTable, {
@@ -843,7 +840,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'full_name',
         label: 'Full Name',
-        sortable: true,
+        sort: true,
         accessor: (item: PersonWithNested) => item.name.first,
       },
       {key: 'id', label: 'ID'},
@@ -869,7 +866,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'full_name',
         label: 'Full Name',
-        sortable: true,
+        sort: true,
         accessor: (item: PersonWithNested) => item.name.first,
       },
       {key: 'id', label: 'ID'},
@@ -907,7 +904,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'name',
         label: 'Name',
-        sortable: true,
+        sort: true,
         accessor: 'first_name',
       },
       {key: 'id', label: 'ID'},
@@ -933,7 +930,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'full_name',
         label: 'Full Name',
-        sortable: true,
+        sort: true,
         accessor: (item: PersonWithNested) => item.name.first,
       },
       {key: 'id', label: 'ID'},
@@ -974,7 +971,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'name',
         label: 'Name',
-        sortable: true,
+        sort: true,
         accessor: 'first_name',
       },
       {key: 'id', label: 'ID'},
@@ -1018,11 +1015,9 @@ describe('combined sorting features', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        sortCompare: reverseCompare,
-        initialSortDirection: 'desc',
+        sort: {compare: reverseCompare, initialDirection: 'desc'},
       },
-      {key: 'age', label: 'Age', sortable: true},
+      {key: 'age', label: 'Age', sort: true},
     ]
 
     const wrapper = mount(BTable, {
@@ -1057,12 +1052,11 @@ describe('combined sorting features', () => {
     }
 
     const fieldsWithMixedComparers: Exclude<TableField<SimplePerson>, string>[] = [
-      {key: 'first_name', label: 'First Name', sortable: true}, // Uses default comparer
+      {key: 'first_name', label: 'First Name', sort: true}, // Uses default comparer
       {
         key: 'age',
         label: 'Age',
-        sortable: true,
-        sortCompare: ageCompare,
+        sort: {compare: ageCompare},
       },
     ]
 
@@ -1112,14 +1106,12 @@ describe('initial sort direction', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        initialSortDirection: 'desc',
+        sort: {initialDirection: 'desc'},
       },
       {
         key: 'age',
         label: 'Age',
-        sortable: true,
-        initialSortDirection: 'asc',
+        sort: {initialDirection: 'asc'},
       },
     ]
 
@@ -1176,10 +1168,9 @@ describe('initial sort direction', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        initialSortDirection: 'last',
+        sort: {initialDirection: 'last'},
       },
-      {key: 'age', label: 'Age', sortable: true},
+      {key: 'age', label: 'Age', sort: true},
     ]
 
     const wrapper = mount(BTable, {
@@ -1279,9 +1270,9 @@ describe('initial sort direction', () => {
       props: {
         items: simpleItems,
         fields: [
-          {key: 'first_name', label: 'First Name', sortable: true},
-          {key: 'age', label: 'Age', sortable: false},
-          {key: 'last_name', label: 'Last Name', sortable: true},
+          {key: 'first_name', label: 'First Name', sort: true},
+          {key: 'age', label: 'Age'},
+          {key: 'last_name', label: 'Last Name', sort: true},
         ],
         sortIconLeft: true,
       },
@@ -1333,8 +1324,8 @@ describe('initial sort direction', () => {
       props: {
         items: simpleItems,
         fields: [
-          {key: 'first_name', label: 'First Name', sortable: true, initialSortDirection: 'last'},
-          {key: 'age', label: 'Age', sortable: true, initialSortDirection: 'last'},
+          {key: 'first_name', label: 'First Name', sort: {initialDirection: 'last'}},
+          {key: 'age', label: 'Age', sort: {initialDirection: 'last'}},
         ],
         sortBy: [
           {key: 'first_name', order: 'desc'},
@@ -1370,8 +1361,8 @@ describe('initial sort direction', () => {
       props: {
         items: simpleItems,
         fields: [
-          {key: 'first_name', label: 'First Name', sortable: true},
-          {key: 'age', label: 'Age', sortable: true},
+          {key: 'first_name', label: 'First Name', sort: true},
+          {key: 'age', label: 'Age', sort: true},
         ],
         initialSortDirection: 'desc',
         mustSort: true,
@@ -1413,8 +1404,8 @@ describe('initial sort direction', () => {
       props: {
         items: simpleItems,
         fields: [
-          {key: 'first_name', label: 'First Name', sortable: true},
-          {key: 'age', label: 'Age', sortable: true},
+          {key: 'first_name', label: 'First Name', sort: true},
+          {key: 'age', label: 'Age', sort: true},
         ],
         initialSortDirection: 'desc',
         // mustSort is not set
@@ -1741,8 +1732,8 @@ describe('event emissions', () => {
     {id: 3, first_name: 'Bob', age: 35},
   ]
   const fields: Exclude<TableField<(typeof items)[0]>, string>[] = [
-    {key: 'first_name', label: 'Name', sortable: true},
-    {key: 'age', label: 'Age', sortable: true},
+    {key: 'first_name', label: 'Name', sort: true},
+    {key: 'age', label: 'Age', sort: true},
   ]
 
   it('emits sorted event when column header is clicked', async () => {
@@ -1903,7 +1894,7 @@ describe('event emissions', () => {
     const emittedEvent = wrapper.emitted('head-clicked')?.[0]?.[0]
     expect(emittedEvent).toEqual({
       key: 'age',
-      field: expect.objectContaining({key: 'age', label: 'Age', sortable: true}),
+      field: expect.objectContaining({key: 'age', label: 'Age', sort: true}),
       event: expect.any(Object),
       isFooter: false,
     })
@@ -2163,7 +2154,7 @@ describe('BTable busy state', () => {
           items: [],
           fields: ['name'],
           showEmpty: true,
-          emptyText: 'Custom empty message',
+          empty: {text: 'Custom empty message'},
         },
       })
       expect(wrapper.text()).toContain('Custom empty message')
@@ -2176,7 +2167,7 @@ describe('BTable busy state', () => {
           fields: ['name'],
           showEmpty: true,
           filter: 'search',
-          emptyFilteredText: 'Custom filtered message',
+          empty: {filteredText: 'Custom filtered message'},
         },
       })
       expect(wrapper.text()).toContain('Custom filtered message')
@@ -2200,8 +2191,7 @@ describe('BTable busy state', () => {
           items: [],
           fields: ['name'],
           showEmpty: true,
-          emptyText: 'Nothing here',
-          emptyFilteredText: 'Nothing filtered',
+          empty: {text: 'Nothing here', filteredText: 'Nothing filtered'},
         },
         slots: {
           empty: (scope: Record<string, unknown>) => {
@@ -2891,7 +2881,7 @@ describe('tbodyTrAttrs', () => {
       props: {
         items: [{name: 'test'}],
         fields: ['name'],
-        tbodyTrAttrs: trAttrsFn,
+        tbody: {trAttrs: trAttrsFn},
       },
     })
     expect(trAttrsFn).toHaveBeenCalled()
@@ -2908,7 +2898,7 @@ describe('tbodyTrAttrs', () => {
         items: [{name: 'test'}],
         fields: ['name'],
         busy: true,
-        tbodyTrAttrs: trAttrsFn,
+        tbody: {trAttrs: trAttrsFn},
       },
       slots: {
         'table-busy': '<div>Loading...</div>',
@@ -2924,7 +2914,7 @@ describe('tbodyTrAttrs', () => {
       props: {
         items: [{name: 'Alice'}, {name: 'Bob'}],
         fields: ['name'],
-        tbodyTrAttrs: {'class': 'custom-row-class', 'data-foo': 'bar'},
+        tbody: {trAttrs: {'class': 'custom-row-class', 'data-foo': 'bar'}},
       },
     })
     const rows = wrapper.findAll('tbody tr')
@@ -2942,7 +2932,7 @@ describe('tbodyTrAttrs', () => {
         fields: ['name'],
         selectable: true,
         selectedItems: [items[0]],
-        tbodyTrAttrs: (item: {name: string} | null) => ({class: `row-${item?.name}`}),
+        tbody: {trAttrs: (item: {name: string} | null) => ({class: `row-${item?.name}`})},
       },
     })
     const [first, second] = wrapper.findAll('tbody tr')
@@ -2977,7 +2967,7 @@ describe('BTable attrs merging', () => {
     const wrapper = mount(BTable, {
       props: {
         items: [{name: 'test'}],
-        fields: [{key: 'name', sortable: true}],
+        fields: [{key: 'name', sort: true}],
         fieldColumnAttrs: (field: {key: string}) => ({class: `col-${field.key}`}),
       },
     })
@@ -3369,7 +3359,7 @@ describe('sortNullLast', () => {
     const wrapper = mount(BTable, {
       props: {
         items: itemsWithNulls,
-        fields: [{key: 'name', sortable: true}],
+        fields: [{key: 'name', sort: true}],
         sortBy: [{key: 'name', order: 'asc'}],
       },
     })
@@ -3385,7 +3375,7 @@ describe('sortNullLast', () => {
     const wrapper = mount(BTable, {
       props: {
         items: itemsWithNulls,
-        fields: [{key: 'name', sortable: true}],
+        fields: [{key: 'name', sort: true}],
         sortBy: [{key: 'name', order: 'asc'}],
         sortNullLast: true,
       },
@@ -3404,7 +3394,7 @@ describe('sortNullLast', () => {
     const wrapper = mount(BTable, {
       props: {
         items: itemsWithNulls,
-        fields: [{key: 'name', sortable: true}],
+        fields: [{key: 'name', sort: true}],
         sortBy: [{key: 'name', order: 'desc'}],
         sortNullLast: true,
       },
@@ -3427,7 +3417,7 @@ describe('noFooterSorting', () => {
     {id: 3, name: 'Bob'},
   ]
   const fields: Exclude<TableField<(typeof items)[0]>, string>[] = [
-    {key: 'name', label: 'Name', sortable: true},
+    {key: 'name', label: 'Name', sort: true},
   ]
 
   it('sorts when clicking the footer by default (footClone enabled)', async () => {
@@ -3468,7 +3458,7 @@ describe('noFooterSorting', () => {
 describe('label-sort props', () => {
   const items = [{name: 'Alice'}, {name: 'Bob'}]
   const fields: Exclude<TableField<(typeof items)[0]>, string>[] = [
-    {key: 'name', label: 'Name', sortable: true},
+    {key: 'name', label: 'Name', sort: true},
   ]
 
   it('shows default sort ascending label for unsorted sortable column', () => {
@@ -3483,7 +3473,7 @@ describe('label-sort props', () => {
 
   it('shows custom label-sort-asc for unsorted sortable column', () => {
     const wrapper = mount(BTable, {
-      props: {items, fields, labelSortAsc: 'Sort A-Z'},
+      props: {items, fields, labels: {sortAsc: 'Sort A-Z'}},
     })
     const srOnly = wrapper.find('thead th .visually-hidden')
     expect(srOnly.text()).toBe('Sort A-Z')
@@ -3507,7 +3497,7 @@ describe('label-sort props', () => {
 
   it('shows custom label-sort-desc', () => {
     const wrapper = mount(BTable, {
-      props: {items, fields, sortBy: [{key: 'name', order: 'asc'}], labelSortDesc: 'Sort Z-A'},
+      props: {items, fields, sortBy: [{key: 'name', order: 'asc'}], labels: {sortDesc: 'Sort Z-A'}},
     })
     const srOnly = wrapper.find('thead th .visually-hidden')
     expect(srOnly.text()).toBe('Sort Z-A')
@@ -3519,7 +3509,7 @@ describe('label-sort props', () => {
         items,
         fields,
         sortBy: [{key: 'name', order: 'desc'}],
-        labelSortClear: 'Remove sort',
+        labels: {sortClear: 'Remove sort'},
       },
     })
     const srOnly = wrapper.find('thead th .visually-hidden')
@@ -3528,7 +3518,7 @@ describe('label-sort props', () => {
 
   it('does not show sort label for non-sortable columns', () => {
     const fieldsNoSort: Exclude<TableField<(typeof items)[0]>, string>[] = [
-      {key: 'name', label: 'Name', sortable: false},
+      {key: 'name', label: 'Name'},
     ]
     const wrapper = mount(BTable, {
       props: {items, fields: fieldsNoSort},
@@ -3573,7 +3563,7 @@ describe('aria-multiselectable', () => {
 describe('context-changed event', () => {
   const items = [{name: 'Alice'}, {name: 'Bob'}]
   const fields: Exclude<TableField<(typeof items)[0]>, string>[] = [
-    {key: 'name', label: 'Name', sortable: true},
+    {key: 'name', label: 'Name', sort: true},
   ]
 
   it('emits context-changed when filter changes', async () => {
@@ -3622,7 +3612,6 @@ describe('filterByFormatted as function', () => {
       {
         key: 'score',
         label: 'Grade',
-        sortable: false,
         filterByFormatted: true,
         formatter: ({value}) => {
           const score = Number(value)
@@ -3644,7 +3633,6 @@ describe('filterByFormatted as function', () => {
       {
         key: 'score',
         label: 'Score',
-        sortable: false,
         filterByFormatted: ({value}) => {
           const score = Number(value)
           return score >= 90 ? 'Excellent' : 'Good'

@@ -1314,6 +1314,20 @@ export interface BTableSimpleProps extends ColorBorderProps {
   tableAttrs?: Readonly<AttrsValue>
 }
 
+/** The table head (`<thead>`) or foot (`<tfoot>`): attributes, row attributes and colors */
+export interface TableHeadSection {
+  attrs?: Readonly<AttrsValue>
+  trAttrs?: Readonly<AttrsValue>
+  color?: ColorExtendables
+  rowColor?: ColorExtendables
+}
+
+/** The table body (`<tbody>`): attributes and row attributes (an object, or a function of the row) */
+export interface TableBodySection<Item> {
+  attrs?: Readonly<AttrsValue>
+  trAttrs?: ((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue
+}
+
 export interface BTableLiteProps<Item> extends BTableSimpleProps {
   align?: VerticalAlign
   caption?: string
@@ -1321,24 +1335,16 @@ export interface BTableLiteProps<Item> extends BTableSimpleProps {
   fieldColumnAttrs?: ((field: TableField<Item>) => AttrsValue) | Readonly<AttrsValue>
   fields?: readonly TableFieldRaw<Item>[]
   footClone?: boolean
-  footColor?: ColorExtendables
-  footRowColor?: ColorExtendables
-  headColor?: ColorExtendables
-  headRowColor?: ColorExtendables
   items?: readonly Item[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modelValue?: any
   expandedItems?: readonly Item[]
   // primaryKey?: Item extends object ? TablePrimaryKey<Item> : string
   primaryKey?: TablePrimaryKey<Item>
-  tbodyAttrs?: Readonly<AttrsValue>
-  tbodyTrAttrs?: ((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue
-  // tbodyTransitionHandlers
-  // tbodyTransitionProps
-  tfootAttrs?: Readonly<AttrsValue>
-  tfootTrAttrs?: Readonly<AttrsValue>
-  theadAttrs?: Readonly<AttrsValue>
-  theadTrAttrs?: Readonly<AttrsValue>
+  tbody?: TableBodySection<Item>
+  /** Keys left out fall back to the matching `thead` key */
+  tfoot?: TableHeadSection
+  thead?: TableHeadSection
 }
 
 export interface BTableProps<Item> extends BTableLiteProps<Item>, FormDebounceOptions {
@@ -1365,9 +1371,7 @@ export interface BTableProps<Item> extends BTableLiteProps<Item>, FormDebounceOp
   filterable?: readonly string[]
   // TODO
   // apiUrl?: string
-  labelSortAsc?: string
-  labelSortClear?: string
-  labelSortDesc?: string
+  labels?: {sortAsc?: string; sortDesc?: string; sortClear?: string}
   noFooterSorting?: boolean
   noLocalSorting?: boolean
   noSelectOnClick?: boolean
@@ -1375,8 +1379,7 @@ export interface BTableProps<Item> extends BTableLiteProps<Item>, FormDebounceOp
   selectedItems?: readonly Item[]
   noSortableIcon?: boolean
   sortIconLeft?: boolean
-  emptyFilteredText?: string
-  emptyText?: string
+  empty?: {text?: string; filteredText?: string}
   showEmpty?: boolean
 }
 

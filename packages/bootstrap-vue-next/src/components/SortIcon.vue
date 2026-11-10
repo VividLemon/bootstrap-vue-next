@@ -15,6 +15,7 @@
 
 <script setup lang="ts" generic="Item">
 import {computed} from 'vue'
+import {getFieldSort} from '../types/TableTypes'
 import type {BTableInitialSortDirection, BTableSortBy, TableField} from '../types'
 
 const props = defineProps<{
@@ -33,7 +34,8 @@ const descPath =
 const resolvedDirection = computed(() => {
   if (currentSort.value?.order) return currentSort.value.order
 
-  const fieldInitialDirection = props.fieldInfo.initialSortDirection || props.initialSortDirection
+  const fieldInitialDirection =
+    getFieldSort(props.fieldInfo).initialDirection || props.initialSortDirection
 
   if (fieldInitialDirection === 'last') {
     const lastSorted = [...(props.sortBy ?? [])].reverse().find((sort) => sort.order !== undefined)

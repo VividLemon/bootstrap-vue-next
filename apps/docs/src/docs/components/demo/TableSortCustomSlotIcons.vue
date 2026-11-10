@@ -13,10 +13,7 @@
       <template #head(first_name)="data">
         <div class="sortable-header">
           {{ data.label }}
-          <span
-            v-if="getSortIcon(data.field)"
-            v-html="getSortIcon(data.field)"
-          />
+          <span v-if="getSortIcon(data.field)" v-html="getSortIcon(data.field)" />
         </div>
       </template>
 
@@ -24,10 +21,7 @@
       <template #head(last_name)="data">
         <div class="sortable-header">
           {{ data.label }}
-          <span
-            v-if="getSortIcon(data.field)"
-            v-html="getSortIcon(data.field)"
-          />
+          <span v-if="getSortIcon(data.field)" v-html="getSortIcon(data.field)" />
         </div>
       </template>
 
@@ -35,10 +29,7 @@
       <template #head(age)="data">
         <div class="sortable-header">
           {{ data.label }}
-          <span
-            v-if="getSortIcon(data.field)"
-            v-html="getSortIcon(data.field)"
-          />
+          <span v-if="getSortIcon(data.field)" v-html="getSortIcon(data.field)" />
         </div>
       </template>
     </BTable>
@@ -46,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import type {TableField} from 'bootstrap-vue-next'
+import type { TableField } from 'bootstrap-vue-next'
 
 interface Person {
   first_name: string
@@ -55,16 +46,16 @@ interface Person {
 }
 
 const fields = [
-  {key: 'first_name', label: 'First Name', sortable: true},
-  {key: 'last_name', label: 'Last Name', sortable: true},
-  {key: 'age', label: 'Age', sortable: true},
+  { key: 'first_name', label: 'First Name', sort: true },
+  { key: 'last_name', label: 'Last Name', sort: true },
+  { key: 'age', label: 'Age', sort: true },
 ]
 
 const items: Person[] = [
-  {first_name: 'John', last_name: 'Doe', age: 42},
-  {first_name: 'Jane', last_name: 'Smith', age: 36},
-  {first_name: 'Bob', last_name: 'Wilson', age: 55},
-  {first_name: 'Alice', last_name: 'Johnson', age: 28},
+  { first_name: 'John', last_name: 'Doe', age: 42 },
+  { first_name: 'Jane', last_name: 'Smith', age: 36 },
+  { first_name: 'Bob', last_name: 'Wilson', age: 55 },
+  { first_name: 'Alice', last_name: 'Johnson', age: 28 },
 ]
 
 // Custom SVG icons (you could also use Bootstrap Icons, Font Awesome, etc.)
@@ -78,10 +69,10 @@ const icons = {
 }
 
 function getSortIcon(field: TableField<Person>): string {
-  // thAttr can be an object or function, so check if it's an object first
+  // th.attr can be an object or function, so check if it's an object first
   const ariaSort =
-    typeof field.thAttr === 'object' && field.thAttr !== null
-      ? field.thAttr['aria-sort']
+    typeof field.th?.attr === 'object' && field.th.attr !== null
+      ? field.th.attr['aria-sort']
       : undefined
 
   if (ariaSort === 'ascending') return icons.ascending

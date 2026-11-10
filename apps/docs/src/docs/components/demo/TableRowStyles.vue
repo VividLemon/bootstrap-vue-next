@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BTable :items="items" :fields="fields" :tbody-tr-attrs="rowAttrs" />
+    <BTable :items="items" :fields="fields" :tbody="{ trAttrs: rowAttrs }" />
   </div>
 </template>
 

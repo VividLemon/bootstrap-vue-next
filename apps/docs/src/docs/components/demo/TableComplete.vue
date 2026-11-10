@@ -218,7 +218,7 @@ const items: TableItem<Person>[] = [
     isActive: false,
     age: 9,
     name: { first: 'Mini', last: 'Navarro' },
-    _rowTheme: 'success' as ThemeColor,
+    _rowColor: { theme: 'success' as ThemeColor },
   },
   { isActive: false, age: 89, name: { first: 'Geneva', last: 'Wilson' } },
   { isActive: true, age: 38, name: { first: 'Jami', last: 'Carney' } },
@@ -228,7 +228,7 @@ const items: TableItem<Person>[] = [
     isActive: true,
     age: 87,
     name: { first: 'Larsen', last: 'Shaw' },
-    _cellThemes: { age: 'danger', isActive: 'warning' },
+    _cellColors: { age: { theme: 'danger' }, isActive: { theme: 'warning' } },
   },
   { isActive: false, age: 26, name: { first: 'Mitzi', last: 'Navarro' } },
   { isActive: false, age: 22, name: { first: 'Genevieve', last: 'Wilson' } },
@@ -240,24 +240,22 @@ const fields: Exclude<TableFieldRaw<Person>, string>[] = [
   {
     key: 'name',
     label: 'Person full name',
-    sortable: true,
+    sort: true,
   },
   {
     key: 'sortableName',
     label: 'Person sortable name',
-    sortable: true,
+    sort: { byFormatted: true },
     formatter: ({ item }) =>
       item ? `${item.name.last}, ${item.name.first}` : 'Something went wrong',
-    sortByFormatted: true,
     filterByFormatted: true,
   },
-  { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
+  { key: 'age', label: 'Person age', sort: true, class: 'text-center' },
   {
     key: 'isActive',
     label: 'Is Active',
     formatter: ({ value }) => (value ? 'Yes' : 'No'),
-    sortable: true,
-    sortByFormatted: true,
+    sort: { byFormatted: true },
     filterByFormatted: true,
   },
   { key: 'actions', label: 'Actions' },
@@ -292,7 +290,7 @@ const infoModal = reactive({
 
 // Create an options list from our fields
 const sortOptions = computed(() =>
-  fields.filter((f) => f.sortable).map((f) => ({ text: f.label, value: f.key })),
+  fields.filter((f) => f.sort).map((f) => ({ text: f.label, value: f.key })),
 )
 
 function info(item: TableItem<Person>, index: number) {
