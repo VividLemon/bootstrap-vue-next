@@ -182,6 +182,40 @@ Open choices to settle in the table, not in code: whether `hide` during `showing
 - `DialogResult {trigger, ok, value?}` (overlays Q4) is built from the cycle's completion, not by mutating an event (`setEventOk` goes away, as already decided).
 - Wrappers like BTooltip must forward all arguments (#18). A `defineExpose` helper that re-exports the machine API would prevent it.
 
+### Suggested implementation patterns
+
+**Suggestions only, not decisions.** The implementing agent may use, adapt or drop any of them, as long as the Goals, the transition table and Decisions D1–D8 hold. Each one names the part of the plan it serves.
+
+1. **State as a discriminated union.** Model the state so impossible combinations can't be written: an operation exists only in `showing` / `hiding`, and `delay` is a `phase`, not a timer flag (root cause 1).
+
+   ```ts
+   type ShowHideState =
+     | { status: "hidden" }
+     | { status: "showing"; op: Operation; phase: "delay" | "transition" }
+     | { status: "shown"; cycle: Cycle | null }
+     | { status: "hiding"; op: Operation; phase: "delay" | "transition" };
+   ```
+
+2. **Pure core, thin Vue wrapper.** A framework-free `transition(state, request) → {next, effects}` is the transition table. A small runner commits `next` first, then runs the effects in order (`emit`, `startDelay`, `runTransition`, `settle`, `abort`). `useShowHide` holds the state in a `shallowRef` and only sends requests. The core can then be tested without mounting, stays SSR-safe, and the "update state, then emit" rule is enforced by the runner's order (Goal 2, root cause 5).
+3. **Operations as objects that settle exactly once.** Each operation owns `{kind, trigger, value, instant, controller: AbortController, deferred}`. `deferred.settle()` ignores every call after the first. Every async effect (delay timer, `useCssTransition().run()`, `showModal()` timing) gets `op.signal`. A user's `controller.show({signal})` is combined with it through `AbortSignal.any()` (#2, #4, #15).
+4. **The cycle is its own object.** `Cycle {id, result: Deferred<DialogResult>}` is created by the show that opens it and settled by the hide that closes it. Outcomes are attributed to the request that owns the cycle, and the cycle is cleared in the same step that settles it (#8, #13, #20–#22, #24).
+5. **One source of truth, adapters for every entry point.** `visible`, `isActive`, `aria-expanded`, the state class and the written-back `modelValue` are `computed` from `state`. v-model, the `visible` / `show` props, `v-b-toggle`, the trigger registry, native `<dialog>` `close` and the controller only translate into `show` / `hide` / `sync` / `dispose`, which removes `noAction`. The orchestrator controller holds a direct handle to its item's machine; the store keeps only what to render (#12, #16, #23).
+6. **Two phases per request, with yield on reentry.** In the request phase, emit the cancelable events with the state not changed yet, and compare a revision number before and after each emit. If a listener's request was carried out meanwhile, the outer request returns that operation's promise and emits nothing more. An abort in this phase counts as "prevent". In the commit phase, change the state, then emit `shown` / `hidden` after the operation has settled and been removed (#5–#7, #11, #25, #26). Prefer this yield rule over a queue that runs nested requests later: a queue changes when user code observes things, and it breaks `@ok="validate && hide()"`.
+7. **Policy as guards outside the core.** `disabled` (D8) is a guard the core checks before `show`. `backdrop` / `keyboard` and the static bounce stay in `useDialogBase` and decide whether to send `hide` at all. The core never knows component names or triggers such as `'esc'`.
+8. **Tests: the table plus generated sequences.** Export the table as data and loop over state × request × listener behavior (none, prevents, nested `show`, nested `hide`, throws, aborts). Also generate random request sequences (for example with `fast-check` as a dev dependency) and check invariants after each step:
+   - every operation settles exactly once;
+   - `hidden` fires once per committed hide;
+   - `visible` equals "`showing` or `shown`";
+   - no timer or transition outlives its operation.
+
+   Keep #12–#26 as named regression tests.
+
+Things to avoid, also as suggestions:
+
+- **XState or a similar library:** a new runtime dependency (against the direction of `EXTERNALIZE_DEPENDENCIES.md` on `bootstrap-v6-foundations`), larger than the roughly 200 lines needed, and the request-phase yield rule doesn't map cleanly onto its event model.
+- **A class with methods that change their own fields:** it brings back the "half-updated during emit" problem.
+- **Vue reactivity inside the core:** `watch` chains between refs are how the legacy version ended up with time split across four async mechanisms. Keep reactivity in the wrapper's derived values.
+
 ## Breaking changes this implies (beyond those already decided for Dialog/Drawer)
 
 For the maintainer and orchestrator to accept or trim:
@@ -232,6 +266,7 @@ The machine is its own stacked PR, **S1 "Show/hide machine"**, on `bootstrap-v6-
 
 ### S1 scope and checks
 
+- See [Suggested implementation patterns](#suggested-implementation-patterns) (optional).
 - Files: `src/composables/useShowHide.ts` (delegates), a new internal `src/composables/showHideMachine.ts` (name open), `useShowHide.spec.ts` rewritten around the generated table, `BvTriggerableEvent` (`signal`), `ShowHideProps` / docs data for the removed `noCloseOn*` props and the new `state`, `architecture/ARIA_VISIBILITY.md` (event order guarantees).
 - The table covers catalog rows #1–#11 and #26 by construction. #18 and #19 get component tests in their batches, and #12–#17 and #20–#25 get orchestrator tests in G1.2.
 - Required checks from `BOOTSTRAP_V6_MIGRATION.md`, plus the BCollapse / BAccordion specs and (after #167) the BAlert / BToast specs unchanged except for event-order assertions.
