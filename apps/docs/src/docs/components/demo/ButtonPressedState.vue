@@ -11,7 +11,12 @@
   </p>
   <h5>In a button group</h5>
   <BButtonGroup size="sm">
-    <BButton v-for="(btn, idx) in buttons" :key="idx" v-model:pressed="btn.state" :color="{ theme: 'primary' }">
+    <BButton
+      v-for="(btn, idx) in buttons"
+      :key="idx"
+      v-model:pressed="btn.state"
+      :color="{ theme: 'primary' }"
+    >
       {{ btn.caption }}
     </BButton>
   </BButtonGroup>

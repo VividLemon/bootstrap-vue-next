@@ -22,7 +22,9 @@
     </BCollapse>
 
     <h5>Using v-model</h5>
-    <BButton :color="{ theme: 'info' }" class="mb-3" @click="isManual = !isManual"> Toggle with v-model </BButton>
+    <BButton :color="{ theme: 'info' }" class="mb-3" @click="isManual = !isManual">
+      Toggle with v-model
+    </BButton>
     <BCollapse id="collapse-manual" v-model="isManual">
       <BCard>
         <p class="card-text">Direct control via reactive state binding.</p>
