@@ -528,7 +528,7 @@ describe('overlay', () => {
 
   it('child BTransition child div second child div BSpinner is given prop type to be prop spinnerType', () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, spinnerType: 'grow'},
+      props: {show: true, spinner: {type: 'grow'}},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
@@ -539,7 +539,7 @@ describe('overlay', () => {
 
   it('child BTransition child div second child div BSpinner is given prop theme', () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, spinnerColor: {theme: 'danger'}},
+      props: {show: true, spinner: {color: {theme: 'danger'}}},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
@@ -550,7 +550,7 @@ describe('overlay', () => {
 
   it('child BTransition child div second child div BSpinner is given prop small', () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, spinnerSmall: true},
+      props: {show: true, spinner: {small: true}},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
@@ -597,7 +597,7 @@ describe('overlay', () => {
 
   it('child BTransition child div first child div has class rounded-top when prop roundedTop is true', () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, roundedTop: true},
+      props: {show: true, roundedSides: {top: true}},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
@@ -607,7 +607,7 @@ describe('overlay', () => {
 
   it('child BTransition child div first child div has class rounded-bottom when prop roundedBottom is true', () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, roundedBottom: true},
+      props: {show: true, roundedSides: {bottom: true}},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
@@ -617,7 +617,7 @@ describe('overlay', () => {
 
   it('child BTransition child div first child div has class rounded-start when prop roundedStart is true', () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, roundedStart: true},
+      props: {show: true, roundedSides: {start: true}},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')
@@ -627,7 +627,7 @@ describe('overlay', () => {
 
   it('child BTransition child div first child div has class rounded-end when prop roundedEnd is true', () => {
     const wrapper = mount(BOverlay, {
-      props: {show: true, roundedEnd: true},
+      props: {show: true, roundedSides: {end: true}},
     })
     const $transition = wrapper.getComponent(BTransition)
     const $div = $transition.get('div')

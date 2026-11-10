@@ -541,10 +541,14 @@ describe('img', () => {
     {name: 'rounded is none', props: {rounded: 'none'}, expected: 'rounded-0'},
     {name: 'rounded is sm', props: {rounded: 'sm'}, expected: 'rounded-1'},
     {name: 'rounded is lg', props: {rounded: 'lg'}, expected: 'rounded-5'},
-    {name: 'roundedTop is true', props: {roundedTop: true}, expected: 'rounded-top'},
-    {name: 'roundedBottom is true', props: {roundedBottom: true}, expected: 'rounded-bottom'},
-    {name: 'roundedStart is true', props: {roundedStart: true}, expected: 'rounded-start'},
-    {name: 'roundedEnd is true', props: {roundedEnd: true}, expected: 'rounded-end'},
+    {name: 'roundedTop is true', props: {roundedSides: {top: true}}, expected: 'rounded-top'},
+    {
+      name: 'roundedBottom is true',
+      props: {roundedSides: {bottom: true}},
+      expected: 'rounded-bottom',
+    },
+    {name: 'roundedStart is true', props: {roundedSides: {start: true}}, expected: 'rounded-start'},
+    {name: 'roundedEnd is true', props: {roundedSides: {end: true}}, expected: 'rounded-end'},
   ] as const)('has $expected class when $name', ({props, expected}) => {
     const wrapper = mount(BImg, {
       props: {src: '/test.jpg', ...props},

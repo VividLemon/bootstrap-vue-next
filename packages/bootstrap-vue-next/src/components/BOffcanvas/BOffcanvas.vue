@@ -49,7 +49,7 @@
                 <BCloseButton
                   v-else
                   ref="_close"
-                  :aria-label="props.headerCloseLabel"
+                  :aria-label="props.headerClose?.label ?? 'Close'"
                   v-bind="headerCloseAttrs"
                   @click="hide('close')"
                 />
@@ -131,10 +131,7 @@ const _props = withDefaults(defineProps<Omit<BOffcanvasProps, 'modelValue'>>(), 
   footerClass: undefined,
   headerAttrs: undefined,
   headerClass: undefined,
-  headerCloseClass: undefined,
-  headerCloseColor: undefined,
-  headerCloseLabel: 'Close',
-  headerCloseVariant: 'solid',
+  headerClose: undefined,
   id: undefined,
   initialAnimation: false,
   lazy: false,
@@ -272,13 +269,14 @@ const showBackdrop = computed(
 const hasHeaderCloseSlot = computed(() => !isEmptySlot(slots['header-close']))
 const headerCloseClasses = computed(() => [
   {'fg-reset': !hasHeaderCloseSlot.value},
-  props.headerCloseClass,
+  props.headerClose?.attrs?.class,
 ])
 const computedHeaderCloseColor = computed(() =>
-  resolvePartColor(props.headerCloseColor, {theme: 'secondary'})
+  resolvePartColor(props.headerClose?.color, {theme: 'secondary'})
 )
 const headerCloseAttrs = computed(() => ({
-  variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
+  ...props.headerClose?.attrs,
+  variant: hasHeaderCloseSlot.value ? (props.headerClose?.variant ?? 'solid') : undefined,
   color: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value : undefined,
   class: headerCloseClasses.value,
 }))
