@@ -182,11 +182,11 @@ Open choices to settle in the table, not in code: whether `hide` during `showing
 - `DialogResult {trigger, ok, value?}` (overlays Q4) is built from the cycle's completion, not by mutating an event (`setEventOk` goes away, as already decided).
 - Wrappers like BTooltip must forward all arguments (#18). A `defineExpose` helper that re-exports the machine API would prevent it.
 
-### `create()` mixes library options into the props object
+### `create()` options move to a second argument
 
-**Open (raised by the maintainer, 2026-11-09). Not decided yet.**
+**Decided by the maintainer on 2026-11-09 (D9).**
 
-`useModal` / `useToast` / `usePopover` `create()` take one object that holds the orchestrated component's props and `on*` listeners **and** library-defined keys:
+`useModal` / `useToast` / `usePopover` `create()` take one object holding the orchestrated component's props and `on*` listeners **and** library options:
 
 ```ts
 const value = await create({
@@ -195,32 +195,23 @@ const value = await create({
 }).show();
 ```
 
-Each helper strips the library keys before rendering: `const {component = modalComp, options, slots, ...props} = resolvedProps.value` (`useModal/index.ts`, same in `useToast` and `usePopover`). So:
+Each helper strips `options` before rendering (`const {component = modalComp, options, slots, ...props} = resolvedProps.value` in `useModal/index.ts`, the same in `useToast` and `usePopover`). A custom `component` with its own `options` prop, a common name for select-like components, never receives it, and the intersection type doesn't report the collision.
 
-- A custom `component` with its own `options`, `slots` or `component` prop can never receive it: the value is silently taken as a library option. `options` is a common prop name (select-like components).
-- Toasts also reserve `position` and `appendToast` in the same object (`ToastOrchestratorCreateParamBase`); they reach `BToast` as extra attrs and collide with any component prop of that name.
-- Every library key added later (for example a cycle or `signal` default) is a new silent collision, and the `OrchestratorCreateBase` type is an intersection, so TypeScript doesn't report it.
-
-**Proposal: the first argument holds only the component's props and `on*` listeners; everything the library defines moves to a second argument.**
+**Decision:** `options` becomes the second argument.
 
 ```ts
 const value = await create(
-  { title: "Hello World!", onOk: (e) => {} }, // props + listeners only (MaybeRef, as today)
-  { resolveOnHide: true, component: MyDialog, slots: { default: Body } }, // library options
+  { title: "Hello World!", component: MyDialog, slots: { default: Body }, onOk: (e) => {} },
+  { resolveOnHide: true },
 ).show();
 
-toast.create({ body: "Saved" }, { position: "bottom-end", appendToast: true });
+toast.create({ body: "Saved", position: "bottom-end", appendToast: true });
 ```
 
-- Second argument (`OrchestratorCreateOptions`, plain object): `component`, `slots`, `resolveOnHide` (or its cycle-API replacement), and for toasts `position` / `appendToast`. Any future library key goes here.
-- `set()` / `get()` act on props only. `id` stays in props: it is a real component prop and also the controller key.
-- No runtime detection of the old shape: a component may legitimately have an `options` prop, so a key named `options` in the first argument is a prop. The migration note and the types carry the change.
-
-Questions for the maintainer (with recommendations):
-
-1. **Where do `slots` go?** In the options object (recommended), or a third argument mirroring `h(component, props, slots)`.
-2. **Does `resolveOnHide` stay a create option?** Keep it in create options as the default, overridable per call with `controller.show({resolveOnHide, signal})` (recommended), or move it to `show()` only. With per-cycle results (above) it is a property of a cycle, so the per-call form fits.
-3. **Is the options argument reactive?** Plain object, read once (recommended); or `MaybeRef` like props, so `position` can change after creation.
+- **First argument (unchanged apart from `options`):** component props, `on*` listeners, `component`, `slots`, and for toasts `position` / `appendToast`. `component` and `slots` are specific enough not to collide in practice, and `position` / `appendToast` are prop-like (they describe how the item renders). `MaybeRef` as today; `set()` / `get()` keep acting on it.
+- **Second argument, `OrchestratorCreateOptions`:** a plain object read once, not reactive. Today it holds `resolveOnHide`; library behavior options added later go here, not into the first argument.
+- **`resolveOnHide` per call:** the create option is the default, and `controller.show({resolveOnHide, signal})` overrides it for one cycle. With per-cycle results it is a property of a cycle, so the per-call form fits.
+- No runtime detection of the old shape: a key named `options` in the first argument is now an ordinary prop. The migration note and the types carry the change.
 
 Lands in G1.2 (orchestrator and `useDialog`) and applies to `useToast` / `usePopover` in the same PR, so the three helpers keep one signature.
 
@@ -266,7 +257,7 @@ For the maintainer and orchestrator to accept or trim:
 - Event order guarantees documented ("state is committed before `shown`/`hidden`"; "a nested request replaces the outer one").
 - `BvTriggerableEvent` gains `signal` (or the result/event split from Q4 decides).
 - Controller `show({signal})`; possibly `controller.state` instead of `ref.visible`.
-- `create(props, options)`: library keys (`options`, `component`, `slots`, toast `position` / `appendToast`) move out of the props object into a second argument (see [`create()` mixes library options into the props object](#create-mixes-library-options-into-the-props-object); not decided yet).
+- `create(props, options)`: `options` (`resolveOnHide`) moves out of the props object into a second, plain-object argument; `controller.show({resolveOnHide})` overrides it per call (D9, see [`create()` options move to a second argument](#create-options-move-to-a-second-argument)).
 - `useLegacyShowHide` deleted once Dialog, Drawer and Menu move (already planned). None of #173's legacy-only fixes need porting if that happens first.
 
 ## Test strategy
@@ -297,15 +288,15 @@ The machine is its own stacked PR, **S1 "Show/hide machine"**, on `bootstrap-v6-
 
 ### Sequence
 
-| Step | PR / batch                             | Show/hide work                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| ---- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| S1   | Show/hide machine (new, after #164)    | Machine + transition table + generated tests; `useShowHide` delegates to it; operation objects with `AbortController`; emit discipline; `sync` requests for `v-model` / `visible` / `show`; `dispose`; `disabled` guard; `event.signal`; read-only `state`; `noCloseOnBackdrop` / `noCloseOnEsc` removed from `UseShowHideProps` (no native adopter sets them)                                                                                                                           |
-| —    | #167 feedback, BPopover/BTooltip batch | Adopt the native `useShowHide` as already planned; nothing machine-specific. BPopover/BTooltip forward all `hide` arguments (#18)                                                                                                                                                                                                                                                                                                                                                        |
-| G1.1 | Dialog core (`BDialog`)                | Native `<dialog>` `close` becomes `sync(false, {trigger, alreadyClosed: true})`; Escape / backdrop are checked in `useDialogBase` before `hide()`; the `transition` callback calls `showModal()` / `show()`                                                                                                                                                                                                                                                                              |
-| G1.2 | Orchestrator and `useDialog`           | The controller reads the machine through the show/hide registry instead of the store's `modelValue`; per-cycle results (`DialogResult`); dismissal before mount; `destroy()` → `dispose`; `controller.show({signal})`; `create(props, options)` for all three helpers (open); `controller.state`; the controller holds a direct handle to its item's machine (no id lookup, #23). Covers #12–#17 and #20–#25. Upstream `awaitDismissal` and #173 / #3374 are not ported; their tests are |
-| G1.3 | Drawer (`BDrawer`)                     | Same base as Dialog; nothing extra                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| G2   | Menu                                   | Adopts the native path with the `disabled` guard (#19)                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| G1.4 | Cleanup                                | Delete `useLegacyShowHide` once BDropdown/Menu, BModal and BOffcanvas are gone                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Step | PR / batch                             | Show/hide work                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ---- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| S1   | Show/hide machine (new, after #164)    | Machine + transition table + generated tests; `useShowHide` delegates to it; operation objects with `AbortController`; emit discipline; `sync` requests for `v-model` / `visible` / `show`; `dispose`; `disabled` guard; `event.signal`; read-only `state`; `noCloseOnBackdrop` / `noCloseOnEsc` removed from `UseShowHideProps` (no native adopter sets them)                                                                                                                         |
+| —    | #167 feedback, BPopover/BTooltip batch | Adopt the native `useShowHide` as already planned; nothing machine-specific. BPopover/BTooltip forward all `hide` arguments (#18)                                                                                                                                                                                                                                                                                                                                                      |
+| G1.1 | Dialog core (`BDialog`)                | Native `<dialog>` `close` becomes `sync(false, {trigger, alreadyClosed: true})`; Escape / backdrop are checked in `useDialogBase` before `hide()`; the `transition` callback calls `showModal()` / `show()`                                                                                                                                                                                                                                                                            |
+| G1.2 | Orchestrator and `useDialog`           | The controller reads the machine through the show/hide registry instead of the store's `modelValue`; per-cycle results (`DialogResult`); dismissal before mount; `destroy()` → `dispose`; `controller.show({signal})`; `create(props, options)` for all three helpers (D9); `controller.state`; the controller holds a direct handle to its item's machine (no id lookup, #23). Covers #12–#17 and #20–#25. Upstream `awaitDismissal` and #173 / #3374 are not ported; their tests are |
+| G1.3 | Drawer (`BDrawer`)                     | Same base as Dialog; nothing extra                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| G2   | Menu                                   | Adopts the native path with the `disabled` guard (#19)                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| G1.4 | Cleanup                                | Delete `useLegacyShowHide` once BDropdown/Menu, BModal and BOffcanvas are gone                                                                                                                                                                                                                                                                                                                                                                                                         |
 
 ### S1 scope and checks
 
@@ -316,15 +307,16 @@ The machine is its own stacked PR, **S1 "Show/hide machine"**, on `bootstrap-v6-
 
 ## Decisions
 
-Answered by the maintainer on 2026-11-09.
+Answered by the maintainer on 2026-11-09 (D9 added the same day).
 
-| #   | Question                                     | Decision                                                                                                                                                                                                                                    |
-| --- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| D1  | Placement                                    | **Own stacked PR (S1) before Dialog core,** behind the existing `useShowHide` API (option c)                                                                                                                                                |
-| D2  | The verified bugs in #164                    | **Don't patch #164.** S1 replaces the code and adds the cases as tests                                                                                                                                                                      |
-| D3  | `dispose` while shown or mid-transition (Q1) | **Settle silently.** No `hide` / `hidden` events; pending operation promises resolve `false`; an open cycle (`controller.show()`, `useDialog`) resolves with trigger `'dispose'`                                                            |
-| D4  | `show` during `hiding` (Q2)                  | **Reverse.** Flip the state class back so the CSS transition runs back from where it is; the hide is superseded (resolves `false`)                                                                                                          |
-| D5  | `v-model` changes (Q3)                       | **Keep today's behavior.** `v-model` and the `visible` / `show` props are `sync` requests that emit the cancelable events; a prevented change writes `modelValue` back. A native `<dialog>` `close` that already happened is not cancelable |
-| D6  | Where `signal` lives (Q4)                    | **On the cancelable request events** (`event.signal` on `show` / `hide` / `ok`; `BvTriggerableEvent` stays the event type). `DialogResult` has no signal. `controller.show({signal})` is separate                                           |
-| D7  | Public state (Q5)                            | **Public and read-only:** `state` (`'hidden' \| 'showing' \| 'shown' \| 'hiding'`) returned by `useShowHide` and on the orchestrator controller, next to `visible`                                                                          |
-| D8  | `disabled` (#19)                             | **Guard in the machine.** While disabled, `show()` resolves `'show-prevented'` without events; turning `disabled` on while open hides with trigger `'disabled'`. Menu (G2) uses it                                                          |
+| #   | Question                                     | Decision                                                                                                                                                                                                                                                                                    |
+| --- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1  | Placement                                    | **Own stacked PR (S1) before Dialog core,** behind the existing `useShowHide` API (option c)                                                                                                                                                                                                |
+| D2  | The verified bugs in #164                    | **Don't patch #164.** S1 replaces the code and adds the cases as tests                                                                                                                                                                                                                      |
+| D3  | `dispose` while shown or mid-transition (Q1) | **Settle silently.** No `hide` / `hidden` events; pending operation promises resolve `false`; an open cycle (`controller.show()`, `useDialog`) resolves with trigger `'dispose'`                                                                                                            |
+| D4  | `show` during `hiding` (Q2)                  | **Reverse.** Flip the state class back so the CSS transition runs back from where it is; the hide is superseded (resolves `false`)                                                                                                                                                          |
+| D5  | `v-model` changes (Q3)                       | **Keep today's behavior.** `v-model` and the `visible` / `show` props are `sync` requests that emit the cancelable events; a prevented change writes `modelValue` back. A native `<dialog>` `close` that already happened is not cancelable                                                 |
+| D6  | Where `signal` lives (Q4)                    | **On the cancelable request events** (`event.signal` on `show` / `hide` / `ok`; `BvTriggerableEvent` stays the event type). `DialogResult` has no signal. `controller.show({signal})` is separate                                                                                           |
+| D7  | Public state (Q5)                            | **Public and read-only:** `state` (`'hidden' \| 'showing' \| 'shown' \| 'hiding'`) returned by `useShowHide` and on the orchestrator controller, next to `visible`                                                                                                                          |
+| D8  | `disabled` (#19)                             | **Guard in the machine.** While disabled, `show()` resolves `'show-prevented'` without events; turning `disabled` on while open hides with trigger `'disabled'`. Menu (G2) uses it                                                                                                          |
+| D9  | `create()` signature                         | **`create(props, options)`.** Only `options` moves to the second argument (a plain object, read once); `component`, `slots` and toast `position` / `appendToast` stay in the first. `resolveOnHide` is a create option overridable per call with `controller.show({resolveOnHide, signal})` |
