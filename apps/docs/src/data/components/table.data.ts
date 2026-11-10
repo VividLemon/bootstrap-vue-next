@@ -1042,9 +1042,7 @@ export default {
       },
       BTbody: {
         styleSpec: { kind: StyleKind.Tag, value: 'tbody' },
-        props: pick(buildCommonProps(), ['color']) satisfies PropRecord<
-          keyof BTbodyProps
-        >,
+        props: pick(buildCommonProps(), ['color']) satisfies PropRecord<keyof BTbodyProps>,
         slots: {
           default: {
             description: 'Content to place in the tbody',
@@ -1086,9 +1084,7 @@ export default {
       },
       BTfoot: {
         styleSpec: { kind: StyleKind.Tag, value: 'tfoot' },
-        props: pick(buildCommonProps(), ['color']) satisfies PropRecord<
-          keyof BTfootProps
-        >,
+        props: pick(buildCommonProps(), ['color']) satisfies PropRecord<keyof BTfootProps>,
         slots: {
           default: {
             description: 'Content to place in the tfoot',

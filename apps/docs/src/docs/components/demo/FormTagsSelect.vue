@@ -13,9 +13,13 @@
         <template #default="{ tags, inputAttrs, disabled, addTag, removeTag }">
           <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
             <li v-for="tag in tags" :key="tag" class="list-inline-item">
-              <BFormTag :title="tag" :disabled="disabled" :color="{ theme: 'info' }" @remove="removeTag(tag)">{{
-                tag
-              }}</BFormTag>
+              <BFormTag
+                :title="tag"
+                :disabled="disabled"
+                :color="{ theme: 'info' }"
+                @remove="removeTag(tag)"
+                >{{ tag }}</BFormTag
+              >
             </li>
           </ul>
           <BFormSelect

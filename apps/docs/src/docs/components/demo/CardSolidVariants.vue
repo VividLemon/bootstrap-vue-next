@@ -3,13 +3,25 @@
   <div>
     <div class="contains-inline">
       <BCardGroup>
-        <BCard :color="{ bg: 'primary', fg: 'contrast-primary' }" header="Primary" class="text-center">
+        <BCard
+          :color="{ bg: 'primary', fg: 'contrast-primary' }"
+          header="Primary"
+          class="text-center"
+        >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard :color="{ bg: 'secondary', fg: 'contrast-secondary' }" header="Secondary" class="text-center">
+        <BCard
+          :color="{ bg: 'secondary', fg: 'contrast-secondary' }"
+          header="Secondary"
+          class="text-center"
+        >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard :color="{ bg: 'success', fg: 'contrast-success' }" header="Success" class="text-center">
+        <BCard
+          :color="{ bg: 'success', fg: 'contrast-success' }"
+          header="Success"
+          class="text-center"
+        >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
       </BCardGroup>
@@ -21,7 +33,11 @@
         <BCard :color="{ bg: 'info', fg: 'contrast-info' }" header="Info" class="text-center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard :color="{ bg: 'warning', fg: 'contrast-warning' }" header="Warning" class="text-center">
+        <BCard
+          :color="{ bg: 'warning', fg: 'contrast-warning' }"
+          header="Warning"
+          class="text-center"
+        >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
         <BCard :color="{ bg: 'danger', fg: 'contrast-danger' }" header="Danger" class="text-center">
@@ -36,7 +52,11 @@
         <BCard :color="{ bg: 'accent', fg: 'contrast-accent' }" header="Accent" class="text-center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard :color="{ bg: 'inverse', fg: 'contrast-inverse' }" header="Inverse" class="text-center">
+        <BCard
+          :color="{ bg: 'inverse', fg: 'contrast-inverse' }"
+          header="Inverse"
+          class="text-center"
+        >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
         <BCard header="Default" class="text-center">

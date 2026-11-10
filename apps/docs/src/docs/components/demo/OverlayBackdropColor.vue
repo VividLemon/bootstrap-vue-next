@@ -29,7 +29,14 @@
     </div>
 
     <BCol :cols="{ lg: 6 }">
-      <BOverlay id="overlay-background" show :color="{ bg: bg }" :opacity="opacity" :blur="blur" rounded="sm">
+      <BOverlay
+        id="overlay-background"
+        show
+        :color="{ bg: bg }"
+        :opacity="opacity"
+        :blur="blur"
+        rounded="sm"
+      >
         <BCard title="Card with overlay" aria-hidden="true">
           <BCardText>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
