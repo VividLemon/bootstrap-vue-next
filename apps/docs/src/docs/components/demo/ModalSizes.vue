@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="d-flex gap-2 mb-3">
-      <BButton v-b-modal.modal-xl theme="primary">xl modal</BButton>
-      <BButton v-b-modal.modal-lg theme="primary">lg modal</BButton>
-      <BButton v-b-modal.modal-sm theme="primary">sm modal</BButton>
+      <BButton v-b-modal.modal-xl :color="{ theme: 'primary' }">xl modal</BButton>
+      <BButton v-b-modal.modal-lg :color="{ theme: 'primary' }">lg modal</BButton>
+      <BButton v-b-modal.modal-sm :color="{ theme: 'primary' }">sm modal</BButton>
     </div>
 
     <BModal id="modal-xl" size="xl" title="Extra Large Modal">Hello Extra Large Modal!</BModal>

@@ -4,7 +4,7 @@
     <div class="contains-inline">
       <BCardGroup>
         <BCard
-          border="primary"
+          :color="{ border: 'primary' }"
           header="Primary"
           :header-color="{ bg: 'primary', fg: 'white' }"
           align="center"
@@ -12,14 +12,14 @@
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
         <BCard
-          border="secondary"
+          :color="{ border: 'secondary' }"
           header="Secondary"
           :header-color="{ border: 'secondary' }"
           align="center"
         >
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard border="success" header="Success" align="center">
+        <BCard :color="{ border: 'success' }" header="Success" align="center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
       </BCardGroup>
@@ -28,14 +28,14 @@
   <div class="mt-3">
     <div class="contains-inline">
       <BCardGroup>
-        <BCard border="info" header="Info" align="center">
+        <BCard :color="{ border: 'info' }" header="Info" align="center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
-        <BCard border="warning" header="Warning" align="center">
+        <BCard :color="{ border: 'warning' }" header="Warning" align="center">
           <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
         </BCard>
         <BCard
-          border="danger"
+          :color="{ border: 'danger' }"
           header="Danger"
           :header-color="{ border: 'danger', fg: 'danger' }"
           align="center"
@@ -47,10 +47,10 @@
   </div>
   <div class="mt-3">
     <BCardGroup class="mb-3">
-      <BCard border="accent" header="Accent" class="text-center">
+      <BCard :color="{ border: 'accent' }" header="Accent" class="text-center">
         <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
       </BCard>
-      <BCard border="inverse" header="Inverse" align="center">
+      <BCard :color="{ border: 'inverse' }" header="Inverse" align="center">
         <BCardText>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</BCardText>
       </BCard>
     </BCardGroup>

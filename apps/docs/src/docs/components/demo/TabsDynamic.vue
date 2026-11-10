@@ -9,7 +9,7 @@
             <BButton
               style="margin-right: -1rem"
               variant="link"
-              theme="secondary"
+              :color="{ theme: 'secondary' }"
               class="text-decoration-none"
               size="sm"
               @click.prevent="closeTab(i)"
@@ -24,7 +24,7 @@
           <li class="nav-item ms-auto mt-0 mb-2">
             <BButton
               variant="outline"
-              theme="secondary"
+              :color="{ theme: 'secondary' }"
               class="no-underline"
               role="presentation"
               @click.prevent="newTab"

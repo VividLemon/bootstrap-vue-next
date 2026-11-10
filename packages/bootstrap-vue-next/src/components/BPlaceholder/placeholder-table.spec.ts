@@ -152,7 +152,7 @@ describe('placeholder-table', () => {
     const $tr = $thead.get('tr')
     const $th = $tr.get('th')
     const $placeholder = $th.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBe('danger')
+    expect($placeholder.props('color')?.bg).toBe('danger')
   })
 
   it('child thead child tr has child th child BPlaceholder has prop theme to be null by default', () => {
@@ -164,7 +164,7 @@ describe('placeholder-table', () => {
     const $tr = $thead.get('tr')
     const $th = $tr.get('th')
     const $placeholder = $th.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBeNull()
+    expect($placeholder.props('color')?.bg).toBeUndefined()
   })
 
   it('child thead child tr has child th child BPlaceholder has prop animation to be prop headerAnimation', () => {
@@ -352,19 +352,19 @@ describe('placeholder-table', () => {
     const $tr = $tbody.get('tr')
     const $td = $tr.get('td')
     const $placeholder = $td.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBeNull()
+    expect($placeholder.props('color')?.bg).toBeUndefined()
   })
 
   it('child tbody child tr child td child BPlaceholder has prop theme to be prop theme', () => {
     const wrapper = mount(BPlaceholderTable, {
-      props: {theme: 'danger'},
+      props: {color: {theme: 'danger'}},
     })
     const $tablesimple = wrapper.getComponent(BTableSimple)
     const $tbody = $tablesimple.get('tbody')
     const $tr = $tbody.get('tr')
     const $td = $tr.get('td')
     const $placeholder = $td.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBe('danger')
+    expect($placeholder.props('color')?.bg).toBe('danger')
   })
 
   it('child tbody child tr child td child BPlaceholder has prop animation to be undefined by default', () => {
@@ -654,7 +654,7 @@ describe('placeholder-table', () => {
     const $tr = $tfoot.get('tr')
     const $th = $tr.get('th')
     const $placeholder = $th.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBe('danger')
+    expect($placeholder.props('color')?.bg).toBe('danger')
   })
 
   it('child tfoot child tr child th child BPlaceholder has prop theme to be null by default', () => {
@@ -666,7 +666,7 @@ describe('placeholder-table', () => {
     const $tr = $tfoot.get('tr')
     const $th = $tr.get('th')
     const $placeholder = $th.getComponent(BPlaceholder)
-    expect($placeholder.props('bg')).toBeNull()
+    expect($placeholder.props('color')?.bg).toBeUndefined()
   })
 
   it('child tfoot child tr child th child BPlaceholder has prop animation to be prop footerAnimation', () => {

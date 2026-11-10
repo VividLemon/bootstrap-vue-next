@@ -308,7 +308,7 @@ describe('avatar-group', () => {
     describe('theme', () => {
       it('child BAvatar inherits theme from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {theme: 'primary'},
+          props: {color: {theme: 'primary'}},
           slots: {
             default: () => h(BAvatar),
           },
@@ -319,7 +319,7 @@ describe('avatar-group', () => {
 
       it('group theme overrides child BAvatar theme', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {theme: 'danger'},
+          props: {color: {theme: 'danger'}},
           slots: {
             default: () => h(BAvatar, {theme: 'success'}),
           },
@@ -333,7 +333,7 @@ describe('avatar-group', () => {
     describe('bg', () => {
       it('child BAvatar inherits bg from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {bg: 'primary', theme: null},
+          props: {color: {bg: 'primary', theme: null}},
           slots: {
             default: () => h(BAvatar, {theme: null}),
           },
@@ -346,7 +346,7 @@ describe('avatar-group', () => {
     describe('fg', () => {
       it('child BAvatar inherits fg from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {fg: 'danger', theme: null},
+          props: {color: {fg: 'danger', theme: null}},
           slots: {
             default: () => h(BAvatar, {theme: null}),
           },
@@ -484,14 +484,14 @@ describe('avatar-group', () => {
 
       it('child BAvatar updates when group theme changes', async () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {theme: 'primary'},
+          props: {color: {theme: 'primary'}},
           slots: {
             default: () => h(BAvatar),
           },
         })
         const avatar = wrapper.findComponent(BAvatar)
         expect(avatar.classes()).toContain('theme-primary')
-        await wrapper.setProps({theme: 'danger'})
+        await wrapper.setProps({color: {theme: 'danger'}})
         expect(avatar.classes()).toContain('theme-danger')
         expect(avatar.classes()).not.toContain('theme-primary')
       })

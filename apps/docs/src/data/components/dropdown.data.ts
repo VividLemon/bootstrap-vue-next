@@ -57,7 +57,7 @@ export default {
               default: 'hr',
             },
           }),
-          ['bg', 'fg', 'tag', 'theme', 'wrapperAttrs'],
+          ['color', 'tag', 'wrapperAttrs'],
         ),
         dividerClass: {
           type: 'ClassValue',
@@ -109,7 +109,7 @@ export default {
     },
     BDropdownHeader: {
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'headerClass', 'tag', 'theme', 'wrapperAttrs']),
+        ...pick(buildCommonProps(), ['color', 'headerClass', 'tag', 'wrapperAttrs']),
         text: {
           type: 'string',
           default: undefined,
@@ -155,15 +155,7 @@ export default {
     },
     BDropdownItemButton: {
       props: {
-        ...pick(buildCommonProps(), [
-          'active',
-          'activeClass',
-          'bg',
-          'disabled',
-          'fg',
-          'theme',
-          'wrapperAttrs',
-        ]),
+        ...pick(buildCommonProps(), ['active', 'activeClass', 'color', 'disabled', 'wrapperAttrs']),
         buttonClass: {
           type: 'ClassValue',
           default: undefined,
@@ -195,7 +187,7 @@ export default {
               default: 'span',
             },
           }),
-          ['fg', 'bg', 'tag', 'theme', 'wrapperAttrs'],
+          ['color', 'tag', 'wrapperAttrs'],
         ),
         text: {
           type: 'string',

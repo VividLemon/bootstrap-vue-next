@@ -104,11 +104,11 @@ describe('button', () => {
 
   it('has class theme-{theme} when prop theme', async () => {
     const wrapper = mount(BButton, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
     })
     expect(wrapper.classes()).toContain('theme-primary')
     expect(wrapper.classes()).not.toContain('theme-secondary')
-    await wrapper.setProps({theme: 'danger'})
+    await wrapper.setProps({color: {theme: 'danger'}})
     expect(wrapper.classes()).toContain('theme-danger')
     expect(wrapper.classes()).not.toContain('theme-primary')
   })
@@ -123,7 +123,7 @@ describe('button', () => {
 
   it('does not have theme class when theme is null', () => {
     const wrapper = mount(BButton, {
-      props: {theme: null},
+      props: {color: {theme: null}},
     })
     expect(wrapper.classes()).not.toContain('theme-secondary')
     expect(wrapper.classes()).not.toContain('theme-null')
@@ -687,7 +687,7 @@ describe('button', () => {
 
   it('has classes btn-link and theme-info when variant is link and theme is info', () => {
     const wrapper = mount(BButton, {
-      props: {variant: 'link', theme: 'info'},
+      props: {variant: 'link', color: {theme: 'info'}},
     })
     expect(wrapper.classes()).toContain('btn-link')
     expect(wrapper.classes()).toContain('theme-info')

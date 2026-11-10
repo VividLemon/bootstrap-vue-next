@@ -2,20 +2,28 @@
 title: Color Themes
 description: >
   Bootstrap v6 colors are driven by theme classes (`.theme-*`) plus `bg`, `fg` and `border` utilities.
-  Learn how BootstrapVueNext's `theme`, `bg`, `fg` and `border` props (and the button `variant` style) map to those classes.
+  Learn how BootstrapVueNext's `color` prop (`theme`, `bg`, `fg` and `border` keys) and the button `variant` style map to those classes.
 ---
 
 Bootstrap v6 replaced v5's per-component color classes (`.btn-primary`, `.alert-danger`, `.text-bg-success`, `.list-group-item-info`, ...)
 with a single **theme** concept. A `.theme-<name>` class sets a handful of CSS variables (such as `--theme-bg` and `--theme-fg`)
-and components that read those variables are colored automatically. BootstrapVueNext exposes this through four kinds of props.
+and components that read those variables are colored automatically. BootstrapVueNext exposes this through one `color` object
+prop per component, whose keys map to those classes.
 
-| Prop                                                | Purpose                         | Rendered class   |
-| --------------------------------------------------- | ------------------------------- | ---------------- |
-| `theme`                                             | Colors the component by a theme | `theme-<theme>`  |
-| `bg`                                                | Background color                | `bg-<value>`     |
-| `fg`                                                | Foreground (text) color         | `fg-<value>`     |
-| `border`                                            | Border color                    | `border-<value>` |
-| `variant` on buttons (and `*-variant` button props) | Button style                    | `btn-<variant>`  |
+| `color` key                       | Purpose                         | Rendered class     |
+| --------------------------------- | ------------------------------- | ------------------ |
+| `theme`                           | Colors the component by a theme | `theme-<theme>`    |
+| `bg`                              | Background color                | `bg-<value>`       |
+| `fg`                              | Foreground (text) color         | `fg-<value>`       |
+| `border` (components with a border) | Border color                  | `border-<value>`   |
+| `underline` (links)               | Link underline color            | `underline-<theme>` |
+
+```vue-html
+<BBadge :color="{ theme: 'success' }">Success</BBadge>
+<BCard :color="{ bg: 'subtle-primary', border: 'primary' }" />
+```
+
+Button style is separate from color: `variant` on buttons (and `*-variant` button props) renders `btn-<variant>`.
 
 Parts of a component (a card header, a modal OK button, a table head, ...) take the same keys through one
 [prefixed color object](#prefixed-color-objects) per part, for example `header-color` or `ok-color`.
@@ -33,7 +41,7 @@ The built-in themes (type `ThemeColor`) are:
 - `inverse`
 - `secondary`
 
-The v5 `light` and `dark` colors no longer exist. Use `secondary` or `inverse`, or a neutral layer value (see below) such as `bg="1"` and `fg="body"`.
+The v5 `light` and `dark` colors no longer exist. Use `secondary` or `inverse`, or a neutral layer value (see below) such as `:color="{ bg: '1', fg: 'body' }"`.
 
 <BCard class="bg-body-tertiary">
   <div class="d-flex flex-wrap gap-2">
@@ -49,14 +57,14 @@ The v5 `light` and `dark` colors no longer exist. Use `secondary` or `inverse`, 
 </BCard>
 
 Components such as `BAlert`, `BBadge`, `BAvatar`, `BButton`, `BCard`, `BListGroupItem`, `BNav`, `BNavbar`, `BPagination`, `BProgress`, `BToast`,
-`BTable` (and its rows and cells), checks, radios and switches, and menus read the theme variables, so a `theme` prop alone is enough.
+`BTable` (and its rows and cells), checks, radios and switches, and menus read the theme variables, so a `theme` key alone is enough.
 
 Components whose styles do not read the theme variables (for example `BOverlay`, tooltips, popovers and `BSpinner`) are colored
-through the `bg` and `fg` values instead (the spinner `theme` becomes `fg-<theme>`).
+through the `bg` and `fg` keys instead (the spinner `theme` becomes `fg-<theme>`).
 
 ## Background, foreground and border values
 
-The `bg`, `fg` and `border` props accept a theme name or a more specific value. A leading prefix is part of the value, not a separate prop.
+The `bg`, `fg` and `border` keys accept a theme name or a more specific value. A leading prefix is part of the value, not a separate key.
 
 ### Background (`bg`)
 
@@ -86,32 +94,32 @@ Renders `.border-<value>`. Values are one of:
 
 ### Migrating from v5 values
 
-| v5 prop and value                  | New prop and value  |
-| ---------------------------------- | ------------------- |
-| `variant="primary"` (non-button)   | `theme="primary"`   |
-| `bg-variant="primary-subtle"`      | `bg="subtle-primary"` |
-| `text-variant="danger-emphasis"`   | `fg="emphasis-danger"` |
-| `text-variant="body-secondary"`    | `fg="2"`            |
-| `text-variant="body"`              | `fg="body"`         |
-| `border-variant="primary-subtle"`  | `border="subtle-primary"` |
-| `text-variant="white-50"` / `black-50` | removed, use `fg="white"` / `fg="black"` with an opacity utility |
+| v5 prop and value                      | New prop and value                       |
+| -------------------------------------- | ---------------------------------------- |
+| `variant="primary"` (non-button)       | `:color="{ theme: 'primary' }"`          |
+| `bg-variant="primary-subtle"`          | `:color="{ bg: 'subtle-primary' }"`      |
+| `text-variant="danger-emphasis"`       | `:color="{ fg: 'emphasis-danger' }"`     |
+| `text-variant="body-secondary"`        | `:color="{ fg: '2' }"`                   |
+| `text-variant="body"`                  | `:color="{ fg: 'body' }"`                |
+| `border-variant="primary-subtle"`      | `:color="{ border: 'subtle-primary' }"`  |
+| `text-variant="white-50"` / `black-50` | removed, use `fg: 'white'` / `fg: 'black'` with an opacity utility |
 
 ## Combining values
 
-`theme`, `bg`, `fg` and `border` (and the same keys inside [prefixed color objects](#prefixed-color-objects) such as `headerColor` or `buttonColor`) accept a single value or an array of values.
+The `theme`, `bg`, `fg` and `border` keys (of `color` and of [prefixed color objects](#prefixed-color-objects) such as `headerColor` or `buttonColor`) accept a single value or an array of values.
 Each value renders its own class, which allows stacking opacity utilities and theme modifiers.
 A single string works exactly as before.
 
 <<< DEMO ./demo/ColorArrays.vue#template{vue-html}
 
-The `theme` prop also accepts the theme modifiers `contrast`, `subtle`, `muted`, `border` and `reset` (type `ThemeProp`). In an array, put the theme color first, followed by modifiers. Arrays stored in a variable need `as const` or a `ThemeProp` annotation. The `underlineTheme` prop and the spinner `theme` (including `spinnerColor.theme`) accept a single theme only.
+The `theme` key also accepts the theme modifiers `contrast`, `subtle`, `muted`, `border` and `reset` (type `ThemeProp`). In an array, put the theme color first, followed by modifiers. Arrays stored in a variable need `as const` or a `ThemeProp` annotation. The link `underline` key and the spinner `theme` (including `spinnerColor.theme`) accept a single theme only.
 
 ## Prefixed color objects
 
-The root `theme`, `bg`, `fg` and `border` props color the component itself. A component part, such as a card header or a modal
-OK button, is colored with a single `<part>Color` object prop instead of separate `<part>Theme` / `<part>Bg` / `<part>Fg` props.
-The object takes the keys `theme`, `bg` and `fg` (type `ColorExtendables`), plus `border` where the part supports a border color
-(type `ColorBorderExtendables`).
+The `color` prop colors the component itself. A component part, such as a card header or a modal OK button, is colored
+the same way with its own `<part>Color` object prop. Both take the keys `theme`, `bg` and `fg` (type `ColorExtendables`), plus
+`border` where the component or part supports a border color (type `ColorBorderExtendables`) and `underline` on links
+(type `LinkColorExtendables`).
 
 ```vue-html
 <BCard
@@ -138,12 +146,12 @@ The object takes the keys `theme`, `bg` and `fg` (type `ColorExtendables`), plus
 | `BPlaceholderCard`, `BPlaceholderTable`       | `header-color`, `footer-color`                                                 |
 | `BTable`, `BTableLite`                        | `head-color`, `head-row-color`, `foot-color`, `foot-row-color`, `selection-color` (`BTable` only) |
 
-`underlineTheme` on links stays a flat prop, and `*-variant` props such as `ok-variant` or `button-variant` select a button
-style, not a color, so they also stay separate.
+`*-variant` props such as `ok-variant` or `button-variant` select a button style, not a color, so they stay separate.
 
 ### Defaults are merged per key
 
-Some parts have a built-in default, for example `ok-color` defaults to `{ theme: 'primary' }` and `close-color`,
+Some components and parts have a built-in default. For example `BButton`, `BBadge` and `BAvatar` default to
+`:color="{ theme: 'secondary' }"`, `BAlert` to `{ theme: 'info' }`, `ok-color` to `{ theme: 'primary' }`, and `close-color`,
 `cancel-color`, `button-color`, `tag-color`, `add-button-color` and `header-close-color` default to `{ theme: 'secondary' }`.
 The object you pass is merged with that default key by key:
 
@@ -151,11 +159,11 @@ The object you pass is merged with that default key by key:
 - A key set to `null` removes the default: `:ok-color="{ theme: null }"` renders no theme class.
 
 Where a part falls back to another one (the table `foot-color` falls back to `head-color`, `foot-row-color` to `head-row-color`,
-and the dropdown `split-color` to the root `theme`, `bg` and `fg`), the fallback is also applied key by key.
+and the dropdown `split-color` to the dropdown's `color`), the fallback is also applied key by key.
 
 ### Global defaults with `BApp`
 
-Color objects can be set as [`BApp` defaults](/docs/components/app) like any other prop, but `BApp` does **not** deep-merge
+Color objects, `color` included, can be set as [`BApp` defaults](/docs/components/app) like any other prop, but `BApp` does **not** deep-merge
 a default object with the object passed on the component:
 
 - When the component does not receive the prop, the `BApp` default object is used, and it is merged per key with the
@@ -176,13 +184,13 @@ Nested `BApp` components replace the outer defaults unless `merge-defaults` is s
 inner and outer default objects are deep-merged, so `{ BModal: { okColor: { theme: 'success' } } }` inside
 `{ BModal: { okColor: { fg: 'white' } } }` results in `{ theme: 'success', fg: 'white' }`.
 
-## Prop interactions
+## Key interactions
 
-The `bg` and `fg` props take precedence over the `theme` prop. It is more
+The `bg` and `fg` keys take precedence over the `theme` key. It is more
 straightforward to set **either** `theme` **or** `bg` and `fg`, but not a
-combination of `theme` with the other two. But the more specific props effectively override
-the foreground or background portion of the `theme` prop, so an alternative is to use the `theme`
-prop and then override `fg` or `bg` as needed.
+combination of `theme` with the other two. But the more specific keys effectively override
+the foreground or background portion of the theme, so an alternative is to set `theme`
+and then override `fg` or `bg` as needed.
 
 <<< DEMO ./demo/VariantInteractions.vue#template{vue-html}
 
@@ -194,33 +202,33 @@ Buttons separate **style** from **color**:
 
 - `variant` is the style: `solid` (default), `outline`, `subtle`, `text` or `link`. It renders `.btn-<variant>`.
 - `BButton`'s `styled` prop independently applies the `.btn-styled` modifier.
-- `theme` is the color. It renders `.theme-<theme>`.
+- The `color` prop's `theme` key is the color. It renders `.theme-<theme>`.
 
-For example `<BButton variant="outline" theme="danger">` renders `.btn.btn-outline.theme-danger`
-(v5 `.btn-outline-danger`), and `<BButton variant="link" theme="info">` renders a link-styled info button.
+For example `<BButton variant="outline" :color="{ theme: 'danger' }">` renders `.btn.btn-outline.theme-danger`
+(v5 `.btn-outline-danger`), and `<BButton variant="link" :color="{ theme: 'info' }">` renders a link-styled info button.
 Components that render a button for you expose the same pair as a style prop plus a [color object](#prefixed-color-objects), for example
 `ok-variant` / `ok-color`, `cancel-variant` / `cancel-color`, `button-variant` / `button-color`, `split-variant` / `split-color` and
 `close-variant` / `close-color`.
 
 ### Alerts, badges, list groups, progress, toasts
 
-Use `theme`. This replaces `.alert-<x>`, `.badge`/`.text-bg-<x>`, `.list-group-item-<x>`, progress `.bg-<x>` and toast variants with `.theme-<x>`.
+Use the `color` prop's `theme` key. This replaces `.alert-<x>`, `.badge`/`.text-bg-<x>`, `.list-group-item-<x>`, progress `.bg-<x>` and toast variants with `.theme-<x>`.
 
 ### Tables
 
-Use `theme` on tables, columns (field `theme`), and the helper components `BThead`, `BTfoot`, `BTr`, `BTd` and `BTh`.
+Use `color` on tables and the helper components `BThead`, `BTfoot`, `BTr`, `BTd` and `BTh`, and the `theme` property on columns (field `theme`).
 Per-item overrides use the item properties `_rowTheme` and `_cellThemes`. All map to `.theme-<theme>` (replacing `.table-<x>`).
-Table-level props are `theme` and the color objects `head-color`, `head-row-color`, `foot-color`, `foot-row-color` and `selection-color`.
+Table-level props are `color` and the color objects `head-color`, `head-row-color`, `foot-color`, `foot-row-color` and `selection-color`.
 The `dark` prop has been removed (v6 removed `.table-dark`). Use the [`v-b-color-mode`](/docs/directives/BColorMode) directive or the [`useColorMode`](/docs/composables/useColorMode) composable to place a table in dark mode.
 
 ### Links
 
-`BLink` uses `theme` (`.theme-<theme>`, since v6 anchors read `--theme-fg`). The underline color uses `underline-theme` (`.underline-<theme>`).
+`BLink` uses the `color` prop's `theme` key (`.theme-<theme>`, since v6 anchors read `--theme-fg`). The underline color uses its `underline` key (`.underline-<theme>`).
 The v5 `link-<color>` classes no longer exist.
 
 ### Overlay and spinner
 
-`BOverlay` uses `bg` for the backdrop color and the `spinner-color` object for its spinner. `BSpinner` uses `theme` to render `.fg-<theme>`.
+`BOverlay` uses `color.bg` for the backdrop color (or `bg-css` for a raw CSS color) and the `spinner-color` object for its spinner. `BSpinner` uses `color.theme` to render `.fg-<theme>`.
 
 ## Using classes directly
 
@@ -230,10 +238,10 @@ for example `class="theme-danger"`, `class="bg-subtle-primary fg-emphasis-primar
 ## Creating custom themes
 
 Add your own theme in Sass or CSS by following Bootstrap v6's theme conventions: define the `.theme-<name>` class
-(plus matching `bg-`, `fg-` and `border-` utilities if you intend to use them with `bg`, `fg` and `border` props).
+(plus matching `bg-`, `fg-` and `border-` utilities if you intend to use them with the `bg`, `fg` and `border` keys).
 Every component that reads the theme variables will then support it.
 
-To make TypeScript accept the new name in `theme` props, augment the `ThemeColors` interface. See
+To make TypeScript accept the new name in `theme` keys, augment the `ThemeColors` interface. See
 [Registering custom themes](/docs/components/button#custom-themes) for the full example.
 
 <style lang="scss">

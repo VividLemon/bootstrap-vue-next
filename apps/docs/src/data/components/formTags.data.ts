@@ -31,11 +31,11 @@ export default {
             tag: {
               default: '<span>',
             },
-            theme: {
-              default: 'secondary',
+            color: {
+              default: { theme: 'secondary' },
             },
           }),
-          ['bg', 'disabled', 'fg', 'id', 'tag', 'theme', 'title'],
+          ['color', 'disabled', 'id', 'tag', 'title'],
         ),
         noRemove: {
           type: 'boolean',

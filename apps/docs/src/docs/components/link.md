@@ -70,7 +70,7 @@ renders `link-50 hover:link-100`. Mix and match to create unique link styles.
 
 ## Colored Links
 
-You can use the `theme` prop to colorize links (rendered as `.theme-<theme>`, which v6 anchors read through `--theme-fg`). Some of the link styles use a relatively light foreground color, and should only be used on a dark background in order to have sufficient contrast. The `underline-theme` prop colors the underline (`.underline-<theme>`). See [registering custom themes](/docs/components/button#custom-themes) to add your own.
+You can use the `color` prop's `theme` key to colorize links (rendered as `.theme-<theme>`, which v6 anchors read through `--theme-fg`). Some of the link styles use a relatively light foreground color, and should only be used on a dark background in order to have sufficient contrast. Its `underline` key colors the underline (`.underline-<theme>`). See [registering custom themes](/docs/components/button#custom-themes) to add your own.
 
 <<< DEMO ./demo/LinkColors.vue
 

@@ -1,9 +1,17 @@
 <template>
-  <!-- #region template -->
-  <BContainer fluid="sm"> 100% wide until small breakpoint </BContainer>
-  <BContainer fluid="md"> 100% wide until medium breakpoint </BContainer>
-  <BContainer fluid="lg"> 100% wide until large breakpoint </BContainer>
-  <BContainer fluid="xl"> 100% wide until extra large breakpoint </BContainer>
-  <BContainer fluid="2xl"> 100% wide until 2x extra large breakpoint </BContainer>
-  <!-- #endregion template -->
+  <BContainer v-for="(label, breakpoint) in breakpoints" :key="breakpoint" :fluid="breakpoint">
+    100% wide until {{ label }} breakpoint
+  </BContainer>
 </template>
+
+<script setup lang="ts">
+import type { Breakpoint } from 'bootstrap-vue-next'
+
+const breakpoints = {
+  'sm': 'small',
+  'md': 'medium',
+  'lg': 'large',
+  'xl': 'extra large',
+  '2xl': '2x extra large',
+} as const satisfies Record<Breakpoint, string>
+</script>

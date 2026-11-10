@@ -7,14 +7,7 @@ export default {
   load: (): ComponentReference => ({
     BFormRating: {
       props: {
-        ...pick(
-          buildCommonProps({
-            theme: {
-              default: undefined,
-            },
-          }),
-          ['bg', 'fg', 'id', 'theme'],
-        ),
+        ...pick(buildCommonProps({}), ['color', 'id']),
         clearLabel: {
           type: 'string',
           default: 'Clear rating',

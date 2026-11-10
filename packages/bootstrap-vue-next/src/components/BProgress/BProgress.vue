@@ -16,9 +16,7 @@
         :show-value="props.showValue"
         :striped="props.striped"
         :value="props.value"
-        :theme="props.theme"
-        :fg="props.fg"
-        :bg="props.bg"
+        :color="props.color"
       />
     </slot>
   </div>
@@ -32,18 +30,16 @@ import {useDefaults} from '../../composables/useDefaults'
 import type {BProgressProps, BProgressSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BProgressProps>(), {
+  color: undefined,
   height: undefined,
   // BProgressBar props
   animated: undefined,
-  bg: undefined,
   max: 100,
   precision: undefined,
   showProgress: undefined,
   showValue: undefined,
   striped: undefined,
-  fg: undefined,
   value: undefined,
-  theme: undefined,
   // End BProgressBar props
 })
 const props = useDefaults(_props, 'BProgress')

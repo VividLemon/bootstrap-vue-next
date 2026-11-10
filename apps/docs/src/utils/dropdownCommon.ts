@@ -152,23 +152,21 @@ export const dropdownProps = {
       role: {
         default: 'menu',
       },
-      theme: {
-        default: 'secondary',
-      },
       variant: {
         default: 'solid',
+      },
+      color: {
+        default: { theme: 'secondary' },
       },
     }),
     [
       'ariaLabel',
-      'bg',
+      'color',
       'disabled',
-      'fg',
       'id',
       'placement',
       'role',
       'size',
-      'theme',
       'variant',
       'splitColor',
       'wrapperClass',

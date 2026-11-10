@@ -5,22 +5,21 @@
 </template>
 
 <script setup lang="ts">
-import {toColorClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import type {BTfootProps, BTfootSlots} from '../../types'
 import {computed} from 'vue'
 
 const _props = withDefaults(defineProps<BTfootProps>(), {
-  theme: null,
-  bg: null,
-  fg: null,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BTfoot')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BTfootSlots>()
 
 const computedClasses = computed(() => [
-  toColorClasses('theme', props.theme),
-  toColorClasses('bg', props.bg),
-  toColorClasses('fg', props.fg),
+  toColorClasses('theme', computedColor.value.theme),
+  toColorClasses('bg', computedColor.value.bg),
+  toColorClasses('fg', computedColor.value.fg),
 ])
 </script>

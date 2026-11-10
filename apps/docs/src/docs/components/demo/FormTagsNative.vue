@@ -10,7 +10,7 @@
             v-on="inputHandlers"
           />
           <BInputGroupText>
-            <BButton theme="primary" @click="addTag()">Add</BButton>
+            <BButton :color="{ theme: 'primary' }" @click="addTag()">Add</BButton>
           </BInputGroupText>
         </BInputGroup>
         <ul

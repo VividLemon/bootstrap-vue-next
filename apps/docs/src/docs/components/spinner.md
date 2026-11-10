@@ -31,11 +31,11 @@ If you don't fancy a `border` spinner, switch to the `grow` spinner by setting t
 ## Spinner color themes
 
 Spinners use `currentColor` for their color, meaning it inherits the current font color. You can
-customize the color using the standard theme colors via the `theme` prop, or place
+customize the color using the standard theme colors via the `color` prop's `theme` key, or place
 classes or styles on the component to change its color.
 
-The `theme` prop translates the theme name to the Bootstrap v6 class `.fg-{theme}`, so if
-you have [registered custom themes](/docs/components/button#custom-themes) that also define `fg-*` utilities, feel free to use them via the `theme` prop.
+The `theme` key translates the theme name to the Bootstrap v6 class `.fg-{theme}`, so if
+you have [registered custom themes](/docs/components/button#custom-themes) that also define `fg-*` utilities, feel free to use them via the `theme` key.
 
 <<< DEMO ./demo/SpinnerColors.vue#template{vue-html}
 

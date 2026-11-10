@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-column text-md-center">
     <div class="p-2">
-      <BButton id="tooltip-expose" theme="primary">I have a tooltip</BButton>
+      <BButton id="tooltip-expose" :color="{ theme: 'primary' }">I have a tooltip</BButton>
     </div>
 
     <div class="p-2">

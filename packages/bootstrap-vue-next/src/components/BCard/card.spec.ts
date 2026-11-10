@@ -37,28 +37,28 @@ describe('card', () => {
 
   it('has class fg-{type} when prop fg', async () => {
     const wrapper = mount(BCard, {
-      props: {fg: 'primary'},
+      props: {color: {fg: 'primary'}},
     })
     expect(wrapper.classes()).toContain('fg-primary')
-    await wrapper.setProps({fg: undefined})
+    await wrapper.setProps({color: {fg: undefined}})
     expect(wrapper.classes()).not.toContain('fg-primary')
   })
 
   it('has class bg-{type} when prop bg', async () => {
     const wrapper = mount(BCard, {
-      props: {bg: 'primary'},
+      props: {color: {bg: 'primary'}},
     })
     expect(wrapper.classes()).toContain('bg-primary')
-    await wrapper.setProps({bg: undefined})
+    await wrapper.setProps({color: {bg: undefined}})
     expect(wrapper.classes()).not.toContain('bg-primary')
   })
 
   it('has class border-{type} when prop border', async () => {
     const wrapper = mount(BCard, {
-      props: {border: 'primary'},
+      props: {color: {border: 'primary'}},
     })
     expect(wrapper.classes()).toContain('border-primary')
-    await wrapper.setProps({border: undefined})
+    await wrapper.setProps({color: {border: undefined}})
     expect(wrapper.classes()).not.toContain('border-primary')
   })
 
@@ -213,7 +213,7 @@ describe('card', () => {
       props: {header: 'foobar', headerColor: {bg: 'danger'}},
     })
     const $header = wrapper.getComponent(BCardHeader)
-    expect($header.props('bg')).toBe('danger')
+    expect($header.props('color')?.bg).toBe('danger')
   })
 
   it('child BCardHeader has internal prop border as prop headerColor.border', () => {
@@ -221,7 +221,7 @@ describe('card', () => {
       props: {header: 'foobar', headerColor: {border: 'danger'}},
     })
     const $header = wrapper.getComponent(BCardHeader)
-    expect($header.props('border')).toBe('danger')
+    expect($header.props('color')?.border).toBe('danger')
   })
 
   it('child BCardHeader has internal prop tag as prop headerTag', () => {
@@ -237,7 +237,7 @@ describe('card', () => {
       props: {header: 'foobar', headerColor: {fg: 'danger'}},
     })
     const $header = wrapper.getComponent(BCardHeader)
-    expect($header.props('fg')).toBe('danger')
+    expect($header.props('color')?.fg).toBe('danger')
   })
 
   it('child BCardHeader text is prop header', () => {
@@ -340,7 +340,7 @@ describe('card', () => {
       props: {bodyColor: {bg: 'danger'}},
     })
     const $body = wrapper.getComponent(BCardBody)
-    expect($body.props('bg')).toBe('danger')
+    expect($body.props('color')?.bg).toBe('danger')
   })
 
   it('child BCardBody has internal prop border as prop bodyColor.border', () => {
@@ -348,7 +348,7 @@ describe('card', () => {
       props: {bodyColor: {border: 'danger'}},
     })
     const $body = wrapper.getComponent(BCardBody)
-    expect($body.props('border')).toBe('danger')
+    expect($body.props('color')?.border).toBe('danger')
   })
 
   it('child BCardHeader has internal prop bodyTag as prop bodyTag', () => {
@@ -364,7 +364,7 @@ describe('card', () => {
       props: {bodyColor: {fg: 'danger'}},
     })
     const $body = wrapper.getComponent(BCardBody)
-    expect($body.props('fg')).toBe('danger')
+    expect($body.props('color')?.fg).toBe('danger')
   })
 
   it('child BCardHeader has internal prop subtitle as prop subtitle', () => {
@@ -442,7 +442,7 @@ describe('card', () => {
       props: {footer: 'foobar', footerColor: {bg: 'danger'}},
     })
     const $footer = wrapper.getComponent(BCardFooter)
-    expect($footer.props('bg')).toBe('danger')
+    expect($footer.props('color')?.bg).toBe('danger')
   })
 
   it('child BCardFooter has internal prop border as prop footerColor.border', () => {
@@ -450,7 +450,7 @@ describe('card', () => {
       props: {footer: 'foobar', footerColor: {border: 'danger'}},
     })
     const $footer = wrapper.getComponent(BCardFooter)
-    expect($footer.props('border')).toBe('danger')
+    expect($footer.props('color')?.border).toBe('danger')
   })
 
   it('child BCardFooter has internal prop tag as prop footerTag', () => {
@@ -466,7 +466,7 @@ describe('card', () => {
       props: {footer: 'foobar', footerColor: {fg: 'danger'}},
     })
     const $footer = wrapper.getComponent(BCardFooter)
-    expect($footer.props('fg')).toBe('danger')
+    expect($footer.props('color')?.fg).toBe('danger')
   })
 
   it('child BCardFooter has renders text as slot footer', () => {
@@ -566,7 +566,7 @@ describe('card', () => {
       props: {header: 'foobar', headerColor: {theme: 'danger'}},
     })
     const $header = wrapper.getComponent(BCardHeader)
-    expect($header.props('theme')).toBe('danger')
+    expect($header.props('color')?.theme).toBe('danger')
   })
 
   it('child BCardFooter has internal prop theme as prop footerColor.theme', () => {
@@ -574,7 +574,7 @@ describe('card', () => {
       props: {footer: 'foobar', footerColor: {theme: 'danger'}},
     })
     const $footer = wrapper.getComponent(BCardFooter)
-    expect($footer.props('theme')).toBe('danger')
+    expect($footer.props('color')?.theme).toBe('danger')
   })
 
   it('child BCardBody has overlay false by default', () => {
