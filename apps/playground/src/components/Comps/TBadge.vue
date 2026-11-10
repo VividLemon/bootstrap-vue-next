@@ -40,14 +40,14 @@
     </BRow>
     <BRow>
       <BCol>
-        <BBadge pill theme="primary">Primary</BBadge>
-        <BBadge pill theme="secondary">Secondary</BBadge>
-        <BBadge pill theme="success">Success</BBadge>
-        <BBadge pill theme="danger">Danger</BBadge>
-        <BBadge pill theme="warning">Warning</BBadge>
-        <BBadge pill theme="info">Info</BBadge>
-        <BBadge pill theme="accent">Accent</BBadge>
-        <BBadge pill theme="inverse">Inverse</BBadge>
+        <BBadge pill :color="{ theme: 'primary' }">Primary</BBadge>
+        <BBadge pill :color="{ theme: 'secondary' }">Secondary</BBadge>
+        <BBadge pill :color="{ theme: 'success' }">Success</BBadge>
+        <BBadge pill :color="{ theme: 'danger' }">Danger</BBadge>
+        <BBadge pill :color="{ theme: 'warning' }">Warning</BBadge>
+        <BBadge pill :color="{ theme: 'info' }">Info</BBadge>
+        <BBadge pill :color="{ theme: 'accent' }">Accent</BBadge>
+        <BBadge pill :color="{ theme: 'inverse' }">Inverse</BBadge>
       </BCol>
     </BRow>
     <BRow>
@@ -55,14 +55,14 @@
     </BRow>
     <BRow>
       <BCol>
-        <BBadge href="#" theme="primary">Primary</BBadge>
-        <BBadge href="#" theme="secondary">Secondary</BBadge>
-        <BBadge href="#" theme="success">Success</BBadge>
-        <BBadge href="#" theme="danger">Danger</BBadge>
-        <BBadge href="#" theme="warning">Warning</BBadge>
-        <BBadge href="#" theme="info">Info</BBadge>
-        <BBadge href="#" theme="accent">Accent</BBadge>
-        <BBadge href="#" theme="inverse">Inverse</BBadge>
+        <BBadge href="#" :color="{ theme: 'primary' }">Primary</BBadge>
+        <BBadge href="#" :color="{ theme: 'secondary' }">Secondary</BBadge>
+        <BBadge href="#" :color="{ theme: 'success' }">Success</BBadge>
+        <BBadge href="#" :color="{ theme: 'danger' }">Danger</BBadge>
+        <BBadge href="#" :color="{ theme: 'warning' }">Warning</BBadge>
+        <BBadge href="#" :color="{ theme: 'info' }">Info</BBadge>
+        <BBadge href="#" :color="{ theme: 'accent' }">Accent</BBadge>
+        <BBadge href="#" :color="{ theme: 'inverse' }">Inverse</BBadge>
       </BCol>
     </BRow>
   </BContainer>

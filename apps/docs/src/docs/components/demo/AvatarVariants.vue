@@ -1,14 +1,14 @@
 <template>
   <!-- #region template -->
   <div class="d-flex" style="column-gap: 1%">
-    <BAvatar theme="secondary" />
-    <BAvatar theme="primary" />
-    <BAvatar theme="inverse" />
-    <BAvatar theme="accent" />
-    <BAvatar theme="success" />
-    <BAvatar theme="danger" />
-    <BAvatar theme="warning" />
-    <BAvatar theme="info" />
+    <BAvatar :color="{ theme: 'secondary' }" />
+    <BAvatar :color="{ theme: 'primary' }" />
+    <BAvatar :color="{ theme: 'inverse' }" />
+    <BAvatar :color="{ theme: 'accent' }" />
+    <BAvatar :color="{ theme: 'success' }" />
+    <BAvatar :color="{ theme: 'danger' }" />
+    <BAvatar :color="{ theme: 'warning' }" />
+    <BAvatar :color="{ theme: 'info' }" />
   </div>
   <!-- #endregion template -->
 </template>

@@ -137,15 +137,24 @@ type HoverState<T> = Partial<Record<'xs' | 'hover', T>>
 
 ### Prefixed color props become objects
 
-Every `<part>Theme` / `<part>Bg` / `<part>Fg` trio (the 19 `*ColorExtendables` interfaces in `types/ColorTypes.ts`, plus inline families such as `badge*`) becomes one `<part>Color` object prop typed as `ColorExtendables` (plus `border` where the part has a border prop). The root `theme` / `bg` / `fg` props stay flat.
+Every `<part>Theme` / `<part>Bg` / `<part>Fg` trio (the 19 `*ColorExtendables` interfaces in `types/ColorTypes.ts`, plus inline families such as `badge*`) becomes one `<part>Color` object prop typed as `ColorExtendables` (plus `border` where the part has a border prop).
+
+The component's own colors follow the same rule: the root `theme` / `bg` / `fg` (and `border`) props become one `color` object prop on every component (`ColorProps` / `ColorBorderProps` in `types/ColorTypes.ts`). Built-in defaults (BButton / BBadge / BAvatar / BFormTag / BDropdown `secondary`, BAlert `info`, BPlaceholderButton `primary`, BFormText / BCardSubtitle `fg: '2'`, BOverlay `bg: 'body'`) are merged per key with `resolvePartColor`, like part objects.
 
 ```vue-html
-<BCard :header-color="{ theme: 'primary', bg: 'subtle-primary', border: 'primary' }" :body-color="{ fg: '2' }" />
+<BBadge :color="{ theme: 'success' }" />
+<BCard :color="{ bg: 'subtle-primary', border: 'primary' }" :header-color="{ theme: 'primary' }" :body-color="{ fg: '2' }" />
 ```
+
+- `color` includes `border` on BCard, BCardBody, BCardHeader / BCardFooter and BTableSimple / BTableLite / BTable.
+- Components with fewer keys take a `Pick`: BPlaceholder `bg` / `fg`, BOverlay `bg`, BFormText / BCardSubtitle `fg`. BSpinner's `theme` key accepts a single `ThemeColor`.
+- `underlineTheme` on BLink (and everything extending its props) becomes `color.underline` (`LinkColorExtendables`).
+- BFormRating's CSS-string `color` prop is removed (it collided with the object); set a CSS `color` through `style` or a class.
+- BOverlay's CSS-string `bgColor` is renamed `bgCss`, so no `*Color` name is a plain string.
+- Table data keeps its shape: field `theme` / `bg` / `fg` and item `_rowTheme` / `_cellThemes` etc. stay flat.
 
 - `headerBorder` / `bodyBorder` / `footerBorder` move into the matching `<part>Color` object.
 - `subtitleFg` becomes `subtitleColor: { fg }`.
-- `underlineTheme` stays flat (v6 has no hover variant for it).
 - `*Variant` props that select a button style (`buttonVariant`, `closeVariant`, `okVariant`, …) are styles, not colors, and stay separate.
 - Applies to all components now, including deferred ones, because these props were introduced in this same major release.
 - Check whether `BApp` defaults merge object props deeply or replace them, and document the behavior.

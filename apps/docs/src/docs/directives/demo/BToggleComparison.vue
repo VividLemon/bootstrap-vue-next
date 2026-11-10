@@ -1,7 +1,7 @@
 <template>
   <div>
     <h5>Using v-b-toggle Directive</h5>
-    <BButton v-b-toggle.collapse-directive theme="primary" class="mb-3">
+    <BButton v-b-toggle.collapse-directive :color="{ theme: 'primary' }" class="mb-3">
       Toggle with Directive
     </BButton>
     <BCollapse id="collapse-directive" class="mb-4">
@@ -11,7 +11,7 @@
     </BCollapse>
 
     <h5>Using useToggle Composable</h5>
-    <BButton theme="success" class="mb-3" @click="() => toggleComposable()">
+    <BButton :color="{ theme: 'success' }" class="mb-3" @click="() => toggleComposable()">
       Toggle with Composable
     </BButton>
     <BCollapse id="collapse-composable" class="mb-4">
@@ -22,7 +22,9 @@
     </BCollapse>
 
     <h5>Using v-model</h5>
-    <BButton theme="info" class="mb-3" @click="isManual = !isManual"> Toggle with v-model </BButton>
+    <BButton :color="{ theme: 'info' }" class="mb-3" @click="isManual = !isManual">
+      Toggle with v-model
+    </BButton>
     <BCollapse id="collapse-manual" v-model="isManual">
       <BCard>
         <p class="card-text">Direct control via reactive state binding.</p>

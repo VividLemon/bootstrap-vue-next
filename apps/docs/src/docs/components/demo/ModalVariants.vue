@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BButton theme="primary" @click="show = true">Show Modal</BButton>
+    <BButton :color="{ theme: 'primary' }" @click="show = true">Show Modal</BButton>
 
     <BModal
       v-model="show"
@@ -50,7 +50,7 @@
       <template #footer>
         <div class="w-100">
           <p class="float-start">Modal Footer Content</p>
-          <BButton theme="primary" size="sm" class="float-end" @click="show = false">
+          <BButton :color="{ theme: 'primary' }" size="sm" class="float-end" @click="show = false">
             Close
           </BButton>
         </div>

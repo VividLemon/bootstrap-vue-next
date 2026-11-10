@@ -132,7 +132,7 @@ describe('dropdown', () => {
       props: {splitColor: {theme: 'danger'}},
     })
     const $bbutton = wrapper.getComponent(BButton)
-    expect($bbutton.props('theme')).toBe('danger')
+    expect($bbutton.props('color')?.theme).toBe('danger')
   })
 
   it('first child BButton prop variant to be prop splitVariant', () => {
@@ -145,11 +145,11 @@ describe('dropdown', () => {
 
   it('first child BButton props to be props variant and theme', () => {
     const wrapper = mount(BDropdown, {
-      props: {variant: 'outline', theme: 'danger'},
+      props: {variant: 'outline', color: {theme: 'danger'}},
     })
     const $bbutton = wrapper.getComponent(BButton)
     expect($bbutton.props('variant')).toBe('outline')
-    expect($bbutton.props('theme')).toBe('danger')
+    expect($bbutton.props('color')?.theme).toBe('danger')
   })
 
   it('first child BButton props prefer splitVariant/splitColor.theme over variant/theme', () => {
@@ -158,30 +158,30 @@ describe('dropdown', () => {
         splitVariant: 'outline',
         splitColor: {theme: 'danger'},
         variant: 'solid',
-        theme: 'secondary',
+        color: {theme: 'secondary'},
       },
     })
     const $bbutton = wrapper.getComponent(BButton)
     expect($bbutton.props('variant')).toBe('outline')
-    expect($bbutton.props('theme')).toBe('danger')
+    expect($bbutton.props('color')?.theme).toBe('danger')
   })
 
   it('first child BButton falls back to theme, bg and fg key by key', () => {
     const wrapper = mount(BDropdown, {
-      props: {splitColor: {fg: 'white'}, theme: 'danger', bg: 'subtle-danger'},
+      props: {splitColor: {fg: 'white'}, color: {theme: 'danger', bg: 'subtle-danger'}},
     })
     const $bbutton = wrapper.getComponent(BButton)
-    expect($bbutton.props('theme')).toBe('danger')
-    expect($bbutton.props('bg')).toBe('subtle-danger')
-    expect($bbutton.props('fg')).toBe('white')
+    expect($bbutton.props('color')?.theme).toBe('danger')
+    expect($bbutton.props('color')?.bg).toBe('subtle-danger')
+    expect($bbutton.props('color')?.fg).toBe('white')
   })
 
   it('first child BButton splitColor null key clears the root color', () => {
     const wrapper = mount(BDropdown, {
-      props: {splitColor: {theme: null}, theme: 'danger'},
+      props: {splitColor: {theme: null}, color: {theme: 'danger'}},
     })
     const $bbutton = wrapper.getComponent(BButton)
-    expect($bbutton.props('theme')).toBeNull()
+    expect($bbutton.props('color')?.theme).toBeNull()
     expect($bbutton.classes()).not.toContain('theme-danger')
   })
 
@@ -423,14 +423,14 @@ describe('dropdown', () => {
 
   it('second child BButton has props variant and theme to be props variant and theme', async () => {
     const wrapper = mount(BDropdown, {
-      props: {split: true, variant: 'outline', theme: 'danger'},
+      props: {split: true, variant: 'outline', color: {theme: 'danger'}},
     })
     const [, $bbutton] = wrapper.findAllComponents(BButton)
     expect($bbutton.props('variant')).toBe('outline')
-    expect($bbutton.props('theme')).toBe('danger')
-    await wrapper.setProps({variant: 'solid', theme: 'secondary'})
+    expect($bbutton.props('color')?.theme).toBe('danger')
+    await wrapper.setProps({variant: 'solid', color: {theme: 'secondary'}})
     expect($bbutton.props('variant')).toBe('solid')
-    expect($bbutton.props('theme')).toBe('secondary')
+    expect($bbutton.props('color')?.theme).toBe('secondary')
   })
 
   it('second child BButton has prop size to be prop size', async () => {
@@ -862,14 +862,14 @@ describe('dropdown', () => {
   describe('variant reactivity', () => {
     it('first child BButton variant and theme react to prop change', async () => {
       const wrapper = mount(BDropdown, {
-        props: {variant: 'outline', theme: 'danger'},
+        props: {variant: 'outline', color: {theme: 'danger'}},
       })
       const $bbutton = wrapper.getComponent(BButton)
       expect($bbutton.props('variant')).toBe('outline')
-      expect($bbutton.props('theme')).toBe('danger')
-      await wrapper.setProps({variant: 'subtle', theme: 'primary'})
+      expect($bbutton.props('color')?.theme).toBe('danger')
+      await wrapper.setProps({variant: 'subtle', color: {theme: 'primary'}})
       expect($bbutton.props('variant')).toBe('subtle')
-      expect($bbutton.props('theme')).toBe('primary')
+      expect($bbutton.props('color')?.theme).toBe('primary')
     })
 
     it('first child BButton size reacts to prop change', async () => {
@@ -1007,7 +1007,7 @@ describe('dropdown', () => {
       const wrapper = mount(BDropdown)
       const $bbutton = wrapper.getComponent(BButton)
       expect($bbutton.props('variant')).toBe('solid')
-      expect($bbutton.props('theme')).toBe('secondary')
+      expect($bbutton.props('color')?.theme).toBe('secondary')
     })
   })
 

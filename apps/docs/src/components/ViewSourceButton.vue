@@ -1,5 +1,7 @@
 <template>
-  <BButton variant="outline" theme="info" :target :href> <slot> View Source </slot> </BButton>
+  <BButton variant="outline" :color="{ theme: 'info' }" :target :href>
+    <slot> View Source </slot>
+  </BButton>
 </template>
 
 <script setup lang="ts">

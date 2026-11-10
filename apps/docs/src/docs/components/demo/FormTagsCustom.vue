@@ -10,7 +10,7 @@
             v-on="inputHandlers"
           />
           <BInputGroupText>
-            <BButton theme="primary" @click="addTag()">Add</BButton>
+            <BButton :color="{ theme: 'primary' }" @click="addTag()">Add</BButton>
           </BInputGroupText>
         </BInputGroup>
         <div class="d-inline-block" style="font-size: 1.5rem">
@@ -18,9 +18,7 @@
             v-for="tag in tags"
             :key="tag"
             :title="tag"
-            :theme="tagColor.theme"
-            :bg="tagColor.bg"
-            :fg="tagColor.fg"
+            :color="tagColor"
             class="me-1"
             @remove="removeTag(tag)"
             >{{ tag }}</BFormTag

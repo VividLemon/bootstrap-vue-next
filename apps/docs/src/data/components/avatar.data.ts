@@ -36,22 +36,20 @@ export default {
               src: {
                 description: 'Image URL to use for the avatar',
               },
-              theme: {
-                default: 'secondary',
+              color: {
+                default: { theme: 'secondary' },
               },
             }),
             [
               'ariaLabel',
               'alt',
-              'bg',
-              'fg',
+              'color',
               'rounded',
               'roundedBottom',
               'roundedEnd',
               'roundedStart',
               'roundedTop',
               'src',
-              'theme',
             ],
           ),
           badge: {
@@ -153,21 +151,8 @@ export default {
               description:
                 'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence. Refer to the documentation for details.',
             },
-            theme: {
-              default: null,
-            },
           }),
-          [
-            'bg',
-            'fg',
-            'rounded',
-            'roundedBottom',
-            'roundedEnd',
-            'roundedStart',
-            'roundedTop',
-            'tag',
-            'theme',
-          ],
+          ['color', 'rounded', 'roundedBottom', 'roundedEnd', 'roundedStart', 'roundedTop', 'tag'],
         ),
         overlap: {
           type: 'Numberish',

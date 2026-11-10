@@ -3,9 +3,9 @@
   <p>Using stand-alone:</p>
   <div class="d-flex mb-4" style="column-gap: 1%">
     <BAvatar />
-    <BAvatar theme="primary" text="BV" />
-    <BAvatar theme="info" src="https://picsum.photos/300/300" />
-    <BAvatar theme="success" />
+    <BAvatar :color="{ theme: 'primary' }" text="BV" />
+    <BAvatar :color="{ theme: 'info' }" src="https://picsum.photos/300/300" />
+    <BAvatar :color="{ theme: 'success' }" />
   </div>
   <p>Using in components (list group) example:</p>
   <BListGroup style="max-width: 300px">
@@ -15,17 +15,17 @@
       <BBadge>5</BBadge>
     </BListGroupItem>
     <BListGroupItem class="d-flex align-items-center">
-      <BAvatar theme="primary" text="BV" class="mx-3" />
+      <BAvatar :color="{ theme: 'primary' }" text="BV" class="mx-3" />
       <span class="me-auto">BootstrapVueNext</span>
       <BBadge>12</BBadge>
     </BListGroupItem>
     <BListGroupItem class="d-flex align-items-center">
-      <BAvatar theme="info" src="https://picsum.photos/300/300" class="mx-3" />
+      <BAvatar :color="{ theme: 'info' }" src="https://picsum.photos/300/300" class="mx-3" />
       <span class="me-auto">Super Kitty</span>
       <BBadge>9</BBadge>
     </BListGroupItem>
     <BListGroupItem class="d-flex align-items-center">
-      <BAvatar theme="success" class="mx-3" />
+      <BAvatar :color="{ theme: 'success' }" class="mx-3" />
       <span class="me-auto">ACME group</span>
       <BBadge>7</BBadge>
     </BListGroupItem>

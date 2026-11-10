@@ -47,7 +47,7 @@ type AttrsValue = Record<string, any>
 
 ## BgColor
 
-Applied with a `bg-<value>` class (`bg` props).
+Applied with a `bg-<value>` class (`bg` keys of `color` props).
 
 <BCard class="bg-body-tertiary">
 
@@ -93,7 +93,7 @@ type BodyProp =
 
 ## BorderColor
 
-Applied with a `border-<value>` class (`border` props).
+Applied with a `border-<value>` class (`border` keys of `color` props).
 
 <BCard class="bg-body-tertiary">
 
@@ -156,7 +156,7 @@ type ButtonType = 'button' | 'submit' | 'reset'
 
 ## ButtonVariant
 
-The button _style_. The color is set separately with the `theme` prop (a [`ThemeColor`](#themecolor)).
+The button _style_. The color is set separately with the `color` prop's `theme` key (a [`ThemeColor`](#themecolor)).
 
 <BCard class="bg-body-tertiary">
 
@@ -284,7 +284,7 @@ type ContainerPosition = `${ContainerVerticalAlign}-${ContainerHorizontalAlign}`
 
 ## FgColor
 
-Applied with a `fg-<value>` class (`fg` props).
+Applied with a `fg-<value>` class (`fg` keys of `color` props).
 
 <BCard class="bg-body-tertiary">
 
@@ -369,7 +369,7 @@ type LinkTarget = '_self' | '_blank' | '_parent' | '_top'
 
 ## MaybeArray
 
-A single value or a list of values. Color props use it so utilities can be stacked, for example `bg="success"` or `:bg="['success', 90]"`.
+A single value or a list of values. Color props use it so utilities can be stacked, for example `:color="{ bg: 'success' }"` or `:color="{ bg: ['success', 90] }"`.
 
 <BCard class="bg-body-tertiary">
 
@@ -782,23 +782,23 @@ declare module 'bootstrap-vue-next' {
 
 </BCard>
 
-`ThemeColor`, `BgColor`, `FgColor` and `BorderColor` are derived from `ThemeColors`, so a new theme is accepted by every `theme`, `bg`, `fg` and `border` prop. You must also provide the matching CSS (a `.theme-purple` class, plus any `bg-*`/`fg-*`/`border-*` utilities you use with it).
+`ThemeColor`, `BgColor`, `FgColor` and `BorderColor` are derived from `ThemeColors`, so a new theme is accepted by every `theme`, `bg`, `fg` and `border` key. You must also provide the matching CSS (a `.theme-purple` class, plus any `bg-*`/`fg-*`/`border-*` utilities you use with it).
 
 New values can be used now and the type check will be successful:
 
 <BCard class="bg-body-tertiary">
 
 ```vue-html
-<BButton theme="purple" size="xl">Extra large purple button</BButton>
-<BButton theme="purple" variant="outline">Outline purple button</BButton>
-<BAlert :model-value="true" theme="purple" bg="subtle-purple">Purple alert</BAlert>
+<BButton :color="{ theme: 'purple' }" size="xl">Extra large purple button</BButton>
+<BButton :color="{ theme: 'purple' }" variant="outline">Outline purple button</BButton>
+<BAlert :model-value="true" :color="{ theme: 'purple', bg: 'subtle-purple' }">Purple alert</BAlert>
 ```
 
 </BCard>
 
 ## ThemeValue
 
-A theme color or a theme modifier. Modifiers stack with a theme, for example `:theme="['primary', 'contrast']"` renders `theme-primary theme-contrast`.
+A theme color or a theme modifier. Modifiers stack with a theme, for example `:color="{ theme: ['primary', 'contrast'] }"` renders `theme-primary theme-contrast`.
 
 <BCard class="bg-body-tertiary">
 
@@ -811,7 +811,7 @@ type ThemeValue = ThemeColor | ThemeModifier
 
 ## ThemeProp
 
-The type of `theme` props. A single theme color or modifier, or an array where an optional theme color comes **first**, followed by modifiers. Two theme colors in one array are rejected by the type checker.
+The type of `theme` keys. A single theme color or modifier, or an array where an optional theme color comes **first**, followed by modifiers. Two theme colors in one array are rejected by the type checker.
 
 <BCard class="bg-body-tertiary">
 

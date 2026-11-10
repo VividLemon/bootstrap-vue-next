@@ -17,7 +17,7 @@
       <col />
       <col />
     </colgroup>
-    <BThead theme="inverse">
+    <BThead :color="{ theme: 'inverse' }">
       <BTr>
         <BTh colspan="2">Region</BTh>
         <BTh colspan="3">Clothes</BTh>
@@ -40,16 +40,16 @@
         <BTd stacked-heading="Clothes: Trousers">56</BTd>
         <BTd stacked-heading="Clothes: Skirts">22</BTd>
         <BTd stacked-heading="Clothes: Dresses">43</BTd>
-        <BTd stacked-heading="Accessories: Bracelets" theme="success">72</BTd>
+        <BTd stacked-heading="Accessories: Bracelets" :color="{ theme: 'success' }">72</BTd>
         <BTd stacked-heading="Accessories: Rings">23</BTd>
       </BTr>
       <BTr>
         <BTh stacked-heading="City">Gent</BTh>
         <BTd stacked-heading="Clothes: Trousers">46</BTd>
-        <BTd stacked-heading="Clothes: Skirts" theme="warning">18</BTd>
+        <BTd stacked-heading="Clothes: Skirts" :color="{ theme: 'warning' }">18</BTd>
         <BTd stacked-heading="Clothes: Dresses">50</BTd>
         <BTd stacked-heading="Accessories: Bracelets">61</BTd>
-        <BTd stacked-heading="Accessories: Rings" theme="danger">15</BTd>
+        <BTd stacked-heading="Accessories: Rings" :color="{ theme: 'danger' }">15</BTd>
       </BTr>
       <BTr>
         <BTh stacked-heading="City">Brussels</BTh>
@@ -62,7 +62,7 @@
       <BTr>
         <BTh rowspan="2" class="text-center">The Netherlands (2 Cities)</BTh>
         <BTh stacked-heading="City">Amsterdam</BTh>
-        <BTd stacked-heading="Clothes: Trousers" theme="success">89</BTd>
+        <BTd stacked-heading="Clothes: Trousers" :color="{ theme: 'success' }">89</BTd>
         <BTd stacked-heading="Clothes: Skirts">34</BTd>
         <BTd stacked-heading="Clothes: Dresses">69</BTd>
         <BTd stacked-heading="Accessories: Bracelets">85</BTd>
@@ -71,15 +71,17 @@
       <BTr>
         <BTh stacked-heading="City">Utrecht</BTh>
         <BTd stacked-heading="Clothes: Trousers">80</BTd>
-        <BTd stacked-heading="Clothes: Skirts" theme="danger">12</BTd>
+        <BTd stacked-heading="Clothes: Skirts" :color="{ theme: 'danger' }">12</BTd>
         <BTd stacked-heading="Clothes: Dresses">43</BTd>
         <BTd stacked-heading="Accessories: Bracelets">36</BTd>
-        <BTd stacked-heading="Accessories: Rings" theme="warning">19</BTd>
+        <BTd stacked-heading="Accessories: Rings" :color="{ theme: 'warning' }">19</BTd>
       </BTr>
     </BTbody>
     <BTfoot>
       <BTr>
-        <BTd colspan="7" theme="secondary" class="text-end"> Total Rows: <b>5</b> </BTd>
+        <BTd colspan="7" :color="{ theme: 'secondary' }" class="text-end">
+          Total Rows: <b>5</b>
+        </BTd>
       </BTr>
     </BTfoot>
   </BTableSimple>

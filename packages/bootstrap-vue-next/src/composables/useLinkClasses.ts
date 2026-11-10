@@ -25,15 +25,15 @@ export const toHoverStateClasses = (
 export const useLinkClasses = (
   linkProps: MaybeRef<LinkUnderlineProps & LinkOpacityProps & LinkIconProps & LinkThemeProps>
 ) => {
-  const {classes: themeClasses} = useThemeClasses(linkProps)
+  const {classes: themeClasses} = useThemeClasses(computed(() => unref(linkProps).color ?? {}))
 
   const classes = computed(() => {
     const props = unref(linkProps)
     return {
       ...themeClasses.value,
       ...toHoverStateClasses('link', props.opacity),
-      [`underline-${props.underlineTheme}`]:
-        props.underlineTheme !== null && props.underlineTheme !== undefined,
+      [`underline-${props.color?.underline}`]:
+        props.color?.underline !== null && props.color?.underline !== undefined,
       ...toHoverStateClasses('underline-offset', props.underlineOffset),
       ...toHoverStateClasses('underline', props.underlineOpacity),
       'icon-link': props.icon === true,

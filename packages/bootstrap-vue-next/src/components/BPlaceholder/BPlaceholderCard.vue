@@ -17,8 +17,10 @@
       <slot name="header">
         <BPlaceholder
           :width="props.headerWidth"
-          :bg="props.headerColor?.bg ?? getThemeColor(props.headerColor?.theme)"
-          :fg="props.headerColor?.fg"
+          :color="{
+            bg: props.headerColor?.bg ?? getThemeColor(props.headerColor?.theme),
+            fg: props.headerColor?.fg,
+          }"
           :animation="props.headerAnimation"
           :size="props.headerSize"
         />
@@ -46,6 +48,7 @@
 </template>
 
 <script setup lang="ts">
+import {getThemeColor, resolvePartColor} from '../../composables/useThemeClasses'
 import BCard from '../BCard/BCard.vue'
 import BCardImg from '../BCard/BCardImg.vue'
 import BPlaceholder from './BPlaceholder.vue'
@@ -53,7 +56,6 @@ import BPlaceholderButton from './BPlaceholderButton.vue'
 import {computed} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import type {BPlaceholderCardProps, BPlaceholderCardSlots} from '../../types'
-import {getThemeColor} from '../../composables/useThemeClasses'
 
 const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   animation: undefined,
@@ -74,27 +76,30 @@ const _props = withDefaults(defineProps<BPlaceholderCardProps>(), {
   noHeader: false,
   noImg: false,
   size: undefined,
-  theme: undefined,
-  bg: null,
-  fg: null,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BPlaceholderCard')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BPlaceholderCardSlots>()
 
 const defaultAttrs = computed(() => ({
   animation: props.animation,
   size: props.size,
-  bg: props.bg ?? getThemeColor(props.theme),
-  fg: props.fg,
+  color: {
+    bg: computedColor.value.bg ?? getThemeColor(computedColor.value.theme),
+    fg: computedColor.value.fg,
+  },
 }))
 
 const footerComponent = computed(() => (!props.noButton ? BPlaceholderButton : BPlaceholder))
 const footerColorAttrs = computed(() =>
   props.noButton
     ? {
-        bg: props.footerColor?.bg ?? getThemeColor(props.footerColor?.theme),
-        fg: props.footerColor?.fg,
+        color: {
+          bg: props.footerColor?.bg ?? getThemeColor(props.footerColor?.theme),
+          fg: props.footerColor?.fg,
+        },
       }
-    : {theme: props.footerColor?.theme, bg: props.footerColor?.bg, fg: props.footerColor?.fg}
+    : {color: props.footerColor}
 )
 </script>

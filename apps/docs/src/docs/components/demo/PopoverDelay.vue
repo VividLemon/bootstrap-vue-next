@@ -3,7 +3,7 @@
   <div class="d-flex gap-2">
     <BPopover hover :delay="{ show: 500, hide: 100 }" title="Delayed Popover">
       <template #target>
-        <BButton theme="primary">Hover with delay</BButton>
+        <BButton :color="{ theme: 'primary' }">Hover with delay</BButton>
       </template>
       This popover has a 500ms show delay and 100ms hide delay
     </BPopover>

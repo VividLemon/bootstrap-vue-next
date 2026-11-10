@@ -1,5 +1,5 @@
 <template>
-  <BAlert theme="info" :model-value="true">
+  <BAlert :color="{ theme: 'info' }" :model-value="true">
     {{ withNoteTextPrepend === true ? 'Note: ' : '' }}<slot />
   </BAlert>
 </template>

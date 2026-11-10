@@ -36,7 +36,6 @@ export const bTableSimpleProps = Object.freeze(
   Object.keys({
     bordered: 0,
     borderless: 0,
-    border: 0,
     captionTop: 0,
     fixed: 0,
     hover: 0,
@@ -49,9 +48,7 @@ export const bTableSimpleProps = Object.freeze(
     stickyHeader: 0,
     striped: 0,
     stripedColumns: 0,
-    theme: 0,
-    bg: 0,
-    fg: 0,
+    color: 0,
     tableAttrs: 0,
     tableClass: 0,
   } satisfies Record<keyof BTableSimpleProps, 0>)

@@ -47,10 +47,10 @@ Using color to add meaning only provides a visual indication, which will not be 
 <div class="mt-2"></div>
 
 ::: warning Interactions between color props
-`BBadge` is colored by the `theme` prop (class `.theme-<theme>`). It also implements `bg` and `fg`
-(for example `bg="subtle-primary"` and `fg="emphasis-primary"`) to provide finer control of colors;
-they take precedence over the `theme` prop. See the
-[Color Themes Reference](/docs/reference/color-variants#prop-interactions) for details, and
+`BBadge` is colored by the `color` prop's `theme` key (class `.theme-<theme>`). Its `bg` and `fg` keys
+(for example `:color="{ bg: 'subtle-primary', fg: 'emphasis-primary' }"`) provide finer control of colors;
+they take precedence over `theme`. See the
+[Color Themes Reference](/docs/reference/color-variants#key-interactions) for details, and
 [registering custom themes](/docs/components/button#custom-themes) to add your own themes.
 :::
 

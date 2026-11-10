@@ -4,7 +4,7 @@
   <BFormInput v-model="inputValue" class="my-3" />
 
   <BButton class="me-2" @click="addItem">Add</BButton>
-  <BButton theme="danger" @click="breadcrumb.reset">Clear</BButton>
+  <BButton :color="{ theme: 'danger' }" @click="breadcrumb.reset">Clear</BButton>
 </template>
 
 <script setup lang="ts">

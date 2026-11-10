@@ -4,9 +4,9 @@
       <template #thead-top>
         <BTr>
           <BTh colspan="2"><span class="visually-hidden">Name and ID</span></BTh>
-          <BTh theme="secondary">Type 1</BTh>
-          <BTh theme="primary" colspan="3">Type 2</BTh>
-          <BTh theme="danger">Type 3</BTh>
+          <BTh :color="{ theme: 'secondary' }">Type 1</BTh>
+          <BTh :color="{ theme: 'primary' }" colspan="3">Type 2</BTh>
+          <BTh :color="{ theme: 'danger' }">Type 3</BTh>
         </BTr>
       </template>
     </BTable>

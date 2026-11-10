@@ -84,9 +84,7 @@
                     :disabled="disableCancel"
                     :size="props.buttonSize"
                     :variant="props.cancelVariant"
-                    :theme="computedCancelColor.theme"
-                    :bg="computedCancelColor.bg"
-                    :fg="computedCancelColor.fg"
+                    :color="computedCancelColor"
                     :class="props.cancelClass"
                     @click="hide('cancel')"
                   >
@@ -99,9 +97,7 @@
                     :disabled="disableOk"
                     :size="props.buttonSize"
                     :variant="props.okVariant"
-                    :theme="computedOkColor.theme"
-                    :bg="computedOkColor.bg"
-                    :fg="computedOkColor.fg"
+                    :color="computedOkColor"
                     :class="props.okClass"
                     @click="hide('ok')"
                   >
@@ -361,9 +357,7 @@ const computedHeaderCloseColor = computed(() =>
 )
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
-  theme: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.theme : undefined,
-  bg: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.bg : undefined,
-  fg: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.fg : undefined,
+  color: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value : undefined,
   class: props.headerCloseClass,
 }))
 

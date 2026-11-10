@@ -5,7 +5,9 @@
     <BModal v-model="show">
       <template #header="{ close }">
         <!-- Emulate built in modal header close button action -->
-        <BButton size="sm" variant="outline" theme="danger" @click="close()"> Close Modal </BButton>
+        <BButton size="sm" variant="outline" :color="{ theme: 'danger' }" @click="close()">
+          Close Modal
+        </BButton>
         <h5>Modal Header</h5>
       </template>
 
@@ -17,10 +19,15 @@
       <template #footer="{ ok, cancel, hide }">
         <b>Custom Footer</b>
         <!-- Emulate built in modal footer ok and cancel button actions -->
-        <BButton size="sm" theme="success" @click="ok()"> OK </BButton>
-        <BButton size="sm" theme="danger" @click="cancel()"> Cancel </BButton>
+        <BButton size="sm" :color="{ theme: 'success' }" @click="ok()"> OK </BButton>
+        <BButton size="sm" :color="{ theme: 'danger' }" @click="cancel()"> Cancel </BButton>
         <!-- Button with custom close trigger value -->
-        <BButton size="sm" variant="outline" theme="secondary" @click="hide('forget')">
+        <BButton
+          size="sm"
+          variant="outline"
+          :color="{ theme: 'secondary' }"
+          @click="hide('forget')"
+        >
           Forget it
         </BButton>
       </template>

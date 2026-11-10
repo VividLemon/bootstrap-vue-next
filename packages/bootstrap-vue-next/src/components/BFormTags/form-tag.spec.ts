@@ -66,7 +66,7 @@ describe('form-tag', () => {
 
     it('has theme class theme-{theme} when set', () => {
       const wrapper = mount(BFormTag, {
-        props: {theme: 'primary'},
+        props: {color: {theme: 'primary'}},
       })
       expect(wrapper.classes()).toContain('theme-primary')
       expect(wrapper.classes()).not.toContain('theme-secondary')
@@ -74,17 +74,17 @@ describe('form-tag', () => {
 
     it('is reactive', async () => {
       const wrapper = mount(BFormTag, {
-        props: {theme: 'primary'},
+        props: {color: {theme: 'primary'}},
       })
       expect(wrapper.classes()).toContain('theme-primary')
-      await wrapper.setProps({theme: 'danger'})
+      await wrapper.setProps({color: {theme: 'danger'}})
       expect(wrapper.classes()).toContain('theme-danger')
       expect(wrapper.classes()).not.toContain('theme-primary')
     })
 
     it('does not have theme class when null', () => {
       const wrapper = mount(BFormTag, {
-        props: {theme: null},
+        props: {color: {theme: null}},
       })
       expect(wrapper.classes()).not.toContain('theme-secondary')
       expect(wrapper.classes()).not.toContain('theme-null')
@@ -328,9 +328,9 @@ describe('form-tag', () => {
     it('applies multiple classes correctly', () => {
       const wrapper = mount(BFormTag, {
         props: {
-          theme: 'danger',
           pill: true,
           disabled: true,
+          color: {theme: 'danger'},
         },
       })
       expect(wrapper.classes()).toContain('badge')

@@ -14,7 +14,7 @@
         labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
         laboris nisi ut aliquip ex ea commodo consequat.
       </BCardText>
-      <BButton disabled theme="primary">Button</BButton>
+      <BButton disabled :color="{ theme: 'primary' }">Button</BButton>
     </BCard>
   </BOverlay>
   <!-- #endregion template -->

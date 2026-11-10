@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BButton v-b-toggle.collapse-css theme="primary">
+    <BButton v-b-toggle.collapse-css :color="{ theme: 'primary' }">
       <span class="when-open">Hide</span>
       <span class="when-closed">Show</span>
       Content
