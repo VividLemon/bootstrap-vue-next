@@ -37,10 +37,7 @@ const _props = withDefaults(defineProps<BImgProps>(), {
   width: undefined,
   // RadiusElementExtendables props
   rounded: false,
-  roundedBottom: undefined,
-  roundedEnd: undefined,
-  roundedStart: undefined,
-  roundedTop: undefined,
+  roundedSides: undefined,
   // End RadiusElementExtendables props
 })
 const props = useDefaults(_props, 'BImg')
@@ -51,10 +48,7 @@ const widthNumber = useToNumber(() => props.width ?? Number.NaN)
 const {classes: radiusElementClasses} = useRadiusElementClasses(
   computed(() => ({
     rounded: props.rounded,
-    roundedTop: props.roundedTop,
-    roundedBottom: props.roundedBottom,
-    roundedStart: props.roundedStart,
-    roundedEnd: props.roundedEnd,
+    roundedSides: props.roundedSides,
   }))
 )
 

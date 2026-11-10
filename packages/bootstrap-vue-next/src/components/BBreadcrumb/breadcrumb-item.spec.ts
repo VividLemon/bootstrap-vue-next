@@ -424,25 +424,25 @@ describe('breadcrumb-item', () => {
 
   it('gives prop underlineOffset to blink', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {underlineOffset: {xs: 1, hover: 3}},
+      props: {underline: {offset: {xs: 1, hover: 3}}},
     })
     const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('underlineOffset')).toStrictEqual({xs: 1, hover: 3})
+    expect($blink.props('underline')?.offset).toStrictEqual({xs: 1, hover: 3})
   })
 
   it('gives prop underlineOpacity to blink', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {underlineOpacity: {xs: 50, hover: 100}},
+      props: {underline: {opacity: {xs: 50, hover: 100}}},
     })
     const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('underlineOpacity')).toStrictEqual({xs: 50, hover: 100})
+    expect($blink.props('underline')?.opacity).toStrictEqual({xs: 50, hover: 100})
   })
 
-  it('gives prop underlineTheme to blink', () => {
+  it('gives prop underline.color to blink', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {color: {underline: 'primary'}},
+      props: {underline: {color: 'primary'}},
     })
     const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('color')?.underline).toBe('primary')
+    expect($blink.props('underline')?.color).toBe('primary')
   })
 })

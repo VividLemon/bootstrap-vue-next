@@ -319,7 +319,7 @@ describe('link', () => {
 
   it('has class underline-{theme} when underlineTheme is set', () => {
     const wrapper = mount(BLink, {
-      props: {color: {underline: 'primary'}},
+      props: {underline: {color: 'primary'}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('underline-primary')
@@ -327,7 +327,7 @@ describe('link', () => {
 
   it('has class underline-offset-{value} when underlineOffset.xs is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineOffset: {xs: 3 as const}},
+      props: {underline: {offset: {xs: 3 as const}}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('underline-offset-3')
@@ -335,7 +335,7 @@ describe('link', () => {
 
   it('has class hover:underline-offset-{value} when underlineOffset.hover is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineOffset: {hover: 2 as const}},
+      props: {underline: {offset: {hover: 2 as const}}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('hover:underline-offset-2')
@@ -344,7 +344,7 @@ describe('link', () => {
 
   it('has class underline-{value} when underlineOpacity.xs is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineOpacity: {xs: 50 as const}},
+      props: {underline: {opacity: {xs: 50 as const}}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('underline-50')
@@ -353,7 +353,7 @@ describe('link', () => {
 
   it('has class hover:underline-{value} when underlineOpacity.hover is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineOpacity: {hover: 70 as const}},
+      props: {underline: {opacity: {hover: 70 as const}}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('hover:underline-70')

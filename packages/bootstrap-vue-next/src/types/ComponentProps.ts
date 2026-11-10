@@ -15,7 +15,6 @@ import type {
   ColorBorderProps,
   ColorExtendables,
   ColorProps,
-  LinkColorExtendables,
   ThemeColor,
 } from './ColorTypes'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
@@ -53,7 +52,7 @@ import type {RadiusElementExtendables} from './RadiusElement'
 import type {SpinnerType} from './SpinnerType'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {ButtonType} from './ButtonType'
-import type {LinkOpacity, UnderlineOffset, UnderlineOpacity} from './LinkDecorators'
+import type {LinkOpacity, LinkUnderline} from './LinkDecorators'
 import type {HoverState} from './HoverState'
 import type {LiteralUnion} from './LiteralUnion'
 import type {BreadcrumbItemRaw} from './BreadcrumbTypes'
@@ -131,7 +130,7 @@ export interface BOrchestratorProps {
 }
 
 export interface BLinkProps {
-  color?: LinkColorExtendables | null
+  color?: ColorExtendables | null
   active?: boolean
   activeClass?: string
   disabled?: boolean
@@ -145,7 +144,6 @@ export interface BLinkProps {
     visibility: boolean
     interaction: boolean
   }>
-  noPrefetch?: boolean
   prefetchedClass?: ClassValue
   rel?: string
   replace?: boolean
@@ -154,11 +152,10 @@ export interface BLinkProps {
   stretched?: boolean
   target?: LinkTarget
   to?: RouteLocationRaw
-  underlineOffset?: HoverState<UnderlineOffset>
-  underlineOpacity?: HoverState<UnderlineOpacity>
+  underline?: LinkUnderline
 }
 
-export type LinkUnderlineProps = Pick<BLinkProps, 'underlineOffset' | 'underlineOpacity'>
+export type LinkUnderlineProps = Pick<BLinkProps, 'underline'>
 export type LinkOpacityProps = Pick<BLinkProps, 'opacity'>
 export type LinkIconProps = Pick<BLinkProps, 'icon'>
 export type LinkThemeProps = Pick<BLinkProps, 'color'>
@@ -820,8 +817,24 @@ export interface BNavbarToggleProps {
   target?: string | readonly string[]
 }
 
+/** The default spinner of an overlay: its color, size and type */
+export interface OverlaySpinnerOptions {
+  color?: BSpinnerProps['color']
+  small?: boolean
+  type?: SpinnerType
+}
+
+/** A built-in close button: its content, accessible label, color, button variant and attributes */
+export interface CloseButtonOptions {
+  content?: string
+  label?: string
+  color?: ColorExtendables
+  variant?: ButtonVariant | null
+  attrs?: Readonly<AttrsValue>
+}
+
 export interface BOffcanvasProps extends TeleporterProps, ShowHideProps {
-  headerCloseColor?: ColorExtendables
+  headerClose?: Omit<CloseButtonOptions, 'content'>
   noBackdrop?: boolean
   backdropFirst?: boolean
   bodyAttrs?: Readonly<AttrsValue>
@@ -832,9 +845,6 @@ export interface BOffcanvasProps extends TeleporterProps, ShowHideProps {
   footerClass?: string
   headerAttrs?: Readonly<AttrsValue>
   headerClass?: string
-  headerCloseClass?: ClassValue
-  headerCloseLabel?: string
-  headerCloseVariant?: ButtonVariant | null
   id?: string
   modelValue?: boolean
   noCloseOnBackdrop?: boolean
@@ -861,9 +871,7 @@ export interface BOverlayProps extends RadiusElementExtendables {
   opacity?: Numberish
   overlayTag?: string
   show?: boolean
-  spinnerColor?: BSpinnerProps['color']
-  spinnerSmall?: boolean
-  spinnerType?: SpinnerType
+  spinner?: OverlaySpinnerOptions
   wrapTag?: string
   zIndex?: Numberish
 }

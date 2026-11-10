@@ -17,12 +17,12 @@ describe('useRadiusElementClasses', () => {
   })
 
   it.each([
-    {prop: 'roundedTop', rounded: true, className: 'rounded-top'},
-    {prop: 'roundedBottom', rounded: 'circle', className: 'rounded-bottom-circle'},
-    {prop: 'roundedStart', rounded: 'pill', className: 'rounded-start-pill'},
-    {prop: 'roundedEnd', rounded: 'lg', className: 'rounded-end-5'},
-  ])('returns $className for $prop', ({prop, rounded, className}) => {
-    const {classes} = useRadiusElementClasses({[prop]: rounded})
+    {prop: 'top', rounded: true, className: 'rounded-top'},
+    {prop: 'bottom', rounded: 'circle', className: 'rounded-bottom-circle'},
+    {prop: 'start', rounded: 'pill', className: 'rounded-start-pill'},
+    {prop: 'end', rounded: 'lg', className: 'rounded-end-5'},
+  ])('returns $className for roundedSides.$prop', ({prop, rounded, className}) => {
+    const {classes} = useRadiusElementClasses({roundedSides: {[prop]: rounded}})
     expect(classes.value[className]).toBe(true)
   })
 

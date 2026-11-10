@@ -3,8 +3,7 @@
     :show="loadingBuzy"
     rounded
     opacity="0.6"
-    spinner-small
-    :spinner-color="{ theme: 'primary' }"
+    :spinner="{ small: true, color: { theme: 'primary' } }"
     class="d-inline-block"
     @hidden="onBuzyHidden"
   >
