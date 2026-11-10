@@ -274,31 +274,13 @@ const commonProps = () =>
       type: 'boolean | RadiusElement',
       default: 'false',
       description:
-        'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence. Refer to the documentation for details',
+        'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence. Use `rounded-sides` to round individual sides. Refer to the documentation for details',
     },
-    roundedBottom: {
-      type: 'boolean | RadiusElement',
+    roundedSides: {
+      type: 'RadiusSides',
       default: undefined,
       description:
-        'Specifies the type of rounding to apply to the `bottom` corners of the component or its children',
-    },
-    roundedEnd: {
-      type: 'boolean | RadiusElement',
-      default: undefined,
-      description:
-        'Specifies the type of rounding to apply to the `end` corners of the component or its children',
-    },
-    roundedStart: {
-      type: 'boolean | RadiusElement',
-      default: undefined,
-      description:
-        'Specifies the type of rounding to apply to the `start` corners of the component or its children',
-    },
-    roundedTop: {
-      type: 'boolean | RadiusElement',
-      default: undefined,
-      description:
-        'Specifies the type of rounding to apply to the `top` corners of the component or its children',
+        'Per-side rounding: `top`, `bottom`, `start` and `end` keys each take the same values as `rounded` and render `rounded-<side>-*` classes, for example `:rounded-sides="{ top: \'lg\' }"`',
     },
     size: {
       type: 'Size',

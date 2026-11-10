@@ -34,14 +34,12 @@ export const useRadiusElementClasses = (obj: MaybeRef<RadiusElementExtendables>)
 
     return {
       [`${resolveRadiusElement(props.rounded as true | RadiusElement, null)}`]: !!props.rounded,
-      [`${resolveRadiusElement(props.roundedTop as true | RadiusElement, 'top')}`]:
-        !!props.roundedTop,
-      [`${resolveRadiusElement(props.roundedBottom as true | RadiusElement, 'bottom')}`]:
-        !!props.roundedBottom,
-      [`${resolveRadiusElement(props.roundedStart as true | RadiusElement, 'start')}`]:
-        !!props.roundedStart,
-      [`${resolveRadiusElement(props.roundedEnd as true | RadiusElement, 'end')}`]:
-        !!props.roundedEnd,
+      ...Object.fromEntries(
+        (['top', 'bottom', 'start', 'end'] as const).map((side) => {
+          const value = props.roundedSides?.[side]
+          return [resolveRadiusElement(value as true | RadiusElement, side), !!value]
+        })
+      ),
     }
   })
 

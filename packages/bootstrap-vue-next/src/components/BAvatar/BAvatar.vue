@@ -7,7 +7,7 @@
     v-bind="computedLinkProps"
     :type="props.button && !computedLink ? props.buttonType : undefined"
     :disabled="props.disabled || null"
-    :color="computedLink ? {underline: computedColor.underline} : null"
+    :color="null"
     @click="clicked"
   >
     <span v-if="hasDefaultSlot" class="b-avatar-custom">
@@ -85,16 +85,12 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   stretched: false,
   routerComponentName: undefined,
   target: undefined,
-  underlineOffset: undefined,
-  underlineOpacity: undefined,
+  underline: undefined,
   // End link props
   // Theme is here as well
   // RadiusElementExtendables props
   rounded: 'circle',
-  roundedBottom: undefined,
-  roundedEnd: undefined,
-  roundedStart: undefined,
-  roundedTop: undefined,
+  roundedSides: undefined,
   // End RadiusElementExtendables props
   color: undefined,
 })
@@ -148,26 +144,21 @@ const computedSizeIsLiteralSize = computed(
 
 const computedTheme = computed(() => parentData?.theme.value ?? computedColor.value.theme)
 const computedRounded = computed(() => parentData?.roundedProps.value.rounded ?? props.rounded)
-const computedRoundedTop = computed(
-  () => parentData?.roundedProps.value.roundedTop ?? props.roundedTop
-)
-const computedRoundedBottom = computed(
-  () => parentData?.roundedProps.value.roundedBottom ?? props.roundedBottom
-)
-const computedRoundedStart = computed(
-  () => parentData?.roundedProps.value.roundedStart ?? props.roundedStart
-)
-const computedRoundedEnd = computed(
-  () => parentData?.roundedProps.value.roundedEnd ?? props.roundedEnd
-)
+// The group's sides win key by key, as the separate side props did
+const computedRoundedSides = computed(() => {
+  const groupSides = parentData?.roundedProps.value.roundedSides
+  return {
+    top: groupSides?.top ?? props.roundedSides?.top,
+    bottom: groupSides?.bottom ?? props.roundedSides?.bottom,
+    start: groupSides?.start ?? props.roundedSides?.start,
+    end: groupSides?.end ?? props.roundedSides?.end,
+  }
+})
 
 const {classes: radiusElementClasses} = useRadiusElementClasses(
   computed(() => ({
     rounded: computedRounded.value,
-    roundedTop: computedRoundedTop.value,
-    roundedBottom: computedRoundedBottom.value,
-    roundedStart: computedRoundedStart.value,
-    roundedEnd: computedRoundedEnd.value,
+    roundedSides: computedRoundedSides.value,
   }))
 )
 

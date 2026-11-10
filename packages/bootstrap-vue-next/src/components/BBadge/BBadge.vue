@@ -41,8 +41,7 @@ const _props = withDefaults(defineProps<BBadgeProps>(), {
   stretched: false,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOpacity: undefined,
+  underline: undefined,
   // End link props
   // Theme is here as well
   color: undefined,
@@ -60,7 +59,6 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props, [
   'icon',
   'noRel',
   'opacity',
-  'noPrefetch',
   'prefetch',
   'prefetchOn',
   'prefetchedClass',
@@ -70,8 +68,7 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props, [
   'stretched',
   'target',
   'to',
-  'underlineOffset',
-  'underlineOpacity',
+  'underline',
   'color',
 ])
 

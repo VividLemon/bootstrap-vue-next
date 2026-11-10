@@ -382,7 +382,7 @@ describe('avatar-group', () => {
 
       it('child BAvatar inherits roundedTop from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {roundedTop: 'pill'},
+          props: {roundedSides: {top: 'pill'}},
           slots: {
             default: () => h(BAvatar),
           },
@@ -393,7 +393,7 @@ describe('avatar-group', () => {
 
       it('child BAvatar inherits roundedBottom from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {roundedBottom: 'pill'},
+          props: {roundedSides: {bottom: 'pill'}},
           slots: {
             default: () => h(BAvatar),
           },
@@ -404,7 +404,7 @@ describe('avatar-group', () => {
 
       it('child BAvatar inherits roundedStart from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {roundedStart: 'pill'},
+          props: {roundedSides: {start: 'pill'}},
           slots: {
             default: () => h(BAvatar),
           },
@@ -415,7 +415,7 @@ describe('avatar-group', () => {
 
       it('child BAvatar inherits roundedEnd from group', () => {
         const wrapper = mount(BAvatarGroup, {
-          props: {roundedEnd: 'pill'},
+          props: {roundedSides: {end: 'pill'}},
           slots: {
             default: () => h(BAvatar),
           },

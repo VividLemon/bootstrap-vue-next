@@ -18,10 +18,13 @@ export type RadiusElement =
   | 4
   | 5
 
+/** Per-side corner radius, rendered as `rounded-<side>` / `rounded-<side>-<value>` classes */
+export type RadiusSides = Partial<
+  Record<'top' | 'bottom' | 'start' | 'end', boolean | RadiusElement>
+>
+
 export type RadiusElementExtendables = {
+  /** Rounds every corner. The common case; use `roundedSides` for per-side control */
   rounded?: boolean | RadiusElement
-  roundedTop?: boolean | RadiusElement
-  roundedBottom?: boolean | RadiusElement
-  roundedStart?: boolean | RadiusElement
-  roundedEnd?: boolean | RadiusElement
+  roundedSides?: RadiusSides
 }

@@ -42,8 +42,7 @@ const _props = withDefaults(defineProps<BListGroupItemProps>(), {
   routerComponentName: undefined,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOpacity: undefined,
+  underline: undefined,
   // End link props
   color: undefined,
 })

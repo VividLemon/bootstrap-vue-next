@@ -570,12 +570,11 @@ type RadiusElement =
 <BCard class="bg-body-tertiary">
 
 ```ts
+type RadiusSides = Partial<Record<'top' | 'bottom' | 'start' | 'end', boolean | RadiusElement>>
+
 type RadiusElementExtendables = {
   rounded?: boolean | RadiusElement
-  roundedTop?: boolean | RadiusElement
-  roundedBottom?: boolean | RadiusElement
-  roundedStart?: boolean | RadiusElement
-  roundedEnd?: boolean | RadiusElement
+  roundedSides?: RadiusSides
 }
 ```
 
