@@ -20,6 +20,7 @@ It is the single source of truth for the migration: implementation work follows 
 | Phase 2b: component batches                                                                                        | In progress — see [Implementation progress](#implementation-progress) |
 | Phase 3: migration docs                                                                                            | Not started                                                           |
 | Deferred components                                                                                                | See [Deferred components](#deferred-components)                       |
+| Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source) |
 
 ## Implementation progress
 
@@ -76,7 +77,7 @@ Forms batch follow-ups (from its report):
 
 1. Check each wave 1 worktree: if its branch has commits after `9380edda`, the batch finished — review and merge it. If it only has uncommitted changes, the agent stopped mid-task: resume the same agent if possible; otherwise start a new agent in that same worktree with the batch instructions below and tell it to continue from the existing changes.
 2. Merge finished batches one at a time onto `bootstrap-v6` with `git cherry-pick 9380edda..<branch>` (keeps history linear), then run the checks below on the combined result.
-3. Start wave 2 after wave 1 is merged, then Phase 3 (migration docs), then the cleanup section.
+3. Start wave 2 after wave 1 is merged, then Phase 3 (migration docs), then the cleanup section, then [Post-migration](#post-migration-api-docs-generated-from-source).
 4. Update this section and the Status table after each merge.
 
 ### Required checks
@@ -330,3 +331,28 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 - Nuxt builds print PostCSS `Lexical error` warnings: Nuxt's CSS minifier (`postcss-calc`) doesn't understand v6's relative color syntax (`oklch(from … calc(l * .9) …)`) in Bootstrap's own CSS. Builds succeed; decide whether to document it or configure the minifier for Nuxt users.
 - Spec type-checking (`vue-tsc -p tsconfig.vitest.json`) already fails in many existing specs; it is not part of the required checks.
 - Final checks: library lint, unit tests and build; docs build; playground and Nuxt builds; a pass over the built CSS for classes or variables missing from v6.
+
+## Post-migration: API docs generated from source
+
+One of the last steps, after the migration, the deferred components and the cleanup above are done: the description move edits the same props types the migration is still changing.
+
+Goal: the component source is the single source of truth for the API docs. Descriptions live as JSDoc on the props / slots / emits types (shown on hover in editors and shipped in the `.d.ts`), defaults come from `withDefaults`, and types come from TypeScript. The docs render that data, and every type name in a type (e.g. `Responsive` and `GutterNumbers` in `Responsive<GutterNumbers>`) links to or pops over its definition.
+
+Decision: use **`vue-component-meta`** for extraction, plus a small in-repo layer (about 400–600 lines). No general extractor and no published package for now. Findings, measurements and prototype scripts: [DOCS_FROM_SOURCE_INVESTIGATION.md](./DOCS_FROM_SOURCE_INVESTIGATION.md).
+
+The in-repo layer covers:
+
+- Declared type text instead of expanded types (`Responsive<GutterNumbers>`, not `Partial<Record<…>>`).
+- Event JSDoc from the emits interface (lost for the tuple-style emits this repo uses).
+- BTable's pattern slots (`cell(…)`, `head(…)`, `foot(…)`) from the slots type's index signatures.
+- Type linking: a table of the types exported from `src/types/index.ts`; link only types declared in this package, stop at `node_modules` and the TS lib, and show definitions as written. Flag reachable types that aren't exported.
+- A thin override file for what source can't carry: `styleSpec` notes, per-component wording of shared props, pass-through defaults.
+
+Integration: a pre-build script that writes JSON (cached by turbo, with a watch mode for the docs dev server). Move to a single Vite plugin only if dev feels slow. Pin TypeScript to 6.x for this work.
+
+Phases (about 2–3 weeks part-time):
+
+1. Generate-and-diff tool comparing the `.data.ts` files with source; run it in CI. Fix the drift it reports (2–3 days).
+2. Render the API tables from the generated data, with type links / popovers (3–5 days).
+3. Move the ~1,600 descriptions into JSDoc by script, then review the shared-prop wording; delete the `.data.ts` content that is now generated (4–6 days).
+4. Optional lint rules (e.g. every public prop has JSDoc).
