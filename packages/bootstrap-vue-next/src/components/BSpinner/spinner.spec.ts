@@ -87,10 +87,10 @@ describe('spinner', () => {
 
   it('has class theme-{type} when prop theme', async () => {
     const wrapper = mount(BSpinner, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
     })
     expect(wrapper.classes()).toContain('theme-primary')
-    await wrapper.setProps({theme: 'secondary'})
+    await wrapper.setProps({color: {theme: 'secondary'}})
     expect(wrapper.classes()).toContain('theme-secondary')
     expect(wrapper.classes()).not.toContain('theme-primary')
   })
@@ -103,10 +103,10 @@ describe('spinner', () => {
 
   it('theme can be removed', async () => {
     const wrapper = mount(BSpinner, {
-      props: {theme: 'danger'},
+      props: {color: {theme: 'danger'}},
     })
     expect(wrapper.classes()).toContain('theme-danger')
-    await wrapper.setProps({theme: null})
+    await wrapper.setProps({color: {theme: null}})
     expect(wrapper.classes()).not.toContain('theme-danger')
   })
 
@@ -278,7 +278,7 @@ describe('spinner', () => {
 
   it('multiple props - all classes correct', () => {
     const wrapper = mount(BSpinner, {
-      props: {theme: 'warning', type: 'grow', small: true},
+      props: { type: 'grow', small: true, color: {theme: 'warning'}},
     })
     expect(wrapper.classes()).toContain('spinner-grow')
     expect(wrapper.classes()).toContain('spinner-sm')

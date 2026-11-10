@@ -48,7 +48,7 @@ const dynamicToast = computed<ToastOrchestratorCreateParamBase>({
   get: () => ({
     modelValue: dynamicModelValue.value,
     body: firstRef.value.body,
-    theme: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ThemeColor,
+    color: {theme: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ThemeColor},
   }),
   set: (value) => {
     dynamicModelValue.value = value.modelValue
@@ -69,7 +69,7 @@ const showFns = {
       slots: {default: () => markRaw(h('div', null, 'foobar!'))},
       modelValue: true,
       active: true,
-      theme: 'primary',
+      color: {theme: 'primary'},
     }).show()
     return _
   },

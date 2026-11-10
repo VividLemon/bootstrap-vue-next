@@ -8,7 +8,7 @@
       </BRow>
       <BRow>
         <BCol>
-          <BLink underline-theme="success" theme="danger" :to="home">Home</BLink>
+          <BLink :color="{ underline: 'success', theme: 'danger' }" :to="home">Home</BLink>
         </BCol>
       </BRow>
       <BRow>
@@ -25,12 +25,12 @@
       </BRow>
       <BRow>
         <BCol>
-          <BLink theme="danger" href="https://www.google.com">Google</BLink>
+          <BLink :color="{ theme: 'danger' }" href="https://www.google.com">Google</BLink>
         </BCol>
       </BRow>
       <BRow>
         <BCol>
-          <BLink theme="info" href="https://www.google.com" target="_blank"
+          <BLink :color="{ theme: 'info' }" href="https://www.google.com" target="_blank"
             >Google (new tab)</BLink
           >
         </BCol>

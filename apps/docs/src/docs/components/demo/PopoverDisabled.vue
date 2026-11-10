@@ -2,7 +2,7 @@
   <div class="d-flex flex-column gap-3 align-items-start">
     <BPopover v-model:show="showPopover" :manual="isDisabled" title="Controlled Popover">
       <template #target>
-        <BButton theme="primary">{{ isDisabled ? 'Disabled' : 'Enabled' }} Popover</BButton>
+        <BButton :color="{ theme: 'primary' }">{{ isDisabled ? 'Disabled' : 'Enabled' }} Popover</BButton>
       </template>
       Hello <strong>World!</strong>
     </BPopover>

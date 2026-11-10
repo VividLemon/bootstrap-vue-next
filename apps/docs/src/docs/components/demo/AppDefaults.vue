@@ -10,7 +10,7 @@ import { BApp, type BAppProps } from 'bootstrap-vue-next'
 
 const appDefaults: BAppProps['defaults'] = {
   BButton: {
-    theme: 'info',
+    color: { theme: 'info' },
     size: 'lg',
   },
   BModal: {
@@ -18,7 +18,7 @@ const appDefaults: BAppProps['defaults'] = {
     noCloseOnBackdrop: true,
   },
   BToast: {
-    theme: 'success',
+    color: { theme: 'success' },
     translucent: true,
   },
 }

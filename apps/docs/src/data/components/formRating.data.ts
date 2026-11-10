@@ -8,12 +8,8 @@ export default {
     BFormRating: {
       props: {
         ...pick(
-          buildCommonProps({
-            theme: {
-              default: undefined,
-            },
-          }),
-          ['bg', 'fg', 'id', 'theme'],
+          buildCommonProps({}),
+          ['color', 'id'],
         ),
         clearLabel: {
           type: 'string',

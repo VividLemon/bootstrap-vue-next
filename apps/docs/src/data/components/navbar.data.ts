@@ -30,7 +30,7 @@ export default {
               default: 'nav',
             },
           }),
-          ['bg', 'fg', 'tag', 'theme'],
+          ['color', 'tag'],
         ),
         container: {
           type: "boolean | 'fluid' | Breakpoint",

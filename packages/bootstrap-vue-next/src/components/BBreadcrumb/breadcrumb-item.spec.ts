@@ -384,10 +384,10 @@ describe('breadcrumb-item', () => {
 
   it('gives prop theme to blink', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
     })
     const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('theme')).toBe('primary')
+    expect($blink.props('color')?.theme).toBe('primary')
   })
 
   it('gives prop opacity to blink', () => {
@@ -440,9 +440,9 @@ describe('breadcrumb-item', () => {
 
   it('gives prop underlineTheme to blink', () => {
     const wrapper = mount(BBreadcrumbItem, {
-      props: {underlineTheme: 'primary'},
+      props: {color: {underline: 'primary'}},
     })
     const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('underlineTheme')).toBe('primary')
+    expect($blink.props('color')?.underline).toBe('primary')
   })
 })

@@ -26,19 +26,19 @@
 
     <h2>7. Bootstrap variants</h2>
     <div class="d-flex gap-3">
-      <BFormRating v-model="valVar1" theme="primary" />
-      <BFormRating v-model="valVar2" theme="success" />
-      <BFormRating v-model="valVar3" theme="warning" />
-      <BFormRating v-model="valVar4" theme="danger" />
+      <BFormRating v-model="valVar1" :color="{ theme: 'primary' }" />
+      <BFormRating v-model="valVar2" :color="{ theme: 'success' }" />
+      <BFormRating v-model="valVar3" :color="{ theme: 'warning' }" />
+      <BFormRating v-model="valVar4" :color="{ theme: 'danger' }" />
     </div>
     <p>primary={{ valVar1 }}, success={{ valVar2 }}, warning={{ valVar3 }}, danger={{ valVar4 }}</p>
 
     <h2>8. custom color</h2>
-    <BFormRating v-model="valColor" color="rgba(64, 192, 128, 0.75)" :show-value="true" />
+    <BFormRating v-model="valColor" style="color: rgba(64, 192, 128, 0.75)" :show-value="true" />
     <p>valColor: {{ valColor }}</p>
 
     <h2>9. custom color + value/max</h2>
-    <BFormRating v-model="valColorMax" color="#ff66cc" :show-value="true" :show-value-max="true" />
+    <BFormRating v-model="valColorMax" style="color: #ff66cc" :show-value="true" :show-value-max="true" />
     <p>valColorMax: {{ valColorMax }}</p>
 
     <h2>10. sizes (sm / default / lg)</h2>

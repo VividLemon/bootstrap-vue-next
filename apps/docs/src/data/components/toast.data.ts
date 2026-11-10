@@ -18,14 +18,13 @@ export default {
         [defaultPropSectionSymbol]: {
           ...omit(showHideProps, ['modelValue']),
           ...pick(buildCommonProps(), [
-            'bg',
+            'color',
             'body',
             'bodyAttrs',
             'closeContent',
             'closeLabel',
             'closeColor',
             'closeVariant',
-            'fg',
             'headerTag',
             'id',
             'interval',
@@ -34,7 +33,6 @@ export default {
             'noResumeOnHoverLeave',
             'progressProps',
             'showOnPause',
-            'theme',
             'title',
           ]),
 

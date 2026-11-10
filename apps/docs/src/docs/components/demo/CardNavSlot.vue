@@ -9,7 +9,7 @@
       </BNav>
     </template>
     <BCardText> With supporting text below as a natural lead-in to additional content. </BCardText>
-    <BButton theme="primary">Go somewhere</BButton>
+    <BButton :color="{ theme: 'primary' }">Go somewhere</BButton>
   </BCard>
   <!-- #endregion template -->
 </template>

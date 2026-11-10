@@ -17,7 +17,7 @@
       <col />
       <col />
     </colgroup>
-    <BThead theme="inverse">
+    <BThead :color="{ theme: 'inverse' }">
       <BTr>
         <BTh colspan="2">Region</BTh>
         <BTh colspan="3">Clothes</BTh>
@@ -40,16 +40,16 @@
         <BTd>56</BTd>
         <BTd>22</BTd>
         <BTd>43</BTd>
-        <BTd theme="success">72</BTd>
+        <BTd :color="{ theme: 'success' }">72</BTd>
         <BTd>23</BTd>
       </BTr>
       <BTr>
         <BTh class="text-end">Gent</BTh>
         <BTd>46</BTd>
-        <BTd theme="warning">18</BTd>
+        <BTd :color="{ theme: 'warning' }">18</BTd>
         <BTd>50</BTd>
         <BTd>61</BTd>
-        <BTd theme="danger">15</BTd>
+        <BTd :color="{ theme: 'danger' }">15</BTd>
       </BTr>
       <BTr>
         <BTh class="text-end">Brussels</BTh>
@@ -62,7 +62,7 @@
       <BTr>
         <BTh rowspan="2">The Netherlands</BTh>
         <BTh class="text-end">Amsterdam</BTh>
-        <BTd theme="success">89</BTd>
+        <BTd :color="{ theme: 'success' }">89</BTd>
         <BTd>34</BTd>
         <BTd>69</BTd>
         <BTd>85</BTd>
@@ -71,15 +71,15 @@
       <BTr>
         <BTh class="text-end">Utrecht</BTh>
         <BTd>80</BTd>
-        <BTd theme="danger">12</BTd>
+        <BTd :color="{ theme: 'danger' }">12</BTd>
         <BTd>43</BTd>
         <BTd>36</BTd>
-        <BTd theme="warning">19</BTd>
+        <BTd :color="{ theme: 'warning' }">19</BTd>
       </BTr>
     </BTbody>
     <BTfoot>
       <BTr>
-        <BTd colspan="7" theme="secondary" class="text-end"> Total Rows: <b>5</b> </BTd>
+        <BTd colspan="7" :color="{ theme: 'secondary' }" class="text-end"> Total Rows: <b>5</b> </BTd>
       </BTr>
     </BTfoot>
   </BTableSimple>

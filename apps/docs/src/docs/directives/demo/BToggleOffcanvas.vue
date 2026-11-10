@@ -1,7 +1,7 @@
 <template>
   <!-- #region template -->
   <div>
-    <BButton v-b-toggle.offcanvas-demo theme="primary">Toggle Offcanvas</BButton>
+    <BButton v-b-toggle.offcanvas-demo :color="{ theme: 'primary' }">Toggle Offcanvas</BButton>
 
     <BOffcanvas id="offcanvas-demo" title="Offcanvas Title">
       <p>This offcanvas is controlled by the v-b-toggle directive.</p>

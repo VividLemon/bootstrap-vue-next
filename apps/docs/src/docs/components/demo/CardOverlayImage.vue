@@ -4,7 +4,7 @@
     overlay
     img-src="https://picsum.photos/900/250/?image=3"
     img-alt="Card Image"
-    fg="white"
+    :color="{ fg: 'white' }"
     title="Image Overlay"
     subtitle="Subtitle"
   >

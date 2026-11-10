@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BNavbar v-b-color-mode="'dark'" :toggleable="true" theme="primary" class="navbar-nav-scroll">
+  <BNavbar v-b-color-mode="'dark'" :toggleable="true" :color="{ theme: 'primary' }" class="navbar-nav-scroll">
     <BNavbarBrand href="#navbar-scroll">NavBar</BNavbarBrand>
     <BNavbarToggle target="nav-scroll" />
     <BCollapse id="nav-scroll" is-nav>
@@ -27,7 +27,7 @@
       </BNavbarNav>
       <BNavForm class="d-flex">
         <BFormInput class="me-2" placeholder="Search" />
-        <BButton type="submit" variant="outline" theme="success">Search</BButton>
+        <BButton type="submit" variant="outline" :color="{ theme: 'success' }">Search</BButton>
       </BNavForm>
     </BCollapse>
   </BNavbar>

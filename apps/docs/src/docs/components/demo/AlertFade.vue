@@ -1,23 +1,23 @@
 <template>
-  <BAlert v-model="showFadingAlert" theme="success" dismissible>
+  <BAlert v-model="showFadingAlert" :color="{ theme: 'success' }" dismissible>
     Dismissing this alert fades it out.
   </BAlert>
 
-  <BAlert v-model="showInstantAlert" theme="danger" dismissible no-transition>
+  <BAlert v-model="showInstantAlert" :color="{ theme: 'danger' }" dismissible no-transition>
     Dismissing this alert removes it at once.
   </BAlert>
 
   <BAlert
     v-model="dismissCountDown"
     dismissible
-    theme="warning"
+    :color="{ theme: 'warning' }"
     :progress-props="{ theme: 'warning' }"
     @close-countdown="countdown = $event"
   >
     <p>This alert fades out after {{ Math.ceil(countdown / 1000) }} seconds...</p>
   </BAlert>
 
-  <BButton theme="info" class="m-1" @click="showAll"> Show the alerts again </BButton>
+  <BButton :color="{ theme: 'info' }" class="m-1" @click="showAll"> Show the alerts again </BButton>
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex flex-column text-md-center">
     <div class="p-2">
-      <BButton id="popover-expose" theme="primary">I have a popover</BButton>
+      <BButton id="popover-expose" :color="{ theme: 'primary' }">I have a popover</BButton>
     </div>
 
     <div class="p-2">

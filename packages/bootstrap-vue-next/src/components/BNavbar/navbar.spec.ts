@@ -101,13 +101,13 @@ describe('navbar', () => {
 
   it('contains class theme when prop theme is set', async () => {
     const wrapper = mount(BNavbar, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
     })
     expect(wrapper.classes()).toContain('theme-primary')
-    await wrapper.setProps({theme: 'danger'})
+    await wrapper.setProps({color: {theme: 'danger'}})
     expect(wrapper.classes()).toContain('theme-danger')
     expect(wrapper.classes()).not.toContain('theme-primary')
-    await wrapper.setProps({theme: undefined})
+    await wrapper.setProps({color: {theme: undefined}})
     expect(wrapper.classes()).not.toContain('theme-danger')
   })
 

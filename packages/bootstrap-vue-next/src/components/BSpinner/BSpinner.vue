@@ -12,10 +12,10 @@
 </template>
 
 <script setup lang="ts">
+import {getThemeColor, resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed} from 'vue'
 import {isEmptySlot} from '../../utils/dom'
 import {useDefaults} from '../../composables/useDefaults'
-import {getThemeColor, useThemeClasses} from '../../composables/useThemeClasses'
 import type {BSpinnerProps, BSpinnerSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BSpinnerProps>(), {
@@ -24,18 +24,17 @@ const _props = withDefaults(defineProps<BSpinnerProps>(), {
   small: false,
   tag: 'span',
   type: 'border',
-  theme: null,
-  bg: null,
-  fg: null,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BSpinner')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 const slots = defineSlots<BSpinnerSlots>()
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg ?? getThemeColor(props.theme),
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg ?? getThemeColor(computedColor.value.theme),
   }))
 )
 const computedClasses = computed(() => [

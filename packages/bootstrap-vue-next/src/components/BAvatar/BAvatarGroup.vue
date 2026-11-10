@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import {computed, provide, type StyleValue, toRef} from 'vue'
 import {avatarGroupInjectionKey} from '../../utils/keys'
 import {useDefaults} from '../../composables/useDefaults'
@@ -26,13 +27,10 @@ const _props = withDefaults(defineProps<BAvatarGroupProps>(), {
   roundedStart: undefined,
   roundedTop: undefined,
   // End RadiusElementExtendables props
-  // ColorExtendables props
-  bg: null,
-  fg: null,
-  theme: null,
-  // End ColorExtendables props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BAvatarGroup')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BAvatarGroupSlots>()
 
 const overlapNumber = useToNumber(() => props.overlap)
@@ -56,8 +54,8 @@ provide(avatarGroupInjectionKey, {
     roundedStart: props.roundedStart,
     roundedEnd: props.roundedEnd,
   })),
-  theme: toRef(() => props.theme),
-  bg: toRef(() => props.bg),
-  fg: toRef(() => props.fg),
+  theme: toRef(() => computedColor.value.theme ?? null),
+  bg: toRef(() => computedColor.value.bg ?? null),
+  fg: toRef(() => computedColor.value.fg ?? null),
 })
 </script>

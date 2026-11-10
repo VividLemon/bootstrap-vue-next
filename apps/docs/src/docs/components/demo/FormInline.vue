@@ -15,7 +15,7 @@
       <BFormCheckbox>Remember me</BFormCheckbox>
     </div>
     <div class="col-lg-1 my-2">
-      <BButton theme="primary">Save</BButton>
+      <BButton :color="{ theme: 'primary' }">Save</BButton>
     </div>
   </BForm>
   <!-- #endregion template -->

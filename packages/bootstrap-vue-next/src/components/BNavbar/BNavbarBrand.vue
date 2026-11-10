@@ -29,9 +29,8 @@ const _props = withDefaults(defineProps<BNavbarBrandProps>(), {
   to: undefined,
   underlineOffset: undefined,
   underlineOpacity: undefined,
-  underlineTheme: undefined,
-  theme: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BNavbarBrand')
 defineSlots<BNavbarBrandSlots>()

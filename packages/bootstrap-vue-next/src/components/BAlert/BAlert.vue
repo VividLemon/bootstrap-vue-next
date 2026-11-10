@@ -26,9 +26,7 @@
         <BButton
           v-if="slots.close || props.closeContent"
           class="ms-auto ps-1 btn-close-custom"
-          :theme="computedCloseColor.theme"
-          :bg="computedCloseColor.bg"
-          :fg="computedCloseColor.fg"
+          :color="computedCloseColor"
           :variant="props.closeVariant"
           v-bind="props.closeAttrs"
           @click.stop.prevent="hide('close')"
@@ -63,9 +61,7 @@
           <BButton
             v-if="slots.close || props.closeContent"
             class="ms-auto btn-close-custom"
-            :theme="computedCloseColor.theme"
-            :bg="computedCloseColor.bg"
-            :fg="computedCloseColor.fg"
+            :color="computedCloseColor"
             :variant="props.closeVariant"
             v-bind="props.closeAttrs"
             @click.stop.prevent="hide('close')"
@@ -91,7 +87,7 @@
       :show-progress="props.progressProps.showProgress"
       :show-value="props.progressProps.showValue"
       :striped="props.progressProps.striped"
-      :theme="props.progressProps.theme"
+      :color="props.progressProps.color"
       :max="modelValue"
       :value="remainingMs"
       height="4px"
@@ -117,7 +113,6 @@ import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClass
 
 const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   alertAttrs: undefined,
-  bg: null,
   body: undefined,
   bodyAttrs: undefined,
   closeAttrs: undefined,
@@ -140,7 +135,6 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   unmountLazy: false,
   showOnPause: true,
   show: false,
-  fg: null,
   title: undefined,
   visible: false,
   // Link props
@@ -161,11 +155,11 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   to: undefined,
   underlineOffset: undefined,
   underlineOpacity: undefined,
-  underlineTheme: undefined,
   // End link props
-  theme: 'info',
+  color: undefined,
 })
 const props = useDefaults(_props, 'BAlert')
+const computedColor = computed(() => resolvePartColor(props.color, {theme: 'info'}))
 const computedCloseColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
 const emit = defineEmits<BAlertEmits>()
 const slots = defineSlots<BAlertSlots>()
@@ -223,9 +217,9 @@ const isAlertMounted = computed(() => isActive.value || (props.showOnPause && is
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [

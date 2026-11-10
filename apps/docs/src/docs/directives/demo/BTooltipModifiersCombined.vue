@@ -5,7 +5,7 @@
       title: 'Advanced tooltip',
       delay: { show: 300, hide: 150 },
     }"
-    theme="primary"
+    :color="{ theme: 'primary' }"
   >
     Combined modifiers
   </BButton>

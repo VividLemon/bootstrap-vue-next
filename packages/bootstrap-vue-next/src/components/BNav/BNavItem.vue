@@ -45,9 +45,8 @@ const _props = withDefaults(defineProps<BNavItemProps>(), {
   to: undefined,
   underlineOffset: undefined,
   underlineOpacity: undefined,
-  underlineTheme: undefined,
-  theme: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BNavItem')
 const emit = defineEmits<BNavItemEmits>()
@@ -75,10 +74,7 @@ const computedLinkProps = computed(() =>
     'to',
     'underlineOffset',
     'underlineOpacity',
-    'underlineTheme',
-    'theme',
-    'bg',
-    'fg',
+    'color',
   ])
 )
 </script>

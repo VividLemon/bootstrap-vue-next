@@ -32,11 +32,11 @@ onUnmounted(() => {
 const derivedTheme = computed(() => (body.value === 'foo' ? 'danger' : 'info') as ThemeColor)
 const myToast = ref<ToastOrchestratorCreateParamBase>({
   body: body.value,
-  theme: derivedTheme.value,
+  color: { theme: derivedTheme.value },
 })
 watchEffect(() => {
   myToast.value.body = body.value
-  myToast.value.theme = derivedTheme.value
+  myToast.value.color = { theme: derivedTheme.value }
 })
 
 const showMe = async () => {

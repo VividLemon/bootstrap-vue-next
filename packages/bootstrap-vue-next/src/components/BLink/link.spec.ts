@@ -251,7 +251,7 @@ describe('link', () => {
 
   it('has class theme-{theme} when theme prop is set', () => {
     const wrapper = mount(BLink, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('theme-primary')
@@ -259,7 +259,7 @@ describe('link', () => {
 
   it('does not have theme class when theme is null', () => {
     const wrapper = mount(BLink, {
-      props: {theme: null},
+      props: {color: {theme: null}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes().some((c) => c.startsWith('theme-'))).toBe(false)
@@ -267,11 +267,11 @@ describe('link', () => {
 
   it('changes theme class reactively', async () => {
     const wrapper = mount(BLink, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('theme-primary')
-    await wrapper.setProps({theme: 'danger'})
+    await wrapper.setProps({color: {theme: 'danger'}})
     expect(wrapper.classes()).toContain('theme-danger')
     expect(wrapper.classes()).not.toContain('theme-primary')
   })
@@ -319,7 +319,7 @@ describe('link', () => {
 
   it('has class underline-{theme} when underlineTheme is set', () => {
     const wrapper = mount(BLink, {
-      props: {underlineTheme: 'primary'},
+      props: {color: {underline: 'primary'}},
       global: {plugins: [router]},
     })
     expect(wrapper.classes()).toContain('underline-primary')
@@ -675,8 +675,8 @@ describe('link', () => {
         active: true,
         disabled: true,
         stretched: true,
-        theme: 'primary',
         icon: true,
+        color: {theme: 'primary'},
       },
       global: {plugins: [router]},
     })
