@@ -54,17 +54,12 @@ const _props = withDefaults(defineProps<BOverlayProps>(), {
   opacity: 0.85,
   overlayTag: 'div',
   show: false,
-  spinnerColor: undefined,
-  spinnerSmall: false,
-  spinnerType: 'border',
+  spinner: undefined,
   wrapTag: 'div',
   zIndex: 10,
   // RadiusElementExtendables props
   rounded: false,
-  roundedBottom: undefined,
-  roundedEnd: undefined,
-  roundedStart: undefined,
-  roundedTop: undefined,
+  roundedSides: undefined,
   // End RadiusElementExtendables props
   color: undefined,
 })
@@ -80,19 +75,16 @@ const {transitionProps: fadeTransitions} = useFadeTransition(() => !props.noTran
 const {classes: radiusElementClasses} = useRadiusElementClasses(
   computed(() => ({
     rounded: props.rounded,
-    roundedTop: props.roundedTop,
-    roundedBottom: props.roundedBottom,
-    roundedStart: props.roundedStart,
-    roundedEnd: props.roundedEnd,
+    roundedSides: props.roundedSides,
   }))
 )
 
 const computedAriaBusy = computed(() => (props.show ? true : null))
 
 const spinnerAttrs = computed(() => ({
-  type: props.spinnerType,
-  color: props.spinnerColor,
-  small: props.spinnerSmall,
+  type: props.spinner?.type ?? 'border',
+  color: props.spinner?.color,
+  small: props.spinner?.small ?? false,
 }))
 
 const overlayStyles = computed(() => ({

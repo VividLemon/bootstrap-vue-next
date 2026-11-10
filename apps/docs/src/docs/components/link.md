@@ -44,25 +44,25 @@ You can even change the opacity level on hover with the `hover` key.
 
 ### Underline color
 
-Change the underline’s color independent of the link text color.
+Change the underline’s color independent of the link text color with the `underline` prop's `color` key.
 
 <<< DEMO ./demo/LinkUnderlineColors.vue
 
 ### Underline offset
 
-Change the underline’s distance from your text. Offset is set in `em` units to automatically scale with the element’s current `font-size`.
+Change the underline’s distance from your text with the `underline` prop's `offset` key. Offset is set in `em` units to automatically scale with the element’s current `font-size`.
 
 <<< DEMO ./demo/LinkUnderlineOffsets.vue
 
 ### Underline opacity
 
-Change the underline’s opacity.
+Change the underline’s opacity with the `underline` prop's `opacity` key.
 
 <<< DEMO ./demo/LinkUnderlineOpacity.vue
 
 ### Hover variants
 
-`opacity`, `underline-offset` and `underline-opacity` take a `HoverState` object: the `xs` key applies the value at all
+`opacity` and the `underline` prop's `offset` and `opacity` keys take a `HoverState` object: the `xs` key applies the value at all
 times (no prefix) and the `hover` key applies it on hover (`hover:` prefix). For example `:opacity="{ xs: 50, hover: 100 }"`
 renders `link-50 hover:link-100`. Mix and match to create unique link styles.
 
@@ -70,7 +70,7 @@ renders `link-50 hover:link-100`. Mix and match to create unique link styles.
 
 ## Colored Links
 
-You can use the `color` prop's `theme` key to colorize links (rendered as `.theme-<theme>`, which v6 anchors read through `--theme-fg`). Some of the link styles use a relatively light foreground color, and should only be used on a dark background in order to have sufficient contrast. Its `underline` key colors the underline (`.underline-<theme>`). See [registering custom themes](/docs/components/button#custom-themes) to add your own.
+You can use the `color` prop's `theme` key to colorize links (rendered as `.theme-<theme>`, which v6 anchors read through `--theme-fg`). Some of the link styles use a relatively light foreground color, and should only be used on a dark background in order to have sufficient contrast. The `underline` prop's `color` key colors the underline (`.underline-<theme>`). See [registering custom themes](/docs/components/button#custom-themes) to add your own.
 
 <<< DEMO ./demo/LinkColors.vue
 

@@ -158,6 +158,24 @@ The component's own colors follow the same rule: the root `theme` / `bg` / `fg` 
 - Applies to all components now, including deferred ones, because these props were introduced in this same major release.
 - Check whether `BApp` defaults merge object props deeply or replace them, and document the behavior.
 
+### Prop families become objects
+
+A family of props that configures one thing becomes one object prop, unless one member is the switch that turns the feature on and is commonly used alone (then the family stays flat). Defaults merge per key, like the color objects.
+
+Objects:
+
+- `roundedSides: { top, bottom, start, end }` (BAvatar, BAvatarGroup, BImg, BCardImg, BOverlay). `rounded` stays a flat prop for all corners: it is the common case.
+- BLink (and every component extending its props) `underline: { color, offset, opacity }` replaces `color.underline`, `underlineOffset` and `underlineOpacity`.
+- BOverlay `spinner: { color, small, type }`. BOffcanvas `headerClose: { label, color, variant, attrs }` (`CloseButtonOptions`).
+- BAlert / BToast `close: { content, label, color, variant, attrs }` (feedback batch).
+- BPagination `labels: { firstPage, prevPage, nextPage, lastPage, page }` and `first` / `last: { text, attrs, number }`, `prev` / `next` / `ellipsis: { text, attrs }` (navigation batch).
+- BFormSpinbutton `labels: { increment, decrement }` and `repeat: { delay, interval, threshold, stepMultiplier }`; BFormSelect, BFormDatalist, BFormSelectOptionGroup, BFormRadioGroup and BFormCheckboxGroup `fields: { text, value, disabled, label, options }` (forms batch).
+- Tables (tables batch): `TableField` `color`, `sort: true | { direction, initialDirection, byFormatted, compare }`, `th: { class, style, attr }`, `td: { class, attr }`, `header: { title, abbr }`; `TableItem` `_rowColor` and `_cellColors`; BTableLite / BTable `thead: { attrs, trAttrs, color, rowColor }`, `tbody: { attrs, trAttrs }`, `tfoot: { attrs, trAttrs, color, rowColor }`; BTable `labels: { sortAsc, sortDesc, sortClear }` and `empty: { text, filteredText }`.
+
+Stay flat: BCard / BCarouselSlide / BPlaceholderCard `img*`, the BCard parts (`header`, `footer`, `body`, `title`, `subtitle`), BButton `loading*`, checkbox / radio `button*`, BLink `prefetch*`, BImg `blank*` / `fluid*`, BTableSimple `striped*`, the `show*` flags, gutters and alignment, BFormGroup `label*`. BLink `noPrefetch` is removed (`:prefetch="false"`).
+
+Not covered here: BModal `ok*` / `cancel*` / `headerClose*`, BDropdown `split*` / `toggle*`, BFormTags, BCarousel and BAvatar `badge*`, which the new-component plans replace.
+
 ### Part attributes (`*Attrs` replaces `*Class`)
 
 - Every configurable inner part gets a `<part>Attrs` prop; every `<part>Class` prop is removed. Users write `:header-attrs="{ class: '…' }"`.

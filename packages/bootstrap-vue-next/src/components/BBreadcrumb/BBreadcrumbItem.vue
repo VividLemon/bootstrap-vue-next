@@ -40,8 +40,7 @@ const _props = withDefaults(defineProps<BBreadcrumbItemProps>(), {
   routerTag: undefined,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOpacity: undefined,
+  underline: undefined,
   // End link props
   color: undefined,
 })
@@ -66,7 +65,6 @@ const computedLinkProps = computed(() =>
         'icon',
         'noRel',
         'opacity',
-        'noPrefetch',
         'prefetch',
         'prefetchOn',
         'prefetchedClass',
@@ -76,8 +74,7 @@ const computedLinkProps = computed(() =>
         'stretched',
         'target',
         'to',
-        'underlineOffset',
-        'underlineOpacity',
+        'underline',
         'color',
       ])
     : {}

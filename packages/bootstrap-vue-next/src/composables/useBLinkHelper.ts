@@ -38,7 +38,6 @@ export const useBLinkHelper = <
             'icon',
             'noRel',
             'opacity',
-            'noPrefetch',
             'prefetch',
             'prefetchOn',
             'prefetchedClass',
@@ -49,8 +48,7 @@ export const useBLinkHelper = <
             'stretched',
             'target',
             'to',
-            'underlineOffset',
-            'underlineOpacity',
+            'underline',
             'color',
           ]
         )

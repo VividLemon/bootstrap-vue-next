@@ -15,10 +15,10 @@ export const linkProps = {
     description: 'Configure the active CSS class applied when the link is active.',
   },
   color: {
-    type: 'LinkColorExtendables | null',
+    type: 'ColorExtendables | null',
     default: undefined,
     description:
-      'Colors the link with one object: `theme` renders `theme-*`, `bg` renders `bg-*`, `fg` renders `fg-*` and `underline` sets the underline color (`underline-*`) independently of the link text',
+      'Colors the link with one object: `theme` renders `theme-*`, `bg` renders `bg-*` and `fg` renders `fg-*`',
   },
   disabled: {
     type: 'boolean',
@@ -40,12 +40,6 @@ export const linkProps = {
     type: 'boolean',
     default: false,
     description: 'When set to `true`, styles an icon at the beginning or end of the link text',
-  },
-  noPrefetch: {
-    type: 'boolean',
-    default: false,
-    description:
-      'To improve the responsiveness of your Nuxt.js applications, when the link will be displayed within the viewport, Nuxt.js will automatically prefetch the code splitted page. Setting `no-prefetch` will disabled this feature for the specific link',
   },
   opacity: {
     type: 'HoverState<LinkOpacity>',
@@ -110,20 +104,14 @@ export const linkProps = {
     description:
       'Denotes the target route of the link. When clicked, the value of the to prop will be passed to `router.push()` internally',
   },
-  underlineOffset: {
-    type: 'HoverState<UnderlineOffset>',
+  underline: {
+    type: 'LinkUnderline',
     default: undefined,
     description:
-      'Change the distance of the underline from the bottom of the link text. `xs` renders `underline-offset-*`, `hover` renders `hover:underline-offset-*`. Values are `1` to `3`',
-  },
-  underlineOpacity: {
-    type: 'HoverState<UnderlineOpacity>',
-    default: undefined,
-    description:
-      "Set the opacity of the link's underline. `xs` renders `underline-*`, `hover` renders `hover:underline-*`. Values are `10` to `100` in steps of 10",
+      "The link's underline in one object: `color` (a theme, `underline-*`), `offset` (`HoverState<UnderlineOffset>`, `underline-offset-*`, values `1` to `3`) and `opacity` (`HoverState<UnderlineOpacity>`, `underline-*`, values `10` to `100`). In the `HoverState` keys, `xs` applies at all times and `hover` adds the `hover:` prefix",
   },
   // TODO: remove the hard-coded NYI props below when they are implemented
-} as const satisfies PropRecord<keyof BLinkProps | 'noPrefetch' | 'prefetch' | 'prefetchedClass'>
+} as const satisfies PropRecord<keyof BLinkProps | 'prefetch' | 'prefetchedClass'>
 
 export const linkedBLinkSection = {
   _opts: {
