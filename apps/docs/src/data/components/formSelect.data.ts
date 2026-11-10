@@ -50,7 +50,7 @@ export default {
             'ariaInvalid',
             'autofocus',
             'disabled',
-            'disabledField',
+            'fields',
             'form',
             'id',
             'name',
@@ -58,14 +58,13 @@ export default {
             'required',
             'size',
             'state',
-            'textField',
-            'valueField',
           ],
         ),
-        labelField: {
-          type: 'string',
-          default: 'label',
-          description: 'The key to use from the option object to get the label',
+        fields: {
+          type: 'GroupedOptionFields',
+          default: undefined,
+          description:
+            "Which keys of each option object to read: `text` (default 'text'), `value` (default 'value'), `disabled` (default 'disabled'), and for option groups `label` (default 'label') and `options` (default 'options'). Keys left out keep their default",
         },
         modelValue: {
           type: `SelectValue`,
@@ -76,11 +75,6 @@ export default {
           type: 'boolean',
           default: false, // TODO item not in string format
           description: 'When set, allows multiple options to be selected (multi-select)',
-        },
-        optionsField: {
-          type: 'string',
-          default: 'options',
-          description: 'The key to use from the option object to get the options',
         },
         selectSize: {
           type: 'Numberish',
@@ -157,7 +151,7 @@ export default {
           buildCommonProps({
             options: { type: 'readonly (unknown | Record<string, unknown>)[]' },
           }),
-          ['disabledField', 'options', 'textField', 'valueField'],
+          ['fields', 'options'],
         ),
         label: {
           type: 'string',

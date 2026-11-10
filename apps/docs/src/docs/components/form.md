@@ -165,8 +165,8 @@ See also:
 
 #### TypeScript Type Safety
 
-`BFormDatalist` uses generic type parameters to validate that `value-field`, `text-field`, and
-`disabled-field` reference actual keys of your option type. Since `BFormDatalist` is a native
+`BFormDatalist` uses generic type parameters to validate that the `value`, `text`, and
+`disabled` keys of its `fields` prop reference actual keys of your option type. Since `BFormDatalist` is a native
 `<datalist>` element (no `v-model`), the type safety focus is on field name validation.
 
 <<< DEMO ./demo/DatalistTypeSafeBasic.vue{vue}

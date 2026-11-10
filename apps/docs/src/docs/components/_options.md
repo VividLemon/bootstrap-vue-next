@@ -42,5 +42,5 @@ Internally, BootstrapVueNext will convert the above array to the following array
 ### Changing the option field names
 
 If you want to customize the field property names (for example using `name` field for display
-`text`) you can easily change them by setting the `text-field`, `value-field`, and
-`disabled-field` props to a string that contains the property name you would like to use:
+`text`) you can easily change them with the `fields` prop: set its `text`, `value` and `disabled`
+keys to the property names you would like to use:

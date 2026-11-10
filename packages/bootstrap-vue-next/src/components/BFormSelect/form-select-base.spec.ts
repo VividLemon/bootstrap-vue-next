@@ -322,9 +322,7 @@ describe('form-select-base', () => {
   it('renders options with custom field names', () => {
     const wrapper = mount(BFormSelectBase, {
       props: {
-        valueField: 'id',
-        textField: 'name',
-        disabledField: 'inactive',
+        fields: {value: 'id', text: 'name', disabled: 'inactive'},
         options: [
           {id: 1, name: 'First', inactive: false},
           {id: 2, name: 'Second', inactive: true},

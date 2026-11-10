@@ -125,6 +125,12 @@ const commonProps = () =>
       description:
         'When set, renders a single control form with a floating label. This only works for forms where the immediate children are a label and one of the supported controls. See above for details.',
     },
+    fields: {
+      type: 'OptionFields',
+      default: undefined,
+      description:
+        "Which keys of each option object to read: `text` (default 'text'), `value` (default 'value') and `disabled` (default 'disabled'). Keys left out keep their default",
+    },
     footer: {
       type: 'string',
       default: undefined,
@@ -500,12 +506,6 @@ const commonProps = () =>
       default: undefined,
       description:
         'Color object for selected table rows: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
-    },
-    spinnerColor: {
-      type: 'ColorExtendables',
-      default: undefined,
-      description:
-        'Color object for the overlay spinner: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
     },
     splitColor: {
       type: 'ColorExtendables',

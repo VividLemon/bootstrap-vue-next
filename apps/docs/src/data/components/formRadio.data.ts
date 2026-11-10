@@ -100,7 +100,7 @@ export default {
           'ariaInvalid',
           'autofocus',
           'disabled',
-          'disabledField',
+          'fields',
           'form',
           'id',
           'name',
@@ -109,8 +109,6 @@ export default {
           'required',
           'size',
           'state',
-          'textField',
-          'valueField',
         ]),
         buttonColor: {
           type: 'ColorExtendables',

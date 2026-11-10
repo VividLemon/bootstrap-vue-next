@@ -53,6 +53,7 @@ import type {SpinnerType} from './SpinnerType'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {ButtonType} from './ButtonType'
 import type {LinkOpacity, LinkUnderline} from './LinkDecorators'
+import type {GroupedOptionFields, OptionFields} from './OptionsTypes'
 import type {HoverState} from './HoverState'
 import type {LiteralUnion} from './LiteralUnion'
 import type {BreadcrumbItemRaw} from './BreadcrumbTypes'
@@ -384,9 +385,7 @@ export interface BFormCheckboxGroupProps<
   buttonColor?: ColorExtendables
   // Options array - generic parameter captures the specific array type
   options?: Options
-  valueField?: string
-  textField?: string
-  disabledField?: string
+  fields?: OptionFields
 
   // All base props (inherited)
   id?: string
@@ -410,11 +409,9 @@ export interface BFormCheckboxGroupProps<
 // BFormDatalist base props (non-generic, uses raw options)
 export interface BFormDatalistBaseProps {
   disabled?: boolean
-  disabledField?: string
   id?: string
   options?: readonly (string | number | Record<string, unknown>)[] | SelectOptionRaw[]
-  textField?: string
-  valueField?: string
+  fields?: OptionFields
 }
 
 // BFormDatalist wrapper props (generic, type-safe options)
@@ -424,11 +421,13 @@ export interface BFormDatalistProps<
     Item extends Record<string, unknown> ? keyof Item : never,
 > {
   disabled?: boolean
-  disabledField?: keyof Item & string
   id?: string
   options?: readonly (Item | string | number)[]
-  textField?: keyof Item & string
-  valueField?: ValueKey
+  fields?: {
+    text?: keyof Item & string
+    value?: ValueKey
+    disabled?: keyof Item & string
+  }
 }
 
 export interface BFormFileProps {
@@ -541,7 +540,6 @@ export interface BFormRadioGroupProps<
   buttonVariant?: ButtonVariant | null
   buttons?: boolean
   disabled?: boolean
-  disabledField?: string
   form?: string
   id?: string
   // Strongly typed based on Options array - extraction happens in component
@@ -554,8 +552,7 @@ export interface BFormRadioGroupProps<
   size?: Size
   stacked?: boolean
   state?: ValidationState
-  textField?: string
-  valueField?: string
+  fields?: OptionFields
 }
 export interface BFormRatingProps extends ColorProps {
   clearLabel?: string
@@ -582,10 +579,8 @@ export interface BFormSelectBaseProps {
   ariaInvalid?: AriaInvalid
   autofocus?: boolean
   disabled?: boolean
-  disabledField?: string
   form?: string
   id?: string
-  labelField?: string
   modelValue?: SelectValue
   multiple?: boolean
   name?: string
@@ -593,13 +588,11 @@ export interface BFormSelectBaseProps {
     | readonly (string | number | Record<string, unknown>)[]
     | readonly SelectOptionRaw[]
     | readonly ComplexSelectOptionRaw[]
-  optionsField?: string
   required?: boolean
   selectSize?: Numberish
   size?: Size
   state?: ValidationState
-  textField?: string
-  valueField?: string
+  fields?: GroupedOptionFields
 }
 
 // BFormSelect wrapper props (generic, type-safe options and modelValue)
@@ -619,23 +612,19 @@ export interface BFormSelectProps<
   ariaInvalid?: AriaInvalid
   autofocus?: boolean
   disabled?: boolean
-  disabledField?: string
   form?: string
   id?: string
-  labelField?: string
   // Strongly typed based on Options array - extraction happens in component
   modelValue?: unknown | unknown[] | null
   multiple?: boolean
   name?: string
   // Options array - generic parameter captures the specific array type
   options?: Options
-  optionsField?: string
   required?: boolean
   selectSize?: Numberish
   size?: Size
   state?: ValidationState
-  textField?: string
-  valueField?: string
+  fields?: GroupedOptionFields
 }
 
 export interface BFormSelectOptionProps<T> {
@@ -644,11 +633,9 @@ export interface BFormSelectOptionProps<T> {
 }
 
 export interface BFormSelectOptionGroupProps {
-  disabledField?: string
   label?: string
   options?: readonly (unknown | Record<string, unknown>)[]
-  textField?: string
-  valueField?: string
+  fields?: OptionFields
 }
 
 export interface BFormSpinbuttonProps {
@@ -659,8 +646,7 @@ export interface BFormSpinbuttonProps {
   formatterFn?: (value: number) => string
   id?: string
   inline?: boolean
-  labelDecrement?: string
-  labelIncrement?: string
+  labels?: {increment?: string; decrement?: string}
   locale?: string
   max?: Numberish
   min?: Numberish
@@ -668,10 +654,12 @@ export interface BFormSpinbuttonProps {
   name?: string
   placeholder?: string
   readonly?: boolean
-  repeatDelay?: Numberish
-  repeatInterval?: Numberish
-  repeatStepMultiplier?: Numberish
-  repeatThreshold?: Numberish
+  repeat?: {
+    delay?: Numberish
+    interval?: Numberish
+    threshold?: Numberish
+    stepMultiplier?: Numberish
+  }
   required?: boolean
   size?: Size
   state?: ValidationState

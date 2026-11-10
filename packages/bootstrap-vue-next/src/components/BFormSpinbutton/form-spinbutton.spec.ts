@@ -351,13 +351,13 @@ describe('form-spinbutton', () => {
     })
 
     it('uses custom labelDecrement prop', () => {
-      const wrapper = mount(BFormSpinbutton, {props: {labelDecrement: 'Less'}})
+      const wrapper = mount(BFormSpinbutton, {props: {labels: {decrement: 'Less'}}})
       const buttons = wrapper.findAll('button')
       expect(buttons[0].attributes('aria-label')).toBe('Less')
     })
 
     it('uses custom labelIncrement prop', () => {
-      const wrapper = mount(BFormSpinbutton, {props: {labelIncrement: 'More'}})
+      const wrapper = mount(BFormSpinbutton, {props: {labels: {increment: 'More'}}})
       const buttons = wrapper.findAll('button')
       expect(buttons[1].attributes('aria-label')).toBe('More')
     })
@@ -714,7 +714,7 @@ describe('form-spinbutton', () => {
 
     it('increments by step multiplier on PageUp keydown', async () => {
       const wrapper = mount(BFormSpinbutton, {
-        props: {modelValue: 5, min: 1, max: 100, step: 1, repeatStepMultiplier: 4},
+        props: {modelValue: 5, min: 1, max: 100, step: 1, repeat: {stepMultiplier: 4}},
       })
       await nextTick()
       await wrapper.trigger('keydown', {key: 'PageUp', code: 'PageUp'})
@@ -723,7 +723,7 @@ describe('form-spinbutton', () => {
 
     it('decrements by step multiplier on PageDown keydown', async () => {
       const wrapper = mount(BFormSpinbutton, {
-        props: {modelValue: 20, min: 1, max: 100, step: 1, repeatStepMultiplier: 4},
+        props: {modelValue: 20, min: 1, max: 100, step: 1, repeat: {stepMultiplier: 4}},
       })
       await nextTick()
       await wrapper.trigger('keydown', {key: 'PageDown', code: 'PageDown'})

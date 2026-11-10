@@ -27,6 +27,7 @@
     )[]
   "
 >
+import {resolveOptionFields} from '../../composables/useFormSelect'
 import {computed, useTemplateRef} from 'vue'
 import BFormSelectBase from './BFormSelectBase.vue'
 import type {
@@ -51,24 +52,21 @@ import type {
  * - Use 'as const' on options for literal type inference
  */
 const props = withDefaults(defineProps<Omit<BFormSelectProps<Options>, 'modelValue'>>(), {
+  fields: undefined,
   ariaInvalid: undefined,
   autofocus: false,
   disabled: false,
-  disabledField: 'disabled',
   form: undefined,
   id: undefined,
-  labelField: 'label',
   multiple: false,
   name: undefined,
   options: () => [] as unknown as Options,
-  optionsField: 'options',
   required: false,
   selectSize: 0,
   size: undefined,
   state: null,
-  textField: 'text',
-  valueField: 'value',
 })
+const optionFields = computed(() => resolveOptionFields(props.fields))
 defineSlots<BFormSelectSlots<OptionsValues<Options>>>()
 
 // Type-safe model value - single value or array depending on multiple prop.
@@ -83,10 +81,11 @@ const modelValue = defineModel<OptionsValues<Options> | OptionsValues<Options>[]
 const normalizeSimpleOption = (el: object): SelectOption =>
   ({
     ...(el as Record<string, unknown>),
-    value: (el as Record<string, unknown>)[props.valueField as string],
-    text: ((el as Record<string, unknown>)[props.textField as string] as string | undefined) ?? '',
+    value: (el as Record<string, unknown>)[optionFields.value.valueField],
+    text:
+      ((el as Record<string, unknown>)[optionFields.value.textField] as string | undefined) ?? '',
     disabled:
-      ((el as Record<string, unknown>)[props.disabledField as string] as boolean | undefined) ??
+      ((el as Record<string, unknown>)[optionFields.value.disabledField] as boolean | undefined) ??
       false,
   }) as SelectOption
 
@@ -101,7 +100,7 @@ const normalizedOptions = computed(() => {
       typeof el !== 'string' &&
       typeof el !== 'number' &&
       typeof el !== 'boolean' &&
-      (el as Record<string, unknown>)[props.optionsField as string] !== undefined
+      (el as Record<string, unknown>)[optionFields.value.optionsField] !== undefined
   )
 
   if (hasComplexOptions) {
@@ -111,12 +110,12 @@ const normalizedOptions = computed(() => {
       }
 
       // Check if this is a complex (grouped) option
-      const optionsField = (el as Record<string, unknown>)[props.optionsField as string]
+      const optionsField = (el as Record<string, unknown>)[optionFields.value.optionsField]
       if (optionsField !== undefined && Array.isArray(optionsField)) {
         // Complex option with nested options
         const label =
-          ((el as Record<string, unknown>)[props.labelField as string] as string | undefined) ??
-          ((el as Record<string, unknown>)[props.textField as string] as string | undefined) ??
+          ((el as Record<string, unknown>)[optionFields.value.labelField] as string | undefined) ??
+          ((el as Record<string, unknown>)[optionFields.value.textField] as string | undefined) ??
           ''
         return {
           label,
