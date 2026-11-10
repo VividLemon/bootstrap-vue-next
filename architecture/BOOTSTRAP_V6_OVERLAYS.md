@@ -270,6 +270,7 @@ export interface BDialogProps extends ShowHideProps {
 
 ### `useModal` (redesign)
 
+- Open: library keys (`options`, `component`, `slots`) may move out of `create()`'s props object into a second argument, `create(props, options)`, so they can't collide with the component's own props. See [`BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`](./BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md#create-mixes-library-options-into-the-props-object).
 - `create(props)` returns the controller as today (`show`, `hide`, `toggle`, `set`, `get`, `destroy`, `[Symbol.asyncDispose]`). `controller.show()` resolves with a plain result object (Q4):
 
   ```ts
