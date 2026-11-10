@@ -31,7 +31,6 @@ const _props = withDefaults(defineProps<BNavItemProps>(), {
   icon: undefined,
   linkAttrs: undefined,
   linkClass: undefined,
-  noPrefetch: undefined,
   noRel: undefined,
   opacity: undefined,
   prefetch: undefined,
@@ -43,8 +42,7 @@ const _props = withDefaults(defineProps<BNavItemProps>(), {
   stretched: false,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOpacity: undefined,
+  underline: undefined,
   // End link props
   color: undefined,
 })
@@ -61,7 +59,6 @@ const computedLinkProps = computed(() =>
     'href',
     'icon',
     'noRel',
-    'noPrefetch',
     'opacity',
     'prefetch',
     'prefetchedClass',
@@ -72,8 +69,7 @@ const computedLinkProps = computed(() =>
     'stretched',
     'target',
     'to',
-    'underlineOffset',
-    'underlineOpacity',
+    'underline',
     'color',
   ])
 )

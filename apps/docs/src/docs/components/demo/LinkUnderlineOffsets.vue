@@ -1,6 +1,6 @@
 <template>
   <p v-for="offset in offsets" :key="offset">
-    <BLink :underline-offset="{ xs: offset }"> {{ offset }} link </BLink>
+    <BLink :underline="{ offset: { xs: offset } }"> {{ offset }} link </BLink>
   </p>
 </template>
 

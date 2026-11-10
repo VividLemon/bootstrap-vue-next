@@ -8,7 +8,7 @@
       </BRow>
       <BRow>
         <BCol>
-          <BLink :color="{ underline: 'success', theme: 'danger' }" :to="home">Home</BLink>
+          <BLink :color="{ theme: 'danger' }" :underline="{ color: 'success' }" :to="home">Home</BLink>
         </BCol>
       </BRow>
       <BRow>

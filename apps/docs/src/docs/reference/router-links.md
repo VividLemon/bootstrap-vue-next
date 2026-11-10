@@ -161,14 +161,6 @@ When BootstrapVueNext detects that your app is running under [Nuxt.js](https://n
 
 To improve the responsiveness of your Nuxt.js applications, when the link will be displayed within the viewport, Nuxt.js will automatically prefetch the code splitted page. Setting `prefetch` to `true` or `false` will overwrite the default value of `router.prefetchLinks` configured in the `nuxt.config.js` configuration file.
 
-### `no-prefetch`
-
-- type: `boolean`
-- default: `true`
-- availability: Nuxt.js 3+
-
-To improve the responsiveness of your Nuxt.js applications, when the link will be displayed within the viewport, Nuxt.js will automatically prefetch the code splitted page. Setting `no-prefetch` will disabled this feature for the specific link.
-
 <HighlightCard>
 
 ```vue

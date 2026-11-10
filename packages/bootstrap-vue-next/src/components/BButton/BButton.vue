@@ -70,8 +70,7 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   routerTag: undefined,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOpacity: undefined,
+  underline: undefined,
   // End link props
   color: undefined,
 })
@@ -90,7 +89,6 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props, [
   'replace',
   'routerComponentName',
   'routerTag',
-  'noPrefetch',
   'prefetch',
   'prefetchOn',
   'prefetchedClass',
@@ -117,10 +115,8 @@ const {classes: linkValueClasses} = useLinkClasses(
       ? {
           icon: props.icon,
           opacity: props.opacity,
-          underlineOffset: props.underlineOffset,
-          underlineOpacity: props.underlineOpacity,
+          underline: props.underline,
           color: {
-            underline: computedColor.value.underline,
             theme: null,
             bg: computedColor.value.bg,
             fg: computedColor.value.fg,
