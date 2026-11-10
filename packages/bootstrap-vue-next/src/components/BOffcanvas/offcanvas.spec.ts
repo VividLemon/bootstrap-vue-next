@@ -292,7 +292,7 @@ describe('offcanvas', () => {
 
     it('BCloseButton has custom aria-label from headerCloseLabel prop', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseLabel: 'Dismiss'},
+        props: {headerClose: {label: 'Dismiss'}},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $close = wrapper.findComponent(BCloseButton)
@@ -301,7 +301,7 @@ describe('offcanvas', () => {
 
     it('BCloseButton has headerCloseClass', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseClass: 'custom-close'},
+        props: {headerClose: {attrs: {class: 'custom-close'}}},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $close = wrapper.findComponent(BCloseButton)
@@ -339,7 +339,7 @@ describe('offcanvas', () => {
 
     it('BButton from header-close slot has headerCloseClass', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseClass: 'custom-close'},
+        props: {headerClose: {attrs: {class: 'custom-close'}}},
         slots: {'header-close': 'X'},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
@@ -349,7 +349,7 @@ describe('offcanvas', () => {
 
     it('BButton from header-close slot has headerCloseColor.theme and headerCloseVariant', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseColor: {theme: 'warning'}, headerCloseVariant: 'outline'},
+        props: {headerClose: {color: {theme: 'warning'}, variant: 'outline'}},
         slots: {'header-close': 'X'},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
@@ -360,7 +360,7 @@ describe('offcanvas', () => {
 
     it('BCloseButton does not have theme class when headerCloseColor.theme is set', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseColor: {theme: 'warning'}},
+        props: {headerClose: {color: {theme: 'warning'}}},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $close = wrapper.findComponent(BCloseButton)
