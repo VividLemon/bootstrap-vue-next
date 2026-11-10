@@ -12,7 +12,7 @@
           :scope="field.scope"
           :class="getFieldColumnClasses(field)"
           :title="field.headerTitle"
-          :color="field"
+          :color="{theme: field.theme, bg: field.bg, fg: field.fg}"
           :abbr="field.headerAbbr"
           :style="field.thStyle"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
@@ -38,7 +38,7 @@
           v-for="field in computedFields"
           :key="field.key"
           scope="col"
-          :color="field"
+          :color="{theme: field.theme, bg: field.bg, fg: field.fg}"
           :class="[field.class, field.thClass]"
         >
           <slot name="thead-sub" :items="props.items" :fields="computedFields" :field>
@@ -186,7 +186,7 @@
           :title="field.headerTitle"
           :abbr="field.headerAbbr"
           :style="field.thStyle"
-          :color="field"
+          :color="{theme: field.theme, bg: field.bg, fg: field.fg}"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
           v-bind="callThAttr(null, field, 'bottom')"
           @click="keyboardController.headerClicked(field, $event, true)"
