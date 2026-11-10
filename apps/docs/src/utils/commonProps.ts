@@ -71,12 +71,6 @@ const commonProps = () =>
       description:
         'When set to `true`, attempts to auto-focus the control when it is mounted, or re-activated when in a keep-alive. Does not set the `autofocus` attribute on the control',
     },
-    bg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description:
-        'Applies a background color to the component (`bg-*` class). Accepts a theme color, `subtle-{theme}`, `muted-{theme}`, or a neutral layer value such as `body`, `1`-`4`, `white`, `black` or `transparent`',
-    },
     body: {
       type: 'string',
       default: undefined,
@@ -97,10 +91,11 @@ const commonProps = () =>
       default: 'div',
       description: 'Specify the HTML tag to render instead of the default tag for the body',
     },
-    border: {
-      type: 'MaybeArray<BorderColor> | null',
+    color: {
+      type: 'ColorExtendables | null',
       default: undefined,
-      description: 'Applies a border color (`BorderColor`) to the component',
+      description:
+        "Colors the component with one object: `theme` renders `theme-*`, `bg` renders `bg-*` and `fg` renders `fg-*`. Keys left out (or `undefined`) keep the component's default; `null` clears it. See [Color variants](/docs/reference/color-variants)",
     },
     debounce: {
       type: 'Numberish',
@@ -347,12 +342,6 @@ const commonProps = () =>
       default: 'text',
       description: 'Field name in the `options` array that should be used for the text label',
     },
-    fg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description:
-        'Applies a foreground (text) color to the component (`fg-*` class). Accepts a theme color, `emphasis-{theme}`, `contrast-{theme}`, or a neutral layer value such as `body`, `1`-`4`, `white`, `black` or `reset`',
-    },
     title: {
       type: 'string',
       default: undefined,
@@ -383,12 +372,6 @@ const commonProps = () =>
       type: 'string',
       default: 'value',
       description: 'Field name in the `options` array that should be used for the value',
-    },
-    theme: {
-      type: 'ThemeProp | null',
-      default: null,
-      description:
-        'Applies one of the theme colors (`theme-*` class) to the component. Custom themes can be registered by augmenting `ThemeColors`. When implemented `bg` and `fg` take precedence',
     },
     variant: {
       type: 'ButtonVariant | null',
@@ -581,4 +564,13 @@ export const buildCommonProps = (
 export const commonEmits = {
   cancel: {},
   ok: {},
+}
+
+/** `color` prop of components that also accept a border color */
+export const colorBorderProp = {
+  color: {
+    type: 'ColorBorderExtendables | null',
+    description:
+      "Colors the component with one object: `theme` renders `theme-*`, `bg` renders `bg-*`, `fg` renders `fg-*` and `border` renders `border-*`. Keys left out (or `undefined`) keep the component's default; `null` clears it. See [Color variants](/docs/reference/color-variants)",
+  },
 }

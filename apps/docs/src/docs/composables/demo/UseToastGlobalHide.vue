@@ -1,10 +1,10 @@
 <template>
   <BButtonGroup>
-    <BButton theme="success" @click="notify"> Show Toasts </BButton>
-    <BButton theme="warning" @click="hide('user-request', 'session-expiring')">
+    <BButton :color="{ theme: 'success' }" @click="notify"> Show Toasts </BButton>
+    <BButton :color="{ theme: 'warning' }" @click="hide('user-request', 'session-expiring')">
       Hide Session Toast
     </BButton>
-    <BButton theme="danger" @click="hideAll('route-change')"> Hide All </BButton>
+    <BButton :color="{ theme: 'danger' }" @click="hideAll('route-change')"> Hide All </BButton>
   </BButtonGroup>
 </template>
 
@@ -25,14 +25,14 @@ const notify = () => {
     id: 'session-expiring',
     title: 'Session expiring',
     body: 'You will be signed out soon',
-    theme: 'warning',
+    color: { theme: 'warning' },
     position: 'bottom-center',
   })
   void show({
     id: 'sync-complete',
     title: 'Sync complete',
     body: 'Everything is up to date',
-    theme: 'success',
+    color: { theme: 'success' },
     position: 'bottom-center',
   })
 }

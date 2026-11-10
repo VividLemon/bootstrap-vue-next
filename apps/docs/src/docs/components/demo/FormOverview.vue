@@ -28,8 +28,8 @@
         <BFormCheckbox value="that">Check that out</BFormCheckbox>
       </BFormCheckboxGroup>
     </BFormGroup>
-    <BButton type="submit" theme="primary">Submit</BButton>
-    <BButton type="reset" theme="danger">Reset</BButton>
+    <BButton type="submit" :color="{ theme: 'primary' }">Submit</BButton>
+    <BButton type="reset" :color="{ theme: 'danger' }">Reset</BButton>
   </BForm>
 
   <BCard class="mt-3" header="Form Data Result">

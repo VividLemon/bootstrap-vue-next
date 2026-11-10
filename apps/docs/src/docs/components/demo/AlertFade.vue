@@ -1,28 +1,28 @@
 <template>
   <BAlert :model-value="true" fade>Default Alert</BAlert>
 
-  <BAlert theme="success" :model-value="true" fade>Success Alert</BAlert>
+  <BAlert :color="{ theme: 'success' }" :model-value="true" fade>Success Alert</BAlert>
 
-  <BAlert v-model="showDismissibleAlert" theme="danger" dismissible fade>
+  <BAlert v-model="showDismissibleAlert" :color="{ theme: 'danger' }" dismissible fade>
     Dismissible Alert!
   </BAlert>
 
   <BAlert
     v-model="dismissCountDown"
     dismissible
-    theme="warning"
+    :color="{ theme: 'warning' }"
     fade
     @close-countdown="countdown = $event"
   >
     <p>This alert will dismiss after {{ countdown / 1000 }} seconds...</p>
-    <BProgress theme="warning" :max="dismissCountDown" :value="countdown" height="4px" />
+    <BProgress :color="{ theme: 'warning' }" :max="dismissCountDown" :value="countdown" height="4px" />
   </BAlert>
 
-  <BButton theme="info" class="m-1" @click="dismissCountDown = dismissCountDown + 5000">
+  <BButton :color="{ theme: 'info' }" class="m-1" @click="dismissCountDown = dismissCountDown + 5000">
     Add a five seconds to the alert with countdown timer
   </BButton>
 
-  <BButton theme="info" class="m-1" @click="showDismissibleAlert = !showDismissibleAlert">
+  <BButton :color="{ theme: 'info' }" class="m-1" @click="showDismissibleAlert = !showDismissibleAlert">
     {{ !showDismissibleAlert ? 'Show' : 'Hide' }} dismissible alert
   </BButton>
 </template>

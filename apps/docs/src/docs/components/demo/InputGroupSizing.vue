@@ -7,7 +7,7 @@
     prepend="Label"
   >
     <BFormInput />
-    <BButton size="sm" text="Button" theme="success">Button</BButton>
+    <BButton size="sm" text="Button" :color="{ theme: 'success' }">Button</BButton>
   </BInputGroup>
 </template>
 

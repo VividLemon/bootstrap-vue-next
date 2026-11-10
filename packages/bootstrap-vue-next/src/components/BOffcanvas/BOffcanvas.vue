@@ -279,9 +279,7 @@ const computedHeaderCloseColor = computed(() =>
 )
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
-  theme: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.theme : undefined,
-  bg: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.bg : undefined,
-  fg: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.fg : undefined,
+  color: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value : undefined,
   class: headerCloseClasses.value,
 }))
 

@@ -76,7 +76,7 @@
       :no-border-collapse="noCollapse"
       :items="items"
       :fields="fields"
-      :theme="theme"
+      :color="{ theme: theme }"
       :head-color="{ theme: headTheme }"
       :foot-color="{ theme: footTheme }"
     />
@@ -109,13 +109,19 @@ const headTheme = ref<ThemeColor | null>(null)
 const footTheme = ref<ThemeColor | null>(null)
 const noCollapse = ref(false)
 
-const themes = [
-  { text: 'Primary', value: 'primary' as ThemeColor },
-  { text: 'Secondary', value: 'secondary' as ThemeColor },
-  { text: 'Info', value: 'info' as ThemeColor },
-  { text: 'Danger', value: 'danger' as ThemeColor },
-  { text: 'Warning', value: 'warning' as ThemeColor },
-  { text: 'Success', value: 'success' as ThemeColor },
-  { text: 'Inverse', value: 'inverse' as ThemeColor },
-]
+const themeLabels = {
+  primary: 'Primary',
+  secondary: 'Secondary',
+  accent: 'Accent',
+  info: 'Info',
+  danger: 'Danger',
+  warning: 'Warning',
+  success: 'Success',
+  inverse: 'Inverse',
+} as const satisfies Record<ThemeColor, string>
+
+const themes = (Object.keys(themeLabels) as ThemeColor[]).map((value) => ({
+  text: themeLabels[value],
+  value,
+}))
 </script>

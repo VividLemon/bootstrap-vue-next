@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BCard bg="2">
+  <BCard :color="{ bg: '2' }">
     <BFormGroup
       :label-cols="{ lg: 3 }"
       label="Shipping Address"

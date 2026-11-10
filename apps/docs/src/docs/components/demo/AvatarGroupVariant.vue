@@ -1,8 +1,8 @@
 <template>
   <!-- #region template -->
-  <BAvatarGroup theme="success">
+  <BAvatarGroup :color="{ theme: 'success' }">
     <BAvatar />
-    <BAvatar theme="info" />
+    <BAvatar :color="{ theme: 'info' }" />
     <BAvatar />
     <BAvatar />
     <BAvatar />

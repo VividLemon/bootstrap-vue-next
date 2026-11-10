@@ -16,7 +16,7 @@
         >Remember my preference</BFormCheckbox
       >
       <div class="col-lg-2 col-form-label">
-        <BButton theme="primary">Save</BButton>
+        <BButton :color="{ theme: 'primary' }">Save</BButton>
       </div>
     </div>
   </BForm>

@@ -5,7 +5,7 @@
       title: 'Tooltip title',
       delay: { show: 500, hide: 100 },
     }"
-    theme="primary"
+    :color="{ theme: 'primary' }"
   >
     Object configuration
   </BButton>

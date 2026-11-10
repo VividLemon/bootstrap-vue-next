@@ -9,14 +9,14 @@ description: 'The component `BNavbar` is a wrapper that positions branding, navi
 
 `BNavbar` is themed with Bootstrap v6's `.theme-*` classes. Set the `theme` prop to one of the theme colors (`primary`, `accent`, `secondary`, `success`, `info`, `warning`, `danger`, `inverse`) to color the navbar, or use the `bg` prop for finer control (for example `bg="subtle-primary"`). See [Color Themes](/docs/reference/color-variants).
 
-If the `theme` or `bg` prop is set, it may be necessary to control the text color so that it contrasts with the background
+If the `color` prop's `theme` or `bg` key is set, it may be necessary to control the text color so that it contrasts with the background
 irrespective of the theme. This can be done by using the `v-b-color-mode` directive or `useColorMode` composable
 
 The example below uses `v-b-colorMode`. For more information see the [BColorMode directive](/docs/directives/BColorMode).
 
 <<< DEMO ./demo/NavbarColorMode.vue#template{vue-html}
 
-`BNavbar` will conform to the current color theme if the `theme` and `bg` props are not set.
+`BNavbar` will conform to the current color theme if the `color` prop is not set.
 
 ## Placement
 

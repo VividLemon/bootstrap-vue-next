@@ -53,7 +53,7 @@
       <BCol>
         <BTooltip click>
           <template #target="{visible}">
-            <BButton :theme="visible ? 'primary' : 'secondary'">
+            <BButton :color="{ theme: visible ? 'primary' : 'secondary' }">
               click tooltip component
             </BButton>
           </template>

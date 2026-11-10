@@ -8,9 +8,7 @@
       :id="computedId"
       ref="_splitButton"
       :variant="props.splitVariant || props.variant"
-      :theme="computedSplitColor.theme"
-      :bg="computedSplitColor.bg"
-      :fg="computedSplitColor.fg"
+      :color="computedSplitColor"
       :size="props.size"
       :class="buttonClasses"
       :disabled="props.splitDisabled || props.disabled"
@@ -31,9 +29,7 @@
       :id="computedId + '-split'"
       ref="_button"
       :variant="props.variant"
-      :theme="props.theme"
-      :bg="props.bg"
-      :fg="props.fg"
+      :color="computedColor"
       :size="props.size"
       :disabled="props.disabled"
       :class="[props.toggleClass, {show: showRef}]"
@@ -167,13 +163,12 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   toggleClass: undefined,
   toggleText: 'Toggle dropdown',
   variant: 'solid',
-  theme: 'secondary',
-  bg: null,
-  fg: null,
   visible: false,
   wrapperClass: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BDropdown')
+const computedColor = computed(() => resolvePartColor(props.color, {theme: 'secondary'}))
 const emit = defineEmits<BDropdownEmits>()
 defineSlots<BDropdownSlots>()
 
@@ -375,7 +370,11 @@ const computedClasses = computed(() => [
 ])
 
 const computedSplitColor = computed(() =>
-  resolvePartColor(props.splitColor, {theme: props.theme, bg: props.bg, fg: props.fg})
+  resolvePartColor(props.splitColor, {
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
+  })
 )
 
 const buttonClasses = computed(() => [

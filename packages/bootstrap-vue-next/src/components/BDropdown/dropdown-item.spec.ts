@@ -106,11 +106,11 @@ describe('dropdown-item', () => {
 
   it('button has class theme-{type} when prop theme', async () => {
     const wrapper = mount(BDropdownItem, {
-      props: {theme: 'danger'},
+      props: {color: {theme: 'danger'}},
     })
     const $button = wrapper.get('button')
     expect($button.classes()).toContain('theme-danger')
-    await wrapper.setProps({theme: undefined})
+    await wrapper.setProps({color: {theme: undefined}})
     expect($button.classes()).not.toContain('theme-danger')
   })
 

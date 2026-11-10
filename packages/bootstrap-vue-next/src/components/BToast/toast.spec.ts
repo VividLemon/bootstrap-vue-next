@@ -819,7 +819,7 @@ describe('toast', () => {
     {prop: 'fg', value: 'white', expectedClass: 'fg-white'},
   ])('applies $prop color class to toast', ({prop, value, expectedClass}) => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, [prop]: value},
+      props: {modelValue: true, color: {[prop]: value}},
       slots: {default: 'content'},
     })
     const $div = wrapper.get('div')

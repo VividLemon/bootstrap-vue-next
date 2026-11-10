@@ -5,22 +5,21 @@
 </template>
 
 <script setup lang="ts">
-import {toColorClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import type {BTbodyProps, BTbodySlots} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
 
 const _props = withDefaults(defineProps<BTbodyProps>(), {
-  theme: null,
-  bg: null,
-  fg: null,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BTbody')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BTbodySlots>()
 
 const computedClasses = computed(() => [
-  toColorClasses('theme', props.theme),
-  toColorClasses('bg', props.bg),
-  toColorClasses('fg', props.fg),
+  toColorClasses('theme', computedColor.value.theme),
+  toColorClasses('bg', computedColor.value.bg),
+  toColorClasses('fg', computedColor.value.fg),
 ])
 </script>

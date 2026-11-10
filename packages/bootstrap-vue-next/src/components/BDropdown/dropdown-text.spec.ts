@@ -75,11 +75,11 @@ describe('dropdown-text', () => {
 
   it('child element has class theme-{theme} when prop theme is set', async () => {
     const wrapper = mount(BDropdownText, {
-      props: {theme: 'danger'},
+      props: {color: {theme: 'danger'}},
     })
     const $span = wrapper.get('span')
     expect($span.classes()).toContain('theme-danger')
-    await wrapper.setProps({theme: undefined})
+    await wrapper.setProps({color: {theme: undefined}})
     expect($span.classes()).not.toContain('theme-danger')
   })
 

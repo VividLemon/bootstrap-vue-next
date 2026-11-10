@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BNavbar v-b-color-mode="'dark'" :toggleable="true" theme="primary">
+  <BNavbar v-b-color-mode="'dark'" :toggleable="true" :color="{ theme: 'primary' }">
     <BNavbarBrand href="#navbar-offcanvas">NavBar</BNavbarBrand>
     <BNavbarToggle target="nav-offcanvas" />
     <BOffcanvas id="nav-offcanvas" title="Offcanvas" placement="end" is-nav>
@@ -27,7 +27,7 @@
       </BNavbarNav>
       <BNavForm class="d-flex">
         <BFormInput class="me-2" placeholder="Search" />
-        <BButton type="submit" variant="outline" theme="success">Search</BButton>
+        <BButton type="submit" variant="outline" :color="{ theme: 'success' }">Search</BButton>
       </BNavForm>
     </BOffcanvas>
   </BNavbar>

@@ -4,7 +4,7 @@
     split
     split-variant="outline"
     :split-color="{ theme: 'primary' }"
-    theme="primary"
+    :color="{ theme: 'primary' }"
     text="Split Variant Dropdown"
     class="me-2"
   >

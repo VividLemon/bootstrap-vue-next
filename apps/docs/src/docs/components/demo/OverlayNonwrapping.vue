@@ -4,7 +4,7 @@
     <BCard title="Card with parent overlay">
       <BCardText>Laborum consequat non elit enim exercitation cillum.</BCardText>
       <BCardText>Click the button to toggle the overlay:</BCardText>
-      <BButton :disabled="show" theme="primary" @click="show = true"> Show overlay </BButton>
+      <BButton :disabled="show" :color="{ theme: 'primary' }" @click="show = true"> Show overlay </BButton>
     </BCard>
     <p class="text-light fw-bold mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     <BOverlay :show="show" no-wrap />

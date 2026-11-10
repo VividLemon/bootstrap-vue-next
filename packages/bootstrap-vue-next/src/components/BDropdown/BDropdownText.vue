@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed, useAttrs} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BDropdownTextProps, BDropdownTextSlots} from '../../types'
 
 defineOptions({
@@ -27,12 +27,11 @@ const _props = withDefaults(defineProps<BDropdownTextProps>(), {
   textClass: undefined,
   tag: 'span',
   text: undefined,
-  theme: null,
-  bg: null,
-  fg: null,
   wrapperAttrs: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BDropdownText')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BDropdownTextSlots>()
 const attrs = useAttrs()
 
@@ -43,9 +42,9 @@ const processedAttrs = computed(() => {
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 </script>

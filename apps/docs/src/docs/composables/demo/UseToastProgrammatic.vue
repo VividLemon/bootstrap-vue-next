@@ -1,7 +1,7 @@
 <template>
   <BButtonGroup>
-    <BButton theme="success" @click="showMe"> Show the Toast </BButton>
-    <BButton theme="danger" @click="hideMe"> Hide the Toast </BButton>
+    <BButton :color="{ theme: 'success' }" @click="showMe"> Show the Toast </BButton>
+    <BButton :color="{ theme: 'danger' }" @click="hideMe"> Hide the Toast </BButton>
   </BButtonGroup>
 </template>
 
@@ -17,7 +17,7 @@ const getToast = () => {
   toast ??= create({
     title: 'Showing',
     body: 'Toast is now showing',
-    theme: 'success',
+    color: { theme: 'success' },
     position: 'bottom-center',
   })
   return toast

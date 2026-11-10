@@ -9,9 +9,9 @@
   </div>
   <div class="mt-3">
     <BButtonGroup>
-      <BButton theme="success">Success</BButton>
-      <BButton theme="info">Info</BButton>
-      <BButton theme="warning">Warning</BButton>
+      <BButton :color="{ theme: 'success' }">Success</BButton>
+      <BButton :color="{ theme: 'info' }">Info</BButton>
+      <BButton :color="{ theme: 'warning' }">Warning</BButton>
     </BButtonGroup>
   </div>
   <!-- #endregion template -->

@@ -105,7 +105,7 @@ describe('alert', () => {
 
   it('nested div has class theme-{type} when prop theme', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, theme: 'danger'},
+      props: {modelValue: true, color: {theme: 'danger'}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('theme-danger')
@@ -113,7 +113,7 @@ describe('alert', () => {
 
   it('nested div has bg and fg classes when props bg and fg', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, bg: 'subtle-danger', fg: 'emphasis-danger'},
+      props: {modelValue: true, color: {bg: 'subtle-danger', fg: 'emphasis-danger'}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('bg-subtle-danger')
@@ -479,7 +479,7 @@ describe('alert', () => {
   // theme null
   it('nested div does not have theme class when theme is null', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, theme: null},
+      props: {modelValue: true, color: {theme: null}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('alert')
@@ -805,7 +805,7 @@ describe('alert', () => {
   // Multiple themes
   it('nested div has class theme-success when theme is success', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, theme: 'success'},
+      props: {modelValue: true, color: {theme: 'success'}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('theme-success')
@@ -813,7 +813,7 @@ describe('alert', () => {
 
   it('nested div has class theme-warning when theme is warning', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, theme: 'warning'},
+      props: {modelValue: true, color: {theme: 'warning'}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('theme-warning')

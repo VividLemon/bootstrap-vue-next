@@ -1,7 +1,7 @@
 <template>
   <!-- #region template -->
   <div>
-    <BButton v-b-modal.my-modal theme="primary">Open Modal</BButton>
+    <BButton v-b-modal.my-modal :color="{ theme: 'primary' }">Open Modal</BButton>
     <BModal id="my-modal" title="Using Modifiers">
       <p>The modal ID is specified as a modifier: <code>.my-modal</code></p>
     </BModal>

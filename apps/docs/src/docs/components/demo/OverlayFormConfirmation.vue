@@ -22,7 +22,7 @@
             min="1"
             max="20"
             :value="processingcounter"
-            theme="success"
+            :color="{ theme: 'success' }"
             height="3px"
             class="mx-n4 rounded-0"
           />
@@ -38,10 +38,10 @@
         >
           <p><strong id="form-confirm-label">Are you sure?</strong></p>
           <div class="d-flex" style="column-gap: 5%">
-            <BButton variant="outline" theme="danger" class="me-3" @click="onFormCancel">
+            <BButton variant="outline" :color="{ theme: 'danger' }" class="me-3" @click="onFormCancel">
               Cancel
             </BButton>
-            <BButton ref="successbutton" variant="outline" theme="success" @click="onFormOK"
+            <BButton ref="successbutton" variant="outline" :color="{ theme: 'success' }" @click="onFormOK"
               >OK</BButton
             >
           </div>

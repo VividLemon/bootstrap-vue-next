@@ -33,7 +33,7 @@
           <BInputGroupText>
             <BButton
               :disabled="innerDisabled || state === false"
-              theme="primary"
+              :color="{ theme: 'primary' }"
               @click="addTag(newTag)"
               >Add</BButton
             >
@@ -50,7 +50,7 @@
                 :disabled="disabled"
                 size="sm"
                 variant="outline"
-                theme="danger"
+                :color="{ theme: 'danger' }"
                 @click="removeTag(tag)"
               >
                 remove tag
