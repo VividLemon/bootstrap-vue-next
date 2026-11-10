@@ -36,20 +36,20 @@ export default {
             size: {
               default: undefined,
             },
-            theme: {
-              default: undefined,
+            color: {
+              type: "Pick<ColorExtendables, 'theme'> | null",
               description:
-                'Applies one of the theme colors (`theme-*` class) to the pagination, coloring the active page and hover/focus states',
+                'Colors the pagination with its `theme` key (`theme-*` class), coloring the active page and hover/focus states',
             },
           }),
           [
             'ariaControls',
             'ariaLabel',
+            'color',
             'disabled',
             'noEllipsis',
             'noGotoEndButtons',
             'size',
-            'theme',
           ],
         ),
         align: {

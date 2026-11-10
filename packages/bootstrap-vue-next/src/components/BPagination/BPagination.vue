@@ -49,7 +49,7 @@ import {computed, mergeProps, nextTick, useTemplateRef, watch} from 'vue'
 import {useAlignment} from '../../composables/useAlignment'
 import {useToNumber} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
-import {toColorClasses} from '../../composables/useThemeClasses'
+import {toColorClasses, resolvePartColor} from '../../composables/useThemeClasses'
 import type {AttrsValue} from '../../types/AnyValuedAttributes'
 import {CODE_DOWN, CODE_LEFT, CODE_RIGHT, CODE_UP} from '../../utils/constants'
 import {getActiveElement} from '../../utils/dom'
@@ -96,10 +96,11 @@ const _props = withDefaults(defineProps<Omit<BPaginationProps, 'modelValue'>>(),
   prevAttrs: undefined,
   prevText: '\u2039',
   size: undefined,
-  theme: undefined,
   totalRows: DEFAULT_TOTAL_ROWS,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BPagination')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 const emit = defineEmits<BPaginationEmits>()
 defineSlots<BPaginationSlots>()
 
@@ -297,7 +298,7 @@ const ellipsisProps = computed(() => ({
 
 const computedWrapperClasses = computed(() => [
   alignment.value,
-  toColorClasses('theme', props.theme),
+  toColorClasses('theme', computedColor.value.theme),
   {
     [`pagination-${props.size}`]: props.size !== undefined,
     'b-pagination-pills': props.pills,

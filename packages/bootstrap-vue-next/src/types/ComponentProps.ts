@@ -913,7 +913,7 @@ export interface BPaginationProps {
   prevAttrs?: Readonly<AttrsValue>
   prevText?: string
   size?: Size
-  theme?: ColorExtendables['theme']
+  color?: Pick<ColorExtendables, 'theme'> | null
   totalRows?: Numberish
 }
 

@@ -1,9 +1,9 @@
 <template>
   <h6>Success</h6>
-  <BPagination v-model="currentPage" theme="success" :total-rows="rows" />
+  <BPagination v-model="currentPage" :color="{ theme: 'success' }" :total-rows="rows" />
 
   <h6>Danger</h6>
-  <BPagination v-model="currentPage" theme="danger" :total-rows="rows" />
+  <BPagination v-model="currentPage" :color="{ theme: 'danger' }" :total-rows="rows" />
 </template>
 
 <script setup lang="ts">

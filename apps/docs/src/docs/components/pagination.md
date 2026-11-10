@@ -96,7 +96,7 @@ pagination of its own.
 
 ### Theme
 
-Set the `theme` prop to apply one of the theme colors (`theme-*` class) to the pagination. Bootstrap
+Set the `color` prop's `theme` key to apply one of the theme colors (`theme-*` class) to the pagination. Bootstrap
 v6 uses it for the active page and the hover and focus states.
 
 <<< DEMO ./demo/PaginationTheme.vue

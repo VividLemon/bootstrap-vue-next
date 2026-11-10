@@ -706,10 +706,10 @@ describe('pagination', () => {
 
   it('has theme class when prop theme is set', async () => {
     const wrapper = mount(BPagination, {
-      props: {theme: 'danger'},
+      props: {color: {theme: 'danger'}},
     })
     expect(wrapper.classes()).toContain('theme-danger')
-    await wrapper.setProps({theme: undefined})
+    await wrapper.setProps({color: {theme: undefined}})
     expect(wrapper.classes()).not.toContain('theme-danger')
   })
 
