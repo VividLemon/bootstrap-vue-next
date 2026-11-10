@@ -8,9 +8,9 @@
       :id="computedId"
       ref="_splitButton"
       :variant="props.splitVariant || props.variant"
-      :theme="props.splitColor?.theme || props.theme"
-      :bg="props.splitColor?.bg || props.bg"
-      :fg="props.splitColor?.fg || props.fg"
+      :theme="computedSplitColor.theme"
+      :bg="computedSplitColor.bg"
+      :fg="computedSplitColor.fg"
       :size="props.size"
       :class="buttonClasses"
       :disabled="props.splitDisabled || props.disabled"
@@ -114,6 +114,7 @@ import {
   watch,
 } from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import {useId} from '../../composables/useId'
 import BButton from '../BButton/BButton.vue'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
@@ -372,6 +373,10 @@ const computedClasses = computed(() => [
     'position-static': props.boundary !== 'clippingAncestors' && !props.isNav,
   },
 ])
+
+const computedSplitColor = computed(() =>
+  resolvePartColor(props.splitColor, {theme: props.theme, bg: props.bg, fg: props.fg})
+)
 
 const buttonClasses = computed(() => [
   props.split ? props.splitClass : props.toggleClass,

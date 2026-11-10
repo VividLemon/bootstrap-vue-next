@@ -274,14 +274,14 @@ const headerCloseClasses = computed(() => [
   {'fg-reset': !hasHeaderCloseSlot.value},
   props.headerCloseClass,
 ])
-const headerCloseColor = computed(() =>
+const computedHeaderCloseColor = computed(() =>
   resolvePartColor(props.headerCloseColor, {theme: 'secondary'})
 )
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
-  theme: hasHeaderCloseSlot.value ? headerCloseColor.value.theme : undefined,
-  bg: hasHeaderCloseSlot.value ? headerCloseColor.value.bg : undefined,
-  fg: hasHeaderCloseSlot.value ? headerCloseColor.value.fg : undefined,
+  theme: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.theme : undefined,
+  bg: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.bg : undefined,
+  fg: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.fg : undefined,
   class: headerCloseClasses.value,
 }))
 
