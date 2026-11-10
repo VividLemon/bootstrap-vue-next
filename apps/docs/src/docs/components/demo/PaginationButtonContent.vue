@@ -4,10 +4,10 @@
     v-model="currentPage"
     :total-rows="rows"
     :per-page="perPage"
-    first-text="First"
-    prev-text="Prev"
-    next-text="Next"
-    last-text="Last"
+    :first="{ text: 'First' }"
+    :prev="{ text: 'Prev' }"
+    :next="{ text: 'Next' }"
+    :last="{ text: 'Last' }"
   />
 
   <!-- Use emojis in props -->
@@ -15,10 +15,10 @@
     v-model="currentPage"
     :total-rows="rows"
     :per-page="perPage"
-    first-text="⏮"
-    prev-text="⏪"
-    next-text="⏩"
-    last-text="⏭"
+    :first="{ text: '⏮' }"
+    :prev="{ text: '⏪' }"
+    :next="{ text: '⏩' }"
+    :last="{ text: '⏭' }"
     class="mt-4"
   />
 

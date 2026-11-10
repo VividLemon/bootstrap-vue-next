@@ -133,7 +133,7 @@ describe('pagination', () => {
         perPage: 1,
         modelValue: 1,
         noGotoEndButtons: true,
-        firstNumber: true,
+        first: {number: true},
       },
     })
     expect(wrapper.find('[aria-label="Go to page 1"]').exists()).toBeTruthy()
@@ -153,7 +153,7 @@ describe('pagination', () => {
         perPage: 1,
         modelValue: 5,
         noGotoEndButtons: true,
-        lastNumber: true,
+        last: {number: true},
       },
     })
     expect(wrapper.find('[aria-label="Go to page 100"]').exists()).toBeTruthy()
@@ -179,56 +179,56 @@ describe('pagination', () => {
 
   it('does not have first button when firstNumber="true"', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, firstNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, first: {number: true}},
     })
     expect(wrapper.find('[aria-label="Go to first page"]').exists()).toBeFalsy()
   })
 
   it('does not have last button when lastNumber="true"', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, lastNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, last: {number: true}},
     })
     expect(wrapper.find('[aria-label="Go to last page"]').exists()).toBeFalsy()
   })
 
   it('has page 1 button when firstNumber="true"', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, firstNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, first: {number: true}},
     })
     expect(wrapper.find('[aria-posinset="1"]').exists()).toBeTruthy()
   })
 
   it('has page 100 button when lastNumber="true"', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, lastNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, last: {number: true}},
     })
     expect(wrapper.find('[aria-posinset="100"]').exists()).toBeTruthy()
   })
 
   it('has limit # of number buttons - 1 when in the middle and firstNumber="true"', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 50, firstNumber: true, limit: 5},
+      props: {totalRows: 100, perPage: 1, modelValue: 50, first: {number: true}, limit: 5},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(4)
   })
 
   it('has limit # of number buttons - 1 when the value === limit and firstNumber="true" (limit === 5)', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, firstNumber: true, limit: 5},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, first: {number: true}, limit: 5},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(4)
   })
 
   it('has limit # of number buttons - 1 when the value === limit - 1 and firstNumber="true" (limit === 7)', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 6, firstNumber: true, limit: 7},
+      props: {totalRows: 100, perPage: 1, modelValue: 6, first: {number: true}, limit: 7},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(6)
   })
 
   it('has limit # of number buttons - 1 when the value === limit and firstNumber="true" (limit === 10)', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 10, firstNumber: true, limit: 10},
+      props: {totalRows: 100, perPage: 1, modelValue: 10, first: {number: true}, limit: 10},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(9)
   })
@@ -249,7 +249,7 @@ describe('pagination', () => {
 
   it('has limit # of number buttons - 1 when in the middle and lastNumber="true"', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 50, lastNumber: true, limit: 5},
+      props: {totalRows: 100, perPage: 1, modelValue: 50, last: {number: true}, limit: 5},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(4)
   })
@@ -260,8 +260,8 @@ describe('pagination', () => {
         totalRows: 100,
         perPage: 1,
         modelValue: 50,
-        firstNumber: true,
-        lastNumber: true,
+        first: {number: true},
+        last: {number: true},
       },
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(5)
@@ -374,63 +374,63 @@ describe('pagination', () => {
 
   it('has page 2 button when firstNumber="true" and value === 3', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 3, firstNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 3, first: {number: true}},
     })
     expect(wrapper.find('[aria-posinset="2"]').exists()).toBeTruthy()
   })
 
   it('has limit # -1 number buttons when firstNumber="true" and value === 4', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 4, firstNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 4, first: {number: true}},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(4)
   })
 
   it('has limit # - 1 number buttons when firstNumber="true" and value === 4 (limit === 4)', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 4, firstNumber: true, limit: 4},
+      props: {totalRows: 100, perPage: 1, modelValue: 4, first: {number: true}, limit: 4},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(3)
   })
 
   it('has limit # number buttons + 1 when firstNumber="true" and value === 4(limit === 3)', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 4, firstNumber: true, limit: 3},
+      props: {totalRows: 100, perPage: 1, modelValue: 4, first: {number: true}, limit: 3},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(4)
   })
 
   it('has limit # number buttons + 1 when firstNumber="true" and value === 4 (limit === 3)', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 3, firstNumber: true, limit: 3},
+      props: {totalRows: 100, perPage: 1, modelValue: 3, first: {number: true}, limit: 3},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(4)
   })
 
   it('has limit # number buttons - 1 when firstNumber="true" and value === max - 3', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 97, firstNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 97, first: {number: true}},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(4)
   })
 
   it('has limit # number buttons - 1 when firstNumber="true" and value === max - 2 (limit === 4)', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 98, firstNumber: true, limit: 4},
+      props: {totalRows: 100, perPage: 1, modelValue: 98, first: {number: true}, limit: 4},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(3)
   })
 
   it('has page max-1 button when lastNumber="true" and value > max-3', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 98, lastNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 98, last: {number: true}},
     })
     expect(wrapper.find('[aria-posinset="99"]').exists()).toBeTruthy()
   })
 
   it('has limit # number buttons when lastNumber="true" and value === max - 3', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 98, lastNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 98, last: {number: true}},
     })
     expect(wrapper.findAll('[aria-posinset]').length).toBe(5)
   })
@@ -445,7 +445,7 @@ describe('pagination', () => {
 
   it('passes invariant tests with firstNumber == true', async () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 1, firstNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 1, first: {number: true}},
     })
 
     expect(await TestScenariosAgainstInvariants(wrapper)).toBe(0)
@@ -453,7 +453,7 @@ describe('pagination', () => {
 
   it('passes invariant tests with lastNumber == true', async () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 1, lastNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 1, last: {number: true}},
     })
 
     expect(await TestScenariosAgainstInvariants(wrapper)).toBe(0)
@@ -461,7 +461,7 @@ describe('pagination', () => {
 
   it('passes invariant tests with first and last Number == true', async () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, firstNumber: true},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, first: {number: true}},
     })
 
     expect(await TestScenariosAgainstInvariants(wrapper)).toBe(0)
@@ -606,42 +606,42 @@ describe('pagination', () => {
 
   it('uses custom labelPage for page buttons', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 10, perPage: 1, modelValue: 1, labelPage: 'Page'},
+      props: {totalRows: 10, perPage: 1, modelValue: 1, labels: {page: 'Page'}},
     })
     expect(wrapper.find('[aria-label="Page 2"]').exists()).toBeTruthy()
   })
 
   it('uses custom labelFirstPage for first button', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, labelFirstPage: 'First'},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, labels: {firstPage: 'First'}},
     })
     expect(wrapper.find('[aria-label="First"]').exists()).toBeTruthy()
   })
 
   it('uses custom labelLastPage for last button', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, labelLastPage: 'Last'},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, labels: {lastPage: 'Last'}},
     })
     expect(wrapper.find('[aria-label="Last"]').exists()).toBeTruthy()
   })
 
   it('uses custom labelNextPage for next button', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, labelNextPage: 'Next'},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, labels: {nextPage: 'Next'}},
     })
     expect(wrapper.find('[aria-label="Next"]').exists()).toBeTruthy()
   })
 
   it('uses custom labelPrevPage for prev button', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 5, labelPrevPage: 'Prev'},
+      props: {totalRows: 100, perPage: 1, modelValue: 5, labels: {prevPage: 'Prev'}},
     })
     expect(wrapper.find('[aria-label="Prev"]').exists()).toBeTruthy()
   })
 
   it('uses custom ellipsisText', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 1, modelValue: 50, ellipsisText: '***'},
+      props: {totalRows: 100, perPage: 1, modelValue: 50, ellipsis: {text: '***'}},
     })
     const separators = wrapper.findAll('[role="separator"]')
     expect(separators[0].text()).toBe('***')
@@ -649,7 +649,7 @@ describe('pagination', () => {
 
   it('perPage affects number of pages', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 100, perPage: 10, modelValue: 1, lastNumber: true},
+      props: {totalRows: 100, perPage: 10, modelValue: 1, last: {number: true}},
     })
     // 100 rows / 10 per page = 10 pages, so last button should be page 10
     expect(wrapper.find('[aria-label="Go to page 10"]').exists()).toBeTruthy()
@@ -719,10 +719,10 @@ describe('pagination', () => {
         totalRows: 100,
         perPage: 10,
         modelValue: 5,
-        firstAttrs: {'class': 'is-first', 'data-part': 'first'},
-        prevAttrs: {class: 'is-prev', style: {color: 'red'}},
-        nextAttrs: {class: 'is-next'},
-        lastAttrs: {class: 'is-last'},
+        first: {attrs: {'class': 'is-first', 'data-part': 'first'}},
+        prev: {attrs: {class: 'is-prev', style: {color: 'red'}}},
+        next: {attrs: {class: 'is-next'}},
+        last: {attrs: {class: 'is-last'}},
       },
     })
     const items = wrapper.findAll('.page-item')
@@ -750,7 +750,12 @@ describe('pagination', () => {
 
   it('merges ellipsisAttrs on ellipsis items', () => {
     const wrapper = mount(BPagination, {
-      props: {totalRows: 200, perPage: 10, modelValue: 10, ellipsisAttrs: {class: 'is-ellipsis'}},
+      props: {
+        totalRows: 200,
+        perPage: 10,
+        modelValue: 10,
+        ellipsis: {attrs: {class: 'is-ellipsis'}},
+      },
     })
     const separators = wrapper.findAll('[role="separator"]')
     expect(separators.length).toBe(2)
@@ -803,7 +808,9 @@ async function TestScenariosAgainstInvariants(wrapper: any): Promise<number> {
 function TestInvariants(wrapper: any): boolean {
   const pageButtons = wrapper.findAll('[aria-posinset]').length
   const ellipses = wrapper.findAll('[role="separator"]').length
-  const {firstNumber, lastNumber, limit, modelValue, perPage, totalRows} = wrapper.vm.$props
+  const {first, last, limit, modelValue, perPage, totalRows} = wrapper.vm.$props
+  const firstNumber = first?.number
+  const lastNumber = last?.number
   const actual = pageButtons + ellipses - (firstNumber ? 1 : 0) - (lastNumber ? 1 : 0)
 
   const pages = Math.ceil(totalRows / perPage)

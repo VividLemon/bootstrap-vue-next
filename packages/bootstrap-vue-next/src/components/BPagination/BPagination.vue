@@ -19,7 +19,7 @@
         v-bind="ellipsisProps.span"
       >
         <slot name="ellipsis-text">
-          {{ props.ellipsisText || '...' }}
+          {{ (props.ellipsis?.text ?? '\u2026') || '...' }}
         </slot>
       </span>
       <component
@@ -68,38 +68,34 @@ const LAST_ELLIPSIS = -6
 const dataDisplayNameCustomAttribute = 'data-display-name'
 
 const _props = withDefaults(defineProps<Omit<BPaginationProps, 'modelValue'>>(), {
+  ellipsis: undefined,
+  first: undefined,
+  labels: undefined,
+  last: undefined,
+  next: undefined,
+  prev: undefined,
   align: 'start',
   ariaControls: undefined,
   ariaLabel: 'Pagination',
   disabled: false,
-  ellipsisAttrs: undefined,
-  ellipsisText: '\u2026',
-  firstAttrs: undefined,
-  firstNumber: false,
-  firstText: '\u00AB',
   noEllipsis: false,
   noGotoEndButtons: false,
-  labelFirstPage: 'Go to first page',
-  labelLastPage: 'Go to last page',
-  labelNextPage: 'Go to next page',
-  labelPage: 'Go to page',
-  labelPrevPage: 'Go to previous page',
-  lastAttrs: undefined,
-  lastNumber: false,
-  lastText: '\u00BB',
   limit: 5,
-  nextAttrs: undefined,
-  nextText: '\u203A',
   pageAttrs: undefined,
   perPage: DEFAULT_PER_PAGE,
   pills: false,
-  prevAttrs: undefined,
-  prevText: '\u2039',
   size: undefined,
   totalRows: DEFAULT_TOTAL_ROWS,
   color: undefined,
 })
 const props = useDefaults(_props, 'BPagination')
+const computedLabels = computed(() => ({
+  firstPage: props.labels?.firstPage ?? 'Go to first page',
+  prevPage: props.labels?.prevPage ?? 'Go to previous page',
+  nextPage: props.labels?.nextPage ?? 'Go to next page',
+  lastPage: props.labels?.lastPage ?? 'Go to last page',
+  page: props.labels?.page ?? 'Go to page',
+}))
 const computedColor = computed(() => resolvePartColor(props.color, {}))
 const emit = defineEmits<BPaginationEmits>()
 defineSlots<BPaginationSlots>()
@@ -229,7 +225,7 @@ const getPageButtonProps = (page: number, isSmHidden?: boolean) =>
     disabled: props.disabled,
     itemAttrs: props.pageAttrs,
     slotName: 'page',
-    label: props.labelPage ? `${props.labelPage} ${page}` : undefined,
+    label: computedLabels.value.page ? `${computedLabels.value.page} ${page}` : undefined,
     tabIndex: getTabIndex(page) ?? undefined,
     position: page,
     isActive: isActivePage(page),
@@ -240,40 +236,40 @@ const firstButtonProps = computed(() =>
   getButtonProps({
     page: 1,
     disabled: firstDisabled.value,
-    itemAttrs: props.firstAttrs,
+    itemAttrs: props.first?.attrs,
     slotName: 'first-text',
-    textValue: props.firstText,
-    label: props.labelFirstPage,
+    textValue: props.first?.text ?? '\u00AB',
+    label: computedLabels.value.firstPage,
   })
 )
 const prevButtonProps = computed(() =>
   getButtonProps({
     page: Math.max(computedModelValue.value - 1, 1),
     disabled: prevDisabled.value,
-    itemAttrs: props.prevAttrs,
+    itemAttrs: props.prev?.attrs,
     slotName: 'prev-text',
-    textValue: props.prevText,
-    label: props.labelPrevPage,
+    textValue: props.prev?.text ?? '\u2039',
+    label: computedLabels.value.prevPage,
   })
 )
 const nextButtonProps = computed(() =>
   getButtonProps({
     page: Math.min(computedModelValue.value + 1, numberOfPages.value),
     disabled: nextDisabled.value,
-    itemAttrs: props.nextAttrs,
+    itemAttrs: props.next?.attrs,
     slotName: 'next-text',
-    textValue: props.nextText,
-    label: props.labelNextPage,
+    textValue: props.next?.text ?? '\u203A',
+    label: computedLabels.value.nextPage,
   })
 )
 const lastButtonProps = computed(() =>
   getButtonProps({
     page: numberOfPages.value,
     disabled: lastDisabled.value,
-    itemAttrs: props.lastAttrs,
+    itemAttrs: props.last?.attrs,
     slotName: 'last-text',
-    textValue: props.lastText,
-    label: props.labelLastPage,
+    textValue: props.last?.text ?? '\u00BB',
+    label: computedLabels.value.lastPage,
   })
 )
 
@@ -289,7 +285,7 @@ const ellipsisProps = computed(() => ({
       ],
       role: 'separator',
     },
-    props.ellipsisAttrs ?? {}
+    props.ellipsis?.attrs ?? {}
   ),
   span: {
     class: ['page-link'],
@@ -436,12 +432,12 @@ watch(pagination, (oldValue, newValue) => {
   }
 })
 
-const noFirstButton = computed(() => (props.noGotoEndButtons && !props.firstNumber ? 1 : 0))
-const noLastButton = computed(() => (props.noGotoEndButtons && !props.lastNumber ? 1 : 0))
+const noFirstButton = computed(() => (props.noGotoEndButtons && !props.first?.number ? 1 : 0))
+const noLastButton = computed(() => (props.noGotoEndButtons && !props.last?.number ? 1 : 0))
 const showFirstButton = computed(() => (noFirstButton.value ? 0 : 1))
 const showLastButton = computed(() => (noLastButton.value ? 0 : 1))
-const firstPage = computed(() => (props.firstNumber ? 1 : 0))
-const lastPage = computed(() => (props.lastNumber ? 1 : 0))
+const firstPage = computed(() => (props.first?.number ? 1 : 0))
+const lastPage = computed(() => (props.last?.number ? 1 : 0))
 const halfLimit = computed(() => Math.floor(limitNumber.value / 2))
 
 const pages = computed(() => {

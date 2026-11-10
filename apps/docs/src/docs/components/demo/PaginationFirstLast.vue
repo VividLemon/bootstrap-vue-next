@@ -4,7 +4,7 @@
     v-model="currentPage"
     :total-rows="rows"
     :per-page="perPage"
-    first-number
+    :first="{ number: true }"
   />
 
   <h6>Goto last button number</h6>
@@ -12,7 +12,7 @@
     v-model="currentPage"
     :total-rows="rows"
     :per-page="perPage"
-    last-number
+    :last="{ number: true }"
   />
 
   <h6>Goto first and last button number</h6>
@@ -20,13 +20,13 @@
     v-model="currentPage"
     :total-rows="rows"
     :per-page="perPage"
-    first-number
-    last-number
+    :first="{ number: true }"
+    :last="{ number: true }"
   />
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const currentPage = ref(5)
 const perPage = ref(1)

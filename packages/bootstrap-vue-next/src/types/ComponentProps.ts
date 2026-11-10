@@ -891,35 +891,41 @@ export interface BOverlayProps extends RadiusElementExtendables {
   zIndex?: Numberish
 }
 
+/** A pagination button: its text and attributes */
+export interface PaginationButtonOptions {
+  text?: string
+  attrs?: Readonly<AttrsValue>
+}
+
+/** The first or last pagination button; `number` shows the page number instead of the text */
+export interface PaginationEndButtonOptions extends PaginationButtonOptions {
+  number?: boolean
+}
+
 export interface BPaginationProps {
+  ellipsis?: PaginationButtonOptions
+  first?: PaginationEndButtonOptions
+  labels?: {
+    firstPage?: string
+    prevPage?: string
+    nextPage?: string
+    lastPage?: string
+    page?: string
+  }
+  last?: PaginationEndButtonOptions
+  next?: PaginationButtonOptions
+  prev?: PaginationButtonOptions
   align?: AlignmentJustifyContent | 'fill'
   ariaControls?: string
   ariaLabel?: string
   disabled?: boolean
-  ellipsisAttrs?: Readonly<AttrsValue>
-  ellipsisText?: string
-  firstAttrs?: Readonly<AttrsValue>
-  firstNumber?: boolean
-  firstText?: string
   noEllipsis?: boolean
   noGotoEndButtons?: boolean
-  labelFirstPage?: string
-  labelLastPage?: string
-  labelNextPage?: string
-  labelPage?: string
-  labelPrevPage?: string
-  lastAttrs?: Readonly<AttrsValue>
-  lastNumber?: boolean
-  lastText?: string
   limit?: Numberish
   modelValue?: Numberish
-  nextAttrs?: Readonly<AttrsValue>
-  nextText?: string
   pageAttrs?: Readonly<AttrsValue>
   perPage?: Numberish
   pills?: boolean
-  prevAttrs?: Readonly<AttrsValue>
-  prevText?: string
   size?: Size
   color?: Pick<ColorExtendables, 'theme'> | null
   totalRows?: Numberish

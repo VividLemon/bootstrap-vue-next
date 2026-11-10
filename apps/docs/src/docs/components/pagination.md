@@ -74,7 +74,7 @@ The slot `page` is always scoped, while the slots `first-text`, `prev-text`, `ne
 ### Goto first/last button type
 
 If you prefer to have buttons with the first and last page number to go to the corresponding page,
-use the `first-number` and `last-number` props.
+set the `number` key of the `first` and `last` props, for example `:first="{ number: true }"`.
 
 <<< DEMO ./demo/PaginationFirstLast.vue
 
@@ -134,23 +134,23 @@ know what component is being updated/controlled.
 
 ### ARIA labels
 
-`BPagination` provides various `label-*` props which are used to set the `aria-label`
+`BPagination` provides a `labels` prop whose keys set the `aria-label`
 attributes on the various elements within the component as well as the common `aria-label` prop
 on the outer container, which will help users of assistive technology.
 
-| Prop               | `aria-label` content default                            |
+| Prop or key        | `aria-label` content default                            |
 | ------------------ | ------------------------------------------------------- |
-| `label-first-page` | "Goto first page"                                       |
-| `label-prev-page`  | "Goto previous page"                                    |
-| `label-next-page`  | "Goto next page"                                        |
-| `label-last-page`  | "Goto last page"                                        |
-| `label-page`       | "Goto page", appended with the page number              |
+| `labels.firstPage` | "Go to first page"                                      |
+| `labels.prevPage`  | "Go to previous page"                                   |
+| `labels.nextPage`  | "Go to next page"                                       |
+| `labels.lastPage`  | "Go to last page"                                       |
+| `labels.page`      | "Go to page", appended with the page number             |
 | `aria-label`       | "Pagination", applied to the outer pagination container |
 
-The `label-page` will optionally accept a function to generate the aria-label. The function is
+The `labels.page` key will optionally accept a function to generate the aria-label. The function is
 passed a single argument which is the page number (indexed from 1 to number of pages).
 
-You can remove any label by setting the prop to an empty string (`''`), although this is not
+You can remove any label by setting its key to an empty string (`''`), although this is not
 recommended unless the content of the button textually conveys its purpose.
 
 ### Keyboard navigation support

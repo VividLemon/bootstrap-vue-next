@@ -57,76 +57,35 @@ export default {
           description:
             "Alignment of the page buttons: 'start' (or 'left'), 'center', 'end' (or 'right'), or 'fill'",
         },
-        ellipsisAttrs: {
-          type: 'Readonly<AttrsValue>',
+        ellipsis: {
+          type: 'PaginationButtonOptions',
           default: undefined,
           description:
-            "Attributes to apply to the ellipsis placeholder `<li>` items. `class` and `style` merge with the component's own",
+            "The ellipsis placeholder: `text` (content, default '\u2026'), `attrs` (attributes for its page item)",
         },
-        ellipsisText: {
-          type: 'string',
-          default: '\u2026',
-          description: 'Content to place in the ellipsis placeholder',
-        },
-        firstAttrs: {
-          type: 'Readonly<AttrsValue>',
+        first: {
+          type: 'PaginationEndButtonOptions',
           default: undefined,
           description:
-            "Attributes to apply to the go-to-first-page button `<li>` item. `class` and `style` merge with the component's own",
+            "The go-to-first-page button: `text` (content, default '\u00AB'), `attrs` (attributes for its page item), and `number` (show the page number instead of the button, default `false`)",
         },
-        firstNumber: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'Display first page number instead of go-to-first-page button',
-        },
-        firstText: {
-          type: 'string',
-          default: '\u00AB',
-          description: 'Content to place in the go-to-first-page button',
-        },
-        labelFirstPage: {
-          type: 'string',
-          default: 'Go to first page',
+        labels: {
+          type: '{ firstPage?: string; prevPage?: string; nextPage?: string; lastPage?: string; page?: string }',
+          default: {
+            firstPage: 'Go to first page',
+            prevPage: 'Go to previous page',
+            nextPage: 'Go to next page',
+            lastPage: 'Go to last page',
+            page: 'Go to page',
+          },
           description:
-            "Value to place in the 'aria-label' attribute of the go-to-first-page button",
+            "Values for the 'aria-label' attributes of the go-to buttons; `page` is appended with the page number. Keys left out keep their default; an empty string removes the label",
         },
-        labelLastPage: {
-          type: 'string',
-          default: 'Go to last page',
-          description: "Value to place in the 'aria-label' attribute of the go-to-last-page button",
-        },
-        labelNextPage: {
-          type: 'string',
-          default: 'Go to next page',
-          description: "Value to place in the 'aria-label' attribute of the go-to-next-page button",
-        },
-        labelPage: {
-          type: 'string',
-          default: 'Go to page',
-          description:
-            "Value to place in the 'aria-label' attribute of the go-to-page button. Page number will be appended automatically",
-        },
-        labelPrevPage: {
-          type: 'string',
-          default: 'Go to previous page',
-          description:
-            "Value to place in the 'aria-label' attribute of the go-to-previous-page button",
-        },
-        lastAttrs: {
-          type: 'Readonly<AttrsValue>',
+        last: {
+          type: 'PaginationEndButtonOptions',
           default: undefined,
           description:
-            "Attributes to apply to the go-to-last-page button `<li>` item. `class` and `style` merge with the component's own",
-        },
-        lastNumber: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'Display last page number instead of go-to-last-page button',
-        },
-        lastText: {
-          type: 'string',
-          default: '\u00BB',
-          description: 'Content to place in the go-to-last-page button',
+            "The go-to-last-page button: `text` (content, default '\u00BB'), `attrs` (attributes for its page item), and `number` (show the page number instead of the button, default `false`)",
         },
         limit: {
           type: 'Numberish',
@@ -139,16 +98,11 @@ export default {
           default: 1, // TODO item not in string format
           description: 'Current page number, starting from 1',
         },
-        nextAttrs: {
-          type: 'Readonly<AttrsValue>',
+        next: {
+          type: 'PaginationButtonOptions',
           default: undefined,
           description:
-            "Attributes to apply to the go-to-next-page button `<li>` item. `class` and `style` merge with the component's own",
-        },
-        nextText: {
-          type: 'string',
-          default: '\u203A',
-          description: 'Content to place in the go-to-next-page button',
+            "The go-to-next-page button: `text` (content, default '\u203A'), `attrs` (attributes for its page item)",
         },
         pageAttrs: {
           type: 'Readonly<AttrsValue>',
@@ -166,16 +120,11 @@ export default {
           default: false, // TODO item not in string format
           description: 'Applies pill styling to the pagination buttons',
         },
-        prevAttrs: {
-          type: 'Readonly<AttrsValue>',
+        prev: {
+          type: 'PaginationButtonOptions',
           default: undefined,
           description:
-            "Attributes to apply to the go-to-previous-page button `<li>` item. `class` and `style` merge with the component's own",
-        },
-        prevText: {
-          type: 'string',
-          default: '\u2039',
-          description: 'Content to place in the go-to-previous-page button',
+            "The go-to-previous-page button: `text` (content, default '\u2039'), `attrs` (attributes for its page item)",
         },
         totalRows: {
           type: 'Numberish',
