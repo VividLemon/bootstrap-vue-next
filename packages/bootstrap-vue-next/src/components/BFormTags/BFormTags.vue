@@ -31,7 +31,7 @@
     <slot
       :add-button-text="props.addButtonText"
       :add-button-variant="props.addButtonVariant"
-      :add-button-color="addButtonColor"
+      :add-button-color="computedAddButtonColor"
       :add-tag
       :disable-add-button="disableAddButton"
       :disabled="props.disabled"
@@ -70,7 +70,7 @@
       :tag-class="props.tagClass"
       :tag-pills="props.tagPills"
       :tag-remove-label="props.tagRemoveLabel"
-      :tag-color="tagColor"
+      :tag-color="computedTagColor"
       :tags="[...modelValue]"
     >
       <ul
@@ -82,7 +82,7 @@
             name="tag"
             :tag="tag"
             :tag-class="props.tagClass"
-            :tag-color="tagColor"
+            :tag-color="computedTagColor"
             :tag-pills="props.tagPills"
             :remove-tag="removeTag"
           >
@@ -90,9 +90,9 @@
               :key="tag"
               :class="props.tagClass"
               tag="li"
-              :theme="tagColor.theme"
-              :bg="tagColor.bg"
-              :fg="tagColor.fg"
+              :theme="computedTagColor.theme"
+              :bg="computedTagColor.bg"
+              :fg="computedTagColor.fg"
               :pill="props.tagPills"
               :no-remove="props.noTagRemove"
               :disabled="props.disabled"
@@ -217,14 +217,16 @@ const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
 const props = useDefaults(_props, 'BFormTags')
 const emit = defineEmits<BFormTagsEmits>()
 defineSlots<BFormTagsSlots>()
-const addButtonColor = computed(() => resolvePartColor(props.addButtonColor, {theme: 'secondary'}))
-const tagColor = computed(() => resolvePartColor(props.tagColor, {theme: 'secondary'}))
+const computedAddButtonColor = computed(() =>
+  resolvePartColor(props.addButtonColor, {theme: 'secondary'})
+)
+const computedTagColor = computed(() => resolvePartColor(props.tagColor, {theme: 'secondary'}))
 const {classes: addButtonClasses} = useButtonThemeClasses(
   computed(() => ({
     variant: props.addButtonVariant,
-    theme: addButtonColor.value.theme,
-    bg: addButtonColor.value.bg,
-    fg: addButtonColor.value.fg,
+    theme: computedAddButtonColor.value.theme,
+    bg: computedAddButtonColor.value.bg,
+    fg: computedAddButtonColor.value.fg,
   }))
 )
 

@@ -533,7 +533,7 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 
 ## Implementation split
 
-1. **Menu core** (`BMenu`, `BMenuItem`, `BMenuHeader`, `BMenuText`, `BMenuDivider`): native transition path, Floating UI port (`transform: false`, `data-bs-placement`, flip map), keyboard and auto-close ports, split, groups injection, part attrs, specs; remove `BDropdown*`, the `.dropdown-toggle-no-caret` CSS and `resolveBootstrapCaret`; `filterEvent` selector; exports, `BootstrapVueOptions`, docs data, page and demos, playground, docs site UI.
+1. **Menu core** (`BMenu`, `BMenuItem`, `BMenuHeader`, `BMenuText`, `BMenuDivider`): native transition path on the show/hide machine (S1 in [`BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`](./BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md)) with its `disabled` guard, so a disabled menu can't be opened by `show()`, `v-model` or an injected `show`, and closes when it becomes disabled (bootstrap-vue-next#3373, D8), Floating UI port (`transform: false`, `data-bs-placement`, flip map), keyboard and auto-close ports, split, groups injection, part attrs, specs; remove `BDropdown*`, the `.dropdown-toggle-no-caret` CSS and `resolveBootstrapCaret`; `filterEvent` selector; exports, `BootstrapVueOptions`, docs data, page and demos, playground, docs site UI.
 2. **Submenus** (`BSubmenu`): hover intent, safe triangle, nested positioning, ←/→ keys.
 3. **`BNavItemMenu`** replacing `BNavItemDropdown` (+ nav docs). Unblocks G3.
 4. **`BCombobox`** + removal of `BAutocomplete` (types, SCSS, docs, demos). Separate PR because it touches forms docs.

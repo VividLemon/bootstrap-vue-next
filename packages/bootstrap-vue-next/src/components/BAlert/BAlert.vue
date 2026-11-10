@@ -31,9 +31,9 @@
             v-if="slots.close || props.closeContent"
             :class="[props.closeClass]"
             class="ms-auto ps-1 btn-close-custom"
-            :theme="closeColor.theme"
-            :bg="closeColor.bg"
-            :fg="closeColor.fg"
+            :theme="computedCloseColor.theme"
+            :bg="computedCloseColor.bg"
+            :fg="computedCloseColor.fg"
             :variant="props.closeVariant"
             @click.stop.prevent="hide('close')"
           >
@@ -68,9 +68,9 @@
               v-if="slots.close || props.closeContent"
               :class="[props.closeClass]"
               class="ms-auto btn-close-custom"
-              :theme="closeColor.theme"
-              :bg="closeColor.bg"
-              :fg="closeColor.fg"
+              :theme="computedCloseColor.theme"
+              :bg="computedCloseColor.bg"
+              :fg="computedCloseColor.fg"
               :variant="props.closeVariant"
               @click.stop.prevent="hide('close')"
             >
@@ -170,7 +170,7 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   theme: 'info',
 })
 const props = useDefaults(_props, 'BAlert')
-const closeColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
+const computedCloseColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
 const emit = defineEmits<BAlertEmits>()
 const slots = defineSlots<BAlertSlots>()
 
