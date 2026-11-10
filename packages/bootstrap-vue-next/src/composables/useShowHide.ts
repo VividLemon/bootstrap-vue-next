@@ -42,7 +42,7 @@ export const useShowHideRegistration = ({
   /** Exposed as `value` in the registry (`useToggle().value`) */
   value: Readonly<Ref<boolean>>
   show: (resolveOnHide?: boolean) => Promise<boolean | string>
-  hide: (trigger?: string) => Promise<boolean | string>
+  hide: (trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>
   toggle: (resolveOnHide?: boolean) => Promise<boolean | string>
   /** Listener added to registered triggers */
   triggerToggle: () => void
@@ -163,8 +163,12 @@ export interface UseShowHideReturn {
    *
    * Resolves `true` after `shown`, `'show-prevented'`, or `false` when superseded by a newer
    * show / hide.
+   *
+   * With `resolveOnHide` the promise stays pending after `shown` and resolves with the trigger
+   * (`trigger ?? ''`) once the component is hidden again, also when the hide starts before
+   * `shown`. It resolves `false` when the component unmounts first.
    */
-  show: () => Promise<boolean | string>
+  show: (resolveOnHide?: boolean) => Promise<boolean | string>
   /**
    * Hides the component. Emits the `trigger` event (unless `noTriggerEmit`) and `hide`, both
    * cancelable (→ `hide-prevented`), flips `visible`, updates `modelValue`, awaits the
@@ -175,9 +179,9 @@ export interface UseShowHideReturn {
   hide: (trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>
   /**
    * Emits `toggle` (cancelable → `toggle-prevented`), then hides with trigger
-   * `'toggle-function'` or shows.
+   * `'toggle-function'` or shows (passing `resolveOnHide` on to `show`).
    */
-  toggle: () => Promise<boolean | string>
+  toggle: (resolveOnHide?: boolean) => Promise<boolean | string>
   buildTriggerableEvent: (
     type: string,
     opts?: Readonly<Partial<BvTriggerableEvent>>
@@ -251,16 +255,30 @@ export const useShowHide = (
   let operation = 0
   let delayTimer: ReturnType<typeof setTimeout> | undefined
   let pending:
-    | {visible: boolean; promise: Promise<boolean | string>; resolve: (v: boolean | string) => void}
+    | {
+        visible: boolean
+        promise: Promise<boolean | string>
+        resolve: (v: boolean | string) => void
+        /** A show whose promise resolves when the component is hidden again */
+        resolveOnHide: boolean
+      }
     | undefined
+  /** Resolvers of `show(true)` promises that wait for the next `hidden` */
+  let hideWaiters: ((v: boolean | string) => void)[] = []
+  /** Set around a show / hide that must skip the transition (`visible` prop, initial render) */
+  let nextInstant = false
+  /** The value this composable last wrote to `modelValue`, until its watcher saw it */
+  let ownModelWrite: boolean | undefined
 
   /** The state the component is heading to, including a pending (delayed) change */
   const targetVisible = () => (pending ? pending.visible : visible.value)
 
   const syncModelValue = (value: boolean) => {
     if (value && !modelValue.value) {
+      ownModelWrite = true
       modelValue.value = true
     } else if (!value && modelValue.value) {
+      ownModelWrite = false
       modelValue.value = typeof modelValue.value === 'number' ? 0 : false
     }
   }
@@ -268,24 +286,45 @@ export const useShowHide = (
   const getDelay = (value: boolean) =>
     typeof props.delay === 'number' ? props.delay : (props.delay?.[value ? 'show' : 'hide'] ?? 0)
 
-  const settle = (value: boolean | string) => {
-    const current = pending
-    pending = undefined
-    current?.resolve(value)
+  const settleHideWaiters = (value: boolean | string) => {
+    const waiters = hideWaiters
+    hideWaiters = []
+    waiters.forEach((resolve) => resolve(value))
   }
 
-  const start = (value: boolean, trigger?: string): Promise<boolean | string> => {
+  /** Resolves the pending change as superseded (or unmounted) */
+  const supersede = (byHide: boolean) => {
+    const current = pending
+    pending = undefined
+    if (!current) return
+    if (byHide && current.visible && current.resolveOnHide) {
+      // `show(true)` waits for the hide, also when the hide starts before `shown`
+      hideWaiters.push(current.resolve)
+    } else {
+      current.resolve(false)
+    }
+  }
+
+  const start = (
+    value: boolean,
+    trigger?: string,
+    resolveOnHide = false
+  ): Promise<boolean | string> => {
     const op = ++operation
     clearTimeout(delayTimer)
     delayTimer = undefined
     // A superseded change never emits its `shown` / `hidden`
-    settle(false)
+    supersede(!value)
+    // Only this change decides whether it is instant; a superseded instant change must not
+    // make the next one skip its delay and transition
+    instant.value = nextInstant
 
     let resolve!: (v: boolean | string) => void
     const promise = new Promise<boolean | string>((res) => {
       resolve = res
     })
-    pending = {visible: value, promise, resolve}
+    const current = {visible: value, promise, resolve, resolveOnHide}
+    pending = current
 
     const apply = async () => {
       delayTimer = undefined
@@ -296,20 +335,33 @@ export const useShowHide = (
         lazyLoaded.value = true
       }
       syncModelValue(value)
+      // An `update:modelValue` listener may have started a newer change synchronously. Starting
+      // this transition now would invalidate the newer one's `useCssTransition().run()`
+      if (op !== operation) return
 
       const finished = await (options.transition
         ? options.transition(value)
         : nextTick().then(() => true))
       if (op !== operation || !finished) return
 
+      // Settle before emitting: a `shown` / `hidden` listener may start the next change
+      // synchronously, and that change must not be settled with this one's result
       instant.value = false
+      pending = undefined
       if (value) {
+        if (current.resolveOnHide) {
+          hideWaiters.push(resolve)
+        } else {
+          resolve(true)
+        }
         emit('shown', buildTriggerableEvent('shown'))
       } else {
         isActive.value = false
+        const result = trigger ?? ''
+        resolve(result)
+        settleHideWaiters(result)
         emit('hidden', buildTriggerableEvent('hidden', {trigger}))
       }
-      settle(value ? true : (trigger ?? ''))
     }
 
     const delay = instant.value ? 0 : getDelay(value)
@@ -321,8 +373,13 @@ export const useShowHide = (
     return promise
   }
 
-  const show = (): Promise<boolean | string> => {
-    if (pending?.visible === true) return pending.promise
+  const show = (resolveOnHide: boolean = false): Promise<boolean | string> => {
+    // Ignore event objects from `@click="show"`
+    resolveOnHide = resolveOnHide === true
+    if (pending?.visible === true) {
+      pending.resolveOnHide = resolveOnHide
+      return pending.promise
+    }
     if (visible.value && !pending) return Promise.resolve(true)
 
     const event = buildTriggerableEvent('show', {cancelable: true})
@@ -334,7 +391,7 @@ export const useShowHide = (
       if (!targetVisible()) syncModelValue(false)
       return Promise.resolve('show-prevented')
     }
-    return start(true)
+    return start(true, undefined, resolveOnHide)
   }
 
   const hide = (trigger?: string, noTriggerEmit = false): Promise<boolean | string> => {
@@ -368,21 +425,26 @@ export const useShowHide = (
     return start(false, trigger)
   }
 
-  const runToggle = (hideTrigger: string): Promise<boolean | string> => {
+  const runToggle = (hideTrigger: string, resolveOnHide = false): Promise<boolean | string> => {
     const event = buildTriggerableEvent('toggle', {cancelable: true})
     emit('toggle', event)
     if (event.defaultPrevented) {
       emit('toggle-prevented', buildTriggerableEvent('toggle-prevented'))
       return Promise.resolve('toggle-prevented')
     }
-    return targetVisible() ? hide(hideTrigger, true) : show()
+    return targetVisible() ? hide(hideTrigger, true) : show(resolveOnHide)
   }
-  const toggle = () => runToggle('toggle-function')
+  const toggle = (resolveOnHide: boolean = false) => runToggle('toggle-function', resolveOnHide)
   const triggerToggle = () => {
     runToggle('toggle-trigger')
   }
 
   watch(modelValue, (value) => {
+    // The change this composable made itself is not a request: reacting to it would cancel a
+    // newer pending (delayed) change in the other direction
+    const own = ownModelWrite
+    ownModelWrite = undefined
+    if (own !== undefined && !!value === own) return
     if (!!value === targetVisible()) return
     if (value) {
       show()
@@ -395,12 +457,13 @@ export const useShowHide = (
     () => props.visible,
     (value) => {
       if (!!value === targetVisible()) return
-      instant.value = true
+      nextInstant = true
       if (value) {
         show()
       } else {
         hide('visible-prop', true)
       }
+      nextInstant = false
     }
   )
 
@@ -428,7 +491,9 @@ export const useShowHide = (
         syncModelValue(false)
         return
       }
+      nextInstant = true
       start(true)
+      nextInstant = false
     } else if (props.show || (!!modelValue.value && props.initialAnimation)) {
       show()
     }
@@ -438,7 +503,8 @@ export const useShowHide = (
     operation++
     clearTimeout(delayTimer)
     delayTimer = undefined
-    settle(false)
+    supersede(false)
+    settleHideWaiters(false)
   })
 
   const {registerTrigger, unregisterTrigger} = useShowHideRegistration({
@@ -446,7 +512,8 @@ export const useShowHide = (
     isExpanded: () => visible.value,
     value: readonly(visible),
     show,
-    hide: (trigger?: string) => hide(trigger),
+    // `useToggle().hide(trigger)` passes `noTriggerEmit`
+    hide,
     toggle,
     triggerToggle,
   })

@@ -84,9 +84,9 @@
                     :disabled="disableCancel"
                     :size="props.buttonSize"
                     :variant="props.cancelVariant"
-                    :theme="cancelColor.theme"
-                    :bg="cancelColor.bg"
-                    :fg="cancelColor.fg"
+                    :theme="computedCancelColor.theme"
+                    :bg="computedCancelColor.bg"
+                    :fg="computedCancelColor.fg"
                     :class="props.cancelClass"
                     @click="hide('cancel')"
                   >
@@ -99,9 +99,9 @@
                     :disabled="disableOk"
                     :size="props.buttonSize"
                     :variant="props.okVariant"
-                    :theme="okColor.theme"
-                    :bg="okColor.bg"
-                    :fg="okColor.fg"
+                    :theme="computedOkColor.theme"
+                    :bg="computedOkColor.bg"
+                    :fg="computedOkColor.fg"
                     :class="props.okClass"
                     @click="hide('ok')"
                   >
@@ -229,8 +229,10 @@ const _props = withDefaults(defineProps<Omit<BModalProps, 'modelValue'>>(), {
   visible: false,
 })
 const props = useDefaults(_props, 'BModal')
-const okColor = computed(() => resolvePartColor(props.okColor, {theme: 'primary'}))
-const cancelColor = computed(() => resolvePartColor(props.cancelColor, {theme: 'secondary'}))
+const computedOkColor = computed(() => resolvePartColor(props.okColor, {theme: 'primary'}))
+const computedCancelColor = computed(() =>
+  resolvePartColor(props.cancelColor, {theme: 'secondary'})
+)
 const emit = defineEmits<BModalEmits>()
 const slots = defineSlots<BModalSlots>()
 
@@ -354,14 +356,14 @@ const bodyClasses = computed(() => [props.bodyClass, bodyColorClasses.value])
 const {classes: headerColorClasses} = useThemeClasses(computed(() => props.headerColor ?? {}))
 const headerClasses = computed(() => [props.headerClass, headerColorClasses.value])
 
-const headerCloseColor = computed(() =>
+const computedHeaderCloseColor = computed(() =>
   resolvePartColor(props.headerCloseColor, {theme: 'secondary'})
 )
 const headerCloseAttrs = computed(() => ({
   variant: hasHeaderCloseSlot.value ? props.headerCloseVariant : undefined,
-  theme: hasHeaderCloseSlot.value ? headerCloseColor.value.theme : undefined,
-  bg: hasHeaderCloseSlot.value ? headerCloseColor.value.bg : undefined,
-  fg: hasHeaderCloseSlot.value ? headerCloseColor.value.fg : undefined,
+  theme: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.theme : undefined,
+  bg: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.bg : undefined,
+  fg: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value.fg : undefined,
   class: props.headerCloseClass,
 }))
 
