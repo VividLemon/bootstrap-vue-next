@@ -6,8 +6,8 @@
   </BCarousel>
 
   <BButtonGroup class="mt-3">
-    <BButton theme="danger" @click="prev">Previous Slide</BButton>
-    <BButton theme="success" @click="next">Next Slide</BButton>
+    <BButton :color="{ theme: 'danger' }" @click="prev">Previous Slide</BButton>
+    <BButton :color="{ theme: 'success' }" @click="next">Next Slide</BButton>
   </BButtonGroup>
 </template>
 

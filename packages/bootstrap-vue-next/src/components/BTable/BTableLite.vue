@@ -3,29 +3,16 @@
     <colgroup v-if="slots['table-colgroup']">
       <slot name="table-colgroup" :fields="computedFields" />
     </colgroup>
-    <BThead
-      v-show="showComputedHeaders"
-      :theme="props.headColor?.theme"
-      :bg="props.headColor?.bg"
-      :fg="props.headColor?.fg"
-      :class="props.theadClass"
-    >
+    <BThead v-show="showComputedHeaders" :color="props.headColor" :class="props.theadClass">
       <slot name="thead-top" :columns="computedFieldsTotal" :fields="computedFields" />
-      <BTr
-        :theme="props.headRowColor?.theme"
-        :bg="props.headRowColor?.bg"
-        :fg="props.headRowColor?.fg"
-        :class="props.theadTrClass"
-      >
+      <BTr :color="props.headRowColor" :class="props.theadTrClass">
         <BTh
           v-for="field in computedFields"
           :key="field.key"
           :scope="field.scope"
           :class="getFieldColumnClasses(field)"
           :title="field.headerTitle"
-          :theme="field.theme"
-          :bg="field.bg"
-          :fg="field.fg"
+          :color="field"
           :abbr="field.headerAbbr"
           :style="field.thStyle"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
@@ -51,9 +38,7 @@
           v-for="field in computedFields"
           :key="field.key"
           scope="col"
-          :theme="field.theme"
-          :bg="field.bg"
-          :fg="field.fg"
+          :color="field"
           :class="[field.class, field.thClass]"
         >
           <slot name="thead-sub" :items="props.items" :fields="computedFields" :field>
@@ -92,9 +77,11 @@
                 : undefined
             "
             :class="getRowClasses(item, 'row')"
-            :theme="isTableItem(item) ? item._rowTheme : undefined"
-            :bg="isTableItem(item) ? item._rowBg : undefined"
-            :fg="isTableItem(item) ? item._rowFg : undefined"
+            :color="{
+              theme: isTableItem(item) ? item._rowTheme : undefined,
+              bg: isTableItem(item) ? item._rowBg : undefined,
+              fg: isTableItem(item) ? item._rowFg : undefined,
+            }"
             :tabindex="keyboardController.shouldRowBeFocusable.value ? '0' : undefined"
             v-bind="callTbodyTrAttrs(item, 'row')"
             @click="
@@ -121,11 +108,13 @@
               :is="getCellComponent(field)"
               v-for="field in computedFields"
               :key="field.key"
-              :theme="
-                (isTableItem(item) ? item._cellThemes?.[field.key] : false) ? null : field.theme
-              "
-              :bg="(isTableItem(item) ? item._cellBgs?.[field.key] : undefined) ?? field.bg"
-              :fg="(isTableItem(item) ? item._cellFgs?.[field.key] : undefined) ?? field.fg"
+              :color="{
+                theme: (isTableItem(item) ? item._cellThemes?.[field.key] : false)
+                  ? null
+                  : field.theme,
+                bg: (isTableItem(item) ? item._cellBgs?.[field.key] : undefined) ?? field.bg,
+                fg: (isTableItem(item) ? item._cellFgs?.[field.key] : undefined) ?? field.fg,
+              }"
               :class="getFieldRowClasses(field, item)"
               v-bind="{
                 ...(field.isRowHeader ? {scope: 'row'} : undefined),
@@ -157,9 +146,11 @@
             <BTr aria-hidden="true" role="presentation" class="d-none" />
             <BTr
               :class="getRowClasses(item, 'row-expansion')"
-              :theme="isTableItem(item) ? item._rowTheme : undefined"
-              :bg="isTableItem(item) ? item._rowBg : undefined"
-              :fg="isTableItem(item) ? item._rowFg : undefined"
+              :color="{
+                theme: isTableItem(item) ? item._rowTheme : undefined,
+                bg: isTableItem(item) ? item._rowBg : undefined,
+                fg: isTableItem(item) ? item._rowFg : undefined,
+              }"
               v-bind="callTbodyTrAttrs(item, 'row-expansion')"
             >
               <BTd :colspan="computedFieldsTotal" :class="detailsTdClass">
@@ -186,12 +177,7 @@
       </slot>
     </BTbody>
     <BTfoot v-if="props.footClone" v-bind="footerProps">
-      <BTr
-        :theme="computedFootRowColor.theme"
-        :bg="computedFootRowColor.bg"
-        :fg="computedFootRowColor.fg"
-        :class="props.tfootTrClass ?? props.theadTrClass"
-      >
+      <BTr :color="computedFootRowColor" :class="props.tfootTrClass ?? props.theadTrClass">
         <BTh
           v-for="field in computedFields"
           :key="field.key"
@@ -200,9 +186,7 @@
           :title="field.headerTitle"
           :abbr="field.headerAbbr"
           :style="field.thStyle"
-          :theme="field.theme"
-          :bg="field.bg"
-          :fg="field.fg"
+          :color="field"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
           v-bind="callThAttr(null, field, 'bottom')"
           @click="keyboardController.headerClicked(field, $event, true)"
@@ -300,11 +284,7 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   theadClass: undefined,
   theadTrClass: undefined,
   // BTableSimpleProps props
-  border: undefined,
   tableClass: undefined,
-  theme: undefined,
-  bg: undefined,
-  fg: undefined,
   bordered: undefined,
   borderless: undefined,
   captionTop: undefined,
@@ -320,6 +300,7 @@ const _props = withDefaults(defineProps<Omit<BTableLiteProps<Item>, 'expandedIte
   small: undefined,
   stickyHeader: undefined,
   // End BTableSimpleProps props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BTableLite')
 const emit = defineEmits<BTableLiteEmits<Item>>()
@@ -444,9 +425,7 @@ const computedFootRowColor = computed(() =>
 )
 
 const footerProps = computed(() => ({
-  theme: computedFootColor.value.theme,
-  bg: computedFootColor.value.bg,
-  fg: computedFootColor.value.fg,
+  color: computedFootColor.value,
   class: props.tfootClass ?? props.theadClass,
 }))
 

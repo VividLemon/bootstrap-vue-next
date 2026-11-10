@@ -2,28 +2,28 @@
   <!-- #region template -->
   <BListGroup>
     <BListGroupItem href="#list-group-actionable-variants">Default list group item</BListGroupItem>
-    <BListGroupItem href="#list-group-actionable-variants" theme="primary"
+    <BListGroupItem href="#list-group-actionable-variants" :color="{ theme: 'primary' }"
       >Primary list group item</BListGroupItem
     >
-    <BListGroupItem href="#list-group-actionable-variants" theme="secondary"
+    <BListGroupItem href="#list-group-actionable-variants" :color="{ theme: 'secondary' }"
       >Secondary list group item</BListGroupItem
     >
-    <BListGroupItem href="#list-group-actionable-variants" theme="success"
+    <BListGroupItem href="#list-group-actionable-variants" :color="{ theme: 'success' }"
       >Success list group item</BListGroupItem
     >
-    <BListGroupItem href="#list-group-actionable-variants" theme="danger"
+    <BListGroupItem href="#list-group-actionable-variants" :color="{ theme: 'danger' }"
       >Danger list group item</BListGroupItem
     >
-    <BListGroupItem href="#list-group-actionable-variants" theme="warning"
+    <BListGroupItem href="#list-group-actionable-variants" :color="{ theme: 'warning' }"
       >Warning list group item</BListGroupItem
     >
-    <BListGroupItem href="#list-group-actionable-variants" theme="info"
+    <BListGroupItem href="#list-group-actionable-variants" :color="{ theme: 'info' }"
       >Info list group item</BListGroupItem
     >
-    <BListGroupItem href="#list-group-actionable-variants" theme="accent"
+    <BListGroupItem href="#list-group-actionable-variants" :color="{ theme: 'accent' }"
       >Accent list group item</BListGroupItem
     >
-    <BListGroupItem href="#list-group-actionable-variants" theme="inverse"
+    <BListGroupItem href="#list-group-actionable-variants" :color="{ theme: 'inverse' }"
       >Inverse list group item</BListGroupItem
     >
   </BListGroup>

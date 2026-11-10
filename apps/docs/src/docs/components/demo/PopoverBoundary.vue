@@ -8,7 +8,7 @@
         title="Constrained Popover"
       >
         <template #target>
-          <BButton theme="primary">Scroll to see boundary</BButton>
+          <BButton :color="{ theme: 'primary' }">Scroll to see boundary</BButton>
         </template>
         This popover is constrained within its scrollable container
       </BPopover>

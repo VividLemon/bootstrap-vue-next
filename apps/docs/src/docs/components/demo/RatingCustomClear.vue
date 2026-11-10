@@ -2,7 +2,7 @@
   <div>
     <BFormRating v-model="rating" show-clear>
       <template #icon-clear>
-        <BButton theme="inverse"> Clear </BButton>
+        <BButton :color="{ theme: 'inverse' }"> Clear </BButton>
       </template>
     </BFormRating>
     <p>Current rating: {{ rating }}</p>

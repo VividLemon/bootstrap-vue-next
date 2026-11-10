@@ -33,9 +33,7 @@
             :class="[props.closeClass]"
             class="ms-auto"
             :variant="props.closeVariant"
-            :theme="computedCloseColor.theme"
-            :bg="computedCloseColor.bg"
-            :fg="computedCloseColor.fg"
+            :color="computedCloseColor"
             @click.stop.prevent="hide('close')"
           >
             <slot name="close" v-bind="sharedSlots">
@@ -72,9 +70,7 @@
               :class="[props.closeClass]"
               class="ms-auto btn-close-custom"
               :variant="props.closeVariant"
-              :theme="computedCloseColor.theme"
-              :bg="computedCloseColor.bg"
-              :fg="computedCloseColor.fg"
+              :color="computedCloseColor"
               @click.stop.prevent="hide('close')"
             >
               <slot name="close" v-bind="sharedSlots">
@@ -98,7 +94,7 @@
         :show-progress="props.progressProps?.showProgress"
         :show-value="props.progressProps?.showValue"
         :striped="props.progressProps?.striped"
-        :theme="props.progressProps?.theme"
+        :color="props.progressProps?.color"
         :max="modelValue"
         :value="remainingMs"
         height="4px"
@@ -123,7 +119,6 @@ import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import BButton from '../BButton/BButton.vue'
 
 const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
-  bg: null,
   body: undefined,
   bodyClass: undefined,
   closeClass: undefined,
@@ -148,7 +143,6 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   showOnPause: true,
   show: false,
   solid: false,
-  fg: null,
   title: undefined,
   toastClass: undefined,
   visible: false,
@@ -170,11 +164,11 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   to: undefined,
   underlineOffset: undefined,
   underlineOpacity: undefined,
-  underlineTheme: undefined,
-  theme: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BToast')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 const computedCloseColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
 const emit = defineEmits<BToastEmits>()
 const slots = defineSlots<BToastSlots>()
@@ -237,9 +231,9 @@ const isToastVisible = computed(
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [

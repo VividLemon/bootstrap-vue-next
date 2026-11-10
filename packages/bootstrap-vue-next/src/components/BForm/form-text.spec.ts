@@ -28,16 +28,16 @@ describe('form-text', () => {
 
   it('has class fg-{type} when prop fg', async () => {
     const wrapper = mount(BFormText, {
-      props: {fg: 'danger'},
+      props: {color: {fg: 'danger'}},
     })
     expect(wrapper.classes()).toContain('fg-danger')
-    await wrapper.setProps({fg: undefined})
+    await wrapper.setProps({color: {fg: undefined}})
     expect(wrapper.classes()).toContain('fg-2')
   })
 
   it('has no fg class when prop fg is null', () => {
     const wrapper = mount(BFormText, {
-      props: {fg: null},
+      props: {color: {fg: null}},
     })
     const fgClasses = wrapper.classes().filter((c) => c.startsWith('fg-'))
     expect(fgClasses).toHaveLength(0)

@@ -1,19 +1,19 @@
 <template>
   <BFormRating
     v-model="rating"
-    color="indigo"
+    style="color: indigo"
   />
   <BFormRating
     v-model="rating"
-    color="#ff00ff"
+    style="color: #ff00ff"
   />
   <BFormRating
     v-model="rating"
-    color="rgb(64, 192, 128)"
+    style="color: rgb(64, 192, 128)"
   />
   <BFormRating
     v-model="rating"
-    color="rgba(64, 192, 128, 0.75)"
+    style="color: rgba(64, 192, 128, 0.75)"
   />
 
   <p>Current rating: {{ rating }}</p>

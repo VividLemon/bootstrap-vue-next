@@ -51,10 +51,7 @@ export const useBLinkHelper = <
             'to',
             'underlineOffset',
             'underlineOpacity',
-            'underlineTheme',
-            'theme',
-            'bg',
-            'fg',
+            'color',
           ]
         )
       : {}

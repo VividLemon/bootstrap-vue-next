@@ -3,7 +3,7 @@
   <BForm @submit.prevent="onSubmit">
     <BFormRating v-model="rating" name="rating" />
     <div class="mt-2">
-      <BButton type="submit" theme="primary">Submit</BButton>
+      <BButton type="submit" :color="{ theme: 'primary' }">Submit</BButton>
     </div>
     <div v-if="result" class="mt-2">Submitted value: {{ result }}</div>
   </BForm>

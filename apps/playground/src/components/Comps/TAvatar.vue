@@ -2,7 +2,7 @@
   <BContainer fluid>
     <!-- <BRow>
       <BCol>
-        <BAvatar button class="me-1" icon="person-fill" theme="secondary" />
+        <BAvatar button class="me-1" icon="person-fill" :color="{ theme: 'secondary' }" />
       </BCol>
     </BRow>
 
@@ -26,31 +26,31 @@
 
     <BRow>
       <BCol>
-        <BAvatar class="me-2" icon="person-fill" theme="success" rounded />
+        <BAvatar class="me-2" icon="person-fill" :color="{ theme: 'success' }" rounded />
       </BCol>
     </BRow>
 
     <BRow>
       <BCol>
-        <BAvatar class="me-5" icon="person-fill" theme="warning" size="lg" />
+        <BAvatar class="me-5" icon="person-fill" :color="{ theme: 'warning' }" size="lg" />
       </BCol>
     </BRow>
 
     <BRow>
       <BCol>
-        <BAvatar class="me-2" text="ED" size="sm" square fg="black" />
+        <BAvatar class="me-2" text="ED" size="sm" square :color="{ fg: 'black' }" />
       </BCol>
     </BRow>
 
     <BRow>
       <BCol>
-        <BAvatar class="me-2" text="ED" theme="success" rounded />
+        <BAvatar class="me-2" text="ED" :color="{ theme: 'success' }" rounded />
       </BCol>
     </BRow>
 
     <BRow>
       <BCol>
-        <BAvatar class="me-5" text="ED" theme="warning" fg="danger" size="lg" />
+        <BAvatar class="me-5" text="ED" :color="{ theme: 'warning', fg: 'danger' }" size="lg" />
       </BCol>
     </BRow>
 

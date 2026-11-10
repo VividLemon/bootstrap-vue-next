@@ -14,10 +14,11 @@ export const linkProps = {
     default: 'router-link-active',
     description: 'Configure the active CSS class applied when the link is active.',
   },
-  bg: {
-    type: 'MaybeArray<BgColor> | null',
-    default: null,
-    description: 'Applies a background color (`bg-*` class) to the link',
+  color: {
+    type: 'LinkColorExtendables | null',
+    default: undefined,
+    description:
+      'Colors the link with one object: `theme` renders `theme-*`, `bg` renders `bg-*`, `fg` renders `fg-*` and `underline` sets the underline color (`underline-*`) independently of the link text',
   },
   disabled: {
     type: 'boolean',
@@ -29,11 +30,6 @@ export const linkProps = {
     type: 'string',
     default: 'router-link-exact-active',
     description: 'Configure the active CSS class applied when the link is active with exact match.',
-  },
-  fg: {
-    type: 'MaybeArray<FgColor> | null',
-    default: null,
-    description: 'Applies a foreground (text) color (`fg-*` class) to the link',
   },
   href: {
     type: 'string',
@@ -125,16 +121,6 @@ export const linkProps = {
     default: undefined,
     description:
       "Set the opacity of the link's underline. `xs` renders `underline-*`, `hover` renders `hover:underline-*`. Values are `10` to `100` in steps of 10",
-  },
-  underlineTheme: {
-    type: 'ThemeColor | null',
-    default: null,
-    description: 'Set the theme color for the link underline independently of the link text',
-  },
-  theme: {
-    type: 'ThemeProp | null',
-    default: null,
-    description: 'Set the theme color for the link',
   },
   // TODO: remove the hard-coded NYI props below when they are implemented
 } as const satisfies PropRecord<keyof BLinkProps | 'noPrefetch' | 'prefetch' | 'prefetchedClass'>

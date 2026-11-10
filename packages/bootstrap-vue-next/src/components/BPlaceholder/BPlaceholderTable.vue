@@ -6,8 +6,10 @@
           <th v-for="(_, i) in computedHeaderColumnsLength" :key="i">
             <BPlaceholder
               :size="props.headerSize"
-              :bg="props.headerColor?.bg ?? getThemeColor(props.headerColor?.theme)"
-              :fg="props.headerColor?.fg"
+              :color="{
+                bg: props.headerColor?.bg ?? getThemeColor(props.headerColor?.theme),
+                fg: props.headerColor?.fg,
+              }"
               :animation="props.headerAnimation"
               :width="props.headerCellWidth"
             />
@@ -21,8 +23,10 @@
           <td v-for="(__, k) in columnsNumber" :key="k">
             <BPlaceholder
               :size="props.size"
-              :bg="props.bg ?? getThemeColor(props.theme)"
-              :fg="props.fg"
+              :color="{
+                bg: computedColor.bg ?? getThemeColor(computedColor.theme),
+                fg: computedColor.fg,
+              }"
               :animation="props.animation"
               :width="props.cellWidth"
             />
@@ -36,8 +40,10 @@
           <th v-for="(_, l) in computedFooterColumnsLength" :key="l">
             <BPlaceholder
               :size="props.footerSize"
-              :bg="props.footerColor?.bg ?? getThemeColor(props.footerColor?.theme)"
-              :fg="props.footerColor?.fg"
+              :color="{
+                bg: props.footerColor?.bg ?? getThemeColor(props.footerColor?.theme),
+                fg: props.footerColor?.fg,
+              }"
               :animation="props.footerAnimation"
               :width="props.footerCellWidth"
             />
@@ -49,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import {getThemeColor} from '../../composables/useThemeClasses'
+import {getThemeColor, resolvePartColor} from '../../composables/useThemeClasses'
 import BTableSimple from '../BTable/BTableSimple.vue'
 import BPlaceholder from './BPlaceholder.vue'
 import {useToNumber} from '@vueuse/core'
@@ -75,11 +81,10 @@ const _props = withDefaults(defineProps<BPlaceholderTableProps>(), {
   rows: 3,
   showFooter: false,
   size: undefined,
-  theme: undefined,
-  bg: null,
-  fg: null,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BPlaceholderTable')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BPlaceholderTableSlots>()
 
 const columnsToNumber = useToNumber(() => props.columns)

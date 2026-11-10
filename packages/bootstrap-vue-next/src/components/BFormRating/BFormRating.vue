@@ -75,18 +75,17 @@
 </template>
 
 <script setup lang="ts">
+import {getThemeColor, resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import {computed, ref} from 'vue'
 import {useToNumber} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {useRtl} from '../../composables/useRtl'
-import {getThemeColor, toColorClasses} from '../../composables/useThemeClasses'
 import type {BFormRatingProps, BFormRatingSlots, Size} from '../../types'
 
 const lengthDefault = 5
 const _props = withDefaults(defineProps<Omit<BFormRatingProps, 'modelValue'>>(), {
   clearLabel: 'Clear rating',
-  color: '',
   id: undefined,
   inline: false,
   labelValueCurrent: (current: number, max: number) => `${current} of ${max}`,
@@ -102,9 +101,10 @@ const _props = withDefaults(defineProps<Omit<BFormRatingProps, 'modelValue'>>(),
   showValueMax: false,
   size: undefined,
   length: lengthDefault,
-  theme: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BFormRating')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BFormRatingSlots>()
 
 const modelValue = defineModel<Exclude<BFormRatingProps['modelValue'], undefined>>({default: 0})
@@ -220,15 +220,12 @@ const iconColors = computed(() =>
       return {class: 'is-disabled', style: {}}
     }
     const colorClasses = {
-      ...toColorClasses('fg', getThemeColor(props.theme)),
-      ...toColorClasses('bg', props.bg),
-      ...toColorClasses('fg', props.fg),
+      ...toColorClasses('fg', getThemeColor(computedColor.value.theme)),
+      ...toColorClasses('bg', computedColor.value.bg),
+      ...toColorClasses('fg', computedColor.value.fg),
     }
-    if (props.theme || props.bg || props.fg) {
+    if (computedColor.value.theme || computedColor.value.bg || computedColor.value.fg) {
       return {class: colorClasses, style: {}}
-    }
-    if (props.color) {
-      return {class: '', style: {color: props.color}}
     }
     return {class: '', style: {}}
   })

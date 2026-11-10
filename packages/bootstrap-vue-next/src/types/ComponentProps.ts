@@ -10,15 +10,13 @@ import type {AriaAttributes, Component, ComponentPublicInstance, TeleportProps} 
 import type {RouteLocationRaw} from 'vue-router'
 import type {LinkTarget} from './LinkTarget'
 import type {
-  BgColor,
-  BorderColor,
   ButtonVariant,
   ColorBorderExtendables,
+  ColorBorderProps,
   ColorExtendables,
-  FgColor,
-  MaybeArray,
+  ColorProps,
+  LinkColorExtendables,
   ThemeColor,
-  UnderlineColorExtendables,
 } from './ColorTypes'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
 import type {CheckboxOptionRaw, CheckboxValue} from './CheckboxTypes'
@@ -132,7 +130,8 @@ export interface BOrchestratorProps {
   filter?: (item: OrchestratorArrayValue) => boolean
 }
 
-export interface BLinkProps extends ColorExtendables, UnderlineColorExtendables {
+export interface BLinkProps {
+  color?: LinkColorExtendables | null
   active?: boolean
   activeClass?: string
   disabled?: boolean
@@ -159,13 +158,10 @@ export interface BLinkProps extends ColorExtendables, UnderlineColorExtendables 
   underlineOpacity?: HoverState<UnderlineOpacity>
 }
 
-export type LinkUnderlineProps = Pick<
-  BLinkProps,
-  'underlineOffset' | 'underlineOpacity' | 'underlineTheme'
->
+export type LinkUnderlineProps = Pick<BLinkProps, 'underlineOffset' | 'underlineOpacity'>
 export type LinkOpacityProps = Pick<BLinkProps, 'opacity'>
 export type LinkIconProps = Pick<BLinkProps, 'icon'>
-export type LinkThemeProps = Pick<BLinkProps, 'theme' | 'bg' | 'fg'>
+export type LinkThemeProps = Pick<BLinkProps, 'color'>
 
 export interface BAutocompleteProps {
   ariaInvalid?: AriaInvalid
@@ -260,7 +256,7 @@ export interface BAccordionItemProps {
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
-export interface BDropdownDividerProps extends ColorExtendables {
+export interface BDropdownDividerProps extends ColorProps {
   dividerClass?: ClassValue
   tag?: string
   wrapperAttrs?: Readonly<AttrsValue>
@@ -282,7 +278,7 @@ export interface BDropdownGroupProps {
   id?: string
 }
 
-export interface BDropdownHeaderProps extends ColorExtendables {
+export interface BDropdownHeaderProps extends ColorProps {
   headerClass?: ClassValue
   tag?: string
   text?: string
@@ -294,7 +290,7 @@ export interface BDropdownItemProps extends Omit<BLinkProps, 'routerTag'> {
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
-export interface BDropdownItemButtonProps extends ColorExtendables {
+export interface BDropdownItemButtonProps extends ColorProps {
   active?: boolean
   activeClass?: ClassValue
   buttonClass?: ClassValue
@@ -302,7 +298,7 @@ export interface BDropdownItemButtonProps extends ColorExtendables {
   disabled?: boolean
 }
 
-export interface BDropdownTextProps extends ColorExtendables {
+export interface BDropdownTextProps extends ColorProps {
   textClass?: ClassValue
   tag?: string
   text?: string
@@ -323,7 +319,7 @@ export interface BFormTextProps {
   inline?: boolean
   tag?: string
   text?: string
-  fg?: MaybeArray<FgColor> | null
+  color?: Pick<ColorExtendables, 'fg'> | null
 }
 
 export interface BFormCheckboxProps {
@@ -578,9 +574,8 @@ export interface BFormRadioGroupProps<
   validated?: boolean
   valueField?: string
 }
-export interface BFormRatingProps extends ColorExtendables {
+export interface BFormRatingProps extends ColorProps {
   clearLabel?: string
-  color?: string
   id?: string
   inline?: boolean
   labelValueCurrent?: (current: number, max: number) => string
@@ -704,7 +699,7 @@ export interface BFormSpinbuttonProps {
   wrap?: boolean
 }
 
-export interface BFormTagProps extends ColorExtendables {
+export interface BFormTagProps extends ColorProps {
   disabled?: boolean
   id?: string
   noRemove?: boolean
@@ -812,7 +807,7 @@ export interface BNavTextProps {
   text?: string
 }
 
-export interface BNavbarProps extends ColorExtendables {
+export interface BNavbarProps extends ColorProps {
   container?: boolean | 'fluid' | Breakpoint
   fixed?: Extract<Placement, 'top' | 'bottom'>
   noAutoClose?: boolean
@@ -870,8 +865,9 @@ export interface BOffcanvasProps extends TeleporterProps, ShowHideProps {
 }
 
 export interface BOverlayProps extends RadiusElementExtendables {
-  bgColor?: string
+  bgCss?: string
   blur?: string | null
+  color?: Pick<ColorExtendables, 'bg'> | null
   fixed?: boolean
   noCenter?: boolean
   noTransition?: boolean
@@ -880,10 +876,9 @@ export interface BOverlayProps extends RadiusElementExtendables {
   opacity?: Numberish
   overlayTag?: string
   show?: boolean
-  spinnerColor?: Pick<BSpinnerProps, 'theme' | 'bg' | 'fg'>
+  spinnerColor?: BSpinnerProps['color']
   spinnerSmall?: boolean
   spinnerType?: SpinnerType
-  bg?: MaybeArray<BgColor> | null
   wrapTag?: string
   zIndex?: Numberish
 }
@@ -927,20 +922,19 @@ export interface BPlaceholderProps {
   cols?: Numberish
   size?: PlaceholderSize
   tag?: string
-  bg?: MaybeArray<BgColor> | null
-  fg?: MaybeArray<FgColor> | null
+  color?: Pick<ColorExtendables, 'bg' | 'fg'> | null
   width?: Numberish
   wrapperTag?: string
 }
 
-export interface BPlaceholderButtonProps extends ColorExtendables {
+export interface BPlaceholderButtonProps extends ColorProps {
   animation?: PlaceholderAnimation
   cols?: Numberish
   tag?: string
   width?: Numberish
 }
 
-export interface BPlaceholderCardProps extends ColorExtendables {
+export interface BPlaceholderCardProps extends ColorProps {
   animation?: PlaceholderAnimation
   footerAnimation?: PlaceholderAnimation
   footerColor?: ColorExtendables
@@ -961,7 +955,7 @@ export interface BPlaceholderCardProps extends ColorExtendables {
   size?: PlaceholderSize
 }
 
-export interface BPlaceholderTableProps extends ColorExtendables {
+export interface BPlaceholderTableProps extends ColorProps {
   animation?: PlaceholderAnimation
   cellWidth?: Numberish
   columns?: Numberish
@@ -1049,17 +1043,16 @@ export interface BContainerProps {
   tag?: string
 }
 
-export interface BSpinnerProps extends ColorExtendables {
+export interface BSpinnerProps {
   label?: string
   role?: string
   small?: boolean
   tag?: string
   type?: SpinnerType
-  theme?: ThemeColor | null
+  color?: (Omit<ColorExtendables, 'theme'> & {theme?: ThemeColor | null}) | null
 }
 
-export interface BAlertProps
-  extends ColorExtendables, Omit<BLinkProps, 'routerTag'>, ShowHideProps {
+export interface BAlertProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProps {
   alertClass?: ClassValue
   body?: string
   bodyClass?: ClassValue
@@ -1083,7 +1076,7 @@ export interface BAlertProps
 }
 
 export interface BAvatarProps
-  extends Omit<BLinkProps, 'routerTag' | 'icon'>, ColorExtendables, RadiusElementExtendables {
+  extends Omit<BLinkProps, 'routerTag' | 'icon'>, RadiusElementExtendables {
   alt?: string
   badge?: boolean | string
   badgeColor?: ColorExtendables
@@ -1098,14 +1091,14 @@ export interface BAvatarProps
   text?: string
 }
 
-export interface BAvatarGroupProps extends ColorExtendables, RadiusElementExtendables {
+export interface BAvatarGroupProps extends ColorProps, RadiusElementExtendables {
   overlap?: Numberish
   size?: LiteralUnion<Size, Numberish>
   square?: boolean
   tag?: string
 }
 
-export interface BBadgeProps extends Omit<BLinkProps, 'routerTag'>, ColorExtendables {
+export interface BBadgeProps extends Omit<BLinkProps, 'routerTag'> {
   dotIndicator?: boolean
   pill?: boolean
   placement?: CombinedPlacement
@@ -1158,13 +1151,12 @@ export interface BCloseButtonProps {
   type?: ButtonType
 }
 
-export interface BCardProps extends ColorExtendables {
+export interface BCardProps extends ColorBorderProps {
   align?: AlignmentTextHorizontal
   bodyClass?: ClassValue
   bodyColor?: ColorBorderExtendables
   bodyTag?: string
   bodyText?: string
-  border?: MaybeArray<BorderColor> | null
   footer?: string
   footerClass?: ClassValue
   footerColor?: ColorBorderExtendables
@@ -1188,8 +1180,7 @@ export interface BCardProps extends ColorExtendables {
   titleTag?: string
 }
 
-export interface BCardBodyProps extends ColorExtendables {
-  border?: MaybeArray<BorderColor> | null
+export interface BCardBodyProps extends ColorBorderProps {
   overlay?: boolean
   subtitle?: string
   subtitleColor?: Pick<ColorExtendables, 'fg'>
@@ -1211,7 +1202,7 @@ export interface BCardImgProps extends Omit<BImgProps, 'placement'> {
 export interface BCardSubtitleProps {
   text?: string
   tag?: string
-  fg?: MaybeArray<FgColor> | null
+  color?: Pick<ColorExtendables, 'fg'> | null
 }
 
 export interface BCardTextProps {
@@ -1297,10 +1288,9 @@ export interface BFormProps {
   validated?: boolean
 }
 
-export interface BTableSimpleProps extends ColorExtendables {
+export interface BTableSimpleProps extends ColorBorderProps {
   bordered?: boolean
   borderless?: boolean
-  border?: MaybeArray<BorderColor> | null
   captionTop?: boolean
   fixed?: boolean
   hover?: boolean
@@ -1394,22 +1384,22 @@ export interface BTableProps<Item>
   showEmpty?: boolean
 }
 
-export type BTrProps = ColorExtendables
+export type BTrProps = ColorProps
 
-export type BTheadProps = ColorExtendables
+export type BTheadProps = ColorProps
 
-export type BTfootProps = ColorExtendables
+export type BTfootProps = ColorProps
 
-export interface BTdProps extends ColorExtendables {
+export interface BTdProps extends ColorProps {
   colspan?: Numberish
   rowspan?: Numberish
   stackedHeading?: string
   stickyColumn?: boolean
 }
 
-export type BTbodyProps = ColorExtendables
+export type BTbodyProps = ColorProps
 
-export interface BThProps extends ColorExtendables {
+export interface BThProps extends ColorProps {
   colspan?: Numberish
   rowspan?: Numberish
   stackedHeading?: string
@@ -1417,7 +1407,7 @@ export interface BThProps extends ColorExtendables {
   scope?: TableThScope
 }
 
-export interface BProgressBarProps extends ColorExtendables {
+export interface BProgressBarProps extends ColorProps {
   animated?: boolean
   label?: string
   max?: Numberish
@@ -1445,7 +1435,7 @@ export interface BFormFeedbackSharedProps {
 export type BFormInvalidFeedbackProps = BFormFeedbackSharedProps
 export type BFormValidFeedbackProps = BFormFeedbackSharedProps
 
-export interface BDropdownProps extends TeleporterProps, ShowHideProps, ColorExtendables {
+export interface BDropdownProps extends TeleporterProps, ShowHideProps, ColorProps {
   ariaLabel?: string
   autoClose?: boolean | 'inside' | 'outside'
   boundary?: Boundary | RootBoundary
@@ -1486,8 +1476,7 @@ export interface BDropdownProps extends TeleporterProps, ShowHideProps, ColorExt
   placement?: FloatingPlacement
 }
 
-export interface BToastProps
-  extends ColorExtendables, Omit<BLinkProps, 'routerTag'>, ShowHideProps {
+export interface BToastProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProps {
   body?: string
   bodyClass?: ClassValue
   closeClass?: ClassValue
@@ -1558,8 +1547,7 @@ export interface BTooltipProps extends Omit<BPopoverProps, 'tooltip'> {
   interactive?: boolean
 }
 
-export interface BCardHeadFootProps extends ColorExtendables {
-  border?: MaybeArray<BorderColor> | null
+export interface BCardHeadFootProps extends ColorBorderProps {
   tag?: string
   text?: string
 }

@@ -8,11 +8,11 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed, provide, toRef} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useContainerClasses} from '../../composables/useContainerClasses'
 import {navbarInjectionKey} from '../../utils/keys'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BNavbarProps, BNavbarSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BNavbarProps>(), {
@@ -23,11 +23,10 @@ const _props = withDefaults(defineProps<BNavbarProps>(), {
   sticky: undefined,
   tag: 'nav',
   toggleable: false,
-  theme: null,
-  bg: null,
-  fg: null,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BNavbar')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BNavbarSlots>()
 
 const computedRole = computed(() => (props.tag === 'nav' ? undefined : 'navigation'))
@@ -36,9 +35,9 @@ const {classes: containerClass} = useContainerClasses(() => props.container)
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [

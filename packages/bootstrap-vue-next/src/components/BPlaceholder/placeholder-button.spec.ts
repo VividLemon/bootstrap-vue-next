@@ -30,7 +30,7 @@ describe('placeholder-button', () => {
 
   it('BPlaceholder has classes btn-solid and theme-{type} when prop theme', () => {
     const wrapper = mount(BPlaceholderButton, {
-      props: {theme: 'danger'},
+      props: {color: {theme: 'danger'}},
     })
     expect(wrapper.find('.placeholder').classes()).toContain('btn-solid')
     expect(wrapper.find('.placeholder').classes()).toContain('theme-danger')

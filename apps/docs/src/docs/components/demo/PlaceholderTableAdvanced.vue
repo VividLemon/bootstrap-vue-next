@@ -13,16 +13,16 @@
       <tbody>
         <tr>
           <td>
-            <BPlaceholder size="lg" bg="secondary" />
-            <BPlaceholder size="sm" bg="secondary" />
-            <BPlaceholder size="xs" bg="secondary" />
+            <BPlaceholder size="lg" :color="{ bg: 'secondary' }" />
+            <BPlaceholder size="sm" :color="{ bg: 'secondary' }" />
+            <BPlaceholder size="xs" :color="{ bg: 'secondary' }" />
           </td>
           <td>
-            <BPlaceholder bg="warning" />
-            <BPlaceholder animation="wave" bg="warning" />
+            <BPlaceholder :color="{ bg: 'warning' }" />
+            <BPlaceholder animation="wave" :color="{ bg: 'warning' }" />
           </td>
           <td>
-            <BPlaceholder animation="glow" bg="danger" />
+            <BPlaceholder animation="glow" :color="{ bg: 'danger' }" />
           </td>
         </tr>
       </tbody>

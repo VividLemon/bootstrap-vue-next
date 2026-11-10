@@ -5,7 +5,7 @@
         modelValue: tooltipVisible,
         title: 'Manually controlled tooltip',
       }"
-      theme="primary"
+      :color="{ theme: 'primary' }"
       @click="tooltipVisible = !tooltipVisible"
     >
       {{ tooltipVisible ? 'Hide' : 'Show' }} tooltip

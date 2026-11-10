@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="text-center mb-3 d-flex justify-content-between">
-      <BSpinner v-for="theme in themes" :key="theme" :theme="theme" />
+      <BSpinner v-for="theme in themes" :key="theme" :color="{ theme: theme }" />
     </div>
 
     <div class="text-center d-flex justify-content-between">
-      <BSpinner v-for="theme in themes" :key="theme" :theme="theme" type="grow" />
+      <BSpinner v-for="theme in themes" :key="theme" :color="{ theme: theme }" type="grow" />
     </div>
   </div>
 </template>

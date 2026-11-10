@@ -6,7 +6,7 @@
         title: 'Appears after 500ms',
         delay: { show: 500, hide: 100 },
       }"
-      theme="primary"
+      :color="{ theme: 'primary' }"
     >
       Delayed show
     </BButton>
@@ -16,7 +16,7 @@
         title: 'No delay',
         delay: 0,
       }"
-      theme="secondary"
+      :color="{ theme: 'secondary' }"
     >
       Instant
     </BButton>
