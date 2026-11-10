@@ -32,10 +32,10 @@ export const useLinkClasses = (
     return {
       ...themeClasses.value,
       ...toHoverStateClasses('link', props.opacity),
-      [`underline-${props.color?.underline}`]:
-        props.color?.underline !== null && props.color?.underline !== undefined,
-      ...toHoverStateClasses('underline-offset', props.underlineOffset),
-      ...toHoverStateClasses('underline', props.underlineOpacity),
+      [`underline-${props.underline?.color}`]:
+        props.underline?.color !== null && props.underline?.color !== undefined,
+      ...toHoverStateClasses('underline-offset', props.underline?.offset),
+      ...toHoverStateClasses('underline', props.underline?.opacity),
       'icon-link': props.icon === true,
     }
   })

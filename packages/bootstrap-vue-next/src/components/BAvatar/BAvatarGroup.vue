@@ -22,10 +22,7 @@ const _props = withDefaults(defineProps<BAvatarGroupProps>(), {
   tag: 'div',
   // RadiusElementExtendables props
   rounded: 'circle',
-  roundedBottom: undefined,
-  roundedEnd: undefined,
-  roundedStart: undefined,
-  roundedTop: undefined,
+  roundedSides: undefined,
   // End RadiusElementExtendables props
   color: undefined,
 })
@@ -49,10 +46,7 @@ provide(avatarGroupInjectionKey, {
   square: toRef(() => props.square),
   roundedProps: computed(() => ({
     rounded: props.rounded,
-    roundedTop: props.roundedTop,
-    roundedBottom: props.roundedBottom,
-    roundedStart: props.roundedStart,
-    roundedEnd: props.roundedEnd,
+    roundedSides: props.roundedSides,
   })),
   theme: toRef(() => computedColor.value.theme ?? null),
   bg: toRef(() => computedColor.value.bg ?? null),

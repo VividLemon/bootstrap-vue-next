@@ -1,6 +1,6 @@
 <template>
   <p v-for="color in colors" :key="color">
-    <BLink :color="{ underline: color }"> {{ color }} link </BLink>
+    <BLink :underline="{ color }"> {{ color }} link </BLink>
   </p>
 </template>
 

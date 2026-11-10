@@ -40,17 +40,7 @@ export default {
                 default: { theme: 'secondary' },
               },
             }),
-            [
-              'ariaLabel',
-              'alt',
-              'color',
-              'rounded',
-              'roundedBottom',
-              'roundedEnd',
-              'roundedStart',
-              'roundedTop',
-              'src',
-            ],
+            ['ariaLabel', 'alt', 'color', 'rounded', 'roundedSides', 'src'],
           ),
           badge: {
             type: 'boolean | string',
@@ -152,7 +142,7 @@ export default {
                 'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence. Refer to the documentation for details.',
             },
           }),
-          ['color', 'rounded', 'roundedBottom', 'roundedEnd', 'roundedStart', 'roundedTop', 'tag'],
+          ['color', 'rounded', 'roundedSides', 'tag'],
         ),
         overlap: {
           type: 'Numberish',

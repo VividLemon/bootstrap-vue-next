@@ -105,11 +105,6 @@ export interface ColorBorderExtendables extends ColorExtendables {
   border?: MaybeArray<BorderColor> | null
 }
 
-/** Color keys of a link: the component colors plus the underline color (`.underline-<theme>`) */
-export interface LinkColorExtendables extends ColorExtendables {
-  underline?: ThemeColor | null
-}
-
 /** The single `color` object prop of a component: `{theme, bg, fg}` */
 export interface ColorProps {
   color?: ColorExtendables | null
