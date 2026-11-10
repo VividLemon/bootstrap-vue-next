@@ -16,7 +16,6 @@ prop per component, whose keys map to those classes.
 | `bg`                              | Background color                | `bg-<value>`       |
 | `fg`                              | Foreground (text) color         | `fg-<value>`       |
 | `border` (components with a border) | Border color                  | `border-<value>`   |
-| `underline` (links)               | Link underline color            | `underline-<theme>` |
 
 ```vue-html
 <BBadge :color="{ theme: 'success' }">Success</BBadge>
@@ -112,14 +111,13 @@ A single string works exactly as before.
 
 <<< DEMO ./demo/ColorArrays.vue#template{vue-html}
 
-The `theme` key also accepts the theme modifiers `contrast`, `subtle`, `muted`, `border` and `reset` (type `ThemeProp`). In an array, put the theme color first, followed by modifiers. Arrays stored in a variable need `as const` or a `ThemeProp` annotation. The link `underline` key and the spinner `theme` (including `spinnerColor.theme`) accept a single theme only.
+The `theme` key also accepts the theme modifiers `contrast`, `subtle`, `muted`, `border` and `reset` (type `ThemeProp`). In an array, put the theme color first, followed by modifiers. Arrays stored in a variable need `as const` or a `ThemeProp` annotation. The link `underline.color` and the spinner `theme` (including `spinner.color.theme`) accept a single theme only.
 
 ## Prefixed color objects
 
 The `color` prop colors the component itself. A component part, such as a card header or a modal OK button, is colored
 the same way with its own `<part>Color` object prop. Both take the keys `theme`, `bg` and `fg` (type `ColorExtendables`), plus
-`border` where the component or part supports a border color (type `ColorBorderExtendables`) and `underline` on links
-(type `LinkColorExtendables`).
+`border` where the component or part supports a border color (type `ColorBorderExtendables`).
 
 ```vue-html
 <BCard
@@ -141,8 +139,8 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 | `BFormCheckbox`, `BFormRadio` and their groups | `button-color`                                                                |
 | `BFormTags`                                   | `tag-color`, `add-button-color`                                                |
 | `BModal`                                      | `header-color`, `footer-color` (with `border`), `body-color`, `header-close-color`, `ok-color`, `cancel-color` |
-| `BOffcanvas`                                  | `header-close-color`                                                           |
-| `BOverlay`                                    | `spinner-color`                                                                |
+| `BOffcanvas`                                  | `header-close.color`                                                           |
+| `BOverlay`                                    | `spinner.color`                                                                |
 | `BPlaceholderCard`, `BPlaceholderTable`       | `header-color`, `footer-color`                                                 |
 | `BTable`, `BTableLite`                        | `head-color`, `head-row-color`, `foot-color`, `foot-row-color`, `selection-color` (`BTable` only) |
 
@@ -152,7 +150,7 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 
 Some components and parts have a built-in default. For example `BButton`, `BBadge` and `BAvatar` default to
 `:color="{ theme: 'secondary' }"`, `BAlert` to `{ theme: 'info' }`, `ok-color` to `{ theme: 'primary' }`, and `close-color`,
-`cancel-color`, `button-color`, `tag-color`, `add-button-color` and `header-close-color` default to `{ theme: 'secondary' }`.
+`cancel-color`, `button-color`, `tag-color`, `add-button-color`, and the BModal `header-close-color` and BOffcanvas `header-close.color`, default to `{ theme: 'secondary' }`.
 The object you pass is merged with that default key by key:
 
 - A key you leave out, or set to `undefined`, keeps the default: `:ok-color="{ fg: 'white' }"` renders `theme-primary fg-white`.
@@ -223,12 +221,12 @@ The `dark` prop has been removed (v6 removed `.table-dark`). Use the [`v-b-color
 
 ### Links
 
-`BLink` uses the `color` prop's `theme` key (`.theme-<theme>`, since v6 anchors read `--theme-fg`). The underline color uses its `underline` key (`.underline-<theme>`).
+`BLink` uses the `color` prop's `theme` key (`.theme-<theme>`, since v6 anchors read `--theme-fg`). The underline color is set with the separate `underline` prop's `color` key (`.underline-<theme>`).
 The v5 `link-<color>` classes no longer exist.
 
 ### Overlay and spinner
 
-`BOverlay` uses `color.bg` for the backdrop color (or `bg-css` for a raw CSS color) and the `spinner-color` object for its spinner. `BSpinner` uses `color.theme` to render `.fg-<theme>`.
+`BOverlay` uses `color.bg` for the backdrop color (or `bg-css` for a raw CSS color) and the `spinner` prop's `color` object for its spinner. `BSpinner` uses `color.theme` to render `.fg-<theme>`.
 
 ## Using classes directly
 

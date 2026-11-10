@@ -2,9 +2,7 @@
   <!-- #region template -->
   <BOverlay
     show
-    :spinner-color="{ theme: 'primary' }"
-    spinner-type="grow"
-    spinner-small
+    :spinner="{ color: { theme: 'primary' }, type: 'grow', small: true }"
     rounded="sm"
     style="max-width: 320px"
   >
