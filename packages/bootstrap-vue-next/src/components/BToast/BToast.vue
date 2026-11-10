@@ -27,9 +27,9 @@
           v-if="slots.close || props.closeContent"
           class="ms-auto"
           :variant="props.closeVariant"
-          :theme="closeColor.theme"
-          :bg="closeColor.bg"
-          :fg="closeColor.fg"
+          :theme="computedCloseColor.theme"
+          :bg="computedCloseColor.bg"
+          :fg="computedCloseColor.fg"
           v-bind="props.closeAttrs"
           @click.stop.prevent="hide('close')"
         >
@@ -64,9 +64,9 @@
             v-if="slots.close || props.closeContent"
             class="ms-auto btn-close-custom"
             :variant="props.closeVariant"
-            :theme="closeColor.theme"
-            :bg="closeColor.bg"
-            :fg="closeColor.fg"
+            :theme="computedCloseColor.theme"
+            :bg="computedCloseColor.bg"
+            :fg="computedCloseColor.fg"
             v-bind="props.closeAttrs"
             @click.stop.prevent="hide('close')"
           >
@@ -168,7 +168,7 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   // End link props
 })
 const props = useDefaults(_props, 'BToast')
-const closeColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
+const computedCloseColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
 const emit = defineEmits<BToastEmits>()
 const slots = defineSlots<BToastSlots>()
 

@@ -68,9 +68,9 @@ Returns:
 | `isActive`                                                      | `true` from the start of a show until `hidden`. Use for `v-if` of transient elements; the `active` slot prop                                                          |
 | `instant`                                                       | `true` while the current change must skip the transition (initial render of an initially shown component, `visible` prop changes). Add the `-instant` class while set |
 | `contentShowing`                                                | Default content should render (`lazy` / `unmountLazy`)                                                                                                                |
-| `show()`                                                        | Resolves `true` after `shown`, `'show-prevented'`, or `false` when superseded                                                                                         |
+| `show(resolveOnHide?)`                                          | Resolves `true` after `shown`, `'show-prevented'`, or `false` when superseded. With `resolveOnHide` it resolves with the trigger once hidden again                    |
 | `hide(trigger?, noTriggerEmit?)`                                | Resolves `trigger ?? ''` after `hidden`, `'hide-prevented'`, or `false` when superseded                                                                               |
-| `toggle()`                                                      | Emits `toggle` (cancelable), then hides (trigger `'toggle-function'`) or shows                                                                                        |
+| `toggle(resolveOnHide?)`                                        | Emits `toggle` (cancelable), then hides (trigger `'toggle-function'`) or shows                                                                                        |
 | `buildTriggerableEvent`, `registerTrigger`, `unregisterTrigger` | Helpers / registry                                                                                                                                                    |
 
 Event order:
@@ -83,6 +83,7 @@ hide():  [trigger] + 'hide' (cancelable → 'hide-prevented') → visible = fals
 ```
 
 - A newer show/hide supersedes a pending one. The older one never emits `shown` / `hidden`; its promise resolves `false`. Repeating the same direction while pending returns the pending promise.
+- The promise of a finished show/hide is resolved before `shown` / `hidden` is emitted, so a listener may start the next change synchronously.
 - A prevented show/hide that was requested through `v-model` reverts `modelValue`.
 - Numeric `modelValue` (countdown) is set to `0` on hide; changes between truthy numbers do nothing.
 - Initially shown (`modelValue` without `initialAnimation`, or `visible`): rendered shown with `instant = true`; on mount it emits `show` (cancelable) and, one frame later, `shown`.
