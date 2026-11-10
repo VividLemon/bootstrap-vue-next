@@ -753,13 +753,10 @@ export default {
           description:
             'Content to display when no items are present in the `items` array. Optionally scoped',
           scope: {
-            emptyFilteredText: {
-              type: 'string',
-              description: 'The value of the empty-filtered-text prop',
-            },
-            emptyText: {
-              type: 'string',
-              description: 'The value of the empty-text prop',
+            empty: {
+              type: '{ text: string; filteredText: string }',
+              description:
+                'The resolved `empty` prop: its `text` and `filteredText`, with their defaults',
             },
             fields: {
               type: 'TableField<Item>[]',
@@ -776,13 +773,10 @@ export default {
           description:
             'Content to display when no items are present in the filtered `items` array. Optionally scoped',
           scope: {
-            emptyFilteredText: {
-              type: 'string',
-              description: 'The value of the empty-filtered-text prop',
-            },
-            emptyText: {
-              type: 'string',
-              description: 'The value of the empty-text prop',
+            empty: {
+              type: '{ text: string; filteredText: string }',
+              description:
+                'The resolved `empty` prop: its `text` and `filteredText`, with their defaults',
             },
             fields: {
               type: 'TableField<Item>[]',

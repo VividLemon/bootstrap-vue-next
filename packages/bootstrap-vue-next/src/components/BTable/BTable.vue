@@ -439,8 +439,7 @@ const computedLiteProps = computed(() => ({
 }))
 
 const emptySlotScope = computed(() => ({
-  emptyFilteredText: computedEmpty.value.filteredText,
-  emptyText: computedEmpty.value.text,
+  empty: computedEmpty.value,
   fields: computedFields.value,
   items: computedItems.value,
 }))

@@ -525,12 +525,11 @@ either falsy or an array of length 0.
 The slot can optionally be scoped. The slot's scope (`scope` in the above example) will have the
 following properties:
 
-| Property            | Type                 | Description                                        |
-| ------------------- | -------------------- | -------------------------------------------------- |
-| `emptyFilteredHtml` | `string`             | The `empty-filtered-html` prop                     |
-| `emptyFilteredText` | `string`             | The `empty` prop's `filteredText` (or its default) |
-| `fields`            | `TableField<Item>[]` | The `fields` prop                                  |
-| `items`             | `Item[]`             | The `items` prop. Exposed here to check null vs [] |
+| Property | Type                                     | Description                                        |
+| -------- | ---------------------------------------- | -------------------------------------------------- |
+| `empty`  | `{ text: string; filteredText: string }` | The resolved `empty` prop, with its defaults       |
+| `fields` | `TableField<Item>[]`                     | The `fields` prop                                  |
+| `items`  | `Item[]`                                 | The `items` prop. Exposed here to check null vs [] |
 
 ::: info NOTE
 If you previously used the `emptyHtml` or `emtpyFilteredHtml` scoped slots or the `empty-html` or
