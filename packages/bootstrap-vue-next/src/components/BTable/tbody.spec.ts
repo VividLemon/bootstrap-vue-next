@@ -32,14 +32,14 @@ describe('tbody', () => {
 
   it('has class theme-{type} when prop theme is set', () => {
     const wrapper = mount(BTbody, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
     })
     expect(wrapper.classes()).toContain('theme-primary')
   })
 
   it('does not have theme class when theme is null', () => {
     const wrapper = mount(BTbody, {
-      props: {theme: null},
+      props: {color: {theme: null}},
     })
     expect(wrapper.classes().join(' ')).not.toMatch(/theme-/)
   })
@@ -51,20 +51,20 @@ describe('tbody', () => {
 
   it('theme class is reactive', async () => {
     const wrapper = mount(BTbody, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
     })
     expect(wrapper.classes()).toContain('theme-primary')
-    await wrapper.setProps({theme: 'secondary'})
+    await wrapper.setProps({color: {theme: 'secondary'}})
     expect(wrapper.classes()).not.toContain('theme-primary')
     expect(wrapper.classes()).toContain('theme-secondary')
   })
 
   it('theme class is removed when theme is set to undefined', async () => {
     const wrapper = mount(BTbody, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
     })
     expect(wrapper.classes()).toContain('theme-primary')
-    await wrapper.setProps({theme: undefined})
+    await wrapper.setProps({color: {theme: undefined}})
     expect(wrapper.classes()).not.toContain('theme-primary')
   })
 
@@ -79,7 +79,7 @@ describe('tbody', () => {
     'inverse',
   ] as const)('has class theme-%s when theme is set', (theme) => {
     const wrapper = mount(BTbody, {
-      props: {theme},
+      props: {color: {theme}},
     })
     expect(wrapper.classes()).toContain(`theme-${theme}`)
   })

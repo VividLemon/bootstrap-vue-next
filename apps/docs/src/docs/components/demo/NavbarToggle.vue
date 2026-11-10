@@ -1,5 +1,5 @@
 <template>
-  <BNavbar v-b-color-mode="'dark'" toggleable theme="inverse">
+  <BNavbar v-b-color-mode="'dark'" toggleable :color="{ theme: 'inverse' }">
     <BNavbarBrand href="#navbar-toggle">NavBar</BNavbarBrand>
     <BNavbarToggle target="navbar-toggle-collapse">
       <template #default="{ expanded }">

@@ -29,29 +29,29 @@ describe('card-head-foot', () => {
   it.each([
     {
       name: 'theme',
-      initialProps: {theme: 'primary'},
-      updatedProps: {theme: 'danger'},
+      initialProps: {color: {theme: 'primary'}},
+      updatedProps: {color: {theme: 'danger'}},
       initialClass: 'theme-primary',
       updatedClass: 'theme-danger',
     },
     {
       name: 'foreground',
-      initialProps: {fg: 'primary'},
-      updatedProps: {fg: 'emphasis-danger'},
+      initialProps: {color: {fg: 'primary'}},
+      updatedProps: {color: {fg: 'emphasis-danger'}},
       initialClass: 'fg-primary',
       updatedClass: 'fg-emphasis-danger',
     },
     {
       name: 'background',
-      initialProps: {bg: 'primary'},
-      updatedProps: {bg: 'subtle-danger'},
+      initialProps: {color: {bg: 'primary'}},
+      updatedProps: {color: {bg: 'subtle-danger'}},
       initialClass: 'bg-primary',
       updatedClass: 'bg-subtle-danger',
     },
     {
       name: 'border',
-      initialProps: {border: 'primary'},
-      updatedProps: {border: 'danger'},
+      initialProps: {color: {border: 'primary'}},
+      updatedProps: {color: {border: 'danger'}},
       initialClass: 'border-primary',
       updatedClass: 'border-danger',
     },
@@ -63,7 +63,7 @@ describe('card-head-foot', () => {
       await wrapper.setProps(updatedProps)
       expect(wrapper.classes()).toContain(updatedClass)
       expect(wrapper.classes()).not.toContain(initialClass)
-      await wrapper.setProps({theme: undefined, fg: undefined, bg: undefined, border: undefined})
+      await wrapper.setProps({color: undefined})
       expect(wrapper.classes()).not.toContain(updatedClass)
     }
   )
@@ -71,10 +71,7 @@ describe('card-head-foot', () => {
   it('all color classes can coexist', () => {
     const wrapper = mount(BCardHeadFoot, {
       props: {
-        theme: 'primary',
-        fg: 'danger',
-        bg: 'success',
-        border: 'warning',
+        color: {theme: 'primary', fg: 'danger', bg: 'success', border: 'warning'},
       },
     })
     expect(wrapper.classes()).toContain('theme-primary')

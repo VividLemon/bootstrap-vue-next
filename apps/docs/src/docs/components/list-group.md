@@ -40,8 +40,8 @@ props.
 
 ## Contextual themes
 
-Use contextual themes to style list items with a stateful background and color, via the `theme`
-prop. It renders the Bootstrap v6 class `.theme-<theme>` on the item (replacing v5 `list-group-item-<variant>`). See [Color Themes](/docs/reference/color-variants).
+Use contextual themes to style list items with a stateful background and color, via the `color`
+prop's `theme` key. It renders the Bootstrap v6 class `.theme-<theme>` on the item (replacing v5 `list-group-item-<variant>`). See [Color Themes](/docs/reference/color-variants).
 
 <<< DEMO ./demo/ListGroupVariants.vue#template{vue-html}
 

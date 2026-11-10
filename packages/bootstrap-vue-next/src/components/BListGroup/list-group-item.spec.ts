@@ -299,31 +299,31 @@ describe('list-group-item', () => {
 
     it('has class theme-{theme} when theme is set', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {theme: 'danger'},
+        props: {color: {theme: 'danger'}},
       })
       expect(wrapper.classes()).toContain('theme-danger')
     })
 
     it('theme prop is reactive', async () => {
       const wrapper = mount(BListGroupItem, {
-        props: {theme: 'danger'},
+        props: {color: {theme: 'danger'}},
       })
       expect(wrapper.classes()).toContain('theme-danger')
-      await wrapper.setProps({theme: 'success'})
+      await wrapper.setProps({color: {theme: 'success'}})
       expect(wrapper.classes()).toContain('theme-success')
       expect(wrapper.classes()).not.toContain('theme-danger')
     })
 
     it('does not have theme class when theme is null', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {theme: null},
+        props: {color: {theme: null}},
       })
       expect(wrapper.classes().some((c) => c.startsWith('theme-'))).toBe(false)
     })
 
     it('retains list-group-item class with theme', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {theme: 'primary'},
+        props: {color: {theme: 'primary'}},
       })
       expect(wrapper.classes()).toContain('list-group-item')
     })
@@ -340,7 +340,7 @@ describe('list-group-item', () => {
 
     it('theme and active can coexist', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {theme: 'primary', active: true},
+        props: { active: true, color: {theme: 'primary'}},
       })
       expect(wrapper.classes()).toContain('theme-primary')
       expect(wrapper.classes()).toContain('active')
@@ -348,7 +348,7 @@ describe('list-group-item', () => {
 
     it('href with active and theme', () => {
       const wrapper = mount(BListGroupItem, {
-        props: {href: '/test', active: true, theme: 'info'},
+        props: {href: '/test', active: true, color: {theme: 'info'}},
       })
       expect(wrapper.classes()).toContain('list-group-item-action')
       expect(wrapper.classes()).toContain('active')

@@ -3,7 +3,7 @@
     <BAlert :model-value="true">
       Hello from BootstrapVueNext
     </BAlert>
-    <BButton theme="primary">
+    <BButton :color="{ theme: 'primary' }">
       Click me
     </BButton>
     <BImg

@@ -9,7 +9,7 @@ app.use(
   createBootstrap({
     components: {
       BButton: {
-        theme: 'primary',
+        color: { theme: 'primary' },
       },
     },
   }),

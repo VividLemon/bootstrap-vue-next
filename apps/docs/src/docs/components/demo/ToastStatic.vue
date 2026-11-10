@@ -1,5 +1,5 @@
 <template>
-  <BToast v-model="active" theme="info">
+  <BToast v-model="active" :color="{ theme: 'info' }">
     <template #title> Title </template>
     Body
   </BToast>

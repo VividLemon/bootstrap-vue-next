@@ -26,7 +26,7 @@ import {
 } from '../../types'
 import { omit, pick } from '../../utils/objectUtils'
 import { imageProps, linkTo } from '../../utils/imageProps'
-import { buildCommonProps } from '../../utils/commonProps'
+import { buildCommonProps, colorBorderProp } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
@@ -34,13 +34,11 @@ export default {
       props: {
         ...pick(
           buildCommonProps({
+            ...colorBorderProp,
             bodyColor: {
               type: 'ColorBorderExtendables',
               description:
                 'Color object for the body: `theme`, `bg`, `fg` and `border` keys render `theme-*`, `bg-*`, `fg-*` and `border-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
-            },
-            border: {
-              default: null,
             },
             footerColor: {
               type: 'ColorBorderExtendables',
@@ -52,17 +50,12 @@ export default {
               description:
                 'Color object for the header: `theme`, `bg`, `fg` and `border` keys render `theme-*`, `bg-*`, `fg-*` and `border-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
             },
-            theme: {
-              default: null,
-            },
           }),
           [
-            'bg',
+            'color',
             'bodyColor',
             'bodyClass',
             'bodyTag',
-            'border',
-            'fg',
             'footer',
             'footerColor',
             'footerClass',
@@ -75,7 +68,6 @@ export default {
             'subtitleColor',
             'subtitleTag',
             'tag',
-            'theme',
             'title',
             'titleTag',
           ],
@@ -146,15 +138,12 @@ export default {
     BCardBody: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.card-body, .card-img-overlay' },
       props: {
-        ...pick(buildCommonProps(), [
-          'bg',
-          'border',
-          'fg',
+        ...pick(buildCommonProps(colorBorderProp), [
+          'color',
           'subtitle',
           'subtitleColor',
           'subtitleTag',
           'tag',
-          'theme',
           'title',
           'titleTag',
         ]),
@@ -184,7 +173,7 @@ export default {
     },
     BCardFooter: {
       props: {
-        ...pick(buildCommonProps(), ['bg', 'border', 'fg', 'tag', 'theme']),
+        ...pick(buildCommonProps(colorBorderProp), ['color', 'tag']),
         text: {
           type: 'string',
           default: undefined,
@@ -212,7 +201,7 @@ export default {
     },
     BCardHeader: {
       props: {
-        ...pick(buildCommonProps(), ['bg', 'border', 'fg', 'tag', 'theme']),
+        ...pick(buildCommonProps(colorBorderProp), ['color', 'tag']),
         text: {
           type: 'string',
           default: undefined,
@@ -252,11 +241,11 @@ export default {
             tag: {
               default: 'h6',
             },
-            fg: {
-              default: '2',
+            color: {
+              default: { fg: '2' },
             },
           }),
-          ['fg', 'tag'],
+          ['color', 'tag'],
         ),
         text: {
           type: 'string',

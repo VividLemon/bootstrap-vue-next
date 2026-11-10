@@ -270,6 +270,7 @@ export interface BDialogProps extends ShowHideProps {
 
 ### `useModal` (redesign)
 
+- `create()` takes its options as a second argument, `create(props, {resolveOnHide})`, so `options` can't collide with a component prop of that name; `component` and `slots` stay in the props object (D9 in [`BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`](./BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md#create-options-move-to-a-second-argument)).
 - `create(props)` returns the controller as today (`show`, `hide`, `toggle`, `set`, `get`, `destroy`, `[Symbol.asyncDispose]`). `controller.show()` resolves with a plain result object (Q4):
 
   ```ts

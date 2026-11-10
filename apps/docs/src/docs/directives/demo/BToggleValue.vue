@@ -1,7 +1,7 @@
 <template>
   <!-- #region template -->
   <div>
-    <BButton v-b-toggle="'collapse-value'" theme="primary">Toggle with Value</BButton>
+    <BButton v-b-toggle="'collapse-value'" :color="{ theme: 'primary' }">Toggle with Value</BButton>
     <BCollapse id="collapse-value" class="mt-3">
       <BCard>
         <p class="card-text">Toggled using <code>v-b-toggle="'collapse-value'"</code></p>

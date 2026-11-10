@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex gap-2 mb-2">
-    <BButton theme="danger" @click="show">Show</BButton>
-    <BButton theme="success" @click="hide">Hide</BButton>
+    <BButton :color="{ theme: 'danger' }" @click="show">Show</BButton>
+    <BButton :color="{ theme: 'success' }" @click="hide">Hide</BButton>
     <BButton @click="toggle">Toggle</BButton>
   </div>
 

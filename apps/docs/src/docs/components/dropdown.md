@@ -110,7 +110,7 @@ Set the `size` prop to either `sm` for a small button, or `lg` for a large butto
 
 ### Dropdown color themes and variants
 
-The dropdown toggle button is colored with the `theme` prop (`success`, `primary`, `info`, `danger`, etc., or custom themes, if [registered](/docs/components/button#custom-themes)) and styled with the `variant` prop (`solid`, `outline`, `subtle`, `text` or `link`). The defaults are theme `secondary` and variant `solid`.
+The dropdown toggle button is colored with the `color` prop's `theme` key (`success`, `primary`, `info`, `danger`, etc., or custom themes, if [registered](/docs/components/button#custom-themes)) and styled with the `variant` prop (`solid`, `outline`, `subtle`, `text` or `link`). The defaults are theme `secondary` and variant `solid`.
 
 See the [Color Themes Reference](/docs/reference/color-variants) for a full list of built-in themes.
 
@@ -120,8 +120,8 @@ You can also apply arbitrary classes to the toggle button via the `toggle-class`
 
 ### Split button color
 
-By default, the left split button uses the same `variant` and `theme` as the `toggle` button. You can give the
-split button its own style and color via the `split-variant` and `split-theme` props.
+By default, the left split button uses the same `variant` and `color` as the `toggle` button. You can give the
+split button its own style and color via the `split-variant` and `split-color` props.
 
 <<< DEMO ./demo/DropdownSplitButtonVariant.vue#template{vue-html}
 
@@ -147,7 +147,7 @@ utility class to the `menu-class` prop.
 ### Dropdown sub-component themes
 
 Many of the supported dropdown [sub-components](#dropdown-supported-sub-components) provide a
-`theme` prop for controlling their color.
+`color` prop for controlling their color.
 
 ### Hidden caret
 

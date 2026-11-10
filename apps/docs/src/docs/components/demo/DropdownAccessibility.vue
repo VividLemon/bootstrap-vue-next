@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BDropdown text="Dropdown ARIA" theme="primary">
+  <BDropdown text="Dropdown ARIA" :color="{ theme: 'primary' }">
     <BDropdownHeader id="dropdown-header-1">Groups</BDropdownHeader>
     <BDropdownItemButton aria-describedby="dropdown-header-1">Add</BDropdownItemButton>
     <BDropdownItemButton aria-describedby="dropdown-header-1">Delete</BDropdownItemButton>

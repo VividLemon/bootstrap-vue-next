@@ -6,7 +6,7 @@
       title: 'Manual Popover',
       body: 'Click the button to toggle',
     }"
-    theme="primary"
+    :color="{ theme: 'primary' }"
     @click="popoverVisible = !popoverVisible"
   >
     {{ popoverVisible ? 'Hide' : 'Show' }} popover

@@ -1,7 +1,7 @@
 <template>
   <!-- #region template -->
   <div>
-    <BButton theme="primary">
+    <BButton :color="{ theme: 'primary' }">
       Notifications
       <BBadge>4</BBadge>
     </BButton>

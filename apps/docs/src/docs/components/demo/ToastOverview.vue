@@ -13,7 +13,7 @@
     "
   >
     <BButton class="mb-2" @click="showToast"> Show Toast </BButton>
-    <BToast v-model="show" theme="info" solid>
+    <BToast v-model="show" :color="{ theme: 'info' }" solid>
       <template #title> Example toast </template>
       This is a toast with a title.
     </BToast>

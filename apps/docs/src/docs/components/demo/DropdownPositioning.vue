@@ -17,7 +17,7 @@
           :key="placement"
           :placement="placement"
           :text="placement"
-          theme="primary"
+          :color="{ theme: 'primary' }"
         >
           <BDropdownItem>Action</BDropdownItem>
           <BDropdownItem>Another action</BDropdownItem>

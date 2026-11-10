@@ -3,18 +3,18 @@
   <BRow class="g-2">
     <BCol :cols="{ xs: 12 }">
       Theme with modifiers:
-      <BBadge :theme="['primary', 'contrast']">contrast</BBadge>
-      <BBadge :theme="['danger', 'subtle', 'border']">subtle + border</BBadge>
-      <BBadge :theme="['success', 'muted']">muted</BBadge>
+      <BBadge :color="{ theme: ['primary', 'contrast'] }">contrast</BBadge>
+      <BBadge :color="{ theme: ['danger', 'subtle', 'border'] }">subtle + border</BBadge>
+      <BBadge :color="{ theme: ['success', 'muted'] }">muted</BBadge>
     </BCol>
     <BCol :cols="{ xs: 12 }">
       Background with opacity:
-      <BBadge :bg="['success', 90]" fg="contrast-success">bg 90%</BBadge>
-      <BBadge :bg="['subtle-success', 40]" fg="success">bg 40%</BBadge>
+      <BBadge :color="{ bg: ['success', 90], fg: 'contrast-success' }">bg 90%</BBadge>
+      <BBadge :color="{ bg: ['subtle-success', 40], fg: 'success' }">bg 40%</BBadge>
     </BCol>
     <BCol :cols="{ xs: 12 }">
       Foreground with opacity:
-      <BBadge bg="body" :fg="['primary', 50]">fg 50%</BBadge>
+      <BBadge :color="{ bg: 'body', fg: ['primary', 50] }">fg 50%</BBadge>
     </BCol>
   </BRow>
   <!-- #endregion template -->

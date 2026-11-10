@@ -23,11 +23,11 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import BCloseButton from '../BButton/BCloseButton.vue'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BFormTagEmits, BFormTagProps, BFormTagSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BFormTagProps>(), {
@@ -38,11 +38,10 @@ const _props = withDefaults(defineProps<BFormTagProps>(), {
   removeLabel: 'Remove tag',
   tag: 'span',
   title: undefined,
-  theme: 'secondary',
-  bg: null,
-  fg: null,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BFormTag')
+const computedColor = computed(() => resolvePartColor(props.color, {theme: 'secondary'}))
 const emit = defineEmits<BFormTagEmits>()
 const slots = defineSlots<BFormTagSlots>()
 
@@ -55,9 +54,9 @@ const taglabelId = computed(() => `${computedId.value}taglabel__`)
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [

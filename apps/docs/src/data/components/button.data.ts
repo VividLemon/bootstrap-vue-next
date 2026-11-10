@@ -25,11 +25,11 @@ export default {
         [defaultPropSectionSymbol]: {
           ...pick(
             buildCommonProps({
-              theme: {
-                default: 'secondary',
+              color: {
+                default: { theme: 'secondary' },
               },
             }),
-            ['size', 'tag', 'theme', 'variant'],
+            ['color', 'size', 'tag', 'variant'],
           ),
           loading: {
             type: 'boolean',

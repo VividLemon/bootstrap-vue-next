@@ -12,7 +12,7 @@ export default {
   load: (): ComponentReference => ({
     BProgress: {
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
+        ...pick(buildCommonProps(), ['color']),
         animated: {
           type: 'boolean',
           default: undefined,
@@ -63,7 +63,7 @@ export default {
     },
     BProgressBar: {
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
+        ...pick(buildCommonProps(), ['color']),
         animated: {
           type: 'boolean',
           default: false, // TODO item not in string format

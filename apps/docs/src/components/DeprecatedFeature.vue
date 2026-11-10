@@ -1,5 +1,5 @@
 <template>
-  <BAlert theme="warning" show class="deprecation-warning">
+  <BAlert :color="{ theme: 'warning' }" show class="deprecation-warning">
     <strong v-html="deprecatedLabel" /> {{ reasonText }}.
     <BLink :href="learnMoreUrl">Learn more about deprecation reasons</BLink
     ><template v-if="$slots.default"> – <slot /></template>

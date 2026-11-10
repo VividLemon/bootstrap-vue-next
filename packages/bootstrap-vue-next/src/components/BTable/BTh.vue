@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import {toColorClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
 import type {BThProps, BThSlots} from '../../types'
@@ -24,22 +24,24 @@ const _props = withDefaults(defineProps<BThProps>(), {
   rowspan: undefined,
   stackedHeading: undefined,
   stickyColumn: false,
-  theme: null,
-  bg: null,
-  fg: null,
   scope: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BTh')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BThSlots>()
 
 const computedClasses = computed(() => [
-  toColorClasses('theme', props.theme),
-  toColorClasses('bg', props.bg),
-  toColorClasses('fg', props.fg),
+  toColorClasses('theme', computedColor.value.theme),
+  toColorClasses('bg', computedColor.value.bg),
+  toColorClasses('fg', computedColor.value.fg),
   {
     'b-table-sticky-column': props.stickyColumn,
     'table-b-table-default':
-      props.stickyColumn && props.theme === null && props.bg === null && props.fg === null,
+      props.stickyColumn &&
+      computedColor.value.theme == null &&
+      computedColor.value.bg == null &&
+      computedColor.value.fg == null,
   },
 ])
 

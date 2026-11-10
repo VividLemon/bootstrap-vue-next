@@ -189,10 +189,10 @@ describe('nav-item', () => {
 
   it('passes theme prop to BLink', () => {
     const wrapper = mount(BNavItem, {
-      props: {theme: 'primary'},
+      props: {color: {theme: 'primary'}},
     })
     const $blink = wrapper.findComponent(BLink)
-    expect($blink.props('theme')).toBe('primary')
+    expect($blink.props('color')?.theme).toBe('primary')
   })
 
   it('passes replace prop to BLink', () => {
