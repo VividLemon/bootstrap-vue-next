@@ -166,6 +166,25 @@ describe('dropdown', () => {
     expect($bbutton.props('theme')).toBe('danger')
   })
 
+  it('first child BButton falls back to theme, bg and fg key by key', () => {
+    const wrapper = mount(BDropdown, {
+      props: {splitColor: {fg: 'white'}, theme: 'danger', bg: 'subtle-danger'},
+    })
+    const $bbutton = wrapper.getComponent(BButton)
+    expect($bbutton.props('theme')).toBe('danger')
+    expect($bbutton.props('bg')).toBe('subtle-danger')
+    expect($bbutton.props('fg')).toBe('white')
+  })
+
+  it('first child BButton splitColor null key clears the root color', () => {
+    const wrapper = mount(BDropdown, {
+      props: {splitColor: {theme: null}, theme: 'danger'},
+    })
+    const $bbutton = wrapper.getComponent(BButton)
+    expect($bbutton.props('theme')).toBeNull()
+    expect($bbutton.classes()).not.toContain('theme-danger')
+  })
+
   it('first child BButton prop size is prop size', () => {
     const wrapper = mount(BDropdown, {
       props: {size: 'sm'},
