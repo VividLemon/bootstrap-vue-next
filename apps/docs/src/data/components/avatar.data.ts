@@ -152,15 +152,7 @@ export default {
                 'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence. Refer to the documentation for details.',
             },
           }),
-          [
-            'color',
-            'rounded',
-            'roundedBottom',
-            'roundedEnd',
-            'roundedStart',
-            'roundedTop',
-            'tag',
-          ],
+          ['color', 'rounded', 'roundedBottom', 'roundedEnd', 'roundedStart', 'roundedTop', 'tag'],
         ),
         overlap: {
           type: 'Numberish',

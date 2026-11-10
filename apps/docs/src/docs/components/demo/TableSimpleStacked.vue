@@ -79,7 +79,9 @@
     </BTbody>
     <BTfoot>
       <BTr>
-        <BTd colspan="7" :color="{ theme: 'secondary' }" class="text-end"> Total Rows: <b>5</b> </BTd>
+        <BTd colspan="7" :color="{ theme: 'secondary' }" class="text-end">
+          Total Rows: <b>5</b>
+        </BTd>
       </BTr>
     </BTfoot>
   </BTableSimple>

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <BButton v-b-toggle.collapse-disabled :disabled="isDisabled" :color="{ theme: 'primary' }" class="mb-2">
+    <BButton
+      v-b-toggle.collapse-disabled
+      :disabled="isDisabled"
+      :color="{ theme: 'primary' }"
+      class="mb-2"
+    >
       Toggle (Currently {{ isDisabled ? 'Disabled' : 'Enabled' }})
     </BButton>
 

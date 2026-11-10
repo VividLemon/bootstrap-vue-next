@@ -13,7 +13,9 @@
     ></BRow
   >
   <BRow
-    ><BCol>Set 'fg' and 'bg': <BBadge :color="{ fg: 'primary', bg: 'danger' }"> testing </BBadge></BCol></BRow
+    ><BCol
+      >Set 'fg' and 'bg': <BBadge :color="{ fg: 'primary', bg: 'danger' }"> testing </BBadge></BCol
+    ></BRow
   >
   <BRow
     ><BCol

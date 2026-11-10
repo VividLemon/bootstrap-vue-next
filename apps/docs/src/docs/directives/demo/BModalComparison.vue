@@ -1,27 +1,37 @@
 <template>
   <div>
     <h5>Using v-b-modal Directive</h5>
-    <BButton v-b-modal.modal-directive :color="{ theme: 'primary' }" class="mb-3"> Open with Directive </BButton>
+    <BButton v-b-modal.modal-directive :color="{ theme: 'primary' }" class="mb-3">
+      Open with Directive
+    </BButton>
     <BModal id="modal-directive" title="Directive Approach">
       <p class="card-text">Simple, declarative approach for triggering modals.</p>
     </BModal>
 
     <h5>Using v-model</h5>
-    <BButton :color="{ theme: 'success' }" class="mb-3" @click="showVModel = true"> Open with v-model </BButton>
+    <BButton :color="{ theme: 'success' }" class="mb-3" @click="showVModel = true">
+      Open with v-model
+    </BButton>
     <BModal v-model="showVModel" title="v-model Approach">
       <p class="card-text">Direct control via reactive state binding.</p>
       <p class="mb-0">Current state: {{ showVModel ? 'Visible' : 'Hidden' }}</p>
     </BModal>
 
     <h5>Using Template Refs</h5>
-    <BButton :color="{ theme: 'info' }" class="mb-3" @click="modalRef?.show()"> Open with Template Ref </BButton>
+    <BButton :color="{ theme: 'info' }" class="mb-3" @click="modalRef?.show()">
+      Open with Template Ref
+    </BButton>
     <BModal ref="modalRef" title="Template Ref Approach">
       <p class="card-text">Programmatic control using component methods.</p>
       <div class="d-flex gap-2 mt-3">
         <BButton size="sm" variant="outline" :color="{ theme: 'primary' }" @click="modalRef?.show()"
           >Show</BButton
         >
-        <BButton size="sm" variant="outline" :color="{ theme: 'secondary' }" @click="modalRef?.hide()"
+        <BButton
+          size="sm"
+          variant="outline"
+          :color="{ theme: 'secondary' }"
+          @click="modalRef?.hide()"
           >Hide</BButton
         >
         <BButton size="sm" variant="outline" :color="{ theme: 'info' }" @click="modalRef?.toggle()"

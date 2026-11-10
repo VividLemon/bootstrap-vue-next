@@ -36,7 +36,7 @@ export default {
           type: "boolean | 'fluid' | Breakpoint",
           default: 'fluid',
           description:
-            "Use the container option to change the layout of the navbar. By default, the navbar is a fluid container. Use 'fluid' for a full width navbar (`container-fluid`), `true` for a fixed-width container (`container`), or a breakpoint for a navbar that is full width until that breakpoint (`container=\"md\"` renders `md:container`).",
+            'Use the container option to change the layout of the navbar. By default, the navbar is a fluid container. Use \'fluid\' for a full width navbar (`container-fluid`), `true` for a fixed-width container (`container`), or a breakpoint for a navbar that is full width until that breakpoint (`container="md"` renders `md:container`).',
         },
         fixed: {
           type: "'top' | 'bottom'",
