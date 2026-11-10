@@ -430,7 +430,7 @@ describe('toast', () => {
 
   it('does not have BCloseButton when closeContent prop is provided', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeContent: 'X'},
+      props: {modelValue: true, close: {content: 'X'}},
       slots: {default: 'content'},
     })
     const $bclosebutton = wrapper.findComponent(BCloseButton)
@@ -440,7 +440,7 @@ describe('toast', () => {
   // Close button (BButton variant - when closeContent or close slot)
   it('has BButton when closeContent prop is provided', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeContent: 'X'},
+      props: {modelValue: true, close: {content: 'X'}},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.findComponent(BButton)
@@ -458,7 +458,7 @@ describe('toast', () => {
 
   it('BButton renders closeContent text', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeContent: 'X'},
+      props: {modelValue: true, close: {content: 'X'}},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)
@@ -486,7 +486,7 @@ describe('toast', () => {
 
   it('BCloseButton has aria-label from closeLabel prop', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeLabel: 'Dismiss'},
+      props: {modelValue: true, close: {label: 'Dismiss'}},
       slots: {default: 'content'},
     })
     const $bclosebutton = wrapper.getComponent(BCloseButton)
@@ -496,7 +496,7 @@ describe('toast', () => {
   // closeClass prop
   it('BCloseButton merges closeAttrs', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeAttrs: {'class': 'custom-close', 'data-foo': 'bar'}},
+      props: {modelValue: true, close: {attrs: {'class': 'custom-close', 'data-foo': 'bar'}}},
       slots: {default: 'content'},
     })
     const $bclosebutton = wrapper.getComponent(BCloseButton)
@@ -508,7 +508,7 @@ describe('toast', () => {
 
   it('BButton merges closeAttrs', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeAttrs: {class: 'custom-close'}, closeContent: 'X'},
+      props: {modelValue: true, close: {attrs: {class: 'custom-close'}, content: 'X'}},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)
@@ -519,7 +519,7 @@ describe('toast', () => {
   // closeVariant prop
   it('BButton has theme class from closeColor.theme prop', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeColor: {theme: 'warning'}, closeContent: 'X'},
+      props: {modelValue: true, close: {color: {theme: 'warning'}, content: 'X'}},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)
@@ -529,7 +529,7 @@ describe('toast', () => {
 
   it('BButton has variant class from closeVariant prop', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeVariant: 'outline', closeContent: 'X'},
+      props: {modelValue: true, close: {variant: 'outline', content: 'X'}},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)
@@ -829,7 +829,7 @@ describe('toast', () => {
   // closeContent rendering in header (with title)
   it('renders closeContent in header BButton when title is set', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, title: 'Title', closeContent: 'X'},
+      props: {modelValue: true, title: 'Title', close: {content: 'X'}},
       slots: {default: 'content'},
     })
     const $header = wrapper.find('.toast-header')
@@ -851,7 +851,7 @@ describe('toast', () => {
   // BButton ms-auto class
   it('BButton has ms-auto class when closeContent provided', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true, closeContent: 'X'},
+      props: {modelValue: true, close: {content: 'X'}},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)

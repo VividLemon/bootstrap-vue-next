@@ -24,22 +24,22 @@
       </slot>
       <template v-if="props.dismissible">
         <BButton
-          v-if="slots.close || props.closeContent"
+          v-if="slots.close || props.close?.content"
           class="ms-auto ps-1 btn-close-custom"
           :color="computedCloseColor"
-          :variant="props.closeVariant"
-          v-bind="props.closeAttrs"
+          :variant="props.close?.variant ?? 'solid'"
+          v-bind="props.close?.attrs"
           @click.stop.prevent="hide('close')"
         >
           <slot name="close" v-bind="sharedSlots">
-            {{ props.closeContent }}
+            {{ props.close?.content }}
           </slot>
         </BButton>
         <BCloseButton
           v-else
           class="ms-auto"
-          :aria-label="props.closeLabel"
-          v-bind="props.closeAttrs"
+          :aria-label="props.close?.label ?? 'Close'"
+          v-bind="props.close?.attrs"
           @click.stop.prevent="hide('close')"
         />
       </template>
@@ -59,22 +59,22 @@
 
         <template v-if="props.dismissible && !(slots.title || props.title)">
           <BButton
-            v-if="slots.close || props.closeContent"
+            v-if="slots.close || props.close?.content"
             class="ms-auto btn-close-custom"
             :color="computedCloseColor"
-            :variant="props.closeVariant"
-            v-bind="props.closeAttrs"
+            :variant="props.close?.variant ?? 'solid'"
+            v-bind="props.close?.attrs"
             @click.stop.prevent="hide('close')"
           >
             <slot name="close" v-bind="sharedSlots">
-              {{ props.closeContent }}
+              {{ props.close?.content }}
             </slot>
           </BButton>
           <BCloseButton
             v-else
             class="ms-auto"
-            :aria-label="props.closeLabel"
-            v-bind="props.closeAttrs"
+            :aria-label="props.close?.label ?? 'Close'"
+            v-bind="props.close?.attrs"
             @click.stop.prevent="hide('close')"
           />
         </template>
@@ -115,11 +115,7 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   alertAttrs: undefined,
   body: undefined,
   bodyAttrs: undefined,
-  closeAttrs: undefined,
-  closeContent: undefined,
-  closeLabel: 'Close',
-  closeColor: undefined,
-  closeVariant: 'solid',
+  close: undefined,
   dismissible: false,
   headerAttrs: undefined,
   headerTag: 'div',
@@ -159,7 +155,9 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
 })
 const props = useDefaults(_props, 'BAlert')
 const computedColor = computed(() => resolvePartColor(props.color, {theme: 'info'}))
-const computedCloseColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
+const computedCloseColor = computed(() =>
+  resolvePartColor(props.close?.color, {theme: 'secondary'})
+)
 const emit = defineEmits<BAlertEmits>()
 const slots = defineSlots<BAlertSlots>()
 

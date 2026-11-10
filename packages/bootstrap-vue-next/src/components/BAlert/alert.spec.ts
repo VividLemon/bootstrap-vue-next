@@ -175,7 +175,7 @@ describe('alert', () => {
 
   it('nested div does not have BCloseButton when prop dismissible but also prop closeContent', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeContent: 'foobar'},
+      props: {modelValue: true, dismissible: true, close: {content: 'foobar'}},
     })
     const $div = wrapper.get('div')
     const $bclosebutton = $div.findComponent(BCloseButton)
@@ -184,7 +184,7 @@ describe('alert', () => {
 
   it('nested div has BButton when prop dismissible but also prop closeContent', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeContent: 'foobar'},
+      props: {modelValue: true, dismissible: true, close: {content: 'foobar'}},
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -233,7 +233,7 @@ describe('alert', () => {
 
   it('nested div BCloseButton has aria-label to be prop closeLabel', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeLabel: 'foobar'},
+      props: {modelValue: true, dismissible: true, close: {label: 'foobar'}},
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -309,7 +309,7 @@ describe('alert', () => {
       props: {
         modelValue: true,
         dismissible: true,
-        closeAttrs: {'class': 'foobar', 'data-foo': 'bar'},
+        close: {attrs: {'class': 'foobar', 'data-foo': 'bar'}},
       },
       slots: {default: 'foobar'},
     })
@@ -342,7 +342,7 @@ describe('alert', () => {
 
   it('nested div BCloseButton has no variant class when closeColor.theme', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeColor: {theme: 'warning'}},
+      props: {modelValue: true, dismissible: true, close: {color: {theme: 'warning'}}},
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -413,7 +413,7 @@ describe('alert', () => {
 
   it('nested div BButton merges closeAttrs', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeAttrs: {class: 'foobar'}},
+      props: {modelValue: true, dismissible: true, close: {attrs: {class: 'foobar'}}},
       slots: {close: 'foobar', default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -438,8 +438,7 @@ describe('alert', () => {
       props: {
         modelValue: true,
         dismissible: true,
-        closeVariant: 'outline',
-        closeColor: {theme: 'warning'},
+        close: {variant: 'outline', color: {theme: 'warning'}},
       },
       slots: {close: 'foobar', default: 'foobar'},
     })
@@ -654,7 +653,7 @@ describe('alert', () => {
   // closeContent prop rendering
   it('renders closeContent text in BButton', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeContent: 'X'},
+      props: {modelValue: true, dismissible: true, close: {content: 'X'}},
       slots: {default: 'content'},
     })
     const $bbutton = wrapper.getComponent(BButton)
@@ -816,7 +815,7 @@ describe('alert', () => {
 
   it('does not have alert-dismissible class when dismissible with closeContent', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeContent: 'X'},
+      props: {modelValue: true, dismissible: true, close: {content: 'X'}},
       slots: {default: 'content'},
     })
     const $div = wrapper.get('div')

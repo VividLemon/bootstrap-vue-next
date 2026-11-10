@@ -21,10 +21,6 @@ export default {
             'color',
             'body',
             'bodyAttrs',
-            'closeContent',
-            'closeLabel',
-            'closeColor',
-            'closeVariant',
             'headerTag',
             'id',
             'interval',
@@ -36,10 +32,13 @@ export default {
             'title',
           ]),
 
-          closeAttrs: {
-            type: 'Readonly<AttrsValue>',
+          close: {
+            type: 'CloseButtonOptions',
+
             default: undefined,
-            description: 'Attributes to be applied to the close button',
+
+            description:
+              "The close button: `content` (text that turns it into a styled button), `label` (accessible label, default 'Close'), `variant` (button style when it has content, default 'solid'), `color` (color object, default `{ theme: 'secondary' }`; keys left out keep the default) and `attrs` (attributes for the button)",
           },
           headerAttrs: {
             type: 'Readonly<AttrsValue>',

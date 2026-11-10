@@ -1066,11 +1066,7 @@ export interface BAlertProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProp
   alertAttrs?: Readonly<AttrsValue>
   body?: string
   bodyAttrs?: Readonly<AttrsValue>
-  closeAttrs?: Readonly<AttrsValue>
-  closeColor?: ColorExtendables
-  closeContent?: string
-  closeLabel?: string
-  closeVariant?: ButtonVariant | null
+  close?: CloseButtonOptions
   dismissible?: boolean
   headerAttrs?: Readonly<AttrsValue>
   headerTag?: string
@@ -1491,11 +1487,7 @@ export interface BDropdownProps extends TeleporterProps, ShowHideProps, ColorPro
 export interface BToastProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProps {
   body?: string
   bodyAttrs?: Readonly<AttrsValue>
-  closeAttrs?: Readonly<AttrsValue>
-  closeColor?: ColorExtendables
-  closeContent?: string
-  closeLabel?: string
-  closeVariant?: ButtonVariant | null
+  close?: CloseButtonOptions
   headerAttrs?: Readonly<AttrsValue>
   headerTag?: string
   id?: string

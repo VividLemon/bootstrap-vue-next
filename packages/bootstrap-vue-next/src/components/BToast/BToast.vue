@@ -24,22 +24,22 @@
       </slot>
       <template v-if="!props.noCloseButton">
         <BButton
-          v-if="slots.close || props.closeContent"
+          v-if="slots.close || props.close?.content"
           class="ms-auto"
-          :variant="props.closeVariant"
+          :variant="props.close?.variant ?? 'solid'"
           :color="computedCloseColor"
-          v-bind="props.closeAttrs"
+          v-bind="props.close?.attrs"
           @click.stop.prevent="hide('close')"
         >
           <slot name="close" v-bind="sharedSlots">
-            {{ props.closeContent }}
+            {{ props.close?.content }}
           </slot>
         </BButton>
         <BCloseButton
           v-else
-          :aria-label="props.closeLabel"
+          :aria-label="props.close?.label ?? 'Close'"
           class="ms-auto"
-          v-bind="props.closeAttrs"
+          v-bind="props.close?.attrs"
           @click.stop.prevent="hide('close')"
         />
       </template>
@@ -59,22 +59,22 @@
 
         <template v-if="!props.noCloseButton && !(slots.title || props.title)">
           <BButton
-            v-if="slots.close || props.closeContent"
+            v-if="slots.close || props.close?.content"
             class="ms-auto btn-close-custom"
-            :variant="props.closeVariant"
+            :variant="props.close?.variant ?? 'solid'"
             :color="computedCloseColor"
-            v-bind="props.closeAttrs"
+            v-bind="props.close?.attrs"
             @click.stop.prevent="hide('close')"
           >
             <slot name="close" v-bind="sharedSlots">
-              {{ props.closeContent }}
+              {{ props.close?.content }}
             </slot>
           </BButton>
           <BCloseButton
             v-else
-            :aria-label="props.closeLabel"
+            :aria-label="props.close?.label ?? 'Close'"
             class="ms-auto btn-close-custom"
-            v-bind="props.closeAttrs"
+            v-bind="props.close?.attrs"
             @click.stop.prevent="hide('close')"
           />
         </template>
@@ -114,11 +114,7 @@ import BButton from '../BButton/BButton.vue'
 const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   body: undefined,
   bodyAttrs: undefined,
-  closeAttrs: undefined,
-  closeContent: undefined,
-  closeLabel: 'Close',
-  closeColor: undefined,
-  closeVariant: 'solid',
+  close: undefined,
   headerAttrs: undefined,
   headerTag: 'div',
   id: undefined,
@@ -161,7 +157,9 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
 })
 const props = useDefaults(_props, 'BToast')
 const computedColor = computed(() => resolvePartColor(props.color, {}))
-const computedCloseColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
+const computedCloseColor = computed(() =>
+  resolvePartColor(props.close?.color, {theme: 'secondary'})
+)
 const emit = defineEmits<BToastEmits>()
 const slots = defineSlots<BToastSlots>()
 
