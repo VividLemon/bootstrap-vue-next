@@ -204,6 +204,25 @@ Standalone `.chip` (`.chip-icon`, `.chip-img`, `.chip-dismiss`, `.active`, `.dis
 - The keyboard map is ported from `chips.ts`.
 - Selected chips get `.active` plus `aria-pressed="true"`. A role-less `<span>` cannot carry `aria-selected`, and `option` cannot contain a button.
 
+### Open: prop families carried over from `BFormTags`
+
+Decide during the Chips implementation, not now. `BFormTags` still has prefix families that the
+prop-family audit skipped because Chips replaces it (see "Prop families become objects" in
+`BOOTSTRAP_V6_MIGRATION.md`):
+
+- Props: `addButtonText` / `addButtonVariant` / `addButtonColor`, `inputAttrs` / `inputClass` /
+  `inputId` / `inputType`, `tagClass` / `tagColor` / `tagPills` / `tagRemoveLabel` /
+  `tagRemovedLabel`, and the message props `invalidTagText` / `duplicateTagText` /
+  `limitTagsText`.
+- Slot scopes: the `default` scope mirrors those props (`addButton*`, `input*`, `tag*`, the
+  `*Text` messages), and the `tag` scope exposes `tagClass` / `tagColor` / `tagPills`.
+
+For each family, decide whether it survives in `BFormChips`. If it does, apply the same rule as the
+rest of v6: one object prop when the family is one concern with no main switch (for example
+`input: { id, type, attrs }`, `messages: { invalid, duplicate, limit }`), flat otherwise. Slot
+scopes only group when they mirror a grouped prop, so they can be bound straight onto the
+sub-component.
+
 ## OTP input (replace `BFormOtp`)
 
 ### v6 overview
