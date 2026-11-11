@@ -254,31 +254,49 @@ export const useShowHide = (
 
   let operation = 0
   let delayTimer: ReturnType<typeof setTimeout> | undefined
-  let pending:
-    | {
-        visible: boolean
-        promise: Promise<boolean | string>
-        resolve: (v: boolean | string) => void
-        /** A show whose promise resolves when the component is hidden again */
-        resolveOnHide: boolean
-      }
-    | undefined
+  type Waiter = {
+    promise: Promise<boolean | string>
+    resolve: (v: boolean | string) => void
+    /** A show whose promise resolves when the component is hidden again */
+    resolveOnHide: boolean
+  }
+  const createWaiter = (resolveOnHide: boolean): Waiter => {
+    let resolve!: (v: boolean | string) => void
+    const promise = new Promise<boolean | string>((res) => {
+      resolve = res
+    })
+    return {promise, resolve, resolveOnHide}
+  }
+  /**
+   * The change in progress. A show has one waiter per kind of caller, `show()` and `show(true)`,
+   * so each gets the promise it asked for
+   */
+  let pending: {visible: boolean; waiters: Waiter[]} | undefined
   /** Resolvers of `show(true)` promises that wait for the next `hidden` */
   let hideWaiters: ((v: boolean | string) => void)[] = []
   /** Set around a show / hide that must skip the transition (`visible` prop, initial render) */
   let nextInstant = false
   /** The value this composable last wrote to `modelValue`, until its watcher saw it */
-  let ownModelWrite: boolean | undefined
+  let ownModelWrite: {value: boolean} | undefined
+  const markOwnModelWrite = (value: boolean) => {
+    const write = {value}
+    ownModelWrite = write
+    // The watcher never runs when the parent does not apply the update. Left set, the mark would
+    // make it skip the parent's next real change to that value
+    void nextTick(() => {
+      if (ownModelWrite === write) ownModelWrite = undefined
+    })
+  }
 
   /** The state the component is heading to, including a pending (delayed) change */
   const targetVisible = () => (pending ? pending.visible : visible.value)
 
   const syncModelValue = (value: boolean) => {
     if (value && !modelValue.value) {
-      ownModelWrite = true
+      markOwnModelWrite(true)
       modelValue.value = true
     } else if (!value && modelValue.value) {
-      ownModelWrite = false
+      markOwnModelWrite(false)
       modelValue.value = typeof modelValue.value === 'number' ? 0 : false
     }
   }
@@ -297,12 +315,14 @@ export const useShowHide = (
     const current = pending
     pending = undefined
     if (!current) return
-    if (byHide && current.visible && current.resolveOnHide) {
-      // `show(true)` waits for the hide, also when the hide starts before `shown`
-      hideWaiters.push(current.resolve)
-    } else {
-      current.resolve(false)
-    }
+    current.waiters.forEach((waiter) => {
+      if (byHide && current.visible && waiter.resolveOnHide) {
+        // `show(true)` waits for the hide, also when the hide starts before `shown`
+        hideWaiters.push(waiter.resolve)
+      } else {
+        waiter.resolve(false)
+      }
+    })
   }
 
   const start = (
@@ -319,11 +339,8 @@ export const useShowHide = (
     // make the next one skip its delay and transition
     instant.value = nextInstant
 
-    let resolve!: (v: boolean | string) => void
-    const promise = new Promise<boolean | string>((res) => {
-      resolve = res
-    })
-    const current = {visible: value, promise, resolve, resolveOnHide}
+    const waiter = createWaiter(resolveOnHide)
+    const current = {visible: value, waiters: [waiter]}
     pending = current
 
     const apply = async () => {
@@ -349,16 +366,18 @@ export const useShowHide = (
       instant.value = false
       pending = undefined
       if (value) {
-        if (current.resolveOnHide) {
-          hideWaiters.push(resolve)
-        } else {
-          resolve(true)
-        }
+        current.waiters.forEach((w) => {
+          if (w.resolveOnHide) {
+            hideWaiters.push(w.resolve)
+          } else {
+            w.resolve(true)
+          }
+        })
         emit('shown', buildTriggerableEvent('shown'))
       } else {
         isActive.value = false
         const result = trigger ?? ''
-        resolve(result)
+        current.waiters.forEach((w) => w.resolve(result))
         settleHideWaiters(result)
         emit('hidden', buildTriggerableEvent('hidden', {trigger}))
       }
@@ -370,15 +389,21 @@ export const useShowHide = (
     } else {
       apply()
     }
-    return promise
+    return waiter.promise
   }
 
   const show = (resolveOnHide: boolean = false): Promise<boolean | string> => {
     // Ignore event objects from `@click="show"`
     resolveOnHide = resolveOnHide === true
     if (pending?.visible === true) {
-      pending.resolveOnHide = resolveOnHide
-      return pending.promise
+      // Repeating a pending show returns its promise. A caller that asks for the other kind of
+      // promise gets its own, so it cannot change what an earlier caller is waiting for
+      let waiter = pending.waiters.find((w) => w.resolveOnHide === resolveOnHide)
+      if (!waiter) {
+        waiter = createWaiter(resolveOnHide)
+        pending.waiters.push(waiter)
+      }
+      return waiter.promise
     }
     if (visible.value && !pending) return Promise.resolve(true)
 
@@ -396,7 +421,7 @@ export const useShowHide = (
 
   const hide = (trigger?: string, noTriggerEmit = false): Promise<boolean | string> => {
     if (typeof trigger !== 'string') trigger = undefined
-    if (pending?.visible === false) return pending.promise
+    if (pending?.visible === false) return (pending.waiters[0] as Waiter).promise
     if (!visible.value && !pending) return Promise.resolve('')
 
     if (
@@ -444,7 +469,7 @@ export const useShowHide = (
     // newer pending (delayed) change in the other direction
     const own = ownModelWrite
     ownModelWrite = undefined
-    if (own !== undefined && !!value === own) return
+    if (own !== undefined && !!value === own.value) return
     if (!!value === targetVisible()) return
     if (value) {
       show()

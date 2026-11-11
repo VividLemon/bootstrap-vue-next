@@ -1,6 +1,6 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it, vi} from 'vitest'
-import {defineComponent, type EmitFn, h, nextTick, ref, type Ref, watch} from 'vue'
+import {customRef, defineComponent, type EmitFn, h, nextTick, ref, type Ref, watch} from 'vue'
 import {useShowHide, type UseShowHideProps, type UseShowHideReturn} from './useShowHide'
 import type {BvTriggerableEvent} from '../utils'
 
@@ -370,6 +370,33 @@ describe('useShowHide', () => {
     expect(api().visible.value).toBe(true)
   })
 
+  it('follows the model after a parent declined its own model update', async () => {
+    // Like a parent that listens to `update:modelValue` without writing the value back
+    let value = false
+    let notify = () => {}
+    const modelValue = customRef<boolean | number>((track, trigger) => {
+      notify = trigger
+      return {
+        get: () => {
+          track()
+          return value
+        },
+        set: () => {},
+      }
+    })
+    const {api} = mountHost({}, {modelValue})
+    await flush()
+    await api().show()
+    await api().hide()
+    await flush()
+    expect(api().visible.value).toBe(false)
+
+    value = true
+    notify()
+    await flush()
+    expect(api().visible.value).toBe(true)
+  })
+
   it('a superseded visible-prop change does not make the next change instant', async () => {
     vi.useFakeTimers()
     const {api, wrapper} = mountHost(
@@ -415,6 +442,52 @@ describe('useShowHide', () => {
     finish(true)
     await expect(hidePromise).resolves.toBe('early')
     await expect(showPromise).resolves.toBe('early')
+  })
+
+  it('a plain show() does not change what a pending show(true) waits for', async () => {
+    let finish!: (v: boolean) => void
+    const transition = () => new Promise<boolean>((resolve) => (finish = resolve))
+    const {api} = mountHost({}, {transition})
+    await flush()
+    const onHide = vi.fn<(v: boolean | string) => void>()
+    void api().show(true).then(onHide)
+    const plain = api().show()
+    finish(true)
+    await flush()
+    expect(await plain).toBe(true)
+    expect(onHide).not.toHaveBeenCalled()
+
+    const hidePromise = api().hide('esc')
+    finish(true)
+    await hidePromise
+    await flush()
+    expect(onHide).toHaveBeenCalledWith('esc')
+  })
+
+  it('a show(true) does not change what a pending plain show() waits for', async () => {
+    let finish!: (v: boolean) => void
+    const transition = () => new Promise<boolean>((resolve) => (finish = resolve))
+    const {api} = mountHost({}, {transition})
+    await flush()
+    const plain = api().show()
+    const onHide = vi.fn<(v: boolean | string) => void>()
+    void api().show(true).then(onHide)
+    expect(api().show(true)).toBe(api().show(true))
+    finish(true)
+    expect(await plain).toBe(true)
+    await flush()
+    expect(onHide).not.toHaveBeenCalled()
+  })
+
+  it('settles every waiter of a pending show that is superseded', async () => {
+    const transition = () => new Promise<boolean>(() => {})
+    const {api, wrapper} = mountHost({}, {transition})
+    await flush()
+    const plain = api().show()
+    const onHide = api().show(true)
+    wrapper.unmount()
+    expect(await plain).toBe(false)
+    expect(await onHide).toBe(false)
   })
 
   it('show(true) resolves false on unmount', async () => {

@@ -274,9 +274,13 @@ const headerCloseClasses = computed(() => [
 const computedHeaderCloseColor = computed(() =>
   resolvePartColor(props.headerClose?.color, {theme: 'secondary'})
 )
+// `null` clears the variant, so only a missing one falls back to solid
+const headerCloseVariant = computed(() =>
+  props.headerClose?.variant === undefined ? 'solid' : props.headerClose.variant
+)
 const headerCloseAttrs = computed(() => ({
   ...props.headerClose?.attrs,
-  variant: hasHeaderCloseSlot.value ? (props.headerClose?.variant ?? 'solid') : undefined,
+  variant: hasHeaderCloseSlot.value ? headerCloseVariant.value : undefined,
   color: hasHeaderCloseSlot.value ? computedHeaderCloseColor.value : undefined,
   class: headerCloseClasses.value,
 }))
