@@ -127,8 +127,9 @@ export default {
             type: {
               type: 'SpinnerType',
             },
-            theme: {
-              type: 'ThemeColor | null | undefined',
+            color: {
+              type: "BSpinnerProps['color']",
+              description: 'The `color` of the `spinner` prop',
             },
             small: {
               type: 'boolean',

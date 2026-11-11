@@ -82,7 +82,7 @@ hide():  [trigger] + 'hide' (cancelable → 'hide-prevented') → visible = fals
          → transition(false) → isActive = false, 'hidden' {trigger}
 ```
 
-- A newer show/hide supersedes a pending one. The older one never emits `shown` / `hidden`; its promise resolves `false`. Repeating the same direction while pending returns the pending promise.
+- A newer show/hide supersedes a pending one. The older one never emits `shown` / `hidden`; its promise resolves `false`. Repeating the same direction while pending returns the pending promise; `show()` and `show(true)` each keep their own, so one caller cannot change what another waits for.
 - The promise of a finished show/hide is resolved before `shown` / `hidden` is emitted, so a listener may start the next change synchronously.
 - A prevented show/hide that was requested through `v-model` reverts `modelValue`.
 - Numeric `modelValue` (countdown) is set to `0` on hide; changes between truthy numbers do nothing.

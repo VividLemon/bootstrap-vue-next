@@ -52,9 +52,9 @@ In BSVN, `v-b-modal` is an alias for `v-b-toggle`:
 
 <<< FRAGMENT ../../directives/demo/ModalDirectiveMigration.html#array-value{vue-html}
 
-**CSS class tracking:**
+**Trigger state:**
 
-BSVN adds `collapsed`/`not-collapsed` classes to trigger elements based on modal state, allowing for conditional styling.
+BSVN sets `aria-expanded` on trigger elements to follow the modal state. There are no `collapsed`/`not-collapsed` trigger classes; style triggers with the `[aria-expanded="true"]` and `[aria-expanded="false"]` attribute selectors.
 
 **Migration from BSV `this.$bvModal.show(id)`:**
 
