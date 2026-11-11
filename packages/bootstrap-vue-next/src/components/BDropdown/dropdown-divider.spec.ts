@@ -15,6 +15,17 @@ describe('dropdown-divider', () => {
     expect(wrapper.attributes('role')).toBe('presentation')
   })
 
+  it('renders the color prop as classes on the divider', () => {
+    const wrapper = mount(BDropdownDivider, {
+      props: {color: {theme: 'danger', bg: 'primary', fg: 'white'}},
+    })
+    const classes = wrapper.find('hr').classes()
+    expect(classes).toContain('theme-danger')
+    expect(classes).toContain('bg-primary')
+    expect(classes).toContain('fg-white')
+    expect(wrapper.classes()).not.toContain('theme-danger')
+  })
+
   it('has child hr when not prop hr', () => {
     const wrapper = mount(BDropdownDivider)
     const $hr = wrapper.find('hr')
