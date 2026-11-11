@@ -45,6 +45,25 @@ describe('nav-item-dropdown', () => {
     expect($bdropdown.props('color')?.theme).toBe('primary')
   })
 
+  it('leaves the toggle unthemed by default', () => {
+    const wrapper = mount(BNavItemDropdown)
+    const toggle = wrapper.find('button')
+    expect(toggle.exists()).toBe(true)
+    expect(toggle.classes().some((c) => c.startsWith('theme-'))).toBe(false)
+  })
+
+  it('stays unthemed when only another color key is set', () => {
+    const wrapper = mount(BNavItemDropdown, {props: {color: {bg: 'primary'}}})
+    const classes = wrapper.find('button').classes()
+    expect(classes).toContain('bg-primary')
+    expect(classes.some((c) => c.startsWith('theme-'))).toBe(false)
+  })
+
+  it('themes the toggle when a theme is set', () => {
+    const wrapper = mount(BNavItemDropdown, {props: {color: {theme: 'primary'}}})
+    expect(wrapper.find('button').classes()).toContain('theme-primary')
+  })
+
   it('passes split prop to BDropdown', async () => {
     const wrapper = mount(BNavItemDropdown, {
       props: {split: true},
