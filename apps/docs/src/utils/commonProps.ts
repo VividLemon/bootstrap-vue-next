@@ -477,12 +477,6 @@ const commonProps = () =>
       description:
         'Color object for selected table rows: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
     },
-    spinnerColor: {
-      type: 'ColorExtendables',
-      default: undefined,
-      description:
-        'Color object for the overlay spinner: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
-    },
     splitColor: {
       type: 'ColorExtendables',
       default: undefined,
