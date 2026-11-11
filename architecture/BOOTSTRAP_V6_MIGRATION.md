@@ -139,7 +139,7 @@ type HoverState<T> = Partial<Record<'xs' | 'hover', T>>
 
 Every `<part>Theme` / `<part>Bg` / `<part>Fg` trio (the 19 `*ColorExtendables` interfaces in `types/ColorTypes.ts`, plus inline families such as `badge*`) becomes one `<part>Color` object prop typed as `ColorExtendables` (plus `border` where the part has a border prop).
 
-The component's own colors follow the same rule: the root `theme` / `bg` / `fg` (and `border`) props become one `color` object prop on every component (`ColorProps` / `ColorBorderProps` in `types/ColorTypes.ts`). Built-in defaults (BButton / BBadge / BAvatar / BFormTag / BDropdown `secondary`, BAlert `info`, BPlaceholderButton `primary`, BFormText / BCardSubtitle `fg: '2'`, BOverlay `bg: 'body'`) are merged per key with `resolvePartColor`, like part objects.
+The component's own colors follow the same rule: the root `theme` / `bg` / `fg` (and `border`) props become one `color` object prop on every component (declared on each props interface as `color?: ColorExtendables | null`, or `ColorBorderExtendables` for components with a border). Built-in defaults (BButton / BBadge / BAvatar / BFormTag / BDropdown `secondary`, BAlert `info`, BPlaceholderButton `primary`, BFormText / BCardSubtitle `fg: '2'`, BOverlay `bg: 'body'`) are merged per key with `resolvePartColor`, like part objects.
 
 ```vue-html
 <BBadge :color="{ theme: 'success' }" />

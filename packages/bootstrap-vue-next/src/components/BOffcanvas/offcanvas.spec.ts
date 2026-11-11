@@ -358,6 +358,26 @@ describe('offcanvas', () => {
       expect($button.classes()).toContain('btn-outline')
     })
 
+    it('BButton from header-close slot is solid when headerClose.variant is not set', () => {
+      const wrapper = mount(BOffcanvas, {
+        props: {headerClose: {color: {theme: 'warning'}}},
+        slots: {'header-close': 'X'},
+        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
+      })
+      expect(wrapper.findComponent(BButton).props('variant')).toBe('solid')
+    })
+
+    it('BButton from header-close slot has no variant when headerClose.variant is null', () => {
+      const wrapper = mount(BOffcanvas, {
+        props: {headerClose: {variant: null}},
+        slots: {'header-close': 'X'},
+        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
+      })
+      const $button = wrapper.findComponent(BButton)
+      expect($button.props('variant')).toBeNull()
+      expect($button.classes()).not.toContain('btn-solid')
+    })
+
     it('BCloseButton does not have theme class when headerCloseColor.theme is set', () => {
       const wrapper = mount(BOffcanvas, {
         props: {headerClose: {color: {theme: 'warning'}}},
