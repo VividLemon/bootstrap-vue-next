@@ -49,8 +49,8 @@ For a full list of all available slots see the [Slots](#comp-reference-bpaginati
 
 <<< DEMO ./demo/PaginationButtonContent.vue
 
-The slot `page` is always scoped, while the slots `first-text`, `prev-text`, `next-text` and
-`last-text` are optionally scoped. The `ellipsis-text` slot is not scoped.
+The slot `page` is always scoped, while the slots `first`, `prev`, `next` and
+`last` are optionally scoped. The `ellipsis` slot is not scoped.
 
 **Scoped variables properties available to the `page` slot:**
 
@@ -62,8 +62,8 @@ The slot `page` is always scoped, while the slots `first-text`, `prev-text`, `ne
 | `disabled` | Boolean | If the page button is disabled                       |
 | `content`  | String  | Page number as a string                              |
 
-**Scoped variables properties available to the `first-text`, `prev-text`, `next-text` and
-`last-text` slots:**
+**Scoped variables properties available to the `first`, `prev`, `next` and
+`last` slots:**
 
 | Property   | Type    | Description                                          |
 | ---------- | ------- | ---------------------------------------------------- |

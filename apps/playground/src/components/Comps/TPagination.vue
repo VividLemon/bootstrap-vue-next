@@ -50,19 +50,19 @@
           :per-page="paginationPerPage"
           class="mt-4"
         >
-          <template #first-text>
+          <template #first>
             <span class="text-success">First</span>
           </template>
-          <template #prev-text>
+          <template #prev>
             <span class="text-danger">Prev</span>
           </template>
-          <template #next-text>
+          <template #next>
             <span class="text-warning">Next</span>
           </template>
-          <template #last-text>
+          <template #last>
             <span class="text-info">Last</span>
           </template>
-          <template #ellipsis-text>
+          <template #ellipsis>
             <BSpinner small type="grow" />
             <BSpinner small type="grow" />
             <BSpinner small type="grow" />

@@ -158,19 +158,19 @@ export default {
         },
       } satisfies EmitRecord<keyof BPaginationEmits | 'update:model-value'>,
       slots: {
-        'ellipsis-text': {
+        ellipsis: {
           scope: {},
-          description: "The '...' indicator content. Overrides the `ellipsis-text` prop",
+          description: "The '...' indicator content. Overrides the `ellipsis` prop's `text`",
         },
-        'first-text': {
+        first: {
           description: 'The go-to-first-page button content',
           scope: sharedScope,
         },
-        'last-text': {
+        last: {
           description: 'The go-to-last-page button content',
           scope: sharedScope,
         },
-        'next-text': {
+        next: {
           description: 'The go-to-next-page button content',
           scope: sharedScope,
         },
@@ -188,7 +188,7 @@ export default {
             },
           },
         },
-        'prev-text': {
+        prev: {
           description: 'The go-to-previous-page button content',
           scope: sharedScope,
         },

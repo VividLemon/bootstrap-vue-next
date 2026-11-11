@@ -24,11 +24,11 @@
 
   <!-- Use HTML and sub-components in slots -->
   <BPagination v-model="currentPage" :total-rows="rows" :per-page="perPage" class="mt-4">
-    <template #first-text><span class="fg-success">First</span></template>
-    <template #prev-text><span class="fg-danger">Prev</span></template>
-    <template #next-text><span class="fg-warning">Next</span></template>
-    <template #last-text><span class="fg-info">Last</span></template>
-    <template #ellipsis-text>
+    <template #first><span class="fg-success">First</span></template>
+    <template #prev><span class="fg-danger">Prev</span></template>
+    <template #next><span class="fg-warning">Next</span></template>
+    <template #last><span class="fg-info">Last</span></template>
+    <template #ellipsis>
       <BSpinner small type="grow" />
       <BSpinner small type="grow" />
       <BSpinner small type="grow" />

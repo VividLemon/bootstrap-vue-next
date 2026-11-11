@@ -18,7 +18,7 @@
         v-if="page.id === FIRST_ELLIPSIS || page.id === LAST_ELLIPSIS"
         v-bind="ellipsisProps.span"
       >
-        <slot name="ellipsis-text">
+        <slot name="ellipsis">
           {{ (props.ellipsis?.text ?? '\u2026') || '...' }}
         </slot>
       </span>
@@ -153,7 +153,7 @@ const getBaseButtonProps = ({
   page: number
   disabled: boolean
   itemAttrs: Readonly<AttrsValue> | undefined
-  slotName: 'first-text' | 'prev-text' | 'next-text' | 'last-text' | 'page'
+  slotName: 'first' | 'prev' | 'next' | 'last' | 'page'
   textValue?: string
   tabIndex?: string
   label?: string
@@ -214,7 +214,7 @@ const getButtonProps = ({
   page: number
   disabled: boolean
   itemAttrs: Readonly<AttrsValue> | undefined
-  slotName: 'first-text' | 'prev-text' | 'next-text' | 'last-text' | 'page'
+  slotName: 'first' | 'prev' | 'next' | 'last' | 'page'
   textValue?: string
   label: string
 }) => getBaseButtonProps({page, itemAttrs, disabled, slotName, textValue, label, tabIndex: '-1'})
@@ -237,7 +237,7 @@ const firstButtonProps = computed(() =>
     page: 1,
     disabled: firstDisabled.value,
     itemAttrs: props.first?.attrs,
-    slotName: 'first-text',
+    slotName: 'first',
     textValue: props.first?.text ?? '\u00AB',
     label: computedLabels.value.firstPage,
   })
@@ -247,7 +247,7 @@ const prevButtonProps = computed(() =>
     page: Math.max(computedModelValue.value - 1, 1),
     disabled: prevDisabled.value,
     itemAttrs: props.prev?.attrs,
-    slotName: 'prev-text',
+    slotName: 'prev',
     textValue: props.prev?.text ?? '\u2039',
     label: computedLabels.value.prevPage,
   })
@@ -257,7 +257,7 @@ const nextButtonProps = computed(() =>
     page: Math.min(computedModelValue.value + 1, numberOfPages.value),
     disabled: nextDisabled.value,
     itemAttrs: props.next?.attrs,
-    slotName: 'next-text',
+    slotName: 'next',
     textValue: props.next?.text ?? '\u203A',
     label: computedLabels.value.nextPage,
   })
@@ -267,7 +267,7 @@ const lastButtonProps = computed(() =>
     page: numberOfPages.value,
     disabled: lastDisabled.value,
     itemAttrs: props.last?.attrs,
-    slotName: 'last-text',
+    slotName: 'last',
     textValue: props.last?.text ?? '\u00BB',
     label: computedLabels.value.lastPage,
   })
