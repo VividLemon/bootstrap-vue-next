@@ -4,7 +4,7 @@
     <p>This is the about page</p>
     <BLink
       to="/"
-      no-prefetch
+      :prefetch="false"
     >
       Home
     </BLink>

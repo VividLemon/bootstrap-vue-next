@@ -104,13 +104,3 @@ export interface ColorExtendables {
 export interface ColorBorderExtendables extends ColorExtendables {
   border?: MaybeArray<BorderColor> | null
 }
-
-/** The single `color` object prop of a component: `{theme, bg, fg}` */
-export interface ColorProps {
-  color?: ColorExtendables | null
-}
-
-/** The single `color` object prop of a component with a border: `{theme, bg, fg, border}` */
-export interface ColorBorderProps {
-  color?: ColorBorderExtendables | null
-}
