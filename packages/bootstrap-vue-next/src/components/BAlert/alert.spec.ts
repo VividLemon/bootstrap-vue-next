@@ -105,7 +105,7 @@ describe('alert', () => {
 
   it('nested div has class theme-{type} when prop theme', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, theme: 'danger'},
+      props: {modelValue: true, color: {theme: 'danger'}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('theme-danger')
@@ -113,7 +113,7 @@ describe('alert', () => {
 
   it('nested div has bg and fg classes when props bg and fg', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, bg: 'subtle-danger', fg: 'emphasis-danger'},
+      props: {modelValue: true, color: {bg: 'subtle-danger', fg: 'emphasis-danger'}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('bg-subtle-danger')
@@ -244,7 +244,7 @@ describe('alert', () => {
   // BCloseButton variant
   it('nested div BCloseButton emits update:modelValue when clicked when modelValue boolean', async () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, noAnimation: true},
+      props: {modelValue: true, dismissible: true, noTransition: true},
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -256,7 +256,7 @@ describe('alert', () => {
 
   it('nested div BCloseButton clicked update:modelValue emits arg false when modelValue boolean', async () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, noAnimation: true},
+      props: {modelValue: true, dismissible: true, noTransition: true},
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -324,9 +324,9 @@ describe('alert', () => {
     expect($bclosebutton.classes()).not.toContain('btn-close-custom')
   })
 
-  it('nested div BCloseButton has no variant class when closeTheme', () => {
+  it('nested div BCloseButton has no variant class when closeColor.theme', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeTheme: 'warning'},
+      props: {modelValue: true, dismissible: true, closeColor: {theme: 'warning'}},
       slots: {default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -415,9 +415,14 @@ describe('alert', () => {
     expect($bbutton.classes()).toContain('btn-close-custom')
   })
 
-  it('nested div BButton has variant and theme classes when closeVariant and closeTheme', () => {
+  it('nested div BButton has variant and theme classes when closeVariant and closeColor.theme', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, dismissible: true, closeVariant: 'outline', closeTheme: 'warning'},
+      props: {
+        modelValue: true,
+        dismissible: true,
+        closeVariant: 'outline',
+        closeColor: {theme: 'warning'},
+      },
       slots: {close: 'foobar', default: 'foobar'},
     })
     const $div = wrapper.get('div')
@@ -474,7 +479,7 @@ describe('alert', () => {
   // theme null
   it('nested div does not have theme class when theme is null', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, theme: null},
+      props: {modelValue: true, color: {theme: null}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('alert')
@@ -482,19 +487,10 @@ describe('alert', () => {
     expect($div.classes()).not.toContain('theme-info')
   })
 
-  // noFade prop
-  it('nested div does not have class fade when prop noFade is true', () => {
+  // noTransition prop
+  it('nested div does not have class fade when prop noTransition is true', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, noFade: true},
-    })
-    const $div = wrapper.get('div')
-    expect($div.classes()).not.toContain('fade')
-  })
-
-  // noAnimation prop
-  it('nested div does not have class fade when prop noAnimation is true', () => {
-    const wrapper = mount(BAlert, {
-      props: {modelValue: true, noAnimation: true},
+      props: {modelValue: true, noTransition: true},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).not.toContain('fade')
@@ -637,7 +633,7 @@ describe('alert', () => {
 
   it('close button in header emits update:modelValue when clicked', async () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, title: 'Title', dismissible: true, noAnimation: true},
+      props: {modelValue: true, title: 'Title', dismissible: true, noTransition: true},
       slots: {default: 'content'},
     })
     const $heading = wrapper.find('.alert-heading')
@@ -687,7 +683,7 @@ describe('alert', () => {
   // show prop
   it('show prop triggers show event emission', async () => {
     const wrapper = mount(BAlert, {
-      props: {show: true, noAnimation: true},
+      props: {show: true, noTransition: true},
     })
     await wrapper.vm.$nextTick()
     expect(wrapper.emitted()).toHaveProperty('show')
@@ -696,7 +692,7 @@ describe('alert', () => {
   // visible prop
   it('visible prop makes the component render', async () => {
     const wrapper = mount(BAlert, {
-      props: {visible: true, noAnimation: true},
+      props: {visible: true, noTransition: true},
     })
     await wrapper.vm.$nextTick()
     const $div = wrapper.find('div')
@@ -809,7 +805,7 @@ describe('alert', () => {
   // Multiple themes
   it('nested div has class theme-success when theme is success', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, theme: 'success'},
+      props: {modelValue: true, color: {theme: 'success'}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('theme-success')
@@ -817,7 +813,7 @@ describe('alert', () => {
 
   it('nested div has class theme-warning when theme is warning', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, theme: 'warning'},
+      props: {modelValue: true, color: {theme: 'warning'}},
     })
     const $div = wrapper.get('div')
     expect($div.classes()).toContain('theme-warning')

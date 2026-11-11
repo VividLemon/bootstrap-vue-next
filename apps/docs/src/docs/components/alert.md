@@ -16,7 +16,7 @@ You can use the `v-model` directive to create two-way data bindings as in `v-mod
 
 ## Contextual Themes
 
-For proper styling of `BAlert`, set the `theme` prop to one of the Bootstrap theme colors, such as `info`, `success`, `warning`, or `danger`. The default is `info`.
+For proper styling of `BAlert`, set the `color` prop's `theme` key to one of the Bootstrap theme colors, such as `info`, `success`, `warning`, or `danger`. The default is `info`.
 The theme renders the Bootstrap v6 class `.theme-<theme>`, which the alert styles read to set their background, border and text colors. See [Color Themes](/docs/reference/color-variants) for all values, and [registering custom themes](/docs/components/button#custom-themes) to add your own.
 
 <<< DEMO ./demo/AlertVariants.vue#template{vue-html}

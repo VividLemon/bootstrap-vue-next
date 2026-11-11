@@ -67,11 +67,11 @@ describe('BTableSimple', () => {
       expect(wrapper.get('div').classes()).toContain('table-responsive')
     })
 
-    it('has table-responsive-{breakpoint} class on wrapper div when responsive is a string', () => {
+    it('has {breakpoint}:table-responsive class on wrapper div when responsive is a string', () => {
       const wrapper = mount(BTableSimple, {
         props: {responsive: 'md'},
       })
-      expect(wrapper.get('div').classes()).toContain('table-responsive-md')
+      expect(wrapper.get('div').classes()).toContain('md:table-responsive')
       expect(wrapper.get('div').classes()).not.toContain('table-responsive')
     })
 
@@ -82,8 +82,19 @@ describe('BTableSimple', () => {
       expect(wrapper.get('div').classes()).toContain('table-responsive')
       await wrapper.setProps({responsive: 'sm'})
       expect(wrapper.get('div').classes()).not.toContain('table-responsive')
-      expect(wrapper.get('div').classes()).toContain('table-responsive-sm')
+      expect(wrapper.get('div').classes()).toContain('sm:table-responsive')
     })
+
+    it.each(['sm', 'md', 'lg', 'xl', '2xl'] as const)(
+      'has %s:table-responsive class and no v5 infix class',
+      (bp) => {
+        const wrapper = mount(BTableSimple, {
+          props: {responsive: bp},
+        })
+        expect(wrapper.get('div').classes()).toContain(`${bp}:table-responsive`)
+        expect(wrapper.get('div').classes()).not.toContain(`table-responsive-${bp}`)
+      }
+    )
   })
 
   describe('stickyHeader', () => {
@@ -286,17 +297,17 @@ describe('BTableSimple', () => {
 
     it('has class theme-x when theme prop set', async () => {
       const wrapper = mount(BTableSimple, {
-        props: {theme: 'primary'},
+        props: {color: {theme: 'primary'}},
       })
       const table = wrapper.get('table')
       expect(table.classes()).toContain('theme-primary')
-      await wrapper.setProps({theme: 'secondary'})
+      await wrapper.setProps({color: {theme: 'secondary'}})
       expect(table.classes()).toContain('theme-secondary')
     })
 
     it('has class border-x when border prop set', () => {
       const wrapper = mount(BTableSimple, {
-        props: {border: 'danger'},
+        props: {color: {border: 'danger'}},
       })
       expect(wrapper.get('table').classes()).toContain('border-danger')
     })

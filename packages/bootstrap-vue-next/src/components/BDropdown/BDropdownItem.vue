@@ -21,12 +21,12 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import BLink from '../BLink/BLink.vue'
 import {computed, inject, useAttrs} from 'vue'
 import {useBLinkHelper} from '../../composables/useBLinkHelper'
 import {collapseInjectionKey, dropdownInjectionKey, navbarInjectionKey} from '../../utils/keys'
 import {useDefaults} from '../../composables/useDefaults'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BDropdownItemEmits, BDropdownItemProps, BDropdownItemSlots} from '../../types'
 
 defineOptions({
@@ -37,7 +37,6 @@ const _props = withDefaults(defineProps<BDropdownItemProps>(), {
   wrapperAttrs: undefined,
   // Link props
   linkClass: undefined,
-  theme: null,
   // All others use defaults
   active: undefined,
   activeClass: undefined,
@@ -47,20 +46,17 @@ const _props = withDefaults(defineProps<BDropdownItemProps>(), {
   icon: undefined,
   opacity: undefined,
   stretched: false,
-  opacityHover: undefined,
   rel: undefined,
   replace: undefined,
   routerComponentName: undefined,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: undefined,
+  underline: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BDropdownItem')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 const emit = defineEmits<BDropdownItemEmits>()
 defineSlots<BDropdownItemSlots>()
 const attrs = useAttrs()
@@ -74,9 +70,9 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props)
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [

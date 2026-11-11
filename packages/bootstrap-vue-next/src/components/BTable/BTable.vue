@@ -111,7 +111,7 @@
 </template>
 
 <script setup lang="ts" generic="Item">
-import {toColorClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import {useToNumber} from '@vueuse/core'
 import {computed, readonly, toRef, watch} from 'vue'
 import BTableLite from './BTableLite.vue'
@@ -162,7 +162,7 @@ const _props = withDefaults(
     stickySelect: false,
     selectHead: true,
     selectMode: 'multi',
-    selectionTheme: 'primary',
+    selectionColor: undefined,
     sortCompare: undefined,
     sortNullLast: false,
     noFooterSorting: false,
@@ -184,10 +184,10 @@ const _props = withDefaults(
     fieldColumnClass: undefined,
     tbodyTrClass: undefined,
     detailsTdClass: undefined,
-    headTheme: undefined,
-    headRowTheme: undefined,
-    footRowTheme: undefined,
-    footTheme: undefined,
+    headColor: undefined,
+    headRowColor: undefined,
+    footRowColor: undefined,
+    footColor: undefined,
     modelValue: undefined,
     primaryKey: undefined,
     tbodyClass: undefined,
@@ -217,6 +217,7 @@ const _props = withDefaults(
   }
 )
 const props = useDefaults(_props, 'BTable')
+const selectionColor = computed(() => resolvePartColor(props.selectionColor, {theme: 'primary'}))
 const emit = defineEmits<BTableEmits<Item>>()
 const slots = defineSlots<BTableSlots<Item>>()
 
@@ -401,9 +402,9 @@ const getRowClasses = (item: Item | null, type: TableRowType): TableStrictClassV
   },
   props.selectable && !!item && selectedItemsController.has(item)
     ? [
-        toColorClasses('theme', props.selectionTheme),
-        toColorClasses('bg', props.selectionBg),
-        toColorClasses('fg', props.selectionFg),
+        toColorClasses('theme', selectionColor.value.theme),
+        toColorClasses('bg', selectionColor.value.bg),
+        toColorClasses('fg', selectionColor.value.fg),
       ]
     : null,
   props.tbodyTrClass

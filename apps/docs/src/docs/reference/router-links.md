@@ -79,7 +79,7 @@ Sometimes we want `RouterLink` to render as another tag, e.g `<li>`. Then we can
 
 </HighlightCard>
 
-<BAlert theme="info" :model-value="true" class="my-5">
+<BAlert :color="{ theme: 'info' }" :model-value="true" class="my-5">
 
 Note: Changing the tag from anything other than `<a>` is discouraged, as it hinders accessibility of keyboard and/or screen-reader users, and is also not very SEO friendly.
 
@@ -160,14 +160,6 @@ When BootstrapVueNext detects that your app is running under [Nuxt.js](https://n
 - availability: Nuxt.js 3+
 
 To improve the responsiveness of your Nuxt.js applications, when the link will be displayed within the viewport, Nuxt.js will automatically prefetch the code splitted page. Setting `prefetch` to `true` or `false` will overwrite the default value of `router.prefetchLinks` configured in the `nuxt.config.js` configuration file.
-
-### `no-prefetch`
-
-- type: `boolean`
-- default: `true`
-- availability: Nuxt.js 3+
-
-To improve the responsiveness of your Nuxt.js applications, when the link will be displayed within the viewport, Nuxt.js will automatically prefetch the code splitted page. Setting `no-prefetch` will disabled this feature for the specific link.
 
 <HighlightCard>
 

@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import {toColorClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import {computed, inject, useAttrs} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import BLink from '../BLink/BLink.vue'
@@ -36,22 +36,18 @@ const _props = withDefaults(defineProps<BListGroupItemProps>(), {
   href: undefined,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   stretched: false,
   rel: undefined,
   replace: undefined,
   routerComponentName: undefined,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: undefined,
-  theme: undefined,
+  underline: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BListGroupItem')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BListGroupItemSlots>()
 const attrs = useAttrs()
 
@@ -70,7 +66,7 @@ const isAction = computed(
 )
 
 const computedClasses = computed(() => [
-  toColorClasses('theme', props.theme),
+  toColorClasses('theme', computedColor.value.theme),
   {
     'list-group-item-action': isAction.value,
     'active': props.active,

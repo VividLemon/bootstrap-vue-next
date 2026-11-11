@@ -230,7 +230,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headTheme: 'inverse',
+        headColor: {theme: 'inverse'},
       },
     })
     const $thead = wrapper.get('thead')
@@ -241,8 +241,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1}],
-        headBg: 'subtle-primary',
-        headFg: 'emphasis-primary',
+        headColor: {bg: 'subtle-primary', fg: 'emphasis-primary'},
       },
     })
     const $thead = wrapper.get('thead')
@@ -254,7 +253,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        footTheme: 'primary',
+        footColor: {theme: 'primary'},
         footClone: true,
       },
     })
@@ -266,7 +265,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headTheme: 'primary',
+        headColor: {theme: 'primary'},
         footClone: true,
       },
     })
@@ -274,11 +273,38 @@ describe('btablelite', () => {
     expect($tfoot.classes()).toContain('theme-primary')
   })
 
+  it('Merges foot color with head color key by key in cloned footer', () => {
+    const wrapper = mount(BTableLite, {
+      props: {
+        items: [{a: 1, b: 2}],
+        headColor: {theme: 'primary'},
+        footColor: {fg: 'white'},
+        footClone: true,
+      },
+    })
+    const $tfoot = wrapper.get('tfoot')
+    expect($tfoot.classes()).toContain('theme-primary')
+    expect($tfoot.classes()).toContain('fg-white')
+  })
+
+  it('Clears the head theme in cloned footer when foot theme is null', () => {
+    const wrapper = mount(BTableLite, {
+      props: {
+        items: [{a: 1, b: 2}],
+        headColor: {theme: 'primary'},
+        footColor: {theme: null},
+        footClone: true,
+      },
+    })
+    const $tfoot = wrapper.get('tfoot')
+    expect($tfoot.classes()).not.toContain('theme-primary')
+  })
+
   it('Sets the head row theme correctly', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headRowTheme: 'inverse',
+        headRowColor: {theme: 'inverse'},
       },
     })
     const $tr = wrapper.get('thead tr')
@@ -289,7 +315,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        footRowTheme: 'primary',
+        footRowColor: {theme: 'primary'},
         footClone: true,
       },
     })
@@ -301,12 +327,25 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headRowTheme: 'primary',
+        headRowColor: {theme: 'primary'},
         footClone: true,
       },
     })
     const $tr = wrapper.get('tfoot tr')
     expect($tr.classes()).toContain('theme-primary')
+  })
+
+  it('Clears the head row theme in cloned footer row when foot row theme is null', () => {
+    const wrapper = mount(BTableLite, {
+      props: {
+        items: [{a: 1, b: 2}],
+        headRowColor: {theme: 'inverse'},
+        footRowColor: {theme: null},
+        footClone: true,
+      },
+    })
+    const $tr = wrapper.get('tfoot tr')
+    expect($tr.classes()).not.toContain('theme-inverse')
   })
 
   it('Renders the #head() slot correctly', () => {

@@ -3,7 +3,7 @@
     <BFormGroup
       label="Selection mode:"
       label-for="table-select-mode-select"
-      label-cols-md="4"
+      :label-cols="{ md: 4 }"
     >
       <BFormSelect
         id="table-select-mode-select"

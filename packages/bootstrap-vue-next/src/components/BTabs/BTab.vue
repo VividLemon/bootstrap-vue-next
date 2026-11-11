@@ -152,7 +152,7 @@ const computedClasses = computed(() => [
     'active': isActive.value,
     'show': show.value,
     'card-body': parentData?.card.value && props.noBody === false,
-    'fade': !parentData?.noFade.value,
+    'fade': !parentData?.noTransition.value,
   },
   show.value ? parentData?.activeTabClass.value : parentData?.inactiveTabClass.value,
   parentData?.tabClass.value,

@@ -7,18 +7,19 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed} from 'vue'
 import type {BCardSubtitleProps, BCardSubtitleSlots} from '../../types'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 
 const _props = withDefaults(defineProps<BCardSubtitleProps>(), {
   tag: 'h6',
   text: undefined,
-  fg: '2',
+  color: undefined,
 })
 const props = useDefaults(_props, 'BCardSubtitle')
+const computedColor = computed(() => resolvePartColor(props.color, {fg: '2'}))
 defineSlots<BCardSubtitleSlots>()
 
-const {classes: computedClasses} = useThemeClasses(computed(() => ({fg: props.fg})))
+const {classes: computedClasses} = useThemeClasses(computed(() => ({fg: computedColor.value.fg})))
 </script>

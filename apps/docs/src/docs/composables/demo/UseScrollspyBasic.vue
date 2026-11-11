@@ -1,7 +1,7 @@
 <template>
   <BContainer>
     <BRow>
-      <BCol cols="4">
+      <BCol :cols="{ xs: 4 }">
         <BNav
           ref="navTarget"
           pills
@@ -24,7 +24,7 @@
           >
         </BNav>
       </BCol>
-      <BCol cols="8">
+      <BCol :cols="{ xs: 8 }">
         <div
           ref="scrollContent"
           style="height: 300px; overflow-y: auto; border: 1px solid #dee2e6; padding: 1rem"

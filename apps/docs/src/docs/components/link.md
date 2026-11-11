@@ -32,11 +32,11 @@ External Links can be specified with the `href` prop.
 
 ## Link opacity
 
-Change the alpha opacity of the link `rgba()` color value. Please be aware that changes to a color’s opacity can lead to links with [insufficient contrast](https://getbootstrap.com/docs/5.3/getting-started/accessibility/#color-contrast).
+Change the alpha opacity of the link `rgba()` color value with the `opacity` prop. It takes a `HoverState` object, `{ xs?: LinkOpacity, hover?: LinkOpacity }`: the `xs` value always applies (`link-*`) and the `hover` value applies on hover (`hover:link-*`). Please be aware that changes to a color’s opacity can lead to links with [insufficient contrast](https://getbootstrap.com/docs/5.3/getting-started/accessibility/#color-contrast).
 
 <<< DEMO ./demo/LinkOpacity.vue
 
-You can even change the opacity level on hover.
+You can even change the opacity level on hover with the `hover` key.
 
 <<< DEMO ./demo/LinkOpacityHover.vue
 
@@ -44,32 +44,33 @@ You can even change the opacity level on hover.
 
 ### Underline color
 
-Change the underline’s color independent of the link text color.
+Change the underline’s color independent of the link text color with the `underline` prop's `color` key.
 
 <<< DEMO ./demo/LinkUnderlineColors.vue
 
 ### Underline offset
 
-Change the underline’s distance from your text. Offset is set in `em` units to automatically scale with the element’s current `font-size`.
+Change the underline’s distance from your text with the `underline` prop's `offset` key. Offset is set in `em` units to automatically scale with the element’s current `font-size`.
 
 <<< DEMO ./demo/LinkUnderlineOffsets.vue
 
 ### Underline opacity
 
-Change the underline’s opacity.
+Change the underline’s opacity with the `underline` prop's `opacity` key.
 
 <<< DEMO ./demo/LinkUnderlineOpacity.vue
 
 ### Hover variants
 
-Just like the setting `opacity` has a matching `opacity-hover` prop, `underline-offset` and `underline-opacity` have matching
-`underline-offset-hover` and `underline-opacity-hover` props. Mix and match to create unique link styles.
+`opacity` and the `underline` prop's `offset` and `opacity` keys take a `HoverState` object: the `xs` key applies the value at all
+times (no prefix) and the `hover` key applies it on hover (`hover:` prefix). For example `:opacity="{ xs: 50, hover: 100 }"`
+renders `link-50 hover:link-100`. Mix and match to create unique link styles.
 
 <<< DEMO ./demo/LinkHoverVariants.vue#template{vue-html}
 
 ## Colored Links
 
-You can use the `theme` prop to colorize links (rendered as `.theme-<theme>`, which v6 anchors read through `--theme-fg`). Some of the link styles use a relatively light foreground color, and should only be used on a dark background in order to have sufficient contrast. The `underline-theme` prop colors the underline (`.underline-<theme>`). See [registering custom themes](/docs/components/button#custom-themes) to add your own.
+You can use the `color` prop's `theme` key to colorize links (rendered as `.theme-<theme>`, which v6 anchors read through `--theme-fg`). Some of the link styles use a relatively light foreground color, and should only be used on a dark background in order to have sufficient contrast. The `underline` prop's `color` key colors the underline (`.underline-<theme>`). See [registering custom themes](/docs/components/button#custom-themes) to add your own.
 
 <<< DEMO ./demo/LinkColors.vue
 

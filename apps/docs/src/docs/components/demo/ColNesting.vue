@@ -5,18 +5,16 @@
     class="bv-example-row"
   >
     <BRow>
-      <BCol sm="9">
-        Level 1: sm="9"
+      <BCol :cols="{ sm: 9 }">
+        Level 1: sm:col-9
         <BRow>
           <BCol
-            cols="8"
-            sm="6"
-            >Level 2: cols="8" sm="6"</BCol
+            :cols="{ xs: 8, sm: 6 }"
+            >Level 2: col-8 sm:col-6</BCol
           >
           <BCol
-            cols="4"
-            sm="6"
-            >Level 2: cols="4" sm="6"</BCol
+            :cols="{ xs: 4, sm: 6 }"
+            >Level 2: col-4 sm:col-6</BCol
           >
         </BRow>
       </BCol>

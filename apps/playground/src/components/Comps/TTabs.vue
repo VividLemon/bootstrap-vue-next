@@ -98,14 +98,14 @@
       </BCol>
     </BRow>
     <BRow>
-      <BCol cols="auto">
+      <BCol :cols="{ xs: 'auto' }">
         activeId: {{ activeId }}
         <BButton @click="activeId = 'a1'">a1</BButton>
         <BButton @click="activeId = 'a2'">a2</BButton>
         <BButton @click="activeId = 'a3'">a3</BButton>
         <BButton @click="activeId = 'a4'">a4</BButton>
       </BCol>
-      <BCol cols="auto">
+      <BCol :cols="{ xs: 'auto' }">
         index: {{ tabIndex2 }}
         <BButton @click="tabIndex2 = 0">0</BButton>
         <BButton @click="tabIndex2 = 1">1</BButton>

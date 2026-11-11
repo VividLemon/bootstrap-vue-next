@@ -31,10 +31,8 @@ const _props = withDefaults(defineProps<BNavItemProps>(), {
   icon: undefined,
   linkAttrs: undefined,
   linkClass: undefined,
-  noPrefetch: undefined,
   noRel: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   prefetch: undefined,
   prefetchedClass: undefined,
   prefetchOn: undefined,
@@ -44,13 +42,9 @@ const _props = withDefaults(defineProps<BNavItemProps>(), {
   stretched: false,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: undefined,
-  theme: undefined,
+  underline: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BNavItem')
 const emit = defineEmits<BNavItemEmits>()
@@ -65,9 +59,7 @@ const computedLinkProps = computed(() =>
     'href',
     'icon',
     'noRel',
-    'noPrefetch',
     'opacity',
-    'opacityHover',
     'prefetch',
     'prefetchedClass',
     'prefetchOn',
@@ -77,14 +69,8 @@ const computedLinkProps = computed(() =>
     'stretched',
     'target',
     'to',
-    'underlineOffset',
-    'underlineOffsetHover',
-    'underlineOpacity',
-    'underlineOpacityHover',
-    'underlineTheme',
-    'theme',
-    'bg',
-    'fg',
+    'underline',
+    'color',
   ])
 )
 </script>

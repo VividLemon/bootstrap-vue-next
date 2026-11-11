@@ -11,16 +11,11 @@ import {useThemeClasses} from '../composables/useThemeClasses'
 import type {BCardHeadFootProps, BCardHeadFootSlots} from '../types'
 
 const props = withDefaults(defineProps<BCardHeadFootProps>(), {
-  border: null,
+  color: undefined,
   tag: 'div',
   text: undefined,
-  // ColorExtendables props
-  bg: null,
-  fg: null,
-  theme: null,
-  // End ColorExtendables props
 })
 defineSlots<BCardHeadFootSlots>()
 
-const {classes: computedClasses} = useThemeClasses(props)
+const {classes: computedClasses} = useThemeClasses(() => props.color ?? {})
 </script>

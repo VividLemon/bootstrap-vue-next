@@ -7,6 +7,8 @@
 <script setup lang="ts">
 import type {BContainerProps, BContainerSlots} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
+import {useContainerClasses} from '../../composables/useContainerClasses'
+import {getResponsiveClasses} from '../../utils/responsive'
 import {computed} from 'vue'
 
 const _props = withDefaults(defineProps<BContainerProps>(), {
@@ -18,11 +20,14 @@ const _props = withDefaults(defineProps<BContainerProps>(), {
 const props = useDefaults(_props, 'BContainer')
 defineSlots<BContainerSlots>()
 
-const computedClasses = computed(() => ({
-  container: props.fluid === false,
-  [`container-fluid`]: props.fluid === true,
-  [`container-${props.fluid}`]: typeof props.fluid === 'string',
-  [`gx-${props.gutterX}`]: props.gutterX !== undefined,
-  [`gy-${props.gutterY}`]: props.gutterY !== undefined,
-}))
+// `fluid: false` is a fixed-width `.container`, `fluid: true` is `.container-fluid`
+const {classes: containerClasses} = useContainerClasses(() =>
+  props.fluid === false ? true : props.fluid === true ? 'fluid' : props.fluid
+)
+
+const computedClasses = computed(() => [
+  containerClasses.value,
+  getResponsiveClasses(props.gutterX, 'gx'),
+  getResponsiveClasses(props.gutterY, 'gy'),
+])
 </script>

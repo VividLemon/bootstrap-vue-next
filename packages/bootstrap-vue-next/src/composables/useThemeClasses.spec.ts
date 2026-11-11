@@ -1,6 +1,11 @@
 import {describe, expect, it} from 'vitest'
 import {computed, ref} from 'vue'
-import {getThemeColor, useButtonThemeClasses, useThemeClasses} from './useThemeClasses'
+import {
+  getThemeColor,
+  resolvePartColor,
+  useButtonThemeClasses,
+  useThemeClasses,
+} from './useThemeClasses'
 
 describe('useThemeClasses', () => {
   it('returns class for theme', () => {
@@ -106,5 +111,34 @@ describe('getThemeColor', () => {
     {theme: undefined, expected: undefined},
   ] as const)('returns $expected for theme=$theme', ({theme, expected}) => {
     expect(getThemeColor(theme)).toBe(expected)
+  })
+})
+
+describe('resolvePartColor', () => {
+  it('returns the defaults when value is undefined', () => {
+    expect(resolvePartColor(undefined, {theme: 'primary'})).toStrictEqual({theme: 'primary'})
+  })
+
+  it('keeps defaults for keys the value leaves out', () => {
+    expect(resolvePartColor({bg: 'subtle-danger'}, {theme: 'primary'})).toStrictEqual({
+      theme: 'primary',
+      bg: 'subtle-danger',
+    })
+  })
+
+  it('treats undefined keys as missing', () => {
+    expect(resolvePartColor({theme: undefined}, {theme: 'primary'})).toStrictEqual({
+      theme: 'primary',
+    })
+  })
+
+  it('lets null clear a default', () => {
+    expect(resolvePartColor({theme: null}, {theme: 'primary'})).toStrictEqual({theme: null})
+  })
+
+  it('overrides defaults with explicit values', () => {
+    expect(resolvePartColor({theme: 'danger'}, {theme: 'primary'})).toStrictEqual({
+      theme: 'danger',
+    })
   })
 })

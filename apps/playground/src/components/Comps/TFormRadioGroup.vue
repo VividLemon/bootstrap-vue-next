@@ -82,7 +82,7 @@
           v-model="radios.ex3.selected"
           :options="radios.ex3.options"
           button-variant="outline"
-          button-theme="primary"
+          :button-color="{ theme: 'primary' }"
           size="lg"
           name="radio-btn-outline"
           buttons

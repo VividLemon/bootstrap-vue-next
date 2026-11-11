@@ -292,7 +292,7 @@ describe('offcanvas', () => {
 
     it('BCloseButton has custom aria-label from headerCloseLabel prop', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseLabel: 'Dismiss'},
+        props: {headerClose: {label: 'Dismiss'}},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $close = wrapper.findComponent(BCloseButton)
@@ -301,7 +301,7 @@ describe('offcanvas', () => {
 
     it('BCloseButton has headerCloseClass', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseClass: 'custom-close'},
+        props: {headerClose: {attrs: {class: 'custom-close'}}},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $close = wrapper.findComponent(BCloseButton)
@@ -339,7 +339,7 @@ describe('offcanvas', () => {
 
     it('BButton from header-close slot has headerCloseClass', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseClass: 'custom-close'},
+        props: {headerClose: {attrs: {class: 'custom-close'}}},
         slots: {'header-close': 'X'},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
@@ -347,9 +347,9 @@ describe('offcanvas', () => {
       expect($button.classes()).toContain('custom-close')
     })
 
-    it('BButton from header-close slot has headerCloseTheme and headerCloseVariant', () => {
+    it('BButton from header-close slot has headerCloseColor.theme and headerCloseVariant', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseTheme: 'warning', headerCloseVariant: 'outline'},
+        props: {headerClose: {color: {theme: 'warning'}, variant: 'outline'}},
         slots: {'header-close': 'X'},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
@@ -358,9 +358,29 @@ describe('offcanvas', () => {
       expect($button.classes()).toContain('btn-outline')
     })
 
-    it('BCloseButton does not have theme class when headerCloseTheme is set', () => {
+    it('BButton from header-close slot is solid when headerClose.variant is not set', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {headerCloseTheme: 'warning'},
+        props: {headerClose: {color: {theme: 'warning'}}},
+        slots: {'header-close': 'X'},
+        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
+      })
+      expect(wrapper.findComponent(BButton).props('variant')).toBe('solid')
+    })
+
+    it('BButton from header-close slot has no variant when headerClose.variant is null', () => {
+      const wrapper = mount(BOffcanvas, {
+        props: {headerClose: {variant: null}},
+        slots: {'header-close': 'X'},
+        global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
+      })
+      const $button = wrapper.findComponent(BButton)
+      expect($button.props('variant')).toBeNull()
+      expect($button.classes()).not.toContain('btn-solid')
+    })
+
+    it('BCloseButton does not have theme class when headerCloseColor.theme is set', () => {
+      const wrapper = mount(BOffcanvas, {
+        props: {headerClose: {color: {theme: 'warning'}}},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $close = wrapper.findComponent(BCloseButton)
@@ -578,9 +598,9 @@ describe('offcanvas', () => {
   })
 
   describe('animation', () => {
-    it('has no-transition class when noAnimation is true', () => {
+    it('has no-transition class when noTransition is true', () => {
       const wrapper = mount(BOffcanvas, {
-        props: {noAnimation: true},
+        props: {noTransition: true},
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
       })
       const $offcanvas = wrapper.find('.offcanvas')
@@ -749,7 +769,7 @@ describe('offcanvas', () => {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
         props: {
           id: 'test',
-          noFade: true,
+          noTransition: true,
         },
       })
 
@@ -770,7 +790,7 @@ describe('offcanvas', () => {
         global: {stubs: {teleport: true}, plugins: [createBootstrap()]},
         props: {
           id: 'test',
-          noFade: false,
+          noTransition: false,
         },
       })
 

@@ -53,20 +53,20 @@
             content.
           </BCardText>
 
-          <BButton href="#" theme="primary">Go somewhere</BButton>
+          <BButton href="#" :color="{ theme: 'primary' }">Go somewhere</BButton>
         </BCard>
       </BCol>
-      <BCol cols="6">
+      <BCol :cols="{ xs: 6 }">
         <BCard no-body class="overflow-hidden" style="max-width: 540px">
           <BRow class="g-0">
-            <BCol md="6">
+            <BCol :cols="{ md: 6 }">
               <BCardImg
                 src="https://picsum.photos/400/400/?image=20"
                 alt="Image"
                 class="rounded-0"
               />
             </BCol>
-            <BCol md="6">
+            <BCol :cols="{ md: 6 }">
               <BCardBody title="Horizontal Card">
                 <BCardText>
                   This is a wider card with supporting text as a natural lead-in to additional

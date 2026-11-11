@@ -50,7 +50,7 @@ describe('dropdown-header', () => {
 
   it('child element has class theme-{theme} when prop theme is set', () => {
     const wrapper = mount(BDropdownHeader, {
-      props: {theme: 'danger'},
+      props: {color: {theme: 'danger'}},
     })
     const $h6 = wrapper.get('h6')
     expect($h6.classes()).toContain('theme-danger')

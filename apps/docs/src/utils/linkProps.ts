@@ -14,10 +14,11 @@ export const linkProps = {
     default: 'router-link-active',
     description: 'Configure the active CSS class applied when the link is active.',
   },
-  bg: {
-    type: 'MaybeArray<BgColor> | null',
-    default: null,
-    description: 'Applies a background color (`bg-*` class) to the link',
+  color: {
+    type: 'ColorExtendables | null',
+    default: undefined,
+    description:
+      'Colors the link with one object: `theme` renders `theme-*`, `bg` renders `bg-*` and `fg` renders `fg-*`',
   },
   disabled: {
     type: 'boolean',
@@ -30,11 +31,6 @@ export const linkProps = {
     default: 'router-link-exact-active',
     description: 'Configure the active CSS class applied when the link is active with exact match.',
   },
-  fg: {
-    type: 'MaybeArray<FgColor> | null',
-    default: null,
-    description: 'Applies a foreground (text) color (`fg-*` class) to the link',
-  },
   href: {
     type: 'string',
     default: undefined,
@@ -45,21 +41,11 @@ export const linkProps = {
     default: false,
     description: 'When set to `true`, styles an icon at the beginning or end of the link text',
   },
-  noPrefetch: {
-    type: 'boolean',
-    default: false,
-    description:
-      'To improve the responsiveness of your Nuxt.js applications, when the link will be displayed within the viewport, Nuxt.js will automatically prefetch the code splitted page. Setting `no-prefetch` will disabled this feature for the specific link',
-  },
   opacity: {
-    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
+    type: 'HoverState<LinkOpacity>',
     default: undefined,
-    description: 'Change the alpha opacity of the link `rgba()` color value',
-  },
-  opacityHover: {
-    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
-    default: undefined,
-    description: 'Change the alpha opacity of the link `rgba()` color value on hover',
+    description:
+      'Change the alpha opacity of the link color. `xs` renders `link-*`, `hover` renders `hover:link-*`, e.g. `{ xs: 50, hover: 100 }`. Values are `10` to `100` in steps of 10',
   },
   prefetch: {
     type: 'boolean',
@@ -118,38 +104,14 @@ export const linkProps = {
     description:
       'Denotes the target route of the link. When clicked, the value of the to prop will be passed to `router.push()` internally',
   },
-  underlineOffset: {
-    type: "1 | 2 | 3 | '1' | '2' | '3'",
+  underline: {
+    type: 'LinkUnderline',
     default: undefined,
-    description: 'Change the distance of the underline from the bottom of the link text',
-  },
-  underlineOffsetHover: {
-    type: "1 | 2 | 3 | '1' | '2' | '3'",
-    default: undefined,
-    description: 'Change the distance of the underline from the bottom of the link text on hover',
-  },
-  underlineOpacity: {
-    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
-    default: undefined,
-    description: "Set's the opacity of the link's underline",
-  },
-  underlineOpacityHover: {
-    type: "10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100 | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'",
-    default: undefined,
-    description: "Set's the opacity of the link's underline on hover",
-  },
-  underlineTheme: {
-    type: 'ThemeColor | null',
-    default: null,
-    description: 'Set the theme color for the link underline independently of the link text',
-  },
-  theme: {
-    type: 'ThemeProp | null',
-    default: null,
-    description: 'Set the theme color for the link',
+    description:
+      "The link's underline in one object: `color` (a theme, `underline-*`), `offset` (`HoverState<UnderlineOffset>`, `underline-offset-*`, values `1` to `3`) and `opacity` (`HoverState<UnderlineOpacity>`, `underline-*`, values `10` to `100`). In the `HoverState` keys, `xs` applies at all times and `hover` adds the `hover:` prefix",
   },
   // TODO: remove the hard-coded NYI props below when they are implemented
-} as const satisfies PropRecord<keyof BLinkProps | 'noPrefetch' | 'prefetch' | 'prefetchedClass'>
+} as const satisfies PropRecord<keyof BLinkProps | 'prefetch' | 'prefetchedClass'>
 
 export const linkedBLinkSection = {
   _opts: {

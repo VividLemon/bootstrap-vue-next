@@ -52,7 +52,7 @@ const _props = withDefaults(defineProps<Omit<BTooltipProps, 'modelValue'>>(), {
   lazy: undefined,
   manual: undefined,
   noAutoClose: undefined,
-  noFade: undefined,
+  noTransition: undefined,
   noFlip: undefined,
   noHide: undefined,
   noShift: undefined,

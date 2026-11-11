@@ -9,8 +9,12 @@
         <h3>Hello From My Modal!</h3>
       </div>
       <div class="d-flex justify-content-center gap-2 mt-3">
-        <BButton variant="outline" theme="danger" block @click="hide">Close Me</BButton>
-        <BButton variant="outline" theme="warning" block @click="toggle">Toggle Me</BButton>
+        <BButton variant="outline" :color="{ theme: 'danger' }" block @click="hide"
+          >Close Me</BButton
+        >
+        <BButton variant="outline" :color="{ theme: 'warning' }" block @click="toggle"
+          >Toggle Me</BButton
+        >
       </div>
     </BModal>
   </div>

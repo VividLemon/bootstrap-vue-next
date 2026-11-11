@@ -53,7 +53,7 @@
       <BCol>
         <BTooltip click>
           <template #target="{visible}">
-            <BButton :theme="visible ? 'primary' : 'secondary'">
+            <BButton :color="{ theme: visible ? 'primary' : 'secondary' }">
               click tooltip component
             </BButton>
           </template>
@@ -158,7 +158,7 @@
     </BRow>
     <BRow class="my-5 position-relative">
       <BCol>
-        <BPopover v-model="value" strategy="absolute" no-fade no-auto-close manual>
+        <BPopover v-model="value" strategy="absolute" no-transition no-auto-close manual>
           <template #title>
             <h3>Popover title</h3>
           </template>

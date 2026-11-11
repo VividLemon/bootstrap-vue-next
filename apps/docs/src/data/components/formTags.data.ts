@@ -31,11 +31,11 @@ export default {
             tag: {
               default: '<span>',
             },
-            theme: {
-              default: 'secondary',
+            color: {
+              default: { theme: 'secondary' },
             },
           }),
-          ['bg', 'disabled', 'fg', 'id', 'tag', 'theme', 'title'],
+          ['color', 'disabled', 'id', 'tag', 'title'],
         ),
         noRemove: {
           type: 'boolean',
@@ -85,17 +85,17 @@ export default {
           }),
           ['autofocus', 'disabled', 'form', 'name', 'placeholder', 'required', 'size', 'state'],
         ),
-        ...pick(buildCommonProps(), ['addButtonBg', 'addButtonFg', 'tagBg', 'tagFg']),
         addButtonText: {
           type: 'string',
           default: 'Add',
           description:
             "Text for the built-in 'Add' button. Slot `add-button-text` takes precedence",
         },
-        addButtonTheme: {
-          type: 'ThemeProp | null',
-          default: 'secondary',
-          description: "Applies one of the theme colors to the 'Add' button",
+        addButtonColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'secondary' },
+          description:
+            "Color object for the 'Add' button: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)",
         },
         addButtonVariant: {
           type: 'ButtonVariant | null',
@@ -222,10 +222,11 @@ export default {
           description:
             "Optional tag validator method. Passed a single argument of tag being added. Should return 'true' if the tag passes validation, or 'false' if the tag cannot be added",
         },
-        tagTheme: {
-          type: 'ThemeProp | null',
-          default: 'secondary',
-          description: 'Applies one of the theme colors to the tags',
+        tagColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'secondary' },
+          description:
+            'Color object for the tags: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
         },
       } satisfies PropRecord<keyof BFormTagsProps>,
       emits: {
@@ -316,9 +317,10 @@ export default {
               type: 'string',
               description: "Value of the 'add-button-text' prop",
             },
-            addButtonTheme: {
-              type: 'ThemeProp | null',
-              description: "Value of the 'add-button-theme' prop",
+            addButtonColor: {
+              type: 'ColorExtendables',
+              description:
+                "Value of the 'add-button-color' prop, merged with its default (`{ theme: 'secondary' }`)",
             },
             addButtonVariant: {
               type: 'ButtonVariant | null',
@@ -438,6 +440,11 @@ export default {
               description:
                 "Class (or classes) to apply to the tag elements. Value of the 'tag-class' prop",
             },
+            tagColor: {
+              type: 'ColorExtendables',
+              description:
+                "Value of the 'tag-color' prop, merged with its default (`{ theme: 'secondary' }`)",
+            },
             tagPills: {
               type: 'boolean',
               description: 'Value of the `tag-pills` prop',
@@ -455,10 +462,6 @@ export default {
               type: '(t: string) => boolean',
               description: "Value of the 'tag-validator' prop",
             },
-            tagTheme: {
-              type: 'ThemeProp | null',
-              description: "Value of the 'tag-theme' prop",
-            },
           },
         },
         tag: {
@@ -472,9 +475,10 @@ export default {
               type: 'ClassValue',
               description: 'Class (or classes) to apply to the tag element',
             },
-            tagTheme: {
-              type: 'ThemeProp | null',
-              description: 'Theme color to apply to the tag',
+            tagColor: {
+              type: 'ColorExtendables',
+              description:
+                "Value of the 'tag-color' prop, merged with its default (`{ theme: 'secondary' }`)",
             },
             tagPills: {
               type: 'boolean',

@@ -15,11 +15,11 @@ export default {
     BOverlay: {
       styleSpec: { kind: StyleKind.BsvnClass },
       props: {
-        bgColor: {
+        bgCss: {
           type: 'string',
           default: undefined,
           description:
-            'CSS color to use as the opaque overlay backdrop color. If set, overrides the `bg` prop',
+            'CSS color to use as the opaque overlay backdrop color. If set, overrides `color.bg`',
         },
         blur: {
           type: 'string | null',
@@ -39,7 +39,7 @@ export default {
           description:
             'When set, disables the vertical and horizontal centering of the overlay content',
         },
-        noFade: {
+        noTransition: {
           type: 'boolean',
           default: false,
           description: 'Disables the fade transition of the overlay',
@@ -70,27 +70,17 @@ export default {
           default: false,
           description: 'When set, shows the overlay',
         },
-        spinnerSmall: {
-          type: 'boolean',
-          default: false,
-          description: 'When set, renders the default spinner in a smaller size',
-        },
-        spinnerType: {
-          type: 'SpinnerType',
-          default: 'border',
-          description:
-            "Type of the default spinner to show. Current supported types are 'border' and 'grow'",
-        },
-        spinnerTheme: {
-          type: 'ThemeColor | null',
+        spinner: {
+          type: 'OverlaySpinnerOptions',
           default: undefined,
-          description: 'Applies one of the theme colors to the default spinner.',
-        },
-        bg: {
-          type: 'MaybeArray<BgColor> | null',
-          default: 'body',
           description:
-            'Applies a background color (`BgColor`) to the overlay backdrop. Set to `null` to apply no background class',
+            "The default spinner: `type` ('border', the default, or 'grow'), `small` (renders a smaller spinner) and `color` (a color object: `theme` takes a theme color only, plus `bg` and `fg`). See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)",
+        },
+        color: {
+          type: "Pick<ColorExtendables, 'bg'> | null",
+          default: { bg: 'body' },
+          description:
+            'Colors the overlay backdrop: `bg` renders a `bg-*` class. Set `bg` to `null` to apply no background class',
         },
         wrapTag: {
           type: 'string',
@@ -104,15 +94,7 @@ export default {
           description:
             'Z-index value to apply to the overlay. You may need to increase this value to suit your content or placement',
         },
-        ...pick(buildCommonProps({}), [
-          'spinnerBg',
-          'spinnerFg',
-          'rounded',
-          'roundedTop',
-          'roundedBottom',
-          'roundedStart',
-          'roundedEnd',
-        ]),
+        ...pick(buildCommonProps(), ['rounded', 'roundedSides']),
       } satisfies PropRecord<keyof BOverlayProps>,
       emits: {
         click: {
@@ -145,8 +127,9 @@ export default {
             type: {
               type: 'SpinnerType',
             },
-            theme: {
-              type: 'ThemeColor | null | undefined',
+            color: {
+              type: "BSpinnerProps['color']",
+              description: 'The `color` of the `spinner` prop',
             },
             small: {
               type: 'boolean',

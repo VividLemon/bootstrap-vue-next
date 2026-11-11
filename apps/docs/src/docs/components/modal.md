@@ -213,7 +213,7 @@ hidden. You can disable this behaviour by setting the `no-close-on-backdrop` pro
 
 ### Disable open and close animation
 
-To disable the fading transition/animation when modal opens and closes, just set the prop `no-fade`
+To disable the fading transition/animation when modal opens and closes, just set the prop `no-transition`
 on the `<BModal>` component.
 
 ### Footer button sizing

@@ -9,8 +9,8 @@
     </BRow>
 
     <BRow>
-      <BCol cols="8">col-8</BCol>
-      <BCol cols="4">col-4</BCol>
+      <BCol :cols="{ xs: 8 }">col-8</BCol>
+      <BCol :cols="{ xs: 4 }">col-4</BCol>
     </BRow>
   </BContainer>
   <!-- #endregion template -->

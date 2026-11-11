@@ -3,7 +3,7 @@
     <component
       :is="props.tag"
       class="dropdown-divider"
-      :class="props.dividerClass"
+      :class="[colorClasses, props.dividerClass]"
       role="separator"
       aria-orientation="horizontal"
       v-bind="processedAttrs.dividerAttrs"
@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import {computed, useAttrs} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
+import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BDropdownDividerProps} from '../../types'
 
 defineOptions({
@@ -24,9 +25,12 @@ const _props = withDefaults(defineProps<BDropdownDividerProps>(), {
   dividerClass: undefined,
   tag: 'hr',
   wrapperAttrs: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BDropdownDivider')
 const attrs = useAttrs()
+
+const {classes: colorClasses} = useThemeClasses(() => props.color ?? {})
 
 const processedAttrs = computed(() => {
   const {class: wrapperClass, ...dividerAttrs} = attrs

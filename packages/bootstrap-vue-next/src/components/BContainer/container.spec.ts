@@ -42,64 +42,55 @@ describe('container', () => {
     expect(wrapper.classes()).not.toContain('container-fluid')
   })
 
-  it('has class container-{type} when prop fluid is string', async () => {
+  it('has class {breakpoint}:container when prop fluid is a breakpoint', async () => {
     const wrapper = mount(BContainer, {
-      props: {fluid: 'xxl'},
+      props: {fluid: '2xl'},
     })
-    expect(wrapper.classes()).toContain('container-xxl')
+    expect(wrapper.classes()).toContain('2xl:container')
+    expect(wrapper.classes()).not.toContain('container')
     await wrapper.setProps({fluid: undefined})
-    expect(wrapper.classes()).not.toContain('container-xxl')
+    expect(wrapper.classes()).not.toContain('2xl:container')
+    expect(wrapper.classes()).toContain('container')
   })
 
-  it('has class gx-{type} when prop gutterX', async () => {
+  it.each(['sm', 'md', 'lg', 'xl', '2xl'] as const)(
+    'has class %s:container when prop fluid is %s',
+    (value) => {
+      const wrapper = mount(BContainer, {
+        props: {fluid: value},
+      })
+      expect(wrapper.classes()).toEqual([`${value}:container`])
+    }
+  )
+
+  it('has class container by default', () => {
+    const wrapper = mount(BContainer)
+    expect(wrapper.classes()).toEqual(['container'])
+  })
+
+  it('has class gx-{value} when prop gutterX', async () => {
     const wrapper = mount(BContainer, {
-      props: {gutterX: '5'},
+      props: {gutterX: {xs: 5}},
     })
     expect(wrapper.classes()).toContain('gx-5')
     await wrapper.setProps({gutterX: undefined})
     expect(wrapper.classes()).not.toContain('gx-5')
   })
 
-  it('has class gy-{type} when prop gutterY', async () => {
+  it('has class gy-{value} when prop gutterY', async () => {
     const wrapper = mount(BContainer, {
-      props: {gutterY: '5'},
+      props: {gutterY: {xs: 5}},
     })
     expect(wrapper.classes()).toContain('gy-5')
     await wrapper.setProps({gutterY: undefined})
     expect(wrapper.classes()).not.toContain('gy-5')
   })
 
-  it('has class container by default', () => {
-    const wrapper = mount(BContainer)
-    expect(wrapper.classes()).toContain('container')
-  })
-
-  it('does not have container-fluid class by default', () => {
-    const wrapper = mount(BContainer)
-    expect(wrapper.classes()).not.toContain('container-fluid')
-  })
-
-  it('has class container-sm when prop fluid is sm', () => {
+  it('has responsive gutter classes', () => {
     const wrapper = mount(BContainer, {
-      props: {fluid: 'sm'},
+      props: {gutterX: {'xs': 0, 'md': 3, '2xl': 12}, gutterY: {lg: 4}},
     })
-    expect(wrapper.classes()).toContain('container-sm')
-    expect(wrapper.classes()).not.toContain('container')
-  })
-
-  it.each(['md', 'lg', 'xl'] as const)('has class container-%s when prop fluid is %s', (value) => {
-    const wrapper = mount(BContainer, {
-      props: {fluid: value},
-    })
-    expect(wrapper.classes()).toContain(`container-${value}`)
-  })
-
-  it('combines gutterX and gutterY classes', () => {
-    const wrapper = mount(BContainer, {
-      props: {gutterX: '3', gutterY: '4'},
-    })
-    expect(wrapper.classes()).toContain('gx-3')
-    expect(wrapper.classes()).toContain('gy-4')
+    expect(wrapper.classes()).toEqual(['container', 'gx-0', 'md:gx-3', '2xl:gx-12', 'lg:gy-4'])
   })
 
   it('renders slot content with HTML', () => {

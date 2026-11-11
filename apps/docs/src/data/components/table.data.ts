@@ -32,7 +32,7 @@ import {
   StyleKind,
 } from '../../types'
 import { pick } from '../../utils/objectUtils'
-import { buildCommonProps } from '../../utils/commonProps'
+import { buildCommonProps, colorBorderProp } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => {
@@ -75,7 +75,7 @@ export default {
         },
       } satisfies SlotRecord<keyof BTableSimpleSlots>,
       props: {
-        ...pick(buildCommonProps(), ['bg', 'fg', 'id', 'theme']),
+        ...pick(buildCommonProps(colorBorderProp), ['color', 'id']),
         bordered: {
           type: 'boolean',
           default: false,
@@ -85,11 +85,6 @@ export default {
           type: 'boolean',
           default: false,
           description: 'Removes all borders from cells',
-        },
-        border: {
-          type: 'MaybeArray<BorderColor> | null',
-          default: null,
-          description: 'Applies a border color (`BorderColor`) to the table',
         },
         captionTop: {
           type: 'boolean',
@@ -122,7 +117,7 @@ export default {
           type: 'boolean | Breakpoint',
           default: false,
           description:
-            "Makes the table responsive in width, adding a horizontal scrollbar. Set to true for always responsive or set to one of the breakpoints to switch from responsive to normal: 'sm', 'md', 'lg', 'xl'",
+            "Makes the table responsive in width, adding a horizontal scrollbar. Set to true for always responsive (`table-responsive`) or set to one of the breakpoints to switch from responsive to normal: 'sm', 'md', 'lg', 'xl', '2xl' (`responsive=\"md\"` renders `md:table-responsive`)",
         },
         small: {
           type: 'boolean',
@@ -166,16 +161,7 @@ export default {
 
     const BTableLite = {
       props: {
-        ...pick(buildCommonProps(), [
-          'footBg',
-          'footFg',
-          'footRowBg',
-          'footRowFg',
-          'headBg',
-          'headFg',
-          'headRowBg',
-          'headRowFg',
-        ]),
+        ...pick(buildCommonProps(), ['footColor', 'footRowColor', 'headColor', 'headRowColor']),
         align: {
           type: 'VerticalAlign',
           default: undefined,
@@ -203,28 +189,6 @@ export default {
           type: 'boolean',
           default: false,
           description: 'Enable the footer of the table, and clone the header content by default',
-        },
-        footRowTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-          description:
-            'Apply a theme color to the tr element in the tfoot. Falls back to head-row-theme',
-        },
-        footTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-          description:
-            'Apply a theme color to the foot, falls back to head-theme if that prop is specified. May take precedence over foot-row-theme',
-        },
-        headRowTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-          description: 'Apply a theme color to the tr element in the thead',
-        },
-        headTheme: {
-          type: 'ThemeProp | null',
-          default: undefined,
-          description: 'Apply a theme color to the head. May take precedence over head-row-theme',
         },
         items: {
           type: 'readonly Item[]',
@@ -604,7 +568,6 @@ export default {
         | 'update:current-page'
       >,
       props: {
-        ...pick(buildCommonProps(), ['selectionBg', 'selectionFg']),
         busy: {
           type: 'boolean',
           default: false,
@@ -748,11 +711,11 @@ export default {
           type: 'boolean | string',
           default: true,
         },
-        selectionTheme: {
-          type: 'ThemeProp | null',
-          default: 'primary',
+        selectionColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'primary' },
           description:
-            'Theme color to set selected rows to. Use any of the registered theme colors. Set to `null` to not apply a theme',
+            'Color object for selected rows: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
         },
         selectMode: {
           type: "'multi' | 'single' | 'range'",
@@ -1079,9 +1042,7 @@ export default {
       },
       BTbody: {
         styleSpec: { kind: StyleKind.Tag, value: 'tbody' },
-        props: pick(buildCommonProps(), ['bg', 'fg', 'theme']) satisfies PropRecord<
-          keyof BTbodyProps
-        >,
+        props: pick(buildCommonProps(), ['color']) satisfies PropRecord<keyof BTbodyProps>,
         slots: {
           default: {
             description: 'Content to place in the tbody',
@@ -1091,7 +1052,7 @@ export default {
       BTd: {
         styleSpec: { kind: StyleKind.Tag, value: 'td' },
         props: {
-          ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
+          ...pick(buildCommonProps(), ['color']),
           colspan: {
             type: 'Numberish',
             default: undefined,
@@ -1123,9 +1084,7 @@ export default {
       },
       BTfoot: {
         styleSpec: { kind: StyleKind.Tag, value: 'tfoot' },
-        props: pick(buildCommonProps(), ['bg', 'fg', 'theme']) satisfies PropRecord<
-          keyof BTfootProps
-        >,
+        props: pick(buildCommonProps(), ['color']) satisfies PropRecord<keyof BTfootProps>,
         slots: {
           default: {
             description: 'Content to place in the tfoot',
@@ -1135,7 +1094,7 @@ export default {
       BTh: {
         styleSpec: { kind: StyleKind.Tag, value: 'th' },
         props: {
-          ...pick(buildCommonProps(), ['bg', 'fg', 'theme']),
+          ...pick(buildCommonProps(), ['color']),
           colspan: {
             type: 'Numberish',
             default: undefined,
@@ -1171,11 +1130,7 @@ export default {
       BThead: {
         styleSpec: { kind: StyleKind.Tag, value: 'thead' },
         props: {
-          ...pick(buildCommonProps(), ['bg', 'fg']),
-          theme: {
-            type: 'ThemeProp | null',
-            default: null,
-          },
+          ...pick(buildCommonProps(), ['color']),
         } satisfies PropRecord<keyof BTheadProps>,
         emits: {},
         slots: {
@@ -1188,11 +1143,7 @@ export default {
       BTr: {
         styleSpec: { kind: StyleKind.Tag, value: 'tr' },
         props: {
-          ...pick(buildCommonProps(), ['bg', 'fg']),
-          theme: {
-            type: 'ThemeProp | null',
-            default: null,
-          },
+          ...pick(buildCommonProps(), ['color']),
         } satisfies PropRecord<keyof BTrProps>,
         emits: {},
         slots: {

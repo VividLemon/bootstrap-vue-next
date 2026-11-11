@@ -1,345 +1,507 @@
-import {mount} from '@vue/test-utils'
+import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it, vi} from 'vitest'
-import {defineComponent, ref, type EmitFn} from 'vue'
-import {BvTriggerableEvent} from '../utils'
-import {useShowHide} from './useShowHide'
+import {customRef, defineComponent, type EmitFn, h, nextTick, ref, type Ref, watch} from 'vue'
+import {useShowHide, type UseShowHideProps, type UseShowHideReturn} from './useShowHide'
+import type {BvTriggerableEvent} from '../utils'
+
+const flush = async () => {
+  for (let i = 0; i < 3; i++) {
+    await nextTick()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+  }
+}
+
+/**
+ * Minimal host component. `transition` lets a test control when the "CSS transition" ends.
+ */
+const mountHost = (
+  props: UseShowHideProps = {},
+  {
+    modelValue = ref<boolean | number>(false),
+    transition,
+    prevent = [],
+    onEmit,
+  }: {
+    modelValue?: Ref<boolean | number>
+    transition?: (visible: boolean) => Promise<boolean>
+    /** events whose BvTriggerableEvent gets preventDefault() called by the "listener" */
+    prevent?: string[]
+    /** called synchronously for every emitted event, like a listener on the component */
+    onEmit?: (name: string, api: UseShowHideReturn) => void
+  } = {}
+) => {
+  let api!: UseShowHideReturn
+  const emitted: [string, unknown][] = []
+  const Host = defineComponent({
+    props: {
+      visible: {type: Boolean, default: false},
+      show: {type: Boolean, default: false},
+      initialAnimation: {type: Boolean, default: false},
+      lazy: {type: Boolean, default: false},
+      unmountLazy: {type: Boolean, default: false},
+      noCloseOnEsc: {type: Boolean, default: false},
+      noCloseOnBackdrop: {type: Boolean, default: false},
+      delay: {type: [Number, Object], default: undefined},
+    },
+    setup(p) {
+      const element = ref<HTMLElement | null>(null)
+      const emit = ((name: string, value: unknown) => {
+        emitted.push([name, value])
+        if (prevent.includes(name)) (value as BvTriggerableEvent).preventDefault()
+        onEmit?.(name, api)
+      }) as EmitFn
+      api = useShowHide(
+        {
+          modelValue,
+          props: p as UseShowHideProps & Record<string, unknown>,
+          emit,
+          element,
+          id: ref('host'),
+        },
+        transition ? {transition} : {}
+      )
+      return () => h('div', {ref: element, class: {show: api.visible.value}})
+    },
+  })
+  const wrapper = mount(Host, {props})
+  const names = () => emitted.map(([name]) => name)
+  const event = (name: string) =>
+    emitted.find(([n]) => n === name)?.[1] as BvTriggerableEvent | undefined
+  return {wrapper, api: () => api, names, event, modelValue}
+}
 
 describe('useShowHide', () => {
+  enableAutoUnmount(afterEach)
   afterEach(() => {
     vi.useRealTimers()
   })
 
-  it('ignores repeated hides during the delay and leave, then allows hiding after showing again', async () => {
-    vi.useFakeTimers()
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>()
-    let state!: ReturnType<typeof useShowHide>
-    const wrapper = mount(
-      defineComponent({
-        setup() {
-          state = useShowHide({
-            modelValue: ref<boolean | number>(true),
-            element: ref(null),
-            props: {noCloseOnBackdrop: true},
-            emit: emit as EmitFn,
-            id: ref('test'),
-          })
-          return () => null
-        },
-      })
+  it('emits show, flips state and model, then shown after the transition', async () => {
+    let finish!: (v: boolean) => void
+    const transition = vi.fn<(visible: boolean) => Promise<boolean>>(
+      () => new Promise<boolean>((resolve) => (finish = resolve))
     )
-
-    const first = state.hide('ok')
-    expect(state.hide('ok')).toBe(first)
-    await vi.runAllTimersAsync()
-    expect(state.hide('backdrop')).toBe(first)
-    expect(emit.mock.calls.filter(([name]) => name === 'ok')).toHaveLength(1)
-    expect(emit.mock.calls.filter(([name]) => name === 'hide')).toHaveLength(1)
-    expect(emit.mock.calls.filter(([name]) => name === 'hide-prevented')).toHaveLength(0)
-
-    for (const hook of state.transitionProps.onAfterLeave as (() => void)[]) hook()
-    expect(await first).toBe('ok')
-    const hidden = emit.mock.calls.find(([name]) => name === 'hidden')?.[1] as BvTriggerableEvent
-    expect(hidden.trigger).toBe('ok')
-    expect(await state.hide('cancel')).toBe('')
-
-    state.show()
-    await vi.runAllTimersAsync()
-    state.hide('cancel')
-    expect(emit.mock.calls.filter(([name]) => name === 'hide')).toHaveLength(2)
-    wrapper.unmount()
+    const {api, names, modelValue} = mountHost({}, {transition})
+    await flush()
+    api().show()
+    expect(names()).toEqual(['show'])
+    expect(api().visible.value).toBe(true)
+    expect(api().isActive.value).toBe(true)
+    expect(modelValue.value).toBe(true)
+    expect(transition).toHaveBeenCalledWith(true)
+    finish(true)
+    await flush()
+    expect(names()).toEqual(['show', 'shown'])
   })
 
-  it('allows another hide after a prevented hide', async () => {
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name, event) => {
-      if (name === 'ok') event.preventDefault()
-    })
-    let state!: ReturnType<typeof useShowHide>
-    const wrapper = mount(
-      defineComponent({
-        setup() {
-          state = useShowHide({
-            modelValue: ref<boolean | number>(true),
-            element: ref(null),
-            props: {noCloseOnBackdrop: true},
-            emit: emit as EmitFn,
-            id: ref('test'),
-          })
-          return () => null
-        },
-      })
+  it('does not emit shown when the transition reports it was superseded', async () => {
+    const {api, names} = mountHost({}, {transition: () => Promise.resolve(false)})
+    await flush()
+    await Promise.race([api().show(), flush()])
+    expect(names()).toEqual(['show'])
+  })
+
+  it('emits the trigger event before hide, and passes the trigger to hidden', async () => {
+    const {api, names, event} = mountHost({}, {modelValue: ref(true)})
+    await flush()
+    const result = await api().hide('close')
+    expect(result).toBe('close')
+    expect(names()).toEqual(['show', 'shown', 'close', 'hide', 'hidden'])
+    expect(event('hidden')?.trigger).toBe('close')
+  })
+
+  it('does not emit the trigger event when noTriggerEmit', async () => {
+    const {api, names} = mountHost({}, {modelValue: ref(true)})
+    await flush()
+    await api().hide('close', true)
+    expect(names()).not.toContain('close')
+  })
+
+  it('a prevented trigger event prevents the hide', async () => {
+    const modelValue = ref<boolean | number>(true)
+    const {api, names} = mountHost({}, {modelValue, prevent: ['close']})
+    await flush()
+    await expect(api().hide('close')).resolves.toBe('hide-prevented')
+    expect(names()).toContain('hide-prevented')
+    expect(names()).not.toContain('hidden')
+    expect(api().visible.value).toBe(true)
+    expect(modelValue.value).toBe(true)
+  })
+
+  it('a prevented hide from v-model reverts the model', async () => {
+    const modelValue = ref<boolean | number>(true)
+    const {api} = mountHost({}, {modelValue, prevent: ['hide']})
+    await flush()
+    modelValue.value = false
+    await flush()
+    expect(modelValue.value).toBe(true)
+    expect(api().visible.value).toBe(true)
+  })
+
+  it.each([
+    {trigger: 'esc', prop: 'noCloseOnEsc'},
+    {trigger: 'backdrop', prop: 'noCloseOnBackdrop'},
+  ] as const)('prevents hide($trigger) with $prop', async ({trigger, prop}) => {
+    const {api, names} = mountHost({[prop]: true}, {modelValue: ref(true)})
+    await flush()
+    await expect(api().hide(trigger)).resolves.toBe('hide-prevented')
+    expect(names()).toContain('hide-prevented')
+    expect(names()).not.toContain('hide')
+    expect(api().visible.value).toBe(true)
+  })
+
+  it('ignores a non-string trigger (event objects from click handlers)', async () => {
+    const {api, event} = mountHost({}, {modelValue: ref(true)})
+    await flush()
+    await api().hide(new MouseEvent('click') as unknown as string)
+    expect(event('hide')?.trigger).toBeFalsy()
+    expect(api().visible.value).toBe(false)
+  })
+
+  it('sets a numeric modelValue to 0 on hide', async () => {
+    const modelValue = ref<boolean | number>(5000)
+    const {api} = mountHost({}, {modelValue})
+    await flush()
+    expect(api().visible.value).toBe(true)
+    await api().hide()
+    expect(modelValue.value).toBe(0)
+  })
+
+  it('does not re-show when a numeric modelValue counts down', async () => {
+    const modelValue = ref<boolean | number>(5000)
+    const {names} = mountHost({}, {modelValue})
+    await flush()
+    modelValue.value = 4000
+    await flush()
+    expect(names().filter((n) => n === 'show')).toHaveLength(1)
+  })
+
+  it('waits for delay before flipping the state', async () => {
+    vi.useFakeTimers()
+    const {api, names} = mountHost({delay: {show: 100, hide: 50}})
+    await nextTick()
+    api().show()
+    expect(names()).toEqual(['show'])
+    expect(api().visible.value).toBe(false)
+    vi.advanceTimersByTime(100)
+    expect(api().visible.value).toBe(true)
+    await vi.runAllTimersAsync()
+    expect(names()).toEqual(['show', 'shown'])
+    api().hide()
+    expect(api().visible.value).toBe(true)
+    vi.advanceTimersByTime(50)
+    expect(api().visible.value).toBe(false)
+  })
+
+  it('a hide during the show delay cancels the pending show', async () => {
+    vi.useFakeTimers()
+    const {api, names} = mountHost({delay: 100})
+    await nextTick()
+    const showPromise = api().show()
+    api().hide()
+    await vi.runAllTimersAsync()
+    await expect(showPromise).resolves.toBe(false)
+    expect(api().visible.value).toBe(false)
+    expect(names()).not.toContain('shown')
+    expect(names()).toContain('hidden')
+  })
+
+  it('returns the pending promise for a repeated show', async () => {
+    let finish!: (v: boolean) => void
+    const {api} = mountHost(
+      {},
+      {transition: () => new Promise<boolean>((resolve) => (finish = resolve))}
     )
-
-    expect(await state.hide('backdrop')).toBe('hide-prevented')
-    expect(await state.hide('ok')).toBe('hide-prevented')
-    const hide = state.hide('cancel')
-    expect(state.hide('cancel')).toBe(hide)
-    expect(emit.mock.calls.filter(([name]) => name === 'hide-prevented')).toHaveLength(2)
-    expect(emit.mock.calls.filter(([name]) => name === 'hide')).toHaveLength(2)
-    expect(emit.mock.calls.filter(([name]) => name === 'cancel')).toHaveLength(1)
-    for (const hook of state.transitionProps.onAfterLeave as (() => void)[]) hook()
-    expect(await hide).toBe('cancel')
-    wrapper.unmount()
+    await flush()
+    const a = api().show()
+    const b = api().show()
+    expect(b).toBe(a)
+    finish(true)
+    await expect(a).resolves.toBe(true)
   })
 
-  it('allows hiding after show cancels a pending hide', () => {
-    let state!: ReturnType<typeof useShowHide>
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>()
-    const wrapper = mount(
-      defineComponent({
-        setup() {
-          state = useShowHide({
-            modelValue: ref<boolean | number>(true),
-            element: ref(null),
-            props: {},
-            emit: emit as EmitFn,
-            id: ref('test'),
-          })
-          return () => null
+  it('toggle hides with trigger toggle-function', async () => {
+    const {api, event} = mountHost({}, {modelValue: ref(true)})
+    await flush()
+    await api().toggle()
+    expect(event('hidden')?.trigger).toBe('toggle-function')
+  })
+
+  it('registered triggers get aria-expanded that follows the state', async () => {
+    const {api, names} = mountHost()
+    await flush()
+    const button = document.createElement('button')
+    api().registerTrigger('click', button)
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    button.click()
+    await flush()
+    expect(names()).toContain('toggle')
+    expect(button.getAttribute('aria-expanded')).toBe('true')
+    expect(button.classList.contains('not-collapsed')).toBe(false)
+    expect(button.classList.contains('collapsed')).toBe(false)
+    button.click()
+    await flush()
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    api().unregisterTrigger('click', button, true)
+    expect(button.hasAttribute('aria-expanded')).toBe(false)
+  })
+
+  it('unregisterTrigger with clean=false keeps aria-expanded', async () => {
+    const {api} = mountHost()
+    await flush()
+    const button = document.createElement('button')
+    api().registerTrigger('click', button)
+    api().unregisterTrigger('click', button, false)
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+  })
+
+  it('resolves a pending change with false on unmount and emits nothing more', async () => {
+    const {api, names, wrapper} = mountHost({}, {transition: () => new Promise<boolean>(() => {})})
+    await flush()
+    const promise = api().show()
+    wrapper.unmount()
+    await expect(promise).resolves.toBe(false)
+    expect(names()).toEqual(['show'])
+  })
+
+  it('contentShowing honours lazy and unmountLazy', async () => {
+    const lazy = mountHost({lazy: true})
+    await flush()
+    expect(lazy.api().contentShowing.value).toBe(false)
+    await lazy.api().show()
+    await lazy.api().hide()
+    expect(lazy.api().contentShowing.value).toBe(true)
+
+    const unmount = mountHost({lazy: true, unmountLazy: true})
+    await flush()
+    await unmount.api().show()
+    expect(unmount.api().contentShowing.value).toBe(true)
+    await unmount.api().hide()
+    expect(unmount.api().contentShowing.value).toBe(false)
+  })
+  it('a show() started from a hidden listener does not mix up the promises', async () => {
+    let showPromise: Promise<boolean | string> | undefined
+    const {api, names} = mountHost(
+      {},
+      {
+        modelValue: ref(true),
+        onEmit: (name, a) => {
+          if (name === 'hidden' && !showPromise) showPromise = a.show()
         },
-      })
+      }
     )
-
-    state.hide('ok')
-    state.show()
-    state.hide('cancel')
-    expect(emit.mock.calls.filter(([name]) => name === 'hide')).toHaveLength(2)
-    wrapper.unmount()
+    await flush()
+    await expect(api().hide('x')).resolves.toBe('x')
+    expect(showPromise).toBeDefined()
+    await expect(showPromise).resolves.toBe(true)
+    expect(names()).toEqual(['show', 'shown', 'x', 'hide', 'hidden', 'show', 'shown'])
+    expect(api().visible.value).toBe(true)
   })
 
-  const mountShowHide = (
-    emit: (name: string, event: BvTriggerableEvent) => void,
-    props: Record<string, unknown> = {},
-    modelValue = false
-  ) => {
-    let state!: ReturnType<typeof useShowHide>
-    const wrapper = mount(
-      defineComponent({
-        setup() {
-          state = useShowHide({
-            modelValue: ref<boolean | number>(modelValue),
-            element: ref(null),
-            props,
-            emit: emit as EmitFn,
-            id: ref('test'),
-          })
-          return () => null
+  it('a hide() started from a shown listener does not mix up the promises', async () => {
+    let hidePromise: Promise<boolean | string> | undefined
+    const {api} = mountHost(
+      {},
+      {
+        onEmit: (name, a) => {
+          if (name === 'shown' && !hidePromise) hidePromise = a.hide('auto')
         },
-      })
+      }
     )
-    return {state, wrapper}
-  }
-  const count = (emit: ReturnType<typeof vi.fn>, name: string) =>
-    emit.mock.calls.filter(([n]) => n === name).length
+    await flush()
+    await expect(api().show()).resolves.toBe(true)
+    await expect(hidePromise).resolves.toBe('auto')
+    expect(api().visible.value).toBe(false)
+    expect(api().isActive.value).toBe(false)
+  })
 
-  it('does not reveal the component when hide() lands before the pending show frame', async () => {
+  it('a hide() started synchronously while a show updates the model still finishes', async () => {
+    // Same invalidation rule as useCssTransition: a newer run makes an older one resolve false
+    let generation = 0
+    const transition = async () => {
+      const id = ++generation
+      await nextTick()
+      return id === generation
+    }
+    const modelValue = ref<boolean | number>(false)
+    const {api, names} = mountHost({}, {modelValue, transition})
+    await flush()
+    let hidePromise: Promise<boolean | string> | undefined
+    // defineModel emits update:modelValue synchronously
+    const stop = watch(
+      modelValue,
+      (value) => {
+        if (value && !hidePromise) hidePromise = api().hide('sync')
+      },
+      {flush: 'sync'}
+    )
+    const showPromise = api().show()
+    await expect(showPromise).resolves.toBe(false)
+    await expect(hidePromise).resolves.toBe('sync')
+    stop()
+    expect(names()).toEqual(['show', 'sync', 'hide', 'hidden'])
+    expect(api().visible.value).toBe(false)
+    expect(api().isActive.value).toBe(false)
+  })
+
+  it('a delayed hide in the same tick as a show is not cancelled by the model update', async () => {
     vi.useFakeTimers()
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>()
-    const {state, wrapper} = mountShowHide(emit)
-
-    // show() defers revealing to requestAnimationFrame; hide() lands before that frame
-    const shown = state.show()
-    const hidden = state.hide('ok')
+    const {api, names} = mountHost({delay: {show: 0, hide: 100}})
+    await nextTick()
+    api().show()
+    const hidePromise = api().hide()
     await vi.runAllTimersAsync()
-    expect(state.showRef.value).toBe(false)
-    // no leave transition runs, so the hide finishes on its own and leaves nothing behind
-    expect(state.isLeaving.value).toBe(false)
-    expect(state.renderBackdropRef.value).toBe(false)
-    expect(count(emit, 'hidden')).toBe(1)
-    expect(await hidden).toBe('ok')
-    expect(await shown).toBe('ok')
-
-    // and the next show/hide cycle still works
-    state.show()
-    await vi.runAllTimersAsync()
-    expect(state.showRef.value).toBe(true)
-    state.hide('cancel')
-    expect(count(emit, 'hide')).toBe(2)
-    expect(count(emit, 'cancel')).toBe(1)
-    wrapper.unmount()
+    await expect(hidePromise).resolves.toBe('')
+    expect(api().visible.value).toBe(false)
+    expect(names()).toEqual(['show', 'hide', 'hidden'])
   })
 
-  it('does not settle a show(true) promise when a hide is prevented', async () => {
-    vi.useFakeTimers()
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>()
-    const {state, wrapper} = mountShowHide(emit, {noCloseOnBackdrop: true})
-
-    const shown = state.show(true)
-    await vi.runAllTimersAsync()
-    expect(await state.hide('backdrop')).toBe('hide-prevented')
-
-    state.hide('ok')
-    await vi.runAllTimersAsync()
-    for (const hook of state.transitionProps.onAfterLeave as (() => void)[]) hook()
-    expect(await shown).toBe('ok')
-    wrapper.unmount()
+  it('still follows the model after its own model update was skipped', async () => {
+    const modelValue = ref<boolean | number>(false)
+    const {api} = mountHost({}, {modelValue})
+    await flush()
+    await api().show()
+    expect(modelValue.value).toBe(true)
+    modelValue.value = false
+    await flush()
+    expect(api().visible.value).toBe(false)
+    modelValue.value = true
+    await flush()
+    expect(api().visible.value).toBe(true)
   })
 
-  it('emits hide once when a listener hides the component from its trigger event', () => {
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name) => {
-      if (name === 'ok') mounted.state.hide()
-    })
-    const mounted = mountShowHide(emit, {}, true)
-
-    mounted.state.hide('ok')
-    expect(count(emit, 'ok')).toBe(1)
-    expect(count(emit, 'hide')).toBe(1)
-    expect(count(emit, 'hide-prevented')).toBe(0)
-    mounted.wrapper.unmount()
-  })
-
-  describe('event.signal', () => {
-    it('stays live while the request is prevented and aborts once a hide is committed', () => {
-      const events: BvTriggerableEvent[] = []
-      const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name, event) => {
-        events.push(event)
-        if (name === 'ok') event.preventDefault()
-      })
-      const {state, wrapper} = mountShowHide(emit, {noCloseOnBackdrop: true}, true)
-
-      state.hide('ok')
-      const ok = events.find((e) => e.eventType === 'ok') as BvTriggerableEvent
-      expect(ok.signal).toBeInstanceOf(AbortSignal)
-      expect(ok.signal?.aborted).toBe(false)
-
-      // a refused backdrop click does not abort it
-      state.hide('backdrop')
-      expect(ok.signal?.aborted).toBe(false)
-
-      state.hide('cancel')
-      expect(ok.signal?.aborted).toBe(true)
-      wrapper.unmount()
-    })
-
-    it('is already aborted after a request that is not prevented', () => {
-      const events: BvTriggerableEvent[] = []
-      const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((_, event) => {
-        events.push(event)
-      })
-      const {state, wrapper} = mountShowHide(emit, {}, true)
-
-      state.hide('ok')
-      expect(events.find((e) => e.eventType === 'hide')?.signal?.aborted).toBe(true)
-      wrapper.unmount()
-    })
-
-    it('aborts when the component unmounts', () => {
-      const events: BvTriggerableEvent[] = []
-      const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name, event) => {
-        events.push(event)
-        if (name === 'ok') event.preventDefault()
-      })
-      const {state, wrapper} = mountShowHide(emit, {}, true)
-
-      state.hide('ok')
-      const {signal} = events.find((e) => e.eventType === 'ok') as BvTriggerableEvent
-      expect(signal?.aborted).toBe(false)
-      wrapper.unmount()
-      expect(signal?.aborted).toBe(true)
-    })
-
-    it('is null on events built outside a show or hide request', () => {
-      expect(new BvTriggerableEvent('hidden').signal).toBeNull()
-    })
-  })
-
-  it('finishes a hide that lands during a delayed show without leaving a backdrop', async () => {
-    vi.useFakeTimers()
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>()
-    const {state, wrapper} = mountShowHide(emit, {delay: {show: 500, hide: 0}})
-
-    state.show()
-    await vi.advanceTimersByTimeAsync(100) // frame has run, delay still pending
-    expect(state.renderBackdropRef.value).toBe(true)
-    state.hide('esc')
-    await vi.runAllTimersAsync()
-
-    expect(state.showRef.value).toBe(false)
-    expect(state.isLeaving.value).toBe(false)
-    expect(state.renderBackdropRef.value).toBe(false)
-    const hidden = emit.mock.calls.find(([name]) => name === 'hidden')?.[1]
-    expect(hidden?.trigger).toBe('esc')
-    wrapper.unmount()
-  })
-
-  it('returns the hide promise when a listener hides the component while its show is pending', async () => {
-    vi.useFakeTimers()
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name) => {
-      if (name === 'ok') mounted.state.hide()
-    })
-    const mounted = mountShowHide(emit)
-
-    mounted.state.show()
-    const hidden = mounted.state.hide('ok')
-    expect(hidden).toBeInstanceOf(Promise)
-    expect(await hidden).toBe('')
-    expect(count(emit, 'hidden')).toBe(1)
-    mounted.wrapper.unmount()
-  })
-
-  it('lets a running leave finish a hide that cancels a show started during it', async () => {
-    vi.useFakeTimers()
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>()
-    const {state, wrapper} = mountShowHide(emit, {}, true)
-
-    state.hide('ok')
-    await vi.advanceTimersByTimeAsync(1) // hide timer ran: the leave transition is running
-    expect(state.isLeaving.value).toBe(true)
-
-    const shown = state.show()
-    const hidden = state.hide('cancel') // before the show's frame
-    expect(count(emit, 'hidden')).toBe(0)
-
-    for (const hook of state.transitionProps.onAfterLeave as (() => void)[]) hook()
-    const hiddenEvents = emit.mock.calls.filter(([name]) => name === 'hidden')
-    expect(hiddenEvents).toHaveLength(1)
-    expect(hiddenEvents[0]?.[1].trigger).toBe('cancel')
-    expect(await hidden).toBe('cancel')
-    expect(await shown).toBe('cancel')
-    wrapper.unmount()
-  })
-
-  it('does not settle a show started from a hidden listener with the finished hide', async () => {
-    vi.useFakeTimers()
-    let reopened: Promise<boolean | string> | undefined
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name) => {
-      if (name === 'hidden' && !reopened) reopened = mounted.state.show()
-    })
-    const mounted = mountShowHide(emit)
-
-    const shown = mounted.state.show()
-    const hidden = mounted.state.hide('ok') // before the show's frame
-    expect(await hidden).toBe('ok')
-    expect(await shown).toBe('ok')
-
-    let reopenedSettled = false
-    reopened?.then(() => {
-      reopenedSettled = true
-    })
-    await vi.advanceTimersByTimeAsync(0)
-    expect(reopened).toBeInstanceOf(Promise)
-    expect(reopenedSettled).toBe(false)
-    mounted.wrapper.unmount()
-  })
-
-  it('keeps a show started from hidden when the outer hide resumes', async () => {
-    vi.useFakeTimers()
-    let reopened = false
-    const emit = vi.fn<(name: string, event: BvTriggerableEvent) => void>((name) => {
-      if (name === 'ok') mounted.state.hide() // finishes at once: the show is still pending
-      if (name === 'hidden' && !reopened) {
-        reopened = true
-        mounted.state.show()
+  it('follows the model after a parent declined its own model update', async () => {
+    // Like a parent that listens to `update:modelValue` without writing the value back
+    let value = false
+    let notify = () => {}
+    const modelValue = customRef<boolean | number>((track, trigger) => {
+      notify = trigger
+      return {
+        get: () => {
+          track()
+          return value
+        },
+        set: () => {},
       }
     })
-    const mounted = mountShowHide(emit)
+    const {api} = mountHost({}, {modelValue})
+    await flush()
+    await api().show()
+    await api().hide()
+    await flush()
+    expect(api().visible.value).toBe(false)
 
-    mounted.state.show()
-    await mounted.state.hide('ok')
-    await vi.runAllTimersAsync()
+    value = true
+    notify()
+    await flush()
+    expect(api().visible.value).toBe(true)
+  })
 
-    expect(count(emit, 'hidden')).toBe(1)
-    expect(count(emit, 'hide')).toBe(1)
-    expect(mounted.state.showRef.value).toBe(true)
-    mounted.wrapper.unmount()
+  it('a superseded visible-prop change does not make the next change instant', async () => {
+    vi.useFakeTimers()
+    const {api, wrapper} = mountHost(
+      {delay: 300},
+      {transition: () => new Promise<boolean>(() => {})}
+    )
+    await nextTick()
+    await wrapper.setProps({visible: true})
+    expect(api().instant.value).toBe(true)
+    expect(api().visible.value).toBe(true)
+    api().hide()
+    expect(api().instant.value).toBe(false)
+    // the hide waits for its delay again
+    expect(api().visible.value).toBe(true)
+    vi.advanceTimersByTime(300)
+    expect(api().visible.value).toBe(false)
+  })
+
+  it('show(true) resolves with the trigger once hidden', async () => {
+    const {api, names} = mountHost()
+    await flush()
+    let resolved: boolean | string | undefined
+    api()
+      .show(true)
+      .then((value) => (resolved = value))
+    await flush()
+    expect(names()).toEqual(['show', 'shown'])
+    expect(resolved).toBeUndefined()
+    await api().hide('ok')
+    await flush()
+    expect(resolved).toBe('ok')
+  })
+
+  it('show(true) still resolves on hidden when the hide starts before shown', async () => {
+    let finish!: (v: boolean) => void
+    const {api} = mountHost(
+      {},
+      {transition: () => new Promise<boolean>((resolve) => (finish = resolve))}
+    )
+    await flush()
+    const showPromise = api().show(true)
+    const hidePromise = api().hide('early')
+    finish(true)
+    await expect(hidePromise).resolves.toBe('early')
+    await expect(showPromise).resolves.toBe('early')
+  })
+
+  it('a plain show() does not change what a pending show(true) waits for', async () => {
+    let finish!: (v: boolean) => void
+    const transition = () => new Promise<boolean>((resolve) => (finish = resolve))
+    const {api} = mountHost({}, {transition})
+    await flush()
+    const onHide = vi.fn<(v: boolean | string) => void>()
+    void api().show(true).then(onHide)
+    const plain = api().show()
+    finish(true)
+    await flush()
+    expect(await plain).toBe(true)
+    expect(onHide).not.toHaveBeenCalled()
+
+    const hidePromise = api().hide('esc')
+    finish(true)
+    await hidePromise
+    await flush()
+    expect(onHide).toHaveBeenCalledWith('esc')
+  })
+
+  it('a show(true) does not change what a pending plain show() waits for', async () => {
+    let finish!: (v: boolean) => void
+    const transition = () => new Promise<boolean>((resolve) => (finish = resolve))
+    const {api} = mountHost({}, {transition})
+    await flush()
+    const plain = api().show()
+    const onHide = vi.fn<(v: boolean | string) => void>()
+    void api().show(true).then(onHide)
+    expect(api().show(true)).toBe(api().show(true))
+    finish(true)
+    expect(await plain).toBe(true)
+    await flush()
+    expect(onHide).not.toHaveBeenCalled()
+  })
+
+  it('settles every waiter of a pending show that is superseded', async () => {
+    const transition = () => new Promise<boolean>(() => {})
+    const {api, wrapper} = mountHost({}, {transition})
+    await flush()
+    const plain = api().show()
+    const onHide = api().show(true)
+    wrapper.unmount()
+    expect(await plain).toBe(false)
+    expect(await onHide).toBe(false)
+  })
+
+  it('show(true) resolves false on unmount', async () => {
+    const {api, wrapper} = mountHost()
+    await flush()
+    const promise = api().show(true)
+    await flush()
+    wrapper.unmount()
+    await expect(promise).resolves.toBe(false)
+  })
+
+  it('treats an event object passed to show as no resolveOnHide', async () => {
+    const {api} = mountHost()
+    await flush()
+    await expect(api().show(new Event('click') as unknown as boolean)).resolves.toBe(true)
   })
 })

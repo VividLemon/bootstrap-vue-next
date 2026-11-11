@@ -11,8 +11,8 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {useBLinkHelper} from '../../composables/useBLinkHelper'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {computed} from 'vue'
 import BLink from '../BLink/BLink.vue'
@@ -25,7 +25,6 @@ const _props = withDefaults(defineProps<BBadgeProps>(), {
   tag: 'span',
   placement: undefined,
   // Link props
-  theme: 'secondary',
   // All others use defaults
   active: undefined,
   activeClass: undefined,
@@ -34,26 +33,19 @@ const _props = withDefaults(defineProps<BBadgeProps>(), {
   href: undefined,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   rel: undefined,
   replace: undefined,
   routerComponentName: undefined,
   stretched: false,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: undefined,
+  underline: undefined,
   // End link props
-  // ColorExtendables props
   // Theme is here as well
-  fg: null,
-  bg: null,
-  // End ColorExtendables props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BBadge')
+const computedColor = computed(() => resolvePartColor(props.color, {theme: 'secondary'}))
 defineSlots<BBadgeSlots>()
 
 const {computedLink, computedLinkProps} = useBLinkHelper(props, [
@@ -65,8 +57,6 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props, [
   'icon',
   'noRel',
   'opacity',
-  'opacityHover',
-  'noPrefetch',
   'prefetch',
   'prefetchOn',
   'prefetchedClass',
@@ -76,11 +66,8 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props, [
   'stretched',
   'target',
   'to',
-  'underlineOffset',
-  'underlineOffsetHover',
-  'underlineOpacity',
-  'underlineOpacityHover',
-  'underlineTheme',
+  'underline',
+  'color',
 ])
 
 const computedTag = computed(() => (computedLink.value ? BLink : props.tag))
@@ -106,9 +93,9 @@ const placementClasses = computed(() => {
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [

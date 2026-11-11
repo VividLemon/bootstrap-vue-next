@@ -33,6 +33,7 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useButtonThemeClasses} from '../../composables/useThemeClasses'
 import {computed, useTemplateRef} from 'vue'
 import BSpinner from '../BSpinner/BSpinner.vue'
 import {useBLinkHelper} from '../../composables/useBLinkHelper'
@@ -40,7 +41,6 @@ import BLink from '../BLink/BLink.vue'
 import {useLinkClasses} from '../../composables/useLinkClasses'
 import {onKeyStroke} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
-import {useButtonThemeClasses} from '../../composables/useThemeClasses'
 import type {BButtonEmits, BButtonProps, BButtonSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
@@ -56,7 +56,6 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   // Link props
   active: false, // Why is this active: false?
   variant: 'solid',
-  theme: 'secondary',
   // All others use defaults
   activeClass: undefined,
   disabled: undefined,
@@ -65,23 +64,18 @@ const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
   href: undefined,
   icon: false,
   opacity: undefined,
-  opacityHover: undefined,
   rel: undefined,
   replace: undefined,
   routerComponentName: undefined,
   routerTag: undefined,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: null,
-  bg: null,
-  fg: null,
+  underline: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BButton')
+const computedColor = computed(() => resolvePartColor(props.color, {theme: 'secondary'}))
 const emit = defineEmits<BButtonEmits>()
 defineSlots<BButtonSlots>()
 
@@ -95,7 +89,6 @@ const {computedLink, computedLinkProps} = useBLinkHelper(props, [
   'replace',
   'routerComponentName',
   'routerTag',
-  'noPrefetch',
   'prefetch',
   'prefetchOn',
   'prefetchedClass',
@@ -122,20 +115,19 @@ const {classes: linkValueClasses} = useLinkClasses(
       ? {
           icon: props.icon,
           opacity: props.opacity,
-          opacityHover: props.opacityHover,
-          underlineOffset: props.underlineOffset,
-          underlineOffsetHover: props.underlineOffsetHover,
-          underlineOpacity: props.underlineOpacity,
-          underlineOpacityHover: props.underlineOpacityHover,
-          underlineTheme: props.underlineTheme,
-          theme: null,
-          bg: props.bg,
-          fg: props.fg,
+          underline: props.underline,
+          color: {
+            theme: null,
+            bg: computedColor.value.bg,
+            fg: computedColor.value.fg,
+          },
         }
       : undefined),
   }))
 )
-const {classes: buttonThemeClasses} = useButtonThemeClasses(props)
+const {classes: buttonThemeClasses} = useButtonThemeClasses(
+  computed(() => ({...computedColor.value, variant: props.variant, styled: props.styled}))
+)
 const computedClasses = computed(() => [
   variantIsLinkType.value === true && computedLink.value === false
     ? linkValueClasses.value

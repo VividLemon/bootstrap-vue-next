@@ -8,66 +8,16 @@ const commonProps = () =>
       description:
         'When set to `true`, places the component in the active state with active styling',
     },
-    buttonBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to the button',
-    },
-    buttonFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to the button',
-    },
-    cancelBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to the cancel button',
-    },
-    cancelFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to the cancel button',
-    },
     activeClass: {
       type: 'ClassValue',
       default: 'active',
       description:
         "Configure the active CSS class applied when the link is active. Typically you will want to set this to class name 'active'",
     },
-    closeBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to the close button',
-    },
-    closeFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to the close button',
-    },
     alt: {
       type: 'string',
       default: 'undefined',
       description: 'Value to set for the `alt` attribute',
-    },
-    footBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: undefined,
-      description: 'Applies a background color to the table footer',
-    },
-    footFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: undefined,
-      description: 'Applies a foreground color to the table footer',
-    },
-    footRowBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: undefined,
-      description: 'Applies a background color to the footer row',
-    },
-    footRowFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: undefined,
-      description: 'Applies a foreground color to the footer row',
     },
     ariaControls: {
       type: 'AriaInvalid',
@@ -75,51 +25,11 @@ const commonProps = () =>
       description:
         'If this component controls another component or element, set this to the ID of the controlled component or element',
     },
-    headerCloseBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to the header close button',
-    },
-    headerCloseFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to the header close button',
-    },
-    headBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: undefined,
-      description: 'Applies a background color to the table header',
-    },
-    headFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: undefined,
-      description: 'Applies a foreground color to the table header',
-    },
-    headRowBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: undefined,
-      description: 'Applies a background color to the header row',
-    },
-    headRowFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: undefined,
-      description: 'Applies a foreground color to the header row',
-    },
     ariaDescribedby: {
       type: 'string',
       default: undefined,
       description:
         'The ID of the element that provides a description for this component. Used as the value for the `aria-describedby` attribute',
-    },
-    okBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to the confirmation button',
-    },
-    okFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to the confirmation button',
     },
     ariaInvalid: {
       type: 'AriaInvalid',
@@ -127,61 +37,11 @@ const commonProps = () =>
       description:
         'Sets the `aria-invalid` attribute value on the wrapper element. When not provided, the `state` prop will control the attribute',
     },
-    selectionBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to selected table rows',
-    },
-    selectionFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to selected table rows',
-    },
-    splitBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to the split dropdown button',
-    },
-    splitFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to the split dropdown button',
-    },
-    spinnerBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to the overlay spinner',
-    },
-    spinnerFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to the overlay spinner',
-    },
     autoClose: {
       type: "boolean | 'inside' | 'outside'",
       default: true,
       description:
         'Controls the automatic closing of the component when clicking. See above for details.',
-    },
-    tagBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to form tags',
-    },
-    tagFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to form tags',
-    },
-    addButtonBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description: 'Applies a background color to the add-tag button',
-    },
-    addButtonFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description: 'Applies a foreground color to the add-tag button',
     },
     autocomplete: {
       type: 'string',
@@ -211,12 +71,6 @@ const commonProps = () =>
       description:
         'When set to `true`, attempts to auto-focus the control when it is mounted, or re-activated when in a keep-alive. Does not set the `autofocus` attribute on the control',
     },
-    bg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: null,
-      description:
-        'Applies a background color to the component (`bg-*` class). Accepts a theme color, `subtle-{theme}`, `muted-{theme}`, or a neutral layer value such as `body`, `1`-`4`, `white`, `black` or `transparent`',
-    },
     body: {
       type: 'string',
       default: undefined,
@@ -226,16 +80,6 @@ const commonProps = () =>
       type: 'Readonly<AttrsValue>',
       default: undefined,
       description: 'Attributes to be applied to the body of the component',
-    },
-    bodyBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: undefined,
-      description: 'Applies a background color (`BgColor`) to the body',
-    },
-    bodyBorder: {
-      type: 'MaybeArray<BorderColor> | null',
-      default: undefined,
-      description: 'Applies a border color (`BorderColor`) to the body',
     },
     bodyClass: {
       type: 'ClassValue',
@@ -247,20 +91,11 @@ const commonProps = () =>
       default: 'div',
       description: 'Specify the HTML tag to render instead of the default tag for the body',
     },
-    bodyFg: {
-      type: 'MaybeArray<FgColor> | null',
+    color: {
+      type: 'ColorExtendables | null',
       default: undefined,
-      description: 'Applies a foreground (text) color (`FgColor`) to the body',
-    },
-    bodyTheme: {
-      type: 'ThemeProp | null',
-      default: undefined,
-      description: 'Applies one of the theme colors (`theme-*` class) to the body',
-    },
-    border: {
-      type: 'MaybeArray<BorderColor> | null',
-      default: undefined,
-      description: 'Applies a border color (`BorderColor`) to the component',
+      description:
+        "Colors the component with one object: `theme` renders `theme-*`, `bg` renders `bg-*` and `fg` renders `fg-*`. Keys left out (or `undefined`) keep the component's default; `null` clears it. See [Color variants](/docs/reference/color-variants)",
     },
     debounce: {
       type: 'Numberish',
@@ -295,16 +130,6 @@ const commonProps = () =>
       default: undefined,
       description: 'Text content to place in the footer',
     },
-    footerBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: undefined,
-      description: 'Applies a background color (`BgColor`) to the footer',
-    },
-    footerBorder: {
-      type: 'MaybeArray<BorderColor> | null',
-      default: undefined,
-      description: 'Applies a border color (`BorderColor`) to the footer',
-    },
     footerClass: {
       type: 'ClassValue',
       default: undefined,
@@ -314,16 +139,6 @@ const commonProps = () =>
       type: 'string',
       default: 'div',
       description: 'Specify the HTML tag to render instead of the default tag for the footer',
-    },
-    footerFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: undefined,
-      description: 'Applies a foreground (text) color (`FgColor`) to the footer',
-    },
-    footerTheme: {
-      type: 'ThemeProp | null',
-      default: undefined,
-      description: 'Applies one of the theme colors (`theme-*` class) to the footer',
     },
     form: {
       type: 'string',
@@ -341,16 +156,6 @@ const commonProps = () =>
       default: undefined,
       description: 'Text content to place in the header',
     },
-    headerBg: {
-      type: 'MaybeArray<BgColor> | null',
-      default: undefined,
-      description: 'Applies a background color (`BgColor`) to the header',
-    },
-    headerBorder: {
-      type: 'MaybeArray<BorderColor> | null',
-      default: undefined,
-      description: 'Applies a border color (`BorderColor`) to the header',
-    },
     headerClass: {
       type: 'ClassValue',
       default: undefined,
@@ -360,16 +165,6 @@ const commonProps = () =>
       type: 'string',
       default: 'div',
       description: 'Specify the HTML tag to render instead of the default tag for the header',
-    },
-    headerFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: undefined,
-      description: 'Applies a foreground (text) color (`FgColor`) to the header',
-    },
-    headerTheme: {
-      type: 'ThemeProp | null',
-      default: undefined,
-      description: 'Applies one of the theme colors (`theme-*` class) to the header',
     },
     id: {
       type: 'string',
@@ -479,31 +274,13 @@ const commonProps = () =>
       type: 'boolean | RadiusElement',
       default: 'false',
       description:
-        'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence. Refer to the documentation for details',
+        'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence. Use `rounded-sides` to round individual sides. Refer to the documentation for details',
     },
-    roundedBottom: {
-      type: 'boolean | RadiusElement',
+    roundedSides: {
+      type: 'RadiusSides',
       default: undefined,
       description:
-        'Specifies the type of rounding to apply to the `bottom` corners of the component or its children',
-    },
-    roundedEnd: {
-      type: 'boolean | RadiusElement',
-      default: undefined,
-      description:
-        'Specifies the type of rounding to apply to the `end` corners of the component or its children',
-    },
-    roundedStart: {
-      type: 'boolean | RadiusElement',
-      default: undefined,
-      description:
-        'Specifies the type of rounding to apply to the `start` corners of the component or its children',
-    },
-    roundedTop: {
-      type: 'boolean | RadiusElement',
-      default: undefined,
-      description:
-        'Specifies the type of rounding to apply to the `top` corners of the component or its children',
+        'Per-side rounding: `top`, `bottom`, `start` and `end` keys each take the same values as `rounded` and render `rounded-<side>-*` classes, for example `:rounded-sides="{ top: \'lg\' }"`',
     },
     size: {
       type: 'Size',
@@ -531,10 +308,11 @@ const commonProps = () =>
       default: 'h6',
       description: 'Specify the HTML tag to render instead of the default tag for the subtitle',
     },
-    subtitleFg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: '2',
-      description: 'Applies a foreground (text) color (`FgColor`) to the subtitle text',
+    subtitleColor: {
+      type: "Pick<ColorExtendables, 'fg'>",
+      default: undefined,
+      description:
+        'Color object for the subtitle text: the `fg` key renders an `fg-*` class. When `fg` is not set the subtitle uses `fg-2`',
     },
     tag: {
       type: 'string',
@@ -545,12 +323,6 @@ const commonProps = () =>
       type: 'string',
       default: 'text',
       description: 'Field name in the `options` array that should be used for the text label',
-    },
-    fg: {
-      type: 'MaybeArray<FgColor> | null',
-      default: null,
-      description:
-        'Applies a foreground (text) color to the component (`fg-*` class). Accepts a theme color, `emphasis-{theme}`, `contrast-{theme}`, or a neutral layer value such as `body`, `1`-`4`, `white`, `black` or `reset`',
     },
     title: {
       type: 'string',
@@ -583,12 +355,6 @@ const commonProps = () =>
       default: 'value',
       description: 'Field name in the `options` array that should be used for the value',
     },
-    theme: {
-      type: 'ThemeProp | null',
-      default: null,
-      description:
-        'Applies one of the theme colors (`theme-*` class) to the component. Custom themes can be registered by augmenting `ThemeColors`. When implemented `bg` and `fg` take precedence',
-    },
     variant: {
       type: 'ButtonVariant | null',
       default: 'solid',
@@ -619,11 +385,6 @@ const commonProps = () =>
       type: 'string',
       default: 'Close',
       description: 'Sets the `aria-label` attribute for the close button',
-    },
-    closeTheme: {
-      type: 'ThemeProp | null',
-      default: 'secondary',
-      description: 'Sets the theme color for the close button',
     },
     closeVariant: {
       type: 'ButtonVariant | null',
@@ -656,6 +417,102 @@ const commonProps = () =>
       default: true,
       description: 'Keeps the component visible when paused',
     },
+    addButtonColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the add-tag button: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    bodyColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the body: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    buttonColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the button: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    cancelColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the cancel button: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    closeColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the close button: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    footColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the table footer: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. Each key falls back to `headColor`. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    footRowColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the footer row: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. Each key falls back to `headRowColor`. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    footerColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the footer: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    headColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the table header: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    headRowColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the header row: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    headerColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the header: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    headerCloseColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the header close button: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    okColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the confirmation button: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    selectionColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for selected table rows: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    splitColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for the split dropdown button: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. Each key falls back to the root `theme`, `bg` or `fg` prop. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
+    tagColor: {
+      type: 'ColorExtendables',
+      default: undefined,
+      description:
+        'Color object for form tags: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+    },
   }) as const
 
 const singletonProps = Object.freeze(commonProps())
@@ -683,4 +540,13 @@ export const buildCommonProps = (
 export const commonEmits = {
   cancel: {},
   ok: {},
+}
+
+/** `color` prop of components that also accept a border color */
+export const colorBorderProp = {
+  color: {
+    type: 'ColorBorderExtendables | null',
+    description:
+      "Colors the component with one object: `theme` renders `theme-*`, `bg` renders `bg-*`, `fg` renders `fg-*` and `border` renders `border-*`. Keys left out (or `undefined`) keep the component's default; `null` clears it. See [Color variants](/docs/reference/color-variants)",
+  },
 }

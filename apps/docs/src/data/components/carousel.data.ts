@@ -87,10 +87,10 @@ export default {
           default: 0, // TODO item not in string format
           description: 'The index of the currently active slide',
         },
-        noAnimation: {
+        noTransition: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'When set, disables the animation',
+          description: 'When set, slides change without a transition',
         },
         noHoverPause: {
           type: 'boolean',

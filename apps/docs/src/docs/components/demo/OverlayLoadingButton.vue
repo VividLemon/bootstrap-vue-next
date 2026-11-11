@@ -3,12 +3,16 @@
     :show="loadingBuzy"
     rounded
     opacity="0.6"
-    spinner-small
-    spinner-theme="primary"
+    :spinner="{ small: true, color: { theme: 'primary' } }"
     class="d-inline-block"
     @hidden="onBuzyHidden"
   >
-    <BButton ref="buzyButton" :disabled="loadingBuzy" theme="primary" @click="setBuzyClick">
+    <BButton
+      ref="buzyButton"
+      :disabled="loadingBuzy"
+      :color="{ theme: 'primary' }"
+      @click="setBuzyClick"
+    >
       Do something
     </BButton>
   </BOverlay>

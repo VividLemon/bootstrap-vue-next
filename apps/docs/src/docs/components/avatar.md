@@ -72,14 +72,14 @@ appearance, or if using custom icons or SVGs e.g.:
 
 ### Themes
 
-Use the `theme` prop to specify one of the Bootstrap theme colors. The default theme is
+Use the `color` prop's `theme` key to specify one of the Bootstrap theme colors. The default theme is
 `secondary`.
 
 <<< DEMO ./demo/AvatarVariants.vue#template{vue-html}
 
-When displaying text inside the avatar, text colors come from the `theme` (class `.theme-<theme>`). You can override the colors by manually specifying the `bg` and `fg` props (for example `bg="subtle-primary"` and `fg="emphasis-primary"`). Note that
+When displaying text inside the avatar, text colors come from the theme (class `.theme-<theme>`). You can override the colors with the `bg` and `fg` keys (for example `:color="{ bg: 'subtle-primary', fg: 'emphasis-primary' }"`). Note that
 `bg` and `fg` take precedence over `theme`. See the
-[Color Themes Reference](/docs/reference/color-variants#prop-interactions) for details.
+[Color Themes Reference](/docs/reference/color-variants#key-interactions) for details.
 
 <<< DEMO ./demo/AvatarVariantOverride.vue#template{vue-html}
 
@@ -106,8 +106,8 @@ Prefer a square avatar? simply set the `square` prop to `true`.
 `rounded` to any of the values of [`RadiusElement`](/docs/types#radiuselement).
 When set to `true` (or the empty string `''`), it uses the Bootstrap default of medium rounding.
 When set to `circle`, it uses a border radius of 50%, resulting in a circle.
-Rounding specific edges is accomplished via the `rounded-top`, `rounded-bottom`, `rounded-start` and
-`rounded-end` props. See the [migration knowledge base](/docs/migration-data/props/rounded-radius-element) for differences
+Rounding specific edges is accomplished via the `rounded-sides` prop, an object with `top`, `bottom`,
+`start` and `end` keys (for example `:rounded-sides="{ top: 'lg' }"`). See the [migration knowledge base](/docs/migration-data/props/rounded-radius-element) for differences
 from `bootstrap-vue`
 
 <<< DEMO ./demo/AvatarRounding.vue#template{vue-html}
@@ -184,7 +184,7 @@ Badge positioning properties have changed from `bootstrap-vue`. See the [migrati
 
 **Notes:**
 
-- The `theme`, `square` and `rounded` props on `BAvatarGroup` will take precedence over the
+- The `color`, `square` and `rounded` props on `BAvatarGroup` will take precedence over the
   respective props on individual avatars.
 
 ### Group size
@@ -197,14 +197,14 @@ individual avatars when they are placed inside a `BAvatarGroup`.
 
 ### Group theme
 
-Use the `theme` prop to color all child avatars in the `BAvatarGroup`. Note that the `theme`
-prop, when set, will override the the `theme` specified on individual avatars.
+Use the `color` prop to color all child avatars in the `BAvatarGroup`. Note that its keys, when set,
+will override the same keys specified on individual avatars.
 
 <<< DEMO ./demo/AvatarGroupVariant.vue#template{vue-html}
 
 ### Group rounding
 
-Similar to the `theme` prop, the `BAvatarGroup` props `square` and `rounded` take precedence
+Similar to the `color` prop, the `BAvatarGroup` props `square` and `rounded` take precedence
 over the respective props on individual child avatars.
 
 <<< DEMO ./demo/AvatarGroupRounding.vue#template{vue-html}

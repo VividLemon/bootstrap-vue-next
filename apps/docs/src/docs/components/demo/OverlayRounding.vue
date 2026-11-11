@@ -2,7 +2,7 @@
   <BButton @click="showRoundedEx = !showRoundedEx">Toggle overlay</BButton>
 
   <BRow class="text-center mt-3">
-    <BCol md="6">
+    <BCol :cols="{ md: 6 }">
       <p>With rounding</p>
       <BOverlay
         :show="showRoundedEx"
@@ -19,7 +19,7 @@
       </BOverlay>
     </BCol>
 
-    <BCol md="6">
+    <BCol :cols="{ md: 6 }">
       <p>Without rounding</p>
       <BOverlay
         :show="showRoundedEx"

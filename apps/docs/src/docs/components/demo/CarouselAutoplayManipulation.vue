@@ -6,8 +6,8 @@
   </BCarousel>
 
   <BButtonGroup>
-    <BButton theme="danger" @click="pause">Pause</BButton>
-    <BButton theme="success" @click="resume">Resume</BButton>
+    <BButton :color="{ theme: 'danger' }" @click="pause">Pause</BButton>
+    <BButton :color="{ theme: 'success' }" @click="resume">Resume</BButton>
   </BButtonGroup>
 </template>
 

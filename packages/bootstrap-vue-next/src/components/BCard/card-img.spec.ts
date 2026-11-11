@@ -229,42 +229,42 @@ describe('card-img', () => {
 
   it('BImg is given prop roundedTop', async () => {
     const wrapper = mount(BCardImg, {
-      props: {roundedTop: true},
+      props: {roundedSides: {top: true}},
     })
     const $img = wrapper.getComponent(BImg)
-    expect($img.props('roundedTop')).toBe(true)
-    await wrapper.setProps({roundedTop: undefined})
-    expect($img.props('roundedTop')).toBeUndefined()
+    expect($img.props('roundedSides')?.top).toBe(true)
+    await wrapper.setProps({roundedSides: {top: undefined}})
+    expect($img.props('roundedSides')?.top).toBeUndefined()
   })
 
   it('BImg is given prop roundedBottom', async () => {
     const wrapper = mount(BCardImg, {
-      props: {roundedBottom: true},
+      props: {roundedSides: {bottom: true}},
     })
     const $img = wrapper.getComponent(BImg)
-    expect($img.props('roundedBottom')).toBe(true)
-    await wrapper.setProps({roundedBottom: undefined})
-    expect($img.props('roundedBottom')).toBeUndefined()
+    expect($img.props('roundedSides')?.bottom).toBe(true)
+    await wrapper.setProps({roundedSides: {bottom: undefined}})
+    expect($img.props('roundedSides')?.bottom).toBeUndefined()
   })
 
   it('BImg is given prop roundedStart', async () => {
     const wrapper = mount(BCardImg, {
-      props: {roundedStart: true},
+      props: {roundedSides: {start: true}},
     })
     const $img = wrapper.getComponent(BImg)
-    expect($img.props('roundedStart')).toBe(true)
-    await wrapper.setProps({roundedStart: undefined})
-    expect($img.props('roundedStart')).toBeUndefined()
+    expect($img.props('roundedSides')?.start).toBe(true)
+    await wrapper.setProps({roundedSides: {start: undefined}})
+    expect($img.props('roundedSides')?.start).toBeUndefined()
   })
 
   it('BImg is given prop roundedEnd', async () => {
     const wrapper = mount(BCardImg, {
-      props: {roundedEnd: true},
+      props: {roundedSides: {end: true}},
     })
     const $img = wrapper.getComponent(BImg)
-    expect($img.props('roundedEnd')).toBe(true)
-    await wrapper.setProps({roundedEnd: undefined})
-    expect($img.props('roundedEnd')).toBeUndefined()
+    expect($img.props('roundedSides')?.end).toBe(true)
+    await wrapper.setProps({roundedSides: {end: undefined}})
+    expect($img.props('roundedSides')?.end).toBeUndefined()
   })
 
   it('emits load event on load', async () => {

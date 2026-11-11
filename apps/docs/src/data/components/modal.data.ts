@@ -46,6 +46,16 @@ export default {
         ...showHideProps,
         ...pick(
           buildCommonProps({
+            footerColor: {
+              type: 'ColorBorderExtendables',
+              description:
+                'Color object for the footer: `theme`, `bg`, `fg` and `border` keys render `theme-*`, `bg-*`, `fg-*` and `border-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+            },
+            headerColor: {
+              type: 'ColorBorderExtendables',
+              description:
+                'Color object for the header: `theme`, `bg`, `fg` and `border` keys render `theme-*`, `bg-*`, `fg-*` and `border-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+            },
             size: {
               type: "Size | 'xl'",
               description: "Sets the modal's width. Options: 'sm', 'lg', or 'xl'",
@@ -57,30 +67,19 @@ export default {
           [
             'body',
             'bodyAttrs',
-            'bodyBg',
+            'bodyColor',
             'bodyClass',
-            'bodyFg',
-            'bodyTheme',
-            'cancelBg',
-            'cancelFg',
-            'footerBg',
-            'footerBorder',
+            'cancelColor',
+            'footerColor',
             'footerClass',
-            'footerFg',
-            'footerTheme',
-            'headerBg',
-            'headerBorder',
+            'headerColor',
             'headerClass',
-            'headerCloseBg',
-            'headerCloseFg',
-            'headerFg',
-            'headerTheme',
+            'headerCloseColor',
             'id',
             'noBackdrop',
             'noHeader',
             'noHeaderClose',
-            'okBg',
-            'okFg',
+            'okColor',
             'size',
             'title',
             'titleClass',
@@ -124,10 +123,11 @@ export default {
           default: 'Cancel',
           description: 'Text to place in the default footer Cancel button',
         },
-        cancelTheme: {
-          type: 'ThemeProp | null',
-          default: 'secondary',
-          description: 'Theme color for the default footer Cancel button',
+        cancelColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'secondary' },
+          description:
+            'Color object for the default footer Cancel button: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
         },
         cancelVariant: {
           type: 'ButtonVariant | null',
@@ -159,7 +159,7 @@ export default {
           type: 'boolean | Breakpoint',
           default: false,
           description:
-            "Enables full-screen mode with a boolean value or sets the breakpoint for full-screen mode below the specified breakpoint value ('sm', 'md', 'lg', 'xl', 'xxl')",
+            "Enables full-screen mode with a boolean value or sets the breakpoint for full-screen mode below the specified breakpoint value ('sm', 'md', 'lg', 'xl', '2xl')",
         },
         headerAttrs: {
           type: 'Readonly<AttrsValue>',
@@ -176,10 +176,11 @@ export default {
           default: 'Close',
           description: 'Accessibility label for the header close button',
         },
-        headerCloseTheme: {
-          type: 'ThemeProp | null',
-          default: 'secondary',
-          description: 'Theme color for the header close button when using the header-close slot',
+        headerCloseColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'secondary' },
+          description:
+            'Color object for the header close button when using the `header-close` slot: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
         },
         headerCloseVariant: {
           type: 'ButtonVariant | null',
@@ -238,10 +239,11 @@ export default {
           default: 'OK',
           description: 'Text to place in the default footer OK button',
         },
-        okTheme: {
-          type: 'ThemeProp | null',
-          default: 'primary',
-          description: 'Theme color for the default footer OK button',
+        okColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'primary' },
+          description:
+            'Color object for the default footer OK button: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
         },
         okVariant: {
           type: 'ButtonVariant | null',

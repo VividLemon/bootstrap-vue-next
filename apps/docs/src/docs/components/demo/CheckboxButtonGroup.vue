@@ -13,7 +13,7 @@
     v-model="selected"
     :options="options"
     buttons
-    button-theme="primary"
+    :button-color="{ theme: 'primary' }"
     size="lg"
     name="buttons-2"
   />

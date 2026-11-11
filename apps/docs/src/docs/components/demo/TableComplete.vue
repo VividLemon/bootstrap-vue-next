@@ -2,13 +2,13 @@
   <BContainer class="py-5">
     <!-- User Interface controls -->
     <BRow>
-      <BCol lg="6" class="my-1">
+      <BCol :cols="{ lg: 6 }" class="my-1">
         <BFormGroup
           v-slot="{ ariaDescribedby }"
           label="Sort"
           label-for="sort-by-select"
-          label-cols-sm="3"
-          label-align-sm="right"
+          :label-cols="{ sm: 3 }"
+          :label-align="{ sm: 'end' }"
           label-size="sm"
           class="mb-0"
         >
@@ -39,14 +39,12 @@
         </BFormGroup>
       </BCol>
 
-      <BCol sm="5" md="6" class="my-1">
+      <BCol :cols="{ sm: 5, md: 6 }" class="my-1">
         <BFormGroup
           label="Initial Direction"
           label-for="initial-sort-direction"
-          label-cols-sm="6"
-          label-cols-md="4"
-          label-cols-lg="3"
-          label-align-sm="right"
+          :label-cols="{ sm: 6, md: 4, lg: 3 }"
+          :label-align="{ sm: 'end' }"
           label-size="sm"
           class="mb-0"
         >
@@ -58,13 +56,13 @@
           />
         </BFormGroup>
       </BCol>
-      <BCol lg="6" class="my-1">
+      <BCol :cols="{ lg: 6 }" class="my-1">
         <BFormGroup
           v-slot="{ ariaDescribedby }"
           label="Filter On"
           description="Leave all unchecked to filter on all data"
-          label-cols-sm="3"
-          label-align-sm="right"
+          :label-cols="{ sm: 3 }"
+          :label-align="{ sm: 'end' }"
           label-size="sm"
           class="mb-0"
         >
@@ -81,12 +79,12 @@
           </div>
         </BFormGroup>
       </BCol>
-      <BCol lg="6" class="my-1">
+      <BCol :cols="{ lg: 6 }" class="my-1">
         <BFormGroup
           label="Filter"
           label-for="filter-input"
-          label-cols-sm="3"
-          label-align-sm="right"
+          :label-cols="{ sm: 3 }"
+          :label-align="{ sm: 'end' }"
           label-size="sm"
           class="mb-0"
         >
@@ -104,7 +102,7 @@
         </BFormGroup>
       </BCol>
 
-      <BCol sm="7" md="6" class="my-1">
+      <BCol :cols="{ sm: 7, md: 6 }" class="my-1">
         <BPagination
           v-model="currentPage"
           :total-rows="totalRows"
@@ -114,14 +112,12 @@
           class="my-0"
         />
       </BCol>
-      <BCol sm="5" md="6" class="my-1">
+      <BCol :cols="{ sm: 5, md: 6 }" class="my-1">
         <BFormGroup
           label="Per page"
           label-for="per-page-select"
-          label-cols-sm="6"
-          label-cols-md="4"
-          label-cols-lg="3"
-          label-align-sm="right"
+          :label-cols="{ sm: 6, md: 4, lg: 3 }"
+          :label-align="{ sm: 'end' }"
           label-size="sm"
           class="mb-0"
         >

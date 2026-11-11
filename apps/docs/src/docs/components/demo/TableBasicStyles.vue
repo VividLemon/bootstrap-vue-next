@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BFormGroup v-slot="{ ariaDescribedby }" label="Table Options" label-cols-lg="2">
+    <BFormGroup v-slot="{ ariaDescribedby }" label="Table Options" :label-cols="{ lg: 2 }">
       <BFormCheckbox v-model="striped" :aria-describedby="ariaDescribedby" inline
         >Striped</BFormCheckbox
       >
@@ -34,7 +34,7 @@
       >
     </BFormGroup>
 
-    <BFormGroup label="Theme" label-for="table-style-theme" label-cols-lg="2" class="my-2">
+    <BFormGroup label="Theme" label-for="table-style-theme" :label-cols="{ lg: 2 }" class="my-2">
       <BFormSelect id="table-style-theme" v-model="theme" :options="themes">
         <template #first>
           <option :value="null">-- None --</option>
@@ -42,7 +42,12 @@
       </BFormSelect>
     </BFormGroup>
 
-    <BFormGroup label="Head Theme" label-for="head-style-theme" label-cols-lg="2" class="my-2">
+    <BFormGroup
+      label="Head Theme"
+      label-for="head-style-theme"
+      :label-cols="{ lg: 2 }"
+      class="my-2"
+    >
       <BFormSelect id="head-style-theme" v-model="headTheme" :options="themes">
         <template #first>
           <option :value="null">-- None --</option>
@@ -50,7 +55,12 @@
       </BFormSelect>
     </BFormGroup>
 
-    <BFormGroup label="Foot Theme" label-for="foot-style-theme" label-cols-lg="2" class="my-2">
+    <BFormGroup
+      label="Foot Theme"
+      label-for="foot-style-theme"
+      :label-cols="{ lg: 2 }"
+      class="my-2"
+    >
       <BFormSelect id="foot-style-theme" v-model="footTheme" :options="themes">
         <template #first>
           <option :value="null">-- None --</option>
@@ -72,9 +82,9 @@
       :no-border-collapse="noCollapse"
       :items="items"
       :fields="fields"
-      :theme="theme"
-      :head-theme="headTheme"
-      :foot-theme="footTheme"
+      :color="{ theme: theme }"
+      :head-color="{ theme: headTheme }"
+      :foot-color="{ theme: footTheme }"
     />
   </div>
 </template>
@@ -105,13 +115,19 @@ const headTheme = ref<ThemeColor | null>(null)
 const footTheme = ref<ThemeColor | null>(null)
 const noCollapse = ref(false)
 
-const themes = [
-  { text: 'Primary', value: 'primary' as ThemeColor },
-  { text: 'Secondary', value: 'secondary' as ThemeColor },
-  { text: 'Info', value: 'info' as ThemeColor },
-  { text: 'Danger', value: 'danger' as ThemeColor },
-  { text: 'Warning', value: 'warning' as ThemeColor },
-  { text: 'Success', value: 'success' as ThemeColor },
-  { text: 'Inverse', value: 'inverse' as ThemeColor },
-]
+const themeLabels = {
+  primary: 'Primary',
+  secondary: 'Secondary',
+  accent: 'Accent',
+  info: 'Info',
+  danger: 'Danger',
+  warning: 'Warning',
+  success: 'Success',
+  inverse: 'Inverse',
+} as const satisfies Record<ThemeColor, string>
+
+const themes = (Object.keys(themeLabels) as ThemeColor[]).map((value) => ({
+  text: themeLabels[value],
+  value,
+}))
 </script>

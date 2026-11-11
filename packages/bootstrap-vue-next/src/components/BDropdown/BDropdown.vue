@@ -8,9 +8,7 @@
       :id="computedId"
       ref="_splitButton"
       :variant="props.splitVariant || props.variant"
-      :theme="props.splitTheme || props.theme"
-      :bg="props.splitBg || props.bg"
-      :fg="props.splitFg || props.fg"
+      :color="computedSplitColor"
       :size="props.size"
       :class="buttonClasses"
       :disabled="props.splitDisabled || props.disabled"
@@ -31,9 +29,7 @@
       :id="computedId + '-split'"
       ref="_button"
       :variant="props.variant"
-      :theme="props.theme"
-      :bg="props.bg"
-      :fg="props.fg"
+      :color="computedColor"
       :size="props.size"
       :disabled="props.disabled"
       :class="[props.toggleClass, {show: showRef}]"
@@ -114,6 +110,7 @@ import {
   watch,
 } from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import {useId} from '../../composables/useId'
 import BButton from '../BButton/BButton.vue'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
@@ -121,7 +118,7 @@ import ConditionalTeleport from '../ConditionalTeleport.vue'
 import {isBoundary, isRootBoundary, resolveBootstrapCaret} from '../../utils/floatingUi'
 import {getElement} from '../../utils/getElement'
 import {buttonGroupKey, dropdownInjectionKey, inputGroupKey} from '../../utils/keys'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import type {BDropdownEmits, BDropdownProps, BDropdownSlots} from '../../types'
 import {getSafeDocument} from '../../utils/dom'
 
@@ -141,7 +138,7 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   lazy: false,
   menuClass: undefined,
   noCaret: false,
-  noFade: false,
+  noTransition: false,
   noFlip: false,
   noShift: false,
   noSize: false,
@@ -153,29 +150,25 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   split: false,
   splitButtonType: 'button',
   splitClass: undefined,
+  splitColor: undefined,
   splitDisabled: undefined,
   splitHref: undefined,
   splitTo: undefined,
   placement: 'bottom-start',
   splitVariant: undefined,
-  splitTheme: undefined,
-  splitBg: null,
-  splitFg: null,
   strategy: 'absolute',
   text: undefined,
   show: false,
   toggleAttrs: undefined,
   toggleClass: undefined,
   toggleText: 'Toggle dropdown',
-  transProps: undefined,
   variant: 'solid',
-  theme: 'secondary',
-  bg: null,
-  fg: null,
   visible: false,
   wrapperClass: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BDropdown')
+const computedColor = computed(() => resolvePartColor(props.color, {theme: 'secondary'}))
 const emit = defineEmits<BDropdownEmits>()
 defineSlots<BDropdownSlots>()
 
@@ -216,7 +209,7 @@ const {
   contentShowing,
   isVisible,
   isActive,
-} = useShowHide(
+} = useLegacyShowHide(
   {modelValue, props, emit: emit as EmitFn, element: referenceElement, id: computedId},
   {
     showFn: () => {
@@ -375,6 +368,14 @@ const computedClasses = computed(() => [
     'position-static': props.boundary !== 'clippingAncestors' && !props.isNav,
   },
 ])
+
+const computedSplitColor = computed(() =>
+  resolvePartColor(props.splitColor, {
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
+  })
+)
 
 const buttonClasses = computed(() => [
   props.split ? props.splitClass : props.toggleClass,

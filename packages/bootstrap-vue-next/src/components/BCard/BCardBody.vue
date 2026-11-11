@@ -9,7 +9,7 @@
     <BCardSubtitle
       v-if="!!props.subtitle || hasSubtitleSlot"
       :tag="props.subtitleTag"
-      :fg="props.subtitleFg"
+      :color="props.subtitleColor"
     >
       <slot name="subtitle">
         {{ props.subtitle }}
@@ -23,37 +23,33 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed} from 'vue'
 import BCardTitle from './BCardTitle.vue'
 import {isEmptySlot} from '../../utils/dom'
 import BCardSubtitle from './BCardSubtitle.vue'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import type {BCardBodyProps, BCardBodySlots} from '../../types'
 
 const _props = withDefaults(defineProps<BCardBodyProps>(), {
-  border: null,
   overlay: false,
   subtitle: undefined,
+  subtitleColor: undefined,
   subtitleTag: 'h4',
-  subtitleFg: undefined,
   tag: 'div',
   text: undefined,
   title: undefined,
   titleTag: 'h4',
-  // ColorExtendables props
-  bg: null,
-  fg: null,
-  theme: null,
-  // End ColorExtendables props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BCardBody')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 const slots = defineSlots<BCardBodySlots>()
 
 const hasTitleSlot = computed(() => !isEmptySlot(slots.title))
 const hasSubtitleSlot = computed(() => !isEmptySlot(slots.subtitle))
 
-const {classes: colorClasses} = useThemeClasses(props)
+const {classes: colorClasses} = useThemeClasses(computedColor)
 const computedClasses = computed(() => [
   colorClasses.value,
   props.overlay ? 'card-img-overlay' : 'card-body',

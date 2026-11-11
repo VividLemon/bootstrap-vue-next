@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {Placement} from './Alignment'
 import type {ClassValue} from './AnyValuedAttributes'
-import type {BgColor, ButtonVariant, FgColor, MaybeArray, ThemeColor, ThemeProp} from './ColorTypes'
+import type {ButtonVariant, ColorExtendables} from './ColorTypes'
 import type {ValidationState} from './CommonTypes'
 import type {LiteralUnion} from './LiteralUnion'
 import type {SelectOption} from './SelectTypes'
 import type {Size} from './Size'
 import type {SpinnerType} from './SpinnerType'
+import type {BSpinnerProps} from './ComponentProps'
 import type {InputType} from './InputType'
 import type {TableField} from './TableTypes'
 import type {DateRange, DateValue, SegmentPart, TimeValue} from 'reka-ui'
@@ -471,9 +472,7 @@ export type BFormTagsSlots = {
   'default'?: (props: {
     addButtonText: string
     addButtonVariant: ButtonVariant | null
-    addButtonTheme: ThemeProp | null
-    addButtonBg: MaybeArray<BgColor> | null
-    addButtonFg: MaybeArray<FgColor> | null
+    addButtonColor: ColorExtendables
     addTag: (tag?: string) => void
     disableAddButton: boolean
     disabled: boolean
@@ -506,17 +505,13 @@ export type BFormTagsSlots = {
     tagClass: ClassValue
     tagPills: boolean
     tagRemoveLabel: string | undefined
-    tagTheme: ThemeProp | null
-    tagBg: MaybeArray<BgColor> | null
-    tagFg: MaybeArray<FgColor> | null
+    tagColor: ColorExtendables
     tags: string[]
   }) => any
   'tag'?: (props: {
     tag: string
     tagClass: ClassValue
-    tagTheme: ThemeProp | null
-    tagBg: MaybeArray<BgColor> | null
-    tagFg: MaybeArray<FgColor> | null
+    tagColor: ColorExtendables
     tagPills: boolean
     removeTag: (tag?: string) => void
   }) => any
@@ -551,13 +546,7 @@ export type BNavbarToggleSlots = {
 export type BOverlaySlots = {
   default?: (props: Record<string, never>) => any
 
-  overlay?: (props: {
-    type: SpinnerType
-    theme: ThemeColor | null | undefined
-    bg: MaybeArray<BgColor> | null | undefined
-    fg: MaybeArray<FgColor> | null | undefined
-    small: boolean
-  }) => any
+  overlay?: (props: {type: SpinnerType; color: BSpinnerProps['color']; small: boolean}) => any
 }
 
 type EmptySlotScope<Item> = {

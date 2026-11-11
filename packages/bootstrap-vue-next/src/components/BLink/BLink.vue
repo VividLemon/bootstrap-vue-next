@@ -37,8 +37,6 @@ const _props = withDefaults(defineProps<BLinkProps>(), {
   href: undefined,
   icon: false,
   opacity: undefined,
-  opacityHover: undefined,
-  noPrefetch: undefined,
   prefetchOn: undefined,
   noRel: false,
   prefetchedClass: undefined,
@@ -50,14 +48,8 @@ const _props = withDefaults(defineProps<BLinkProps>(), {
   stretched: false,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: null,
-  theme: null,
-  bg: null,
-  fg: null,
+  underline: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BLink')
 const emit = defineEmits<BLinkEmits>()
@@ -121,7 +113,7 @@ const computedTabIndex = computed(() =>
 )
 
 const nuxtSpecificProps = computed(() => ({
-  ...(props.noPrefetch ? {noPrefetch: props.noPrefetch} : {prefetch: props.prefetch}),
+  prefetch: props.prefetch,
   prefetchOn: props.prefetchOn,
   prefetchedClass: props.prefetchedClass,
   ...linkProps.value,

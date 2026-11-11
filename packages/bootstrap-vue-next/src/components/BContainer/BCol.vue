@@ -7,81 +7,26 @@
 <script setup lang="ts">
 import {computed} from 'vue'
 import type {BColProps, BColSlots} from '../../types'
-import {getClasses} from '../../utils/getClasses'
+import {getResponsiveClasses} from '../../utils/responsive'
 import {useDefaults} from '../../composables/useDefaults'
 
 const _props = withDefaults(defineProps<BColProps>(), {
   alignSelf: undefined,
-  col: false,
   cols: undefined,
   offset: undefined,
   order: undefined,
   tag: 'div',
-  lg: false,
-  md: false,
-  sm: false,
-  xl: false,
-  xxl: false,
-  offsetLg: undefined,
-  offsetMd: undefined,
-  offsetSm: undefined,
-  offsetXl: undefined,
-  offsetXxl: undefined,
-  orderLg: undefined,
-  orderMd: undefined,
-  orderSm: undefined,
-  orderXl: undefined,
-  orderXxl: undefined,
 })
 const props = useDefaults(_props, 'BCol')
 defineSlots<BColSlots>()
 
-const classList = computed(() => [
-  ...getClasses(
-    {
-      sm: props.sm,
-      md: props.md,
-      lg: props.lg,
-      xl: props.xl,
-      xxl: props.xxl,
-    },
-    ['sm', 'md', 'lg', 'xl', 'xxl'],
-    'col'
-  ),
-  ...getClasses(
-    {
-      order: props.order,
-      orderLg: props.orderLg,
-      orderMd: props.orderMd,
-      orderSm: props.orderSm,
-      orderXl: props.orderXl,
-      orderXxl: props.orderXxl,
-    },
-    ['order', 'orderLg', 'orderMd', 'orderSm', 'orderXl', 'orderXxl'],
-    'order'
-  ),
-  ...getClasses(
-    {
-      offset: props.offset,
-      offsetLg: props.offsetLg,
-      offsetMd: props.offsetMd,
-      offsetSm: props.offsetSm,
-      offsetXl: props.offsetXl,
-      offsetXxl: props.offsetXxl,
-    },
-    ['offset', 'offsetLg', 'offsetMd', 'offsetSm', 'offsetXl', 'offsetXxl'],
-    'offset'
-  ),
-])
+const colClasses = computed(() => getResponsiveClasses(props.cols, 'col'))
 
 const computedClasses = computed(() => [
-  classList.value,
-  {
-    col: props.col || (!classList.value.some((v) => v.startsWith('col-')) && !props.cols),
-    [`col-${props.cols}`]: props.cols !== undefined,
-    [`offset-${props.offset}`]: props.offset !== undefined,
-    [`order-${props.order}`]: props.order !== undefined,
-    [`align-self-${props.alignSelf}`]: props.alignSelf !== undefined,
-  },
+  // Only fall back to an equal-width `.col` when no column size is set at any breakpoint
+  colClasses.value.length === 0 ? 'col' : colClasses.value,
+  getResponsiveClasses(props.offset, 'offset'),
+  getResponsiveClasses(props.order, 'order'),
+  getResponsiveClasses(props.alignSelf, 'align-self'),
 ])
 </script>

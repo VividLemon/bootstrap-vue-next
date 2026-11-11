@@ -11,10 +11,10 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed, type CSSProperties} from 'vue'
 import type {BPlaceholderProps} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 
 defineOptions({
   inheritAttrs: false,
@@ -25,11 +25,12 @@ const _props = withDefaults(defineProps<BPlaceholderProps>(), {
   cols: 12,
   size: undefined,
   tag: 'span',
-  bg: null,
   width: undefined,
   wrapperTag: 'span',
+  color: undefined,
 })
 const props = useDefaults(_props, 'BPlaceholder')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 
 const widthString = computed(() =>
   props.width === undefined
@@ -47,7 +48,9 @@ const colsString = computed(() =>
       : props.cols
 )
 
-const {classes: colorClasses} = useThemeClasses(computed(() => ({bg: props.bg, fg: props.fg})))
+const {classes: colorClasses} = useThemeClasses(
+  computed(() => ({bg: computedColor.value.bg, fg: computedColor.value.fg}))
+)
 const computedClasses = computed(() => [
   colorClasses.value,
   {

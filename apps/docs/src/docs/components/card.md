@@ -114,15 +114,15 @@ may be needed depending on your card content.
 
 ## Foreground colors
 
-Cards read their colors from Bootstrap v6's theme variables. Set the `theme` prop (class `.theme-<theme>`) to color the whole card, or use the `fg` prop (for example `fg="white"` or `fg="contrast-primary"`) to change the color of text within, as well as that of the card's sub-components.
+Cards read their colors from Bootstrap v6's theme variables. Set the `color` prop's `theme` key (class `.theme-<theme>`) to color the whole card, or use its `fg` key (for example `:color="{ fg: 'white' }"` or `{ fg: 'contrast-primary' }`) to change the color of text within, as well as that of the card's sub-components.
 
 <<< DEMO ./demo/CardTextVariants.vue#template{vue-html}
 
 ## Theme, background and border colors
 
 Cards include their own style for quickly changing the background color and border of a card via
-the `theme`, `bg` and `border` props. Solid backgrounds may require setting the prop
-`fg` to adjust the text color. `bg` accepts values like `primary`, `subtle-primary`, `muted-primary` or a neutral layer such as `1`; `border` accepts values like `primary`, `subtle-primary` or `muted`.
+the `color` prop's `theme`, `bg` and `border` keys. Solid backgrounds may require setting the
+`fg` key to adjust the text color. `bg` accepts values like `primary`, `subtle-primary`, `muted-primary` or a neutral layer such as `1`; `border` accepts values like `primary`, `subtle-primary` or `muted`.
 See [Color Themes](/docs/reference/color-variants) for all values and
 [registering custom themes](/docs/components/button#custom-themes).
 
@@ -136,7 +136,7 @@ See [Color Themes](/docs/reference/color-variants) for all values and
 
 #### Value to class mapping
 
-bootstrap-vue-next `BCard` values are directly mapped to Bootstrap v6 classes: `theme` to
+bootstrap-vue-next `BCard` `color` keys are directly mapped to Bootstrap v6 classes: `theme` to
 `theme-<theme>`, `bg` to `bg-<value>`, `fg` to `fg-<value>` and `border` to `border-<value>`.
 
 ### Header and footer colors

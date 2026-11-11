@@ -30,9 +30,7 @@ export default {
             'bodyAttrs',
             'bodyClass',
             'footerClass',
-            'headerCloseBg',
             'headerClass',
-            'headerCloseFg',
             'id',
             'noBackdrop',
             'noHeader',
@@ -64,27 +62,11 @@ export default {
           default: undefined,
           description: 'Attributes to be applied to the offcanvas header element',
         },
-        headerCloseClass: {
-          type: 'ClassValue',
+        headerClose: {
+          type: "Omit<CloseButtonOptions, 'content'>",
           default: undefined,
-          description: 'CSS class (or classes) to apply to the header close button',
-        },
-        headerCloseLabel: {
-          type: 'string',
-          default: 'Close',
-          description: 'Accessibility label for the header close button',
-        },
-        headerCloseTheme: {
-          type: 'ThemeProp | null',
-          default: 'secondary',
           description:
-            'Theme color to use for the header close button when using a custom close slot',
-        },
-        headerCloseVariant: {
-          type: 'ButtonVariant | null',
-          default: 'solid',
-          description:
-            'Button style (variant) to use for the header close button when using a custom close slot',
+            "The header close button: `label` (accessible label, default 'Close'), `attrs` (attributes for the button), and, when using the `header-close` slot, `variant` (button style, default 'solid') and `color` (color object, default `{ theme: 'secondary' }`; keys left out keep the default, `null` clears it)",
         },
         noCloseOnBackdrop: {
           type: 'boolean',

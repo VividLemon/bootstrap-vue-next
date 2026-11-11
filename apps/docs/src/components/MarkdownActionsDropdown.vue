@@ -3,9 +3,9 @@
     split
     class="me-2"
     variant="outline"
-    theme="info"
+    :color="{ theme: 'info' }"
     split-variant="outline"
-    split-theme="info"
+    :split-color="{ theme: 'info' }"
     toggle-text="More markdown actions"
     :disabled="!actionsReady"
     :split-disabled="!actionsReady"

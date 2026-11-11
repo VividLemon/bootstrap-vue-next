@@ -26,7 +26,6 @@ export default {
           'state',
           'wrapperAttrs',
         ]),
-        ...pick(buildCommonProps(), ['buttonBg', 'buttonFg']),
         button: {
           type: 'boolean',
           default: false, // TODO item not in string format
@@ -38,10 +37,11 @@ export default {
           description:
             "When set, renders the checkbox as part of a button group (it doesn't enclose the checkbox and label with a div). It is not necessary to set this to true if this is part of a CheckboxGroup as it is handled internally",
         },
-        buttonTheme: {
-          type: 'ThemeProp | null',
-          default: 'secondary',
-          description: 'Applies one of the theme colors when in `button` mode',
+        buttonColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'secondary' },
+          description:
+            'Color object for the button in `button` mode: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
         },
         buttonVariant: {
           type: 'ButtonVariant | null',
@@ -153,11 +153,11 @@ export default {
           'textField',
           'valueField',
         ]),
-        ...pick(buildCommonProps(), ['buttonBg', 'buttonFg']),
-        buttonTheme: {
-          type: 'ThemeProp | null',
-          default: 'secondary',
-          description: 'Specifies the theme color to apply to the button style checkboxes',
+        buttonColor: {
+          type: 'ColorExtendables',
+          default: { theme: 'secondary' },
+          description:
+            'Color object for the button in `button` mode: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
         },
         buttonVariant: {
           type: 'ButtonVariant | null',

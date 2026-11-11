@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BButton v-b-toggle.collapse-1 theme="primary">Toggle Collapse</BButton>
+  <BButton v-b-toggle.collapse-1 :color="{ theme: 'primary' }">Toggle Collapse</BButton>
 
   <BCollapse id="collapse-1">
     <BCard class="mt-4">

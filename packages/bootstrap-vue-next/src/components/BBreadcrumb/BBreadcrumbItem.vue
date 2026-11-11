@@ -33,7 +33,6 @@ const _props = withDefaults(defineProps<BBreadcrumbItemProps>(), {
   href: undefined,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   stretched: false,
   rel: undefined,
   replace: undefined,
@@ -41,13 +40,9 @@ const _props = withDefaults(defineProps<BBreadcrumbItemProps>(), {
   routerTag: undefined,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: undefined,
-  theme: undefined,
+  underline: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BBreadcrumbItem')
 const emit = defineEmits<BBreadcrumbItemEmits>()
@@ -70,8 +65,6 @@ const computedLinkProps = computed(() =>
         'icon',
         'noRel',
         'opacity',
-        'opacityHover',
-        'noPrefetch',
         'prefetch',
         'prefetchOn',
         'prefetchedClass',
@@ -81,14 +74,8 @@ const computedLinkProps = computed(() =>
         'stretched',
         'target',
         'to',
-        'underlineOffset',
-        'underlineOffsetHover',
-        'underlineOpacity',
-        'underlineOpacityHover',
-        'underlineTheme',
-        'theme',
-        'bg',
-        'fg',
+        'underline',
+        'color',
       ])
     : {}
 )

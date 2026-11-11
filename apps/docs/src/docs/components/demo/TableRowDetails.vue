@@ -21,12 +21,12 @@
       <template #row-expansion="row">
         <BCard>
           <BRow class="mb-2">
-            <BCol sm="3" class="text-sm-right"><b>Age:</b></BCol>
+            <BCol :cols="{ sm: 3 }" class="text-sm-right"><b>Age:</b></BCol>
             <BCol>{{ row.item?.age }}</BCol>
           </BRow>
 
           <BRow class="mb-2">
-            <BCol sm="3" class="text-sm-right"><b>Is Active:</b></BCol>
+            <BCol :cols="{ sm: 3 }" class="text-sm-right"><b>Is Active:</b></BCol>
             <BCol>{{ row.item?.isActive }}</BCol>
           </BRow>
 

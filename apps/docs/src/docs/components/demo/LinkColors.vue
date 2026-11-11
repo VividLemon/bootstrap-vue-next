@@ -1,6 +1,6 @@
 <template>
   <p v-for="color in colors" :key="color">
-    <BLink :theme="color"> {{ color }} link </BLink>
+    <BLink :color="{ theme: color }"> {{ color }} link </BLink>
   </p>
 </template>
 

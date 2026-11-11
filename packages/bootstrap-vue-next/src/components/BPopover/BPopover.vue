@@ -90,7 +90,7 @@ import {isBoundary, isRootBoundary, resolveBootstrapPlacement} from '../../utils
 import {getElement} from '../../utils/getElement'
 import {warn} from '../../utils/console'
 import ConditionalTeleport from '../ConditionalTeleport.vue'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import {getSafeDocument, getSafeWindow} from '../../utils/dom'
 
 defineOptions({
@@ -117,7 +117,7 @@ const _props = withDefaults(defineProps<Omit<BPopoverProps, 'modelValue'>>(), {
   lazy: false,
   manual: false,
   noAutoClose: false,
-  noFade: false,
+  noTransition: false,
   noFlip: false,
   noHide: false,
   noShift: false,
@@ -272,7 +272,7 @@ const {
   renderRef,
   localTemporaryHide,
   setLocalTemporaryHide,
-} = useShowHide(
+} = useLegacyShowHide(
   {modelValue, props, emit: emit as EmitFn, element: floatingElement, id: computedId},
   {
     showFn: () => {

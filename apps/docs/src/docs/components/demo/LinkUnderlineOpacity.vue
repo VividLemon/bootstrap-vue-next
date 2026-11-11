@@ -1,6 +1,6 @@
 <template>
   <p v-for="opacity in opacities" :key="opacity">
-    <BLink :underline-opacity="opacity"> {{ opacity }} link </BLink>
+    <BLink :underline="{ opacity: { xs: opacity } }"> {{ opacity }} link </BLink>
   </p>
 </template>
 

@@ -28,15 +28,22 @@
       </div>
     </div>
 
-    <BCol lg="6">
-      <BOverlay id="overlay-background" show :bg="bg" :opacity="opacity" :blur="blur" rounded="sm">
+    <BCol :cols="{ lg: 6 }">
+      <BOverlay
+        id="overlay-background"
+        show
+        :color="{ bg: bg }"
+        :opacity="opacity"
+        :blur="blur"
+        rounded="sm"
+      >
         <BCard title="Card with overlay" aria-hidden="true">
           <BCardText>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
             incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
             exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </BCardText>
-          <BButton disabled theme="primary">Button</BButton>
+          <BButton disabled :color="{ theme: 'primary' }">Button</BButton>
         </BCard>
       </BOverlay>
     </BCol>

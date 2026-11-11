@@ -33,15 +33,15 @@ the overlay.
 
 ### Overlay backdrop color
 
-You can control the backdrop background color via the `bg` prop. The value is translated into
-one of Bootstrap v6's `bg-<value>` utility classes (for example `bg="primary"`, `bg="subtle-primary"` or `bg="black"`; see [Color Themes](/docs/reference/color-variants#background-foreground-and-border-values)). Registering your own themes is covered in [custom themes](/docs/components/button#custom-themes).
+You can control the backdrop background color via the `color` prop's `bg` key. The value is translated into
+one of Bootstrap v6's `bg-<value>` utility classes (for example `:color="{ bg: 'primary' }"`, `{ bg: 'subtle-primary' }` or `{ bg: 'black' }`; see [Color Themes](/docs/reference/color-variants#background-foreground-and-border-values)). Registering your own themes is covered in [custom themes](/docs/components/button#custom-themes).
 Control the opacity of the backdrop via the `opacity` prop (opacity values can range from `0` to
 `1`). And background blurring can be controlled via the `blur` prop.
 
 <<< DEMO ./demo/OverlayBackdropColor.vue
 
-As an alternative to the `bg` prop, you can specify a CSS color string value via the `bg-color`
-prop. When a value is provided for `bg-color`, the `bg` prop value is ignored.
+As an alternative to `color.bg`, you can specify a CSS color string value via the `bg-css`
+prop. When a value is provided for `bg-css`, `color.bg` is ignored.
 
 **Notes:**
 
@@ -51,19 +51,19 @@ prop. When a value is provided for `bg-color`, the `bg` prop value is ignored.
 ### Fade transition
 
 By default, the overlay uses Bootstrap's fade transition when showing or hiding. You can disable the
-fade transition via adding the `no-fade` prop to `BOverlay`.
+fade transition via adding the `no-transition` prop to `BOverlay`.
 
 <<< DEMO ./demo/OverlayNoFade.vue
 
 ### Default spinner styling
 
 The default overlay content is a [`BSpinner`](/docs/components/spinner) of type `'border'`. You
-can control the appearance of the spinner via the following props:
+can control the appearance of the spinner via the `spinner` prop, an object with these keys:
 
-- `spinner-type`: Currently supported values are `'border'` (the default) or `'grow'`
-- `spinner-theme`: Theme color for the spinner (rendered as `.fg-<theme>`). Default is `null` which inherits the
-  current font color
-- `spinner-small`: Set to `true` to render a small size spinner
+- `type`: Currently supported values are `'border'` (the default) or `'grow'`
+- `color`: Color object for the spinner; its `theme` renders `.fg-<theme>`. By default the spinner
+  inherits the current font color
+- `small`: Set to `true` to render a small size spinner
 
 <<< DEMO ./demo/OverlayDefaultStyling.vue#template{vue-html}
 
@@ -71,7 +71,7 @@ can control the appearance of the spinner via the following props:
 
 By default, the overlay backdrop has square corners. If the content you are wrapping has rounded
 corners, you can use the [RadiusElementExtendables](/docs/types#radiuselementextendables) props
-`rounded`, `rounded-top`, `rounded-bottom`, `rounded-start` and `rounded-end` to apply rounding to
+`rounded` (all corners) and `rounded-sides` (an object with `top`, `bottom`, `start` and `end` keys) to apply rounding to
 the overlay's corners to match the obscured content's rounded corners. Possible values for these
 props are the values of [RadiusElementExtendables](/docs/types#radiuselement).
 See the [BAvatar documentation](/docs/components/avatar#rounding) for a detailed explanation of how these
@@ -88,11 +88,11 @@ Place custom content in the overlay (replacing the default spinner) via the opti
 
 The following scope properties are available to the `overlay` slot:
 
-| Property         | Description                         |
-| ---------------- | ----------------------------------- |
-| `spinnerTheme`   | Value of the `spinner-theme` prop   |
-| `spinnerType`    | Value of the `spinner-type` prop    |
-| `spinnerSmall`   | Value of the `spinner-small` prop   |
+| Property | Description                                     |
+| -------- | ----------------------------------------------- |
+| `type`   | The `spinner` prop's `type` (default `'border'`) |
+| `color`  | The `spinner` prop's `color` object             |
+| `small`  | The `spinner` prop's `small` (default `false`)  |
 
 When placing interactive content in the overlay, you should focus the container of the custom
 content or one of the focusable controls in the overlay content for accessibility reasons. You can

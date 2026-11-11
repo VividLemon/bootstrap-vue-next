@@ -1,4 +1,4 @@
-import type {BTabProps, BTabsEmits, BTabsProps, BTabsSlots} from 'bootstrap-vue-next'
+import type { BTabProps, BTabsEmits, BTabsProps, BTabsSlots } from 'bootstrap-vue-next'
 import {
   type ComponentReference,
   type EmitRecord,
@@ -7,9 +7,9 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
-import {showHideProps} from '../../utils/showHideData'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
+import { showHideProps } from '../../utils/showHideData'
 
 export default {
   load: (): ComponentReference => ({
@@ -111,10 +111,10 @@ export default {
           default: undefined,
           description: 'Sets the CSS class(es) for the tab controls wrapper element.',
         },
-        noFade: {
+        noTransition: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'Disables the fade animation for tab transitions.',
+          description: 'Disables the fade transition when switching tabs.',
         },
         noKeyNav: {
           type: 'boolean',
@@ -184,10 +184,10 @@ export default {
         },
       } satisfies EmitRecord<keyof BTabsEmits | 'update:index' | 'update:model-value'>,
       slots: {
-        'default': {
+        default: {
           description: 'Content (tabs) for the tabs element.',
         },
-        'empty': {
+        empty: {
           description: 'Content to render when no tabs are present.',
         },
         'tabs-end': {
@@ -199,7 +199,7 @@ export default {
       } satisfies SlotRecord<keyof BTabsSlots>,
     },
     BTab: {
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.tab-pane'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.tab-pane' },
       sourcePath: '/BTabs/BTab.vue',
       props: {
         ...pick(showHideProps, ['lazy', 'unmountLazy']),

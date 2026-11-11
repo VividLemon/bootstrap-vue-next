@@ -11,21 +11,17 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed, type StyleValue} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useId} from '../../composables/useId'
 import type {BTableSimpleProps, BTableSimpleSlots} from '../../types'
 
 const defaultStickyHeaderHeight = '300px'
 
 const _props = withDefaults(defineProps<BTableSimpleProps>(), {
-  border: null,
   tableClass: undefined,
-  theme: null,
-  bg: null,
-  fg: null,
   bordered: false,
   borderless: false,
   captionTop: false,
@@ -41,18 +37,20 @@ const _props = withDefaults(defineProps<BTableSimpleProps>(), {
   small: false,
   stickyHeader: false,
   tableAttrs: undefined,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BTableSimple')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BTableSimpleSlots>()
 
 const computedId = useId(() => props.id)
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    border: props.border,
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    border: computedColor.value.border,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [
@@ -95,7 +93,7 @@ const responsiveStyles = computed<StyleValue | undefined>(() =>
 )
 const responsiveClasses = computed(() => ({
   'table-responsive': props.responsive === true,
-  [`table-responsive-${props.responsive}`]: typeof props.responsive === 'string',
+  [`${props.responsive}:table-responsive`]: typeof props.responsive === 'string',
   'b-table-sticky-header': stickyIsValid.value,
 }))
 </script>

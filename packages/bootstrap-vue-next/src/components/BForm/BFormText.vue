@@ -7,9 +7,9 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import type {BFormTextProps, BFormTextSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BFormTextProps>(), {
@@ -17,12 +17,13 @@ const _props = withDefaults(defineProps<BFormTextProps>(), {
   inline: false,
   tag: 'small',
   text: undefined,
-  fg: '2',
+  color: undefined,
 })
 const props = useDefaults(_props, 'BFormText')
+const computedColor = computed(() => resolvePartColor(props.color, {fg: '2'}))
 defineSlots<BFormTextSlots>()
 
-const {classes: colorClasses} = useThemeClasses(computed(() => ({fg: props.fg})))
+const {classes: colorClasses} = useThemeClasses(computed(() => ({fg: computedColor.value.fg})))
 const computedClasses = computed(() => [
   colorClasses.value,
   {

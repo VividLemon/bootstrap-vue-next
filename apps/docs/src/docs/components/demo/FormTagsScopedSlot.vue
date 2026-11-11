@@ -3,7 +3,7 @@
     <BFormCheckbox v-model="disabled" switch size="lg">Disable</BFormCheckbox>
     <BFormTags
       v-model="tags"
-      tag-theme="success"
+      :tag-color="{ theme: 'success' }"
       class="mb-2 mt-2"
       :disabled="disabled"
       no-outer-focus
@@ -33,7 +33,7 @@
           <BInputGroupText>
             <BButton
               :disabled="innerDisabled || state === false"
-              theme="primary"
+              :color="{ theme: 'primary' }"
               @click="addTag(newTag)"
               >Add</BButton
             >
@@ -50,7 +50,7 @@
                 :disabled="disabled"
                 size="sm"
                 variant="outline"
-                theme="danger"
+                :color="{ theme: 'danger' }"
                 @click="removeTag(tag)"
               >
                 remove tag

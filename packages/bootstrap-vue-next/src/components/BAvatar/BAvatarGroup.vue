@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import {computed, provide, type StyleValue, toRef} from 'vue'
 import {avatarGroupInjectionKey} from '../../utils/keys'
 import {useDefaults} from '../../composables/useDefaults'
@@ -21,18 +22,12 @@ const _props = withDefaults(defineProps<BAvatarGroupProps>(), {
   tag: 'div',
   // RadiusElementExtendables props
   rounded: 'circle',
-  roundedBottom: undefined,
-  roundedEnd: undefined,
-  roundedStart: undefined,
-  roundedTop: undefined,
+  roundedSides: undefined,
   // End RadiusElementExtendables props
-  // ColorExtendables props
-  bg: null,
-  fg: null,
-  theme: null,
-  // End ColorExtendables props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BAvatarGroup')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BAvatarGroupSlots>()
 
 const overlapNumber = useToNumber(() => props.overlap)
@@ -51,13 +46,10 @@ provide(avatarGroupInjectionKey, {
   square: toRef(() => props.square),
   roundedProps: computed(() => ({
     rounded: props.rounded,
-    roundedTop: props.roundedTop,
-    roundedBottom: props.roundedBottom,
-    roundedStart: props.roundedStart,
-    roundedEnd: props.roundedEnd,
+    roundedSides: props.roundedSides,
   })),
-  theme: toRef(() => props.theme),
-  bg: toRef(() => props.bg),
-  fg: toRef(() => props.fg),
+  theme: toRef(() => computedColor.value.theme ?? null),
+  bg: toRef(() => computedColor.value.bg ?? null),
+  fg: toRef(() => computedColor.value.fg ?? null),
 })
 </script>

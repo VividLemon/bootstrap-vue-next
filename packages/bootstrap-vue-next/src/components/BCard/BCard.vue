@@ -7,11 +7,8 @@
     </template>
     <BCardHeader
       v-if="props.header || hasHeaderSlot"
-      :bg="props.headerBg"
-      :theme="props.headerTheme"
-      :border="props.headerBorder"
+      :color="props.headerColor"
       :tag="props.headerTag"
-      :fg="props.headerFg"
       :class="props.headerClass"
     >
       <slot name="header">
@@ -21,13 +18,11 @@
     <BCardBody
       v-if="!props.noBody"
       :overlay="props.imgPlacement === 'overlay'"
-      :bg="props.bodyBg"
-      :border="props.bodyBorder"
+      :color="props.bodyColor"
       :tag="props.bodyTag"
-      :fg="props.bodyFg"
       :subtitle="props.subtitle"
       :subtitle-tag="props.subtitleTag"
-      :subtitle-fg="props.subtitleFg"
+      :subtitle-color="props.subtitleColor"
       :title="props.title"
       :title-tag="props.titleTag"
       :class="props.bodyClass"
@@ -41,11 +36,8 @@
     </slot>
     <BCardFooter
       v-if="props.footer || hasFooterSlot"
-      :bg="props.footerBg"
-      :border="props.footerBorder"
-      :theme="props.footerTheme"
+      :color="props.footerColor"
       :tag="props.footerTag"
-      :fg="props.footerFg"
       :class="props.footerClass"
     >
       <slot name="footer">
@@ -61,9 +53,9 @@
 </template>
 
 <script setup lang="ts">
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {isEmptySlot} from '../../utils/dom'
 import {computed} from 'vue'
-import {useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import BCardImg from './BCardImg.vue'
 import BCardHeader from './BCardHeader.vue'
@@ -73,27 +65,18 @@ import type {BCardProps, BCardSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BCardProps>(), {
   align: undefined,
-  bodyBg: undefined,
-  bodyBorder: undefined,
   bodyClass: undefined,
+  bodyColor: undefined,
   bodyTag: 'div',
   bodyText: '',
-  bodyFg: undefined,
-  border: null,
   footer: undefined,
-  footerBg: undefined,
-  footerBorder: undefined,
   footerClass: undefined,
+  footerColor: undefined,
   footerTag: 'div',
-  footerFg: undefined,
-  footerTheme: null,
   header: undefined,
-  headerBg: undefined,
-  headerBorder: undefined,
   headerClass: undefined,
+  headerColor: undefined,
   headerTag: 'div',
-  headerFg: undefined,
-  headerTheme: null,
   imgAlt: undefined,
   imgAttrs: undefined,
   imgPlacement: 'top',
@@ -102,24 +85,21 @@ const _props = withDefaults(defineProps<BCardProps>(), {
   imgWidth: undefined,
   noBody: false,
   subtitle: undefined,
+  subtitleColor: undefined,
   subtitleTag: 'h6',
-  subtitleFg: '2',
   tag: 'div',
   title: undefined,
   titleTag: 'h4',
-  // ColorExtendables props
-  bg: null,
-  fg: null,
-  theme: null,
-  // End ColorExtendables props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BCard')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 const slots = defineSlots<BCardSlots>()
 
 const hasHeaderSlot = computed(() => !isEmptySlot(slots.header))
 const hasFooterSlot = computed(() => !isEmptySlot(slots.footer))
 
-const {classes: colorClasses} = useThemeClasses(props)
+const {classes: colorClasses} = useThemeClasses(computedColor)
 const computedClasses = computed(() => [
   colorClasses.value,
   {

@@ -4,6 +4,7 @@
       ref="_dropdown"
       v-bind="props"
       v-model="modelValue"
+      :color="computedColor"
       is-nav
       @show="emit('show', $event)"
       @shown="emit('shown', $event)"
@@ -29,9 +30,10 @@
 </template>
 
 <script setup lang="ts">
-import {useTemplateRef} from 'vue'
+import {computed, useTemplateRef} from 'vue'
 import BDropdown from '../BDropdown/BDropdown.vue'
 import {useDefaults} from '../../composables/useDefaults'
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import type {BDropdownEmits, BDropdownProps, BNavItemDropdownSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
@@ -60,11 +62,11 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   split: false,
   splitButtonType: 'button',
   splitClass: undefined,
+  splitColor: undefined,
   splitDisabled: undefined,
   splitHref: undefined,
   splitTo: undefined,
   splitVariant: undefined,
-  splitTheme: undefined,
   placement: undefined,
   noWrapper: undefined,
   wrapperClass: undefined,
@@ -74,9 +76,12 @@ const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
   toggleClass: undefined,
   toggleText: 'Toggle dropdown',
   variant: 'link',
-  theme: null,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BNavItemDropdown')
+// A nav dropdown toggle is unthemed unless a theme is set: the `null` clears BDropdown's own
+// `secondary` default, so the toggle keeps the colors of the nav around it
+const computedColor = computed(() => resolvePartColor(props.color, {theme: null}))
 const emit = defineEmits<BDropdownEmits>()
 defineSlots<BNavItemDropdownSlots>()
 

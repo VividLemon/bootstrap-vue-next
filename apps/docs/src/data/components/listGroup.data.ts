@@ -22,7 +22,8 @@ export default {
         horizontal: {
           type: 'boolean | Breakpoint',
           default: false, // TODO item not in string format
-          description: 'When set, renders the list group horizontally rather than vertically',
+          description:
+            "When set, renders the list group horizontally rather than vertically (`list-group-horizontal`). Set to a breakpoint to switch to horizontal at that breakpoint (`horizontal=\"md\"` renders `md:list-group-horizontal`). Breakpoint values use container queries, so the list group needs a query-container ancestor such as `.contains-inline`",
         },
         numbered: {
           type: 'boolean',

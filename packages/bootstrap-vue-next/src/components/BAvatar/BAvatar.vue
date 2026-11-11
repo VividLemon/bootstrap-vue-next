@@ -7,7 +7,7 @@
     v-bind="computedLinkProps"
     :type="props.button && !computedLink ? props.buttonType : undefined"
     :disabled="props.disabled || null"
-    :theme="null"
+    :color="null"
     @click="clicked"
   >
     <span v-if="hasDefaultSlot" class="b-avatar-custom">
@@ -35,9 +35,7 @@
       v-if="showBadge"
       :pill="props.badgePill"
       :dot-indicator="props.badgeDotIndicator || badgeImplicitlyDot"
-      :theme="props.badgeTheme"
-      :bg="props.badgeBg"
-      :fg="props.badgeFg"
+      :color="badgeColor"
       :style="badgeStyle"
       :placement="props.badgePlacement"
     >
@@ -57,16 +55,14 @@ import {useBLinkHelper} from '../../composables/useBLinkHelper'
 import {isEmptySlot} from '../../utils/dom'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
 import {useRadiusElementClasses} from '../../composables/useRadiusElementClasses'
-import {useThemeClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import type {BAvatarEmits, BAvatarProps, BAvatarSlots, Size} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 
 const _props = withDefaults(defineProps<BAvatarProps>(), {
   alt: 'avatar',
   badge: false,
-  badgeBg: null,
-  badgeFg: null,
-  badgeTheme: 'primary',
+  badgeColor: undefined,
   badgePlacement: 'bottom-end',
   badgeDotIndicator: false,
   badgePill: false,
@@ -77,7 +73,6 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   src: undefined,
   text: undefined,
   // Link props
-  theme: 'secondary',
   // All others use defaults
   active: undefined,
   activeClass: undefined,
@@ -85,32 +80,23 @@ const _props = withDefaults(defineProps<BAvatarProps>(), {
   exactActiveClass: undefined,
   href: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   rel: undefined,
   replace: undefined,
   stretched: false,
   routerComponentName: undefined,
   target: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: undefined,
+  underline: undefined,
   // End link props
-  // ColorExtendables props
   // Theme is here as well
-  bg: null,
-  fg: null,
-  // End ColorExtendables props
   // RadiusElementExtendables props
   rounded: 'circle',
-  roundedBottom: undefined,
-  roundedEnd: undefined,
-  roundedStart: undefined,
-  roundedTop: undefined,
+  roundedSides: undefined,
   // End RadiusElementExtendables props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BAvatar')
+const computedColor = computed(() => resolvePartColor(props.color, {theme: 'secondary'}))
+const badgeColor = computed(() => resolvePartColor(props.badgeColor, {theme: 'primary'}))
 const emit = defineEmits<BAvatarEmits>()
 const slots = defineSlots<BAvatarSlots>()
 
@@ -156,28 +142,23 @@ const computedSizeIsLiteralSize = computed(
   () => !!computedSize.value && SIZES.has(computedSize.value)
 )
 
-const computedTheme = computed(() => parentData?.theme.value ?? props.theme)
+const computedTheme = computed(() => parentData?.theme.value ?? computedColor.value.theme)
 const computedRounded = computed(() => parentData?.roundedProps.value.rounded ?? props.rounded)
-const computedRoundedTop = computed(
-  () => parentData?.roundedProps.value.roundedTop ?? props.roundedTop
-)
-const computedRoundedBottom = computed(
-  () => parentData?.roundedProps.value.roundedBottom ?? props.roundedBottom
-)
-const computedRoundedStart = computed(
-  () => parentData?.roundedProps.value.roundedStart ?? props.roundedStart
-)
-const computedRoundedEnd = computed(
-  () => parentData?.roundedProps.value.roundedEnd ?? props.roundedEnd
-)
+// The group's sides win key by key, as the separate side props did
+const computedRoundedSides = computed(() => {
+  const groupSides = parentData?.roundedProps.value.roundedSides
+  return {
+    top: groupSides?.top ?? props.roundedSides?.top,
+    bottom: groupSides?.bottom ?? props.roundedSides?.bottom,
+    start: groupSides?.start ?? props.roundedSides?.start,
+    end: groupSides?.end ?? props.roundedSides?.end,
+  }
+})
 
 const {classes: radiusElementClasses} = useRadiusElementClasses(
   computed(() => ({
     rounded: computedRounded.value,
-    roundedTop: computedRoundedTop.value,
-    roundedBottom: computedRoundedBottom.value,
-    roundedStart: computedRoundedStart.value,
-    roundedEnd: computedRoundedEnd.value,
+    roundedSides: computedRoundedSides.value,
   }))
 )
 
@@ -186,8 +167,8 @@ const badgeImplicitlyDot = computed(() => !badgeText.value && !hasBadgeSlot.valu
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    bg: parentData?.bg.value ?? props.bg,
-    fg: parentData?.fg.value ?? props.fg,
+    bg: parentData?.bg.value ?? computedColor.value.bg,
+    fg: parentData?.fg.value ?? computedColor.value.fg,
     theme: computedTheme.value,
   }))
 )

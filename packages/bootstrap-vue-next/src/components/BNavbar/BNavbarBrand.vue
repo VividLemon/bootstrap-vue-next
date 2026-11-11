@@ -22,19 +22,14 @@ const _props = withDefaults(defineProps<BNavbarBrandProps>(), {
   stretched: false,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   rel: undefined,
   replace: undefined,
   routerComponentName: undefined,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: undefined,
-  theme: undefined,
+  underline: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BNavbarBrand')
 defineSlots<BNavbarBrandSlots>()

@@ -20,6 +20,7 @@
 
 <script setup lang="ts">
 import {computed, provide, toRef, useTemplateRef} from 'vue'
+import {resolvePartColor} from '../../composables/useThemeClasses'
 import {radioGroupKey} from '../../utils/keys'
 import BFormRadio from './BFormRadio.vue'
 import {useFormCheckGroupAttr, useFormCheckGroupClasses} from '../../composables/useFormCheck'
@@ -42,9 +43,7 @@ const _props = withDefaults(defineProps<Omit<BFormRadioGroupBaseProps, 'modelVal
   ariaInvalid: undefined,
   autofocus: false,
   buttonVariant: 'solid',
-  buttonTheme: 'secondary',
-  buttonBg: null,
-  buttonFg: null,
+  buttonColor: undefined,
   buttons: false,
   disabled: false,
   form: undefined,
@@ -97,11 +96,7 @@ const normalizedOptions = computed(() =>
 provide(radioGroupKey, {
   modelValue: modelValue as import('vue').Ref<import('../../types/RadioTypes').RadioValue>,
   buttonVariant: toRef(() => props.buttonVariant),
-  buttonTheme: computed(() => ({
-    theme: props.buttonTheme,
-    bg: props.buttonBg,
-    fg: props.buttonFg,
-  })),
+  buttonColor: computed(() => resolvePartColor(props.buttonColor, {theme: 'secondary'})),
   form: toRef(() => props.form),
   name: computedName,
   buttons: toRef(() => props.buttons),

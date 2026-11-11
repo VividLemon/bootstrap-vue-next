@@ -4,7 +4,7 @@
       Button Checkbox (Checked: {{ button1Checked }})
     </BFormCheckbox>
 
-    <BFormCheckbox v-model="button2Checked" button button-theme="danger">
+    <BFormCheckbox v-model="button2Checked" button :button-color="{ theme: 'danger' }">
       Button Checkbox (Checked: {{ button2Checked }})
     </BFormCheckbox>
   </div>

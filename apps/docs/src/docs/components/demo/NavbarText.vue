@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BNavbar v-b-color-mode="'dark'" toggleable="sm" theme="primary">
+  <BNavbar v-b-color-mode="'dark'" toggleable="sm" :color="{ theme: 'primary' }">
     <BNavbarToggle target="nav-text-collapse" />
     <BNavbarBrand>BootstrapVue</BNavbarBrand>
     <BCollapse id="nav-text-collapse" is-nav>

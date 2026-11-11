@@ -1,10 +1,34 @@
-import type {Numberish} from './CommonTypes'
+/**
+ * Bootstrap v6 breakpoints. Widths: sm 576px, md 768px, lg 1024px, xl 1280px, 2xl 1536px.
+ */
+export type Breakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 
-export type Breakpoint = 'sm' | 'md' | 'lg' | 'xl' | 'xxl'
+/**
+ * Keys of a responsive object. They match Bootstrap v6 class prefixes (`md:col-6`).
+ * `xs` means "no prefix" (`col-6`).
+ */
+export type ResponsiveKey = 'xs' | Breakpoint
+
+/**
+ * A per-breakpoint value, for example `{xs: 12, md: 6, '2xl': 4}`.
+ */
+export type Responsive<T> = Partial<Record<ResponsiveKey, T>>
+
 export type ColsBaseNumbers = 1 | 2 | 3 | 4 | 5 | '1' | '2' | '3' | '4' | '5'
 
 export type ColsNumbers =
-  | ColsBaseNumbers
+  ColsBaseNumbers | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '6' | '7' | '8' | '9' | '10' | '11' | '12'
+
+/**
+ * Gutter values are passed straight through to the v6 spacing scale (`gx-0` … `gx-12`)
+ */
+export type GutterNumbers =
+  | 0
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
   | 6
   | 7
   | 8
@@ -12,6 +36,12 @@ export type ColsNumbers =
   | 10
   | 11
   | 12
+  | '0'
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
   | '6'
   | '7'
   | '8'
@@ -20,72 +50,16 @@ export type ColsNumbers =
   | '11'
   | '12'
 
-export type GutterNumbers = ColsBaseNumbers | 0 | '0'
-export type ColsOrderNumbers = ColsBaseNumbers | 'first' | 'last'
-export type ColsOffsetNumbers = ColsNumbers | 0 | '0'
+/**
+ * Row columns (`row-cols-1` … `row-cols-6`, `row-cols-auto`)
+ */
+export type RowColsNumbers = 1 | 2 | 3 | 4 | 5 | 6 | '1' | '2' | '3' | '4' | '5' | '6' | 'auto'
 
-// Vue bug. Cant do this https://github.com/vuejs/core/issues/10962
-// type BreakpointFactory<V, P extends string = ''> = {
-//   [K in Breakpoint as `${P}${Capitalize<K>}`]: V
-// }
+/**
+ * Column size. `true` renders an equal-width column (`col`, `md:col`)
+ */
+export type ColsValue = boolean | ColsNumbers | 'auto'
 
-// export type OffsetBreakpointProps = BreakpointFactory<Numberish, 'offset'>
+export type ColsOrderNumbers = ColsBaseNumbers | 0 | '0' | 'first' | 'last'
 
-// export type OrderBreakpointProps = BreakpointFactory<Numberish, 'order'>
-
-// export type ColBreakpointProps = BreakpointFactory<boolean | Numberish, 'col'>
-
-// export type RowColsBreakpointProps = BreakpointFactory<Numberish, 'cols'>
-
-export interface OffsetBreakpointProps {
-  offsetSm?: ColsOffsetNumbers
-  offsetMd?: ColsOffsetNumbers
-  offsetLg?: ColsOffsetNumbers
-  offsetXl?: ColsOffsetNumbers
-  offsetXxl?: ColsOffsetNumbers
-}
-
-export interface OrderBreakpointProps {
-  orderSm?: ColsOrderNumbers
-  orderMd?: ColsOrderNumbers
-  orderLg?: ColsOrderNumbers
-  orderXl?: ColsOrderNumbers
-  orderXxl?: ColsOrderNumbers
-}
-
-export interface ColBreakpointProps {
-  sm?: boolean | ColsNumbers | 'auto'
-  md?: boolean | ColsNumbers | 'auto'
-  lg?: boolean | ColsNumbers | 'auto'
-  xl?: boolean | ColsNumbers | 'auto'
-  xxl?: boolean | ColsNumbers | 'auto'
-}
-
-export interface RowColsBreakpointProps {
-  colsSm?: ColsNumbers
-  colsMd?: ColsNumbers
-  colsLg?: ColsNumbers
-  colsXl?: ColsNumbers
-  colsXxl?: ColsNumbers
-}
-
-export interface ContentColsBreakpointProps {
-  contentColsSm?: boolean | Numberish
-  contentColsMd?: boolean | Numberish
-  contentColsLg?: boolean | Numberish
-  contentColsXl?: boolean | Numberish
-}
-
-export interface LabelAlignBreakpointProps {
-  labelAlignSm?: string
-  labelAlignMd?: string
-  labelAlignLg?: string
-  labelAlignXl?: string
-}
-
-export interface LabelColsBreakpointProps {
-  labelColsSm?: boolean | Numberish
-  labelColsMd?: boolean | Numberish
-  labelColsLg?: boolean | Numberish
-  labelColsXl?: boolean | Numberish
-}
+export type ColsOffsetNumbers = Exclude<ColsNumbers, 12 | '12'> | 0 | '0'

@@ -198,10 +198,7 @@ describe('useRadiusElementClasses blackbox test', () => {
 
   it('radiusElementClasses to be correct when all edge properties are specified', () => {
     const {classes: radiusElementClasses} = useRadiusElementClasses(() => ({
-      roundedTop: 'lg',
-      roundedBottom: 'sm',
-      roundedStart: 2,
-      roundedEnd: '4',
+      roundedSides: {top: 'lg', bottom: 'sm', start: 2, end: '4'},
     }))
 
     expect(radiusElementClasses.value).toEqual({

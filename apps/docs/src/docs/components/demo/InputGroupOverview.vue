@@ -14,8 +14,8 @@
   <!-- Using components -->
   <BInputGroup prepend="Username" class="mt-3">
     <BFormInput />
-    <BButton variant="outline" theme="success">Button</BButton>
-    <BButton theme="info">Button</BButton>
+    <BButton variant="outline" :color="{ theme: 'success' }">Button</BButton>
+    <BButton :color="{ theme: 'info' }">Button</BButton>
   </BInputGroup>
   <!-- #endregion template -->
 </template>

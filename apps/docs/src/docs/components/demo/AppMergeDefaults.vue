@@ -9,7 +9,7 @@ import { BApp } from 'bootstrap-vue-next'
 
 const appDefaults = {
   BButton: {
-    theme: 'primary' as const, // This will merge with existing BButton defaults
+    color: { theme: 'primary' as const }, // This will merge with existing BButton defaults
   },
 }
 </script>

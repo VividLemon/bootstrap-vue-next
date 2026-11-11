@@ -17,6 +17,7 @@
       :horizontal="props.horizontal"
       :visible="props.visible"
       :is-nav="props.isNav"
+      :no-transition="props.noTransition"
       :lazy="props.lazy || parentData?.lazy.value"
       :unmount-lazy="props.unmountLazy || parentData?.unmountLazy.value"
       @show="emit('show', $event)"
@@ -91,6 +92,7 @@ const _props = withDefaults(defineProps<Omit<BAccordionItemProps, 'modelValue'>>
   id: undefined,
   isNav: undefined,
   lazy: false,
+  noTransition: false,
   unmountLazy: false,
   tag: undefined,
   title: undefined,

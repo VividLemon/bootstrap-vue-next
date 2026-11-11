@@ -45,8 +45,7 @@ const migrationMap: MigrationMap = {
   },
   lazy: { oldProp: 'lazy', components: ['BAccordion', 'BAccordionItem', 'showHideProps'] },
   modelValue: { oldProp: 'visible', components: ['showHideProps'] },
-  noAnimation: { oldProp: 'skip-animation', components: ['showHideProps'] },
-  noFade: { oldProp: 'skip-animation', components: ['showHideProps'] },
+  noTransition: { oldProp: 'skip-animation', components: ['showHideProps'] },
   noBackdrop: { oldProp: 'hide-backdrop', components: ['BModal', 'BOffcanvas'] },
   noEllipsis: { oldProp: 'hide-ellipsis', components: ['BPagination'] },
   noFooter: { oldProp: 'hide-footer', components: ['BModal'] },
@@ -58,7 +57,6 @@ const migrationMap: MigrationMap = {
   noHeaderClose: { oldProp: 'hide-header-close', components: ['BModal', 'BOffcanvas'] },
   noWrapper: { oldProp: 'skip-wrapper', components: ['dropdownCommon'] },
   show: { oldProp: '', components: ['showHideProps'] },
-  transProps: { oldProp: '', components: ['showHideProps'] },
   unmountLazy: {
     oldProp: 'lazy',
     components: ['BAccordion', 'BAccordionItem', 'showHideProps'],

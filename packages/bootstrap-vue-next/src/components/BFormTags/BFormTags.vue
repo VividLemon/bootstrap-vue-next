@@ -31,9 +31,7 @@
     <slot
       :add-button-text="props.addButtonText"
       :add-button-variant="props.addButtonVariant"
-      :add-button-theme="props.addButtonTheme"
-      :add-button-bg="props.addButtonBg"
-      :add-button-fg="props.addButtonFg"
+      :add-button-color="computedAddButtonColor"
       :add-tag
       :disable-add-button="disableAddButton"
       :disabled="props.disabled"
@@ -72,9 +70,7 @@
       :tag-class="props.tagClass"
       :tag-pills="props.tagPills"
       :tag-remove-label="props.tagRemoveLabel"
-      :tag-theme="props.tagTheme"
-      :tag-bg="props.tagBg"
-      :tag-fg="props.tagFg"
+      :tag-color="computedTagColor"
       :tags="[...modelValue]"
     >
       <ul
@@ -86,9 +82,7 @@
             name="tag"
             :tag="tag"
             :tag-class="props.tagClass"
-            :tag-theme="props.tagTheme"
-            :tag-bg="props.tagBg"
-            :tag-fg="props.tagFg"
+            :tag-color="computedTagColor"
             :tag-pills="props.tagPills"
             :remove-tag="removeTag"
           >
@@ -96,9 +90,7 @@
               :key="tag"
               :class="props.tagClass"
               tag="li"
-              :theme="props.tagTheme"
-              :bg="props.tagBg"
-              :fg="props.tagFg"
+              :color="computedTagColor"
               :pill="props.tagPills"
               :no-remove="props.noTagRemove"
               :disabled="props.disabled"
@@ -182,15 +174,13 @@ import {escapeRegExpChars} from '../../utils/stringUtils'
 import BFormTag from './BFormTag.vue'
 import {useId} from '../../composables/useId'
 import {useStateClass} from '../../composables/useStateClass'
-import {useButtonThemeClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, useButtonThemeClasses} from '../../composables/useThemeClasses'
 import type {BFormTagsEmits, BFormTagsProps, BFormTagsSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
+  addButtonColor: undefined,
   addButtonText: 'Add',
   addButtonVariant: 'outline',
-  addButtonTheme: 'secondary',
-  addButtonBg: null,
-  addButtonFg: null,
   addOnChange: false,
   autofocus: false,
   disabled: false,
@@ -216,23 +206,25 @@ const _props = withDefaults(defineProps<Omit<BFormTagsProps, 'modelValue'>>(), {
   size: undefined,
   state: null,
   tagClass: undefined,
+  tagColor: undefined,
   tagPills: false,
   tagRemoveLabel: undefined,
   tagRemovedLabel: 'Tag removed',
   tagValidator: () => true,
-  tagTheme: 'secondary',
-  tagBg: null,
-  tagFg: null,
 })
 const props = useDefaults(_props, 'BFormTags')
 const emit = defineEmits<BFormTagsEmits>()
 defineSlots<BFormTagsSlots>()
+const computedAddButtonColor = computed(() =>
+  resolvePartColor(props.addButtonColor, {theme: 'secondary'})
+)
+const computedTagColor = computed(() => resolvePartColor(props.tagColor, {theme: 'secondary'}))
 const {classes: addButtonClasses} = useButtonThemeClasses(
   computed(() => ({
     variant: props.addButtonVariant,
-    theme: props.addButtonTheme,
-    bg: props.addButtonBg,
-    fg: props.addButtonFg,
+    theme: computedAddButtonColor.value.theme,
+    bg: computedAddButtonColor.value.bg,
+    fg: computedAddButtonColor.value.fg,
   }))
 )
 

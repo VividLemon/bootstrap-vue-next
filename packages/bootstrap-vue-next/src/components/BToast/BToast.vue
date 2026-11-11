@@ -33,9 +33,7 @@
             :class="[props.closeClass]"
             class="ms-auto"
             :variant="props.closeVariant"
-            :theme="props.closeTheme"
-            :bg="props.closeBg"
-            :fg="props.closeFg"
+            :color="computedCloseColor"
             @click.stop.prevent="hide('close')"
           >
             <slot name="close" v-bind="sharedSlots">
@@ -72,9 +70,7 @@
               :class="[props.closeClass]"
               class="ms-auto btn-close-custom"
               :variant="props.closeVariant"
-              :theme="props.closeTheme"
-              :bg="props.closeBg"
-              :fg="props.closeFg"
+              :color="computedCloseColor"
               @click.stop.prevent="hide('close')"
             >
               <slot name="close" v-bind="sharedSlots">
@@ -98,7 +94,7 @@
         :show-progress="props.progressProps?.showProgress"
         :show-value="props.progressProps?.showValue"
         :striped="props.progressProps?.striped"
-        :theme="props.progressProps?.theme"
+        :color="props.progressProps?.color"
         :max="modelValue"
         :value="remainingMs"
         height="4px"
@@ -115,23 +111,20 @@ import BCloseButton from '../BButton/BCloseButton.vue'
 import BLink from '../BLink/BLink.vue'
 import BProgress from '../BProgress/BProgress.vue'
 import {useCountdown} from '../../composables/useCountdown'
-import {useThemeClasses} from '../../composables/useThemeClasses'
+import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {useDefaults} from '../../composables/useDefaults'
 import {useCountdownHover} from '../../composables/useCountdownHover'
 import {useId} from '../../composables/useId'
-import {useShowHide} from '../../composables/useShowHide'
+import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import BButton from '../BButton/BButton.vue'
 
 const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
-  bg: null,
   body: undefined,
   bodyClass: undefined,
   closeClass: undefined,
   closeContent: undefined,
   closeLabel: 'Close',
-  closeTheme: 'secondary',
-  closeBg: null,
-  closeFg: null,
+  closeColor: undefined,
   closeVariant: 'solid',
   headerClass: undefined,
   headerTag: 'div',
@@ -141,7 +134,7 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   isStatus: false,
   lazy: false,
   noCloseButton: false,
-  noFade: false,
+  noTransition: false,
   noHoverPause: false,
   noProgress: false,
   noResumeOnHoverLeave: false,
@@ -150,10 +143,8 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   showOnPause: true,
   show: false,
   solid: false,
-  fg: null,
   title: undefined,
   toastClass: undefined,
-  transProps: undefined,
   visible: false,
   // Link props
   // All others use defaults
@@ -165,22 +156,19 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   href: undefined,
   icon: undefined,
   opacity: undefined,
-  opacityHover: undefined,
   stretched: false,
   rel: undefined,
   replace: undefined,
   routerComponentName: undefined,
   target: undefined,
   to: undefined,
-  underlineOffset: undefined,
-  underlineOffsetHover: undefined,
-  underlineOpacity: undefined,
-  underlineOpacityHover: undefined,
-  underlineTheme: undefined,
-  theme: undefined,
+  underline: undefined,
   // End link props
+  color: undefined,
 })
 const props = useDefaults(_props, 'BToast')
+const computedColor = computed(() => resolvePartColor(props.color, {}))
+const computedCloseColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
 const emit = defineEmits<BToastEmits>()
 const slots = defineSlots<BToastSlots>()
 
@@ -202,7 +190,7 @@ const {
   isVisible,
   transitionProps,
   contentShowing,
-} = useShowHide({modelValue, props, emit: emit as EmitFn, element, id: computedId})
+} = useLegacyShowHide({modelValue, props, emit: emit as EmitFn, element, id: computedId})
 
 // TODO solid is never used
 const countdownLength = computed(() =>
@@ -242,9 +230,9 @@ const isToastVisible = computed(
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
-    theme: props.theme,
-    bg: props.bg,
-    fg: props.fg,
+    theme: computedColor.value.theme,
+    bg: computedColor.value.bg,
+    fg: computedColor.value.fg,
   }))
 )
 const computedClasses = computed(() => [

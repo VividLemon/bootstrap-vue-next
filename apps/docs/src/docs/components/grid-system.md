@@ -26,33 +26,35 @@ Breaking it down, here's how it works:
 - Containers provide a means to center and horizontally pad your site's contents. Use
   `<BContainer>` for a responsive pixel width, `<BContainer fluid>` for `width: 100%` across all
   viewport and device sizes or set `fluid` to a [`Breakpoint`](/docs/types#breakpoint) value for a
-  responsive container (e.g. `<BContainer fluid='md'`).
+  responsive container (e.g. `<BContainer fluid="md">`).
 - Rows are wrappers for columns. Each column has horizontal `padding` (called a gutter) for
   controlling the space between them. This `padding` is then counteracted on the rows with negative
   margins. This way, all the content in your columns is visually aligned down the left side.
 - In a grid layout, content must be placed within columns and only columns may be immediate children
   of rows.
 - Thanks to flexbox, grid columns without a set width will automatically layout with equal widths.
-  For example, four instances of `<BCol sm="auto">` will each automatically be 25% wide for small
-  breakpoints.
-- Column prop `cols` indicates the number of columns you'd like to use out of the possible 12 per
-  row regardless of breakpoint (starting at breakpoint `xs`). So, if you want three equal-width
-  columns at any breakpoint, you can use `<BCol cols="4">`.
-- Column props `sm`, `md`, `lg`, `xl`, `xxl` indicate the number of columns you'd like to use out of the
-  possible 12 per row, at the various breakpoints. So, if you want three equal-width columns at
-  breakpoint `sm`, you can use `<BCol sm="4">`. the special value `auto` can be used to take up the
-  remaining available column space in a row.
+  For example, four instances of `<BCol :cols="{ sm: true }">` will each automatically be 25% wide
+  from the small breakpoint up.
+- The column props `cols`, `offset`, `order` and `align-self` take a
+  [responsive object](/docs/types#responsive) keyed by breakpoint: `xs`, `sm`, `md`, `lg`, `xl` and
+  `2xl`. Each key renders a Bootstrap v6 prefix class, and `xs` renders the class without a prefix.
+  For example `<BCol :cols="{ xs: 12, md: 6, '2xl': 4 }">` renders `col-12 md:col-6 2xl:col-4`.
+- `cols` values indicate the number of columns you'd like to use out of the possible 12 per row. So,
+  if you want three equal-width columns at any breakpoint, you can use `<BCol :cols="{ xs: 4 }">`.
+  The value `true` renders an equal-width column for that breakpoint (`{ md: true }` renders
+  `md:col`), and the special value `'auto'` sizes the column to its content.
 - Column `width`s are set in percentages, so they're always fluid and sized relative to their parent
   element.
 - Columns have horizontal `padding` to create the gutters between individual columns, however, you
   can remove the `margin` from `<BRow>` and `padding` from `<BCol>` by setting the `no-gutters`
   prop on `<BRow>`.
-- To make the grid responsive, there are six grid breakpoints, one for each responsive breakpoint:
-  all breakpoints (extra small), small, medium, large, extra large, and xxl.
+- To make the grid responsive, there are six grid tiers, one for each responsive breakpoint:
+  all breakpoints (extra small), small, medium, large, extra large, and 2x extra large.
 - Grid breakpoints are based on minimum width media queries, meaning **they apply to that one
-  breakpoint and all those above it** (e.g., `<BCol sm="4">` applies to small, medium, large, and
-  extra large devices, but not the first `xs` breakpoint).
-- You can use predefined grid classes or Sass mixins for more semantic markup. See the [Bootstrap 5 docs](https://getbootstrap.com/docs/5.3/layout/grid#sass-variables) for details
+  breakpoint and all those above it** (e.g., `<BCol :cols="{ sm: 4 }">` applies to small, medium,
+  large, extra large and 2x extra large devices, but not the first `xs` breakpoint).
+- You can use predefined grid classes or Sass mixins for more semantic markup. See the
+  [Bootstrap 6 docs](https://getbootstrap.com/docs/6.0/layout/grid/) for details
 
 Be aware of the limitations and [bugs around flexbox](https://github.com/philipwalton/flexbugs),
 like the
@@ -67,7 +69,7 @@ containers where the container is fluid up until a specific breakpoint.
 
 While containers can be nested, most layouts do not require a nested container.
 
-The default breakpoint widths can be configured using Bootstrap V5.x SCSS variables. See the
+The default breakpoint widths can be configured using Bootstrap v6 Sass variables. See the
 [Grid options](#grid-options) section below.
 
 ### Default container
@@ -94,10 +96,10 @@ wide (fluid) until particular breakpoint is reached at which point a `max-width`
 example, setting prop `fluid` to `'md'` will render a container that is 100% wide to start until the
 `'md'` breakpoint is reached, at which point it will become a standard non-fluid container.
 
-<<< FRAGMENT ./demo/ContainerResponsive.vue#template{vue-html}
+<<< FRAGMENT ./demo/ContainerResponsive.vue
 
-Setting the fluid prop to a breakpoint name translates to the Bootstrap class
-`.container-{breakpoint}`.
+Setting the fluid prop to a breakpoint name translates to the Bootstrap v6 class
+`.{breakpoint}:container` (for example `fluid="md"` renders `md:container`).
 
 Refer to the [Grid options section](#grid-options) table below for the default container width
 values.
@@ -128,7 +130,7 @@ change with the [font size](https://drafts.csswg.org/mediaqueries-3/#units).
 
 See how aspects of the Bootstrap grid system work across multiple devices with a handy table.
 
-<div class="table-responsive-sm">
+<div class="sm:table-responsive">
   <table class="table table-bordered table-striped">
     <thead>
       <tr>
@@ -147,66 +149,61 @@ See how aspects of the Bootstrap grid system work across multiple devices with a
         </th>
         <th>
           <strong>Large</strong> (lg)<br>
-          <code>≥992px</code>
+          <code>≥1024px</code>
         </th>
         <th>
           <strong>Extra large</strong> (xl)<br>
-          <code>≥1200px</code>
+          <code>≥1280px</code>
         </th>
         <th>
-          <strong>Extra extra large</strong> (xl)<br>
-          <code>≥1400px</code>
+          <strong>2x extra large</strong> (2xl)<br>
+          <code>≥1536px</code>
         </th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <th class="text-left">Max container width</th>
+        <th class="text-start">Max container width</th>
         <td>None (auto)</td>
         <td>540px</td>
         <td>720px</td>
         <td>960px</td>
-        <td>1140px</td>
-        <td>1320px</td>
+        <td>1200px</td>
+        <td>1440px</td>
       </tr>
       <tr>
-        <th class="text-left">Prop</th>
-        <td><code>cols="*"</code></td>
-        <td><code>sm="*"</code></td>
-        <td><code>md="*"</code></td>
-        <td><code>lg="*"</code></td>
-        <td><code>xl="*"</code></td>
-        <td><code>xxl="*"</code></td>
+        <th class="text-start">Responsive key</th>
+        <td><code>xs</code></td>
+        <td><code>sm</code></td>
+        <td><code>md</code></td>
+        <td><code>lg</code></td>
+        <td><code>xl</code></td>
+        <td><code>'2xl'</code></td>
       </tr>
       <tr>
-        <th class="text-left"># of columns</th>
+        <th class="text-start">Class prefix</th>
+        <td>None (<code>col-6</code>)</td>
+        <td><code>sm:</code></td>
+        <td><code>md:</code></td>
+        <td><code>lg:</code></td>
+        <td><code>xl:</code></td>
+        <td><code>2xl:</code></td>
+      </tr>
+      <tr>
+        <th class="text-start"># of columns</th>
         <td colspan="6">12</td>
       </tr>
       <tr>
-        <th class="text-left">Gutter width</th>
-        <td colspan="6">30px (15px on each side of a column)</td>
+        <th class="text-start">Gutter width</th>
+        <td colspan="6">1.5rem (.75rem on each side of a column)</td>
       </tr>
       <tr>
-        <th class="text-left">Nestable</th>
+        <th class="text-start">Nestable</th>
         <td colspan="6">Yes</td>
       </tr>
       <tr>
-        <th class="text-left">Offset</th>
-        <td><code>offset="*"</code></td>
-        <td><code>offset-sm="*"</code></td>
-        <td><code>offset-md="*"</code></td>
-        <td><code>offset-lg="*"</code></td>
-        <td><code>offset-xl="*"</code></td>
-        <td><code>offset-xxl="*"</code></td>
-      </tr>
-      <tr>
-        <th class="text-left">Order</th>
-        <td><code>order="*"</code></td>
-        <td><code>order-sm="*"</code></td>
-        <td><code>order-md="*"</code></td>
-        <td><code>order-lg="*"</code></td>
-        <td><code>order-xl="*"</code></td>
-        <td><code>order-xxl="*"</code></td>
+        <th class="text-start">Column props</th>
+        <td colspan="6"><code>cols</code>, <code>offset</code>, <code>order</code>, <code>align-self</code></td>
       </tr>
     </tbody>
   </table>
@@ -214,35 +211,36 @@ See how aspects of the Bootstrap grid system work across multiple devices with a
 
 **Notes:**
 
-- The `xs` (smallest) breakpoint does not have a dedicated prop; use the `cols` prop instead.
-- The above breakpoint values are Bootstrap defaults. They can be customized via
-  [SCSS variables](https://getbootstrap.com/docs/5.3/layout/grid#customizing-the-grid).
+- Every responsive prop takes an object, for example `:cols="{ xs: 12, md: 6, '2xl': 4 }"`. The
+  `2xl` key must be quoted because it starts with a digit.
+- The above breakpoint values are Bootstrap v6 defaults. They can be customized via
+  [Sass variables](https://getbootstrap.com/docs/6.0/layout/grid/#customizing-the-grid).
 
 ### Container sizes
 
 The following table outlines the default container maximum widths at the various breakpoints. These
-may vary if you are using custom themed Bootstrap v4 SCSS/CSS.
+may vary if you are using custom themed Bootstrap v6 Sass/CSS.
 
-| Container type | Extra small `<576px` | Small `≥576px` | Medium `≥768px` | Large `≥992px` | Extra large `≥1200px` | Extra extra large `≥1200px` |
-| -------------- | -------------------- | -------------- | --------------- | -------------- | --------------------- | --------------------------- |
-| _default_      | `100%`               | `540px`        | `720px`         | `960px`        | `1140px`              | `1140px`                    |
-| `fluid`        | `100%`               | `100%`         | `100%`          | `100%`         | `100%`                | `100%`                      |
-| `fluid="sm"`   | `100%`               | `540px`        | `720px`         | `960px`        | `1140px`              | `1320px`                    |
-| `fluid="md"`   | `100%`               | `100%`         | `720px`         | `960px`        | `1140px`              | `1320px`                    |
-| `fluid="lg"`   | `100%`               | `100%`         | `100%`          | `960px`        | `1140px`              | `1320px`                    |
-| `fluid="xl"`   | `100%`               | `100%`         | `100%`          | `100%`         | `100%`                | `1320px`                    |
-| `fluid="xxl"`  | `100%`               | `100%`         | `100%`          | `100%`         | `1140px`              | `1320px`                    |
+| Container type | Extra small `<576px` | Small `≥576px` | Medium `≥768px` | Large `≥1024px` | Extra large `≥1280px` | 2x extra large `≥1536px` |
+| -------------- | -------------------- | -------------- | --------------- | --------------- | --------------------- | ------------------------ |
+| _default_      | `100%`               | `540px`        | `720px`         | `960px`         | `1200px`              | `1440px`                 |
+| `fluid`        | `100%`               | `100%`         | `100%`          | `100%`          | `100%`                | `100%`                   |
+| `fluid="sm"`   | `100%`               | `540px`        | `720px`         | `960px`         | `1200px`              | `1440px`                 |
+| `fluid="md"`   | `100%`               | `100%`         | `720px`         | `960px`         | `1200px`              | `1440px`                 |
+| `fluid="lg"`   | `100%`               | `100%`         | `100%`          | `960px`         | `1200px`              | `1440px`                 |
+| `fluid="xl"`   | `100%`               | `100%`         | `100%`          | `100%`          | `1200px`              | `1440px`                 |
+| `fluid="2xl"`  | `100%`               | `100%`         | `100%`          | `100%`          | `100%`                | `1440px`                 |
 
 Refer to the [Containers section](#containers) section above for additional information
 
 ## Auto-layout columns
 
-Utilize breakpoint-specific column classes for easy column sizing without an explicit numbered prop
-like `<BCol sm="6">`.
+Utilize breakpoint-specific column classes for easy column sizing without an explicit number, for
+example `<BCol :cols="{ sm: true }">` (renders `sm:col`).
 
 ### Equal-width columns
 
-For example, here are two grid layouts that apply to every device and viewport, from `xs` to `xl`.
+For example, here are two grid layouts that apply to every device and viewport, from `xs` to `2xl`.
 Add any number of unit-less classes for each breakpoint you need and every column will be the same
 width.
 
@@ -252,7 +250,7 @@ width.
 
 Create equal-width columns that span multiple lines by inserting a `.w-100` where you want the
 columns to break to a new line. Make the breaks responsive by mixing `.w-100` with some
-[responsive display utilities](https://getbootstrap.com/docs/4.5/utilities/display/).
+[responsive display utilities](https://getbootstrap.com/docs/6.0/utilities/display/).
 
 There was a [Safari flexbox bug](https://github.com/philipwalton/flexbugs#flexbug-11) that prevented
 this from working without an explicit `flex-basis` or `border`. There are workarounds for older
@@ -272,35 +270,38 @@ of the center column.
 
 ### Variable width content
 
-Use `{breakpoint}="auto"` props to size columns based on the natural width of their content.
+Use `'auto'` values (for example `:cols="{ md: 'auto' }"`, rendering `md:col-auto`) to size columns
+based on the natural width of their content. A responsive `align-h` on `<BRow>` (here
+`:align-h="{ md: 'center' }"`) centers the columns from the given breakpoint up.
 
 <<< DEMO ./demo/ColVariableWidth.vue#template{vue-html}
 
 ## Responsive classes
 
 Bootstrap's grid includes six tiers of predefined classes for building complex responsive layouts.
-Customize the size of your columns on extra small, small, medium, large, extra large, or extra extra large
-devices however you see fit.
+Customize the size of your columns on extra small, small, medium, large, extra large, or 2x extra
+large devices however you see fit.
 
 ### All breakpoints
 
-For grids that are the same from the smallest of devices to the largest, use the `col` and
-`cols="*"` props. Specify a number of `cols` when you need a particularly sized column; otherwise,
-feel free to stick to `col` (which is applied automatically if no `cols` are specified).
+For grids that are the same from the smallest of devices to the largest, use the `xs` key of the
+`cols` prop (`:cols="{ xs: 8 }"` renders `col-8`). Specify a number when you need a particularly sized
+column; otherwise, leave `cols` unset and the column renders the equal-width `.col` class. `.col`
+is only added when no breakpoint sets a column size, so `:cols="{ md: 6 }"` renders just `md:col-6`.
 
 <<< DEMO ./demo/ColBreakpoints.vue#template{vue-html}
 
 ### Stacked to horizontal
 
-Using a single set of `sm="*"` or `sm` (boolean for equal width @sm) props, you can create a basic
-grid system that starts out stacked on extra small devices before becoming horizontal on desktop
-(medium) devices.
+Using a single `sm` key (`:cols="{ sm: 8 }"`, or `:cols="{ sm: true }"` for equal width from `sm`
+up), you can create a basic grid system that starts out stacked on extra small devices before
+becoming horizontal on larger devices.
 
 <<< DEMO ./demo/ColStackedToHorizontal.vue#template{vue-html}
 
 ### Mix and match
 
-Don't want your columns to simply stack in some grid tiers? Use a combination of different props for
+Don't want your columns to simply stack in some grid tiers? Use a combination of different keys for
 each tier as needed. See the example below for a better idea of how it all works.
 
 <<< DEMO ./demo/ColMixed.vue#template{vue-html}
@@ -316,13 +317,15 @@ container has a `min-height` as shown below.
 ### Vertical alignment
 
 For vertical alignment of all grid cells in a row, use the `align-v` prop on `<BRow>`. Possible
-values are `'start'`, `'center'`, `'end'`, `'fill`, `'baseline'`, and `'stretch'` from
-[`AlignmentVertical`](/docs/types#alignment):
+values are `'start'`, `'center'`, `'end'`, `'baseline'`, and `'stretch'` from
+[`AlignmentVertical`](/docs/types#alignment). Like every grid alignment prop it takes a responsive
+object, so `:align-v="{ xs: 'start', md: 'center' }"` renders `align-items-start md:align-items-center`:
 
 <<< DEMO ./demo/ContainerVerticalAlignment.vue#template{vue-html}
 
 For individual grid cell vertical alignment, use the `align-self` prop on `<BCol>`. Possible values
-are the values [`AlignmentVertical`](/docs/types#alignment) and `auto`:
+are the values [`AlignmentVertical`](/docs/types#alignment) and `auto`
+(`:align-self="{ md: 'end' }"` renders `md:align-self-end`):
 
 <<< DEMO ./demo/ContainerCellAlignment.vue#template{vue-html}
 
@@ -330,7 +333,9 @@ are the values [`AlignmentVertical`](/docs/types#alignment) and `auto`:
 
 To horizontally align grid cells within a row, use the `align-h` prop on `<BRow>`. Possible values
 are: `'start'`, `'center'`, `'end'`, `'around'`, `'between'` and `'evenly'` from
-[`AlignmentJustifyContent`](/docs/types#alignment):
+[`AlignmentJustifyContent`](/docs/types#alignment) (`:align-h="{ lg: 'between' }"` renders
+`lg:justify-content-between`). Use the `align-content` prop on `<BRow>` to align multi-line rows on
+the cross axis:
 
 <<< DEMO ./demo/ContainerHorizontalAlignment.vue#template{vue-html}
 
@@ -338,9 +343,10 @@ are: `'start'`, `'center'`, `'end'`, `'around'`, `'between'` and `'evenly'` from
 
 ### Ordering columns
 
-Use `order-*` props for controlling the visual order of your content. These props are responsive, so
-you can set the order by breakpoint (e.g., `order="1" order-md="2"`). Includes support for 1 through
-5 across all six grid tiers. `<BCol>` defaults to an order value of `0`.
+Use the `order` prop for controlling the visual order of your content. It is responsive, so you can
+set the order by breakpoint (e.g., `:order="{ xs: 1, md: 2 }"` renders `order-1 md:order-2`). Includes
+support for `0` through `5`, `'first'` and `'last'` across all six grid tiers. Flex items default to
+an order value of `0`.
 
 <<< DEMO ./demo/ColOrder.vue#template{vue-html}
 
@@ -348,10 +354,11 @@ Ordering is controlled by flexbox's CSS style `order`.
 
 ### Offsetting columns
 
-You can offset grid columns in two ways: our responsive `offset-*` props or the
-[spacing](https://getbootstrap.com/docs/5.3/utilities/spacing)
-utility classes. Grid `offset-*` props are sized to match columns while margins utility classes are
-more useful for quick layouts where the width of the offset is variable.
+You can offset grid columns in two ways: our responsive `offset` prop or the
+[spacing](https://getbootstrap.com/docs/6.0/utilities/spacing/)
+utility classes. Grid offsets are sized to match columns (`:offset="{ md: 4 }"` renders
+`md:offset-4`, from `0` to `11`) while margin utility classes are more useful for quick layouts
+where the width of the offset is variable.
 
 <<< DEMO ./demo/ColOffset.vue#template{vue-html}
 
@@ -362,8 +369,8 @@ the offset to `0` at a larger breakpoint:
 
 ### Margin utilities on columns
 
-You can use [margin and spacing](https://getbootstrap.com/docs/5.3/utilities/spacing) utility classes
-like `.mr-auto` to force sibling columns away from one another.
+You can use [margin and spacing](https://getbootstrap.com/docs/6.0/utilities/spacing/) utility classes
+like `.me-auto` (or the responsive `.md:ms-auto`) to force sibling columns away from one another.
 
 <<< DEMO ./demo/ColSpacing.vue#template{vue-html}
 
@@ -377,30 +384,42 @@ within an existing `<BCol>` component. Nested rows should include a set of colum
 
 ## Row columns
 
-Use the responsive `cols-*` props in `<BRow>` to quickly set the number of columns that best render
-your content and layout. Whereas normal column widths are apply to the individual `<BCol>` columns
-(e.g., `<BCol md="4">`), the row columns `col-*` props are set on the parent `<BRow>` as a
+Use the responsive `cols` prop on `<BRow>` to quickly set the number of columns that best render
+your content and layout. Whereas normal column widths apply to the individual `<BCol>` columns
+(e.g., `<BCol :cols="{ md: 4 }">`), the row columns `cols` prop is set on the parent `<BRow>` as a
 shortcut.
 
 Use these row columns to quickly create basic grid layouts or to control your card layouts. The
-default maximum number of row columns in Bootstrap v4.4 is `6` (unlike the regular columns which
-have a default maximum of `12` columns)
+maximum number of row columns in Bootstrap v6 is `6` (unlike the regular columns which have a
+maximum of `12` columns), and `'auto'` gives each column its natural width.
 
-The value specified in the `<BRow>` prop(s) is the number of columns to create per row (whereas the
-props on `<BCol>` refer to the number of columns to occupy).
+The value specified in the `<BRow>` prop is the number of columns to create per row (whereas the
+`cols` prop on `<BCol>` refers to the number of columns to occupy).
 
 <<< DEMO ./demo/RowCol.vue#template{vue-html}
 
-You can control the number of columns at each breakpoint level via the following `<BRow>` props:
-
-- `cols` for `xs` and up screens
-- `cols-sm` for `sm` and up screens
-- `cols-md` for `md` and up screens
-- `cols-lg` for `lg` and up screens
-- `cols-xl` for `xl` and up screens
-- `cols-xxl` for `xxl` and up screens
+You can control the number of columns at each breakpoint level via the keys of the `cols` object
+(`xs`, `sm`, `md`, `lg`, `xl` and `'2xl'`). For example `:cols="{ xs: 1, sm: 2, md: 4, lg: 6 }"`
+renders `row-cols-1 sm:row-cols-2 md:row-cols-4 lg:row-cols-6`:
 
 <<< DEMO ./demo/RowColResponsive.vue#template{vue-html}
+
+## Gutters
+
+Gutters are the padding between your columns. Set them with the `gutter-x` and `gutter-y` props on
+`<BRow>` or `<BContainer>`. Both take a responsive object whose values (`0` to `12`) are passed
+straight through to the Bootstrap v6 spacing scale, so `:gutter-x="{ xs: 3, md: 7 }"` renders
+`gx-3 md:gx-7` (`0.5rem`, then `1.5rem` from `md` up). Note that the v6 spacing scale has more steps
+than v5: the default `1.5rem` gutter is step `7`.
+
+```vue-html
+<BRow :gutter-x="{ xs: 3, md: 7 }" :gutter-y="{ xs: 3 }">
+  <BCol>…</BCol>
+  <BCol>…</BCol>
+</BRow>
+```
+
+Use the `no-gutters` prop on `<BRow>` to remove the gutters entirely (`g-0`).
 
 ## Utilities for layout
 
@@ -410,33 +429,33 @@ content.
 
 ### Changing `display`
 
-Use Bootstrap's [display utilities](https://getbootstrap.com/docs/5.3/utilities/display)
+Use Bootstrap's [display utilities](https://getbootstrap.com/docs/6.0/utilities/display/)
 for responsively toggling common values of the `display` property. Mix it with the grid system,
 content, or components to show or hide them across specific viewports.
 
 ### Flexbox options
 
-Bootstrap 5 is built with flexbox, but not every element’s `display` has been changed to
+Bootstrap 6 is built with flexbox, but not every element’s `display` has been changed to
 `display: flex` as this would add many unnecessary overrides and unexpectedly change key browser
 behaviors. Most of the components are built with flexbox enabled.
 
 Should you need to add `display: flex` to an element, do so with `.d-flex` or one of the responsive
-variants (e.g., `.d-sm-flex`). You’ll need this class or `display` value to allow the use of the
-extra [flexbox utilities](https://getbootstrap.com/docs/5.3/utilities/flex)
+variants (e.g., `.sm:d-flex`). You’ll need this class or `display` value to allow the use of the
+extra [flexbox utilities](https://getbootstrap.com/docs/6.0/utilities/flex/)
 for sizing, alignment, spacing, and more.
 
 ### Margin and padding
 
-Use the `margin` and `padding` [spacing utilities](https://getbootstrap.com/docs/5.3/utilities/spacing)
-o control how elements and components are spaced and sized. Bootstrap 5 includes a six-level scale for spacing
-utilities, based on a `1rem` value default SASS `$spacer` variable. Choose values for all viewports
-(e.g., `.me-3` for `margin-right: 1rem` in LTR), or pick responsive variants to target specific viewports
-(e.g., `.me-md-3` for `margin-right: 1rem` —in LTR— starting at the `md` breakpoint).
+Use the `margin` and `padding` [spacing utilities](https://getbootstrap.com/docs/6.0/utilities/spacing/)
+to control how elements and components are spaced and sized. Bootstrap 6 includes a twelve-step
+scale for spacing utilities. Choose values for all viewports (e.g., `.me-5` for `margin-inline-end: 1rem`),
+or pick responsive variants to target specific viewports (e.g., `.md:me-5` for
+`margin-inline-end: 1rem` starting at the `md` breakpoint).
 
 ### Toggle `visibility`
 
 When toggling `display` isn’t needed, you can toggle the `visibility` of an element with the
-[visibility utility classes](https://getbootstrap.com/docs/5.3/utilities/visibility).
+[visibility utility classes](https://getbootstrap.com/docs/6.0/utilities/visibility/).
 Invisible elements will still affect the layout of the page, but are visually hidden from visitors.
 
 <style lang="scss">
@@ -447,7 +466,8 @@ Invisible elements will still affect the layout of the page, but are visually hi
     }
 
     > .col:not(.header),
-    > [class^="col-"] {
+    > [class^="col-"],
+    > [class*=":col"] {
       padding-top: 0.75rem;
       padding-bottom: 0.75rem;
       background-color: rgba(86, 61, 124, 0.15);

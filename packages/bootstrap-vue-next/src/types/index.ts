@@ -48,6 +48,7 @@ export type {
   BorderLayerColor,
   ButtonVariant,
   ColorOpacity,
+  ColorBorderExtendables,
   ColorExtendables,
   FgColor,
   FgLayerColor,
@@ -75,14 +76,15 @@ export type {
 } from './SelectTypes'
 export type {InputType} from './InputType'
 export type {LinkTarget} from './LinkTarget'
-export type {LinkOpacity, UnderlineOffset, UnderlineOpacity} from './LinkDecorators'
+export type {LinkOpacity, LinkUnderline, UnderlineOffset, UnderlineOpacity} from './LinkDecorators'
+export type {HoverState} from './HoverState'
 export type {LiteralUnion} from './LiteralUnion'
 export type {PaginationPage} from './PaginationPage'
 export type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 export type {PopoverPlacement} from './PopoverPlacement'
 export type {Position} from './Position'
 export type {RadioOption, RadioOptionRaw, RadioValue} from './RadioTypes'
-export type {RadiusElement, RadiusElementExtendables} from './RadiusElement'
+export type {RadiusElement, RadiusElementExtendables, RadiusSides} from './RadiusElement'
 export type {SpinnerType} from './SpinnerType'
 export type {TabType} from './Tab'
 export type {TransitionMode} from './TransitionMode'
