@@ -14,11 +14,6 @@ export default {
           description:
             'The `aria-label` for the clear button icon. Override this for non-English applications',
         },
-        color: {
-          type: 'string',
-          default: undefined,
-          description: 'CSS color to use instead of theme. Accepts either a HEX or RGB/RGBA string',
-        },
         disabled: {
           type: 'boolean',
           default: 'false',
