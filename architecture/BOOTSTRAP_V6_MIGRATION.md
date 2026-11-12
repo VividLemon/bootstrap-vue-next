@@ -374,12 +374,14 @@ The in-repo layer covers:
 - BTable's pattern slots (`cell(…)`, `head(…)`, `foot(…)`) from the slots type's index signatures.
 - Type linking: a table of the types exported from `src/types/index.ts`; link only types declared in this package, stop at `node_modules` and the TS lib, and show definitions as written. Flag reachable types that aren't exported.
 - A thin override file for what source can't carry: `styleSpec` notes, per-component wording of shared props, pass-through defaults.
+- Deprecations: if `vue-component-meta` passes through the JSDoc `@deprecated` tag, the `ComponentReference` table appends ` (deprecated)` to the prop name and renders that name cell in the Bootstrap `warning` color. Cover it with a unit test. Optional: skip it if getting the deprecated flag needs a lot of custom code.
 
-Integration: a pre-build script that writes JSON (cached by turbo, with a watch mode for the docs dev server). Move to a single Vite plugin only if dev feels slow. Pin TypeScript to 6.x for this work.
+Integration: a single VitePress data loader (`.data.ts`) orchestrates the extraction and replaces the several dozen per-component `*.data.ts` loaders. If generating in the loader is slow, generate at compile time instead (a pre-build step that writes JSON, cached by turbo, with a watch mode for the docs dev server) and have the loader read that output. VitePress inlines a loader's data into every page that imports it, so pages should only pull the component entries they show. Pin TypeScript to 6.x for this work.
 
 Phases (about 2–3 weeks part-time):
 
 1. Generate-and-diff tool comparing the `.data.ts` files with source; run it in CI. Fix the drift it reports (2–3 days).
 2. Render the API tables from the generated data, with type links / popovers (3–5 days).
-3. Move the ~1,600 descriptions into JSDoc by script, then review the shared-prop wording; delete the `.data.ts` content that is now generated (4–6 days).
-4. Optional lint rules (e.g. every public prop has JSDoc).
+3. Move the ~1,600 descriptions into JSDoc by script, then review the shared-prop wording; delete the `.data.ts` content that is now generated (4–6 days). From this phase on, every public prop must have a JSDoc comment, even an empty one.
+4. Lint rules (required, not optional): add `eslint-plugin-jsdoc` with `jsdoc({config: 'flat/recommended'})` (or its TypeScript variant, `flat/recommended-typescript`) enabled for the whole library, and require the docs-specific values (a JSDoc block on every public prop, slot and emit) only in the files that define them (`ComponentProps.ts`, `ComponentSlots.ts`, `ComponentEmits.ts` and the types they use).
+5. Update `.github/copilot-instructions.md` (and `AGENTS.md` where it mentions the `*.data.ts` files) so contributors and agents document components in JSDoc on the types, not in the docs data files.
