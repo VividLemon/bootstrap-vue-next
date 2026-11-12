@@ -376,7 +376,7 @@ The in-repo layer covers:
 - A thin override file for what source can't carry: `styleSpec` notes, per-component wording of shared props, pass-through defaults.
 - Deprecations: if `vue-component-meta` passes through the JSDoc `@deprecated` tag, the `ComponentReference` table appends ` (deprecated)` to the prop name and renders that name cell in the Bootstrap `warning` color. Cover it with a unit test. Optional: skip it if getting the deprecated flag needs a lot of custom code.
 
-Integration: a single VitePress data loader (`.data.ts`) orchestrates the extraction and replaces the several dozen per-component `*.data.ts` loaders. If generating in the loader is slow, generate at compile time instead (a pre-build step that writes JSON, cached by turbo, with a watch mode for the docs dev server) and have the loader read that output. VitePress inlines a loader's data into every page that imports it, so pages should only pull the component entries they show. Pin TypeScript to 6.x for this work.
+Integration: keep the per-component `*.data.ts` loaders, so each page only ships the data it shows (VitePress inlines a loader's data into every page that imports it). Each loader becomes a thin call into one shared utility that pulls the generated data for its components in a consistent way: the extracted props / slots / emits, the override file, type links and grouping. If extraction is slow, generate at compile time instead (a pre-build step that writes JSON, cached by turbo, with a watch mode for the docs dev server) and have the shared utility read that output. Pin TypeScript to 6.x for this work.
 
 Phases (about 2–3 weeks part-time):
 
