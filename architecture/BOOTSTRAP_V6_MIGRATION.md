@@ -20,6 +20,7 @@ It is the single source of truth for the migration: implementation work follows 
 | Phase 2b: component batches                                                                                        | In progress — see [Implementation progress](#implementation-progress) |
 | Phase 3: migration docs                                                                                            | Not started                                                           |
 | Deferred components                                                                                                | See [Deferred components](#deferred-components)                       |
+| Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source) |
 
 ## Implementation progress
 
@@ -78,7 +79,7 @@ Forms batch follow-ups (from its report):
 
 1. Check each wave 1 worktree: if its branch has commits after `9380edda`, the batch finished — review and merge it. If it only has uncommitted changes, the agent stopped mid-task: resume the same agent if possible; otherwise start a new agent in that same worktree with the batch instructions below and tell it to continue from the existing changes.
 2. Merge finished batches one at a time onto `bootstrap-v6` with `git cherry-pick 9380edda..<branch>` (keeps history linear), then run the checks below on the combined result.
-3. Start wave 2 after wave 1 is merged, then Phase 3 (migration docs), then the cleanup section.
+3. Start wave 2 after wave 1 is merged, then Phase 3 (migration docs), then the cleanup section, then [Post-migration](#post-migration-api-docs-generated-from-source).
 4. Update this section and the Status table after each merge.
 
 ### Required checks
@@ -360,3 +361,30 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 - Spec type-checking (`vue-tsc -p tsconfig.vitest.json`) already fails in many existing specs; it is not part of the required checks.
 - Review `BTabs` usage as a whole. Do not fix the issue below separately before then. Known problem (on `bootstrap-v6` since before the navigation batch): clicking any tab throws "Maximum recursive updates exceeded in component <BTabs>" when a `BTab` receives a prop that is a new object or function on every render, which is the normal case with render functions / JSX (for example `h(BTab, {titleLinkAttrs: {class: 'a'}})` or an inline `onClick`). Templates are not affected. The navigation batch widens it: `titleItemClass` (a string) becomes `titleItemAttrs` (an object). Reproduction and details: `btabs-usage-review-todo.md` in the review session's shared notes folder.
 - Final checks: library lint, unit tests and build; docs build; playground and Nuxt builds; a pass over the built CSS for classes or variables missing from v6.
+
+## Post-migration: API docs generated from source
+
+One of the last steps, after the migration, the deferred components and the cleanup above are done: the description move edits the same props types the migration is still changing.
+
+Goal: the component source is the single source of truth for the API docs. Descriptions live as JSDoc on the props / slots / emits types (shown on hover in editors and shipped in the `.d.ts`), defaults come from `withDefaults`, and types come from TypeScript. The docs render that data, and every type name in a type (e.g. `Responsive` and `GutterNumbers` in `Responsive<GutterNumbers>`) links to or pops over its definition.
+
+Decision: use **`vue-component-meta`** for extraction, plus a small in-repo layer (about 400–600 lines). No general extractor and no published package for now. Findings, measurements and prototype scripts: [DOCS_FROM_SOURCE_INVESTIGATION.md](./DOCS_FROM_SOURCE_INVESTIGATION.md).
+
+The in-repo layer covers:
+
+- Declared type text instead of expanded types (`Responsive<GutterNumbers>`, not `Partial<Record<…>>`).
+- Event JSDoc from the emits interface (lost for the tuple-style emits this repo uses).
+- BTable's pattern slots (`cell(…)`, `head(…)`, `foot(…)`) from the slots type's index signatures.
+- Type linking: a table of the types exported from `src/types/index.ts`; link only types declared in this package, stop at `node_modules` and the TS lib, and show definitions as written. Flag reachable types that aren't exported.
+- A thin override file for what source can't carry: `styleSpec` notes, per-component wording of shared props, pass-through defaults.
+- Deprecations: if `vue-component-meta` passes through the JSDoc `@deprecated` tag, the `ComponentReference` table appends ` (deprecated)` to the prop name and renders that name cell in the Bootstrap `warning` color. Cover it with a unit test. Optional: skip it if getting the deprecated flag needs a lot of custom code.
+
+Integration: keep the per-component `*.data.ts` loaders, so each page only ships the data it shows (VitePress inlines a loader's data into every page that imports it). Each loader becomes a thin call into one shared utility that pulls the generated data for its components in a consistent way: the extracted props / slots / emits, the override file, type links and grouping. If extraction is slow, generate at compile time instead (a pre-build step that writes JSON, cached by turbo, with a watch mode for the docs dev server) and have the shared utility read that output. Pin TypeScript to 6.x for this work.
+
+Phases (about 2–3 weeks part-time):
+
+1. Generate-and-diff tool comparing the `.data.ts` files with source; run it in CI. Fix the drift it reports (2–3 days).
+2. Render the API tables from the generated data, with type links / popovers (3–5 days).
+3. Move the ~1,600 descriptions into JSDoc by script, then review the shared-prop wording; delete the `.data.ts` content that is now generated (4–6 days). From this phase on, every public prop must have a JSDoc comment, even an empty one.
+4. Lint rules (required, not optional): add `eslint-plugin-jsdoc` with `jsdoc({config: 'flat/recommended'})` (or its TypeScript variant, `flat/recommended-typescript`) enabled for the whole library, and require the docs-specific values (a JSDoc block on every public prop, slot and emit) only in the files that define them (`ComponentProps.ts`, `ComponentSlots.ts`, `ComponentEmits.ts` and the types they use).
+5. Update `.github/copilot-instructions.md` (and `AGENTS.md` where it mentions the `*.data.ts` files) so contributors and agents document components in JSDoc on the types, not in the docs data files.
