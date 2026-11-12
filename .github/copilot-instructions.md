@@ -316,6 +316,14 @@ DEMO syntax should be used for:
 - Keep examples focused on demonstrating one feature or pattern
 - Include comments for clarity when showing complex patterns
 
+### Migration Guide "Before" Examples
+
+Every migration guide shows the old API next to the new one: today the BootstrapVue → BootstrapVueNext guide (`apps/docs/src/docs/migration-data/`), and later the guides between BootstrapVueNext major versions, which will be kept separate from it. Their "Before" examples (for example `apps/docs/src/docs/demo/*Before.*` and inline "Before" code in the migration pages) must keep the **old** API on purpose; they document a breaking change and are not out of date.
+
+- When you change an API with a codemod, a find-and-replace or any other bulk or generated edit, exclude the migration "Before" examples from it, or review every one of them afterwards and restore the old API.
+- After such an edit, check the migration pages for "Before" / "After" pairs that now show the same code, or a "Before" that uses the new names.
+- The "After" examples and the surrounding notes should use the new API, and name the old and new prop names where a prop was renamed.
+
 ## Style Guidelines
 
 Follow the established code style
