@@ -97,6 +97,24 @@ describe('nav-form', () => {
     expect(wrapper.get('li').classes()).toContain('li-class')
   })
 
+  it('keeps id and role from formAttrs when the matching props are unset', () => {
+    const wrapper = mount(BNavForm, {
+      props: {formAttrs: {id: 'search-form', role: 'search'}},
+    })
+    const $form = wrapper.get('form')
+    expect($form.attributes('id')).toBe('search-form')
+    expect($form.attributes('role')).toBe('search')
+  })
+
+  it('lets the id and role props win over formAttrs when set', () => {
+    const wrapper = mount(BNavForm, {
+      props: {id: 'prop-id', role: 'form', formAttrs: {id: 'attrs-id', role: 'search'}},
+    })
+    const $form = wrapper.get('form')
+    expect($form.attributes('id')).toBe('prop-id')
+    expect($form.attributes('role')).toBe('form')
+  })
+
   it('emits submit event when form is submitted', async () => {
     const wrapper = mount(BNavForm)
     const $bform = wrapper.findComponent(BForm)

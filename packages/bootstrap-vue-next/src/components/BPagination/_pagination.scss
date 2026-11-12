@@ -1,6 +1,9 @@
 // Pagination pill style
-// Bootstrap v6 has no pill pagination: round every link and separate the items
-.b-pagination-pills {
+// Bootstrap v6 has no pill pagination: round every link and separate the items.
+// `.pagination` is included for specificity: Bootstrap's `.pagination`, `.pagination-sm` and
+// `.pagination-lg` set the same radius token in the same layer, and must not win when Bootstrap's
+// CSS loads after this file
+.pagination.b-pagination-pills {
   --bs-pagination-border-radius: 50rem;
 
   .page-link {
