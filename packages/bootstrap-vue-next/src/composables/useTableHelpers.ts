@@ -31,11 +31,15 @@ import {
   type TablePrimaryKey,
   type TableSelectedReturn,
 } from '../types/TableTypes'
+import type {TableRowThead} from '../types/TableTypes'
+import type {AttrsValue} from '../types/AnyValuedAttributes'
 import {deepEqual, set} from '../utils/object'
 import {startCase} from '../utils/stringUtils'
 import {formatItem, getDataLabelAttr, getWithGetter, type StackedProps} from '../utils/tableUtils'
 import {useDebounceFn} from '../utils/debounce'
 import {useItemTracker} from './useTableLiteHelpers'
+
+type ThAttrContext = {value: unknown; key: string; item: unknown; type: TableRowThead}
 
 export const useTableMapper = <Item>({
   fields,
@@ -114,12 +118,20 @@ export const useTableMapper = <Item>({
                 ? 'ascending'
                 : 'none'
 
+      // A function `thAttr` is called per header cell, so `aria-sort` is added to its result
+      const fieldThAttr = el.thAttr
       return {
         ...(el as TableField<Item>),
-        thAttr: {
-          'aria-sort': sortValue,
-          ...el.thAttr,
-        },
+        thAttr:
+          typeof fieldThAttr === 'function'
+            ? (obj: ThAttrContext) => ({
+                'aria-sort': sortValue,
+                ...(fieldThAttr as (obj: ThAttrContext) => AttrsValue)(obj),
+              })
+            : {
+                'aria-sort': sortValue,
+                ...fieldThAttr,
+              },
         thClass: [
           el.thClass,
           {
