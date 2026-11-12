@@ -34,7 +34,7 @@
           </BThead>
           <BTbody>
             <BTr>
-              <BTd sticky-column :color="{ theme: 'primary' }">Sticky Column Row Header</BTd>
+              <BTd sticky-column :color="{theme: 'primary'}">Sticky Column Row Header</BTd>
               <BTd>Cell</BTd>
               <BTd>Cell</BTd>
               <BTd>Cell</BTd>
@@ -79,7 +79,7 @@
             <col />
             <col />
           </colgroup>
-          <BThead :color="{ theme: 'inverse' }">
+          <BThead :color="{theme: 'inverse'}">
             <BTr>
               <BTh colspan="2">Region</BTh>
               <BTh colspan="3">Clothes</BTh>
@@ -102,16 +102,16 @@
               <BTd>56</BTd>
               <BTd>22</BTd>
               <BTd>43</BTd>
-              <BTd :color="{ theme: 'success' }">72</BTd>
+              <BTd :color="{theme: 'success'}">72</BTd>
               <BTd>23</BTd>
             </BTr>
             <BTr>
               <BTh class="text-end">Gent</BTh>
               <BTd>46</BTd>
-              <BTd :color="{ theme: 'warning' }">18</BTd>
+              <BTd :color="{theme: 'warning'}">18</BTd>
               <BTd>50</BTd>
               <BTd>61</BTd>
-              <BTd :color="{ theme: 'danger' }">15</BTd>
+              <BTd :color="{theme: 'danger'}">15</BTd>
             </BTr>
             <BTr>
               <BTh class="text-end">Brussels</BTh>
@@ -124,7 +124,7 @@
             <BTr>
               <BTh rowspan="2">The Netherlands</BTh>
               <BTh class="text-end">Amsterdam</BTh>
-              <BTd :color="{ theme: 'success' }">89</BTd>
+              <BTd :color="{theme: 'success'}">89</BTd>
               <BTd>34</BTd>
               <BTd>69</BTd>
               <BTd>85</BTd>
@@ -133,15 +133,15 @@
             <BTr>
               <BTh class="text-end">Utrecht</BTh>
               <BTd>80</BTd>
-              <BTd :color="{ theme: 'danger' }">12</BTd>
+              <BTd :color="{theme: 'danger'}">12</BTd>
               <BTd>43</BTd>
               <BTd>36</BTd>
-              <BTd :color="{ theme: 'warning' }">19</BTd>
+              <BTd :color="{theme: 'warning'}">19</BTd>
             </BTr>
           </BTbody>
           <BTfoot>
             <BTr>
-              <BTd colspan="7" :color="{ theme: 'secondary' }" class="text-end">
+              <BTd colspan="7" :color="{theme: 'secondary'}" class="text-end">
                 Total Rows:
                 <b>5</b>
               </BTd>
@@ -169,7 +169,7 @@
             <col />
             <col />
           </colgroup>
-          <BThead :color="{ theme: 'inverse' }">
+          <BThead :color="{theme: 'inverse'}">
             <BTr>
               <BTh colspan="2">Region</BTh>
               <BTh colspan="3">Clothes</BTh>
@@ -187,23 +187,25 @@
           </BThead>
           <BTbody>
             <BTr>
-              <BTh rowspan="3" class="text-center">Belgium (3 Cities)</BTh>
+              <BTd data-cell="Country">Belgium</BTd>
               <BTd data-cell="City" class="text-start">Antwerp</BTd>
               <BTd data-cell="Clothes: Trousers">56</BTd>
               <BTd data-cell="Clothes: Skirts">22</BTd>
               <BTd data-cell="Clothes: Dresses">43</BTd>
-              <BTd data-cell="Accessories: Bracelets" :color="{ theme: 'success' }">72</BTd>
+              <BTd data-cell="Accessories: Bracelets" :color="{theme: 'success'}">72</BTd>
               <BTd data-cell="Accessories: Rings">23</BTd>
             </BTr>
             <BTr>
+              <BTd data-cell="Country">Belgium</BTd>
               <BTd data-cell="City">Gent</BTd>
               <BTd data-cell="Clothes: Trousers">46</BTd>
-              <BTd data-cell="Clothes: Skirts" :color="{ theme: 'warning' }">18</BTd>
+              <BTd data-cell="Clothes: Skirts" :color="{theme: 'warning'}">18</BTd>
               <BTd data-cell="Clothes: Dresses">50</BTd>
               <BTd data-cell="Accessories: Bracelets">61</BTd>
-              <BTd data-cell="Accessories: Rings" :color="{ theme: 'danger' }">15</BTd>
+              <BTd data-cell="Accessories: Rings" :color="{theme: 'danger'}">15</BTd>
             </BTr>
             <BTr>
+              <BTd data-cell="Country">Belgium</BTd>
               <BTd data-cell="City">Brussels</BTd>
               <BTd data-cell="Clothes: Trousers">51</BTd>
               <BTd data-cell="Clothes: Skirts">27</BTd>
@@ -212,26 +214,27 @@
               <BTd data-cell="Accessories: Rings">28</BTd>
             </BTr>
             <BTr>
-              <BTh rowspan="2" class="text-center">The Netherlands (2 Cities)</BTh>
+              <BTd data-cell="Country">The Netherlands</BTd>
               <BTd data-cell="City">Amsterdam</BTd>
-              <BTd data-cell="Clothes: Trousers" :color="{ theme: 'success' }">89</BTd>
+              <BTd data-cell="Clothes: Trousers" :color="{theme: 'success'}">89</BTd>
               <BTd data-cell="Clothes: Skirts">34</BTd>
               <BTd data-cell="Clothes: Dresses">69</BTd>
               <BTd data-cell="Accessories: Bracelets">85</BTd>
               <BTd data-cell="Accessories: Rings">38</BTd>
             </BTr>
             <BTr>
+              <BTd data-cell="Country">The Netherlands</BTd>
               <BTd data-cell="City">Utrecht</BTd>
               <BTd data-cell="Clothes: Trousers">80</BTd>
-              <BTd data-cell="Clothes: Skirts" :color="{ theme: 'danger' }">12</BTd>
+              <BTd data-cell="Clothes: Skirts" :color="{theme: 'danger'}">12</BTd>
               <BTd data-cell="Clothes: Dresses">43</BTd>
               <BTd data-cell="Accessories: Bracelets">36</BTd>
-              <BTd data-cell="Accessories: Rings" :color="{ theme: 'warning' }">19</BTd>
+              <BTd data-cell="Accessories: Rings" :color="{theme: 'warning'}">19</BTd>
             </BTr>
           </BTbody>
           <BTfoot>
             <BTr>
-              <BTd colspan="7" :color="{ theme: 'secondary' }" class="text-end">
+              <BTd colspan="7" :color="{theme: 'secondary'}" class="text-end">
                 Total Rows:
                 <b>5</b>
               </BTd>

@@ -244,8 +244,8 @@ To access nested or computed data, use the new optional `accessor` property:
 The following TableField properties now accept a single parameter object instead of multiple positional parameters:
 
 - `formatter`: Now receives `{value, key, item}` instead of `(value, key, item)`
-- `tdAttr`: Now receives `{value, key, item}` instead of `(value, key, item)`
-- `thAttr`: Now receives `{value, key, item, type}` instead of `(value, key, item, type)`
+- `tdAttr` (now `td.attr`): Now receives `{value, key, item}` instead of `(value, key, item)`
+- `thAttr` (now `th.attr`): Now receives `{value, key, item, type}` instead of `(value, key, item, type)`
 
 **Before (BootstrapVue):**
 

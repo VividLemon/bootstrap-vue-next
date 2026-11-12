@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // #region snippet
-import type { TableField } from 'bootstrap-vue-next'
-
-const fields: TableField[] = [
+const fields = [
   {
     key: 'status',
-    formatter: (value) => String(value.value).toUpperCase(),
-    td: {
-      attr: (value) => ({
-        class: value.value === 'active' ? 'text-success' : '',
-      }),
-    },
+    formatter: (value: any, key: string, item: any) => String(value).toUpperCase(),
+    tdAttr: (value: any, key: string, item: any) => ({
+      class: value === 'active' ? 'text-success' : '',
+    }),
   },
 ]
 // #endregion snippet
