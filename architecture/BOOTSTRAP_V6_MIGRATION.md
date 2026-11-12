@@ -41,7 +41,9 @@ Each batch runs as an agent in its own git worktree under `.claude/worktrees/age
 | 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                         | Not started                                                                                                                                                                                                       |
 | 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                         | Not started                                                                                                                                                                                                       |
 
-Known merge overlap: the navigation batch changed `BNavForm` (`formClass` → `formAttrs`, `validated` left alone), and the forms batch adds `validate` to the same file; expect a small conflict there.
+Known merge overlap: the navigation batch changed `BNavForm` (`formClass` → `formAttrs`, `validated` left alone), and the forms batch adds `validate` to the same file; expect a small conflict there. A dry-run merge (`git merge-tree`) of forms and navigation after the retarget showed no textual conflict.
+
+Known merge overlap: [#179](https://github.com/VividLemon/bootstrap-vue-next/pull/179) (`fix/v6-transition-stall-and-th-attr`, bounds the `useCssTransition` wait so `shown` / `hidden` fire when the page is not rendering, and keeps a function `thAttr` in `BTable`) conflicts with the tables batch (#166) in `useTableHelpers.ts`, where `thAttr` becomes `th.attr`. Whichever lands second carries the function handling over to `th.attr`.
 
 Tables batch follow-ups (from its report):
 
@@ -356,4 +358,5 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 - Docs notes for visual v6 changes that need no code change (e.g. `.btn` is now `inline-flex` with a gap).
 - Nuxt builds print PostCSS `Lexical error` warnings: Nuxt's CSS minifier (`postcss-calc`) doesn't understand v6's relative color syntax (`oklch(from … calc(l * .9) …)`) in Bootstrap's own CSS. Builds succeed; decide whether to document it or configure the minifier for Nuxt users.
 - Spec type-checking (`vue-tsc -p tsconfig.vitest.json`) already fails in many existing specs; it is not part of the required checks.
+- Review `BTabs` usage as a whole. Do not fix the issue below separately before then. Known problem (on `bootstrap-v6` since before the navigation batch): clicking any tab throws "Maximum recursive updates exceeded in component <BTabs>" when a `BTab` receives a prop that is a new object or function on every render, which is the normal case with render functions / JSX (for example `h(BTab, {titleLinkAttrs: {class: 'a'}})` or an inline `onClick`). Templates are not affected. The navigation batch widens it: `titleItemClass` (a string) becomes `titleItemAttrs` (an object). Reproduction and details: `btabs-usage-review-todo.md` in the review session's shared notes folder.
 - Final checks: library lint, unit tests and build; docs build; playground and Nuxt builds; a pass over the built CSS for classes or variables missing from v6.
