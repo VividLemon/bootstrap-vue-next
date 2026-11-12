@@ -7,7 +7,8 @@
       v-model:search="searchQuery"
       :options="filteredUsers"
       :debounce="300"
-      :fields="{ text: 'name', value: 'id' }"
+      text-field="name"
+      value-field="id"
       placeholder="Type to search users..."
       :filter-function="noFilter"
     />
