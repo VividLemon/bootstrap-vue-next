@@ -536,6 +536,16 @@ describe('toast', () => {
     expect($bbutton.classes()).toContain('btn-outline')
   })
 
+  it('BButton has no variant class when close.variant is null', () => {
+    const wrapper = mount(BToast, {
+      props: {modelValue: true, close: {variant: null, content: 'X'}},
+      slots: {default: 'content'},
+    })
+    const $bbutton = wrapper.getComponent(BButton)
+    expect($bbutton.classes()).not.toContain('btn-solid')
+    expect($bbutton.props('variant')).toBeNull()
+  })
+
   // Close button click events
   it('BCloseButton emits update:modelValue when clicked', async () => {
     const wrapper = mount(BToast, {

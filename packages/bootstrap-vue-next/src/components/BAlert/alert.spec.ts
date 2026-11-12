@@ -448,6 +448,16 @@ describe('alert', () => {
     expect($bbutton.classes()).toContain('theme-warning')
   })
 
+  it('nested div BButton has no variant class when close.variant is null', () => {
+    const wrapper = mount(BAlert, {
+      props: {modelValue: true, dismissible: true, close: {variant: null}},
+      slots: {close: 'foobar', default: 'foobar'},
+    })
+    const $bbutton = wrapper.get('div').getComponent(BButton)
+    expect($bbutton.classes().some((c) => c.startsWith('btn-solid'))).toBe(false)
+    expect($bbutton.props('variant')).toBeNull()
+  })
+
   // id prop
   it('nested div has id when prop id is set', () => {
     const wrapper = mount(BAlert, {

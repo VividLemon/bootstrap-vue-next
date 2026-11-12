@@ -27,7 +27,7 @@
           v-if="slots.close || props.close?.content"
           class="ms-auto ps-1 btn-close-custom"
           :color="computedCloseColor"
-          :variant="props.close?.variant ?? 'solid'"
+          :variant="closeVariant"
           v-bind="props.close?.attrs"
           @click.stop.prevent="hide('close')"
         >
@@ -62,7 +62,7 @@
             v-if="slots.close || props.close?.content"
             class="ms-auto btn-close-custom"
             :color="computedCloseColor"
-            :variant="props.close?.variant ?? 'solid'"
+            :variant="closeVariant"
             v-bind="props.close?.attrs"
             @click.stop.prevent="hide('close')"
           >
@@ -157,6 +157,10 @@ const props = useDefaults(_props, 'BAlert')
 const computedColor = computed(() => resolvePartColor(props.color, {theme: 'info'}))
 const computedCloseColor = computed(() =>
   resolvePartColor(props.close?.color, {theme: 'secondary'})
+)
+// Only an unset variant falls back to 'solid'; `null` clears it
+const closeVariant = computed(() =>
+  props.close?.variant === undefined ? 'solid' : props.close.variant
 )
 const emit = defineEmits<BAlertEmits>()
 const slots = defineSlots<BAlertSlots>()

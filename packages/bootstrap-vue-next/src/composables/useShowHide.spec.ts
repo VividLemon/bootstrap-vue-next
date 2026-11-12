@@ -504,4 +504,59 @@ describe('useShowHide', () => {
     await flush()
     await expect(api().show(new Event('click') as unknown as boolean)).resolves.toBe(true)
   })
+
+  describe('request signals', () => {
+    it('gives show and hide requests a signal that aborts when the component commits', async () => {
+      const {api, event} = mountHost()
+      await flush()
+      await api().show()
+      const showSignal = event('show')?.signal
+      expect(showSignal).toBeInstanceOf(AbortSignal)
+      expect(showSignal?.aborted).toBe(true)
+
+      await api().hide('close')
+      expect(event('close')?.signal).toBe(event('hide')?.signal)
+      expect(event('hide')?.signal?.aborted).toBe(true)
+    })
+
+    it('keeps a prevented request signal running until the next commit', async () => {
+      const {api, event} = mountHost({}, {prevent: ['show']})
+      await flush()
+      await expect(api().show()).resolves.toBe('show-prevented')
+      const signal = event('show')?.signal
+      expect(signal?.aborted).toBe(false)
+      expect(event('show-prevented')?.signal).toBe(signal)
+    })
+
+    it('aborts a pending request signal when the component unmounts', async () => {
+      const {api, event, wrapper} = mountHost({}, {prevent: ['show']})
+      await flush()
+      await api().show()
+      const signal = event('show')?.signal
+      wrapper.unmount()
+      expect(signal?.aborted).toBe(true)
+    })
+  })
+
+  describe('listener-initiated changes', () => {
+    it('lets a trigger listener that hides the component win, emitting hide once', async () => {
+      const modelValue = ref<boolean | number>(true)
+      let listenerHide: Promise<boolean | string> | undefined
+      const {api, names} = mountHost(
+        {},
+        {
+          modelValue,
+          onEmit: (name, a) => {
+            if (name === 'close') listenerHide = a.hide()
+          },
+        }
+      )
+      await flush()
+      const outer = api().hide('close')
+      expect(names().filter((n) => n === 'hide')).toHaveLength(1)
+      expect(outer).toBe(listenerHide)
+      await expect(outer).resolves.toBe('')
+      expect(names().filter((n) => n === 'hidden')).toHaveLength(1)
+    })
+  })
 })

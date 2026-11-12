@@ -26,7 +26,7 @@
         <BButton
           v-if="slots.close || props.close?.content"
           class="ms-auto"
-          :variant="props.close?.variant ?? 'solid'"
+          :variant="closeVariant"
           :color="computedCloseColor"
           v-bind="props.close?.attrs"
           @click.stop.prevent="hide('close')"
@@ -61,7 +61,7 @@
           <BButton
             v-if="slots.close || props.close?.content"
             class="ms-auto btn-close-custom"
-            :variant="props.close?.variant ?? 'solid'"
+            :variant="closeVariant"
             :color="computedCloseColor"
             v-bind="props.close?.attrs"
             @click.stop.prevent="hide('close')"
@@ -159,6 +159,10 @@ const props = useDefaults(_props, 'BToast')
 const computedColor = computed(() => resolvePartColor(props.color, {}))
 const computedCloseColor = computed(() =>
   resolvePartColor(props.close?.color, {theme: 'secondary'})
+)
+// Only an unset variant falls back to 'solid'; `null` clears it
+const closeVariant = computed(() =>
+  props.close?.variant === undefined ? 'solid' : props.close.variant
 )
 const emit = defineEmits<BToastEmits>()
 const slots = defineSlots<BToastSlots>()
