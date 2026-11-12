@@ -49,8 +49,8 @@ For a full list of all available slots see the [Slots](#comp-reference-bpaginati
 
 <<< DEMO ./demo/PaginationButtonContent.vue
 
-The slot `page` is always scoped, while the slots `first-text`, `prev-text`, `next-text` and
-`last-text` are optionally scoped. The `ellipsis-text` slot is not scoped.
+The slot `page` is always scoped, while the slots `first`, `prev`, `next` and
+`last` are optionally scoped. The `ellipsis` slot is not scoped.
 
 **Scoped variables properties available to the `page` slot:**
 
@@ -62,8 +62,8 @@ The slot `page` is always scoped, while the slots `first-text`, `prev-text`, `ne
 | `disabled` | Boolean | If the page button is disabled                       |
 | `content`  | String  | Page number as a string                              |
 
-**Scoped variables properties available to the `first-text`, `prev-text`, `next-text` and
-`last-text` slots:**
+**Scoped variables properties available to the `first`, `prev`, `next` and
+`last` slots:**
 
 | Property   | Type    | Description                                          |
 | ---------- | ------- | ---------------------------------------------------- |
@@ -74,7 +74,7 @@ The slot `page` is always scoped, while the slots `first-text`, `prev-text`, `ne
 ### Goto first/last button type
 
 If you prefer to have buttons with the first and last page number to go to the corresponding page,
-use the `first-number` and `last-number` props.
+set the `number` key of the `first` and `last` props, for example `:first="{ number: true }"`.
 
 <<< DEMO ./demo/PaginationFirstLast.vue
 
@@ -91,7 +91,15 @@ Easily switch to pill style buttons by setting the `pills` prop.
 
 <<< DEMO ./demo/PaginationPillStyle.vue
 
-**Note:** Pill styling requires bootstrap-vue-next's custom CSS/SCSS.
+**Note:** Pill styling requires bootstrap-vue-next's custom CSS/SCSS. Bootstrap v6 has no pill
+pagination of its own.
+
+### Theme
+
+Set the `color` prop's `theme` key to apply one of the theme colors (`theme-*` class) to the pagination. Bootstrap
+v6 uses it for the active page and the hover and focus states.
+
+<<< DEMO ./demo/PaginationTheme.vue
 
 ### Alignment
 
@@ -126,23 +134,23 @@ know what component is being updated/controlled.
 
 ### ARIA labels
 
-`BPagination` provides various `label-*` props which are used to set the `aria-label`
+`BPagination` provides a `labels` prop whose keys set the `aria-label`
 attributes on the various elements within the component as well as the common `aria-label` prop
 on the outer container, which will help users of assistive technology.
 
-| Prop               | `aria-label` content default                            |
+| Prop or key        | `aria-label` content default                            |
 | ------------------ | ------------------------------------------------------- |
-| `label-first-page` | "Goto first page"                                       |
-| `label-prev-page`  | "Goto previous page"                                    |
-| `label-next-page`  | "Goto next page"                                        |
-| `label-last-page`  | "Goto last page"                                        |
-| `label-page`       | "Goto page", appended with the page number              |
+| `labels.firstPage` | "Go to first page"                                      |
+| `labels.prevPage`  | "Go to previous page"                                   |
+| `labels.nextPage`  | "Go to next page"                                       |
+| `labels.lastPage`  | "Go to last page"                                       |
+| `labels.page`      | "Go to page", appended with the page number             |
 | `aria-label`       | "Pagination", applied to the outer pagination container |
 
-The `label-page` will optionally accept a function to generate the aria-label. The function is
+The `labels.page` key will optionally accept a function to generate the aria-label. The function is
 passed a single argument which is the page number (indexed from 1 to number of pages).
 
-You can remove any label by setting the prop to an empty string (`''`), although this is not
+You can remove any label by setting its key to an empty string (`''`), although this is not
 recommended unless the content of the button textually conveys its purpose.
 
 ### Keyboard navigation support

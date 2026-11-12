@@ -18,8 +18,8 @@
         v-if="page.id === FIRST_ELLIPSIS || page.id === LAST_ELLIPSIS"
         v-bind="ellipsisProps.span"
       >
-        <slot name="ellipsis-text">
-          {{ props.ellipsisText || '...' }}
+        <slot name="ellipsis">
+          {{ (props.ellipsis?.text ?? '\u2026') || '...' }}
         </slot>
       </span>
       <component
@@ -45,11 +45,12 @@
 
 <script setup lang="ts">
 import {BvEvent} from '../../utils'
-import {computed, nextTick, useTemplateRef, watch} from 'vue'
+import {computed, mergeProps, nextTick, useTemplateRef, watch} from 'vue'
 import {useAlignment} from '../../composables/useAlignment'
 import {useToNumber} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
-import type {ClassValue} from '../../types/AnyValuedAttributes'
+import {toColorClasses, resolvePartColor} from '../../composables/useThemeClasses'
+import type {AttrsValue} from '../../types/AnyValuedAttributes'
 import {CODE_DOWN, CODE_LEFT, CODE_RIGHT, CODE_UP} from '../../utils/constants'
 import {getActiveElement} from '../../utils/dom'
 import {type BPaginationEmits, type BPaginationProps, type BPaginationSlots} from '../../types'
@@ -67,37 +68,35 @@ const LAST_ELLIPSIS = -6
 const dataDisplayNameCustomAttribute = 'data-display-name'
 
 const _props = withDefaults(defineProps<Omit<BPaginationProps, 'modelValue'>>(), {
+  ellipsis: undefined,
+  first: undefined,
+  labels: undefined,
+  last: undefined,
+  next: undefined,
+  prev: undefined,
   align: 'start',
   ariaControls: undefined,
   ariaLabel: 'Pagination',
   disabled: false,
-  ellipsisClass: undefined,
-  ellipsisText: '\u2026',
-  firstClass: undefined,
-  firstNumber: false,
-  firstText: '\u00AB',
   noEllipsis: false,
   noGotoEndButtons: false,
-  labelFirstPage: 'Go to first page',
-  labelLastPage: 'Go to last page',
-  labelNextPage: 'Go to next page',
-  labelPage: 'Go to page',
-  labelPrevPage: 'Go to previous page',
-  lastClass: undefined,
-  lastNumber: false,
-  lastText: '\u00BB',
   limit: 5,
-  nextClass: undefined,
-  nextText: '\u203A',
-  pageClass: undefined,
+  pageAttrs: undefined,
   perPage: DEFAULT_PER_PAGE,
   pills: false,
-  prevClass: undefined,
-  prevText: '\u2039',
   size: undefined,
   totalRows: DEFAULT_TOTAL_ROWS,
+  color: undefined,
 })
 const props = useDefaults(_props, 'BPagination')
+const computedLabels = computed(() => ({
+  firstPage: props.labels?.firstPage ?? 'Go to first page',
+  prevPage: props.labels?.prevPage ?? 'Go to previous page',
+  nextPage: props.labels?.nextPage ?? 'Go to next page',
+  lastPage: props.labels?.lastPage ?? 'Go to last page',
+  page: props.labels?.page ?? 'Go to page',
+}))
+const computedColor = computed(() => resolvePartColor(props.color, {}))
 const emit = defineEmits<BPaginationEmits>()
 defineSlots<BPaginationSlots>()
 
@@ -140,7 +139,7 @@ const nextDisabled = computed(() => checkDisabled(computedModelValue.value + 1))
 
 const getBaseButtonProps = ({
   page,
-  classVal,
+  itemAttrs,
   disabled,
   slotName,
   textValue,
@@ -153,8 +152,8 @@ const getBaseButtonProps = ({
 }: {
   page: number
   disabled: boolean
-  classVal: ClassValue
-  slotName: 'first-text' | 'prev-text' | 'next-text' | 'last-text' | 'page'
+  itemAttrs: Readonly<AttrsValue> | undefined
+  slotName: 'first' | 'prev' | 'next' | 'last' | 'page'
   textValue?: string
   tabIndex?: string
   label?: string
@@ -163,21 +162,23 @@ const getBaseButtonProps = ({
   hidden?: boolean
   isSmHidden?: boolean
 }) => ({
-  li: {
-    'class': [
-      'page-item',
-      {
-        'active': isActive,
-        disabled,
-        'bv-d-sm-down-none': isSmHidden,
-        'flex-fill': computedFill.value,
-        'd-flex': computedFill.value && !disabled,
-      },
-      classVal,
-    ],
-    'role': 'presentation',
-    'aria-hidden': hidden,
-  },
+  li: mergeProps(
+    {
+      'class': [
+        'page-item',
+        {
+          'active': isActive,
+          disabled,
+          'bv-d-sm-down-none': isSmHidden,
+          'flex-fill': computedFill.value,
+          'd-flex': computedFill.value && !disabled,
+        },
+      ],
+      'role': 'presentation',
+      'aria-hidden': hidden,
+    },
+    itemAttrs ?? {}
+  ),
   button: {
     'is': disabled ? 'span' : 'button',
     'class': ['page-link', 'text-center', {'flex-grow-1': !disabled && computedFill.value}],
@@ -204,7 +205,7 @@ const getBaseButtonProps = ({
 
 const getButtonProps = ({
   page,
-  classVal,
+  itemAttrs,
   disabled,
   slotName,
   textValue,
@@ -212,19 +213,19 @@ const getButtonProps = ({
 }: {
   page: number
   disabled: boolean
-  classVal: ClassValue
-  slotName: 'first-text' | 'prev-text' | 'next-text' | 'last-text' | 'page'
+  itemAttrs: Readonly<AttrsValue> | undefined
+  slotName: 'first' | 'prev' | 'next' | 'last' | 'page'
   textValue?: string
   label: string
-}) => getBaseButtonProps({page, classVal, disabled, slotName, textValue, label, tabIndex: '-1'})
+}) => getBaseButtonProps({page, itemAttrs, disabled, slotName, textValue, label, tabIndex: '-1'})
 
 const getPageButtonProps = (page: number, isSmHidden?: boolean) =>
   getBaseButtonProps({
     page,
     disabled: props.disabled,
-    classVal: props.pageClass,
+    itemAttrs: props.pageAttrs,
     slotName: 'page',
-    label: props.labelPage ? `${props.labelPage} ${page}` : undefined,
+    label: computedLabels.value.page ? `${computedLabels.value.page} ${page}` : undefined,
     tabIndex: getTabIndex(page) ?? undefined,
     position: page,
     isActive: isActivePage(page),
@@ -235,55 +236,57 @@ const firstButtonProps = computed(() =>
   getButtonProps({
     page: 1,
     disabled: firstDisabled.value,
-    classVal: props.firstClass,
-    slotName: 'first-text',
-    textValue: props.firstText,
-    label: props.labelFirstPage,
+    itemAttrs: props.first?.attrs,
+    slotName: 'first',
+    textValue: props.first?.text ?? '\u00AB',
+    label: computedLabels.value.firstPage,
   })
 )
 const prevButtonProps = computed(() =>
   getButtonProps({
     page: Math.max(computedModelValue.value - 1, 1),
     disabled: prevDisabled.value,
-    classVal: props.prevClass,
-    slotName: 'prev-text',
-    textValue: props.prevText,
-    label: props.labelPrevPage,
+    itemAttrs: props.prev?.attrs,
+    slotName: 'prev',
+    textValue: props.prev?.text ?? '\u2039',
+    label: computedLabels.value.prevPage,
   })
 )
 const nextButtonProps = computed(() =>
   getButtonProps({
     page: Math.min(computedModelValue.value + 1, numberOfPages.value),
     disabled: nextDisabled.value,
-    classVal: props.nextClass,
-    slotName: 'next-text',
-    textValue: props.nextText,
-    label: props.labelNextPage,
+    itemAttrs: props.next?.attrs,
+    slotName: 'next',
+    textValue: props.next?.text ?? '\u203A',
+    label: computedLabels.value.nextPage,
   })
 )
 const lastButtonProps = computed(() =>
   getButtonProps({
     page: numberOfPages.value,
     disabled: lastDisabled.value,
-    classVal: props.lastClass,
-    slotName: 'last-text',
-    textValue: props.lastText,
-    label: props.labelLastPage,
+    itemAttrs: props.last?.attrs,
+    slotName: 'last',
+    textValue: props.last?.text ?? '\u00BB',
+    label: computedLabels.value.lastPage,
   })
 )
 
 const ellipsisProps = computed(() => ({
-  li: {
-    class: [
-      'page-item',
-      'disabled',
-      'text-center',
-      'bv-d-sm-down-none',
-      computedFill.value ? 'flex-fill' : '',
-      props.ellipsisClass,
-    ],
-    role: 'separator',
-  },
+  li: mergeProps(
+    {
+      class: [
+        'page-item',
+        'disabled',
+        'text-center',
+        'bv-d-sm-down-none',
+        computedFill.value ? 'flex-fill' : '',
+      ],
+      role: 'separator',
+    },
+    props.ellipsis?.attrs ?? {}
+  ),
   span: {
     class: ['page-link'],
   },
@@ -291,6 +294,7 @@ const ellipsisProps = computed(() => ({
 
 const computedWrapperClasses = computed(() => [
   alignment.value,
+  toColorClasses('theme', computedColor.value.theme),
   {
     [`pagination-${props.size}`]: props.size !== undefined,
     'b-pagination-pills': props.pills,
@@ -428,12 +432,12 @@ watch(pagination, (oldValue, newValue) => {
   }
 })
 
-const noFirstButton = computed(() => (props.noGotoEndButtons && !props.firstNumber ? 1 : 0))
-const noLastButton = computed(() => (props.noGotoEndButtons && !props.lastNumber ? 1 : 0))
+const noFirstButton = computed(() => (props.noGotoEndButtons && !props.first?.number ? 1 : 0))
+const noLastButton = computed(() => (props.noGotoEndButtons && !props.last?.number ? 1 : 0))
 const showFirstButton = computed(() => (noFirstButton.value ? 0 : 1))
 const showLastButton = computed(() => (noLastButton.value ? 0 : 1))
-const firstPage = computed(() => (props.firstNumber ? 1 : 0))
-const lastPage = computed(() => (props.lastNumber ? 1 : 0))
+const firstPage = computed(() => (props.first?.number ? 1 : 0))
+const lastPage = computed(() => (props.last?.number ? 1 : 0))
 const halfLimit = computed(() => Math.floor(limitNumber.value / 2))
 
 const pages = computed(() => {

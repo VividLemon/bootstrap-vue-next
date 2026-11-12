@@ -797,12 +797,11 @@ export interface BNavProps {
 export interface BNavFormProps extends BFormProps {
   role?: string
   wrapperAttrs?: Readonly<AttrsValue>
-  formClass?: ClassValue
+  formAttrs?: Readonly<AttrsValue>
 }
 
 export interface BNavItemProps extends Omit<BLinkProps, 'routerTag'> {
   linkAttrs?: Readonly<AttrsValue>
-  linkClass?: ClassValue
 }
 
 export interface BNavTextProps {
@@ -897,36 +896,43 @@ export interface BOverlayProps extends RadiusElementExtendables {
   zIndex?: Numberish
 }
 
+/** A pagination button: its text and attributes */
+export interface PaginationButtonOptions {
+  text?: string
+  attrs?: Readonly<AttrsValue>
+}
+
+/** The first or last pagination button; `number` shows the page number instead of the text */
+export interface PaginationEndButtonOptions extends PaginationButtonOptions {
+  number?: boolean
+}
+
 export interface BPaginationProps {
+  ellipsis?: PaginationButtonOptions
+  first?: PaginationEndButtonOptions
+  labels?: {
+    firstPage?: string
+    prevPage?: string
+    nextPage?: string
+    lastPage?: string
+    page?: string
+  }
+  last?: PaginationEndButtonOptions
+  next?: PaginationButtonOptions
+  prev?: PaginationButtonOptions
   align?: AlignmentJustifyContent | 'fill'
   ariaControls?: string
   ariaLabel?: string
   disabled?: boolean
-  ellipsisClass?: ClassValue
-  ellipsisText?: string
-  firstClass?: ClassValue
-  firstNumber?: boolean
-  firstText?: string
   noEllipsis?: boolean
   noGotoEndButtons?: boolean
-  labelFirstPage?: string
-  labelLastPage?: string
-  labelNextPage?: string
-  labelPage?: string
-  labelPrevPage?: string
-  lastClass?: ClassValue
-  lastNumber?: boolean
-  lastText?: string
   limit?: Numberish
   modelValue?: Numberish
-  nextClass?: ClassValue
-  nextText?: string
-  pageClass?: ClassValue
+  pageAttrs?: Readonly<AttrsValue>
   perPage?: Numberish
   pills?: boolean
-  prevClass?: ClassValue
-  prevText?: string
   size?: Size
+  color?: Pick<ColorExtendables, 'theme'> | null
   totalRows?: Numberish
 }
 
@@ -1009,38 +1015,37 @@ export interface BTabProps {
   noBody?: boolean
   tag?: string
   title?: string
-  titleItemClass?: ClassValue
+  titleItemAttrs?: Readonly<AttrsValue>
   titleLinkAttrs?: Readonly<AttrsValue>
-  titleLinkClass?: ClassValue
 }
 
 export interface BTabsProps {
-  activeNavItemClass?: ClassValue
-  activeNavLinkClass?: ClassValue
-  activeTabClass?: ClassValue
+  activeNavItemAttrs?: Readonly<AttrsValue>
+  activeNavLinkAttrs?: Readonly<AttrsValue>
+  activeTabAttrs?: Readonly<AttrsValue>
   align?: AlignmentJustifyContent
   card?: boolean
-  contentClass?: ClassValue
+  contentAttrs?: Readonly<AttrsValue>
   end?: boolean
   fill?: boolean
   id?: string
   index?: number
-  inactiveNavItemClass?: ClassValue
-  inactiveNavLinkClass?: ClassValue
-  inactiveTabClass?: ClassValue
+  inactiveNavItemAttrs?: Readonly<AttrsValue>
+  inactiveNavLinkAttrs?: Readonly<AttrsValue>
+  inactiveTabAttrs?: Readonly<AttrsValue>
   justified?: boolean
   lazy?: boolean
   modelValue?: string
-  navClass?: ClassValue
-  navItemClass?: ClassValue
-  navWrapperClass?: ClassValue
+  navAttrs?: Readonly<AttrsValue>
+  navItemAttrs?: Readonly<AttrsValue>
+  navWrapperAttrs?: Readonly<AttrsValue>
   noTransition?: boolean
   noKeyNav?: boolean
   noNavStyle?: boolean
   pills?: boolean
   small?: boolean
   tag?: string
-  tabClass?: ClassValue
+  tabAttrs?: Readonly<AttrsValue>
   underline?: boolean
   vertical?: boolean
 }

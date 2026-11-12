@@ -1,5 +1,5 @@
 import type {Ref, Slot} from 'vue'
-import type {ClassValue} from './AnyValuedAttributes'
+import type {AttrsValue} from './AnyValuedAttributes'
 
 export interface TabType {
   internalId: string
@@ -9,10 +9,9 @@ export interface TabType {
   buttonId: string
   disabled: boolean
   titleComponent?: Slot
-  titleItemClass?: ClassValue
-  titleLinkAttrs?: Record<string, unknown>
-  titleLinkClass?: ClassValue
+  titleItemAttrs?: Readonly<AttrsValue>
+  titleLinkAttrs?: Readonly<AttrsValue>
   onClick?: (event: Event) => void
-  navItemClasses?: ClassValue
+  navItemAttrs?: Readonly<AttrsValue>
   el: Ref<HTMLElement | null>
 }

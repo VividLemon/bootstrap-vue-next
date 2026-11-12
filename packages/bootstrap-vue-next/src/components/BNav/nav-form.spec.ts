@@ -75,12 +75,44 @@ describe('nav-form', () => {
     expect($bform.props('validated')).toBe(true)
   })
 
-  it('bform has class formClass when prop formClass', () => {
+  it('bform merges prop formAttrs', () => {
     const wrapper = mount(BNavForm, {
-      props: {formClass: 'custom-form-class'},
+      props: {formAttrs: {'class': 'custom-form-class', 'style': {color: 'red'}, 'data-x': 'y'}},
     })
     const $bform = wrapper.findComponent(BForm)
     expect($bform.classes()).toContain('custom-form-class')
+    expect($bform.classes()).toContain('d-flex')
+    expect($bform.attributes('style')).toContain('color: red')
+    expect($bform.attributes('data-x')).toBe('y')
+  })
+
+  it('bform receives both fallthrough attrs and prop formAttrs', () => {
+    const wrapper = mount(BNavForm, {
+      attrs: {'class': 'li-class', 'data-a': 'a'},
+      props: {formAttrs: {'data-b': 'b'}},
+    })
+    const $bform = wrapper.findComponent(BForm)
+    expect($bform.attributes('data-a')).toBe('a')
+    expect($bform.attributes('data-b')).toBe('b')
+    expect(wrapper.get('li').classes()).toContain('li-class')
+  })
+
+  it('keeps id and role from formAttrs when the matching props are unset', () => {
+    const wrapper = mount(BNavForm, {
+      props: {formAttrs: {id: 'search-form', role: 'search'}},
+    })
+    const $form = wrapper.get('form')
+    expect($form.attributes('id')).toBe('search-form')
+    expect($form.attributes('role')).toBe('search')
+  })
+
+  it('lets the id and role props win over formAttrs when set', () => {
+    const wrapper = mount(BNavForm, {
+      props: {id: 'prop-id', role: 'form', formAttrs: {id: 'attrs-id', role: 'search'}},
+    })
+    const $form = wrapper.get('form')
+    expect($form.attributes('id')).toBe('prop-id')
+    expect($form.attributes('role')).toBe('form')
   })
 
   it('emits submit event when form is submitted', async () => {
