@@ -32,7 +32,7 @@ export default {
         'floating',
         'id',
         'novalidate',
-        'validated',
+        'validate',
       ]) satisfies PropRecord<keyof BFormProps>,
       emits: {},
       slots: {
@@ -57,7 +57,7 @@ export default {
               'Array of items to render in the component. Note that BFormDatalist only supports Options, not OptionsGroups',
           },
         }),
-        ['disabled', 'disabledField', 'id', 'options', 'textField', 'valueField'],
+        ['disabled', 'fields', 'id', 'options'],
       ) satisfies PropRecord<keyof BFormDatalistProps>,
       emits: {},
       slots: {

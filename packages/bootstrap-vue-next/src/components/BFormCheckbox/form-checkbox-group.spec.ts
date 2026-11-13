@@ -120,8 +120,7 @@ describe('form-checkbox-group', () => {
             {id: 'b', label: 'Second'},
             {id: 'c', label: 'Third'},
           ],
-          valueField: 'id',
-          textField: 'label',
+          fields: {value: 'id', text: 'label'},
         },
       })
       const checkboxes = wrapper.findAllComponents(BFormCheckbox)
@@ -142,9 +141,7 @@ describe('form-checkbox-group', () => {
             {id: 'b', label: 'Second', inactive: true},
             {id: 'c', label: 'Third', inactive: false},
           ],
-          valueField: 'id',
-          textField: 'label',
-          disabledField: 'inactive',
+          fields: {value: 'id', text: 'label', disabled: 'inactive'},
         },
       })
       const checkboxes = wrapper.findAllComponents(BFormCheckbox)
@@ -161,8 +158,7 @@ describe('form-checkbox-group', () => {
             {code: {id: 1, type: 'A'}, display: 'Option 1'},
             {code: {id: 2, type: 'B'}, display: 'Option 2'},
           ],
-          valueField: 'code',
-          textField: 'display',
+          fields: {value: 'code', text: 'display'},
         },
       })
       const checkboxes = wrapper.findAllComponents(BFormCheckbox)
@@ -181,8 +177,7 @@ describe('form-checkbox-group', () => {
             {num: 20, name: 'Twenty'},
             {num: 30, name: 'Thirty'},
           ],
-          valueField: 'num',
-          textField: 'name',
+          fields: {value: 'num', text: 'name'},
           modelValue: [20],
         },
       })
@@ -242,8 +237,7 @@ describe('form-checkbox-group', () => {
             {id: 'b', label: 'Second'},
             {id: 'c', label: 'Third'},
           ],
-          valueField: 'id',
-          textField: 'label',
+          fields: {value: 'id', text: 'label'},
           modelValue: ['a'],
         },
         attachTo: document.body,
@@ -261,8 +255,7 @@ describe('form-checkbox-group', () => {
             {id: 'b', label: 'Second'},
             {id: 'c', label: 'Third'},
           ],
-          valueField: 'id',
-          textField: 'label',
+          fields: {value: 'id', text: 'label'},
           modelValue: ['b'],
         },
       })
@@ -387,16 +380,6 @@ describe('form-checkbox-group', () => {
       expect(wrapper.classes()).not.toContain('btn-group')
     })
 
-    it('forwards validated prop to base', () => {
-      const wrapper = mount(BFormCheckboxGroup, {
-        props: {
-          validated: true,
-          options: ['a'],
-        },
-      })
-      expect(wrapper.classes()).toContain('was-validated')
-    })
-
     it('forwards size prop to base', () => {
       const wrapper = mount(BFormCheckboxGroup, {
         props: {
@@ -435,7 +418,7 @@ describe('form-checkbox-group', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).toContain('form-switch')
+      expect(checkbox.find('.switch').exists()).toBe(true)
     })
 
     it('forwards plain prop to child checkboxes', () => {
@@ -446,18 +429,7 @@ describe('form-checkbox-group', () => {
         },
       })
       const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).not.toContain('form-check')
-    })
-
-    it('forwards reverse prop to child checkboxes', () => {
-      const wrapper = mount(BFormCheckboxGroup, {
-        props: {
-          reverse: true,
-          options: ['a'],
-        },
-      })
-      const checkbox = wrapper.findComponent(BFormCheckbox)
-      expect(checkbox.classes()).toContain('form-check-reverse')
+      expect(checkbox.classes()).not.toContain('form-field')
     })
 
     it('forwards name prop to child checkboxes', () => {
@@ -575,7 +547,7 @@ describe('form-checkbox-group', () => {
       const wrapper = mount(BFormCheckboxGroup, {
         props: {
           options: [{id: 100}, {id: 200}],
-          valueField: 'id',
+          fields: {value: 'id'},
         },
       })
       const checkboxes = wrapper.findAllComponents(BFormCheckbox)

@@ -1,5 +1,5 @@
 <template>
-  <ConditionalWrapper :skip="isButtonGroup" :class="computedClasses">
+  <component :is="resolvedProps.button ? 'label' : 'div'" :class="computedWrapperClasses">
     <input
       :id="computedId"
       v-bind="$attrs"
@@ -16,10 +16,11 @@
       :value="props.value"
       :aria-required="computedRequired || undefined"
     />
-    <label v-if="hasOwnLabel" :for="computedId" :class="labelClasses">
+    <slot v-if="resolvedProps.button" />
+    <label v-else-if="hasOwnLabel" :for="computedId">
       <slot />
     </label>
-  </ConditionalWrapper>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -32,7 +33,6 @@ import {
   useFormCheckLabelClasses,
 } from '../../composables/useFormCheck'
 import {isEmptySlot} from '../../utils/dom'
-import ConditionalWrapper from '../ConditionalWrapper.vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {formGroupKey, radioGroupKey} from '../../utils/keys'
@@ -47,17 +47,14 @@ const _props = withDefaults(defineProps<Omit<BFormRadioProps, 'modelValue'>>(), 
   ariaLabelledby: undefined,
   autofocus: false,
   button: undefined,
-  buttonGroup: false,
   buttonVariant: undefined,
   buttonColor: undefined,
   disabled: false,
   form: undefined,
   id: undefined,
-  inline: undefined,
   name: undefined,
   plain: undefined,
   required: false,
-  reverse: undefined,
   size: undefined,
   state: undefined,
   value: true,
@@ -85,8 +82,6 @@ const hasDefaultSlot = computed(() => !isEmptySlot(slots.default))
 const propDefaults = {
   plain: false,
   button: false,
-  inline: false,
-  reverse: false,
   size: undefined,
   buttonVariant: 'solid' as const,
   buttonColor: {theme: 'secondary' as const},
@@ -97,8 +92,6 @@ const propDefaults = {
 const resolvedProps = computed(() => ({
   plain: props.plain ?? parentData?.plain.value ?? propDefaults.plain,
   button: props.button ?? parentData?.buttons.value ?? propDefaults.button,
-  inline: props.inline ?? parentData?.inline.value ?? propDefaults.inline,
-  reverse: props.reverse ?? parentData?.reverse.value ?? propDefaults.reverse,
   state: props.state ?? parentData?.state.value ?? propDefaults.state,
   size: props.size ?? parentData?.size.value ?? propDefaults.size,
   buttonVariant:
@@ -133,15 +126,17 @@ const computedRequired = computed(
   () => !!(props.name ?? parentData?.name.value) && (props.required || parentData?.required.value)
 )
 
-const isButtonGroup = computed(() => props.buttonGroup || (parentData?.buttons.value ?? false))
-
 const classesObject = computed(() => ({
   ...resolvedProps.value,
+  type: 'radio' as const,
   hasDefaultSlot: hasDefaultSlot.value,
 }))
-const {classes: computedClasses} = useFormCheckClasses(classesObject)
-const {classes: inputClasses} = useFormCheckInputClasses(classesObject)
+const {classes: wrapperClasses} = useFormCheckClasses(classesObject)
 const {classes: labelClasses} = useFormCheckLabelClasses(classesObject)
+const computedWrapperClasses = computed(() =>
+  resolvedProps.value.button ? labelClasses.value : wrapperClasses.value
+)
+const {classes: inputClasses} = useFormCheckInputClasses(classesObject)
 
 defineExpose({
   blur: () => {

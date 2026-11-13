@@ -68,9 +68,7 @@
           <BFormDatalist
             id="list-custom"
             :options="customFieldOptions"
-            value-field="code"
-            text-field="label"
-            disabled-field="unavailable"
+            :fields="{value: 'code', text: 'label', disabled: 'unavailable'}"
           />
           <small class="text-body-secondary">Options: {{ customFieldOptions }}</small>
         </div>

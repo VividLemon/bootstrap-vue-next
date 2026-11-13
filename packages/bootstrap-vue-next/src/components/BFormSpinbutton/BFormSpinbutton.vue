@@ -102,18 +102,14 @@ const _props = withDefaults(defineProps<Omit<BFormSpinbuttonProps, 'modelValue'>
   formatterFn: undefined,
   id: undefined,
   inline: false,
-  labelDecrement: 'Decrement',
-  labelIncrement: 'Increment',
+  labels: undefined,
   locale: undefined,
   max: defaultValues.max,
   min: defaultValues.min,
   name: undefined,
   placeholder: undefined,
   readonly: false,
-  repeatDelay: defaultValues.repeatDelay,
-  repeatInterval: defaultValues.repeatInterval,
-  repeatStepMultiplier: defaultValues.repeatMultiplier,
-  repeatThreshold: defaultValues.repeatThreshold,
+  repeat: undefined,
   required: false,
   size: undefined,
   state: null,
@@ -182,7 +178,7 @@ const computedMax = computed(() => {
   return Math.floor((maxNumber.value - min) / step) * step + min
 })
 
-const repeatDelayNumber = useToNumber(() => props.repeatDelay, {
+const repeatDelayNumber = useToNumber(() => props.repeat?.delay ?? defaultValues.repeatDelay, {
   nanToZero: true,
   method: 'parseInt',
 })
@@ -190,18 +186,24 @@ const computedDelay = computed(() =>
   repeatDelayNumber.value > 0 ? repeatDelayNumber.value : defaultValues.repeatDelay
 )
 
-const repeatIntervalNumber = useToNumber(() => props.repeatInterval, {
-  nanToZero: true,
-  method: 'parseInt',
-})
+const repeatIntervalNumber = useToNumber(
+  () => props.repeat?.interval ?? defaultValues.repeatInterval,
+  {
+    nanToZero: true,
+    method: 'parseInt',
+  }
+)
 const computedInterval = computed(() =>
   repeatIntervalNumber.value > 0 ? repeatIntervalNumber.value : defaultValues.repeatInterval
 )
 
-const repeatThresholdNumber = useToNumber(() => props.repeatThreshold, {
-  nanToZero: true,
-  method: 'parseInt',
-})
+const repeatThresholdNumber = useToNumber(
+  () => props.repeat?.threshold ?? defaultValues.repeatThreshold,
+  {
+    nanToZero: true,
+    method: 'parseInt',
+  }
+)
 const computedThreshold = computed(() =>
   Math.max(
     Number.isNaN(repeatThresholdNumber.value)
@@ -211,10 +213,13 @@ const computedThreshold = computed(() =>
   )
 )
 
-const repeatStepMultiplierNumber = useToNumber(() => props.repeatStepMultiplier, {
-  nanToZero: true,
-  method: 'parseInt',
-})
+const repeatStepMultiplierNumber = useToNumber(
+  () => props.repeat?.stepMultiplier ?? defaultValues.repeatMultiplier,
+  {
+    nanToZero: true,
+    method: 'parseInt',
+  }
+)
 const computedStepMultiplier = computed(() =>
   Math.max(
     Number.isNaN(repeatStepMultiplierNumber.value)
@@ -487,7 +492,7 @@ const buttons = computed(() => {
   const incrementAttrs = {
     button: {
       ...sharedButtonAttrs,
-      'aria-label': props.labelIncrement || undefined,
+      'aria-label': (props.labels?.increment ?? 'Increment') || undefined,
       'aria-keyshortcuts': 'ArrowUp',
     },
     svg: {
@@ -506,7 +511,7 @@ const buttons = computed(() => {
   const decrementAttrs = {
     button: {
       ...sharedButtonAttrs,
-      'aria-label': props.labelDecrement || undefined,
+      'aria-label': (props.labels?.decrement ?? 'Decrement') || undefined,
       'aria-keyshortcuts': 'ArrowDown',
     },
     svg: {

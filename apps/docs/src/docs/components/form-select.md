@@ -57,10 +57,10 @@ Any property of an option object that is not used as its value, text or disabled
 an attribute of the `<option>` element. This is intended: it lets you add `data-*`, `title`, `class`
 or other attributes to individual options.
 
-It also applies to the properties you map with `value-field`, `text-field` and `disabled-field`. With
-`value-field="id"`, each option keeps its `id` property and renders it as the element's `id`
-attribute. If you do not want that, map your data to objects that only hold the properties you want
-on the element before passing them as `options`.
+It also applies to the properties you map with the `fields` prop. With `:fields="{ value: 'id' }"`,
+each option keeps its `id` property and renders it as the element's `id` attribute. If you do not
+want that, map your data to objects that only hold the properties you want on the element before
+passing them as `options`.
 
 ## Standard (single) select
 
@@ -166,10 +166,8 @@ Supported `invalid` values are:
 
 When `state` is set to `false`, aria-invalid will also be set to true.
 
-## Non custom style select
+## Styling
 
-Set the prop `plain` to have a native browser `<select>` rendered (although the class
-`.form-control` will always be placed on the select).
-
-A `plain` select will always be rendered for non `multiple` selects which have the `select-size`
-prop set to a value greater than 1.
+`BFormSelect` renders a native `<select>` with Bootstrap v6's `.form-control` class (plus
+`form-control-sm` / `form-control-lg` from the `size` prop). Bootstrap draws the dropdown caret for
+single selects and removes it for `multiple` selects and selects with a `select-size` greater than 1.

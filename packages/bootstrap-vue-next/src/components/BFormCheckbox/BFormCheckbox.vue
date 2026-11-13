@@ -1,32 +1,37 @@
 <template>
-  <ConditionalWrapper
-    :skip="isButtonGroup"
+  <component
+    :is="resolvedProps.button ? 'label' : 'div'"
     v-bind="props.wrapperAttrs"
     :class="computedWrapperClasses"
   >
-    <input
-      :id="computedId"
-      ref="_input"
-      v-model="localValue"
-      :class="computedInputClasses"
-      type="checkbox"
-      :disabled="props.disabled || parentData?.disabled.value || formGroupData?.disabled.value"
-      :required="computedRequired || undefined"
-      :name="props.name || parentData?.name.value"
-      :form="props.form || parentData?.form.value"
-      :aria-label="props.ariaLabel"
-      :aria-labelledby="props.ariaLabelledby"
-      :aria-required="computedRequired || undefined"
-      :value="props.value"
-      :true-value="props.value"
-      :false-value="props.uncheckedValue"
-      :indeterminate="indeterminate || undefined"
-      v-bind="processedAttrs.inputAttrs"
-    />
-    <label v-if="hasOwnLabel" :for="computedId" :class="labelClasses">
+    <ConditionalWrapper :skip="!isSwitch" :class="switchClasses">
+      <input
+        :id="computedId"
+        ref="_input"
+        v-model="localValue"
+        :class="inputClasses"
+        type="checkbox"
+        :role="isSwitch ? 'switch' : undefined"
+        :switch="isSwitch ? '' : undefined"
+        :disabled="props.disabled || parentData?.disabled.value || formGroupData?.disabled.value"
+        :required="computedRequired || undefined"
+        :name="props.name || parentData?.name.value"
+        :form="props.form || parentData?.form.value"
+        :aria-label="props.ariaLabel"
+        :aria-labelledby="props.ariaLabelledby"
+        :aria-required="computedRequired || undefined"
+        :value="props.value"
+        :true-value="props.value"
+        :false-value="props.uncheckedValue"
+        :indeterminate="indeterminate || undefined"
+        v-bind="processedAttrs.inputAttrs"
+      />
+    </ConditionalWrapper>
+    <slot v-if="resolvedProps.button" />
+    <label v-else-if="hasOwnLabel" :for="computedId">
       <slot />
     </label>
-  </ConditionalWrapper>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -37,6 +42,7 @@ import {
   useFormCheckClasses,
   useFormCheckInputClasses,
   useFormCheckLabelClasses,
+  useFormCheckSwitchClasses,
 } from '../../composables/useFormCheck'
 import {checkboxGroupKey, formGroupKey} from '../../utils/keys'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
@@ -53,22 +59,19 @@ const _props = withDefaults(
   defineProps<Omit<BFormCheckboxProps, 'modelValue' | 'indeterminate'>>(),
   {
     wrapperAttrs: undefined,
-    inputClass: undefined,
+    inputAttrs: undefined,
     ariaLabel: undefined,
     ariaLabelledby: undefined,
     autofocus: false,
     button: undefined,
-    buttonGroup: false,
     buttonVariant: undefined,
     buttonColor: undefined,
     disabled: false,
     form: undefined,
     id: undefined,
-    inline: undefined,
     name: undefined,
     plain: undefined,
     required: false,
-    reverse: undefined,
     size: undefined,
     state: undefined,
     switch: undefined,
@@ -91,8 +94,9 @@ const indeterminate = defineModel<Exclude<BFormCheckboxProps['indeterminate'], u
 )
 
 const processedAttrs = computed(() => {
-  const {class: wrapperClass, ...inputAttrs} = attrs
-  return {wrapperClass, inputAttrs}
+  const {class: wrapperClass, ...restAttrs} = attrs
+  // Fallthrough attrs (except class) and `inputAttrs` go to the input; `class` merges
+  return {wrapperClass, inputAttrs: {...restAttrs, ...props.inputAttrs}}
 })
 
 const computedId = useId(() => props.id, 'form-check')
@@ -111,8 +115,6 @@ const hasDefaultSlot = computed(() => !isEmptySlot(slots.default))
 const propDefaults = {
   plain: false,
   button: false,
-  inline: false,
-  reverse: false,
   switch: false,
   size: undefined,
   buttonVariant: 'solid' as const,
@@ -124,8 +126,6 @@ const propDefaults = {
 const resolvedProps = computed(() => ({
   plain: props.plain ?? parentData?.plain.value ?? propDefaults.plain,
   button: props.button ?? parentData?.buttons.value ?? propDefaults.button,
-  inline: props.inline ?? parentData?.inline.value ?? propDefaults.inline,
-  reverse: props.reverse ?? parentData?.reverse.value ?? propDefaults.reverse,
   switch: props.switch ?? parentData?.switch.value ?? propDefaults.switch,
   state: props.state ?? parentData?.state.value ?? propDefaults.state,
   size: props.size ?? parentData?.size.value ?? propDefaults.size,
@@ -167,20 +167,24 @@ const computedRequired = computed(
   () => !!(props.name ?? parentData?.name.value) && (props.required || parentData?.required.value)
 )
 
-const isButtonGroup = computed(() => props.buttonGroup || (parentData?.buttons.value ?? false))
+// A switch renders its input inside `<div class="switch">`; button mode takes precedence
+const isSwitch = computed(
+  () => resolvedProps.value.switch && !resolvedProps.value.button && !resolvedProps.value.plain
+)
 
 const classesObject = computed(() => ({
   ...resolvedProps.value,
+  type: 'check' as const,
   hasDefaultSlot: hasDefaultSlot.value,
 }))
 const {classes: wrapperClasses} = useFormCheckClasses(classesObject)
+const {classes: labelClasses} = useFormCheckLabelClasses(classesObject)
 const computedWrapperClasses = computed(() => [
-  wrapperClasses.value,
+  resolvedProps.value.button ? labelClasses.value : wrapperClasses.value,
   processedAttrs.value.wrapperClass,
 ])
 const {classes: inputClasses} = useFormCheckInputClasses(classesObject)
-const computedInputClasses = computed(() => [inputClasses.value, props.inputClass])
-const {classes: labelClasses} = useFormCheckLabelClasses(classesObject)
+const {classes: switchClasses} = useFormCheckSwitchClasses(classesObject)
 
 defineExpose({
   blur: () => {

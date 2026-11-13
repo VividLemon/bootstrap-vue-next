@@ -45,17 +45,6 @@ describe('form-radio-group', () => {
     expect($formradio.exists()).toBe(false)
   })
 
-  it('has class was-validated when prop validated', async () => {
-    const wrapper = mount(BFormRadioGroup, {
-      props: {validated: true},
-    })
-    expect(wrapper.classes()).toContain('was-validated')
-    await wrapper.setProps({validated: false})
-    expect(wrapper.classes()).not.toContain('was-validated')
-    await wrapper.setProps({validated: undefined})
-    expect(wrapper.classes()).not.toContain('was-validated')
-  })
-
   it('has class btn-group when prop buttons', async () => {
     const wrapper = mount(BFormRadioGroup, {
       props: {buttons: true},
@@ -214,8 +203,7 @@ describe('form-radio-group', () => {
             {id: 'b', label: 'Second'},
             {id: 'c', label: 'Third'},
           ],
-          valueField: 'id',
-          textField: 'label',
+          fields: {value: 'id', text: 'label'},
         },
       })
       const radios = wrapper.findAllComponents(BFormRadio)
@@ -241,9 +229,7 @@ describe('form-radio-group', () => {
             {id: 'b', label: 'Second', inactive: true},
             {id: 'c', label: 'Third', inactive: false},
           ],
-          valueField: 'id',
-          textField: 'label',
-          disabledField: 'inactive',
+          fields: {value: 'id', text: 'label', disabled: 'inactive'},
         },
       })
       const radios = wrapper.findAllComponents(BFormRadio)
@@ -265,8 +251,7 @@ describe('form-radio-group', () => {
             {id: 'b', label: 'Second'},
             {id: 'c', label: 'Third'},
           ],
-          valueField: 'id',
-          textField: 'label',
+          fields: {value: 'id', text: 'label'},
           modelValue: 'b',
         },
       })
@@ -292,8 +277,7 @@ describe('form-radio-group', () => {
             {id: 'b', label: 'Second'},
             {id: 'c', label: 'Third'},
           ],
-          valueField: 'id',
-          textField: 'label',
+          fields: {value: 'id', text: 'label'},
           modelValue: 'a',
         },
       })
@@ -313,8 +297,7 @@ describe('form-radio-group', () => {
             {code: {id: 1, type: 'A'}, display: 'Option 1'},
             {code: {id: 2, type: 'B'}, display: 'Option 2'},
           ],
-          valueField: 'code',
-          textField: 'display',
+          fields: {value: 'code', text: 'display'},
         },
       })
       const radios = wrapper.findAllComponents(BFormRadio)
@@ -337,8 +320,7 @@ describe('form-radio-group', () => {
             {num: 20, name: 'Twenty'},
             {num: 30, name: 'Thirty'},
           ],
-          valueField: 'num',
-          textField: 'name',
+          fields: {value: 'num', text: 'name'},
           modelValue: 20,
         },
       })
@@ -502,14 +484,6 @@ describe('form-radio-group', () => {
       expect(base.props('stacked')).toBe(true)
     })
 
-    it('forwards validated prop', () => {
-      const wrapper = mount(BFormRadioGroup, {
-        props: {validated: true},
-      })
-      const base = wrapper.findComponent(BFormRadioGroupBase)
-      expect(base.props('validated')).toBe(true)
-    })
-
     it('forwards size prop', () => {
       const wrapper = mount(BFormRadioGroup, {
         props: {size: 'lg'},
@@ -540,14 +514,6 @@ describe('form-radio-group', () => {
       })
       const base = wrapper.findComponent(BFormRadioGroupBase)
       expect(base.props('plain')).toBe(true)
-    })
-
-    it('forwards reverse prop', () => {
-      const wrapper = mount(BFormRadioGroup, {
-        props: {reverse: true},
-      })
-      const base = wrapper.findComponent(BFormRadioGroupBase)
-      expect(base.props('reverse')).toBe(true)
     })
 
     it('forwards name prop', () => {

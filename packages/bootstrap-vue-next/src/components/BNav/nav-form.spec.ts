@@ -67,12 +67,13 @@ describe('nav-form', () => {
     expect($bform.props('novalidate')).toBe(true)
   })
 
-  it('bform to have prop validated when prop validated', () => {
+  it('bform to have prop validate when prop validate', () => {
     const wrapper = mount(BNavForm, {
-      props: {validated: true},
+      props: {validate: 'valid'},
     })
     const $bform = wrapper.findComponent(BForm)
-    expect($bform.props('validated')).toBe(true)
+    expect($bform.props('validate')).toBe('valid')
+    expect($bform.attributes('data-bs-validate')).toBe('valid')
   })
 
   it('bform has class formClass when prop formClass', () => {

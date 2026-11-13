@@ -47,28 +47,24 @@ Whenever using multiple checkboxes, it is recommended that the checkboxes be pla
 `BFormCheckboxGroup` components render inline checkboxes by default, while `BFormCheckbox`
 renders block-level (stacked) checkboxes.
 
-Set the prop `stacked` on `BFormCheckboxGroup` to place each form control one over the other,
-or if using individual checkboxes not inside a `BFormCheckboxGroup`, set the `inline` prop on
-`BFormCheckbox`.
+Each `BFormCheckbox` renders Bootstrap's `.form-field` layout: the `<input class="check">`
+followed by its `<label>`. Set the prop `stacked` on `BFormCheckboxGroup` to place each form
+control one over the other. Bootstrap v6 has no inline check modifier: a non-stacked group lays its
+checkboxes out with the `d-flex flex-wrap column-gap-5` utilities, and individual checkboxes not
+inside a `BFormCheckboxGroup` can be placed in a container with the same utilities.
 
 <<< DEMO ./demo/CheckboxInline.vue
 
 ## Control sizing
 
-Use the `size` prop to control the size of the checkbox. The default size is medium. Supported size values are `sm` (small) and `lg` (large).
+Use the `size` prop to control the size of the checkbox (`check-sm` / `check-lg`). The default size is medium. Supported size values are `sm` (small) and `lg` (large).
 
 <<< DEMO ./demo/CheckboxSize.vue#template{vue-html}
-
-## Reverse
-
-Use the `reverse` prop to put your checkboxes and switches on the opposite side of the label.
-
-<<< DEMO ./demo/CheckboxReverse.vue#template{vue-html}
 
 ## Without Labels
 
 In order to omit labels as described in the
-[bootstrap documentation](https://getbootstrap.com/docs/5.3/forms/checks-radios/#without-labels)
+[bootstrap documentation](https://getbootstrap.com/docs/6.0/forms/checkbox/)
 just leave the default slot empty. Remember to still provide some form of accessible name for
 assistive technologies (for instance, using aria-label).
 
@@ -78,13 +74,15 @@ assistive technologies (for instance, using aria-label).
 
 You can optionally render checkboxes to appear as buttons, either individually, or in a group.
 
-Button style checkboxes will have the class `.active` automatically applied to the label when they are in the checked state.
+Button style checkboxes render Bootstrap's toggle button markup: a `<label class="btn btn-check …">` that wraps
+the input, with no wrapper `<div>`. Bootstrap styles the label as active while its input is checked
+(`.btn-check:has(input:checked)`).
 
 ### Individual checkbox button style
 
 A single checkbox can be rendered with a button appearance by setting the prop `button` to `true`.
 
-Change the button style and color by setting the `button-variant` prop (`solid`, `outline`, `subtle`, `text` or `link`) and the `button-theme` prop
+Change the button style and color by setting the `button-variant` prop (`solid`, `outline`, `subtle`, `text` or `link`) and the `button-color` prop
 (see [`BButton`](/docs/components/button) for supported values). The default is variant `solid` with theme `secondary`.
 
 <<< DEMO ./demo/CheckboxButton.vue
@@ -92,8 +90,8 @@ Change the button style and color by setting the `button-variant` prop (`solid`,
 ### Grouped button style checkboxes
 
 Render groups of checkboxes with the look of a button-group by setting the prop `buttons` on
-`BFormCheckboxGroup`. Change the button style and color by setting the `button-variant` and `button-theme` props
-(see [`BButton`](/docs/components/button) for supported values). The default is `button-variant` `solid` with `button-theme` `secondary`.
+`BFormCheckboxGroup`. Change the button style and color by setting the `button-variant` and `button-color` props
+(see [`BButton`](/docs/components/button) for supported values). The default is `button-variant` `solid` with `button-color` `{theme: 'secondary'}`.
 
 <<< DEMO ./demo/CheckboxButtonGroup.vue
 
@@ -109,6 +107,8 @@ effect.
 ### Individual checkbox switch style
 
 A single checkbox can be rendered with a switch appearance by setting the prop `switch` to `true`.
+The input gets `role="switch"` (and the native `switch` attribute) and is wrapped in a
+`<div class="switch">`, followed by its label.
 
 <<< DEMO ./demo/CheckboxSwitch.vue
 
@@ -121,18 +121,13 @@ Render groups of checkboxes with the look of a switches by setting the prop `swi
 
 ### Switch sizing
 
-Use the `size` prop to control the size of the switch. The default size is medium. Supported size
+Use the `size` prop to control the size of the switch (`switch-sm` / `switch-lg`). The default size is medium. Supported size
 values are `sm` (small) and `lg` (large).
 
 <<< DEMO ./demo/CheckboxSwitchSize.vue#template{vue-html}
 
 Sizes can be set on individual `BFormCheckbox` components, or inherited from the size setting of
 `BFormCheckboxGroup`.
-
-::: info NOTE
-Bootstrap v5.x does not natively support sizes for the custom switch control. However,
-bootstrap-vue-next includes custom SCSS/CSS that adds support for sizing the custom switches.
-:::
 
 ## Non-custom check inputs (plain)
 

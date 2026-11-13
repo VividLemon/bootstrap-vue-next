@@ -51,6 +51,7 @@ import type {SpinnerType} from './SpinnerType'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {ButtonType} from './ButtonType'
 import type {LinkOpacity, LinkUnderline} from './LinkDecorators'
+import type {GroupedOptionFields, OptionFields} from './OptionsTypes'
 import type {HoverState} from './HoverState'
 import type {LiteralUnion} from './LiteralUnion'
 import type {BreadcrumbItemRaw} from './BreadcrumbTypes'
@@ -261,7 +262,7 @@ export interface BDropdownDividerProps {
 export interface BDropdownFormProps {
   formClass?: ClassValue
   novalidate?: boolean
-  validated?: boolean
+  validate?: boolean | 'valid'
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
@@ -327,24 +328,21 @@ export interface BFormCheckboxProps {
   autofocus?: boolean
   button?: boolean
   buttonColor?: ColorExtendables
-  buttonGroup?: boolean
   buttonVariant?: ButtonVariant | null
   disabled?: boolean
   form?: string
   id?: string
   indeterminate?: boolean
-  inline?: boolean
   modelValue?: CheckboxValue | readonly CheckboxValue[]
   name?: string
   plain?: boolean
   required?: boolean
-  reverse?: boolean
   size?: Size
   state?: ValidationState
   switch?: boolean
   uncheckedValue?: CheckboxValue
   wrapperAttrs?: Readonly<AttrsValue>
-  inputClass?: ClassValue
+  inputAttrs?: Readonly<AttrsValue>
   // Since the compiler-sfc doesn't crawl external filed, the redundant string/boolean union is
   // necessary to tell it that we don't want it to follow Boolean casting rules
   // https://vuejs.org/guide/components/props.html#boolean-casting which would cast the empty
@@ -364,12 +362,10 @@ export interface BFormCheckboxGroupBaseProps {
   stacked?: boolean
   disabled?: boolean
   required?: boolean
-  validated?: boolean
   autofocus?: boolean
   form?: string
   ariaInvalid?: AriaInvalid
   plain?: boolean
-  reverse?: boolean
   switches?: boolean
   options: CheckboxOptionRaw[] // Already normalized
 }
@@ -391,9 +387,7 @@ export interface BFormCheckboxGroupProps<
   buttonColor?: ColorExtendables
   // Options array - generic parameter captures the specific array type
   options?: Options
-  valueField?: string
-  textField?: string
-  disabledField?: string
+  fields?: OptionFields
 
   // All base props (inherited)
   id?: string
@@ -407,23 +401,19 @@ export interface BFormCheckboxGroupProps<
   stacked?: boolean
   disabled?: boolean
   required?: boolean
-  validated?: boolean
   autofocus?: boolean
   form?: string
   ariaInvalid?: AriaInvalid
   plain?: boolean
-  reverse?: boolean
   switches?: boolean
 }
 
 // BFormDatalist base props (non-generic, uses raw options)
 export interface BFormDatalistBaseProps {
   disabled?: boolean
-  disabledField?: string
   id?: string
   options?: readonly (string | number | Record<string, unknown>)[] | SelectOptionRaw[]
-  textField?: string
-  valueField?: string
+  fields?: OptionFields
 }
 
 // BFormDatalist wrapper props (generic, type-safe options)
@@ -433,11 +423,13 @@ export interface BFormDatalistProps<
     Item extends Record<string, unknown> ? keyof Item : never,
 > {
   disabled?: boolean
-  disabledField?: keyof Item & string
   id?: string
   options?: readonly (Item | string | number)[]
-  textField?: keyof Item & string
-  valueField?: ValueKey
+  fields?: {
+    text?: keyof Item & string
+    value?: ValueKey
+    disabled?: keyof Item & string
+  }
 }
 
 export interface BFormFileProps {
@@ -461,7 +453,7 @@ export interface BFormFileProps {
   form?: string
   id?: string
   label?: string
-  labelClass?: ClassValue
+  labelAttrs?: Readonly<AttrsValue>
   modelValue?: readonly File[] | File | null
   multiple?: boolean
   name?: string
@@ -488,17 +480,14 @@ export interface BFormRadioProps {
   autofocus?: boolean
   button?: boolean
   buttonColor?: ColorExtendables
-  buttonGroup?: boolean
   buttonVariant?: ButtonVariant | null
   disabled?: boolean
   form?: string
   id?: string
-  inline?: boolean
   modelValue?: RadioValue
   name?: string
   plain?: boolean
   required?: boolean
-  reverse?: boolean
   size?: Size
   state?: ValidationState
   value?: RadioValue
@@ -524,11 +513,9 @@ export interface BFormRadioGroupBaseProps {
   options?: readonly RadioOption[]
   plain?: boolean
   required?: boolean
-  reverse?: boolean
   size?: Size
   stacked?: boolean
   state?: ValidationState
-  validated?: boolean
 }
 
 /**
@@ -555,7 +542,6 @@ export interface BFormRadioGroupProps<
   buttonVariant?: ButtonVariant | null
   buttons?: boolean
   disabled?: boolean
-  disabledField?: string
   form?: string
   id?: string
   // Strongly typed based on Options array - extraction happens in component
@@ -565,13 +551,10 @@ export interface BFormRadioGroupProps<
   options?: Options
   plain?: boolean
   required?: boolean
-  reverse?: boolean
   size?: Size
   stacked?: boolean
   state?: ValidationState
-  textField?: string
-  validated?: boolean
-  valueField?: string
+  fields?: OptionFields
 }
 export interface BFormRatingProps {
   clearLabel?: string
@@ -599,10 +582,8 @@ export interface BFormSelectBaseProps {
   ariaInvalid?: AriaInvalid
   autofocus?: boolean
   disabled?: boolean
-  disabledField?: string
   form?: string
   id?: string
-  labelField?: string
   modelValue?: SelectValue
   multiple?: boolean
   name?: string
@@ -610,14 +591,11 @@ export interface BFormSelectBaseProps {
     | readonly (string | number | Record<string, unknown>)[]
     | readonly SelectOptionRaw[]
     | readonly ComplexSelectOptionRaw[]
-  optionsField?: string
-  plain?: boolean
   required?: boolean
   selectSize?: Numberish
   size?: Size
   state?: ValidationState
-  textField?: string
-  valueField?: string
+  fields?: GroupedOptionFields
 }
 
 // BFormSelect wrapper props (generic, type-safe options and modelValue)
@@ -637,24 +615,19 @@ export interface BFormSelectProps<
   ariaInvalid?: AriaInvalid
   autofocus?: boolean
   disabled?: boolean
-  disabledField?: string
   form?: string
   id?: string
-  labelField?: string
   // Strongly typed based on Options array - extraction happens in component
   modelValue?: unknown | unknown[] | null
   multiple?: boolean
   name?: string
   // Options array - generic parameter captures the specific array type
   options?: Options
-  optionsField?: string
-  plain?: boolean
   required?: boolean
   selectSize?: Numberish
   size?: Size
   state?: ValidationState
-  textField?: string
-  valueField?: string
+  fields?: GroupedOptionFields
 }
 
 export interface BFormSelectOptionProps<T> {
@@ -663,11 +636,9 @@ export interface BFormSelectOptionProps<T> {
 }
 
 export interface BFormSelectOptionGroupProps {
-  disabledField?: string
   label?: string
   options?: readonly (unknown | Record<string, unknown>)[]
-  textField?: string
-  valueField?: string
+  fields?: OptionFields
 }
 
 export interface BFormSpinbuttonProps {
@@ -678,8 +649,7 @@ export interface BFormSpinbuttonProps {
   formatterFn?: (value: number) => string
   id?: string
   inline?: boolean
-  labelDecrement?: string
-  labelIncrement?: string
+  labels?: {increment?: string; decrement?: string}
   locale?: string
   max?: Numberish
   min?: Numberish
@@ -687,10 +657,12 @@ export interface BFormSpinbuttonProps {
   name?: string
   placeholder?: string
   readonly?: boolean
-  repeatDelay?: Numberish
-  repeatInterval?: Numberish
-  repeatStepMultiplier?: Numberish
-  repeatThreshold?: Numberish
+  repeat?: {
+    delay?: Numberish
+    interval?: Numberish
+    threshold?: Numberish
+    stepMultiplier?: Numberish
+  }
   required?: boolean
   size?: Size
   state?: ValidationState
@@ -1305,7 +1277,7 @@ export interface BFormProps {
   floating?: boolean
   id?: string
   novalidate?: boolean
-  validated?: boolean
+  validate?: boolean | 'valid'
 }
 
 export interface BTableSimpleProps {
@@ -1689,14 +1661,13 @@ export interface BFormGroupProps {
   id?: string
   invalidFeedback?: string
   label?: string
-  labelClass?: ClassValue
+  labelAttrs?: Readonly<AttrsValue>
   labelFor?: string
   labelSize?: string
   labelVisuallyHidden?: boolean
   state?: ValidationState
   tooltip?: boolean
   validFeedback?: string
-  validated?: boolean
 }
 
 export interface BTimeFieldProps {

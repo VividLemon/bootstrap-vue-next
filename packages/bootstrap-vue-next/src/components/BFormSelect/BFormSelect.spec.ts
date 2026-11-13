@@ -11,7 +11,8 @@ describe('BFormSelect', () => {
   it('has expected default structure', () => {
     const wrapper = mount(BFormSelect)
     expect(wrapper.element.tagName).toBe('SELECT')
-    expect(wrapper.classes()).toContain('form-select')
+    expect(wrapper.classes()).toContain('form-control')
+    expect(wrapper.classes()).not.toContain('form-select')
   })
 
   it('renders options from simple array', () => {
@@ -233,42 +234,28 @@ describe('BFormSelect', () => {
 
   // --- CSS Classes ---
 
-  it('has form-select-sm class when size is sm', () => {
+  it('has form-control-sm class when size is sm', () => {
     const wrapper = mount(BFormSelect, {
       props: {size: 'sm'},
     })
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).toContain('form-select-sm')
+    expect(wrapper.classes()).toContain('form-control')
+    expect(wrapper.classes()).toContain('form-control-sm')
+    expect(wrapper.classes()).not.toContain('form-select-sm')
   })
 
-  it('has form-select-lg class when size is lg', () => {
+  it('has form-control-lg class when size is lg', () => {
     const wrapper = mount(BFormSelect, {
       props: {size: 'lg'},
     })
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).toContain('form-select-lg')
+    expect(wrapper.classes()).toContain('form-control')
+    expect(wrapper.classes()).toContain('form-control-lg')
   })
 
   it('does not have size class when size is undefined (default)', () => {
     const wrapper = mount(BFormSelect)
-    expect(wrapper.classes()).toContain('form-select')
-    expect(wrapper.classes()).not.toContain('form-select-md')
-  })
-
-  it('has form-control class when plain is true', () => {
-    const wrapper = mount(BFormSelect, {
-      props: {plain: true},
-    })
     expect(wrapper.classes()).toContain('form-control')
-    expect(wrapper.classes()).not.toContain('form-select')
-  })
-
-  it('has form-control-sm when plain is true and size is sm', () => {
-    const wrapper = mount(BFormSelect, {
-      props: {plain: true, size: 'sm'},
-    })
-    expect(wrapper.classes()).toContain('form-control')
-    expect(wrapper.classes()).toContain('form-control-sm')
+    expect(wrapper.classes()).not.toContain('form-control-sm')
+    expect(wrapper.classes()).not.toContain('form-control-lg')
   })
 
   it('has is-valid class when state is true', () => {
@@ -465,10 +452,7 @@ describe('BFormSelect', () => {
   it('renders grouped options with custom field names', () => {
     const wrapper = mount(BFormSelect, {
       props: {
-        labelField: 'name',
-        valueField: 'id',
-        textField: 'name',
-        optionsField: 'items',
+        fields: {label: 'name', value: 'id', text: 'name', options: 'items'},
         options: [
           {
             name: 'Fruits',
@@ -509,10 +493,7 @@ describe('BFormSelect', () => {
     const wrapper = mount(BFormSelect, {
       props: {
         modelValue: 2,
-        labelField: 'name',
-        valueField: 'id',
-        textField: 'name',
-        optionsField: 'items',
+        fields: {label: 'name', value: 'id', text: 'name', options: 'items'},
         options: [
           {
             name: 'Fruits',
@@ -536,9 +517,7 @@ describe('BFormSelect', () => {
   it('renders options with custom disabledField', () => {
     const wrapper = mount(BFormSelect, {
       props: {
-        valueField: 'id',
-        textField: 'label',
-        disabledField: 'inactive',
+        fields: {value: 'id', text: 'label', disabled: 'inactive'},
         options: [
           {id: 1, label: 'Active', inactive: false},
           {id: 2, label: 'Inactive', inactive: true},
@@ -572,8 +551,7 @@ describe('BFormSelect', () => {
     const wrapper = mount(BFormSelect, {
       props: {
         // Null can come from runtime bindings even though the prop type is string.
-        labelField: null as unknown as string,
-        optionsField: null as unknown as string,
+        fields: {label: null as unknown as string, options: null as unknown as string},
         options: [{value: 'a', text: 'Option A', label: 'Label A'}],
       },
     })
@@ -587,8 +565,7 @@ describe('BFormSelect', () => {
   it('keeps textField precedence when labelField and optionsField are empty strings', () => {
     const wrapper = mount(BFormSelect, {
       props: {
-        labelField: '',
-        optionsField: '',
+        fields: {label: '', options: ''},
         options: [{value: 'a', text: 'Option A', label: 'Label A'}],
       },
     })

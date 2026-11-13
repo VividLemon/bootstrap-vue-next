@@ -44,9 +44,7 @@
           v-model="radios.ex2.selected"
           :options="radios.ex2.options"
           class="mb-3"
-          value-field="item"
-          text-field="name"
-          disabled-field="notEnabled"
+          :fields="{value: 'item', text: 'name', disabled: 'notEnabled'}"
         />
       </BCol>
     </BRow>

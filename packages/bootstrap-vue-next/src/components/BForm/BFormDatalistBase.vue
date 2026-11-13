@@ -20,7 +20,7 @@ import {computed} from 'vue'
 import BFormSelectOption from '../BFormSelect/BFormSelectOption.vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
-import {useFormSelect} from '../../composables/useFormSelect'
+import {useFormSelect, resolveOptionFields} from '../../composables/useFormSelect'
 
 /**
  * Base component for BFormDatalist - non-generic implementation using useDefaults.
@@ -28,21 +28,17 @@ import {useFormSelect} from '../../composables/useFormSelect'
  * Filters out complex/grouped options as datalist doesn't support them.
  */
 const _props = withDefaults(defineProps<BFormDatalistBaseProps>(), {
+  fields: undefined,
   disabled: false,
-  disabledField: 'disabled',
   id: undefined,
   options: () => [],
-  textField: 'text',
-  valueField: 'value',
 })
 const props = useDefaults(_props, 'BFormDatalist')
+const optionFields = computed(() => resolveOptionFields(props.fields))
 
 const computedId = useId(() => props.id, 'datalist')
 
-const {normalizedOptions, isComplex} = useFormSelect(
-  () => props.options,
-  computed(() => ({...props, optionsField: 'options', labelField: 'label'}))
-)
+const {normalizedOptions, isComplex} = useFormSelect(() => props.options, optionFields)
 
 const normalizedOptsWrapper = computed(() =>
   // Datalist doesn't support complex options
