@@ -263,11 +263,13 @@ export type ColsValue = boolean | ColsNumbers | 'auto'
 type GutterNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 export type GutterNumbers = GutterNumber | `${GutterNumber}`
 
-export type RowColsNumbers = 1 | 2 | 3 | 4 | 5 | 6 | '1' | '2' | '3' | '4' | '5' | '6' | 'auto'
+type RowColsNumber = 1 | 2 | 3 | 4 | 5 | 6
+export type RowColsNumbers = RowColsNumber | `${RowColsNumber}` | 'auto'
 
 export type ColsOrderNumbers = ColsBaseNumbers | 0 | '0' | 'first' | 'last'
 
-export type ColsOffsetNumbers = Exclude<ColsNumbers, 12 | '12'> | 0 | '0'
+type ColsOffsetNumber = Exclude<ColsNumber, 12> | 0
+export type ColsOffsetNumbers = ColsOffsetNumber | `${ColsOffsetNumber}`
 ```
 
 </BCard>
@@ -364,7 +366,8 @@ type InputType =
 ```ts
 type LinkOpacity = ColorOpacity
 type UnderlineOpacity = ColorOpacity
-type UnderlineOffset = 1 | 2 | 3 | '1' | '2' | '3'
+type UnderlineOffsetNumber = 1 | 2 | 3
+type UnderlineOffset = UnderlineOffsetNumber | `${UnderlineOffsetNumber}`
 ```
 
 </BCard>
@@ -514,6 +517,7 @@ type RadioValue =
 <BCard class="bg-body-tertiary">
 
 ```ts
+type RadiusNumber = 0 | 1 | 2 | 3 | 4 | 5
 type RadiusElement =
   | 'circle'
   | 'pill'
@@ -521,18 +525,8 @@ type RadiusElement =
   | 'sm'
   | 'md'
   | 'lg'
-  | '0'
-  | '1'
-  | '2'
-  | '3'
-  | '4'
-  | '5'
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
+  | RadiusNumber
+  | `${RadiusNumber}`
 ```
 
 </BCard>
