@@ -32,12 +32,16 @@ import {
   type TablePrimaryKey,
   type TableSelectedReturn,
 } from '../types/TableTypes'
+import type {TableRowThead} from '../types/TableTypes'
+import type {AttrsValue} from '../types/AnyValuedAttributes'
 import {deepEqual, set} from '../utils/object'
 import {startCase} from '../utils/stringUtils'
 import {formatItem, getDataCellAttr, getWithGetter} from '../utils/tableUtils'
 import {useDebounceFn} from '../utils/debounce'
 import {useItemTracker} from './useTableLiteHelpers'
 import type {Breakpoint} from '../types/BreakpointProps'
+
+type ThAttrContext = {value: unknown; key: string; item: unknown; type: TableRowThead}
 
 export const useTableMapper = <Item>({
   fields,
@@ -107,14 +111,22 @@ export const useTableMapper = <Item>({
                 ? 'ascending'
                 : 'none'
 
+      // A function `th.attr` is called per header cell, so `aria-sort` is added to its result
+      const fieldThAttr = el.th?.attr
       return {
         ...(el as TableField<Item>),
         th: {
           ...el.th,
-          attr: {
-            'aria-sort': sortValue,
-            ...el.th?.attr,
-          },
+          attr:
+            typeof fieldThAttr === 'function'
+              ? (obj: ThAttrContext) => ({
+                  'aria-sort': sortValue,
+                  ...(fieldThAttr as (obj: ThAttrContext) => AttrsValue)(obj),
+                })
+              : {
+                  'aria-sort': sortValue,
+                  ...fieldThAttr,
+                },
           class: [
             el.th?.class,
             {

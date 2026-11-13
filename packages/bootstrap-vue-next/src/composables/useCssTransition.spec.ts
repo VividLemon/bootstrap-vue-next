@@ -255,6 +255,35 @@ describe('useCssTransition', () => {
     expect(el.getAnimations).toHaveBeenCalledTimes(1)
   })
 
+  it('does not stall when an animation never finishes (page not rendering)', async () => {
+    vi.useFakeTimers()
+    try {
+      // Pending at time 0 with 150 ms left, as a transition is while the page does not render
+      const stuck = createAnimation(150)
+      const el = createElement(() => [stuck.animation])
+      const {run} = useCssTransition(el)
+      let result: boolean | undefined
+      void run().then((v) => (result = v))
+
+      await vi.advanceTimersByTimeAsync(200)
+      expect(result).toBeUndefined()
+      await vi.advanceTimersByTimeAsync(200)
+      expect(result).toBe(true)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('does not wait for the fallback when the animations finish', async () => {
+    const a = createAnimation(60_000)
+    const el = createElement(() => [a.animation])
+    const {run} = useCssTransition(el)
+    const promise = run()
+    expect(await isSettled(promise)).toBe(false)
+    a.resolve()
+    await expect(promise).resolves.toBe(true)
+  })
+
   it('cancels pending runs when the owning effect scope is disposed', async () => {
     const a = createAnimation()
     const el = createElement(() => [a.animation])
