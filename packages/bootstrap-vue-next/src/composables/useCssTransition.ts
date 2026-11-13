@@ -17,6 +17,13 @@ import {getSafeWindow} from '../utils/dom'
 const FRAME_FALLBACK_MS = 100
 
 /**
+ * `animation.finished` only settles while the page renders. In a background tab or an occluded
+ * view a transition stays pending and never finishes, so the wait also ends this long after the
+ * time the animations had left.
+ */
+const FINISH_FALLBACK_MARGIN_MS = 100
+
+/**
  * Resolves on the next animation frame, or after `FRAME_FALLBACK_MS` when no frame comes.
  * Falls back to a macrotask when `requestAnimationFrame` is not available (SSR, some test
  * environments), so callers never hang.
@@ -44,6 +51,31 @@ const isFiniteAnimation = (animation: Animation): boolean => {
   return timing?.endTime !== Infinity
 }
 
+/** The time an animation still needs, in ms. `0` when it cannot be told */
+const getRemainingTime = (animation: Animation): number => {
+  const endTime = Number(animation.effect?.getComputedTiming?.().endTime)
+  if (!Number.isFinite(endTime)) return 0
+  const currentTime = Number(animation.currentTime ?? 0)
+  const playbackRate = Math.abs(animation.playbackRate) || 1
+  return Math.max(endTime - (Number.isFinite(currentTime) ? currentTime : 0), 0) / playbackRate
+}
+
+/**
+ * Resolves once every animation settled (finished or cancelled), or once they should have
+ * finished by the clock, whichever comes first.
+ */
+const waitForAnimations = (animations: readonly Animation[]): Promise<void> =>
+  new Promise((resolve) => {
+    const timer = setTimeout(
+      resolve,
+      Math.max(...animations.map(getRemainingTime)) + FINISH_FALLBACK_MARGIN_MS
+    )
+    void Promise.allSettled(animations.map((animation) => animation.finished)).then(() => {
+      clearTimeout(timer)
+      resolve()
+    })
+  })
+
 const getOwnAnimations = (el: Element | null | undefined): Animation[] => {
   if (!el || typeof el.getAnimations !== 'function') return []
   // `getAnimations()` without `{subtree: true}` only returns the element's own animations,
@@ -60,7 +92,8 @@ export interface UseCssTransitionReturn {
    * 2. waits for Vue to patch the DOM (`nextTick`) and for one animation frame;
    * 3. awaits every finite animation / CSS transition running on the element itself
    *    (`el.getAnimations()`, settled with `Promise.allSettled`, so a cancelled transition
-   *    counts as settled).
+   *    counts as settled). The wait is bounded by the time the animations have left, so it
+   *    also ends where the browser does not run them (background tabs).
    *
    * With no running animations (zero duration, `prefers-reduced-motion`, an `-instant` class,
    * `transition-none`, or no element) it resolves right after that frame.
@@ -133,7 +166,7 @@ export const useCssTransition = (
 
     const animations = getOwnAnimations(toValue(element))
     if (animations.length > 0) {
-      await Promise.allSettled(animations.map((animation) => animation.finished))
+      await waitForAnimations(animations)
     }
     if (id !== generation) return false
 

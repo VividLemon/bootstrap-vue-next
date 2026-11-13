@@ -3629,4 +3629,22 @@ describe('filterByFormatted as function', () => {
     expect(rows).toHaveLength(1)
     expect(rows[0].find('td').text()).toBe('92') // raw value shown since no formatter
   })
+
+  it('keeps a function thAttr and adds aria-sort to its result', () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: [{name: 'A'}],
+        fields: [
+          {
+            key: 'name',
+            sortable: true,
+            thAttr: ({type}: {type: string}) => ({'data-th': type}),
+          },
+        ],
+      },
+    })
+    const th = wrapper.get('thead th')
+    expect(th.attributes('data-th')).toBe('top')
+    expect(th.attributes('aria-sort')).toBe('none')
+  })
 })

@@ -1,0 +1,82 @@
+components 108 total 2327 ms (meta 1937 ms)
+{
+  docOnly: 58,
+  srcOnly: 87,
+  match: 1721,
+  typeDiff: 137,
+  defDiff: 310,
+  slotDocOnly: 8,
+  slotSrcOnly: 4,
+  evDocOnly: 41,
+  evSrcOnly: 47
+}
+docOnly 58 
+    BAlert.routerTag
+    BAvatar.ariaLabel
+    BAvatar.icon
+    BAvatar.routerTag
+    BBadge.routerTag
+    BBreadcrumbItem.routerTag
+    BCardImg.alt
+    BFormInput.tooltip
+    BFormTags.bg
+    BFormTags.fg
+    BFormTags.id
+    BFormTags.tag
+srcOnly 87 
+    BButton.active
+    BButton.disabled
+    BButton.href
+    BButton.icon
+    BButton.noRel
+    BButton.opacity
+    BButton.prefetch
+    BButton.prefetchOn
+    BButton.noPrefetch
+    BButton.prefetchedClass
+    BButton.rel
+    BButton.stretched
+typeDiff 137 
+    BAccordion.index: doc=number | number[] src=number | readonly number[] | undefined
+    BAccordion.modelValue: doc=string | string[] src=string | readonly string[] | undefined
+    BAlert.prefetchedClass: doc=string src=any
+    BAlert.prefetchOn: doc=Partial<{visibility: boolean, interaction: boolean}> src=Partial<{ visibility: boolean; interaction: boolean; }> | undefined
+    BAlert.noRel: doc=undefined src=boolean | undefined
+    BAlert.routerComponentName: doc=string src=string | Component | undefined
+    BApp.defaults: doc=Partial<BvnComponentProps> | Ref<Partial<BvnComponentProps>> src=Partial<BvnComponentProps & { global: Record<string, any>; }> | undefined
+    BApp.teleportTo: doc=string | Element | null | undefined src=string | RendererElement | null | undefined
+    BApp.rtl: doc=boolean | { rtlInitial?: boolean; localeInitial?: string } src=boolean | { rtlInitial?: boolean | undefined; localeInitial?: string | undefined; } | undefined
+    BAvatar.size: doc=Size | string src=LiteralUnion<keyof BaseSize, Numberish> | undefined
+    BAvatar.prefetchedClass: doc=string src=any
+    BAvatar.prefetchOn: doc=Partial<{visibility: boolean, interaction: boolean}> src=Partial<{ visibility: boolean; interaction: boolean; }> | undefined
+defDiff 310 
+    BAccordionItem.show: doc=false src=undefined
+    BAccordionItem.tag: doc="div" src=undefined
+    BAlert.activeClass: doc="router-link-active" src=undefined
+    BAlert.disabled: doc=false src=undefined
+    BAlert.exactActiveClass: doc="router-link-exact-active" src=undefined
+    BAlert.icon: doc=false src=undefined
+    BAlert.noPrefetch: doc=false src=undefined
+    BAlert.replace: doc=false src=undefined
+    BAlert.routerComponentName: doc="router-link" src=undefined
+    BAlert.underlineTheme: doc=null src=undefined
+    BApp.teleportTo: doc=null src=undefined
+    BAutocomplete.autocomplete: doc="false" src=undefined
+slotSrcOnly 4 
+    BFormTags#add-button-text
+    BFormTags#tag
+    BTab#default
+    BTab#title
+evSrcOnly 47 
+    BAccordion@update:modelValue
+    BAccordionItem@update:modelValue
+    BAlert@update:modelValue
+    BAutocomplete@update:modelValue
+    BCarousel@update:modelValue
+    BCollapse@update:modelValue
+    BDateField@update:modelValue
+    BDateRangeField@update:modelValue
+    BTimeRangeField@update:modelValue
+    BDatePicker@update:modelValue
+    BDateRangePicker@update:modelValue
+    BDropdown@update:modelValue
