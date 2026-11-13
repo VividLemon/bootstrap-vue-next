@@ -259,8 +259,8 @@ export type ColsNumbers =
 export type ColsValue = boolean | ColsNumbers | 'auto'
 
 // 0 to 12, passed straight through to the spacing scale (`gx-0` … `gx-12`)
-export type GutterNumbers =
-  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '0' | '1' /* … */ | '12'
+type GutterNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+export type GutterNumbers = GutterNumber | `${GutterNumber}`
 
 export type RowColsNumbers = 1 | 2 | 3 | 4 | 5 | 6 | '1' | '2' | '3' | '4' | '5' | '6' | 'auto'
 
@@ -325,27 +325,8 @@ The documented Bootstrap color opacity utilities, accepted as numbers or numeric
 <BCard class="bg-body-tertiary">
 
 ```ts
-type ColorOpacity =
-  | 10
-  | 20
-  | 30
-  | 40
-  | 50
-  | 60
-  | 70
-  | 80
-  | 90
-  | 100
-  | '10'
-  | '20'
-  | '30'
-  | '40'
-  | '50'
-  | '60'
-  | '70'
-  | '80'
-  | '90'
-  | '100'
+type ColorOpacityNumber = 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100
+type ColorOpacity = ColorOpacityNumber | `${ColorOpacityNumber}`
 ```
 
 </BCard>
