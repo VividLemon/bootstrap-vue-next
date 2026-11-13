@@ -57,10 +57,10 @@ Any property of an option object that is not used as its value, text or disabled
 an attribute of the `<option>` element. This is intended: it lets you add `data-*`, `title`, `class`
 or other attributes to individual options.
 
-It also applies to the properties you map with `value-field`, `text-field` and `disabled-field`. With
-`value-field="id"`, each option keeps its `id` property and renders it as the element's `id`
-attribute. If you do not want that, map your data to objects that only hold the properties you want
-on the element before passing them as `options`.
+It also applies to the properties you map with the `fields` prop. With `:fields="{ value: 'id' }"`,
+each option keeps its `id` property and renders it as the element's `id` attribute. If you do not
+want that, map your data to objects that only hold the properties you want on the element before
+passing them as `options`.
 
 ## Standard (single) select
 
