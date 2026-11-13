@@ -250,10 +250,11 @@ type ColorExtendables = {
 <BCard class="bg-body-tertiary">
 
 ```ts
-export type ColsBaseNumbers = 1 | 2 | 3 | 4 | 5 | '1' | '2' | '3' | '4' | '5'
+type ColsBaseNumber = 1 | 2 | 3 | 4 | 5
+export type ColsBaseNumbers = ColsBaseNumber | `${ColsBaseNumber}`
 
-export type ColsNumbers =
-  ColsBaseNumbers | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '6' | '7' | '8' | '9' | '10' | '11' | '12'
+type ColsNumber = ColsBaseNumber | 6 | 7 | 8 | 9 | 10 | 11 | 12
+export type ColsNumbers = ColsNumber | `${ColsNumber}`
 
 // `true` renders an equal-width column (`col`, `md:col`)
 export type ColsValue = boolean | ColsNumbers | 'auto'
