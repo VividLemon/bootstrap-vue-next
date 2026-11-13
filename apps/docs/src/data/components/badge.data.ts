@@ -43,11 +43,6 @@ export default {
             description:
               'Placement of the badge relative to its parent. One of the values of `CombinedPlacement`',
           },
-          size: {
-            type: 'BadgeSize',
-            default: 'md',
-            description: "Badge size. `'lg'` renders the larger `.badge-lg` badge",
-          },
           variant: {
             type: 'BadgeVariant | null',
             default: null,

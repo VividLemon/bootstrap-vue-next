@@ -24,7 +24,6 @@ const _props = withDefaults(defineProps<BBadgeProps>(), {
   pill: false,
   tag: 'span',
   placement: undefined,
-  size: 'md',
   variant: null,
   // Link props
   // All others use defaults
@@ -105,7 +104,6 @@ const computedClasses = computed(() => [
   props.placement !== undefined || props.dotIndicator ? placementClasses.value : undefined,
   {
     [`badge-${props.variant}`]: !!props.variant,
-    'badge-lg': props.size === 'lg',
     'active': props.active,
     'disabled': props.disabled,
     'rounded-pill': props.pill,

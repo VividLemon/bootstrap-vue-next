@@ -45,16 +45,6 @@ type AttrsValue = Record<string, any>
 
 </BCard>
 
-## BadgeSize
-
-<BCard class="bg-body-tertiary">
-
-```ts
-type BadgeSize = 'md' | 'lg'
-```
-
-</BCard>
-
 ## BadgeVariant
 
 <BCard class="bg-body-tertiary">

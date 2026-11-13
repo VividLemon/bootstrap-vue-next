@@ -500,18 +500,4 @@ describe('badge', () => {
       expect(wrapper.classes()).not.toContain('badge-outline')
     })
   })
-
-  describe('size', () => {
-    it('has no size class by default', () => {
-      const wrapper = mount(BBadge)
-      expect(wrapper.classes()).not.toContain('badge-lg')
-    })
-
-    it('has class badge-lg when size is lg', async () => {
-      const wrapper = mount(BBadge, {props: {size: 'lg'}})
-      expect(wrapper.classes()).toContain('badge-lg')
-      await wrapper.setProps({size: 'md'})
-      expect(wrapper.classes()).not.toContain('badge-lg')
-    })
-  })
 })
