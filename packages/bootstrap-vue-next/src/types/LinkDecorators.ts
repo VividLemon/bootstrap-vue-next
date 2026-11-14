@@ -3,7 +3,8 @@ import type {HoverState} from './HoverState'
 
 export type LinkOpacity = ColorOpacity
 export type UnderlineOpacity = ColorOpacity
-export type UnderlineOffset = 1 | 2 | 3 | '1' | '2' | '3'
+type UnderlineOffsetNumber = 1 | 2 | 3
+export type UnderlineOffset = UnderlineOffsetNumber | `${UnderlineOffsetNumber}`
 
 /** A link's underline: its color (`.underline-<theme>`), offset and opacity */
 export interface LinkUnderline {

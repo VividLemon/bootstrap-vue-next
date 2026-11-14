@@ -252,6 +252,19 @@ export const useShowHide = (
       componentId: id.value,
     })
 
+  /**
+   * Backs `event.signal` on show / hide request events (and their trigger and `*-prevented`
+   * events). Requests share it until the component commits to a show or hide, or unmounts, which
+   * aborts it. A prevented request leaves it running, so async work started for it stops only once
+   * the component actually changes state
+   */
+  let requestScope: AbortController | undefined
+  const currentRequestSignal = (): AbortSignal => (requestScope ??= new AbortController()).signal
+  const endRequests = () => {
+    requestScope?.abort()
+    requestScope = undefined
+  }
+
   let operation = 0
   let delayTimer: ReturnType<typeof setTimeout> | undefined
   type Waiter = {
@@ -330,6 +343,7 @@ export const useShowHide = (
     trigger?: string,
     resolveOnHide = false
   ): Promise<boolean | string> => {
+    endRequests()
     const op = ++operation
     clearTimeout(delayTimer)
     delayTimer = undefined
@@ -392,6 +406,10 @@ export const useShowHide = (
     return waiter.promise
   }
 
+  /** The result of a change a request listener started: its promise, or its settled state */
+  const listenerResult = (): Promise<boolean | string> =>
+    pending ? (pending.waiters[0] as Waiter).promise : Promise.resolve(visible.value ? true : '')
+
   const show = (resolveOnHide: boolean = false): Promise<boolean | string> => {
     // Ignore event objects from `@click="show"`
     resolveOnHide = resolveOnHide === true
@@ -407,10 +425,14 @@ export const useShowHide = (
     }
     if (visible.value && !pending) return Promise.resolve(true)
 
-    const event = buildTriggerableEvent('show', {cancelable: true})
+    const signal = currentRequestSignal()
+    const opBefore = operation
+    const event = buildTriggerableEvent('show', {cancelable: true, signal})
     emit('show', event)
+    // A `show` listener started a change itself (for example `@show="hide()"`): that one wins
+    if (operation !== opBefore) return listenerResult()
     if (event.defaultPrevented) {
-      emit('show-prevented', buildTriggerableEvent('show-prevented'))
+      emit('show-prevented', buildTriggerableEvent('show-prevented', {signal}))
       instant.value = false
       // Revert a v-model change that asked for the show
       if (!targetVisible()) syncModelValue(false)
@@ -424,24 +446,30 @@ export const useShowHide = (
     if (pending?.visible === false) return (pending.waiters[0] as Waiter).promise
     if (!visible.value && !pending) return Promise.resolve('')
 
+    const signal = currentRequestSignal()
     if (
       (trigger === 'backdrop' && props.noCloseOnBackdrop) ||
       (trigger === 'esc' && props.noCloseOnEsc)
     ) {
-      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
+      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger, signal}))
       return Promise.resolve('hide-prevented')
     }
 
+    // A listener may start a change itself (for example `@close="hide()"`). That change is the
+    // one that counts: emitting `hide` again or starting another hide would supersede it
+    const opBefore = operation
     let prevented = false
     if (trigger && !noTriggerEmit) {
-      const triggerEvent = buildTriggerableEvent(trigger, {cancelable: true, trigger})
+      const triggerEvent = buildTriggerableEvent(trigger, {cancelable: true, trigger, signal})
       emit(trigger, triggerEvent)
+      if (operation !== opBefore) return listenerResult()
       prevented = triggerEvent.defaultPrevented
     }
-    const event = buildTriggerableEvent('hide', {cancelable: true, trigger})
+    const event = buildTriggerableEvent('hide', {cancelable: true, trigger, signal})
     emit('hide', event)
+    if (operation !== opBefore) return listenerResult()
     if (prevented || event.defaultPrevented) {
-      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger}))
+      emit('hide-prevented', buildTriggerableEvent('hide-prevented', {trigger, signal}))
       instant.value = false
       // Revert a v-model change that asked for the hide
       if (targetVisible()) syncModelValue(true)
@@ -506,10 +534,11 @@ export const useShowHide = (
   onMounted(() => {
     if (initialShow) {
       // Already rendered as shown: announce it, then let the instant "transition" settle
-      const event = buildTriggerableEvent('show', {cancelable: true})
+      const signal = currentRequestSignal()
+      const event = buildTriggerableEvent('show', {cancelable: true, signal})
       emit('show', event)
       if (event.defaultPrevented) {
-        emit('show-prevented', buildTriggerableEvent('show-prevented'))
+        emit('show-prevented', buildTriggerableEvent('show-prevented', {signal}))
         visible.value = false
         isActive.value = false
         instant.value = false
@@ -525,6 +554,7 @@ export const useShowHide = (
   })
 
   onBeforeUnmount(() => {
+    endRequests()
     operation++
     clearTimeout(delayTimer)
     delayTimer = undefined

@@ -14,46 +14,23 @@ export type ResponsiveKey = 'xs' | Breakpoint
  */
 export type Responsive<T> = Partial<Record<ResponsiveKey, T>>
 
-export type ColsBaseNumbers = 1 | 2 | 3 | 4 | 5 | '1' | '2' | '3' | '4' | '5'
+type ColsBaseNumber = 1 | 2 | 3 | 4 | 5
+export type ColsBaseNumbers = ColsBaseNumber | `${ColsBaseNumber}`
 
-export type ColsNumbers =
-  ColsBaseNumbers | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '6' | '7' | '8' | '9' | '10' | '11' | '12'
+type ColsNumber = ColsBaseNumber | 6 | 7 | 8 | 9 | 10 | 11 | 12
+export type ColsNumbers = ColsNumber | `${ColsNumber}`
 
 /**
  * Gutter values are passed straight through to the v6 spacing scale (`gx-0` … `gx-12`)
  */
-export type GutterNumbers =
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
-  | 11
-  | 12
-  | '0'
-  | '1'
-  | '2'
-  | '3'
-  | '4'
-  | '5'
-  | '6'
-  | '7'
-  | '8'
-  | '9'
-  | '10'
-  | '11'
-  | '12'
+type GutterNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+export type GutterNumbers = GutterNumber | `${GutterNumber}`
 
 /**
  * Row columns (`row-cols-1` … `row-cols-6`, `row-cols-auto`)
  */
-export type RowColsNumbers = 1 | 2 | 3 | 4 | 5 | 6 | '1' | '2' | '3' | '4' | '5' | '6' | 'auto'
+type RowColsNumber = 1 | 2 | 3 | 4 | 5 | 6
+export type RowColsNumbers = RowColsNumber | `${RowColsNumber}` | 'auto'
 
 /**
  * Column size. `true` renders an equal-width column (`col`, `md:col`)
@@ -62,4 +39,5 @@ export type ColsValue = boolean | ColsNumbers | 'auto'
 
 export type ColsOrderNumbers = ColsBaseNumbers | 0 | '0' | 'first' | 'last'
 
-export type ColsOffsetNumbers = Exclude<ColsNumbers, 12 | '12'> | 0 | '0'
+type ColsOffsetNumber = Exclude<ColsNumber, 12> | 0
+export type ColsOffsetNumbers = ColsOffsetNumber | `${ColsOffsetNumber}`

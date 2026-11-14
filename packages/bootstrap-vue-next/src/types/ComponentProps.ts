@@ -48,6 +48,7 @@ import type {
 } from './Alignment'
 import type {RadiusElementExtendables} from './RadiusElement'
 import type {SpinnerType} from './SpinnerType'
+import type {BadgeVariant} from './BadgeTypes'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {ButtonType} from './ButtonType'
 import type {LinkOpacity, LinkUnderline} from './LinkDecorators'
@@ -1070,16 +1071,12 @@ export interface BSpinnerProps {
 }
 
 export interface BAlertProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProps {
-  alertClass?: ClassValue
+  alertAttrs?: Readonly<AttrsValue>
   body?: string
-  bodyClass?: ClassValue
-  closeClass?: ClassValue
-  closeColor?: ColorExtendables
-  closeContent?: string
-  closeLabel?: string
-  closeVariant?: ButtonVariant | null
+  bodyAttrs?: Readonly<AttrsValue>
+  close?: CloseButtonOptions
   dismissible?: boolean
-  headerClass?: ClassValue
+  headerAttrs?: Readonly<AttrsValue>
   headerTag?: string
   id?: string
   interval?: number | 'requestAnimationFrame'
@@ -1087,7 +1084,7 @@ export interface BAlertProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProp
   modelValue?: boolean | number
   noHoverPause?: boolean
   noResumeOnHoverLeave?: boolean
-  progressProps?: Omit<BProgressBarProps, 'label' | 'max' | 'value'>
+  progress?: boolean | ProgressOptions
   showOnPause?: boolean
   title?: string
 }
@@ -1121,6 +1118,7 @@ export interface BBadgeProps extends Omit<BLinkProps, 'routerTag'> {
   pill?: boolean
   placement?: CombinedPlacement
   tag?: string
+  variant?: BadgeVariant | null
 }
 
 export interface BBreadcrumbProps {
@@ -1438,6 +1436,11 @@ export interface BThProps {
   scope?: TableThScope
 }
 
+/**
+ * Options for the countdown progress bar of BAlert and BToast. `max`, `value` and `label` are set by the component
+ */
+export type ProgressOptions = Omit<BProgressBarProps, 'label' | 'max' | 'value'>
+
 export interface BProgressBarProps {
   animated?: boolean
   color?: ColorExtendables | null
@@ -1511,13 +1514,9 @@ export interface BDropdownProps extends TeleporterProps, ShowHideProps {
 
 export interface BToastProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProps {
   body?: string
-  bodyClass?: ClassValue
-  closeClass?: ClassValue
-  closeColor?: ColorExtendables
-  closeContent?: string
-  closeLabel?: string
-  closeVariant?: ButtonVariant | null
-  headerClass?: ClassValue
+  bodyAttrs?: Readonly<AttrsValue>
+  close?: CloseButtonOptions
+  headerAttrs?: Readonly<AttrsValue>
   headerTag?: string
   id?: string
   interval?: number | 'requestAnimationFrame'
@@ -1525,13 +1524,12 @@ export interface BToastProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProp
   modelValue?: boolean | number
   noCloseButton?: boolean
   noHoverPause?: boolean
-  noProgress?: boolean
   noResumeOnHoverLeave?: boolean
-  progressProps?: Omit<BProgressBarProps, 'label' | 'max' | 'value'>
+  progress?: boolean | ProgressOptions
   showOnPause?: boolean
-  solid?: boolean
   title?: string
-  toastClass?: ClassValue
+  toastAttrs?: Readonly<AttrsValue>
+  translucent?: boolean
 }
 
 export interface BPopoverProps extends TeleporterProps, ShowHideProps {

@@ -1,106 +1,93 @@
 <template>
-  <Transition
-    v-if="renderRef || contentShowing"
-    v-bind="transitionProps"
-    :appear="!!modelValue || props.visible"
+  <div
+    v-if="isToastMounted"
+    :id="props.id"
+    ref="_element"
+    class="toast"
+    :class="computedClasses"
+    tabindex="0"
+    :role="props.isStatus ? 'status' : 'alert'"
+    :aria-live="props.isStatus ? 'polite' : 'assertive'"
+    aria-atomic="true"
+    v-bind="props.toastAttrs"
   >
-    <div
-      v-show="isToastVisible"
-      :id="props.id"
-      ref="_element"
-      class="toast"
-      :class="[props.toastClass, computedClasses]"
-      tabindex="0"
-      style="display: block"
-      :role="!isToastVisible ? undefined : props.isStatus ? 'status' : 'alert'"
-      :aria-live="!isToastVisible ? undefined : props.isStatus ? 'polite' : 'assertive'"
-      :aria-atomic="!isToastVisible ? undefined : true"
+    <component
+      :is="props.headerTag"
+      v-if="contentShowing && (slots.title || props.title)"
+      class="toast-header"
+      v-bind="props.headerAttrs"
     >
-      <component
-        :is="props.headerTag"
-        v-if="contentShowing && (slots.title || props.title)"
-        class="toast-header"
-        :class="props.headerClass"
-      >
-        <slot name="title" v-bind="sharedSlots">
-          <strong>
-            {{ props.title }}
-          </strong>
-        </slot>
-        <template v-if="!props.noCloseButton">
+      <slot name="title" v-bind="sharedSlots">
+        <strong>
+          {{ props.title }}
+        </strong>
+      </slot>
+      <template v-if="!props.noCloseButton">
+        <BButton
+          v-if="slots.close || props.close?.content"
+          class="ms-auto"
+          :variant="closeVariant"
+          :color="computedCloseColor"
+          v-bind="props.close?.attrs"
+          @click.stop.prevent="hide('close')"
+        >
+          <slot name="close" v-bind="sharedSlots">
+            {{ props.close?.content }}
+          </slot>
+        </BButton>
+        <BCloseButton
+          v-else
+          :aria-label="props.close?.label ?? 'Close'"
+          class="ms-auto"
+          v-bind="props.close?.attrs"
+          @click.stop.prevent="hide('close')"
+        />
+      </template>
+    </component>
+    <template v-if="contentShowing && (slots.default || props.body)">
+      <div class="d-flex">
+        <component
+          :is="computedTag"
+          class="toast-body"
+          v-bind="computedBodyAttrs"
+          @click="computedLink ? hide() : () => {}"
+        >
+          <slot v-bind="sharedSlots">
+            {{ props.body }}
+          </slot>
+        </component>
+
+        <template v-if="!props.noCloseButton && !(slots.title || props.title)">
           <BButton
-            v-if="slots.close || props.closeContent"
-            :class="[props.closeClass]"
-            class="ms-auto"
-            :variant="props.closeVariant"
+            v-if="slots.close || props.close?.content"
+            class="ms-auto btn-close-custom"
+            :variant="closeVariant"
             :color="computedCloseColor"
+            v-bind="props.close?.attrs"
             @click.stop.prevent="hide('close')"
           >
             <slot name="close" v-bind="sharedSlots">
-              {{ props.closeContent }}
+              {{ props.close?.content }}
             </slot>
           </BButton>
           <BCloseButton
             v-else
-            :aria-label="props.closeLabel"
-            class="ms-auto"
-            :class="[props.closeClass]"
+            :aria-label="props.close?.label ?? 'Close'"
+            class="ms-auto btn-close-custom"
+            v-bind="props.close?.attrs"
             @click.stop.prevent="hide('close')"
           />
         </template>
-        <!-- <BCloseButton  class="ms-auto" @click="hide('close')" /> -->
-      </component>
-      <template v-if="contentShowing && (slots.default || props.body)">
-        <div class="d-flex">
-          <component
-            :is="computedTag"
-            class="toast-body"
-            :class="props.bodyClass"
-            v-bind="computedLinkProps"
-            @click="computedLink ? hide() : () => {}"
-          >
-            <slot v-bind="sharedSlots">
-              {{ props.body }}
-            </slot>
-          </component>
-
-          <template v-if="!props.noCloseButton && !(slots.title || props.title)">
-            <BButton
-              v-if="slots.close || props.closeContent"
-              :class="[props.closeClass]"
-              class="ms-auto btn-close-custom"
-              :variant="props.closeVariant"
-              :color="computedCloseColor"
-              @click.stop.prevent="hide('close')"
-            >
-              <slot name="close" v-bind="sharedSlots">
-                {{ props.closeContent }}
-              </slot>
-            </BButton>
-            <BCloseButton
-              v-else
-              :aria-label="props.closeLabel"
-              class="ms-auto btn-close-custom"
-              :class="[props.closeClass]"
-              @click.stop.prevent="hide('close')"
-            />
-          </template>
-        </div>
-      </template>
-      <BProgress
-        v-if="typeof modelValue === 'number' && !props.noProgress"
-        :animated="props.progressProps?.animated"
-        :precision="props.progressProps?.precision"
-        :show-progress="props.progressProps?.showProgress"
-        :show-value="props.progressProps?.showValue"
-        :striped="props.progressProps?.striped"
-        :color="props.progressProps?.color"
-        :max="modelValue"
-        :value="remainingMs"
-        height="4px"
-      />
-    </div>
-  </Transition>
+      </div>
+    </template>
+    <BProgress
+      v-if="typeof modelValue === 'number' && progressOptions !== undefined"
+      v-bind="progressOptions"
+      :max="modelValue"
+      :value="remainingMs"
+      height="4px"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -115,18 +102,15 @@ import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClass
 import {useDefaults} from '../../composables/useDefaults'
 import {useCountdownHover} from '../../composables/useCountdownHover'
 import {useId} from '../../composables/useId'
-import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
+import {useShowHide} from '../../composables/useShowHide'
+import {useCssTransition} from '../../composables/useCssTransition'
 import BButton from '../BButton/BButton.vue'
 
 const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   body: undefined,
-  bodyClass: undefined,
-  closeClass: undefined,
-  closeContent: undefined,
-  closeLabel: 'Close',
-  closeColor: undefined,
-  closeVariant: 'solid',
-  headerClass: undefined,
+  bodyAttrs: undefined,
+  close: undefined,
+  headerAttrs: undefined,
   headerTag: 'div',
   id: undefined,
   initialAnimation: false,
@@ -136,15 +120,14 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   noCloseButton: false,
   noTransition: false,
   noHoverPause: false,
-  noProgress: false,
   noResumeOnHoverLeave: false,
-  progressProps: undefined,
+  progress: false,
   unmountLazy: false,
   showOnPause: true,
   show: false,
-  solid: false,
   title: undefined,
-  toastClass: undefined,
+  toastAttrs: undefined,
+  translucent: false,
   visible: false,
   // Link props
   // All others use defaults
@@ -167,38 +150,43 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   color: undefined,
 })
 const props = useDefaults(_props, 'BToast')
+
+const progressOptions = computed(() =>
+  props.progress === false ? undefined : props.progress === true ? {} : props.progress
+)
 const computedColor = computed(() => resolvePartColor(props.color, {}))
-const computedCloseColor = computed(() => resolvePartColor(props.closeColor, {theme: 'secondary'}))
+const computedCloseColor = computed(() =>
+  resolvePartColor(props.close?.color, {theme: 'secondary'})
+)
+// Only an unset variant falls back to 'solid'; `null` clears it
+const closeVariant = computed(() =>
+  props.close?.variant === undefined ? 'solid' : props.close.variant
+)
 const emit = defineEmits<BToastEmits>()
 const slots = defineSlots<BToastSlots>()
 
-const element = useTemplateRef('_element')
+const element = useTemplateRef<HTMLElement | null>('_element')
 
 const modelValue = defineModel<Exclude<BToastProps['modelValue'], undefined>>({default: false})
 const {computedLink, computedLinkProps} = useBLinkHelper(props)
 
 const computedId = useId(() => props.id, 'toast')
 
-const {
-  showRef,
-  renderRef,
-  hide,
-  toggle,
-  show,
-  buildTriggerableEvent,
-  computedNoAnimation,
-  isVisible,
-  transitionProps,
-  contentShowing,
-} = useLegacyShowHide({modelValue, props, emit: emit as EmitFn, element, id: computedId})
+// Bootstrap v6 fades the toast in and out with `.show` (`@starting-style` covers the fade-in
+// of a freshly mounted toast). `.toast-instant` skips the transition.
+const {run} = useCssTransition(element)
 
-// TODO solid is never used
+const {visible, isActive, instant, contentShowing, show, hide, toggle} = useShowHide(
+  {modelValue, props, emit: emit as EmitFn, element, id: computedId},
+  {transition: () => run()}
+)
+
 const countdownLength = computed(() =>
   typeof modelValue.value === 'boolean' ? 0 : modelValue.value
 )
 
 const {
-  isActive,
+  isActive: isCountdownActive,
   pause,
   restart,
   resume,
@@ -223,10 +211,10 @@ watchEffect(() => {
 })
 
 const computedTag = computed(() => (computedLink.value ? BLink : 'div'))
+const computedBodyAttrs = computed(() => ({...props.bodyAttrs, ...computedLinkProps.value}))
 
-const isToastVisible = computed(
-  () => showRef.value || isActive.value || (props.showOnPause && isPaused.value)
-)
+// Mounted from the start of a show until `hidden`, so the fade-out can run
+const isToastMounted = computed(() => isActive.value || (props.showOnPause && isPaused.value))
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
@@ -238,44 +226,40 @@ const {classes: colorClasses} = useThemeClasses(
 const computedClasses = computed(() => [
   colorClasses.value,
   {
-    show: isVisible.value,
-    fade: !computedNoAnimation.value,
+    'show': visible.value,
+    'toast-instant': props.noTransition || instant.value,
+    'toast-translucent': props.translucent,
   },
 ])
 
-watch(modelValue, (newValue, oldValue) => {
-  if (typeof newValue === 'number' && newValue > 0) {
-    const event = buildTriggerableEvent('show', {cancelable: true, trigger: 'model'})
-    emit('show', event)
-    if (event.defaultPrevented) {
-      emit('show-prevented', buildTriggerableEvent('show-prevented'))
-    } else {
-      restart()
-    }
-  }
-  if (typeof newValue === 'number' && newValue === 0) {
-    stop()
-  }
-  if (newValue === false && typeof oldValue === 'number' && oldValue > 0) {
+// The countdown runs while the toast is shown and restarts each time it is shown again
+watch(visible, (newValue) => {
+  if (newValue && countdownLength.value > 0) {
+    restart()
+  } else if (!newValue) {
     stop()
   }
 })
 
-// isActive in the composable will cause the toast to hide when the countdown is done
-watch(isActive, (newValue) => {
-  if (newValue === false && isPaused.value === false) {
+// The countdown ran out: hide the toast (a numeric `v-model` becomes `0`)
+watch(isCountdownActive, (newValue) => {
+  if (
+    newValue === false &&
+    isPaused.value === false &&
+    typeof modelValue.value === 'number' &&
+    visible.value
+  ) {
     hide()
-    modelValue.value = 0
-    stop()
   }
 })
+
 const sharedSlots = computed<ShowHideSlotsData>(() => ({
   toggle,
   show,
   hide,
   id: computedId.value,
-  visible: showRef.value,
-  active: isActive.value,
+  visible: visible.value,
+  active: isCountdownActive.value,
 }))
 
 defineExpose({

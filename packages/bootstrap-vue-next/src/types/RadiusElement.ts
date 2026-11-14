@@ -1,22 +1,6 @@
+type RadiusNumber = 0 | 1 | 2 | 3 | 4 | 5
 export type RadiusElement =
-  | 'circle'
-  | 'pill'
-  | 'none'
-  | 'sm'
-  | 'md'
-  | 'lg'
-  | '0'
-  | '1'
-  | '2'
-  | '3'
-  | '4'
-  | '5'
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
+  'circle' | 'pill' | 'none' | 'sm' | 'md' | 'lg' | RadiusNumber | `${RadiusNumber}`
 
 /** Per-side corner radius, rendered as `rounded-<side>` / `rounded-<side>-<value>` classes */
 export type RadiusSides = Partial<

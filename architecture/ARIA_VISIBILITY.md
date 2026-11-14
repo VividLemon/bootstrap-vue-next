@@ -8,10 +8,10 @@ With Bootstrap v6 the system is being moved to Bootstrap's **native transition**
 
 During the migration there are two paths:
 
-| Path               | Composables                              | Components                                                                                  |
-| ------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse (+ BAccordionItem, which renders it)                                              |
-| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BModal, BOffcanvas, BDropdown (deferred); BAlert, BToast, BPopover / BTooltip (later batch) |
+| Path               | Composables                              | Components                                                                  |
+| ------------------ | ---------------------------------------- | --------------------------------------------------------------------------- |
+| Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse (+ BAccordionItem, which renders it), BAlert, BToast              |
+| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BModal, BOffcanvas, BDropdown (deferred); BPopover / BTooltip (later batch) |
 
 Both paths share `useShowHideRegistration` (app registry + trigger registry + `aria-expanded`), so ARIA behavior is identical on both.
 

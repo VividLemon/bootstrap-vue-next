@@ -130,7 +130,7 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 
 | Component                                     | Color object props                                                             |
 | --------------------------------------------- | ------------------------------------------------------------------------------ |
-| `BAlert`, `BToast`                            | `close-color`                                                                  |
+| `BAlert`, `BToast`                            | `close.color`                                                                  |
 | `BAvatar`                                     | `badge-color`                                                                  |
 | `BCard`                                       | `header-color`, `body-color`, `footer-color` (with `border`), `subtitle-color` (`fg` only) |
 | `BCardBody`                                   | `subtitle-color` (`fg` only)                                                   |
@@ -149,7 +149,7 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 ### Defaults are merged per key
 
 Some components and parts have a built-in default. For example `BButton`, `BBadge` and `BAvatar` default to
-`:color="{ theme: 'secondary' }"`, `BAlert` to `{ theme: 'info' }`, `ok-color` to `{ theme: 'primary' }`, and `close-color`,
+`:color="{ theme: 'secondary' }"`, `BAlert` to `{ theme: 'info' }`, `ok-color` to `{ theme: 'primary' }`, and BAlert / BToast `close.color`,
 `cancel-color`, `button-color`, `tag-color`, `add-button-color`, and the BModal `header-close-color` and BOffcanvas `header-close.color`, default to `{ theme: 'secondary' }`.
 The object you pass is merged with that default key by key:
 
@@ -205,8 +205,7 @@ Buttons separate **style** from **color**:
 For example `<BButton variant="outline" :color="{ theme: 'danger' }">` renders `.btn.btn-outline.theme-danger`
 (v5 `.btn-outline-danger`), and `<BButton variant="link" :color="{ theme: 'info' }">` renders a link-styled info button.
 Components that render a button for you expose the same pair as a style prop plus a [color object](#prefixed-color-objects), for example
-`ok-variant` / `ok-color`, `cancel-variant` / `cancel-color`, `button-variant` / `button-color`, `split-variant` / `split-color` and
-`close-variant` / `close-color`.
+`ok-variant` / `ok-color`, `cancel-variant` / `cancel-color`, `button-variant` / `button-color`, `split-variant` / `split-color`, and the `variant` / `color` keys of the BAlert / BToast `close` and BOffcanvas `header-close` objects.
 
 ### Alerts, badges, list groups, progress, toasts
 

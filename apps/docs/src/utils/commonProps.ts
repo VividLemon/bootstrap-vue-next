@@ -407,10 +407,11 @@ const commonProps = () =>
       default: 'bottom-start',
       description: 'Placement of a floating element',
     },
-    progressProps: {
-      type: "Omit<BProgressBarProps, 'label' | 'max' | 'value'>",
-      default: undefined,
-      description: 'Configures the progress bar. No progress bar is shown if undefined',
+    progress: {
+      type: 'boolean | ProgressOptions',
+      default: false,
+      description:
+        'Shows a countdown progress bar when `model-value` is a number. `true` uses the defaults; an object (`animated`, `color`, `precision`, `showProgress`, `showValue`, `striped`) shows it with those options',
     },
     showOnPause: {
       type: 'boolean',
