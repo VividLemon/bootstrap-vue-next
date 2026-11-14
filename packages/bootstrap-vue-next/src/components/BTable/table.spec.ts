@@ -24,20 +24,19 @@ const multiSort: TableItem<SimplePerson>[] = [
 ]
 
 const simpleFields: Exclude<TableField<SimplePerson>, string>[] = [
-  {key: 'first_name', label: 'First Name', sortable: true},
-  {key: 'age', label: 'Age', sortable: true},
+  {key: 'first_name', label: 'First Name', sort: true},
+  {key: 'age', label: 'Age', sort: true},
 ]
 
 const formattedFields: Exclude<TableField<SimplePerson>, string>[] = [
   {
     key: 'is_adult',
     label: 'Adult?',
-    sortable: true,
-    sortByFormatted: true,
+    sort: {byFormatted: true},
     formatter: ({item}) => (item ? (item.age >= 18 ? 'Yes' : 'No') : 'Something went wrong'),
   },
-  {key: 'first_name', label: 'First Name', sortable: true},
-  {key: 'age', label: 'Age', sortable: true},
+  {key: 'first_name', label: 'First Name', sort: true},
+  {key: 'age', label: 'Age', sort: true},
 ]
 
 class Person {
@@ -307,10 +306,9 @@ describe('single-sort', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        sortByFormatted: ({value}) => (value as string).slice(1),
+        sort: {byFormatted: ({value}) => (value as string).slice(1)},
       },
-      {key: 'age', label: 'Age', sortable: true},
+      {key: 'age', label: 'Age', sort: true},
     ]
 
     const wrapper = mount(BTable, {
@@ -557,8 +555,8 @@ describe('object-persistence', () => {
               {id: 4, text: 'D'},
             ],
             'fields': [
-              {key: 'id', sortable: true},
-              {key: 'text', sortable: true},
+              {key: 'id', sort: true},
+              {key: 'text', sort: true},
             ],
             'selectedItems': [],
             'onUpdate:selectedItems': (value) => wrapper.setProps({selectedItems: value}),
@@ -593,7 +591,7 @@ describe('object-persistence', () => {
       })
       const $table = wrapper.get('table')
       expect($table.classes()).toContain('b-table-busy')
-      expect($table.attributes('ariabusy')).toBe('true')
+      expect($table.attributes('aria-busy')).toBe('true')
     })
   })
 
@@ -644,7 +642,7 @@ describe('object-persistence', () => {
         const tds = tr.findAll('td')
         tds.forEach((td, colIndex) => {
           const field = fields[colIndex]
-          expect(td.attributes('data-label')).toBe(field.label)
+          expect(td.attributes('data-cell')).toBe(field.label)
         })
       })
     })
@@ -695,58 +693,32 @@ describe('object-persistence', () => {
         const tds = tr.findAll('td')
         tds.forEach((td, colIndex) => {
           const field = fields[colIndex]
-          expect(td.attributes('data-label')).toBe(field.label)
+          expect(td.attributes('data-cell')).toBe(field.label)
         })
       })
     })
 
-    it('does not have duplicate labels when both labelstacked and label', () => {
-      const fields = [
-        {
-          key: 'id',
-          label: 'The ID',
-        },
-        {
-          key: 'first_name',
-          label: 'this is the first name',
-        },
-        {
-          key: 'last_name',
-          label: 'this is the last name',
-        },
-      ]
-
-      const items = [
-        {
-          id: 1,
-          first_name: 'Ringo',
-          last_name: 'Starr',
-        },
-        {
-          id: 2,
-          first_name: 'John',
-          last_name: 'Lennon',
-        },
-        {
-          id: 3,
-          first_name: 'Paul',
-          last_name: 'McCartney',
-        },
-      ]
-
+    it('does not render the removed stacked label elements or data-label', () => {
       const wrapper = mount(BTable, {
         props: {
-          fields,
-          items,
+          fields: ['id', 'name'],
+          items: [{id: 1, name: 'Ringo'}],
           stacked: true,
-          labelStacked: true,
         },
       })
+      expect(wrapper.findAll('label').length).toBe(0)
+      expect(wrapper.findAll('[data-label]').length).toBe(0)
+      expect(wrapper.findAll('[data-cell]').length).toBe(2)
+    })
 
-      const labels = wrapper.findAll('label')
-      expect(labels.length).toBe(9)
-      const dataLabels = wrapper.findAll('[data-label]')
-      expect(dataLabels.length).toBe(0)
+    it('does not add data-cell when not stacked', () => {
+      const wrapper = mount(BTable, {
+        props: {
+          fields: ['id', {key: 'name', label: 'Name'}],
+          items: [{id: 1, name: 'Ringo'}],
+        },
+      })
+      expect(wrapper.findAll('[data-cell]').length).toBe(0)
     })
   })
 })
@@ -812,10 +784,9 @@ describe('custom sort comparers', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        sortCompare: fieldLevelCompare,
+        sort: {compare: fieldLevelCompare},
       },
-      {key: 'age', label: 'Age', sortable: true},
+      {key: 'age', label: 'Age', sort: true},
     ]
 
     const wrapper = mount(BTable, {
@@ -869,7 +840,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'full_name',
         label: 'Full Name',
-        sortable: true,
+        sort: true,
         accessor: (item: PersonWithNested) => item.name.first,
       },
       {key: 'id', label: 'ID'},
@@ -895,7 +866,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'full_name',
         label: 'Full Name',
-        sortable: true,
+        sort: true,
         accessor: (item: PersonWithNested) => item.name.first,
       },
       {key: 'id', label: 'ID'},
@@ -933,7 +904,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'name',
         label: 'Name',
-        sortable: true,
+        sort: true,
         accessor: 'first_name',
       },
       {key: 'id', label: 'ID'},
@@ -959,7 +930,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'full_name',
         label: 'Full Name',
-        sortable: true,
+        sort: true,
         accessor: (item: PersonWithNested) => item.name.first,
       },
       {key: 'id', label: 'ID'},
@@ -1000,7 +971,7 @@ describe('sorting with accessor function', () => {
       {
         key: 'name',
         label: 'Name',
-        sortable: true,
+        sort: true,
         accessor: 'first_name',
       },
       {key: 'id', label: 'ID'},
@@ -1044,11 +1015,9 @@ describe('combined sorting features', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        sortCompare: reverseCompare,
-        initialSortDirection: 'desc',
+        sort: {compare: reverseCompare, initialDirection: 'desc'},
       },
-      {key: 'age', label: 'Age', sortable: true},
+      {key: 'age', label: 'Age', sort: true},
     ]
 
     const wrapper = mount(BTable, {
@@ -1083,12 +1052,11 @@ describe('combined sorting features', () => {
     }
 
     const fieldsWithMixedComparers: Exclude<TableField<SimplePerson>, string>[] = [
-      {key: 'first_name', label: 'First Name', sortable: true}, // Uses default comparer
+      {key: 'first_name', label: 'First Name', sort: true}, // Uses default comparer
       {
         key: 'age',
         label: 'Age',
-        sortable: true,
-        sortCompare: ageCompare,
+        sort: {compare: ageCompare},
       },
     ]
 
@@ -1138,14 +1106,12 @@ describe('initial sort direction', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        initialSortDirection: 'desc',
+        sort: {initialDirection: 'desc'},
       },
       {
         key: 'age',
         label: 'Age',
-        sortable: true,
-        initialSortDirection: 'asc',
+        sort: {initialDirection: 'asc'},
       },
     ]
 
@@ -1202,10 +1168,9 @@ describe('initial sort direction', () => {
       {
         key: 'first_name',
         label: 'First Name',
-        sortable: true,
-        initialSortDirection: 'last',
+        sort: {initialDirection: 'last'},
       },
-      {key: 'age', label: 'Age', sortable: true},
+      {key: 'age', label: 'Age', sort: true},
     ]
 
     const wrapper = mount(BTable, {
@@ -1305,9 +1270,9 @@ describe('initial sort direction', () => {
       props: {
         items: simpleItems,
         fields: [
-          {key: 'first_name', label: 'First Name', sortable: true},
-          {key: 'age', label: 'Age', sortable: false},
-          {key: 'last_name', label: 'Last Name', sortable: true},
+          {key: 'first_name', label: 'First Name', sort: true},
+          {key: 'age', label: 'Age'},
+          {key: 'last_name', label: 'Last Name', sort: true},
         ],
         sortIconLeft: true,
       },
@@ -1359,8 +1324,8 @@ describe('initial sort direction', () => {
       props: {
         items: simpleItems,
         fields: [
-          {key: 'first_name', label: 'First Name', sortable: true, initialSortDirection: 'last'},
-          {key: 'age', label: 'Age', sortable: true, initialSortDirection: 'last'},
+          {key: 'first_name', label: 'First Name', sort: {initialDirection: 'last'}},
+          {key: 'age', label: 'Age', sort: {initialDirection: 'last'}},
         ],
         sortBy: [
           {key: 'first_name', order: 'desc'},
@@ -1396,8 +1361,8 @@ describe('initial sort direction', () => {
       props: {
         items: simpleItems,
         fields: [
-          {key: 'first_name', label: 'First Name', sortable: true},
-          {key: 'age', label: 'Age', sortable: true},
+          {key: 'first_name', label: 'First Name', sort: true},
+          {key: 'age', label: 'Age', sort: true},
         ],
         initialSortDirection: 'desc',
         mustSort: true,
@@ -1439,8 +1404,8 @@ describe('initial sort direction', () => {
       props: {
         items: simpleItems,
         fields: [
-          {key: 'first_name', label: 'First Name', sortable: true},
-          {key: 'age', label: 'Age', sortable: true},
+          {key: 'first_name', label: 'First Name', sort: true},
+          {key: 'age', label: 'Age', sort: true},
         ],
         initialSortDirection: 'desc',
         // mustSort is not set
@@ -1767,8 +1732,8 @@ describe('event emissions', () => {
     {id: 3, first_name: 'Bob', age: 35},
   ]
   const fields: Exclude<TableField<(typeof items)[0]>, string>[] = [
-    {key: 'first_name', label: 'Name', sortable: true},
-    {key: 'age', label: 'Age', sortable: true},
+    {key: 'first_name', label: 'Name', sort: true},
+    {key: 'age', label: 'Age', sort: true},
   ]
 
   it('emits sorted event when column header is clicked', async () => {
@@ -1929,7 +1894,7 @@ describe('event emissions', () => {
     const emittedEvent = wrapper.emitted('head-clicked')?.[0]?.[0]
     expect(emittedEvent).toEqual({
       key: 'age',
-      field: expect.objectContaining({key: 'age', label: 'Age', sortable: true}),
+      field: expect.objectContaining({key: 'age', label: 'Age', sort: true}),
       event: expect.any(Object),
       isFooter: false,
     })
@@ -2189,7 +2154,7 @@ describe('BTable busy state', () => {
           items: [],
           fields: ['name'],
           showEmpty: true,
-          emptyText: 'Custom empty message',
+          empty: {text: 'Custom empty message'},
         },
       })
       expect(wrapper.text()).toContain('Custom empty message')
@@ -2202,7 +2167,7 @@ describe('BTable busy state', () => {
           fields: ['name'],
           showEmpty: true,
           filter: 'search',
-          emptyFilteredText: 'Custom filtered message',
+          empty: {filteredText: 'Custom filtered message'},
         },
       })
       expect(wrapper.text()).toContain('Custom filtered message')
@@ -2226,8 +2191,7 @@ describe('BTable busy state', () => {
           items: [],
           fields: ['name'],
           showEmpty: true,
-          emptyText: 'Nothing here',
-          emptyFilteredText: 'Nothing filtered',
+          empty: {text: 'Nothing here', filteredText: 'Nothing filtered'},
         },
         slots: {
           empty: (scope: Record<string, unknown>) => {
@@ -2238,8 +2202,7 @@ describe('BTable busy state', () => {
       })
       expect(wrapper.text()).toContain('Empty')
       expect(receivedScope).toBeDefined()
-      expect(receivedScope?.emptyText).toBe('Nothing here')
-      expect(receivedScope?.emptyFilteredText).toBe('Nothing filtered')
+      expect(receivedScope?.empty).toEqual({text: 'Nothing here', filteredText: 'Nothing filtered'})
       expect(receivedScope?.fields).toBeDefined()
       expect(receivedScope?.items).toBeDefined()
     })
@@ -2908,52 +2871,108 @@ describe('BTable additional event emissions', () => {
   })
 })
 
-describe('tbodyTrClass as function', () => {
-  it('calls tbodyTrClass function with item and row type', () => {
-    const trClassFn = vi.fn<(item: {name: string} | null) => string>(
-      (item: {name: string} | null) => (item ? 'has-item' : 'no-item')
+describe('tbodyTrAttrs', () => {
+  it('calls the tbodyTrAttrs function with item and row type', () => {
+    const trAttrsFn = vi.fn<(item: {name: string} | null) => {class: string}>(
+      (item: {name: string} | null) => ({class: item ? 'has-item' : 'no-item'})
     )
-    mount(BTable, {
+    const wrapper = mount(BTable, {
       props: {
         items: [{name: 'test'}],
         fields: ['name'],
-        tbodyTrClass: trClassFn,
+        tbody: {trAttrs: trAttrsFn},
       },
     })
-    expect(trClassFn).toHaveBeenCalled()
-    const [rowCall] = trClassFn.mock.calls.filter((c) => c[0] !== null)
+    expect(trAttrsFn).toHaveBeenCalled()
+    const [rowCall] = trAttrsFn.mock.calls.filter((c) => c[0] !== null)
     expect(rowCall).toBeDefined()
     expect(rowCall?.[0]).toEqual({name: 'test'})
+    expect(wrapper.get('tbody tr').classes()).toContain('has-item')
   })
 
-  it('calls tbodyTrClass with null and "table-busy" for busy row', () => {
-    const trClassFn = vi.fn<() => string>(() => 'custom-class')
-    mount(BTable, {
+  it('calls tbodyTrAttrs with null and "table-busy" for the busy row', () => {
+    const trAttrsFn = vi.fn<() => {class: string}>(() => ({class: 'custom-class'}))
+    const wrapper = mount(BTable, {
       props: {
         items: [{name: 'test'}],
         fields: ['name'],
         busy: true,
-        tbodyTrClass: trClassFn,
+        tbody: {trAttrs: trAttrsFn},
       },
       slots: {
         'table-busy': '<div>Loading...</div>',
       },
     })
-    expect(trClassFn).toHaveBeenCalledWith(null, 'table-busy')
+    expect(trAttrsFn).toHaveBeenCalledWith(null, 'table-busy')
+    const $busy = wrapper.get('tbody tr.b-table-busy-slot')
+    expect($busy.classes()).toContain('custom-class')
   })
 
-  it('applies string tbodyTrClass to all rows', () => {
+  it('merges a static tbodyTrAttrs class into all rows', () => {
     const wrapper = mount(BTable, {
       props: {
         items: [{name: 'Alice'}, {name: 'Bob'}],
         fields: ['name'],
-        tbodyTrClass: 'custom-row-class',
+        tbody: {trAttrs: {'class': 'custom-row-class', 'data-foo': 'bar'}},
       },
     })
     const rows = wrapper.findAll('tbody tr')
     rows.forEach((row) => {
       expect(row.classes()).toContain('custom-row-class')
+      expect(row.attributes('data-foo')).toBe('bar')
     })
+  })
+
+  it('merges the user class with the selection classes', async () => {
+    const items = [{name: 'Alice'}, {name: 'Bob'}]
+    const wrapper = mount(BTable, {
+      props: {
+        items,
+        fields: ['name'],
+        selectable: true,
+        selectedItems: [items[0]],
+        tbody: {trAttrs: (item: {name: string} | null) => ({class: `row-${item?.name}`})},
+      },
+    })
+    const [first, second] = wrapper.findAll('tbody tr')
+    expect(first.classes()).toContain('row-Alice')
+    expect(first.classes()).toContain('selected')
+    expect(first.classes()).toContain('theme-primary')
+    expect(second.classes()).toContain('row-Bob')
+    expect(second.classes()).not.toContain('selected')
+  })
+})
+
+describe('BTable attrs merging', () => {
+  it('merges tableAttrs with its own classes and aria-busy', () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: [{name: 'test'}],
+        fields: ['name'],
+        busy: true,
+        selectable: true,
+        tableAttrs: {'class': 'custom-table', 'data-foo': 'bar'},
+      },
+    })
+    const $table = wrapper.get('table')
+    expect($table.classes()).toContain('custom-table')
+    expect($table.classes()).toContain('b-table-busy')
+    expect($table.classes()).toContain('b-table-selectable')
+    expect($table.attributes('aria-busy')).toBe('true')
+    expect($table.attributes('data-foo')).toBe('bar')
+  })
+
+  it('merges fieldColumnAttrs with the sortable column class', () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: [{name: 'test'}],
+        fields: [{key: 'name', sort: true}],
+        fieldColumnAttrs: (field: {key: string}) => ({class: `col-${field.key}`}),
+      },
+    })
+    const $th = wrapper.get('thead th')
+    expect($th.classes()).toContain('col-name')
+    expect($th.classes()).toContain('b-table-sortable-column')
   })
 })
 
@@ -2990,7 +3009,7 @@ describe('busy state aria-busy', () => {
         busy: true,
       },
     })
-    expect(wrapper.get('table').attributes('ariabusy')).toBe('true')
+    expect(wrapper.get('table').attributes('aria-busy')).toBe('true')
   })
 
   it('does not set aria-busy when not busy', () => {
@@ -3001,7 +3020,7 @@ describe('busy state aria-busy', () => {
         busy: false,
       },
     })
-    expect(wrapper.get('table').attributes('ariabusy')).toBe('false')
+    expect(wrapper.get('table').attributes('aria-busy')).toBe('false')
   })
 
   it('applies b-table-busy class when busy', () => {
@@ -3257,6 +3276,39 @@ describe('mustSort prop', () => {
     const sortEvents = wrapper.emitted('sorted') as BTableSortBy[][]
     expect(sortEvents[2][0]).toMatchObject({order: undefined})
   })
+
+  it('prevents clearing sort for a field with sort.must', async () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: simpleItems,
+        fields: [{key: 'age', sort: {must: true}}],
+      },
+    })
+    const header = wrapper.get('thead th')
+    await header.trigger('click')
+    await header.trigger('click')
+    await header.trigger('click')
+
+    const sortEvents = wrapper.emitted('sorted') as BTableSortBy[][]
+    expect(sortEvents[2][0]).toMatchObject({order: 'asc'})
+  })
+
+  it('lets a field with sort.must false clear sort when the table has mustSort', async () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: simpleItems,
+        fields: [{key: 'age', sort: {must: false}}],
+        mustSort: true,
+      },
+    })
+    const header = wrapper.get('thead th')
+    await header.trigger('click')
+    await header.trigger('click')
+    await header.trigger('click')
+
+    const sortEvents = wrapper.emitted('sorted') as BTableSortBy[][]
+    expect(sortEvents[2][0]).toMatchObject({order: undefined})
+  })
 })
 
 describe('slot pass-through', () => {
@@ -3339,7 +3391,7 @@ describe('sortNullLast', () => {
     const wrapper = mount(BTable, {
       props: {
         items: itemsWithNulls,
-        fields: [{key: 'name', sortable: true}],
+        fields: [{key: 'name', sort: true}],
         sortBy: [{key: 'name', order: 'asc'}],
       },
     })
@@ -3355,7 +3407,7 @@ describe('sortNullLast', () => {
     const wrapper = mount(BTable, {
       props: {
         items: itemsWithNulls,
-        fields: [{key: 'name', sortable: true}],
+        fields: [{key: 'name', sort: true}],
         sortBy: [{key: 'name', order: 'asc'}],
         sortNullLast: true,
       },
@@ -3374,7 +3426,7 @@ describe('sortNullLast', () => {
     const wrapper = mount(BTable, {
       props: {
         items: itemsWithNulls,
-        fields: [{key: 'name', sortable: true}],
+        fields: [{key: 'name', sort: true}],
         sortBy: [{key: 'name', order: 'desc'}],
         sortNullLast: true,
       },
@@ -3397,7 +3449,7 @@ describe('noFooterSorting', () => {
     {id: 3, name: 'Bob'},
   ]
   const fields: Exclude<TableField<(typeof items)[0]>, string>[] = [
-    {key: 'name', label: 'Name', sortable: true},
+    {key: 'name', label: 'Name', sort: true},
   ]
 
   it('sorts when clicking the footer by default (footClone enabled)', async () => {
@@ -3438,7 +3490,7 @@ describe('noFooterSorting', () => {
 describe('label-sort props', () => {
   const items = [{name: 'Alice'}, {name: 'Bob'}]
   const fields: Exclude<TableField<(typeof items)[0]>, string>[] = [
-    {key: 'name', label: 'Name', sortable: true},
+    {key: 'name', label: 'Name', sort: true},
   ]
 
   it('shows default sort ascending label for unsorted sortable column', () => {
@@ -3453,7 +3505,7 @@ describe('label-sort props', () => {
 
   it('shows custom label-sort-asc for unsorted sortable column', () => {
     const wrapper = mount(BTable, {
-      props: {items, fields, labelSortAsc: 'Sort A-Z'},
+      props: {items, fields, labels: {sortAsc: 'Sort A-Z'}},
     })
     const srOnly = wrapper.find('thead th .visually-hidden')
     expect(srOnly.text()).toBe('Sort A-Z')
@@ -3477,7 +3529,7 @@ describe('label-sort props', () => {
 
   it('shows custom label-sort-desc', () => {
     const wrapper = mount(BTable, {
-      props: {items, fields, sortBy: [{key: 'name', order: 'asc'}], labelSortDesc: 'Sort Z-A'},
+      props: {items, fields, sortBy: [{key: 'name', order: 'asc'}], labels: {sortDesc: 'Sort Z-A'}},
     })
     const srOnly = wrapper.find('thead th .visually-hidden')
     expect(srOnly.text()).toBe('Sort Z-A')
@@ -3489,7 +3541,7 @@ describe('label-sort props', () => {
         items,
         fields,
         sortBy: [{key: 'name', order: 'desc'}],
-        labelSortClear: 'Remove sort',
+        labels: {sortClear: 'Remove sort'},
       },
     })
     const srOnly = wrapper.find('thead th .visually-hidden')
@@ -3498,7 +3550,7 @@ describe('label-sort props', () => {
 
   it('does not show sort label for non-sortable columns', () => {
     const fieldsNoSort: Exclude<TableField<(typeof items)[0]>, string>[] = [
-      {key: 'name', label: 'Name', sortable: false},
+      {key: 'name', label: 'Name'},
     ]
     const wrapper = mount(BTable, {
       props: {items, fields: fieldsNoSort},
@@ -3543,7 +3595,7 @@ describe('aria-multiselectable', () => {
 describe('context-changed event', () => {
   const items = [{name: 'Alice'}, {name: 'Bob'}]
   const fields: Exclude<TableField<(typeof items)[0]>, string>[] = [
-    {key: 'name', label: 'Name', sortable: true},
+    {key: 'name', label: 'Name', sort: true},
   ]
 
   it('emits context-changed when filter changes', async () => {
@@ -3592,7 +3644,6 @@ describe('filterByFormatted as function', () => {
       {
         key: 'score',
         label: 'Grade',
-        sortable: false,
         filterByFormatted: true,
         formatter: ({value}) => {
           const score = Number(value)
@@ -3614,7 +3665,6 @@ describe('filterByFormatted as function', () => {
       {
         key: 'score',
         label: 'Score',
-        sortable: false,
         filterByFormatted: ({value}) => {
           const score = Number(value)
           return score >= 90 ? 'Excellent' : 'Good'
@@ -3630,21 +3680,35 @@ describe('filterByFormatted as function', () => {
     expect(rows[0].find('td').text()).toBe('92') // raw value shown since no formatter
   })
 
-  it('keeps a function thAttr and adds aria-sort to its result', () => {
+  it('keeps a function thAttrs and adds aria-sort to its result', () => {
     const wrapper = mount(BTable, {
       props: {
         items: [{name: 'A'}],
         fields: [
           {
             key: 'name',
-            sortable: true,
-            thAttr: ({type}: {type: string}) => ({'data-th': type}),
+            sort: true,
+            thAttrs: ({type}: {type: string}) => ({'data-th': type}),
           },
         ],
       },
     })
     const th = wrapper.get('thead th')
     expect(th.attributes('data-th')).toBe('top')
+    expect(th.attributes('aria-sort')).toBe('none')
+  })
+
+  it('merges a thAttrs class with the sort icon class', () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: [{name: 'A'}],
+        sortIconLeft: true,
+        fields: [{key: 'name', sort: true, thAttrs: {class: 'from-field'}}],
+      },
+    })
+    const th = wrapper.get('thead th')
+    expect(th.classes()).toContain('from-field')
+    expect(th.classes()).toContain('b-table-sort-icon-left')
     expect(th.attributes('aria-sort')).toBe('none')
   })
 })

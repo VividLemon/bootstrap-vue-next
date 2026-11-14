@@ -16,8 +16,8 @@ const testItems: TestPerson[] = [
 ]
 
 const testFields = [
-  {key: 'name', label: 'Name', sortable: true},
-  {key: 'age', label: 'Age', sortable: true},
+  {key: 'name', label: 'Name', sort: true},
+  {key: 'age', label: 'Age', sort: true},
 ]
 
 describe('BTable keyboard navigation', () => {
@@ -38,8 +38,8 @@ describe('BTable keyboard navigation', () => {
 
     it('should not add tabindex to non-sortable headers', () => {
       const nonSortableFields = [
-        {key: 'name', label: 'Name', sortable: false},
-        {key: 'age', label: 'Age', sortable: false},
+        {key: 'name', label: 'Name'},
+        {key: 'age', label: 'Age'},
       ]
 
       const wrapper = mount(BTable, {

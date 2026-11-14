@@ -1,14 +1,6 @@
 <template>
-  <td
-    :class="computedClasses"
-    :colspan="props.colspan"
-    :rowspan="props.rowspan"
-    :data-label="props.stackedHeading"
-  >
-    <div v-if="props.stackedHeading">
-      <slot />
-    </div>
-    <slot v-else />
+  <td :class="computedClasses" :colspan="props.colspan" :rowspan="props.rowspan">
+    <slot />
   </td>
 </template>
 
@@ -21,7 +13,6 @@ import {computed} from 'vue'
 const _props = withDefaults(defineProps<BTdProps>(), {
   colspan: undefined,
   rowspan: undefined,
-  stackedHeading: undefined,
   stickyColumn: false,
   color: undefined,
 })
@@ -35,11 +26,6 @@ const computedClasses = computed(() => [
   toColorClasses('fg', computedColor.value.fg),
   {
     'b-table-sticky-column': props.stickyColumn,
-    'table-b-table-default':
-      props.stickyColumn &&
-      computedColor.value.theme == null &&
-      computedColor.value.bg == null &&
-      computedColor.value.fg == null,
   },
 ])
 </script>

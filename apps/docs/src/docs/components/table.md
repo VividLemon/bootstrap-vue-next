@@ -40,10 +40,10 @@ cells (themes), and for triggering additional row detail. The type [TableItem](/
 defines the supported optional item record modifier properties
 (make sure your field keys do not conflict with these names):
 
-| Property        | Type                                   | Description                                                                                                                                                                                                                                                |
-| --------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `_cellThemes` | Partial<Record<keyof T, ThemeColor>> | Bootstrap theme applied to individual cells. Keyed by field (See the [Color Themes](/docs/reference/color-variants) for supported values). These themes map to the class `theme-${theme}`. |
-| `_rowTheme`   | ThemeColor                           | Bootstrap theme applied to the entire row (See the [Color Themes](/docs/reference/color-variants) for supported values). This theme maps to the class `theme-${theme}` |
+| Property      | Type                                         | Description                                                                                                                                                                                                               |
+| ------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `_cellColors` | `Partial<Record<keyof T, ColorExtendables>>` | Colors for individual cells, keyed by field key: `theme`, `bg` and `fg` render `theme-*`, `bg-*` and `fg-*` classes. Keys left out fall back to the field's `color` (See [Color Themes](/docs/reference/color-variants)). |
+| `_rowColor`   | `ColorExtendables`                           | Color for the entire row: `theme`, `bg` and `fg` render `theme-*`, `bg-*` and `fg-*` classes (See [Color Themes](/docs/reference/color-variants)).                                                                        |
 
 ### Example: Using themes for table cells
 
@@ -104,37 +104,30 @@ The `accessor` can be:
 
 The following field properties (defined as [TableField](/docs/types#tableitem)) are recognized:
 
-| Property               | Type                                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `key`                  | `string`                                                                                     | **Required.** Unique identifier for the column. Used for generating slot names (e.g., `head(<key>)`, `cell(<key>)`) and tracking column state. This value must be a simple string and does **not** support nested paths like `name.firstName`. For nested or computed data access, use the `accessor` property. See the [migration knowledge base](/docs/migration-data/components/btable) for details on migrating from nested keys.                                                                                |
-| `accessor`             | `string \| ((item: T) => unknown)`                                                           | **Optional.** Specifies how to read the value from each row item. Can be a string representing a root-level property name (e.g., `'email'`), or a function that receives the row item and returns the value (recommended for nested or computed values). If omitted, defaults to using the `key` property. **Note:** String accessors only work for root-level properties; use a function for nested paths (e.g., `(item) => item.name.first`).                                                              |
-| `label`                | `string`                                                                                     | Appears in the columns table header (and footer if `foot-clone` is set). Defaults to the field's key (in humanized format) if not provided. It's possible to use empty labels by assigning an empty string `""` but be sure you also set `headerTitle` to provide non-sighted users a hint about the column contents.                                                                                                                                                                                        |
-| `headerTitle`          | `string`                                                                                     | Text to place on the fields header `<th>` attribute `title`. Defaults to no `title` attribute.                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `headerAbbr`           | `string`                                                                                     | Text to place on the fields header `<th>` attribute `abbr`. Set this to the unabbreviated version of the label (or title) if label (or title) is an abbreviation. Defaults to no `abbr` attribute.                                                                                                                                                                                                                                                                                                           |
-| `class`                | `ClassValue`                                                                                 | Class name (or array of class names) to add to `<th>` **and** `<td>` in the column.                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| `formatter`            | `TableFieldFormatter<T>`                                                                     | A formatter callback function can be used instead of (or in conjunction with) scoped field slots. The formatter receives a single parameter object with the signature `({value, key, item}) => string`. The `value` is determined by the `accessor` (or `key` if no accessor is provided). Refer to [Custom Data Rendering](#custom-data-rendering) for more details.                                                                                                                                        |
-| `sortable`             | `boolean`                                                                                    | Enable sorting on this column. Refer to the [Sorting](#sorting) Section for more details.                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `initialSortDirection` | `BTableInitialSortDirection`                                                                 | Control the sort direction on this column when it becomes sorted. Refer to the [Change initial sort direction](#change-initial-sort-direction) Section for more details.                                                                                                                                                                                                                                                                                                                                     |
-| `sortByFormatted`      | `boolean \| TableFieldFormatter<T>`                                                          | Sort the column by the result of the field's `formatter` callback function when set to `true`. Default is `false`. Boolean has no effect if the field does not have a `formatter`. Optionally accepts a formatter function _reference_ to format the value for sorting purposes only. Refer to the [Sorting](#sorting) Section for more details.                                                                                                                                                             |
-| `filterByFormatted`    | `boolean \| TableFieldFormatter<T>`                                                          | Filter the column by the result of the field's `formatter` callback function when set to `true`. Default is `false`. Boolean has no effect if the field does not have a `formatter`. Optionally accepts a formatter function _reference_ to format the value for filtering purposes only. Refer to the [Filtering](#filtering) section for more details.                                                                                                                                                     |
-| `sortCompare`          | `BTableSortByComparerFunction`                                                               | A custom comparison function for sorting this field. The function signature is `(a: T, b: T, key: string) => number`. If not provided, uses default string comparison. See [Custom Sort Comparers](#custom-sort-comparers) for more details.                                                                                                                                                                                                                                                                 |
-| `tdClass`              | `TableStrictClassValue \| ((value: unknown, key: string, item: T) => TableStrictClassValue)` | Class name (or array of class names) to add to `<tbody>` data `<td>` cells in the column. If custom classes per cell are required, a callback function can be specified instead. See the typescript definition for accepted parameters and return types.                                                                                                                                                                                                                                                     |
-| `thClass`              | `ClassValue`                                                                                 | Class name (or array of class names) to add to this field's `<thead>`/`<tfoot>` heading `<th>` cell.                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `thStyle`              | `StyleValue`                                                                                 | CSS styles you would like to apply to the table `<thead>`/`<tfoot>` field `<th>` cell.                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `theme`              | `ThemeColor \| null`                                                                         | Apply contextual `theme-*` class to all the `<th>` **and** `<td>` in the column.                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `tdAttr`               | `AttrsValue \| (({value, key, item}) => AttrsValue)`                                         | Object representing additional attributes to apply to the `<tbody>` field `<td>` cell. If custom attributes per cell are required, a callback function can be specified. The function receives a single parameter object with properties `{value, key, item}` and should return an object of attributes.                                                                                                                                                                                                     |
-| `thAttr`               | `AttrsValue \| (({value, key, item, type}) => AttrsValue)`                                   | Object representing additional attributes to apply to the field's `<thead>`/`<tfoot>` heading `<th>` cell. If the field's `isRowHeader` is set to `true`, the attributes will also apply to the `<tbody>` field `<th>` cell. If custom attributes per cell are required, a callback function can be specified. The function receives a single parameter object with properties `{value, key, item, type}` (where `type` is `'top'` or `'bottom'` for thead/tfoot) and should return an object of attributes. |
-| `isRowHeader`          | `boolean`                                                                                    | When set to `true`, the field's item data cell will be rendered with `<th>` rather than the default of `<td>`.                                                                                                                                                                                                                                                                                                                                                                                               |
-| `stickyColumn`         | `boolean`                                                                                    | When set to `true`, and the table in [responsive](#responsive-tables) mode or has [sticky headers](#sticky-headers), will cause the column to become fixed to the left when the table's horizontal scrollbar is scrolled. See [Sticky columns](#sticky-columns) for more details                                                                                                                                                                                                                             |
-| `scope`                | `TableThScope`                                                                               | The scope attribute for the field's `<th>` element. This is used to specify the relationship of the header cell to the data cells. Valid values are `row`, `col`, `rowgroup`, and `colgroup`. Defaults to `colgroup` if `colspan` specified, `rowgroup` if `rowspan` specified, otherwise `col`.                                                                                                                                                                                                             |
+| Property            | Type                                | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `key`               | `string`                            | **Required.** Unique identifier for the column. Used for generating slot names (e.g., `head(<key>)`, `cell(<key>)`) and tracking column state. This value must be a simple string and does **not** support nested paths like `name.firstName`. For nested or computed data access, use the `accessor` property. See the [migration knowledge base](/docs/migration-data/components/btable) for details on migrating from nested keys.                                                                                                                        |
+| `accessor`          | `string \| ((item: T) => unknown)`  | **Optional.** Specifies how to read the value from each row item. Can be a string representing a root-level property name (e.g., `'email'`), or a function that receives the row item and returns the value (recommended for nested or computed values). If omitted, defaults to using the `key` property. **Note:** String accessors only work for root-level properties; use a function for nested paths (e.g., `(item) => item.name.first`).                                                                                                              |
+| `label`             | `string`                            | Appears in the columns table header (and footer if `foot-clone` is set). Defaults to the field's key (in humanized format) if not provided. It's possible to use empty labels by assigning an empty string `""` but be sure you also set `headerTitle` to provide non-sighted users a hint about the column contents.                                                                                                                                                                                                                                        |
+| `header`            | `{ title?: string; abbr?: string }` | Attributes for the field's header `<th>`: `title` sets its `title` attribute; `abbr` sets its `abbr` attribute (set it to the unabbreviated label when the label is abbreviated).                                                                                                                                                                                                                                                                                                                                                                            |
+| `class`             | `ClassValue`                        | Class name (or array of class names) to add to `<th>` **and** `<td>` in the column.                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `formatter`         | `TableFieldFormatter<T>`            | A formatter callback function can be used instead of (or in conjunction with) scoped field slots. The formatter receives a single parameter object with the signature `({value, key, item}) => string`. The `value` is determined by the `accessor` (or `key` if no accessor is provided). Refer to [Custom Data Rendering](#custom-data-rendering) for more details.                                                                                                                                                                                        |
+| `sort`              | `boolean \| TableFieldSort<T>`      | Enable sorting on this column with `true`, or with an options object: `initialDirection` (the direction the column takes when it becomes sorted, see [Change initial sort direction](#change-initial-sort-direction)), `byFormatted` (sort by the result of the `formatter`, or by a formatter function given here), `compare` (a custom comparison function `(a: T, b: T, key: string) => number`) `must` (sorting this column cannot be cleared by clicking; overrides the table's `must-sort`) and `direction`. Refer to the [Sorting](#sorting) section. |
+| `filterByFormatted` | `boolean \| TableFieldFormatter<T>` | Filter the column by the result of the field's `formatter` callback function when set to `true`. Default is `false`. Boolean has no effect if the field does not have a `formatter`. Optionally accepts a formatter function _reference_ to format the value for filtering purposes only. Refer to the [Filtering](#filtering) section for more details.                                                                                                                                                                                                     |
+| `tdAttrs`           | `AttrsValue \| (obj) => AttrsValue` | Attributes for the column's `<tbody>` data cells, including `class` and `style`. A function `({value, key, item}) => AttrsValue` is called for each cell.                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `thAttrs`           | `AttrsValue \| (obj) => AttrsValue` | Attributes for the column's `<thead>`/`<tfoot>` heading `<th>` cells, including `class` and `style`. A function `({value, key, item, type}) => AttrsValue` is called for each cell.                                                                                                                                                                                                                                                                                                                                                                          |
+| `color`             | `ColorExtendables \| null`          | Colors all the `<th>` **and** `<td>` in the column: `theme`, `bg` and `fg` render `theme-*`, `bg-*` and `fg-*` classes.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `isRowHeader`       | `boolean`                           | When set to `true`, the field's item data cell will be rendered with `<th>` rather than the default of `<td>`.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `stickyColumn`      | `boolean`                           | When set to `true`, and the table in [responsive](#responsive-tables) mode or has [sticky headers](#sticky-headers), will cause the column to become fixed to the left when the table's horizontal scrollbar is scrolled. See [Sticky columns](#sticky-columns) for more details                                                                                                                                                                                                                                                                             |
+| `scope`             | `TableThScope`                      | The scope attribute for the field's `<th>` element. This is used to specify the relationship of the header cell to the data cells. Valid values are `row`, `col`, `rowgroup`, and `colgroup`. Defaults to `colgroup` if `colspan` specified, `rowgroup` if `rowspan` specified, otherwise `col`.                                                                                                                                                                                                                                                             |
 
 **Notes:**
 
 - Field properties, if not present, default to `null` (falsey) unless otherwise stated above.
-- `class`, `thClass`, `tdClass` etc. will not work with classes that are defined in scoped CSS,
+- `class`, and the `class` in `thAttrs` and `tdAttrs`, will not work with classes that are defined in scoped CSS,
   unless you are using Vue's
   [Deep selector](https://vuejs.org/api/sfc-css-features.html#deep-selectors).
-- For information on the syntax supported by `thStyle`, see
+- For information on the syntax supported by `style` in `thAttrs` and `tdAttrs`, see
   [Class and Style Bindings](https://vuejs.org/guide/essentials/class-and-style.html#Binding-Inline-Styles)
   in the Vue.js guide.
 - Any additional properties added to the field definition objects will be left intact - so you can
@@ -192,31 +185,32 @@ details.
 
 `<BTable>` provides several props to alter the style of the table:
 
-| prop                 | Type                  | Description                                                                                                                                                                                                                                                                                                                                                                      |
-| -------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `striped`            | boolean               | Add zebra-striping to the table rows within the `<tbody>`                                                                                                                                                                                                                                                                                                                        |
-| `striped-columns`    | boolean               | Add zebra-striping to the table colums within the `<tbody>`                                                                                                                                                                                                                                                                                                                      |
-| `bordered`           | boolean               | For borders on all sides of the table and cells.                                                                                                                                                                                                                                                                                                                                 |
-| `borderless`         | boolean               | removes inner borders from table.                                                                                                                                                                                                                                                                                                                                                |
-| `outlined`           | boolean               | For a thin border on all sides of the table. Has no effect if `bordered` is set.                                                                                                                                                                                                                                                                                                 |
-| `small`              | boolean               | To make tables more compact by cutting cell padding in half.                                                                                                                                                                                                                                                                                                                     |
-| `hover`              | boolean               | To enable a hover highlighting state on table rows within a `<tbody>`                                                                                                                                                                                                                                                                                                            |
-| `fixed`              | boolean               | Generate a table with equal fixed-width columns (`table-layout: fixed;`)                                                                                                                                                                                                                                                                                                         |
-| `responsive`         | boolean \| Breakpoint | Generate a responsive table to make it scroll horizontally. Set to `true` for an always responsive table, or set it to one of the [breakpoints](/docs/types#breakpoint) `'sm'`, `'md'`, `'lg'`, `'xl'` or `'2xl'` to make the table responsive (horizontally scroll) only on screens smaller than the breakpoint (`responsive="md"` renders `md:table-responsive`). See [Responsive tables](#responsive-tables) below for details. |
-| `sticky-header`      | boolean \| Numberish  | Generates a vertically scrollable table with sticky headers. Set to `true` to enable sticky headers (default table max-height of `300px`), or set it to a string containing a height (with CSS units) to specify a maximum height other than `300px`. See the [Sticky header](#sticky-headers) section below for details.                                                        |
-| `stacked`            | boolean \| Breakpoint | Generate a responsive stacked table. Set to `true` for an always stacked table, or set it to one of the [breakpoints](/docs/types#breakpoint) `'sm'`, `'md'`, `'lg'`, `'xl'` or `'2xl'` to make the table visually stacked only on screens smaller than the breakpoint. See [Stacked tables](#stacked-tables) below for details.                                                 |
-| `caption-top`        | boolean \| Numberish  | If the table has a caption, and this prop is set to `true`, the caption will be visually placed above the table. If `false` (the default), the caption will be visually placed below the table.                                                                                                                                                                                  |
-| `color`              | ColorBorderExtendables \| null | Give the table an overall color: `theme` renders `theme-<theme>`, plus `bg`, `fg` and `border` keys.                                                                                                                                                                                                                                                                                                                                   |
-| `head-color`         | ColorExtendables      | Make the table head a color different from the table                                                                                                                                                                                                                                                                                                                             |
-| `foot-color`         | ColorExtendables      | Make the table foot a color different from the table. If not set, `head-color` will be used.        Has no effect if `foot-clone` is not set                                                                                                                                                                                                                                    |
-| `head-row-theme`     | ThemeColor \| null    | Make the only the `<tr>` part of the `<head>` a specific theme color                                                                                                                                                                                                                                                                                                             |
-| `foot-theme`         | ThemeColor \| null    | Make the only the `<tr>` part of the `<foot>` a specific theme color. If not set, `head-row-theme` will be used. Has no effect if `foot-clone` is not set                                                                                                                                                                                                                      |
-| `foot-clone`         | boolean               | Turns on the table footer, and defaults with the same contents a the table header                                                                                                                                                                                                                                                                                                |
-| `no-border-collapse` | Boolean               | Disables the default of collapsing of the table borders. Mainly for use with [sticky headers](#sticky-headers) and/or [sticky columns](#sticky-columns). Will cause the appearance of double borders in some situations.                                                                                                                                                         |
+| prop                 | Type                           | Description                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| -------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `striped`            | boolean                        | Add zebra-striping to the table rows within the `<tbody>`                                                                                                                                                                                                                                                                                                                                                                          |
+| `striped-columns`    | boolean                        | Add zebra-striping to the table colums within the `<tbody>`                                                                                                                                                                                                                                                                                                                                                                        |
+| `bordered`           | boolean                        | For borders on all sides of the table and cells.                                                                                                                                                                                                                                                                                                                                                                                   |
+| `borderless`         | boolean                        | removes inner borders from table.                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `outlined`           | boolean                        | For a thin border on all sides of the table. Has no effect if `bordered` is set.                                                                                                                                                                                                                                                                                                                                                   |
+| `small`              | boolean                        | To make tables more compact by cutting cell padding in half.                                                                                                                                                                                                                                                                                                                                                                       |
+| `hover`              | boolean                        | To enable a hover highlighting state on table rows within a `<tbody>`                                                                                                                                                                                                                                                                                                                                                              |
+| `fixed`              | boolean                        | Generate a table with equal fixed-width columns (`table-layout: fixed;`)                                                                                                                                                                                                                                                                                                                                                           |
+| `responsive`         | boolean \| Breakpoint          | Generate a responsive table to make it scroll horizontally. Set to `true` for an always responsive table, or set it to one of the [breakpoints](/docs/types#breakpoint) `'sm'`, `'md'`, `'lg'`, `'xl'` or `'2xl'` to make the table responsive (horizontally scroll) only on screens smaller than the breakpoint (`responsive="md"` renders `md:table-responsive`). See [Responsive tables](#responsive-tables) below for details. |
+| `sticky-header`      | boolean \| Numberish           | Generates a vertically scrollable table with sticky headers. Set to `true` to enable sticky headers (default table max-height of `300px`), or set it to a string containing a height (with CSS units) to specify a maximum height other than `300px`. See the [Sticky header](#sticky-headers) section below for details.                                                                                                          |
+| `stacked`            | boolean \| Breakpoint          | Generate a Bootstrap stacked table (`table-stacked`). Set to `true` for an always stacked table, or set it to one of the [breakpoints](/docs/types#breakpoint) `'sm'`, `'md'`, `'lg'`, `'xl'` or `'2xl'` to stack the table only while its container is narrower than the breakpoint (`stacked="md"` renders `md:table-stacked`). See [Stacked tables](#stacked-tables) below for details.                                         |
+| `caption-top`        | boolean \| Numberish           | If the table has a caption, and this prop is set to `true`, the caption will be visually placed above the table. If `false` (the default), the caption will be visually placed below the table.                                                                                                                                                                                                                                    |
+| `color`              | ColorBorderExtendables \| null | Give the table an overall color: `theme` renders `theme-<theme>`, plus `bg`, `fg` and `border` keys.                                                                                                                                                                                                                                                                                                                               |
+| `thead`              | TableHeadSection               | The table head: `attrs`, `trAttrs` (row attributes), `color` and `rowColor` (a color different from the table)                                                                                                                                                                                                                                                                                                                     |
+| `tfoot`              | TableHeadSection               | The table foot, with the same keys as `thead`. Keys left out fall back to `thead`. Has no effect if `foot-clone` is not set                                                                                                                                                                                                                                                                                                        |
+| `head-row-theme`     | ThemeColor \| null             | Make the only the `<tr>` part of the `<head>` a specific theme color                                                                                                                                                                                                                                                                                                                                                               |
+| `foot-theme`         | ThemeColor \| null             | Make the only the `<tr>` part of the `<foot>` a specific theme color. If not set, `head-row-theme` will be used. Has no effect if `foot-clone` is not set                                                                                                                                                                                                                                                                          |
+| `foot-clone`         | boolean                        | Turns on the table footer, and defaults with the same contents a the table header                                                                                                                                                                                                                                                                                                                                                  |
+| `no-border-collapse` | Boolean                        | Disables the default of collapsing of the table borders. Mainly for use with [sticky headers](#sticky-headers) and/or [sticky columns](#sticky-columns). Will cause the appearance of double borders in some situations.                                                                                                                                                                                                           |
 
 ::: info NOTE
-The table style options `fixed`, `stacked`, `no-border-collapse`, sticky
+The table style options `fixed`, `no-border-collapse`, sticky
 headers, sticky columns and the table sorting feature, all require BootstrapVueNext's custom CSS.
+Stacked tables use Bootstrap's own `table-stacked` CSS.
 :::
 
 <<< DEMO ./demo/TableBasicStyles.vue
@@ -229,14 +223,14 @@ The `fixed` prop generates a table with equal fixed-width columns using `table-l
 
 ### Row styling and attributes
 
-You can also style every row using the `tbody-tr-class` prop, and optionally supply additional attributes via the `tbody-tr-attr` prop:
+You can style every row, and supply additional attributes, via the `tbody` prop's `trAttrs` key. Its
+`class` and `style` are merged with the classes the table adds itself (row colors, selection):
 
-| Property         | Type                                                                                           | Description                                         |
-| ---------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| `tbody-tr-class` | `((item: Item \| null, type: TableRowType) => TableStrictClassValue) \| TableStrictClassValue` | Classes to be applied to every row on the table.    |
-| `tbody-tr-attr`  | `((item: Item \| null, type: TableRowType) => AttrsValue) \| AttrsValue`                       | Attributes to be applied to every row on the table. |
+| Key             | Type                                                                     | Description                                                             |
+| --------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| `tbody.trAttrs` | `((item: Item \| null, type: TableRowType) => AttrsValue) \| AttrsValue` | Attributes (including `class`) to be applied to every row on the table. |
 
-When passing a function reference to `tbody-tr-class` or `tbody-tr-attr`, the function's arguments
+When passing a function reference to `tbody.trAttrs`, the function's arguments
 will be as follows:
 
 - `item` - The item record data associated with the row. For rows that are not associated with an
@@ -274,42 +268,47 @@ breakpoint.
   - Wrap header cells in `<div>` elements, via the use of
     [custom header rendering](#header-and-footer-custom-rendering-via-scoped-slots), which have a
     minimum width set on them, or
-  - Use the `thStyle` property of the [field definition object](#field-definition-reference) to set
+  - Use the `style` in the `thAttrs` property of the [field definition object](#field-definition-reference) to set
     a width for the column(s), or
-  - Use custom CSS to define classes to apply to the columns to set widths, via the `thClass` or
+  - Use custom CSS to define classes to apply to the columns to set widths, via the `class` in `thAttrs` or
     `class` properties of the [field definition object](#field-definition-reference).
 
 ### Stacked tables
 
-An alternative to responsive tables, BootstrapVueNext includes the stacked table option (using custom
-SCSS/CSS), which allow tables to be rendered in a visually stacked format. Make any table stacked
-across _all viewports_ by setting the prop `stacked` to `true`. Or, alternatively, set a breakpoint
-at which the table will return to normal table format by setting the prop `stacked` to one of the
-breakpoint values `'sm'`, `'md'`, `'lg'`, or `'xl'`.
+An alternative to responsive tables, the `stacked` prop renders Bootstrap's
+[stacked tables](https://getbootstrap.com/docs/6.0/content/tables/#stacked-tables), which convert
+each body row into a vertical block. Make any table stacked at all widths by setting the prop
+`stacked` to `true` (`table-stacked`). Or set it to one of the breakpoint values `'sm'`, `'md'`,
+`'lg'`, `'xl'` or `'2xl'` to only stack the table while it is narrower than that breakpoint
+(`stacked="md"` renders `md:table-stacked`).
 
-Column header labels will be rendered to the left of each field value using a CSS `::before` pseudo
-element, with a width of 40%.
+Bootstrap's stacked tables use container queries, so the breakpoint is compared against the width of
+the table's wrapper rather than the viewport. A stacked table is therefore always rendered inside a
+`table-responsive` wrapper `<div>` (or the `{breakpoint}:table-responsive` wrapper when `responsive`
+is also set), which acts as the query container.
 
-The `stacked` prop takes precedence over the [`sticky-header`](#sticky-headers) prop and the
-[`stickyColumn`](#sticky-columns) field definition property.
+Each body cell gets a `data-cell` attribute holding the field's label, which Bootstrap renders as a
+label above the value. The first cell of each row is shown as a bold title without a label.
 
 <<< DEMO ./demo/TableStacked.vue
 
 **Note: When the table is visually stacked:**
 
-- The table header will be hidden. The table footer will remain visible if `foot-clone` or `custom-foot` slots are used.
+- The table header is visually hidden (it stays available to assistive technology). The table footer
+  is not stacked and remains visible as a normal row if `foot-clone` or the `custom-foot` slot is
+  used.
 - Custom rendered header slots will not be shown, rather, the fields' `label` will be used.
+- Only `<td>` cells are stacked and labelled. Fields rendered as row headers (`isRowHeader`, which
+  renders a `<th>`) are not stacked by Bootstrap's CSS.
+- Rows with a single spanning cell (row details, the busy and empty rows) render their cell as the
+  bold first cell.
 - The table **cannot** be sorted by clicking the rendered field labels. You will need to provide an
   external control to select the field to sort by and the sort direction. See the
   [Sorting](#sorting) section below for sorting control information, as well as the
   [complete example](#complete-example) at the bottom of this page for an example of controlling
   sorting via the use of form controls.
-- The slots `top-row` and `bottom-row` will be hidden when visually stacked.
-- The table caption, if provided, will always appear at the top of the table when visually stacked.
-- In an always stacked table, the table header and the fixed top and bottom row slots
-  will not be rendered.
-
-BootstrapVueNext's custom CSS is required in order to support stacked tables.
+- The slots `top-row` and `bottom-row` are not rendered when the `stacked` prop is set (at any
+  width).
 
 ### Table caption
 
@@ -515,8 +514,8 @@ Slot `custom-foot` can be optionally scoped, receiving an object with the follow
 
 The content to show when the table is empty can be specified by setting the `show-empty` prop and then specifying:
 
-- Either the `empty-text` prop or the `empty` named slot, for the case where unfiltered items are an empty or falsy array
-- Either the `empty-filtered-text` prop or the `empty-filtered` named slot, for the case where filtered items are an empty or falsy array
+- Either the `empty` prop's `text` key or the `empty` named slot, for the case where unfiltered items are an empty or falsy array
+- Either the `empty` prop's `filteredText` key or the `empty-filtered` named slot, for the case where filtered items are an empty or falsy array
 
 In order for these props or slots to be shown, the `show-empty` attribute must be set and `items` must be
 either falsy or an array of length 0.
@@ -526,16 +525,15 @@ either falsy or an array of length 0.
 The slot can optionally be scoped. The slot's scope (`scope` in the above example) will have the
 following properties:
 
-| Property            | Type                 | Description                                        |
-| ------------------- | -------------------- | -------------------------------------------------- |
-| `emptyFilteredHtml` | `string`             | The `empty-filtered-html` prop                     |
-| `emptyFilteredText` | `string`             | The `empty-filtered-text` prop                     |
-| `fields`            | `TableField<Item>[]` | The `fields` prop                                  |
-| `items`             | `Item[]`             | The `items` prop. Exposed here to check null vs [] |
+| Property | Type                                     | Description                                        |
+| -------- | ---------------------------------------- | -------------------------------------------------- |
+| `empty`  | `{ text: string; filteredText: string }` | The resolved `empty` prop, with its defaults       |
+| `fields` | `TableField<Item>[]`                     | The `fields` prop                                  |
+| `items`  | `Item[]`                                 | The `items` prop. Exposed here to check null vs [] |
 
 ::: info NOTE
 If you previously used the `emptyHtml` or `emtpyFilteredHtml` scoped slots or the `empty-html` or
-`empty-filtered-html` props, please convert to using the `empty-text` or `empty-filtered-text` slots
+`empty-filtered-html` props, please convert to using the `empty` prop's `text` / `filteredText` keys or the `empty` / `empty-filtered` slots
 instead. See our [migration knowledge base](/docs/migration-data/patterns/v-html-props) for details.
 :::
 
@@ -771,17 +769,17 @@ to the `sortBy` array. From the user inteface, multi-sort works as follows:
 
 - Clicking on a sortable header that isn't currently sorted adds it as `ascending` to the end of the sortBy list
 - Clicking on a sortable header that is currently sorted as ascending makes it **descending**, but leaves it in the same order in the `sortBy` list
-- Clicking on a sortable header that is currently sorted as descending will set the order to undefined. If `must-sort` is `true` OR if `mustSort` is an array that contains that columns `key`, it will skip to be `ascending`
+- Clicking on a sortable header that is currently sorted as descending will set the order to undefined. If `must-sort` is `true`, or the field's `sort` has `must: true`, it will skip to be `ascending`. A field's `sort.must` overrides the table's `must-sort`
 
 <<< DEMO ./demo/TableSortByMulti.vue
 
 ### Change initial sort direction
 
-Control the order in which ascending and descending sorting is applied when a sortable column header is clicked, by using the `initial-sort-direction` prop on the table or the `initialSortDirection` property in field definitions. The default value `asc` applies ascending sort first (when a column is not currently sorted). To reverse the behavior and sort in descending direction first, set it to `desc`.
+Control the order in which ascending and descending sorting is applied when a sortable column header is clicked, by using the `initial-sort-direction` prop on the table or the `sort.initialDirection` key in field definitions. The default value `asc` applies ascending sort first (when a column is not currently sorted). To reverse the behavior and sort in descending direction first, set it to `desc`.
 
 If you don't want the current sorting direction to change when clicking another sortable column header, set the value to `last`. This will maintain the sorting direction of the previously sorted column.
 
-The table-level `initial-sort-direction` prop sets the default for all sortable columns, while the field-level `initialSortDirection` property allows you to override this on a per-column basis. The field-level prop takes precedence.
+The table-level `initial-sort-direction` prop sets the default for all sortable columns, while the field-level `sort.initialDirection` key allows you to override this on a per-column basis. The field-level prop takes precedence.
 
 <<< DEMO ./demo/TableInitialSortDirection.vue
 
@@ -789,17 +787,17 @@ See the [complete example](#complete-example) for a demonstration or the table-l
 
 ### Custom Sort Comparers
 
-Each field definition may include a `sortCompare` field of the type `BTableSortByComparerFunction<T = any> = (a: T, b: T, key: string) => number`. This function takes the items to be compared and the key to compare on. Since the key is passed in, you may use the same function for multiple fields or you can craft a different comparer function for each field.
+Each field definition may include a `sort.compare` key of the type `BTableSortByComparerFunction<T = any> = (a: T, b: T, key: string) => number`. This function takes the items to be compared and the key to compare on. Since the key is passed in, you may use the same function for multiple fields or you can craft a different comparer function for each field.
 
-You can also set a table-level `sort-compare` prop that will be used as the default comparer for all sortable fields. Field-level `sortCompare` takes precedence over the table-level setting.
+You can also set a table-level `sort-compare` prop that will be used as the default comparer for all sortable fields. Field-level `sort.compare` takes precedence over the table-level setting.
 
-Leaving both the field-level `sortCompare` and table-level `sort-compare` undefined will fall back to using the default comparer, which looks like this:
+Leaving both the field-level `sort.compare` and table-level `sort-compare` undefined will fall back to using the default comparer, which looks like this:
 
 <<< FRAGMENT ./demo/TableSortCompareDefault.ts#snippet{ts}
 
 where `getStringValue` retrieves the field value as a string.
 
-If you have a particular field that you want to sort by with custom logic, you can set the `sortCompare` property in the field definition:
+If you have a particular field that you want to sort by with custom logic, you can set the `sort.compare` key in the field definition:
 
 <<< FRAGMENT ./demo/TableSortCompareCustom.ts#snippet{ts}
 
@@ -845,7 +843,7 @@ For maximum flexibility, use the `head(fieldkey)` scoped slots to completely cus
 
 <<< DEMO ./demo/TableSortCustomSlotIcons.vue
 
-The scoped slot provides access to the `field` object, which includes `thAttr['aria-sort']` indicating the current sort state (`'none'`, `'ascending'`, or `'descending'`). Note that `thAttr` may be a function or undefined, so type checking is recommended (see demo for example).
+The scoped slot provides access to the `field` object, which includes `thAttrs['aria-sort']` indicating the current sort state (`'none'`, `'ascending'`, or `'descending'`). Note that `thAttrs` may be a function or undefined, so type checking is recommended (see demo for example).
 
 **Tip:** When using scoped slots, the table's `head-clicked` event is still emitted, allowing you to maintain sorting functionality while having full control over the visual presentation.
 
@@ -1045,22 +1043,19 @@ Since `BTableSimple` is just a wrapper component, of which you will need to rend
 
 <<< DEMO ./demo/TableSimpleOverview.vue#template{vue-html}
 
-When in responsive or sticky-header mode, the `<table>` element is wrapped inside a `<div>` element. If you need to apply additional classes or attributes to the `<table>` element, use the table-classes and table-attrs, respectively.
+When in responsive, stacked or sticky-header mode, the `<table>` element is wrapped inside a `<div>` element. If you need to apply additional classes or attributes to the `<table>` element, use the `table-attrs` prop (its `class` and `style` are merged with the table's own).
 
 ### Simple tables and stacked mode
 
-A bit of additional markup is required on your `BTableSimple` body cells when the table is in stacked mode. Specifically, BootstrapVueNext uses a special data attribute to create the cell's heading, of which you can supply to `BTd` or `BTh` via the stacked-heading prop. Only plain strings are supported (not HTML markup), as we use the pseudo element ::before and css content property.
+A bit of additional markup is required on your `BTableSimple` body cells when the table is in stacked mode. Bootstrap's `table-stacked` CSS reads each cell's label from a `data-cell` attribute, which you set directly on `BTd` (it falls through to the `<td>`). Only plain strings are supported (not HTML markup), as Bootstrap uses the `::before` pseudo element and the CSS `content` property.
 
-Here is the same table as above, set to be always stacked, which has the extra markup to handle stacked mode (specifically for generating the cell headings):
+Bootstrap only stacks `<td>` cells: the first cell of each row becomes the row's bold title (its `data-cell` is not shown), and `<th>` cells in the body (row headers) are not stacked, so use `BTd` for every body cell of a stacked table.
+
+Here is a table set to be stacked below the `md` breakpoint, with the extra markup to generate the cell headings:
 
 <<< DEMO ./demo/TableSimpleStacked.vue#template{vue-html}
 
-Like `BTable` and `BTableLite`, table headers (`<thead>`) and footers (`<tfoot>`) are visually hidden when the table is visually stacked. If you need a header or footer, you can do so by creating an extra `BTr` inside of the `BTbody` component (or in a second `BTbody` component), and set a role of columnheader on the child `BTh` cells, and use Bootstrap v5 responsive display utility classes to hide the extra row (or `BTbody`) above a certain breakpoint when the table is no longer visually stacked (the breakpoint should match the stacked table breakpoint you have set), i.e. `<BTr class="d-md-none">` would hide the row on medium and wider screens, while `<BTbody class="d-md-none">` would hide the row group on medium and wider screens.
-
-::: info NOTE
-Note: stacked mode with `BTableSimple` requires that you use the BootstrapVueNext [table helper components](#table-helper-components).
-Use of the regular `<tbody>`, `<tr>`, `<td>` and `<th>` element tags will not work as expected, nor will they automatically apply any of the required accessibility attributes.
-:::
+Like `BTable` and `BTableLite`, the table header (`<thead>`) is visually hidden when the table is visually stacked, and the footer (`<tfoot>`) is not stacked.
 
 ### Simple tables and sticky columns
 

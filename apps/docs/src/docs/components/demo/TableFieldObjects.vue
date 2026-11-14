@@ -18,18 +18,17 @@ interface Person {
 const fields: TableFieldRaw<Person>[] = [
   {
     key: 'last_name',
-    sortable: true,
+    sort: true,
   },
   {
     key: 'first_name',
-    sortable: false,
   },
   {
     key: 'age',
     label: 'Person age',
-    sortable: true,
-    // Theme applies to the whole column, including the header and footer
-    theme: 'danger',
+    sort: true,
+    // The color applies to the whole column, including the header and footer
+    color: { theme: 'danger' },
   },
 ]
 

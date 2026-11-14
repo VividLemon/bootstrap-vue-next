@@ -27,10 +27,10 @@ import type { TableFieldRaw } from 'bootstrap-vue-next'
 import { ref } from 'vue'
 
 const fields: TableFieldRaw[] = [
-  { key: 'id', stickyColumn: true, isRowHeader: true, theme: 'primary' },
+  { key: 'id', stickyColumn: true, isRowHeader: true, color: { theme: 'primary' } },
   'a',
   'b',
-  { key: 'c', stickyColumn: true, theme: 'info' },
+  { key: 'c', stickyColumn: true, color: { theme: 'info' } },
   'd',
   'e',
   'f',

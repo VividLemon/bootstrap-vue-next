@@ -40,9 +40,9 @@ interface Person {
 const filter = ref('')
 
 const fields = [
-  { key: 'name', sortable: true },
-  { key: 'age', sortable: true },
-  { key: 'city', sortable: true },
+  { key: 'name', sort: true },
+  { key: 'age', sort: true },
+  { key: 'city', sort: true },
 ]
 
 const items: Person[] = [

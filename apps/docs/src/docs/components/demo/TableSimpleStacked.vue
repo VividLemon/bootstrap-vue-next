@@ -1,89 +1,58 @@
 <template>
   <!-- #region template -->
-  <BTableSimple hover small caption-top stacked>
+  <BTableSimple hover small caption-top stacked="md">
     <caption>
-      Items sold in August, grouped by Country and City:
+      Items sold in August, by City:
     </caption>
-    <colgroup>
-      <col />
-      <col />
-    </colgroup>
-    <colgroup>
-      <col />
-      <col />
-      <col />
-    </colgroup>
-    <colgroup>
-      <col />
-      <col />
-    </colgroup>
-    <BThead :color="{ theme: 'inverse' }">
+    <BThead>
       <BTr>
-        <BTh colspan="2">Region</BTh>
-        <BTh colspan="3">Clothes</BTh>
-        <BTh colspan="2">Accessories</BTh>
-      </BTr>
-      <BTr>
-        <BTh>Country</BTh>
         <BTh>City</BTh>
-        <BTh>Trousers</BTh>
-        <BTh>Skirts</BTh>
-        <BTh>Dresses</BTh>
-        <BTh>Bracelets</BTh>
-        <BTh>Rings</BTh>
+        <BTh>Country</BTh>
+        <BTh>Clothes: Trousers</BTh>
+        <BTh>Clothes: Skirts</BTh>
+        <BTh>Clothes: Dresses</BTh>
+        <BTh>Accessories: Bracelets</BTh>
+        <BTh>Accessories: Rings</BTh>
       </BTr>
     </BThead>
     <BTbody>
       <BTr>
-        <BTh rowspan="3" class="text-center">Belgium (3 Cities)</BTh>
-        <BTh stacked-heading="City" class="text-start">Antwerp</BTh>
-        <BTd stacked-heading="Clothes: Trousers">56</BTd>
-        <BTd stacked-heading="Clothes: Skirts">22</BTd>
-        <BTd stacked-heading="Clothes: Dresses">43</BTd>
-        <BTd stacked-heading="Accessories: Bracelets" :color="{ theme: 'success' }">72</BTd>
-        <BTd stacked-heading="Accessories: Rings">23</BTd>
+        <BTd data-cell="City">Antwerp</BTd>
+        <BTd data-cell="Country">Belgium</BTd>
+        <BTd data-cell="Clothes: Trousers">56</BTd>
+        <BTd data-cell="Clothes: Skirts">22</BTd>
+        <BTd data-cell="Clothes: Dresses">43</BTd>
+        <BTd data-cell="Accessories: Bracelets" :color="{ theme: 'success' }">72</BTd>
+        <BTd data-cell="Accessories: Rings">23</BTd>
       </BTr>
       <BTr>
-        <BTh stacked-heading="City">Gent</BTh>
-        <BTd stacked-heading="Clothes: Trousers">46</BTd>
-        <BTd stacked-heading="Clothes: Skirts" :color="{ theme: 'warning' }">18</BTd>
-        <BTd stacked-heading="Clothes: Dresses">50</BTd>
-        <BTd stacked-heading="Accessories: Bracelets">61</BTd>
-        <BTd stacked-heading="Accessories: Rings" :color="{ theme: 'danger' }">15</BTd>
+        <BTd data-cell="City">Gent</BTd>
+        <BTd data-cell="Country">Belgium</BTd>
+        <BTd data-cell="Clothes: Trousers">46</BTd>
+        <BTd data-cell="Clothes: Skirts" :color="{ theme: 'warning' }">18</BTd>
+        <BTd data-cell="Clothes: Dresses">50</BTd>
+        <BTd data-cell="Accessories: Bracelets">61</BTd>
+        <BTd data-cell="Accessories: Rings" :color="{ theme: 'danger' }">15</BTd>
       </BTr>
       <BTr>
-        <BTh stacked-heading="City">Brussels</BTh>
-        <BTd stacked-heading="Clothes: Trousers">51</BTd>
-        <BTd stacked-heading="Clothes: Skirts">27</BTd>
-        <BTd stacked-heading="Clothes: Dresses">38</BTd>
-        <BTd stacked-heading="Accessories: Bracelets">69</BTd>
-        <BTd stacked-heading="Accessories: Rings">28</BTd>
+        <BTd data-cell="City">Amsterdam</BTd>
+        <BTd data-cell="Country">The Netherlands</BTd>
+        <BTd data-cell="Clothes: Trousers" :color="{ theme: 'success' }">89</BTd>
+        <BTd data-cell="Clothes: Skirts">34</BTd>
+        <BTd data-cell="Clothes: Dresses">69</BTd>
+        <BTd data-cell="Accessories: Bracelets">85</BTd>
+        <BTd data-cell="Accessories: Rings">38</BTd>
       </BTr>
       <BTr>
-        <BTh rowspan="2" class="text-center">The Netherlands (2 Cities)</BTh>
-        <BTh stacked-heading="City">Amsterdam</BTh>
-        <BTd stacked-heading="Clothes: Trousers" :color="{ theme: 'success' }">89</BTd>
-        <BTd stacked-heading="Clothes: Skirts">34</BTd>
-        <BTd stacked-heading="Clothes: Dresses">69</BTd>
-        <BTd stacked-heading="Accessories: Bracelets">85</BTd>
-        <BTd stacked-heading="Accessories: Rings">38</BTd>
-      </BTr>
-      <BTr>
-        <BTh stacked-heading="City">Utrecht</BTh>
-        <BTd stacked-heading="Clothes: Trousers">80</BTd>
-        <BTd stacked-heading="Clothes: Skirts" :color="{ theme: 'danger' }">12</BTd>
-        <BTd stacked-heading="Clothes: Dresses">43</BTd>
-        <BTd stacked-heading="Accessories: Bracelets">36</BTd>
-        <BTd stacked-heading="Accessories: Rings" :color="{ theme: 'warning' }">19</BTd>
+        <BTd data-cell="City">Utrecht</BTd>
+        <BTd data-cell="Country">The Netherlands</BTd>
+        <BTd data-cell="Clothes: Trousers">80</BTd>
+        <BTd data-cell="Clothes: Skirts" :color="{ theme: 'danger' }">12</BTd>
+        <BTd data-cell="Clothes: Dresses">43</BTd>
+        <BTd data-cell="Accessories: Bracelets">36</BTd>
+        <BTd data-cell="Accessories: Rings" :color="{ theme: 'warning' }">19</BTd>
       </BTr>
     </BTbody>
-    <BTfoot>
-      <BTr>
-        <BTd colspan="7" :color="{ theme: 'secondary' }" class="text-end">
-          Total Rows: <b>5</b>
-        </BTd>
-      </BTr>
-    </BTfoot>
   </BTableSimple>
   <!-- #endregion template -->
 </template>

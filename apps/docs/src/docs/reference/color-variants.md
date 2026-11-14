@@ -125,7 +125,7 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
   :body-color="{ fg: '2' }"
 />
 <BModal :ok-color="{ theme: 'success' }" :cancel-color="{ theme: 'danger', fg: 'white' }" />
-<BTable :head-color="{ theme: 'inverse' }" :selection-color="{ bg: 'subtle-primary' }" />
+<BTable :thead="{ color: { theme: 'inverse' } }" :selection-color="{ bg: 'subtle-primary' }" />
 ```
 
 | Component                                     | Color object props                                                             |
@@ -142,7 +142,7 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 | `BOffcanvas`                                  | `header-close.color`                                                           |
 | `BOverlay`                                    | `spinner.color`                                                                |
 | `BPlaceholderCard`, `BPlaceholderTable`       | `header-color`, `footer-color`                                                 |
-| `BTable`, `BTableLite`                        | `head-color`, `head-row-color`, `foot-color`, `foot-row-color`, `selection-color` (`BTable` only) |
+| `BTable`, `BTableLite`                        | `thead.color`, `thead.rowColor`, `tfoot.color`, `tfoot.rowColor`, `selection-color` (`BTable` only) |
 
 `*-variant` props such as `ok-variant` or `button-variant` select a button style, not a color, so they stay separate.
 
@@ -156,7 +156,7 @@ The object you pass is merged with that default key by key:
 - A key you leave out, or set to `undefined`, keeps the default: `:ok-color="{ fg: 'white' }"` renders `theme-primary fg-white`.
 - A key set to `null` removes the default: `:ok-color="{ theme: null }"` renders no theme class.
 
-Where a part falls back to another one (the table `foot-color` falls back to `head-color`, `foot-row-color` to `head-row-color`,
+Where a part falls back to another one (the table `tfoot` keys fall back to the `thead` keys,
 and the dropdown `split-color` to the dropdown's `color`), the fallback is also applied key by key.
 
 ### Global defaults with `BApp`
@@ -214,9 +214,9 @@ Use the `color` prop's `theme` key. This replaces `.alert-<x>`, `.badge`/`.text-
 
 ### Tables
 
-Use `color` on tables and the helper components `BThead`, `BTfoot`, `BTr`, `BTd` and `BTh`, and the `theme` property on columns (field `theme`).
-Per-item overrides use the item properties `_rowTheme` and `_cellThemes`. All map to `.theme-<theme>` (replacing `.table-<x>`).
-Table-level props are `color` and the color objects `head-color`, `head-row-color`, `foot-color`, `foot-row-color` and `selection-color`.
+Use `color` on tables, on columns (the field's `color`), and on the helper components `BThead`, `BTfoot`, `BTr`, `BTd` and `BTh`.
+Per-item overrides use the item properties `_rowColor` and `_cellColors`. Their `theme` maps to `.theme-<theme>` (replacing `.table-<x>`).
+Table-level props are `color`, the `thead` and `tfoot` sections (with `color` and `rowColor` keys) and `selection-color`.
 The `dark` prop has been removed (v6 removed `.table-dark`). Use the [`v-b-color-mode`](/docs/directives/BColorMode) directive or the [`useColorMode`](/docs/composables/useColorMode) composable to place a table in dark mode.
 
 ### Links
