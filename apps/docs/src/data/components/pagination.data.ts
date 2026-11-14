@@ -1,4 +1,4 @@
-import type {BPaginationEmits, BPaginationProps, BPaginationSlots} from 'bootstrap-vue-next'
+import type { BPaginationEmits, BPaginationProps, BPaginationSlots } from 'bootstrap-vue-next'
 import type {
   ComponentReference,
   EmitRecord,
@@ -6,8 +6,8 @@ import type {
   SlotRecord,
   SlotScopeReference,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 const sharedScope: SlotScopeReference = {
   disabled: {
@@ -36,81 +36,56 @@ export default {
             size: {
               default: undefined,
             },
+            color: {
+              type: "Pick<ColorExtendables, 'theme'> | null",
+              description:
+                'Colors the pagination with its `theme` key (`theme-*` class), coloring the active page and hover/focus states',
+            },
           }),
-          ['ariaControls', 'ariaLabel', 'disabled', 'noEllipsis', 'noGotoEndButtons', 'size']
+          [
+            'ariaControls',
+            'ariaLabel',
+            'color',
+            'disabled',
+            'noEllipsis',
+            'noGotoEndButtons',
+            'size',
+          ],
         ),
         align: {
           type: 'AlignmentJustifyContent | fill',
           description:
             "Alignment of the page buttons: 'start' (or 'left'), 'center', 'end' (or 'right'), or 'fill'",
         },
-        ellipsisClass: {
-          type: 'ClassValue',
+        ellipsis: {
+          type: 'PaginationButtonOptions',
           default: undefined,
-          description: "Class(es) to apply to the 'ellipsis' placeholders",
+          description:
+            "The ellipsis placeholder: `text` (content, default '\u2026'), `attrs` (attributes for its page item)",
         },
-        ellipsisText: {
-          type: 'string',
-          default: '\u2026',
-          description: 'Content to place in the ellipsis placeholder',
-        },
-        firstClass: {
-          type: 'ClassValue',
+        first: {
+          type: 'PaginationEndButtonOptions',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-first-page button',
-        },
-        firstNumber: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'Display first page number instead of go-to-first-page button',
-        },
-        firstText: {
-          type: 'string',
-          default: '\u00AB',
-          description: 'Content to place in the go-to-first-page button',
-        },
-        labelFirstPage: {
-          type: 'string',
-          default: 'Go to first page',
           description:
-            "Value to place in the 'aria-label' attribute of the go-to-first-page button",
+            "The go-to-first-page button: `text` (content, default '\u00AB'), `attrs` (attributes for its page item), and `number` (show the page number instead of the button, default `false`)",
         },
-        labelLastPage: {
-          type: 'string',
-          default: 'Go to last page',
-          description: "Value to place in the 'aria-label' attribute of the go-to-last-page button",
-        },
-        labelNextPage: {
-          type: 'string',
-          default: 'Go to next page',
-          description: "Value to place in the 'aria-label' attribute of the go-to-next-page button",
-        },
-        labelPage: {
-          type: 'string',
-          default: 'Go to page',
+        labels: {
+          type: '{ firstPage?: string; prevPage?: string; nextPage?: string; lastPage?: string; page?: string }',
+          default: {
+            firstPage: 'Go to first page',
+            prevPage: 'Go to previous page',
+            nextPage: 'Go to next page',
+            lastPage: 'Go to last page',
+            page: 'Go to page',
+          },
           description:
-            "Value to place in the 'aria-label' attribute of the go-to-page button. Page number will be appended automatically",
+            "Values for the 'aria-label' attributes of the go-to buttons; `page` is appended with the page number. Keys left out keep their default; an empty string removes the label",
         },
-        labelPrevPage: {
-          type: 'string',
-          default: 'Go to previous page',
-          description:
-            "Value to place in the 'aria-label' attribute of the go-to-previous-page button",
-        },
-        lastClass: {
-          type: 'ClassValue',
+        last: {
+          type: 'PaginationEndButtonOptions',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-last-page button',
-        },
-        lastNumber: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'Display last page number instead of go-to-last-page button',
-        },
-        lastText: {
-          type: 'string',
-          default: '\u00BB',
-          description: 'Content to place in the go-to-last-page button',
+          description:
+            "The go-to-last-page button: `text` (content, default '\u00BB'), `attrs` (attributes for its page item), and `number` (show the page number instead of the button, default `false`)",
         },
         limit: {
           type: 'Numberish',
@@ -123,20 +98,17 @@ export default {
           default: 1, // TODO item not in string format
           description: 'Current page number, starting from 1',
         },
-        nextClass: {
-          type: 'ClassValue',
+        next: {
+          type: 'PaginationButtonOptions',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-next-page button',
+          description:
+            "The go-to-next-page button: `text` (content, default '\u203A'), `attrs` (attributes for its page item)",
         },
-        nextText: {
-          type: 'string',
-          default: '\u203A',
-          description: 'Content to place in the go-to-next-page button',
-        },
-        pageClass: {
-          type: 'ClassValue',
+        pageAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-page buttons',
+          description:
+            "Attributes to apply to the go-to-page button `<li>` items. `class` and `style` merge with the component's own",
         },
         perPage: {
           type: 'Numberish',
@@ -148,15 +120,11 @@ export default {
           default: false, // TODO item not in string format
           description: 'Applies pill styling to the pagination buttons',
         },
-        prevClass: {
-          type: 'ClassValue',
+        prev: {
+          type: 'PaginationButtonOptions',
           default: undefined,
-          description: 'Class(es) to apply to the go-to-previous-page button',
-        },
-        prevText: {
-          type: 'string',
-          default: '\u2039',
-          description: 'Content to place in the go-to-previous-page button',
+          description:
+            "The go-to-previous-page button: `text` (content, default '\u2039'), `attrs` (attributes for its page item)",
         },
         totalRows: {
           type: 'Numberish',
@@ -190,23 +158,23 @@ export default {
         },
       } satisfies EmitRecord<keyof BPaginationEmits | 'update:model-value'>,
       slots: {
-        'ellipsis-text': {
+        ellipsis: {
           scope: {},
-          description: "The '...' indicator content. Overrides the `ellipsis-text` prop",
+          description: "The '...' indicator content. Overrides the `ellipsis` prop's `text`",
         },
-        'first-text': {
+        first: {
           description: 'The go-to-first-page button content',
           scope: sharedScope,
         },
-        'last-text': {
+        last: {
           description: 'The go-to-last-page button content',
           scope: sharedScope,
         },
-        'next-text': {
+        next: {
           description: 'The go-to-next-page button content',
           scope: sharedScope,
         },
-        'page': {
+        page: {
           description: 'Page number button content',
           scope: {
             ...sharedScope,
@@ -220,7 +188,7 @@ export default {
             },
           },
         },
-        'prev-text': {
+        prev: {
           description: 'The go-to-previous-page button content',
           scope: sharedScope,
         },

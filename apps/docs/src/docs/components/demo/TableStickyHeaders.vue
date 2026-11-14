@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BTable sticky-header :items="items" :head-color="{ theme: 'secondary' }" />
+    <BTable sticky-header :items="items" :thead="{ color: { theme: 'secondary' } }" />
   </div>
 </template>
 

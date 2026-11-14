@@ -1,6 +1,6 @@
 import type {ComponentInternalInstance, ComputedRef, InjectionKey, Ref, ShallowRef} from 'vue'
 import type {TabType} from '../types/Tab'
-import type {ClassValue} from '../types/AnyValuedAttributes'
+import type {AttrsValue} from '../types/AnyValuedAttributes'
 import type {Numberish, ValidationState} from '../types/CommonTypes'
 import type {LiteralUnion} from '../types/LiteralUnion'
 import type {Size} from '../types/Size'
@@ -50,9 +50,9 @@ export const tabsInjectionKey: InjectionKey<{
   registerTab: (tab: ComputedRef<TabType>) => string
   unregisterTab: (id: string) => void
   activateTab: (id: string | undefined) => void
-  activeTabClass: Readonly<Ref<ClassValue>>
-  inactiveTabClass: Readonly<Ref<ClassValue>>
-  tabClass: Readonly<Ref<ClassValue>>
+  activeTabAttrs: Readonly<Ref<Readonly<AttrsValue> | undefined>>
+  inactiveTabAttrs: Readonly<Ref<Readonly<AttrsValue> | undefined>>
+  tabAttrs: Readonly<Ref<Readonly<AttrsValue> | undefined>>
   activeId: Readonly<Ref<string | undefined>>
 }> = createBvnInjectionKey('tabs')
 

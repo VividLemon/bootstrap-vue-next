@@ -1,5 +1,5 @@
 <template>
-  <div class="tab-content" :class="contentClass">
+  <div class="tab-content" v-bind="contentAttrs">
     <slot />
     <div v-if="showEmpty" key="bv-empty-tab" class="tab-pane active" :class="{'card-body': card}">
       <slot name="empty" />
@@ -8,10 +8,10 @@
 </template>
 
 <script setup lang="ts">
-import type {ClassValue} from '../types/AnyValuedAttributes'
+import type {AttrsValue} from '../types/AnyValuedAttributes'
 
 defineProps<{
-  contentClass: ClassValue | undefined
+  contentAttrs: Readonly<AttrsValue> | undefined
   showEmpty: boolean
   card: boolean
 }>()

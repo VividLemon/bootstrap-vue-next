@@ -1,5 +1,5 @@
-import type {ComputedRef, StyleValue} from 'vue'
-import type {BgColor, FgColor, MaybeArray, ThemeProp} from './ColorTypes'
+import type {ComputedRef} from 'vue'
+import type {ColorExtendables} from './ColorTypes'
 import type {MaybePromise} from './MaybePromise'
 import type {LiteralUnion} from './LiteralUnion'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
@@ -20,12 +20,9 @@ export type TableRowEvent<T, E extends UIEvent = Readonly<MouseEvent>> = [
 ]
 
 export type TableItem<T = Record<string, unknown>> = T & {
-  _rowBg?: MaybeArray<BgColor> | null
-  _rowFg?: MaybeArray<FgColor> | null
-  _rowTheme?: ThemeProp | null
-  _cellBgs?: Partial<Record<keyof T, MaybeArray<BgColor>>>
-  _cellFgs?: Partial<Record<keyof T, MaybeArray<FgColor>>>
-  _cellThemes?: Partial<Record<keyof T, ThemeProp>>
+  _rowColor?: ColorExtendables | null
+  /** Per-cell colors, keyed by field key; keys left out fall back to the field's `color` */
+  _cellColors?: Partial<Record<keyof T, ColorExtendables>>
   _showDetails?: boolean
 }
 
@@ -77,9 +74,8 @@ export type TableStrictClassValue = string | readonly unknown[] | Record<string,
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TableField<T = any> = {
-  bg?: MaybeArray<BgColor> | null
   class?: ClassValue
-  fg?: MaybeArray<FgColor> | null
+  color?: ColorExtendables | null
   filterByFormatted?: boolean | TableFieldFormatter<T>
   formatter?: TableFieldFormatter<T>
   isRowHeader?: boolean
@@ -110,25 +106,50 @@ export type TableField<T = any> = {
    * - If omitted, defaults to using the column `key`.
    */
   accessor?: string | ((item: T) => unknown)
-  headerTitle?: string
-  headerAbbr?: string
-  sortable?: boolean
-  sortDirection?: string
-  sortByFormatted?: boolean | TableFieldFormatter<T>
-  sortCompare?: BTableSortByComparerFunction<T>
+  /** The header cell's `title` and `abbr` attributes */
+  header?: {title?: string; abbr?: string}
+  /** `true` makes the column sortable; an object makes it sortable with these options */
+  sort?: boolean | TableFieldSort<T>
   stickyColumn?: boolean
   scope?: TableThScope
-  initialSortDirection?: BTableInitialSortDirection
-  tdClass?:
-    TableStrictClassValue | ((value: unknown, key: string, item: T) => TableStrictClassValue)
-  thClass?: ClassValue
-  thStyle?: StyleValue
-  tdAttr?: AttrsValue | ((obj: {value: unknown; key: string; item: T}) => AttrsValue)
-  thAttr?:
+  /**
+   * Attributes for the column's header cells (`<th>` in `<thead>` and `<tfoot>`), including `class` and `style`.
+   * A function is called for each cell
+   */
+  thAttrs?:
     | AttrsValue
     | ((obj: {value: unknown; key: string; item: T | null; type: TableRowThead}) => AttrsValue)
-  theme?: ThemeProp | null
+  /**
+   * Attributes for the column's data cells (`<td>`), including `class` and `style`.
+   * A function is called for each cell
+   */
+  tdAttrs?: AttrsValue | ((obj: {value: unknown; key: string; item: T}) => AttrsValue)
 }
+
+/** Sorting options of a sortable column */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TableFieldSort<T = any> = {
+  direction?: string
+  initialDirection?: BTableInitialSortDirection
+  byFormatted?: boolean | TableFieldFormatter<T>
+  compare?: BTableSortByComparerFunction<T>
+  /** Sorting this column cannot be cleared by clicking. Overrides the table's `mustSort` */
+  must?: boolean
+}
+
+/** Resolves a field's `sort` into whether it is sortable and its options */
+export const getFieldSort = <T>(
+  field: TableField<T> | null | undefined
+): {sortable: boolean} & TableFieldSort<T> => {
+  const sort = field?.sort
+  return {sortable: !!sort, ...(typeof sort === 'object' ? sort : {})}
+}
+
+/** Whether a column's sorting cannot be cleared: the field's `sort.must`, else the table's `mustSort` */
+export const isFieldMustSort = <T>(
+  field: TableField<T> | null | undefined,
+  tableMustSort: boolean
+): boolean => getFieldSort(field).must ?? tableMustSort
 
 export type TableFieldRaw<T = unknown> = T extends object
   ? LiteralUnion<keyof T> | TableField<T>

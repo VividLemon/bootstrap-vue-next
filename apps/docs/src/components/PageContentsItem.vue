@@ -1,5 +1,9 @@
 <template>
-  <BNavItem :href="buildLink(item)" link-class="otp-link" :active="item.id === activeId">
+  <BNavItem
+    :href="buildLink(item)"
+    :link-attrs="{ class: 'otp-link' }"
+    :active="item.id === activeId"
+  >
     <template #default>{{ props.item.text }}</template>
     <template #after>
       <BNav v-show="isVisible" vertical small class="otp-nav">
@@ -15,8 +19,8 @@
 </template>
 
 <script setup lang="ts">
-import type {ContentsItem} from '../types'
-import {computed} from 'vue'
+import type { ContentsItem } from '../types'
+import { computed } from 'vue'
 
 const props = defineProps<{
   item: ContentsItem

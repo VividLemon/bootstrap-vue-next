@@ -35,6 +35,7 @@ export type {
   TableFieldFormatter,
   TableFieldFormatterObject,
   TableFieldRaw,
+  TableFieldSort,
   TableItem,
   TableRowThead,
   TableRowType,
@@ -86,6 +87,7 @@ export type {Position} from './Position'
 export type {RadioOption, RadioOptionRaw, RadioValue} from './RadioTypes'
 export type {RadiusElement, RadiusElementExtendables, RadiusSides} from './RadiusElement'
 export type {SpinnerType} from './SpinnerType'
+export type {BadgeVariant} from './BadgeTypes'
 export type {TabType} from './Tab'
 export type {TransitionMode} from './TransitionMode'
 export type * from './ComponentExposes'

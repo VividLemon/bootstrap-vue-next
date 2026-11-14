@@ -230,7 +230,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headColor: {theme: 'inverse'},
+        thead: {color: {theme: 'inverse'}},
       },
     })
     const $thead = wrapper.get('thead')
@@ -241,7 +241,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1}],
-        headColor: {bg: 'subtle-primary', fg: 'emphasis-primary'},
+        thead: {color: {bg: 'subtle-primary', fg: 'emphasis-primary'}},
       },
     })
     const $thead = wrapper.get('thead')
@@ -253,7 +253,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        footColor: {theme: 'primary'},
+        tfoot: {color: {theme: 'primary'}},
         footClone: true,
       },
     })
@@ -265,7 +265,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headColor: {theme: 'primary'},
+        thead: {color: {theme: 'primary'}},
         footClone: true,
       },
     })
@@ -277,8 +277,8 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headColor: {theme: 'primary'},
-        footColor: {fg: 'white'},
+        thead: {color: {theme: 'primary'}},
+        tfoot: {color: {fg: 'white'}},
         footClone: true,
       },
     })
@@ -291,8 +291,8 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headColor: {theme: 'primary'},
-        footColor: {theme: null},
+        thead: {color: {theme: 'primary'}},
+        tfoot: {color: {theme: null}},
         footClone: true,
       },
     })
@@ -304,7 +304,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headRowColor: {theme: 'inverse'},
+        thead: {rowColor: {theme: 'inverse'}},
       },
     })
     const $tr = wrapper.get('thead tr')
@@ -315,7 +315,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        footRowColor: {theme: 'primary'},
+        tfoot: {rowColor: {theme: 'primary'}},
         footClone: true,
       },
     })
@@ -327,7 +327,7 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headRowColor: {theme: 'primary'},
+        thead: {rowColor: {theme: 'primary'}},
         footClone: true,
       },
     })
@@ -339,8 +339,8 @@ describe('btablelite', () => {
     const wrapper = mount(BTableLite, {
       props: {
         items: [{a: 1, b: 2}],
-        headRowColor: {theme: 'inverse'},
-        footRowColor: {theme: null},
+        thead: {rowColor: {theme: 'inverse'}},
+        tfoot: {rowColor: {theme: null}},
         footClone: true,
       },
     })
@@ -510,7 +510,7 @@ describe('btablelite', () => {
   describe('toggle details', () => {
     it('works internally', async () => {
       const items = [{isActive: true, age: 40, name: {first: 'Dickerson', last: 'Macdonald'}}]
-      const fields = [{key: 'actions', label: 'Actions', sortable: false}]
+      const fields = [{key: 'actions', label: 'Actions'}]
       const wrapper = mount(BTableLite, {
         props: {
           items,
@@ -529,7 +529,7 @@ describe('btablelite', () => {
     })
 
     it('works externally with v-model:expanded-items', async () => {
-      const fields = [{key: 'actions', label: 'Actions', sortable: false}]
+      const fields = [{key: 'actions', label: 'Actions'}]
       const item = {
         isActive: true,
         age: 40,
@@ -558,7 +558,7 @@ describe('btablelite', () => {
     })
 
     it('persists details when items are replaced with new object references but same primary key', async () => {
-      const fields = [{key: 'actions', label: 'Actions', sortable: false}]
+      const fields = [{key: 'actions', label: 'Actions'}]
       const wrapper = mount(BTableLite, {
         props: {
           primaryKey: 'id',
@@ -599,7 +599,7 @@ describe('btablelite', () => {
     })
 
     it('falls back to object reference when primaryKey is not provided', async () => {
-      const fields = [{key: 'actions', label: 'Actions', sortable: false}]
+      const fields = [{key: 'actions', label: 'Actions'}]
       const wrapper = mount(BTableLite, {
         props: {
           items: [
@@ -637,7 +637,7 @@ describe('btablelite', () => {
     })
 
     it('clears details when primaryKey prop changes', async () => {
-      const fields = [{key: 'actions', label: 'Actions', sortable: false}]
+      const fields = [{key: 'actions', label: 'Actions'}]
       const wrapper = mount(BTableLite, {
         props: {
           primaryKey: 'id',
@@ -671,7 +671,7 @@ describe('btablelite', () => {
     })
 
     it('clears details when primaryKey is removed', async () => {
-      const fields = [{key: 'actions', label: 'Actions', sortable: false}]
+      const fields = [{key: 'actions', label: 'Actions'}]
       const wrapper = mount(BTableLite, {
         props: {
           primaryKey: 'id',
@@ -705,7 +705,7 @@ describe('btablelite', () => {
     })
 
     it('clears details when primaryKey is changed and then changed back', async () => {
-      const fields = [{key: 'actions', label: 'Actions', sortable: false}]
+      const fields = [{key: 'actions', label: 'Actions'}]
       const wrapper = mount(BTableLite, {
         props: {
           primaryKey: 'id',
@@ -785,8 +785,8 @@ describe('btablelite', () => {
       {id: 3, name: 'Bob', age: 35},
     ]
     const fields = [
-      {key: 'name', label: 'Name', sortable: true},
-      {key: 'age', label: 'Age', sortable: true},
+      {key: 'name', label: 'Name', sort: true},
+      {key: 'age', label: 'Age', sort: true},
     ]
 
     it('emits row-clicked event when row is clicked', async () => {
@@ -892,7 +892,7 @@ describe('btablelite', () => {
       const emittedEvent = wrapper.emitted('head-clicked')?.[0]?.[0]
       expect(emittedEvent).toEqual({
         key: 'name',
-        field: expect.objectContaining({key: 'name', label: 'Name', sortable: true}),
+        field: expect.objectContaining({key: 'name', label: 'Name', sort: true}),
         event: expect.any(Object),
         isFooter: false,
       })
@@ -1048,62 +1048,103 @@ describe('btablelite', () => {
     })
   })
 
-  describe('tbodyClass prop', () => {
-    it('applies tbodyClass to tbody element', () => {
+  describe('section attrs props', () => {
+    it('merges tbodyAttrs into the tbody element', () => {
       const wrapper = mount(BTableLite, {
-        props: {items: [{a: 1}], tbodyClass: 'custom-tbody'},
+        props: {
+          items: [{a: 1}],
+          tbody: {attrs: {'class': 'custom-tbody', 'style': {color: 'red'}, 'data-foo': 'bar'}},
+        },
       })
-      expect(wrapper.get('tbody').classes()).toContain('custom-tbody')
-    })
-  })
-
-  describe('theadClass prop', () => {
-    it('applies theadClass to thead element', () => {
-      const wrapper = mount(BTableLite, {
-        props: {items: [{a: 1}], theadClass: 'custom-thead'},
-      })
-      expect(wrapper.get('thead').classes()).toContain('custom-thead')
-    })
-  })
-
-  describe('theadTrClass prop', () => {
-    it('applies theadTrClass to the tr in thead', () => {
-      const wrapper = mount(BTableLite, {
-        props: {items: [{a: 1}], theadTrClass: 'custom-tr'},
-      })
-      expect(wrapper.get('thead tr').classes()).toContain('custom-tr')
-    })
-  })
-
-  describe('tfootClass prop', () => {
-    it('applies tfootClass to tfoot element', () => {
-      const wrapper = mount(BTableLite, {
-        props: {items: [{a: 1}], footClone: true, tfootClass: 'custom-tfoot'},
-      })
-      expect(wrapper.get('tfoot').classes()).toContain('custom-tfoot')
+      const $tbody = wrapper.get('tbody')
+      expect($tbody.classes()).toContain('custom-tbody')
+      expect($tbody.attributes('style')).toContain('color: red')
+      expect($tbody.attributes('data-foo')).toBe('bar')
     })
 
-    it('falls back to theadClass for tfoot when tfootClass is not set', () => {
+    it('merges theadAttrs class with the head color classes', () => {
       const wrapper = mount(BTableLite, {
-        props: {items: [{a: 1}], footClone: true, theadClass: 'thead-class'},
+        props: {
+          items: [{a: 1}],
+          thead: {color: {theme: 'primary'}, attrs: {class: 'custom-thead', style: {color: 'red'}}},
+        },
+      })
+      const $thead = wrapper.get('thead')
+      expect($thead.classes()).toContain('custom-thead')
+      expect($thead.classes()).toContain('theme-primary')
+      expect($thead.attributes('style')).toContain('color: red')
+    })
+
+    it('merges theadTrAttrs class with the head row color classes', () => {
+      const wrapper = mount(BTableLite, {
+        props: {
+          items: [{a: 1}],
+          thead: {rowColor: {theme: 'info'}, trAttrs: {class: 'custom-tr'}},
+        },
+      })
+      const $tr = wrapper.get('thead tr')
+      expect($tr.classes()).toContain('custom-tr')
+      expect($tr.classes()).toContain('theme-info')
+    })
+
+    it('merges tfootAttrs class with the foot color classes', () => {
+      const wrapper = mount(BTableLite, {
+        props: {
+          items: [{a: 1}],
+          footClone: true,
+          tfoot: {color: {theme: 'dark'}, attrs: {class: 'custom-tfoot'}},
+        },
+      })
+      const $tfoot = wrapper.get('tfoot')
+      expect($tfoot.classes()).toContain('custom-tfoot')
+      expect($tfoot.classes()).toContain('theme-dark')
+    })
+
+    it('falls back to theadAttrs for tfoot when tfootAttrs is not set', () => {
+      const wrapper = mount(BTableLite, {
+        props: {items: [{a: 1}], footClone: true, thead: {attrs: {class: 'thead-class'}}},
       })
       expect(wrapper.get('tfoot').classes()).toContain('thead-class')
     })
-  })
 
-  describe('tfootTrClass prop', () => {
-    it('applies tfootTrClass to the tr in tfoot', () => {
+    it('merges tfootTrAttrs into the tr in tfoot', () => {
       const wrapper = mount(BTableLite, {
-        props: {items: [{a: 1}], footClone: true, tfootTrClass: 'custom-foot-tr'},
+        props: {items: [{a: 1}], footClone: true, tfoot: {trAttrs: {class: 'custom-foot-tr'}}},
       })
       expect(wrapper.get('tfoot tr').classes()).toContain('custom-foot-tr')
     })
 
-    it('falls back to theadTrClass when tfootTrClass is not set', () => {
+    it('falls back to theadTrAttrs when tfootTrAttrs is not set', () => {
       const wrapper = mount(BTableLite, {
-        props: {items: [{a: 1}], footClone: true, theadTrClass: 'head-tr-class'},
+        props: {items: [{a: 1}], footClone: true, thead: {trAttrs: {class: 'head-tr-class'}}},
       })
       expect(wrapper.get('tfoot tr').classes()).toContain('head-tr-class')
+    })
+
+    it('merges detailsTdAttrs into the details row cell', () => {
+      const item = {a: 1}
+      const wrapper = mount(BTableLite, {
+        props: {
+          items: [item],
+          expandedItems: [item],
+          detailsTdAttrs: {class: 'custom-details', style: {color: 'red'}},
+        },
+        slots: {'row-expansion': 'Details'},
+      })
+      const $td = wrapper.get('tbody tr:last-child td')
+      expect($td.text()).toBe('Details')
+      expect($td.classes()).toContain('custom-details')
+      expect($td.attributes('style')).toContain('color: red')
+    })
+
+    it('merges tableAttrs class with the align class', () => {
+      const wrapper = mount(BTableLite, {
+        props: {items: [{a: 1}], align: 'middle', tableAttrs: {class: 'custom-table'}},
+      })
+      const $table = wrapper.get('table')
+      expect($table.classes()).toContain('custom-table')
+      expect($table.classes()).toContain('align-middle')
+      expect($table.classes()).toContain('table')
     })
   })
 
@@ -1136,7 +1177,7 @@ describe('btablelite', () => {
     it('applies row theme class from _rowTheme property', () => {
       const wrapper = mount(BTableLite, {
         props: {
-          items: [{a: 1, _rowTheme: 'danger'}],
+          items: [{a: 1, _rowColor: {theme: 'danger'}}],
         },
       })
 
@@ -1148,7 +1189,7 @@ describe('btablelite', () => {
   it('applies row background and foreground colors', () => {
     const wrapper = mount(BTableLite, {
       props: {
-        items: [{a: 1, _rowBg: 'subtle-danger', _rowFg: 'contrast-danger'}],
+        items: [{a: 1, _rowColor: {bg: 'subtle-danger', fg: 'contrast-danger'}}],
       },
     })
     const $tr = wrapper.get('tbody tr')
@@ -1160,7 +1201,7 @@ describe('btablelite', () => {
     it('applies cell theme class from _cellThemes property', () => {
       const wrapper = mount(BTableLite, {
         props: {
-          items: [{a: 1, b: 2, _cellThemes: {a: 'success'}}],
+          items: [{a: 1, b: 2, _cellColors: {a: {theme: 'success'}}}],
         },
       })
       const $tds = wrapper.findAll('tbody td')
@@ -1311,40 +1352,43 @@ describe('btablelite', () => {
     })
   })
 
-  describe('tbodyTrClass prop', () => {
-    it('applies static class to body rows', () => {
+  describe('tbodyTrAttrs prop', () => {
+    it('merges a static class into body rows with the row theme', () => {
       const wrapper = mount(BTableLite, {
         props: {
-          items: [{a: 1}, {a: 2}],
-          tbodyTrClass: 'custom-row',
+          items: [{a: 1, _rowColor: {theme: 'danger'}}, {a: 2}],
+          tbody: {trAttrs: {class: 'custom-row', style: {color: 'red'}}},
         },
       })
       const $trs = wrapper.findAll('tbody tr')
       $trs.forEach(($tr) => {
         expect($tr.classes()).toContain('custom-row')
+        expect($tr.attributes('style')).toContain('color: red')
       })
+      expect($trs[0].classes()).toContain('theme-danger')
     })
 
-    it('applies function-based class to body rows', () => {
+    it('applies a function-based class per row and row type', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}, {a: 2}],
-          tbodyTrClass: (item: {a: number} | null, type: string) =>
-            type === 'row' && item?.a === 1 ? 'highlight' : '',
+          tbody: {
+            trAttrs: (item: {a: number} | null, type: string) => ({
+              class: type === 'row' && item?.a === 1 ? 'highlight' : '',
+            }),
+          },
         },
       })
       const $trs = wrapper.findAll('tbody tr')
       expect($trs[0].classes()).toContain('highlight')
       expect($trs[1].classes()).not.toContain('highlight')
     })
-  })
 
-  describe('tbodyTrAttrs prop', () => {
     it('applies static attributes to body rows', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          tbodyTrAttrs: {'data-custom': 'value'},
+          tbody: {trAttrs: {'data-custom': 'value'}},
         },
       })
       expect(wrapper.get('tbody tr').attributes('data-custom')).toBe('value')
@@ -1354,9 +1398,11 @@ describe('btablelite', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}, {a: 2}],
-          tbodyTrAttrs: (item: {a: number} | null) => ({
-            'data-id': item?.a?.toString(),
-          }),
+          tbody: {
+            trAttrs: (item: {a: number} | null) => ({
+              'data-id': item?.a?.toString(),
+            }),
+          },
         },
       })
       const $trs = wrapper.findAll('tbody tr')
@@ -1382,30 +1428,42 @@ describe('btablelite', () => {
     })
   })
 
-  describe('stacked and labelStacked', () => {
-    it('renders stacked labels when both stacked and labelStacked are true', () => {
+  describe('stacked', () => {
+    it('adds data-cell labels to body cells when stacked', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{name: 'John', age: 30}],
           stacked: true,
-          labelStacked: true,
         },
       })
-      const labels = wrapper.findAll('.b-table-stacked-label')
-      expect(labels.length).toBe(2)
-      expect(labels[0].text()).toBe('Name')
-      expect(labels[1].text()).toBe('Age')
+      const $tds = wrapper.findAll('tbody td')
+      expect($tds[0].attributes('data-cell')).toBe('Name')
+      expect($tds[1].attributes('data-cell')).toBe('Age')
+      expect($tds[0].attributes('data-label')).toBeUndefined()
+      expect(wrapper.find('.b-table-stacked-label').exists()).toBe(false)
+      expect(wrapper.get('table').classes()).toContain('table-stacked')
     })
 
-    it('does not render stacked labels when stacked is false', () => {
+    it('adds data-cell labels when stacked at a breakpoint', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{name: 'John'}],
-          stacked: false,
-          labelStacked: true,
+          fields: [{key: 'name', label: 'Full name'}],
+          stacked: 'md',
         },
       })
-      expect(wrapper.find('.b-table-stacked-label').exists()).toBe(false)
+      expect(wrapper.get('tbody td').attributes('data-cell')).toBe('Full name')
+      expect(wrapper.get('table').classes()).toContain('md:table-stacked')
+      expect(wrapper.get('div').classes()).toContain('table-responsive')
+    })
+
+    it('does not add data-cell labels when not stacked', () => {
+      const wrapper = mount(BTableLite, {
+        props: {
+          items: [{name: 'John'}],
+        },
+      })
+      expect(wrapper.get('tbody td').attributes('data-cell')).toBeUndefined()
     })
   })
 
@@ -1427,12 +1485,12 @@ describe('btablelite', () => {
     })
   })
 
-  describe('field thStyle', () => {
-    it('applies thStyle to header cells', () => {
+  describe('field thAttrs style', () => {
+    it('applies thAttrs style to header cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', label: 'A', thStyle: {width: '200px'}}],
+          fields: [{key: 'a', label: 'A', thAttrs: {style: {width: '200px'}}}],
         },
       })
       expect(wrapper.get('thead th').attributes('style')).toContain('width: 200px')
@@ -1444,7 +1502,7 @@ describe('btablelite', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', label: 'A', headerTitle: 'Column A'}],
+          fields: [{key: 'a', label: 'A', header: {title: 'Column A'}}],
         },
       })
       expect(wrapper.get('thead th').attributes('title')).toBe('Column A')
@@ -1456,7 +1514,7 @@ describe('btablelite', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', label: 'A', headerAbbr: 'col-a'}],
+          fields: [{key: 'a', label: 'A', header: {abbr: 'col-a'}}],
         },
       })
       expect(wrapper.get('thead th').attributes('abbr')).toBe('col-a')
@@ -1476,18 +1534,18 @@ describe('btablelite', () => {
     })
   })
 
-  describe('field tdAttr', () => {
-    it('applies static tdAttr to body cells', () => {
+  describe('field tdAttrs', () => {
+    it('applies static tdAttrs to body cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', label: 'A', tdAttr: {'data-test': 'hello'}}],
+          fields: [{key: 'a', label: 'A', tdAttrs: {'data-test': 'hello'}}],
         },
       })
       expect(wrapper.get('tbody td').attributes('data-test')).toBe('hello')
     })
 
-    it('applies function tdAttr to body cells', () => {
+    it('applies function tdAttrs to body cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 42}],
@@ -1495,7 +1553,7 @@ describe('btablelite', () => {
             {
               key: 'a',
               label: 'A',
-              tdAttr: ({value}: {value: unknown}) => ({'data-value': String(value)}),
+              tdAttrs: ({value}: {value: unknown}) => ({'data-value': String(value)}),
             },
           ],
         },
@@ -1504,18 +1562,18 @@ describe('btablelite', () => {
     })
   })
 
-  describe('field tdClass', () => {
-    it('applies static tdClass to body cells', () => {
+  describe('field tdAttrs class', () => {
+    it('applies a static tdAttrs class to body cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', label: 'A', tdClass: 'custom-td'}],
+          fields: [{key: 'a', label: 'A', tdAttrs: {class: 'custom-td'}}],
         },
       })
       expect(wrapper.get('tbody td').classes()).toContain('custom-td')
     })
 
-    it('applies function tdClass to body cells', () => {
+    it('applies a function tdAttrs class to body cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 42}],
@@ -1523,7 +1581,7 @@ describe('btablelite', () => {
             {
               key: 'a',
               label: 'A',
-              tdClass: (value: unknown) => (value === 42 ? 'is-42' : ''),
+              tdAttrs: ({value}: {value: unknown}) => ({class: value === 42 ? 'is-42' : ''}),
             },
           ],
         },
@@ -1532,27 +1590,46 @@ describe('btablelite', () => {
     })
   })
 
-  describe('fieldColumnClass prop', () => {
-    it('applies static fieldColumnClass to header cells', () => {
+  describe('fieldColumnAttrs prop', () => {
+    it('merges static fieldColumnAttrs into header cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fieldColumnClass: 'col-class',
+          fields: [{key: 'a', thAttrs: {class: 'th-class'}}],
+          fieldColumnAttrs: {'class': 'col-class', 'data-foo': 'bar'},
         },
       })
-      expect(wrapper.get('thead th').classes()).toContain('col-class')
+      const $th = wrapper.get('thead th')
+      expect($th.classes()).toContain('col-class')
+      expect($th.classes()).toContain('th-class')
+      expect($th.attributes('data-foo')).toBe('bar')
     })
 
-    it('applies function fieldColumnClass to header cells', () => {
+    it('applies function fieldColumnAttrs per field to header and footer cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1, b: 2}],
-          fieldColumnClass: (field: {key: string}) => `col-${field.key}`,
+          footClone: true,
+          fieldColumnAttrs: (field: {key: string}) => ({class: `col-${field.key}`}),
         },
       })
       const $ths = wrapper.findAll('thead th')
       expect($ths[0].classes()).toContain('col-a')
       expect($ths[1].classes()).toContain('col-b')
+      expect(wrapper.findAll('tfoot th')[1].classes()).toContain('col-b')
+    })
+
+    it('merges fieldColumnAttrs class with the field thAttrs class', () => {
+      const wrapper = mount(BTableLite, {
+        props: {
+          items: [{a: 1}],
+          fields: [{key: 'a', thAttrs: {class: 'from-th-attrs'}}],
+          fieldColumnAttrs: {class: 'col-class'},
+        },
+      })
+      const $th = wrapper.get('thead th')
+      expect($th.classes()).toContain('col-class')
+      expect($th.classes()).toContain('from-th-attrs')
     })
   })
 

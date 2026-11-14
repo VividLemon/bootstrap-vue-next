@@ -80,7 +80,7 @@
             <ChildComp :title="tabs[0]?.title" :content="tabs[0]?.content" />
             <BTab :title="test" @click="log"> test </BTab>
             <BTab v-model:active="activeBool" title="ac" button-id="ac-button"> ac </BTab>
-            <BTab title="test1" lazy-once title-link-class="bg-danger" class="bg-danger">
+            <BTab title="test1" lazy-once :title-link-attrs="{class: 'bg-danger'}" class="bg-danger">
               <template #title> doo</template> doo <LoggerComp>goo</LoggerComp></BTab
             >
           </ParentComp>

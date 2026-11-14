@@ -48,27 +48,8 @@ export type FgLayerColor = 'body' | '1' | '2' | '3' | '4' | 'bg' | 'white' | 'bl
 /** Neutral layer borders from `$theme-borders`, rendered as `.border-<value>` */
 export type BorderLayerColor = 'bg' | 'body' | 'muted' | 'subtle' | 'emphasized' | 'white' | 'black'
 /** Opacity utilities for theme-aware backgrounds, foregrounds, and borders */
-export type ColorOpacity =
-  | 10
-  | 20
-  | 30
-  | 40
-  | 50
-  | 60
-  | 70
-  | 80
-  | 90
-  | 100
-  | '10'
-  | '20'
-  | '30'
-  | '40'
-  | '50'
-  | '60'
-  | '70'
-  | '80'
-  | '90'
-  | '100'
+type ColorOpacityNumber = 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100
+export type ColorOpacity = ColorOpacityNumber | `${ColorOpacityNumber}`
 
 /** `.bg-<theme>`, `.bg-subtle-<theme>`, `.bg-muted-<theme>` or a layer color */
 export type BgColor =

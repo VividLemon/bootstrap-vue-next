@@ -127,7 +127,7 @@ const items: TableItem<Person>[] = [
     age: 9,
     first_name: 'Mini',
     last_name: 'Navarro',
-    _rowTheme: 'success' as ThemeColor,
+    _rowColor: { theme: 'success' as ThemeColor },
   },
   { isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson' },
   { isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney' },
@@ -138,7 +138,7 @@ const items: TableItem<Person>[] = [
     age: 87,
     first_name: 'Larsen',
     last_name: 'Shaw',
-    _cellThemes: { age: 'danger', isActive: 'warning' },
+    _cellColors: { age: { theme: 'danger' }, isActive: { theme: 'warning' } },
   },
   { isActive: false, age: 26, first_name: 'Mitzi', last_name: 'Navarro' },
   { isActive: false, age: 22, first_name: 'Genevieve', last_name: 'Wilson' },
@@ -149,13 +149,13 @@ const items: TableItem<Person>[] = [
 const fields: Exclude<TableFieldRaw<Person>, string>[] = [
   {
     key: 'first_name',
-    sortable: true,
+    sort: true,
   },
   {
     key: 'last_name',
-    sortable: true,
+    sort: true,
   },
-  { key: 'age', label: 'Person age', sortable: true, class: 'text-center' },
+  { key: 'age', label: 'Person age', sort: true, class: 'text-center' },
 ]
 
 const pageOptions = [

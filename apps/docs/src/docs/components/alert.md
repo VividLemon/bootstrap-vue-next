@@ -59,11 +59,11 @@ The **interval** prop determines how frequently the timer updates. While the def
 
 <<< DEMO ./demo/AlertAutoDismissible.vue
 
-## Fading alerts
+## Transitions
 
-Use the `fade` prop to enable animation. By default alerts are not animated.
+Like Bootstrap's alerts, `BAlert` only animates its exit: when it is dismissed, the `.hiding` class fades it out, then the alert is removed from the DOM and `hidden` is emitted. Showing an alert is instant.
 
-Note that `bootstrap-vue-next` uses Vue's transitions for this animation rather than bootstrap's `.fade` class.
+Set the `no-transition` prop to add Bootstrap's `.alert-instant` class, which removes the alert at once. Tune the fade with the `--bs-alert-transition-duration` and `--bs-alert-transition-timing` CSS variables.
 
 <<< DEMO ./demo/AlertFade.vue
 

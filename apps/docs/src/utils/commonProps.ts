@@ -413,10 +413,11 @@ const commonProps = () =>
       default: 'bottom-start',
       description: 'Placement of a floating element',
     },
-    progressProps: {
-      type: "Omit<BProgressBarProps, 'label' | 'max' | 'value'>",
-      default: undefined,
-      description: 'Configures the progress bar. No progress bar is shown if undefined',
+    progress: {
+      type: 'boolean | ProgressOptions',
+      default: false,
+      description:
+        'Shows a countdown progress bar when `model-value` is a number. `true` uses the defaults; an object (`animated`, `color`, `precision`, `showProgress`, `showValue`, `striped`) shows it with those options',
     },
     showOnPause: {
       type: 'boolean',
@@ -453,35 +454,11 @@ const commonProps = () =>
       description:
         'Color object for the close button: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
     },
-    footColor: {
-      type: 'ColorExtendables',
-      default: undefined,
-      description:
-        'Color object for the table footer: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. Each key falls back to `headColor`. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
-    },
-    footRowColor: {
-      type: 'ColorExtendables',
-      default: undefined,
-      description:
-        'Color object for the footer row: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. Each key falls back to `headRowColor`. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
-    },
     footerColor: {
       type: 'ColorExtendables',
       default: undefined,
       description:
         'Color object for the footer: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
-    },
-    headColor: {
-      type: 'ColorExtendables',
-      default: undefined,
-      description:
-        'Color object for the table header: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
-    },
-    headRowColor: {
-      type: 'ColorExtendables',
-      default: undefined,
-      description:
-        'Color object for the header row: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
     },
     headerColor: {
       type: 'ColorExtendables',

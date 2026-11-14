@@ -3,7 +3,7 @@
  *
  * This is the pre-Bootstrap-v6 `useShowHide`, built around Vue `<Transition>` and timing logic
  * inside the composable. It is kept only so components that are not migrated to the native v6
- * transition path yet keep working: BModal, BOffcanvas, BDropdown (deferred), and BAlert, BToast,
+ * transition path yet keep working: BModal, BOffcanvas, BDropdown (deferred), and
  * BPopover / BTooltip (migrated in a later batch). New code must use `useShowHide` +
  * `useCssTransition`. See `architecture/ARIA_VISIBILITY.md` and
  * `architecture/BOOTSTRAP_V6_MIGRATION.md`.

@@ -48,6 +48,7 @@ import type {
 } from './Alignment'
 import type {RadiusElementExtendables} from './RadiusElement'
 import type {SpinnerType} from './SpinnerType'
+import type {BadgeVariant} from './BadgeTypes'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {ButtonType} from './ButtonType'
 import type {LinkOpacity, LinkUnderline} from './LinkDecorators'
@@ -68,7 +69,6 @@ import type {
   TableFieldRaw,
   TablePrimaryKey,
   TableRowType,
-  TableStrictClassValue,
   TableThScope,
 } from './TableTypes'
 import type {PopoverPlacement} from './PopoverPlacement'
@@ -769,12 +769,11 @@ export interface BNavProps {
 export interface BNavFormProps extends BFormProps {
   role?: string
   wrapperAttrs?: Readonly<AttrsValue>
-  formClass?: ClassValue
+  formAttrs?: Readonly<AttrsValue>
 }
 
 export interface BNavItemProps extends Omit<BLinkProps, 'routerTag'> {
   linkAttrs?: Readonly<AttrsValue>
-  linkClass?: ClassValue
 }
 
 export interface BNavTextProps {
@@ -869,36 +868,43 @@ export interface BOverlayProps extends RadiusElementExtendables {
   zIndex?: Numberish
 }
 
+/** A pagination button: its text and attributes */
+export interface PaginationButtonOptions {
+  text?: string
+  attrs?: Readonly<AttrsValue>
+}
+
+/** The first or last pagination button; `number` shows the page number instead of the text */
+export interface PaginationEndButtonOptions extends PaginationButtonOptions {
+  number?: boolean
+}
+
 export interface BPaginationProps {
+  ellipsis?: PaginationButtonOptions
+  first?: PaginationEndButtonOptions
+  labels?: {
+    firstPage?: string
+    prevPage?: string
+    nextPage?: string
+    lastPage?: string
+    page?: string
+  }
+  last?: PaginationEndButtonOptions
+  next?: PaginationButtonOptions
+  prev?: PaginationButtonOptions
   align?: AlignmentJustifyContent | 'fill'
   ariaControls?: string
   ariaLabel?: string
   disabled?: boolean
-  ellipsisClass?: ClassValue
-  ellipsisText?: string
-  firstClass?: ClassValue
-  firstNumber?: boolean
-  firstText?: string
   noEllipsis?: boolean
   noGotoEndButtons?: boolean
-  labelFirstPage?: string
-  labelLastPage?: string
-  labelNextPage?: string
-  labelPage?: string
-  labelPrevPage?: string
-  lastClass?: ClassValue
-  lastNumber?: boolean
-  lastText?: string
   limit?: Numberish
   modelValue?: Numberish
-  nextClass?: ClassValue
-  nextText?: string
-  pageClass?: ClassValue
+  pageAttrs?: Readonly<AttrsValue>
   perPage?: Numberish
   pills?: boolean
-  prevClass?: ClassValue
-  prevText?: string
   size?: Size
+  color?: Pick<ColorExtendables, 'theme'> | null
   totalRows?: Numberish
 }
 
@@ -981,38 +987,37 @@ export interface BTabProps {
   noBody?: boolean
   tag?: string
   title?: string
-  titleItemClass?: ClassValue
+  titleItemAttrs?: Readonly<AttrsValue>
   titleLinkAttrs?: Readonly<AttrsValue>
-  titleLinkClass?: ClassValue
 }
 
 export interface BTabsProps {
-  activeNavItemClass?: ClassValue
-  activeNavLinkClass?: ClassValue
-  activeTabClass?: ClassValue
+  activeNavItemAttrs?: Readonly<AttrsValue>
+  activeNavLinkAttrs?: Readonly<AttrsValue>
+  activeTabAttrs?: Readonly<AttrsValue>
   align?: AlignmentJustifyContent
   card?: boolean
-  contentClass?: ClassValue
+  contentAttrs?: Readonly<AttrsValue>
   end?: boolean
   fill?: boolean
   id?: string
   index?: number
-  inactiveNavItemClass?: ClassValue
-  inactiveNavLinkClass?: ClassValue
-  inactiveTabClass?: ClassValue
+  inactiveNavItemAttrs?: Readonly<AttrsValue>
+  inactiveNavLinkAttrs?: Readonly<AttrsValue>
+  inactiveTabAttrs?: Readonly<AttrsValue>
   justified?: boolean
   lazy?: boolean
   modelValue?: string
-  navClass?: ClassValue
-  navItemClass?: ClassValue
-  navWrapperClass?: ClassValue
+  navAttrs?: Readonly<AttrsValue>
+  navItemAttrs?: Readonly<AttrsValue>
+  navWrapperAttrs?: Readonly<AttrsValue>
   noTransition?: boolean
   noKeyNav?: boolean
   noNavStyle?: boolean
   pills?: boolean
   small?: boolean
   tag?: string
-  tabClass?: ClassValue
+  tabAttrs?: Readonly<AttrsValue>
   underline?: boolean
   vertical?: boolean
 }
@@ -1042,16 +1047,12 @@ export interface BSpinnerProps {
 }
 
 export interface BAlertProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProps {
-  alertClass?: ClassValue
+  alertAttrs?: Readonly<AttrsValue>
   body?: string
-  bodyClass?: ClassValue
-  closeClass?: ClassValue
-  closeColor?: ColorExtendables
-  closeContent?: string
-  closeLabel?: string
-  closeVariant?: ButtonVariant | null
+  bodyAttrs?: Readonly<AttrsValue>
+  close?: CloseButtonOptions
   dismissible?: boolean
-  headerClass?: ClassValue
+  headerAttrs?: Readonly<AttrsValue>
   headerTag?: string
   id?: string
   interval?: number | 'requestAnimationFrame'
@@ -1059,7 +1060,7 @@ export interface BAlertProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProp
   modelValue?: boolean | number
   noHoverPause?: boolean
   noResumeOnHoverLeave?: boolean
-  progressProps?: Omit<BProgressBarProps, 'label' | 'max' | 'value'>
+  progress?: boolean | ProgressOptions
   showOnPause?: boolean
   title?: string
 }
@@ -1093,6 +1094,7 @@ export interface BBadgeProps extends Omit<BLinkProps, 'routerTag'> {
   pill?: boolean
   placement?: CombinedPlacement
   tag?: string
+  variant?: BadgeVariant | null
 }
 
 export interface BBreadcrumbProps {
@@ -1297,48 +1299,42 @@ export interface BTableSimpleProps {
   striped?: boolean
   stripedColumns?: boolean
   tableAttrs?: Readonly<AttrsValue>
-  tableClass?: ClassValue
+}
+
+/** The table head (`<thead>`) or foot (`<tfoot>`): attributes, row attributes and colors */
+export interface TableHeadSection {
+  attrs?: Readonly<AttrsValue>
+  trAttrs?: Readonly<AttrsValue>
+  color?: ColorExtendables
+  rowColor?: ColorExtendables
+}
+
+/** The table body (`<tbody>`): attributes and row attributes (an object, or a function of the row) */
+export interface TableBodySection<Item> {
+  attrs?: Readonly<AttrsValue>
+  trAttrs?: ((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue
 }
 
 export interface BTableLiteProps<Item> extends BTableSimpleProps {
   align?: VerticalAlign
   caption?: string
-  detailsTdClass?: ClassValue
-  fieldColumnClass?:
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | ((field: TableField<Item>) => readonly Record<string, any>[])
-    | string
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | Readonly<Record<PropertyKey, any>>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | readonly any[]
+  detailsTdAttrs?: Readonly<AttrsValue>
+  fieldColumnAttrs?: ((field: TableField<Item>) => AttrsValue) | Readonly<AttrsValue>
   fields?: readonly TableFieldRaw<Item>[]
   footClone?: boolean
-  footColor?: ColorExtendables
-  footRowColor?: ColorExtendables
-  headColor?: ColorExtendables
-  headRowColor?: ColorExtendables
   items?: readonly Item[]
-  labelStacked?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modelValue?: any
   expandedItems?: readonly Item[]
   // primaryKey?: Item extends object ? TablePrimaryKey<Item> : string
   primaryKey?: TablePrimaryKey<Item>
-  tbodyClass?: ClassValue
-  tbodyTrAttrs?: ((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue
-  // tbodyTransitionHandlers
-  // tbodyTransitionProps
-  tbodyTrClass?:
-    ((item: Item | null, type: TableRowType) => TableStrictClassValue) | TableStrictClassValue
-  tfootClass?: ClassValue
-  tfootTrClass?: ClassValue
-  theadClass?: ClassValue
-  theadTrClass?: ClassValue
+  tbody?: TableBodySection<Item>
+  /** Keys left out fall back to the matching `thead` key */
+  tfoot?: TableHeadSection
+  thead?: TableHeadSection
 }
 
-export interface BTableProps<Item>
-  extends Omit<BTableLiteProps<Item>, 'tableClass'>, FormDebounceOptions {
+export interface BTableProps<Item> extends BTableLiteProps<Item>, FormDebounceOptions {
   provider?: BTableProvider<Item>
   noProvider?: readonly NoProviderTypes[]
   noProviderPaging?: boolean
@@ -1347,7 +1343,7 @@ export interface BTableProps<Item>
   selectionColor?: ColorExtendables
   sortBy?: readonly BTableSortBy[]
   sortCompare?: BTableSortByComparerFunction<Item>
-  mustSort?: boolean | readonly string[] // TODO this is a string of fields, possibly generic
+  mustSort?: boolean
   initialSortDirection?: BTableInitialSortDirection
   selectable?: boolean
   multisort?: boolean
@@ -1362,9 +1358,7 @@ export interface BTableProps<Item>
   filterable?: readonly string[]
   // TODO
   // apiUrl?: string
-  labelSortAsc?: string
-  labelSortClear?: string
-  labelSortDesc?: string
+  labels?: {sortAsc?: string; sortDesc?: string; sortClear?: string}
   noFooterSorting?: boolean
   noLocalSorting?: boolean
   noSelectOnClick?: boolean
@@ -1372,8 +1366,7 @@ export interface BTableProps<Item>
   selectedItems?: readonly Item[]
   noSortableIcon?: boolean
   sortIconLeft?: boolean
-  emptyFilteredText?: string
-  emptyText?: string
+  empty?: {text?: string; filteredText?: string}
   showEmpty?: boolean
 }
 
@@ -1393,7 +1386,6 @@ export interface BTdProps {
   color?: ColorExtendables | null
   colspan?: Numberish
   rowspan?: Numberish
-  stackedHeading?: string
   stickyColumn?: boolean
 }
 
@@ -1405,10 +1397,14 @@ export interface BThProps {
   color?: ColorExtendables | null
   colspan?: Numberish
   rowspan?: Numberish
-  stackedHeading?: string
   stickyColumn?: boolean
   scope?: TableThScope
 }
+
+/**
+ * Options for the countdown progress bar of BAlert and BToast. `max`, `value` and `label` are set by the component
+ */
+export type ProgressOptions = Omit<BProgressBarProps, 'label' | 'max' | 'value'>
 
 export interface BProgressBarProps {
   animated?: boolean
@@ -1483,13 +1479,9 @@ export interface BDropdownProps extends TeleporterProps, ShowHideProps {
 
 export interface BToastProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProps {
   body?: string
-  bodyClass?: ClassValue
-  closeClass?: ClassValue
-  closeColor?: ColorExtendables
-  closeContent?: string
-  closeLabel?: string
-  closeVariant?: ButtonVariant | null
-  headerClass?: ClassValue
+  bodyAttrs?: Readonly<AttrsValue>
+  close?: CloseButtonOptions
+  headerAttrs?: Readonly<AttrsValue>
   headerTag?: string
   id?: string
   interval?: number | 'requestAnimationFrame'
@@ -1497,13 +1489,12 @@ export interface BToastProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProp
   modelValue?: boolean | number
   noCloseButton?: boolean
   noHoverPause?: boolean
-  noProgress?: boolean
   noResumeOnHoverLeave?: boolean
-  progressProps?: Omit<BProgressBarProps, 'label' | 'max' | 'value'>
+  progress?: boolean | ProgressOptions
   showOnPause?: boolean
-  solid?: boolean
   title?: string
-  toastClass?: ClassValue
+  toastAttrs?: Readonly<AttrsValue>
+  translucent?: boolean
 }
 
 export interface BPopoverProps extends TeleporterProps, ShowHideProps {

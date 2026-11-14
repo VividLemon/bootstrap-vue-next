@@ -156,7 +156,7 @@ describe('sort-icon', () => {
   it('field-level initialSortDirection takes precedence over prop', () => {
     const wrapper = mount(SortIcon, {
       props: {
-        fieldInfo: {key: 'name', initialSortDirection: 'desc'},
+        fieldInfo: {key: 'name', sort: {initialDirection: 'desc'}},
         initialSortDirection: 'asc',
       },
     })

@@ -13,7 +13,7 @@ const showToast = async () => {
     color: { theme: 'info' },
     position: 'middle-center',
     modelValue: 10000,
-    progressProps: {
+    progress: {
       color: { theme: 'danger' },
     },
     body: 'Watch me!',

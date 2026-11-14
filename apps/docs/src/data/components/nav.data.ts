@@ -44,7 +44,8 @@ export default {
         cardHeader: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'Indicates the nav is placed inside a card header',
+          description:
+            'Indicates the nav is placed inside a card header. Adds `card-header-tabs` to tabs; has no effect on pills or vertical navs',
         },
         fill: {
           type: 'boolean',
@@ -80,7 +81,8 @@ export default {
         vertical: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'Stacks nav items vertically',
+          description:
+            'Stacks nav items vertically (`flex-column`). Pills use `nav-pills-vertical`, which also stretches each item to the full width',
         },
       } satisfies PropRecord<keyof BNavProps>,
       emits: {},
@@ -102,10 +104,11 @@ export default {
           'validate',
           'wrapperAttrs',
         ]),
-        formClass: {
-          type: 'ClassValue',
+        formAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'CSS class (or classes) to apply to the form element',
+          description:
+            "Attributes to apply to the form element. `class` and `style` merge with the component's own; other keys win over the matching props (`id`, `role`, …)",
         },
       } satisfies PropRecord<keyof BNavFormProps>,
       emits: {
@@ -132,12 +135,8 @@ export default {
           linkAttrs: {
             type: 'Readonly<AttrsValue>',
             default: undefined,
-            description: 'Additional attributes for the nested link element',
-          },
-          linkClass: {
-            type: 'ClassValue',
-            default: undefined,
-            description: 'CSS class (or classes) for the nested link element',
+            description:
+              "Additional attributes for the nested link element. `class` and `style` merge with the component's own",
           },
         } satisfies PropRecord<Exclude<keyof BNavItemProps, keyof typeof linkProps>>,
         'BLink props': {

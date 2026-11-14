@@ -23,15 +23,17 @@ describe('nav-item', () => {
     expect($blink.classes()).toContain('nav-link')
   })
 
-  it("blink has custom-class class when prop link-class='custom-class'", () => {
+  it('blink merges class and style from prop linkAttrs', () => {
     const wrapper = mount(BNavItem, {
       props: {
-        linkClass: 'custom-class',
+        linkAttrs: {class: 'custom-class', style: {color: 'red'}},
       },
     })
     const $blink = wrapper.findComponent(BLink)
 
     expect($blink.classes()).toContain('custom-class')
+    expect($blink.classes()).toContain('nav-link')
+    expect($blink.attributes('style')).toContain('color: red')
   })
 
   it('blink has tabindex -1 when prop disabled', () => {

@@ -7,8 +7,8 @@
           :limit="paginationLimit"
           :total-rows="paginationRows"
           :per-page="paginationPerPage"
-          first-number
-          last-number
+          :first="{number: true}"
+          :last="{number: true}"
           @page-click="handlePaginationPageClick"
         />
       </BCol>
@@ -35,10 +35,10 @@
           :limit="paginationLimit"
           :total-rows="paginationRows"
           :per-page="paginationPerPage"
-          prev-text="Prev"
-          next-text="Next"
-          first-text="First"
-          last-text="Last"
+          :prev="{text: 'Prev'}"
+          :next="{text: 'Next'}"
+          :first="{text: 'First'}"
+          :last="{text: 'Last'}"
         />
       </BCol>
     </BRow>
@@ -50,19 +50,19 @@
           :per-page="paginationPerPage"
           class="mt-4"
         >
-          <template #first-text>
+          <template #first>
             <span class="text-success">First</span>
           </template>
-          <template #prev-text>
+          <template #prev>
             <span class="text-danger">Prev</span>
           </template>
-          <template #next-text>
+          <template #next>
             <span class="text-warning">Next</span>
           </template>
-          <template #last-text>
+          <template #last>
             <span class="text-info">Last</span>
           </template>
-          <template #ellipsis-text>
+          <template #ellipsis>
             <BSpinner small type="grow" />
             <BSpinner small type="grow" />
             <BSpinner small type="grow" />
@@ -81,13 +81,11 @@
           :limit="paginationLimit"
           :total-rows="paginationRows"
           :per-page="paginationPerPage"
-          prev-text="Prev"
-          next-text="Next"
-          :first-class="paginationDangerClasses"
-          first-text="First"
-          last-text="Last"
-          last-class="border border-4 border-info"
-          ellipsis-class="border border-3 border-success"
+          :prev="{text: 'Prev'}"
+          :next="{text: 'Next'}"
+          :first="{attrs: {class: paginationDangerClasses}, text: 'First'}"
+          :last="{text: 'Last', attrs: {class: 'border border-4 border-info'}}"
+          :ellipsis="{attrs: {class: 'border border-3 border-success'}}"
         />
       </BCol>
     </BRow>
@@ -98,10 +96,10 @@
           :limit="paginationLimit"
           :total-rows="paginationRows"
           :per-page="paginationPerPage"
-          prev-text="Prev"
-          next-text="Next"
-          first-text="First"
-          last-text="Last"
+          :prev="{text: 'Prev'}"
+          :next="{text: 'Next'}"
+          :first="{text: 'First'}"
+          :last="{text: 'Last'}"
           align="end"
         />
       </BCol>
