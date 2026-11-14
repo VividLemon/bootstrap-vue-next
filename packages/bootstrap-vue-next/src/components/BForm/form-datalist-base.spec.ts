@@ -138,7 +138,7 @@ describe('form-datalist-base', () => {
   it('uses custom textField', () => {
     const wrapper = mount(BFormDatalistBase, {
       props: {
-        textField: 'label',
+        fields: {text: 'label'},
         options: [
           {value: 'a', label: 'Label A'},
           {value: 'b', label: 'Label B'},
@@ -153,7 +153,7 @@ describe('form-datalist-base', () => {
   it('uses custom valueField', () => {
     const wrapper = mount(BFormDatalistBase, {
       props: {
-        valueField: 'id',
+        fields: {value: 'id'},
         options: [
           {id: 1, text: 'One'},
           {id: 2, text: 'Two'},
@@ -198,7 +198,7 @@ describe('form-datalist-base', () => {
   it('uses custom disabledField', () => {
     const wrapper = mount(BFormDatalistBase, {
       props: {
-        disabledField: 'inactive',
+        fields: {disabled: 'inactive'},
         options: [
           {value: 'a', text: 'Active', inactive: false},
           {value: 'b', text: 'Inactive', inactive: true},

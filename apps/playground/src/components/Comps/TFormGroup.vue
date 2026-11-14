@@ -49,14 +49,14 @@
     </BRow>
     <BRow>
       <BCol>
-        <h4 class="mt-4 mb-3">Using label-class prop</h4>
+        <h4 class="mt-4 mb-3">Using label-attrs prop</h4>
 
         <BFormGroup
           label="Aktiv:"
           label-for="test-active-fixed"
           :label-align="{ md: 'end' }"
           :label-cols="{ md: 3 }"
-          label-class="custom-label-field"
+          :label-attrs="{class: 'custom-label-field'}"
           class="align-items-center test-form-group"
         >
           <BFormCheckbox id="test-active-fixed" placeholder="" switch />
@@ -67,7 +67,7 @@
           label-for="test-default-fixed"
           :label-align="{ md: 'end' }"
           :label-cols="{ md: 3 }"
-          label-class="custom-label-field"
+          :label-attrs="{class: 'custom-label-field'}"
           class="align-items-center test-form-group"
         >
           <BFormCheckbox id="test-default-fixed" placeholder="" switch />
@@ -78,7 +78,7 @@
           label-for="test-name-fixed"
           :label-align="{ md: 'end' }"
           :label-cols="{ md: 3 }"
-          label-class="custom-label-field"
+          :label-attrs="{class: 'custom-label-field'}"
           class="align-items-center test-form-group"
         >
           <BFormInput id="test-name-fixed" placeholder="Enter name" />

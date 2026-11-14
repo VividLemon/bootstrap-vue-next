@@ -19,9 +19,7 @@
         v-if="isComplex(option)"
         :label="option.label"
         :options="option.options"
-        :value-field="props.valueField"
-        :text-field="props.textField"
-        :disabled-field="props.disabledField"
+        :fields="props.fields"
       />
       <BFormSelectOption v-else v-bind="option">
         <slot name="option" v-bind="option">
@@ -43,7 +41,7 @@ import {useFocus, useToNumber} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {useStateClass} from '../../composables/useStateClass'
-import {useFormSelect} from '../../composables/useFormSelect'
+import {useFormSelect, resolveOptionFields} from '../../composables/useFormSelect'
 import {formGroupKey, formSelectKey} from '../../utils/keys'
 
 /**
@@ -52,26 +50,22 @@ import {formGroupKey, formSelectKey} from '../../utils/keys'
  * Supports both simple options and complex grouped options.
  */
 const _props = withDefaults(defineProps<Omit<BFormSelectBaseProps, 'modelValue'>>(), {
+  fields: undefined,
   ariaInvalid: undefined,
   autofocus: false,
   disabled: false,
-  disabledField: 'disabled',
   form: undefined,
   id: undefined,
-  labelField: 'label',
   multiple: false,
   name: undefined,
   options: () => [],
-  optionsField: 'options',
-  plain: false,
   required: false,
   selectSize: 0,
   size: undefined,
   state: null,
-  textField: 'text',
-  valueField: 'value',
 })
 const props = useDefaults(_props, 'BFormSelect')
+const optionFields = computed(() => resolveOptionFields(props.fields))
 
 const modelValue = defineModel<BFormSelectBaseProps['modelValue']>({
   default: '',
@@ -95,16 +89,14 @@ const {focused} = useFocus(input, {
 
 const computedClasses = computed(() => [
   stateClass.value,
+  'form-control',
   {
-    'form-control': props.plain,
-    [`form-control-${props.size}`]: props.size !== undefined && props.plain,
-    'form-select': !props.plain,
-    [`form-select-${props.size}`]: props.size !== undefined && !props.plain,
+    [`form-control-${props.size}`]: props.size !== undefined,
   },
 ])
 
 const computedSelectSize = computed(() =>
-  !props.plain && selectSizeNumber.value > 0 ? selectSizeNumber.value : undefined
+  selectSizeNumber.value > 0 ? selectSizeNumber.value : undefined
 )
 
 const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(
@@ -112,7 +104,7 @@ const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(
   () => props.state
 )
 
-const {normalizedOptions, isComplex} = useFormSelect(() => props.options, props)
+const {normalizedOptions, isComplex} = useFormSelect(() => props.options, optionFields)
 
 const normalizedOptsWrapper = computed(() => normalizedOptions.value)
 

@@ -87,8 +87,8 @@ TypeScript enums work naturally as option values:
 
 ## Custom field names
 
-`BFormSelect`, `BFormRadioGroup`, and `BFormCheckboxGroup` accept `value-field`, `text-field`,
-and `disabled-field` props to tell the component which properties of your objects to use as the
+`BFormSelect`, `BFormRadioGroup`, and `BFormCheckboxGroup` accept a `fields` prop, an object with
+`value`, `text` and `disabled` keys, to tell the component which properties of your objects to use as the
 value, text, and disabled state. These are convenience props for simple cases where your objects
 already have descriptive field names:
 
@@ -107,12 +107,12 @@ For the strongest typing, map your data to `{value, text}` format using `compute
 ## BFormDatalist
 
 `BFormDatalist` uses a different generic approach (`Item`/`ValueKey`) that provides compile-time
-validation of field names. When you pass typed options, TypeScript will ensure that `value-field`,
-`text-field`, and `disabled-field` are valid keys of your option type:
+validation of field names. When you pass typed options, TypeScript will ensure that the `value`,
+`text`, and `disabled` keys of `fields` are valid keys of your option type:
 
 <<< FRAGMENT ./demo/TypeSafeDatalist.vue#template{vue-html}
 
-TypeScript will report an error if `value-field` references a property that doesn't exist on
+TypeScript will report an error if `fields.value` references a property that doesn't exist on
 the option type. Since `BFormDatalist` doesn't have a `v-model` (it's a
 [`<datalist>` element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist)
 backing an `<input>`), the type safety focus is on field name validation rather than value inference.

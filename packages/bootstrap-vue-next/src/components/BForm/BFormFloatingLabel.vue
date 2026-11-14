@@ -1,11 +1,11 @@
 <template>
   <div class="form-floating">
-    <slot />
     <label :for="props.labelFor">
       <slot name="label">
         {{ props.label }}
       </slot>
     </label>
+    <slot />
   </div>
 </template>
 

@@ -9,9 +9,7 @@
     <BFormDatalist
       id="user-list"
       :options="users"
-      value-field="id"
-      text-field="name"
-      disabled-field="inactive"
+      :fields="{ value: 'id', text: 'name', disabled: 'inactive' }"
     />
     <div class="mt-3">
       Selected user ID: <strong>{{ selectedUserId }}</strong>
@@ -20,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 interface User {
   id: number
@@ -29,10 +27,10 @@ interface User {
 }
 
 const users: User[] = [
-  {id: 1, name: 'Alice Smith'},
-  {id: 2, name: 'Bob Johnson'},
-  {id: 3, name: 'Charlie Brown', inactive: true},
-  {id: 4, name: 'David Wilson'},
+  { id: 1, name: 'Alice Smith' },
+  { id: 2, name: 'Bob Johnson' },
+  { id: 3, name: 'Charlie Brown', inactive: true },
+  { id: 4, name: 'David Wilson' },
 ]
 
 // TypeScript knows selectedUserId is a number (matching the id field type)

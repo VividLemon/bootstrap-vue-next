@@ -5,8 +5,7 @@
     :aria-invalid="computedAriaInvalid"
     :aria-labelledby="isFieldset && isHorizontal ? labelId : undefined"
     v-bind="$attrs"
-    :class="[stateClass, {'was-validated': props.validated}]"
-    class="b-form-group"
+    :class="computedClasses"
   >
     <!-- End of definitions -->
     <BFormRow v-if="isHorizontal">
@@ -41,12 +40,6 @@
     </BFormRow>
     <template v-else>
       <div v-if="isFloating" ref="_content" class="form-floating">
-        <slot
-          :id="computedId"
-          :aria-describedby="computedAriaDescribedby"
-          :description-id="descriptionId"
-          :label-id="labelId"
-        />
         <BFormGroupLabel
           v-if="labelShowing"
           v-bind="labelComponentProps"
@@ -56,6 +49,12 @@
             <slot name="label" />
           </template>
         </BFormGroupLabel>
+        <slot
+          :id="computedId"
+          :aria-describedby="computedAriaDescribedby"
+          :description-id="descriptionId"
+          :label-id="labelId"
+        />
         <BFormGroupContent v-bind="contentComponentProps">
           <template v-if="slots['invalid-feedback']" #invalid-feedback>
             <slot name="invalid-feedback" />
@@ -132,7 +131,7 @@ const _props = withDefaults(defineProps<BFormGroupProps>(), {
   invalidFeedback: undefined,
   label: undefined,
   labelAlign: undefined,
-  labelClass: undefined,
+  labelAttrs: undefined,
   labelCols: undefined,
   labelFor: undefined,
   labelSize: undefined,
@@ -140,7 +139,6 @@ const _props = withDefaults(defineProps<BFormGroupProps>(), {
   state: null,
   tooltip: false,
   validFeedback: undefined,
-  validated: false,
 })
 const props = useDefaults(_props, 'BFormGroup')
 const slots = defineSlots<BFormGroupSlots>()
@@ -177,6 +175,12 @@ const isHorizontal = computed(
 const isFloating = computed(() => props.floating && !isHorizontal.value)
 
 const {stateClass} = useStateClass(computedState)
+
+const computedClasses = computed(() => [
+  'b-form-group',
+  stateClass.value,
+  {'form-field': !isHorizontal.value},
+])
 const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(() => props.ariaInvalid, computedState)
 
 const onLegendClick = (event: Readonly<MouseEvent>) => {
@@ -213,12 +217,11 @@ const labelClasses = computed(() => [
     'bv-no-focus-ring': !isFloating.value && !computedLabelFor.value,
     'col-form-label': isHorizontal.value || (!isFloating.value && !computedLabelFor.value),
     'pt-0': !isHorizontal.value && !isFloating.value && !computedLabelFor.value,
-    'd-block': !isHorizontal.value && (isFloating.value || !!computedLabelFor.value),
+    'd-block': !isHorizontal.value && !isFloating.value && !!computedLabelFor.value,
     [`col-form-label-${props.labelSize}`]: !!props.labelSize,
     'visually-hidden': props.labelVisuallyHidden,
   },
   isHorizontal.value ? null : labelAlignClasses.value,
-  props.labelClass,
 ])
 
 const invalidFeedbackId = useId(undefined, '_BV_feedback_invalid_')
@@ -252,6 +255,7 @@ const labelComponentProps = computed(() => ({
   labelColProps: labelColProps.value,
   labelAlignClasses: labelAlignClasses.value,
   labelClasses: labelClasses.value,
+  labelAttrs: props.labelAttrs,
 }))
 
 const contentComponentProps = computed(() => ({

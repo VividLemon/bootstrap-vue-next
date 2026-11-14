@@ -41,14 +41,8 @@ describe('form-radio-group-base', () => {
   })
 
   describe('validation classes', () => {
-    it('has class was-validated when prop validated', async () => {
-      const wrapper = mount(BFormRadioGroupBase, {
-        props: {validated: true},
-      })
-      expect(wrapper.classes()).toContain('was-validated')
-      await wrapper.setProps({validated: false})
-      expect(wrapper.classes()).not.toContain('was-validated')
-      await wrapper.setProps({validated: undefined})
+    it('never has class was-validated', () => {
+      const wrapper = mount(BFormRadioGroupBase)
       expect(wrapper.classes()).not.toContain('was-validated')
     })
   })
@@ -358,26 +352,40 @@ describe('form-radio-group-base', () => {
   })
 
   describe('stacked prop', () => {
-    it('child radios are inline when stacked is false', () => {
+    it('lays out child radios inline with flex utilities when stacked is false', () => {
       const wrapper = mount(BFormRadioGroupBase, {
         props: {
           stacked: false,
           options: [{text: 'A', value: 'a', disabled: false}],
         },
       })
+      expect(wrapper.classes()).toEqual(
+        expect.arrayContaining(['d-flex', 'flex-wrap', 'column-gap-5'])
+      )
       const radio = wrapper.findComponent(BFormRadio)
-      expect(radio.classes()).toContain('form-check-inline')
+      expect(radio.classes()).toContain('form-field')
+      expect(radio.classes()).not.toContain('form-check-inline')
     })
 
-    it('child radios are not inline when stacked is true', () => {
+    it('does not use flex utilities when stacked is true', () => {
       const wrapper = mount(BFormRadioGroupBase, {
         props: {
           stacked: true,
           options: [{text: 'A', value: 'a', disabled: false}],
         },
       })
-      const radio = wrapper.findComponent(BFormRadio)
-      expect(radio.classes()).not.toContain('form-check-inline')
+      expect(wrapper.classes()).not.toContain('d-flex')
+    })
+
+    it('does not use flex utilities in button mode', () => {
+      const wrapper = mount(BFormRadioGroupBase, {
+        props: {
+          buttons: true,
+          options: [{text: 'A', value: 'a', disabled: false}],
+        },
+      })
+      expect(wrapper.classes()).not.toContain('d-flex')
+      expect(wrapper.classes()).toContain('btn-group')
     })
   })
 
@@ -390,8 +398,10 @@ describe('form-radio-group-base', () => {
         },
       })
       const radio = wrapper.findComponent(BFormRadio)
-      const input = radio.get('input')
-      expect(input.classes()).toContain('btn-check')
+      // Button mode renders <label class="btn btn-check"><input></label> as the child root
+      expect(radio.element.tagName).toBe('LABEL')
+      expect(radio.classes()).toContain('btn-check')
+      expect(radio.element.parentElement).toBe(wrapper.element)
     })
 
     it('child radios do not have btn-check class when buttons is false', () => {
@@ -402,8 +412,7 @@ describe('form-radio-group-base', () => {
         },
       })
       const radio = wrapper.findComponent(BFormRadio)
-      const input = radio.get('input')
-      expect(input.classes()).not.toContain('btn-check')
+      expect(radio.find('.btn-check').exists()).toBe(false)
     })
   })
 
@@ -416,20 +425,7 @@ describe('form-radio-group-base', () => {
         },
       })
       const radio = wrapper.findComponent(BFormRadio)
-      expect(radio.classes()).not.toContain('form-check')
-    })
-  })
-
-  describe('reverse prop', () => {
-    it('child radios inherit reverse from group', () => {
-      const wrapper = mount(BFormRadioGroupBase, {
-        props: {
-          reverse: true,
-          options: [{text: 'A', value: 'a', disabled: false}],
-        },
-      })
-      const radio = wrapper.findComponent(BFormRadio)
-      expect(radio.classes()).toContain('form-check-reverse')
+      expect(radio.classes()).not.toContain('form-field')
     })
   })
 
@@ -442,7 +438,7 @@ describe('form-radio-group-base', () => {
         },
       })
       const radio = wrapper.findComponent(BFormRadio)
-      expect(radio.classes()).toContain('form-control-lg')
+      expect(radio.get('input').classes()).toContain('radio-lg')
     })
 
     it('child radios inherit size sm from group', () => {
@@ -453,7 +449,7 @@ describe('form-radio-group-base', () => {
         },
       })
       const radio = wrapper.findComponent(BFormRadio)
-      expect(radio.classes()).toContain('form-control-sm')
+      expect(radio.get('input').classes()).toContain('radio-sm')
     })
   })
 

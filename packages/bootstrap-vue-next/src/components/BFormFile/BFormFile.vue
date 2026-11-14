@@ -3,8 +3,8 @@
     <!-- Optional label -->
     <label
       v-if="hasLabelSlot || props.label"
+      v-bind="props.labelAttrs"
       class="form-label"
-      :class="props.labelClass"
       :for="computedId"
     >
       <slot name="label">
@@ -25,7 +25,7 @@
     >
       <!-- Custom file control (mimics Bootstrap native input) -->
       <div
-        class="b-form-file-control"
+        class="b-form-file-control form-control"
         :class="computedClasses"
         :aria-disabled="props.disabled"
         @click="handleControlClick"
@@ -166,7 +166,7 @@ const _props = withDefaults(defineProps<Omit<BFormFileProps, 'modelValue'>>(), {
   form: undefined,
   id: undefined,
   label: '',
-  labelClass: undefined,
+  labelAttrs: undefined,
   multiple: false,
   name: undefined,
   noButton: false,

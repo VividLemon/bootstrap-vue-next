@@ -68,7 +68,7 @@ export default {
     },
     BDropdownForm: {
       props: {
-        ...pick(buildCommonProps(), ['novalidate', 'validated', 'wrapperAttrs']),
+        ...pick(buildCommonProps(), ['novalidate', 'validate', 'wrapperAttrs']),
         formClass: {
           type: 'ClassValue',
           default: undefined,

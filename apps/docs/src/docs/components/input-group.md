@@ -49,9 +49,8 @@ The following are the form controls supported as the input-group's _main_ input 
 Place any checkbox or radio within an input group's addon instead of text.
 
 ::: info NOTE
-Bootstrap v5 recommends adding `.mt-0` to the `.form-check-input` when there’s no visible text next to the input.
-It is also possible to use as `BFormRadio` and `BFormCheckbox` with a few utility
-classes applied.
+Native inputs can be placed directly in a `BInputGroupText`. It is also possible to use `BFormRadio` and
+`BFormCheckbox` with a few utility classes applied.
 :::
 
 ### Native checkbox and radio addons

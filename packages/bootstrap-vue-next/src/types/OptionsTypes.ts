@@ -29,3 +29,16 @@ export type ExtractItemValue<T> = T extends string | number | boolean
 export type OptionsValues<T extends readonly unknown[]> = T extends readonly (infer Item)[]
   ? ExtractItemValue<Item>
   : unknown
+
+/** Which keys of each option object hold its text, value and disabled flag */
+export interface OptionFields {
+  text?: string
+  value?: string
+  disabled?: string
+}
+
+/** `OptionFields` plus the keys of an option group's label and nested options */
+export interface GroupedOptionFields extends OptionFields {
+  label?: string
+  options?: string
+}

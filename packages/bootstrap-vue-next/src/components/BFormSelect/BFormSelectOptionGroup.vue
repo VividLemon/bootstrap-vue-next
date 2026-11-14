@@ -15,10 +15,11 @@
 </template>
 
 <script setup lang="ts" generic="T">
+import {computed} from 'vue'
 import BFormSelectOption from './BFormSelectOption.vue'
 import {useDefaults} from '../../composables/useDefaults'
 import type {ComputedRef} from 'vue'
-import {useFormSelect} from '../../composables/useFormSelect'
+import {useFormSelect, resolveOptionFields} from '../../composables/useFormSelect'
 import type {
   BFormSelectOptionGroupProps,
   BFormSelectOptionGroupSlots,
@@ -26,13 +27,12 @@ import type {
 } from '../../types'
 
 const _props = withDefaults(defineProps<BFormSelectOptionGroupProps>(), {
-  disabledField: 'disabled',
+  fields: undefined,
   label: undefined,
   options: () => [],
-  textField: 'text',
-  valueField: 'value',
 })
 const props = useDefaults(_props, 'BFormSelectOptionGroup')
+const optionFields = computed(() => resolveOptionFields(props.fields))
 defineSlots<BFormSelectOptionGroupSlots<T>>()
 
 // The form select context is injected by BFormSelectOption components automatically
@@ -42,7 +42,7 @@ defineSlots<BFormSelectOptionGroupSlots<T>>()
 // Type assertion is needed because useFormSelect is not generic-aware.
 // This is acceptable in the wrapper/base pattern where the wrapper (BFormSelect)
 // handles type-safe normalization before passing to base components.
-const {normalizedOptions} = useFormSelect(() => props.options, props) as {
+const {normalizedOptions} = useFormSelect(() => props.options, optionFields) as {
   normalizedOptions: ComputedRef<SelectOption<T>[]>
 }
 </script>

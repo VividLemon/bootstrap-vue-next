@@ -1,6 +1,15 @@
 import {computed, type MaybeRef, type MaybeRefOrGetter, toValue, unref} from 'vue'
 import {get} from '../utils/object'
-import type {ComplexSelectOptionRaw, SelectOption} from '../types'
+import type {ComplexSelectOptionRaw, GroupedOptionFields, SelectOption} from '../types'
+
+/** Resolves a `fields` prop against the default option keys, key by key */
+export const resolveOptionFields = (fields: Readonly<GroupedOptionFields> | null | undefined) => ({
+  valueField: fields?.value ?? 'value',
+  textField: fields?.text ?? 'text',
+  disabledField: fields?.disabled ?? 'disabled',
+  labelField: fields?.label ?? 'label',
+  optionsField: fields?.options ?? 'options',
+})
 
 export const useFormSelect = (
   options: MaybeRefOrGetter<ReadonlyArray<unknown>>,

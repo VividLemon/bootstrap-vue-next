@@ -10,13 +10,13 @@ import {
   type SlotRecord,
   StyleKind,
 } from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BFormSpinbutton: {
-      styleSpec: {kind: StyleKind.BsvnClass},
+      styleSpec: { kind: StyleKind.BsvnClass },
       props: {
         ...pick(buildCommonProps(), [
           'ariaControls',
@@ -40,15 +40,11 @@ export default {
           default: 'false',
           description: 'When set, renders the component as an inline element',
         },
-        labelDecrement: {
-          type: 'string',
-          default: 'Decrement',
-          description: 'Text to be used for the `aria-label` attribute on the decrement button',
-        },
-        labelIncrement: {
-          type: 'string',
-          default: 'Increment',
-          description: 'Text to be used for the `aria-label` attribute on the increment button',
+        labels: {
+          type: '{ increment?: string; decrement?: string }',
+          default: { increment: 'Increment', decrement: 'Decrement' },
+          description:
+            'Text for the `aria-label` attribute of the increment and decrement buttons. Keys left out keep their default',
         },
         locale: {
           type: 'string',
@@ -72,29 +68,11 @@ export default {
           default: 'undefined',
           description: 'Value to show when the v-model is `null`',
         },
-        repeatDelay: {
-          type: 'Numberish',
-          default: '500',
+        repeat: {
+          type: '{ delay?: Numberish; interval?: Numberish; threshold?: Numberish; stepMultiplier?: Numberish }',
+          default: { delay: 500, interval: 100, threshold: 10, stepMultiplier: 4 },
           description:
-            'Delay in milliseconds before auto repeat increment or decrement happens. Must be a positive integer. Requires the user to click/keydown and hold',
-        },
-        repeatInterval: {
-          type: 'Numberish',
-          default: '100',
-          description:
-            'Interval in milliseconds between increment or decrement repeats. Must be a positive integer',
-        },
-        repeatStepMultiplier: {
-          type: 'Numberish',
-          default: '4',
-          description:
-            'Number of steps to jump by once the `repeat-threshold` has been reached. Must be a positive integer. This value is also used for the page up and down keys',
-        },
-        repeatThreshold: {
-          type: 'Numberish',
-          default: '10',
-          description:
-            'Number of repeats to occur before increasing the step size by `repeat-step-multiplier`. Must be a positive integer',
+            'Auto-repeat while a button or arrow key is held: `delay` (milliseconds before repeating starts), `interval` (milliseconds between repeats), `threshold` (repeats before the step size grows) and `stepMultiplier` (steps to jump once the threshold is reached, also used by Page Up / Page Down). Each must be a positive integer; keys left out keep their default',
         },
         step: {
           type: 'Numberish',
@@ -119,7 +97,7 @@ export default {
         },
       } satisfies PropRecord<keyof BFormSpinbuttonProps>,
       emits: {
-        'change': {
+        change: {
           description: 'Emitted when the user releases the mouse button or key',
           args: {
             value: {

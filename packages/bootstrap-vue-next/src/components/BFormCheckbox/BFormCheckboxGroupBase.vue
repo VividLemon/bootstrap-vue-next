@@ -46,12 +46,10 @@ const _props = withDefaults(defineProps<Omit<BFormCheckboxGroupBaseProps, 'model
   options: () => [],
   plain: false,
   required: false,
-  reverse: false,
   size: undefined,
   stacked: false,
   state: null,
   switches: false,
-  validated: false,
 })
 const props = useDefaults(_props, 'BFormCheckboxGroup')
 
@@ -80,8 +78,6 @@ provide(checkboxGroupKey, {
   state: toRef(() => props.state),
   plain: toRef(() => props.plain),
   size: toRef(() => props.size),
-  inline: toRef(() => !props.stacked),
-  reverse: toRef(() => props.reverse),
   required: toRef(() => props.required),
   buttons: toRef(() => props.buttons),
   disabled: toRef(() => props.disabled),
@@ -113,7 +109,6 @@ const classesObject = computed(() => ({
   required: props.required,
   ariaInvalid: props.ariaInvalid,
   state: props.state,
-  validated: props.validated,
   buttons: props.buttons,
   stacked: props.stacked,
   size: props.size,

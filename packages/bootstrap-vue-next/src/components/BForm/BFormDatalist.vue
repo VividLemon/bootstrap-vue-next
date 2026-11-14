@@ -18,13 +18,19 @@
   lang="ts"
   generic="
     Item = Record<string, unknown> | string | number | boolean,
-    ValueKey extends Item extends Record<string, unknown> ? keyof Item : string =
+    ValueKey extends (Item extends Record<string, unknown> ? keyof Item : string) =
       Item extends Record<string, unknown> ? keyof Item : never
   "
 >
+import {resolveOptionFields} from '../../composables/useFormSelect'
 import {computed} from 'vue'
 import BFormDatalistBase from './BFormDatalistBase.vue'
-import type {BFormDatalistProps, BFormDatalistSlots, SelectOption} from '../../types'
+import type {
+  BFormDatalistProps,
+  BFormDatalistSlots,
+  GroupedOptionFields,
+  SelectOption,
+} from '../../types'
 
 /**
  * Type-safe wrapper component for BFormDatalist.
@@ -33,14 +39,15 @@ import type {BFormDatalistProps, BFormDatalistSlots, SelectOption} from '../../t
  * Supports both complex objects and simple scalar types (string, number).
  */
 const props = withDefaults(defineProps<BFormDatalistProps<Item, ValueKey>>(), {
+  fields: undefined,
   disabled: false,
-  disabledField: 'disabled' as keyof Item & string,
   id: undefined,
   options: () => [],
-  textField: 'text' as keyof Item & string,
-  // @ts-expect-error - ValueKey default doesn't satisfy InferDefault but works at runtime
-  valueField: 'value',
 })
+// ValueKey is a key of Item, which may not be a string; the fields hold plain key names at runtime
+const optionFields = computed(() =>
+  resolveOptionFields(props.fields as GroupedOptionFields | undefined)
+)
 defineSlots<
   BFormDatalistSlots<Item extends Record<string, unknown> ? Item[ValueKey & keyof Item] : Item>
 >()
@@ -58,12 +65,12 @@ const normalizedOptions = computed(() =>
       return String(el)
     }
     return {
-      value: (el as Record<string, unknown>)[props.valueField as string],
+      value: (el as Record<string, unknown>)[optionFields.value.valueField],
       text:
-        ((el as Record<string, unknown>)[props.textField as string] as string | undefined) ?? '',
+        ((el as Record<string, unknown>)[optionFields.value.textField] as string | undefined) ?? '',
       disabled:
-        ((el as Record<string, unknown>)[props.disabledField as string] as boolean | undefined) ??
-        false,
+        ((el as Record<string, unknown>)[optionFields.value.disabledField] as
+          boolean | undefined) ?? false,
     } as SelectOption
   })
 )

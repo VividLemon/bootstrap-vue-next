@@ -72,10 +72,11 @@ export default {
           default: '',
           description: 'Sets the label for the form group which the file input is rendered',
         },
-        labelClass: {
-          type: 'ClassValue',
+        labelAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the styling for the label',
+          description:
+            'Attributes to apply to the label element. `class` and `style` merge with the `form-label` class',
         },
         modelValue: {
           type: 'readonly File[] | File | null',

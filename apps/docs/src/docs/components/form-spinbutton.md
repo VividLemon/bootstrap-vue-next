@@ -116,10 +116,10 @@ The following keyboard controls are available when the spin button is focused:
 - <kbd>End</kbd> Sets the value to the `max` value
 - <kbd>ArrowUp</kbd> Increases the value by the step amount
 - <kbd>ArrowDown</kbd> Decreases the value by the step amount
-- <kbd>PageUp</kbd> Increases the value by the step amount times the `repeat-step-multiplier` amount
-- <kbd>PageDown</kbd> Decreases the value by the step amount times the `repeat-step-multiplier` amount
+- <kbd>PageUp</kbd> Increases the value by the step amount times the `repeat.stepMultiplier` amount
+- <kbd>PageDown</kbd> Decreases the value by the step amount times the `repeat.stepMultiplier` amount
 
-Note that the `repeat-delay`, `repeat-threshold` and `repeat-interval` only apply to the <kbd>ArrowUp</kbd> or <kbd>ArrowDown</kbd> keys
+Note that the `repeat` prop's `delay`, `threshold` and `interval` keys only apply to the <kbd>ArrowUp</kbd> or <kbd>ArrowDown</kbd> keys
 
 ## Internationalization
 

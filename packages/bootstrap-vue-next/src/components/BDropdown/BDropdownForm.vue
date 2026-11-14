@@ -2,8 +2,9 @@
   <li role="presentation" :class="processedAttrs.wrapperClass" v-bind="props.wrapperAttrs">
     <form
       class="dropdown-item-text"
-      :class="computedClasses"
+      :class="props.formClass"
       :novalidate="props.novalidate"
+      :data-bs-validate="validateAttr"
       v-bind="processedAttrs.formAttrs"
     >
       <slot />
@@ -14,6 +15,7 @@
 <script setup lang="ts">
 import {computed, useAttrs} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
+import {useFormValidate} from '../../composables/useFormValidate'
 import type {BDropdownFormProps, BDropdownFormSlots} from '../../types'
 
 defineOptions({
@@ -23,7 +25,7 @@ defineOptions({
 const _props = withDefaults(defineProps<BDropdownFormProps>(), {
   formClass: undefined,
   novalidate: undefined,
-  validated: undefined,
+  validate: undefined,
   wrapperAttrs: undefined,
 })
 const props = useDefaults(_props, 'BDropdownForm')
@@ -35,10 +37,5 @@ const processedAttrs = computed(() => {
   return {wrapperClass, formAttrs}
 })
 
-const computedClasses = computed(() => [
-  props.formClass,
-  {
-    'was-validated': props.validated,
-  },
-])
+const {validateAttr} = useFormValidate(() => props.validate)
 </script>

@@ -1,37 +1,31 @@
 <template>
   <div>
     <BFormGroup v-slot="{ ariaDescribedby }" label="Table Options" :label-cols="{ lg: 2 }">
-      <BFormCheckbox v-model="striped" :aria-describedby="ariaDescribedby" inline
-        >Striped</BFormCheckbox
-      >
-      <BFormCheckbox v-model="stripedColumns" :aria-describedby="ariaDescribedby" inline
-        >Striped Columns</BFormCheckbox
-      >
-      <BFormCheckbox v-model="bordered" :aria-describedby="ariaDescribedby" inline
-        >Bordered</BFormCheckbox
-      >
-      <BFormCheckbox v-model="borderless" :aria-describedby="ariaDescribedby" inline
-        >Borderless</BFormCheckbox
-      >
-      <BFormCheckbox v-model="outlined" :aria-describedby="ariaDescribedby" inline
-        >Outlined</BFormCheckbox
-      >
-      <BFormCheckbox v-model="small" :aria-describedby="ariaDescribedby" inline
-        >Small</BFormCheckbox
-      >
-      <BFormCheckbox v-model="hover" :aria-describedby="ariaDescribedby" inline
-        >Hover</BFormCheckbox
-      >
-      <BFormCheckbox v-model="dark" :aria-describedby="ariaDescribedby" inline>Dark</BFormCheckbox>
-      <BFormCheckbox v-model="fixed" :aria-describedby="ariaDescribedby" inline
-        >Fixed</BFormCheckbox
-      >
-      <BFormCheckbox v-model="footClone" :aria-describedby="ariaDescribedby" inline
-        >Foot Clone</BFormCheckbox
-      >
-      <BFormCheckbox v-model="noCollapse" :aria-describedby="ariaDescribedby" inline
-        >No border collapse</BFormCheckbox
-      >
+      <div class="d-flex flex-wrap column-gap-5">
+        <BFormCheckbox v-model="striped" :aria-describedby="ariaDescribedby">Striped</BFormCheckbox>
+        <BFormCheckbox v-model="stripedColumns" :aria-describedby="ariaDescribedby"
+          >Striped Columns</BFormCheckbox
+        >
+        <BFormCheckbox v-model="bordered" :aria-describedby="ariaDescribedby"
+          >Bordered</BFormCheckbox
+        >
+        <BFormCheckbox v-model="borderless" :aria-describedby="ariaDescribedby"
+          >Borderless</BFormCheckbox
+        >
+        <BFormCheckbox v-model="outlined" :aria-describedby="ariaDescribedby"
+          >Outlined</BFormCheckbox
+        >
+        <BFormCheckbox v-model="small" :aria-describedby="ariaDescribedby">Small</BFormCheckbox>
+        <BFormCheckbox v-model="hover" :aria-describedby="ariaDescribedby">Hover</BFormCheckbox>
+        <BFormCheckbox v-model="dark" :aria-describedby="ariaDescribedby">Dark</BFormCheckbox>
+        <BFormCheckbox v-model="fixed" :aria-describedby="ariaDescribedby">Fixed</BFormCheckbox>
+        <BFormCheckbox v-model="footClone" :aria-describedby="ariaDescribedby"
+          >Foot Clone</BFormCheckbox
+        >
+        <BFormCheckbox v-model="noCollapse" :aria-describedby="ariaDescribedby"
+          >No border collapse</BFormCheckbox
+        >
+      </div>
     </BFormGroup>
 
     <BFormGroup label="Theme" label-for="table-style-theme" :label-cols="{ lg: 2 }" class="my-2">

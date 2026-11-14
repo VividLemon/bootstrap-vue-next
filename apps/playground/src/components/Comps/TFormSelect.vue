@@ -7,12 +7,12 @@
     </BRow>
     <BRow>
       <BCol>
-        <h4 class="mt-2">plain</h4>
+        <h4 class="mt-2">small</h4>
       </BCol>
     </BRow>
     <BRow>
       <BCol>
-        <BFormSelect v-model="formSelectSelected" :options="formSelectOptions" size="sm" plain />
+        <BFormSelect v-model="formSelectSelected" :options="formSelectOptions" size="sm" />
       </BCol>
     </BRow>
     <BRow>

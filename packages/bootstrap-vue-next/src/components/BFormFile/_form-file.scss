@@ -12,55 +12,20 @@ input[type="file"].form-control-input-file-hide-button {
   position: relative;
 }
 
-.b-form-file-control {
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-  border: 1px solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius);
-  background-color: var(--bs-bg-body);
-  transition:
-    border-color 0.15s ease-in-out,
-    box-shadow 0.15s ease-in-out;
+// The control also carries `.form-control`, so it inherits Bootstrap's `--bs-control-*`
+// tokens, size modifiers (`form-control-sm` / `-lg`), focus ring and validation border colors.
+.b-form-file-control.form-control {
   position: relative;
+  align-items: stretch;
+  padding: 0;
+  overflow: hidden;
   cursor: pointer;
 
-  &:focus-within:not([aria-disabled="true"]) {
-    border-color: var(--bs-primary-border);
-    box-shadow: 0 0 0 0.25rem var(--bs-primary-focus-ring);
-    outline: 0;
-  }
-
-  &.is-invalid {
-    border-color: var(--bs-danger-border);
-    padding-right: calc(1.5em + 0.75rem);
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right calc(0.375em + 0.1875rem) center;
-    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
-
-    &:focus-within {
-      box-shadow: 0 0 0 0.25rem var(--bs-danger-focus-ring);
-    }
-  }
-
-  &.is-valid {
-    border-color: var(--bs-success-border);
-    padding-right: calc(1.5em + 0.75rem);
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right calc(0.375em + 0.1875rem) center;
-    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
-
-    &:focus-within {
-      box-shadow: 0 0 0 0.25rem var(--bs-success-focus-ring);
-    }
-  }
-
   &[aria-disabled="true"] {
-    background-color: var(--bs-secondary-bg);
-    opacity: 0.65;
+    color: var(--bs-control-disabled-color);
     cursor: not-allowed;
+    background-color: var(--bs-control-disabled-bg);
+    border-color: var(--bs-control-disabled-border-color);
 
     .b-form-file-text,
     .b-form-file-button {
@@ -70,30 +35,35 @@ input[type="file"].form-control-input-file-hide-button {
 }
 
 .b-form-file-text {
+  display: flex;
   flex: 1 1 auto;
+  align-items: center;
   min-width: 0;
-  padding: 0.375rem 0.75rem;
+  padding: var(--bs-control-padding-y) var(--bs-control-padding-x);
   overflow: hidden;
+  line-height: var(--bs-control-line-height);
   text-overflow: ellipsis;
   white-space: nowrap;
   background-color: transparent;
-  line-height: 1.5;
 }
 
 .b-form-file-button {
   flex-shrink: 0;
-  padding: 0.375rem 0.75rem;
+  padding: var(--bs-control-padding-y) var(--bs-control-padding-x);
   margin: 0;
-  color: var(--bs-fg-body);
-  background-color: var(--bs-bg-1);
-  border: none;
-  border-right: 1px solid var(--bs-border-color);
-  border-radius: var(--bs-border-radius) 0 0 var(--bs-border-radius);
+  font: inherit;
+  line-height: var(--bs-control-line-height);
+  color: var(--bs-control-fg);
   cursor: pointer;
-  line-height: 1.5;
+  background-color: var(--bs-control-action-bg);
+  border: 0;
+  border-inline-end: var(--bs-control-border-width) solid var(--bs-control-border-color);
+  border-radius: 0;
+  transition: background-color var(--bs-control-transition-duration)
+    var(--bs-control-transition-timing);
 
   &:hover:not(:disabled) {
-    background-color: var(--bs-secondary-bg);
+    background-color: var(--bs-control-action-hover-bg);
   }
 
   &:focus {
@@ -102,41 +72,6 @@ input[type="file"].form-control-input-file-hide-button {
 
   &:disabled {
     cursor: not-allowed;
-  }
-}
-
-// Size variants
-.b-form-file-control.form-control-sm {
-  border-radius: var(--bs-border-radius-sm);
-  padding: 0;
-  min-height: auto;
-
-  .b-form-file-text,
-  .b-form-file-button {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-  }
-
-  .b-form-file-button {
-    margin: 0;
-    border-radius: var(--bs-border-radius-sm) 0 0 var(--bs-border-radius-sm);
-  }
-}
-
-.b-form-file-control.form-control-lg {
-  border-radius: var(--bs-border-radius-lg);
-  padding: 0;
-  min-height: auto;
-
-  .b-form-file-text,
-  .b-form-file-button {
-    padding: 0.5rem 1rem;
-    font-size: 1.25rem;
-  }
-
-  .b-form-file-button {
-    margin: 0;
-    border-radius: var(--bs-border-radius-lg) 0 0 var(--bs-border-radius-lg);
   }
 }
 
@@ -157,9 +92,9 @@ input[type="file"].form-control-input-file-hide-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: color-mix(in oklch, var(--bs-bg-body) 95%, transparent);
   border: 2px dashed var(--bs-primary-bg);
-  border-radius: var(--bs-border-radius);
+  border-radius: var(--bs-btn-input-border-radius);
   pointer-events: none;
   z-index: 1;
 }

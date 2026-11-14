@@ -101,7 +101,7 @@ export default {
           'id',
           'novalidate',
           'role',
-          'validated',
+          'validate',
           'wrapperAttrs',
         ]),
         formAttrs: {

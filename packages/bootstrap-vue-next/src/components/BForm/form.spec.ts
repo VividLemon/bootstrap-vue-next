@@ -37,12 +37,28 @@ describe('form', () => {
     expect(wrapper.classes()).not.toContain('form-floating')
   })
 
-  it('has class was-validated when prop validated', async () => {
+  it('has attr data-bs-validate when prop validate is true', async () => {
     const wrapper = mount(BForm, {
-      props: {validated: true},
+      props: {validate: true},
     })
-    expect(wrapper.classes()).toContain('was-validated')
-    await wrapper.setProps({validated: false})
+    expect(wrapper.attributes('data-bs-validate')).toBe('')
+    await wrapper.setProps({validate: false})
+    expect(wrapper.attributes('data-bs-validate')).toBeUndefined()
+  })
+
+  it('has attr data-bs-validate="valid" when prop validate is valid', async () => {
+    const wrapper = mount(BForm, {
+      props: {validate: 'valid'},
+    })
+    expect(wrapper.attributes('data-bs-validate')).toBe('valid')
+    await wrapper.setProps({validate: true})
+    expect(wrapper.attributes('data-bs-validate')).toBe('')
+  })
+
+  it('never has class was-validated', () => {
+    const wrapper = mount(BForm, {
+      props: {validate: true},
+    })
     expect(wrapper.classes()).not.toContain('was-validated')
   })
 
@@ -84,9 +100,9 @@ describe('form', () => {
     expect(wrapper.classes()).not.toContain('form-floating')
   })
 
-  it('does not have class was-validated by default', () => {
+  it('does not have attr data-bs-validate by default', () => {
     const wrapper = mount(BForm)
-    expect(wrapper.classes()).not.toContain('was-validated')
+    expect(wrapper.attributes('data-bs-validate')).toBeUndefined()
   })
 
   it('does not have attr novalidate by default', () => {

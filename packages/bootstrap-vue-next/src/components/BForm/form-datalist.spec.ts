@@ -112,7 +112,7 @@ describe('form-datalist', () => {
           {id: '1', text: 'First'},
           {id: '2', text: 'Second'},
         ],
-        valueField: 'id',
+        fields: {value: 'id'},
       },
     })
     const options = wrapper.findAll('option')
@@ -127,7 +127,7 @@ describe('form-datalist', () => {
           {value: 'a', label: 'Label A'},
           {value: 'b', label: 'Label B'},
         ],
-        textField: 'label',
+        fields: {text: 'label'},
       },
     })
     const options = wrapper.findAll('option')
@@ -142,7 +142,7 @@ describe('form-datalist', () => {
           {value: 'a', text: 'A', inactive: true},
           {value: 'b', text: 'B', inactive: false},
         ],
-        disabledField: 'inactive',
+        fields: {disabled: 'inactive'},
       },
     })
     const options = wrapper.findAll('option')

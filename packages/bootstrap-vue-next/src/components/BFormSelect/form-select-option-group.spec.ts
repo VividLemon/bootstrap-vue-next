@@ -99,7 +99,7 @@ describe('form-select-option-group', () => {
     const wrapper = mount(BFormSelectOptionGroup, {
       props: {
         label: 'Group',
-        valueField: 'id',
+        fields: {value: 'id'},
         options: [
           {id: 1, text: 'First'},
           {id: 2, text: 'Second'},
@@ -115,7 +115,7 @@ describe('form-select-option-group', () => {
     const wrapper = mount(BFormSelectOptionGroup, {
       props: {
         label: 'Group',
-        textField: 'name',
+        fields: {text: 'name'},
         options: [
           {value: 'a', name: 'Alpha'},
           {value: 'b', name: 'Beta'},
@@ -131,7 +131,7 @@ describe('form-select-option-group', () => {
     const wrapper = mount(BFormSelectOptionGroup, {
       props: {
         label: 'Group',
-        disabledField: 'inactive',
+        fields: {disabled: 'inactive'},
         options: [
           {value: 'a', text: 'A', inactive: true},
           {value: 'b', text: 'B', inactive: false},
@@ -147,9 +147,7 @@ describe('form-select-option-group', () => {
     const wrapper = mount(BFormSelectOptionGroup, {
       props: {
         label: 'Custom',
-        valueField: 'id',
-        textField: 'label',
-        disabledField: 'locked',
+        fields: {value: 'id', text: 'label', disabled: 'locked'},
         options: [
           {id: 100, label: 'Item A', locked: false},
           {id: 200, label: 'Item B', locked: true},

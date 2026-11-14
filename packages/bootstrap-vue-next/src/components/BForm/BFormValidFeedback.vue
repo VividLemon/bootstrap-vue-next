@@ -36,6 +36,6 @@ const computedShow = computed(() => props.forceShow === true || props.state === 
 const computedClasses = computed(() => ({
   'd-block': computedShow.value,
   'valid-feedback': !props.tooltip,
-  'valid-tooltip': props.tooltip,
+  'tooltip valid-tooltip': props.tooltip,
 }))
 </script>

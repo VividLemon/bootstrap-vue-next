@@ -40,13 +40,14 @@ Custom form controls and selects are also supported.
 ## Floating Labels
 
 Wrap a `BFormInput`, `BFormTextarea`, or `BFormSelect` in a `BFormFloatingLabel` to enable floating labels. A `placeholder`
-is required on each input in order to make the Bootstrap 5 `css` work correctly.
+is required on each input in order to make the Bootstrap `css` work correctly. The label is rendered before the
+control, as Bootstrap v6 floating labels require.
 
 <<< DEMO ./demo/FormFloatingLabels.vue#template{vue-html}
 
 Floating labels work correctly for disabled state and readonly states. In addition to styled textual inputs, floating labels
 also work for plaintext inputs, textareas, input groups and selects.
-See the [Bootstrap 5 documentation](https://getbootstrap.com/docs/5.3/forms/floating-labels) for more details.
+See the [Bootstrap 6 documentation](https://getbootstrap.com/docs/6.0/forms/floating-labels/) for more details.
 
 The `floating` attribute on the `BForm` component only applies to single form controls like this:
 
@@ -122,11 +123,11 @@ The `BFormValidFeedback` and `BFormInvalidFeedback` helper components will displ
 feedback (based on input state) as a block of colored text. They rely on being placed after an input
 (sibling) and will show based on the browser native validation state of the input. To force them to
 show, set the prop `force-show` to `true`, or bind the controls `state` to the `state` prop of the
-feedback helper, or set the `was-validated` class on a parent element (such as a form). See the
+feedback helper, or set the `validate` prop on a parent `BForm`. See the
 [**Validation**](#validation) section below for additional details.
 
 Use the optional Boolean prop `tooltip` to change the display from a block to a static tooltip
-style. The feedback will typically appear below the form control. When this mode is enabled, it is
+style (`tooltip invalid-tooltip` / `tooltip valid-tooltip`, which relies on Bootstrap's base `.tooltip` styles). The feedback will typically appear below the form control. When this mode is enabled, it is
 important that the parent container have a `position: relative:` css style (or `position-relative`
 class). Note that tooltip style feedback may, since its positioning is static, obscure other inputs,
 labels, etc.
@@ -164,8 +165,8 @@ See also:
 
 #### TypeScript Type Safety
 
-`BFormDatalist` uses generic type parameters to validate that `value-field`, `text-field`, and
-`disabled-field` reference actual keys of your option type. Since `BFormDatalist` is a native
+`BFormDatalist` uses generic type parameters to validate that the `value`, `text`, and
+`disabled` keys of its `fields` prop reference actual keys of your option type. Since `BFormDatalist` is a native
 `<datalist>` element (no `v-model`), the type safety focus is on field name validation.
 
 <<< DEMO ./demo/DatalistTypeSafeBasic.vue{vue}
@@ -176,8 +177,12 @@ See the [Type-Safe Options](/docs/reference/type-safe-options#bformdatalist) ref
 
 Disable browser native HTML5 validation by setting the `novalidate` prop to true on `BForm`.
 
-Set the `validated` prop, on `BForm`, to `true` to add the Bootstrap v5 `.was-validated` class to
-the form to trigger validation states.
+Set the `validate` prop on `BForm` to opt in to Bootstrap's client-side validation styles. It
+renders `data-bs-validate` on the form, so controls show `:user-invalid` styling once the user has
+interacted with them (required fields are not shown as invalid on page load). Set `validate` to
+`'valid'` (`data-bs-validate="valid"`) to also show `:user-valid` success styling. Combine it with
+`novalidate` to replace the browser's native validation bubbles with Bootstrap's styles and
+feedback.
 
 All form controls support a `state` prop, which can be used to set the form control into one
 of three contextual states:
@@ -189,5 +194,5 @@ of three contextual states:
 - `null` Displays no validation state (neither valid nor invalid)
 
 Refer to the
-[Bootstrap v5 Form Validation Documentation](https://getbootstrap.com/docs/5.3/forms/validation/)
-for details on the Bootstrap v5 validation states.
+[Bootstrap v6 Form Validation Documentation](https://getbootstrap.com/docs/6.0/forms/validation/)
+for details on the Bootstrap v6 validation states.

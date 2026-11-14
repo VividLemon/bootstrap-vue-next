@@ -27,6 +27,7 @@
     )[]
   "
 >
+import {resolveOptionFields} from '../../composables/useFormSelect'
 import type {
   BFormRadioGroupExposes,
   BFormRadioGroupProps,
@@ -49,27 +50,24 @@ import BFormRadioGroupBase from './BFormRadioGroupBase.vue'
  * - Use 'as const' on options for literal type inference
  */
 const props = withDefaults(defineProps<Omit<BFormRadioGroupProps<Options>, 'modelValue'>>(), {
+  fields: undefined,
   ariaInvalid: undefined,
   autofocus: false,
   buttonVariant: 'solid',
   buttonColor: undefined,
   buttons: false,
   disabled: false,
-  disabledField: 'disabled',
   form: undefined,
   id: undefined,
   name: undefined,
   options: () => [] as unknown as Options,
   plain: false,
   required: false,
-  reverse: false,
   size: undefined,
   stacked: false,
   state: null,
-  textField: 'text',
-  validated: false,
-  valueField: 'value',
 })
+const optionFields = computed(() => resolveOptionFields(props.fields))
 
 // Type-safe model value - extracts union from options.
 // NOTE: OptionsValues assumes a static "value" key; custom valueField is not
@@ -90,15 +88,15 @@ const normalizedOptions = computed(
             text: el.toString(),
           }
         : {
-            value: (el as Record<string, unknown>)[props.valueField as string],
+            value: (el as Record<string, unknown>)[optionFields.value.valueField],
             disabled:
               props.disabled ||
-              (((el as Record<string, unknown>)[props.disabledField as string] as
+              (((el as Record<string, unknown>)[optionFields.value.disabledField] as
                 boolean | undefined) ??
                 false),
             text:
-              ((el as Record<string, unknown>)[props.textField as string] as string | undefined) ??
-              '',
+              ((el as Record<string, unknown>)[optionFields.value.textField] as
+                string | undefined) ?? '',
           }
     ) as RadioOption[]
 )
@@ -115,12 +113,10 @@ const forwardedProps = computed(() => ({
   stacked: props.stacked,
   disabled: props.disabled,
   required: props.required,
-  validated: props.validated,
   autofocus: props.autofocus,
   form: props.form,
   ariaInvalid: props.ariaInvalid,
   plain: props.plain,
-  reverse: props.reverse,
 }))
 
 const base = useTemplateRef('_base')
