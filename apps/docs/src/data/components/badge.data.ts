@@ -43,6 +43,12 @@ export default {
             description:
               'Placement of the badge relative to its parent. One of the values of `CombinedPlacement`',
           },
+          variant: {
+            type: 'BadgeVariant | null',
+            default: null,
+            description:
+              "Badge style: `'subtle'` (`.badge-subtle`, subtle theme background) or `'outline'` (`.badge-outline`, theme border on a transparent background). Leave unset for the solid default",
+          },
         } satisfies PropRecord<Exclude<keyof BBadgeProps, keyof typeof linkProps>>,
         'BLink props': linkedBLinkSection,
       },

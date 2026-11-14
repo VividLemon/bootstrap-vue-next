@@ -45,6 +45,16 @@ type AttrsValue = Record<string, any>
 
 </BCard>
 
+## BadgeVariant
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type BadgeVariant = 'subtle' | 'outline'
+```
+
+</BCard>
+
 ## BgColor
 
 Applied with a `bg-<value>` class (`bg` keys of `color` props).
@@ -240,22 +250,26 @@ type ColorExtendables = {
 <BCard class="bg-body-tertiary">
 
 ```ts
-export type ColsBaseNumbers = 1 | 2 | 3 | 4 | 5 | '1' | '2' | '3' | '4' | '5'
+type ColsBaseNumber = 1 | 2 | 3 | 4 | 5
+export type ColsBaseNumbers = ColsBaseNumber | `${ColsBaseNumber}`
 
-export type ColsNumbers =
-  ColsBaseNumbers | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '6' | '7' | '8' | '9' | '10' | '11' | '12'
+type ColsNumber = ColsBaseNumber | 6 | 7 | 8 | 9 | 10 | 11 | 12
+export type ColsNumbers = ColsNumber | `${ColsNumber}`
 
 // `true` renders an equal-width column (`col`, `md:col`)
 export type ColsValue = boolean | ColsNumbers | 'auto'
 
 // 0 to 12, passed straight through to the spacing scale (`gx-0` … `gx-12`)
-export type GutterNumbers = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | '0' | '1' /* … */ | '12'
+type GutterNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+export type GutterNumbers = GutterNumber | `${GutterNumber}`
 
-export type RowColsNumbers = 1 | 2 | 3 | 4 | 5 | 6 | '1' | '2' | '3' | '4' | '5' | '6' | 'auto'
+type RowColsNumber = 1 | 2 | 3 | 4 | 5 | 6
+export type RowColsNumbers = RowColsNumber | `${RowColsNumber}` | 'auto'
 
 export type ColsOrderNumbers = ColsBaseNumbers | 0 | '0' | 'first' | 'last'
 
-export type ColsOffsetNumbers = Exclude<ColsNumbers, 12 | '12'> | 0 | '0'
+type ColsOffsetNumber = Exclude<ColsNumber, 12> | 0
+export type ColsOffsetNumbers = ColsOffsetNumber | `${ColsOffsetNumber}`
 ```
 
 </BCard>
@@ -314,8 +328,8 @@ The documented Bootstrap color opacity utilities, accepted as numbers or numeric
 <BCard class="bg-body-tertiary">
 
 ```ts
-type ColorOpacity = 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100
-  | '10' | '20' | '30' | '40' | '50' | '60' | '70' | '80' | '90' | '100'
+type ColorOpacityNumber = 10 | 20 | 30 | 40 | 50 | 60 | 70 | 80 | 90 | 100
+type ColorOpacity = ColorOpacityNumber | `${ColorOpacityNumber}`
 ```
 
 </BCard>
@@ -352,7 +366,8 @@ type InputType =
 ```ts
 type LinkOpacity = ColorOpacity
 type UnderlineOpacity = ColorOpacity
-type UnderlineOffset = 1 | 2 | 3 | '1' | '2' | '3'
+type UnderlineOffsetNumber = 1 | 2 | 3
+type UnderlineOffset = UnderlineOffsetNumber | `${UnderlineOffsetNumber}`
 ```
 
 </BCard>
@@ -492,12 +507,7 @@ type RadioOptionRaw = string | number | (Partial<RadioOption> & Record<string, u
 
 ```ts
 type RadioValue =
-  | boolean
-  | string
-  | readonly unknown[]
-  | Readonly<Record<string, unknown>>
-  | number
-  | null
+  boolean | string | readonly unknown[] | Readonly<Record<string, unknown>> | number | null
 ```
 
 </BCard>
@@ -507,6 +517,7 @@ type RadioValue =
 <BCard class="bg-body-tertiary">
 
 ```ts
+type RadiusNumber = 0 | 1 | 2 | 3 | 4 | 5
 type RadiusElement =
   | 'circle'
   | 'pill'
@@ -514,18 +525,8 @@ type RadiusElement =
   | 'sm'
   | 'md'
   | 'lg'
-  | '0'
-  | '1'
-  | '2'
-  | '3'
-  | '4'
-  | '5'
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
+  | RadiusNumber
+  | `${RadiusNumber}`
 ```
 
 </BCard>
@@ -570,12 +571,7 @@ type ScrollspyList = ScrollspyListItem[]
 
 ```ts
 type SelectValue =
-  | boolean
-  | string
-  | readonly unknown[]
-  | Readonly<Record<string, unknown>>
-  | number
-  | null
+  boolean | string | readonly unknown[] | Readonly<Record<string, unknown>> | number | null
 ```
 
 </BCard>
@@ -586,6 +582,16 @@ type SelectValue =
 
 ```ts
 type Size = 'sm' | 'md' | 'lg'
+```
+
+</BCard>
+
+## PlaceholderAnimation
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type PlaceholderAnimation = 'wave' | 'pulse' | 'glow'
 ```
 
 </BCard>
@@ -815,10 +821,7 @@ The type of `theme` keys. A single theme color or modifier, or an array where an
 <BCard class="bg-body-tertiary">
 
 ```ts
-type ThemeProp =
-  | ThemeValue
-  | readonly [ThemeColor, ...ThemeModifier[]]
-  | readonly ThemeModifier[]
+type ThemeProp = ThemeValue | readonly [ThemeColor, ...ThemeModifier[]] | readonly ThemeModifier[]
 ```
 
 </BCard>

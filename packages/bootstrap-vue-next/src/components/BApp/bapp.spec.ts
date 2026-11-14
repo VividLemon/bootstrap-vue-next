@@ -532,7 +532,7 @@ describe('BApp defaults for prefixed color objects', () => {
   const mountAlert = (alertProps: Record<string, unknown> = {}) =>
     mount(BApp, {
       props: {
-        defaults: {BAlert: {closeColor: {bg: 'subtle-danger' as const}}},
+        defaults: {BAlert: {close: {content: 'X', color: {bg: 'subtle-danger' as const}}}},
         noOrchestrator: true,
       },
       slots: {
@@ -540,7 +540,6 @@ describe('BApp defaults for prefixed color objects', () => {
           h(BAlert, {
             modelValue: true,
             dismissible: true,
-            closeContent: 'X',
             body: 'content',
             ...alertProps,
           }),
@@ -554,7 +553,7 @@ describe('BApp defaults for prefixed color objects', () => {
   })
 
   it('replaces the BApp color object default when the prop is passed (no deep merge)', () => {
-    const $button = mountAlert({closeColor: {fg: 'white'}}).get('.btn-close-custom')
+    const $button = mountAlert({close: {content: 'X', color: {fg: 'white'}}}).get('.btn-close-custom')
     expect($button.classes()).toContain('fg-white')
     expect($button.classes()).not.toContain('bg-subtle-danger')
     expect($button.classes()).toContain('theme-secondary')

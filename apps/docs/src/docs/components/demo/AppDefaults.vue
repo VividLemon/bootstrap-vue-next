@@ -19,7 +19,7 @@ const appDefaults: BAppProps['defaults'] = {
   },
   BToast: {
     color: { theme: 'success' },
-    solid: true,
+    translucent: true,
   },
 }
 </script>
