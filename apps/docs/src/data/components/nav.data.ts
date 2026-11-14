@@ -108,7 +108,7 @@ export default {
           type: 'Readonly<AttrsValue>',
           default: undefined,
           description:
-            "Attributes to apply to the form element. `class` and `style` merge with the component's own",
+            "Attributes to apply to the form element. `class` and `style` merge with the component's own; other keys win over the matching props (`id`, `role`, …)",
         },
       } satisfies PropRecord<keyof BNavFormProps>,
       emits: {

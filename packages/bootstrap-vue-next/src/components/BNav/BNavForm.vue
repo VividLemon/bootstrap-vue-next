@@ -1,6 +1,15 @@
 <template>
   <li :class="liClasses" v-bind="wrapperAttrs">
-    <BForm v-bind="formBindings" class="d-flex" @submit.prevent="submitted">
+    <BForm
+      :id="props.id"
+      :floating="props.floating"
+      :role="props.role"
+      :novalidate="props.novalidate"
+      :validated="props.validated"
+      class="d-flex"
+      v-bind="formAttrs"
+      @submit.prevent="submitted"
+    >
       <slot />
     </BForm>
   </li>
@@ -37,20 +46,10 @@ const processedAttrs = computed(() => {
   return {wrapperClass, formAttrs}
 })
 
-// The top-level form props win over `formAttrs`, but only when they are set: an unset prop must
-// not clear the same attribute passed through `formAttrs` (for example `id` or `role`)
-const formBindings = computed(() => {
-  const ownProps = Object.fromEntries(
-    Object.entries({
-      id: props.id,
-      floating: props.floating,
-      role: props.role,
-      novalidate: props.novalidate,
-      validated: props.validated,
-    }).filter(([, value]) => value !== undefined)
-  )
-  return mergeProps(processedAttrs.value.formAttrs, props.formAttrs ?? {}, ownProps)
-})
+// Fallthrough attrs (except `class`, which goes to the wrapper) and `formAttrs` both go to the form.
+// An element takes one `v-bind` object, so they are merged here; it is bound after the form props,
+// so a key in `formAttrs` wins over the matching top-level prop
+const formAttrs = computed(() => mergeProps(processedAttrs.value.formAttrs, props.formAttrs ?? {}))
 
 const submitted = (e: Readonly<Event>) => {
   emit('submit', e)

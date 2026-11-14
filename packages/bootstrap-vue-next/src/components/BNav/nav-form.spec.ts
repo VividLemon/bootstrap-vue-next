@@ -106,13 +106,22 @@ describe('nav-form', () => {
     expect($form.attributes('role')).toBe('search')
   })
 
-  it('lets the id and role props win over formAttrs when set', () => {
+  it('lets formAttrs win over the matching id and role props', () => {
     const wrapper = mount(BNavForm, {
       props: {id: 'prop-id', role: 'form', formAttrs: {id: 'attrs-id', role: 'search'}},
     })
     const $form = wrapper.get('form')
+    expect($form.attributes('id')).toBe('attrs-id')
+    expect($form.attributes('role')).toBe('search')
+  })
+
+  it('uses the id and role props when formAttrs does not set them', () => {
+    const wrapper = mount(BNavForm, {
+      props: {id: 'prop-id', role: 'search', formAttrs: {'data-x': 'y'}},
+    })
+    const $form = wrapper.get('form')
     expect($form.attributes('id')).toBe('prop-id')
-    expect($form.attributes('role')).toBe('form')
+    expect($form.attributes('role')).toBe('search')
   })
 
   it('emits submit event when form is submitted', async () => {
