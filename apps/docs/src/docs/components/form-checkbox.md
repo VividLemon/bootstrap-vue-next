@@ -57,7 +57,8 @@ inside a `BFormCheckboxGroup` can be placed in a container with the same utiliti
 
 ## Control sizing
 
-Use the `size` prop to control the size of the checkbox (`check-sm` / `check-lg`). The default size is medium. Supported size values are `sm` (small) and `lg` (large).
+Use the `size` prop to control the size of the checkbox: `sm` renders `check-sm` and `lg` renders `check-lg`. Without
+`size`, no size class is added and the checkbox has Bootstrap's default size.
 
 <<< DEMO ./demo/CheckboxSize.vue#template{vue-html}
 
@@ -121,8 +122,8 @@ Render groups of checkboxes with the look of a switches by setting the prop `swi
 
 ### Switch sizing
 
-Use the `size` prop to control the size of the switch (`switch-sm` / `switch-lg`). The default size is medium. Supported size
-values are `sm` (small) and `lg` (large).
+Use the `size` prop to control the size of the switch: `sm` renders `switch-sm` and `lg` renders `switch-lg`. Without
+`size`, no size class is added and the switch has Bootstrap's default size.
 
 <<< DEMO ./demo/CheckboxSwitchSize.vue#template{vue-html}
 

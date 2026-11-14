@@ -5,8 +5,7 @@
     :aria-invalid="computedAriaInvalid"
     :aria-labelledby="isFieldset && isHorizontal ? labelId : undefined"
     v-bind="$attrs"
-    :class="[stateClass, {'form-field': !isHorizontal}]"
-    class="b-form-group"
+    :class="computedClasses"
   >
     <!-- End of definitions -->
     <BFormRow v-if="isHorizontal">
@@ -176,6 +175,12 @@ const isHorizontal = computed(
 const isFloating = computed(() => props.floating && !isHorizontal.value)
 
 const {stateClass} = useStateClass(computedState)
+
+const computedClasses = computed(() => [
+  'b-form-group',
+  stateClass.value,
+  {'form-field': !isHorizontal.value},
+])
 const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(() => props.ariaInvalid, computedState)
 
 const onLegendClick = (event: Readonly<MouseEvent>) => {

@@ -71,10 +71,7 @@ interface SwitchClassesItemsInput {
 const useFormCheckSwitchClasses = (items: MaybeRef<SwitchClassesItemsInput>) => {
   const classes = computed(() => {
     const resolvedItems = toValue(items)
-    return {
-      switch: true,
-      [`switch-${resolvedItems.size}`]: resolvedItems.size !== undefined,
-    }
+    return ['switch', {[`switch-${resolvedItems.size}`]: resolvedItems.size !== undefined}]
   })
 
   return {classes}
@@ -106,13 +103,13 @@ const useFormCheckLabelClasses = (items: MaybeRef<LabelClasesItemsInput>) => {
 
   const classes = computed(() => {
     const resolvedItems = toValue(items)
-    if (resolvedItems.button !== true) return {}
-    return {
-      'btn': true,
-      'btn-check': true,
-      ...buttonThemeClasses.value,
-      [`btn-${resolvedItems.size}`]: resolvedItems.size !== undefined,
-    }
+    if (resolvedItems.button !== true) return []
+    return [
+      'btn',
+      'btn-check',
+      buttonThemeClasses.value,
+      {[`btn-${resolvedItems.size}`]: resolvedItems.size !== undefined},
+    ]
   })
 
   return {classes}

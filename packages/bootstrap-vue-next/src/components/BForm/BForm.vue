@@ -13,6 +13,7 @@
 <script setup lang="ts">
 import {useDefaults} from '../../composables/useDefaults'
 import {computed, useTemplateRef} from 'vue'
+import {useFormValidate} from '../../composables/useFormValidate'
 import type {BFormProps, BFormSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BFormProps>(), {
@@ -30,10 +31,7 @@ const computedClasses = computed(() => ({
   'form-floating': props.floating,
 }))
 
-// `data-bs-validate` opts in to `:user-invalid` styling; `="valid"` also shows `:user-valid`
-const computedValidate = computed(() =>
-  props.validate === 'valid' ? 'valid' : props.validate === true ? '' : undefined
-)
+const computedValidate = useFormValidate(() => props.validate)
 
 defineExpose({
   element,

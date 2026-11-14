@@ -334,6 +334,16 @@ type ColorOpacity = ColorOpacityNumber | `${ColorOpacityNumber}`
 
 </BCard>
 
+## FormValidate
+
+<BCard class="bg-body-tertiary">
+
+```ts
+type FormValidate = boolean | 'valid'
+```
+
+</BCard>
+
 ## InputType
 
 <BCard class="bg-body-tertiary">

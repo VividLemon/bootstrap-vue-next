@@ -19,7 +19,13 @@ import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
 import type {CheckboxOptionRaw, CheckboxValue} from './CheckboxTypes'
 import type {Size} from './Size'
 import type {AriaInvalid} from './AriaInvalid'
-import type {Numberish, TeleporterProps, ValidationState, ValueOrCallBack} from './CommonTypes'
+import type {
+  FormValidate,
+  Numberish,
+  TeleporterProps,
+  ValidationState,
+  ValueOrCallBack,
+} from './CommonTypes'
 import type {CommonInputProps, FormDebounceOptions} from './FormCommonInputProps'
 import type {RadioOption, RadioValue} from './RadioTypes'
 import type {
@@ -262,7 +268,7 @@ export interface BDropdownDividerProps {
 export interface BDropdownFormProps {
   formClass?: ClassValue
   novalidate?: boolean
-  validate?: boolean | 'valid'
+  validate?: FormValidate
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
@@ -1279,7 +1285,7 @@ export interface BFormProps {
   floating?: boolean
   id?: string
   novalidate?: boolean
-  validate?: boolean | 'valid'
+  validate?: FormValidate
 }
 
 export interface BTableSimpleProps {

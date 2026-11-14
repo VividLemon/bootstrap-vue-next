@@ -115,7 +115,7 @@ export {
   type ComposableType,
   type DirectiveType,
 } from './BootstrapVueOptions'
-export type {ValidationState} from './CommonTypes'
+export type {FormValidate, ValidationState} from './CommonTypes'
 export type {MaybePromise} from './MaybePromise'
 export type {
   ExtractItemValue,

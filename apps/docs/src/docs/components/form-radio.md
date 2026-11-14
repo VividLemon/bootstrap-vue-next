@@ -63,8 +63,8 @@ with the same utilities.
 
 ## Control sizing
 
-Use the `size` prop to control the size of the radio (`radio-sm` / `radio-lg`). The default size is medium. Supported size
-values are `sm` (small) and `lg` (large).
+Use the `size` prop to control the size of the radio: `sm` renders `radio-sm` and `lg` renders `radio-lg`. Without
+`size`, no size class is added and the radio has Bootstrap's default size.
 
 <<< DEMO ./demo/RadioSizing.vue#template{vue-html}
 
