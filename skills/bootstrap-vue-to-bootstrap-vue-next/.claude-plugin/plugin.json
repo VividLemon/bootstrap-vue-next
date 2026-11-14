@@ -1,0 +1,13 @@
+{
+  "name": "bootstrap-vue-to-bootstrap-vue-next",
+  "displayName": "BootstrapVue → BootstrapVueNext migration",
+  "description": "Migrate a Vue 2 + BootstrapVue (Bootstrap 4) app to Vue 3 + BootstrapVueNext v1 (Bootstrap 5). Not for upgrading between BootstrapVueNext versions.",
+  "author": {
+    "name": "BootstrapVueNext",
+    "url": "https://github.com/bootstrap-vue-next/bootstrap-vue-next"
+  },
+  "homepage": "https://bootstrap-vue-next.github.io/bootstrap-vue-next/docs/migration-guide",
+  "repository": "https://github.com/bootstrap-vue-next/bootstrap-vue-next",
+  "license": "MIT",
+  "keywords": ["bootstrap-vue", "bootstrap-vue-next", "vue", "migration"]
+}

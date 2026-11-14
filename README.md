@@ -51,6 +51,10 @@
 
 BootstrapVueNext is an attempt to have the [BootstrapVue](https://bootstrap-vue.github.io/bootstrap-vue/) components in Vue3, Bootstrap 5, and typescript. Another goal is to have the components written in a simple and readable way for a better developer experience
 
+## Agent skills
+
+Migrating from BootstrapVue? The [`skills/`](./skills/) folder has an agent skill for coding agents (Claude Code, Codex, Copilot, Cursor and others) that guides a BootstrapVue → BootstrapVueNext migration. See [`skills/README.md`](./skills/README.md) to install it.
+
 ## Contribute & support 🙌
 
 If you want to contribute you can:
