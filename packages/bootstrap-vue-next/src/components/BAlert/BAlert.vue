@@ -3,7 +3,7 @@
     v-if="isAlertMounted"
     :id="props.id"
     ref="_element"
-    class="alert flex-column align-items-stretch"
+    class="alert"
     :class="computedClasses"
     tabindex="0"
     :role="props.isStatus ? 'status' : 'alert'"
@@ -11,21 +11,34 @@
     aria-atomic="true"
     v-bind="props.alertAttrs"
   >
-    <component
-      :is="props.headerTag"
-      v-if="contentShowing && (slots.title || props.title)"
-      class="alert-heading d-flex gap-2"
-      v-bind="props.headerAttrs"
-    >
-      <slot name="title" v-bind="sharedSlots">
-        <span>
-          {{ props.title }}
-        </span>
-      </slot>
+    <template v-if="contentShowing && (slots.title || props.title || slots.default || props.body)">
+      <div class="d-flex flex-column gap-2 flex-grow-1">
+        <component
+          :is="props.headerTag"
+          v-if="slots.title || props.title"
+          class="alert-heading"
+          v-bind="props.headerAttrs"
+        >
+          <slot name="title" v-bind="sharedSlots">
+            {{ props.title }}
+          </slot>
+        </component>
+        <component
+          :is="computedTag"
+          v-if="slots.default || props.body"
+          class="alert-body"
+          v-bind="computedBodyAttrs"
+          @click="computedLink && props.dismissible ? hide() : () => {}"
+        >
+          <slot v-bind="sharedSlots">
+            {{ props.body }}
+          </slot>
+        </component>
+      </div>
       <template v-if="props.dismissible">
         <BButton
           v-if="slots.close || props.close?.content"
-          class="ms-auto ps-1 btn-close-custom"
+          class="ms-auto btn-close-custom"
           :color="computedCloseColor"
           :variant="closeVariant"
           v-bind="props.close?.attrs"
@@ -43,47 +56,12 @@
           @click.stop.prevent="hide('close')"
         />
       </template>
-    </component>
-    <template v-if="contentShowing && (slots.default || props.body)">
-      <div class="d-flex gap-2">
-        <component
-          :is="computedTag"
-          class="alert-body"
-          v-bind="computedBodyAttrs"
-          @click="computedLink && props.dismissible ? hide() : () => {}"
-        >
-          <slot v-bind="sharedSlots">
-            {{ props.body }}
-          </slot>
-        </component>
-
-        <template v-if="props.dismissible && !(slots.title || props.title)">
-          <BButton
-            v-if="slots.close || props.close?.content"
-            class="ms-auto btn-close-custom"
-            :color="computedCloseColor"
-            :variant="closeVariant"
-            v-bind="props.close?.attrs"
-            @click.stop.prevent="hide('close')"
-          >
-            <slot name="close" v-bind="sharedSlots">
-              {{ props.close?.content }}
-            </slot>
-          </BButton>
-          <BCloseButton
-            v-else
-            class="ms-auto"
-            :aria-label="props.close?.label ?? 'Close'"
-            v-bind="props.close?.attrs"
-            @click.stop.prevent="hide('close')"
-          />
-        </template>
-      </div>
     </template>
     <BProgress
-      v-if="typeof modelValue === 'number' && progressOptions !== undefined"
+      v-if="showProgress"
+      class="w-100"
       v-bind="progressOptions"
-      :max="modelValue"
+      :max="modelValue as number"
       :value="remainingMs"
       height="4px"
     />
@@ -222,9 +200,15 @@ const {classes: colorClasses} = useThemeClasses(
     fg: computedColor.value.fg,
   }))
 )
+const showProgress = computed(
+  () => typeof modelValue.value === 'number' && progressOptions.value !== undefined
+)
+
 const computedClasses = computed(() => [
   colorClasses.value,
   {
+    // the countdown bar wraps onto its own full-width line below the content
+    'flex-wrap': showProgress.value,
     'hiding': !visible.value,
     'alert-instant': props.noTransition || instant.value,
   },

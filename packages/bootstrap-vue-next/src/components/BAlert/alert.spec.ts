@@ -14,13 +14,17 @@ describe('alert', () => {
     expect(wrapper.find('div').exists()).toBe(false)
   })
 
-  it('stacks its content vertically', () => {
+  it('wraps the heading and body in one column next to the close button', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true},
+      props: {modelValue: true, title: 'Title', dismissible: true},
+      slots: {default: 'content'},
     })
-    const $div = wrapper.get('div')
-    expect($div.classes()).toContain('flex-column')
-    expect($div.classes()).toContain('align-items-stretch')
+    const $alert = wrapper.get('.alert')
+    expect($alert.classes()).not.toContain('flex-column')
+    const $content = $alert.get(':scope > .flex-column')
+    expect($content.find('.alert-heading').exists()).toBe(true)
+    expect($content.find('.alert-body').exists()).toBe(true)
+    expect($alert.find(':scope > .btn-close').exists()).toBe(true)
   })
 
   it('there is a div when modelValue true', async () => {
@@ -657,7 +661,6 @@ describe('alert', () => {
     const $heading = wrapper.find('.alert-heading')
     expect($heading.classes()).toContain('custom-header')
     expect($heading.classes()).toContain('alert-heading')
-    expect($heading.classes()).toContain('d-flex')
   })
 
   // closeContent prop rendering
@@ -671,34 +674,32 @@ describe('alert', () => {
   })
 
   // close button in header (with title)
-  it('shows close button in header when both title and dismissible', () => {
+  it('shows the close button beside the content when both title and dismissible', () => {
     const wrapper = mount(BAlert, {
       props: {modelValue: true, title: 'Title', dismissible: true},
       slots: {default: 'content'},
     })
-    const $heading = wrapper.find('.alert-heading')
-    const $closeBtn = $heading.findComponent(BCloseButton)
-    expect($closeBtn.exists()).toBe(true)
+    expect(wrapper.find('.alert-heading .btn-close').exists()).toBe(false)
+    expect(wrapper.find('.alert > .btn-close').exists()).toBe(true)
   })
 
-  it('shows BButton close in header when title, dismissible, and close slot', () => {
+  it('shows BButton close when title, dismissible, and close slot', () => {
     const wrapper = mount(BAlert, {
       props: {modelValue: true, title: 'Title', dismissible: true},
       slots: {default: 'content', close: 'close text'},
     })
-    const $heading = wrapper.find('.alert-heading')
-    const $btn = $heading.findComponent(BButton)
+    const $btn = wrapper.findComponent(BButton)
     expect($btn.exists()).toBe(true)
+    expect($btn.element.parentElement?.classList.contains('alert')).toBe(true)
     expect($btn.text()).toBe('close text')
   })
 
-  it('close button in header emits update:modelValue when clicked', async () => {
+  it('close button emits update:modelValue when clicked with a title', async () => {
     const wrapper = mount(BAlert, {
       props: {modelValue: true, title: 'Title', dismissible: true, noTransition: true},
       slots: {default: 'content'},
     })
-    const $heading = wrapper.find('.alert-heading')
-    const $closeBtn = $heading.getComponent(BCloseButton)
+    const $closeBtn = wrapper.getComponent(BCloseButton)
     await $closeBtn.trigger('click')
     await new Promise((resolve) => setTimeout(resolve, 30))
     expect(wrapper.emitted()).toHaveProperty('update:modelValue')
@@ -814,14 +815,13 @@ describe('alert', () => {
     expect(typeof wrapper.vm.stop).toBe('function')
   })
 
-  // d-flex wrapper around body content
-  it('body content is wrapped in d-flex div', () => {
+  // wrapper around the heading and body
+  it('body content is wrapped in a flex column', () => {
     const wrapper = mount(BAlert, {
       props: {modelValue: true},
       slots: {default: 'content'},
     })
-    const $flex = wrapper.find('.d-flex')
-    expect($flex.exists()).toBe(true)
+    expect(wrapper.find('.alert > .flex-column > .alert-body').exists()).toBe(true)
   })
 
   // alert-dismissible class not added when close slot or closeContent is provided
@@ -909,8 +909,17 @@ describe('alert', () => {
       props: {modelValue: 5000, progress: true},
       slots: {default: 'content'},
     })
-    // the progress is a direct child of the column flex container
+    // the progress is a direct child of the alert and wraps onto its own full-width line
+    expect(wrapper.get('.alert').classes()).toContain('flex-wrap')
     const $progress = wrapper.get('.alert > .progress')
-    expect($progress.exists()).toBe(true)
+    expect($progress.classes()).toContain('w-100')
+  })
+
+  it('does not wrap the alert without a countdown bar', () => {
+    const wrapper = mount(BAlert, {
+      props: {modelValue: true},
+      slots: {default: 'content'},
+    })
+    expect(wrapper.get('.alert').classes()).not.toContain('flex-wrap')
   })
 })
