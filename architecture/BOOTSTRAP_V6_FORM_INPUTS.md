@@ -32,7 +32,7 @@ Findings:
 | v-model           | Each control has a `defineModel` value. v6 `change.bs.*` events map to `update:modelValue`. Cancelable v6 events (`add.bs.chips`, `remove.bs.chips`) become cancelable `BvEvent` emits.                        |
 | Field integration | Every new control registers with `useProvideFormGroupData` (the same way `BFormInput` does) so that `BFormGroup` auto-resolves `labelFor`, `state` and `disabled`.                                             |
 | Validation        | `state` renders `.is-valid` / `.is-invalid` on the element v6 expects (input, `.form-ghost`, `.form-range-input`, or the `.otp` wrapper). The `data-bs-validate` CSS from #165 covers native `:user-invalid`.  |
-| Colors            | Root `theme` emits `.theme-{color}` (v6 recolors `.form-range`, `.chip`, `.chip-input` through `--theme-*`).                                                                                                   |
+| Colors            | The root `color` object (`{ theme, bg, fg }`); `color.theme` emits `.theme-{color}` (v6 recolors `.form-range`, `.chip`, `.chip-input` through `--theme-*`).                                                   |
 | Attrs             | `*Attrs` for inner parts; no `*Class` props.                                                                                                                                                                   |
 | SSR               | All markup renders on the server. Only Datepicker creates a third-party instance, and only in `onMounted`. Document listeners (`selectionchange` for OTP) go through `useEventListener(getSafeDocument(), …)`. |
 
@@ -101,7 +101,7 @@ The v6 range is a wrapper with generated children (bubble, ticks, fill variable)
 | `bubble`                                                             | `boolean`                                                | `false`                     | v6 option                                                                                                                         |
 | `formatter`                                                          | `(value: number) => string`                              | `String`                    | v6 option; bubble and tick labels                                                                                                 |
 | `ticks`                                                              | `readonly (number \| {value: number; label?: string})[]` | —                           | Replaces `list` + `<datalist>`; renders the ticks grid **and** a real `<datalist>` (`list` on the input) for native snapping/a11y |
-| `theme`                                                              | `ColorVariant`                                           | —                           | `.theme-*` on the wrapper                                                                                                         |
+| `color`                                                              | `Pick<ColorExtendables, 'theme'> \| null`                | —                           | `.theme-*` on the wrapper                                                                                                         |
 | `id`, `name`, `form`, `disabled`, `required`, `state`, `ariaInvalid` |                                                          |                             | standard                                                                                                                          |
 | `wrapperAttrs`                                                       | `AttrsValue`                                             | —                           | root `.form-range`                                                                                                                |
 
@@ -148,7 +148,7 @@ Standalone `.chip` (`.chip-icon`, `.chip-img`, `.chip-dismiss`, `.active`, `.dis
 | `limit`                                                                   | replace                      | `maxChips`                                                                                                  |
 | `noTagRemove`                                                             | replace                      | `dismissible` (default `true`)                                                                              |
 | `tagRemoveLabel`                                                          | replace                      | `dismissLabel` (default `'Remove'`, rendered as `"Remove {value}"`)                                         |
-| `tagColor`                                                                | replace                      | root `theme` (chips inherit) + per-chip color through the `chip` slot / `BChip`                             |
+| `tagColor`                                                                | replace                      | root `color.theme` (chips inherit) + per-chip `color` through the `chip` slot / `BChip`                     |
 | `tagClass`                                                                | replace                      | `chipAttrs?: (value: string, index: number) => AttrsValue` (function-valued, as #166)                       |
 | `tagPills`                                                                | remove                       | chips are always pills                                                                                      |
 | `tagValidator`                                                            | replace                      | cancelable `add` event (v6)                                                                                 |
@@ -160,7 +160,7 @@ Standalone `.chip` (`.chip-icon`, `.chip-img`, `.chip-dismiss`, `.active`, `.dis
 | `ignoreInputFocusSelector`, `noOuterFocus`                                | remove                       | v6 focuses the input only on a background click                                                             |
 | `size`                                                                    | remove                       | v6 has no chip sizes                                                                                        |
 | `tagRemovedLabel`                                                         | keep, renamed `removedLabel` | built-in live region (v6 docs promise announcements but `chips.ts` has none)                                |
-| new                                                                       | add                          | `allowDuplicates`, `theme`                                                                                  |
+| new                                                                       | add                          | `allowDuplicates`, `color`                                                                                  |
 
 | Slot / emit / expose                            | Disposition                                                                                                                |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -179,7 +179,7 @@ Standalone `.chip` (`.chip-icon`, `.chip-img`, `.chip-dismiss`, `.active`, `.dis
 | Prop / emit                              | Disposition                                                                            |
 | ---------------------------------------- | -------------------------------------------------------------------------------------- |
 | `id`, `disabled`, `tag` (default `span`) | keep                                                                                   |
-| `theme` / `bg` / `fg`                    | keep (root color props stay flat)                                                      |
+| `color`                                  | keep (the root `{ theme, bg, fg }` object, as on every component)                      |
 | `noRemove`                               | replace → `dismissible` (default `false` for a standalone chip)                        |
 | `removeLabel`                            | replace → `dismissLabel`                                                               |
 | `pill`                                   | remove                                                                                 |
@@ -204,24 +204,21 @@ Standalone `.chip` (`.chip-icon`, `.chip-img`, `.chip-dismiss`, `.active`, `.dis
 - The keyboard map is ported from `chips.ts`.
 - Selected chips get `.active` plus `aria-pressed="true"`. A role-less `<span>` cannot carry `aria-selected`, and `option` cannot contain a button.
 
-### Open: prop families carried over from `BFormTags`
+### Prop families carried over from `BFormTags` (resolved)
 
-Decide during the Chips implementation, not now. `BFormTags` still has prefix families that the
-prop-family audit skipped because Chips replaces it (see "Prop families become objects" in
-`BOOTSTRAP_V6_MIGRATION.md`):
+The prop-family audit skipped `BFormTags` because Chips replaces it (see "Prop families become
+objects" in `BOOTSTRAP_V6_MIGRATION.md`). The `BFormTags` disposition above and Q8 already settle
+every family, and none of them survives as a group of three or more:
 
-- Props: `addButtonText` / `addButtonVariant` / `addButtonColor`, `inputAttrs` / `inputClass` /
-  `inputId` / `inputType`, `tagClass` / `tagColor` / `tagPills` / `tagRemoveLabel` /
-  `tagRemovedLabel`, and the message props `invalidTagText` / `duplicateTagText` /
-  `limitTagsText`.
-- Slot scopes: the `default` scope mirrors those props (`addButton*`, `input*`, `tag*`, the
-  `*Text` messages), and the `tag` scope exposes `tagClass` / `tagColor` / `tagPills`.
-
-For each family, decide whether it survives in `BFormChips`. If it does, apply the same rule as the
-rest of v6: one object prop when the family is one concern with no main switch (for example
-`input: { id, type, attrs }`, `messages: { invalid, duplicate, limit }`), flat otherwise. Slot
-scopes only group when they mirror a grouped prop, so they can be bound straight onto the
-sub-component.
+- `addButton*` and the message props (`invalidTagText` / `duplicateTagText` / `limitTagsText`)
+  are removed.
+- `input*`: only `inputAttrs` stays; `inputClass` and `inputType` are removed, `inputId` becomes
+  `id`.
+- `tag*`: `tagClass` → `chipAttrs`, `tagColor` → `color`, `tagPills` removed, `tagRemoveLabel` →
+  `dismissLabel`, `tagRemovedLabel` → `removedLabel`. `dismissible` + `dismissLabel` stay flat
+  (two members, `dismissible` is the switch).
+- Slot scopes follow the props: the `default` and `tag` scopes drop the removed props, and nothing
+  is grouped because no prop is.
 
 ## OTP input (replace `BFormOtp`)
 
@@ -502,7 +499,7 @@ Recommendation: **A**. Related: decide separately whether other bundled deps (`@
 
 ### Q6. Range as a new component or a `BFormInput` feature (Medium)
 
-- **A. New `BFormRange` (recommended); remove range handling from `BFormInput`.** Clean wrapper root, `number` v-model, `bubble` / `ticks` / `theme` props, server-rendered fill. Breaking for `type="range"` users.
+- **A. New `BFormRange` (recommended); remove range handling from `BFormInput`.** Clean wrapper root, `number` v-model, `bubble` / `ticks` / `color` props, server-rendered fill. Breaking for `type="range"` users.
 - **B. Keep `BFormInput type="range"` and wrap conditionally.** No new component, but the root element and attrs target change with `type`, range-only props clutter `BFormInput`, and the model stays string-ish.
 
 Recommendation: **A**.
@@ -533,7 +530,7 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - **Q3 — A. ISO strings.** `'YYYY-MM-DD'`: `string | null` (single), `string[]` (multiple), `[start, end]` tuple (range).
 - **Q4 — A.** `BTimeField` / `BTimeRangeField` are removed with no replacement component; docs show `<BFormInput type="time">` (two inputs for a range).
 - **Q5 — A.** `vanilla-calendar-pro` is a required peer dependency (`^3.4.0`), externalized in `vite.config`, imported statically.
-- **Q6 — A.** New `BFormRange` (wrapper root, `number` v-model, `bubble` / `ticks` / `theme`, server-rendered fill); range handling is removed from `BFormInput`.
+- **Q6 — A.** New `BFormRange` (wrapper root, `number` v-model, `bubble` / `ticks` / `theme`, server-rendered fill; `theme` is `color: { theme }` under the single color prop); range handling is removed from `BFormInput`.
 - **Q7 — A.** `BFormAdorn` wrapper with `start` / `end` slots that injects `.form-ghost` into child controls.
 - **Q8 — A.** `BFormChips` keeps `name` / `form` hidden inputs, `required`, `state`, `autofocus`, `inputAttrs` and a live region; everything else listed in Q8 is removed (`tagValidator` → cancelable `add` event; validation messages go in `BFormField` feedback).
 

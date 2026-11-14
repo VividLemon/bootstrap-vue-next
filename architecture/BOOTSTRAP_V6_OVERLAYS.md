@@ -78,8 +78,8 @@ The browser can also close the dialog without going through `hide()`: Chrome's c
 | `title`, `titleTag`                                                  | keep                                                                    | `titleTag` default `'h5'`                                                                                                                                         |
 | `body`                                                               | keep                                                                    | Plain-text body for programmatic dialogs (`create({title, body})`)                                                                                                |
 | `titleVisuallyHidden`                                                | remove (Q8)                                                             | `titleAttrs: {class: 'visually-hidden'}`                                                                                                                          |
-| `noHeader`, `noHeaderClose`, `headerCloseLabel`                      | keep                                                                    | Small additives; `headerCloseLabel` is i18n                                                                                                                       |
-| `headerCloseVariant`, `headerCloseColor`                             | remove                                                                  | The `header-close` slot replaces the whole button (see slots); style the slotted button directly                                                                  |
+| `noHeader`, `noHeaderClose`                                         | keep                                                                    | Small additives; `noHeaderClose` is the on-switch of the close-button family |
+| `headerCloseLabel`, `headerCloseVariant`, `headerCloseColor`         | replace with `headerClose: { label, attrs }`                            | Prop-family rule: the object BOffcanvas already ships (`CloseButtonOptions`), trimmed to `label` (i18n) and `attrs`. `variant` / `color` are removed: the `header-close` slot replaces the whole button; style the slotted button directly |
 | `noFooter`                                                           | depends on Q2                                                           |                                                                                                                                                                   |
 | `okTitle`, `okOnly`, `okDisabled`, `cancelTitle`, `cancelDisabled`   | depends on Q2 (recommended keep)                                        |                                                                                                                                                                   |
 | `okVariant`, `okColor`, `cancelVariant`, `cancelColor`, `buttonSize` | depends on Q2 (recommended → `okAttrs` / `cancelAttrs`)                 | BButton props through attrs                                                                                                                                       |
@@ -87,7 +87,7 @@ The browser can also close the dialog without going through `hide()`: Chrome's c
 | `headerColor`, `bodyColor`, `footerColor`                            | keep                                                                    | Rule 5 (`<part>Color` objects)                                                                                                                                    |
 | `headerAttrs`, `bodyAttrs`                                           | keep                                                                    |                                                                                                                                                                   |
 | `headerClass`, `bodyClass`, `footerClass`, `titleClass`              | replace with `headerAttrs` / `bodyAttrs` / `footerAttrs` / `titleAttrs` | Rule 5                                                                                                                                                            |
-| `headerCloseClass`                                                   | replace with `headerCloseAttrs`                                         |                                                                                                                                                                   |
+| `headerCloseClass`                                                   | replace with `headerClose.attrs`                                        |  |
 | `okClass`, `cancelClass`                                             | replace with `okAttrs`, `cancelAttrs`                                   |                                                                                                                                                                   |
 | `modalClass`, `dialogClass`, `contentClass`                          | remove                                                                  | The `<dialog>` is the only wrapper; `class` / `$attrs` land on it                                                                                                 |
 
@@ -123,21 +123,20 @@ export interface BDialogProps extends ShowHideProps {
   focus?: "ok" | "cancel" | "close";
   noHeader?: boolean;
   noHeaderClose?: boolean;
-  headerCloseLabel?: string; // 'Close'
+  headerClose?: {label?: string; attrs?: Readonly<AttrsValue>}; // label default 'Close'
   noFooter?: boolean; // Q2
   okTitle?: string; // 'OK', Q2
   okOnly?: boolean;
   okDisabled?: boolean;
   cancelTitle?: string; // 'Cancel'
   cancelDisabled?: boolean;
-  okAttrs?: Readonly<AttrsValue>; // BButton props too: {variant, theme, size, class}
+  okAttrs?: Readonly<AttrsValue>; // BButton props too: {variant, color, size, class}
   cancelAttrs?: Readonly<AttrsValue>;
   headerColor?: ColorBorderExtendables;
   bodyColor?: ColorExtendables;
   footerColor?: ColorBorderExtendables;
   headerAttrs?: Readonly<AttrsValue>;
   titleAttrs?: Readonly<AttrsValue>;
-  headerCloseAttrs?: Readonly<AttrsValue>;
   bodyAttrs?: Readonly<AttrsValue>;
   footerAttrs?: Readonly<AttrsValue>;
 }
@@ -217,10 +216,10 @@ export interface BDialogProps extends ShowHideProps {
 | `width`                                                       | remove (Q8)                                                                | `style="--bs-drawer-width: 20rem"` (and `--bs-drawer-height` for top/bottom)                |
 | `focus`                                                       | keep reduced (Q8)                                                          | `'close'` → `autofocus` on the close button                                                 |
 | `title`                                                       | keep                                                                       | Renders `h5.drawer-title`                                                                   |
-| `noHeader`, `noHeaderClose`, `headerCloseLabel`               | keep                                                                       |                                                                                             |
-| `headerCloseVariant`, `headerCloseColor`                      | remove                                                                     | As for Dialog                                                                               |
+| `noHeader`, `noHeaderClose`                                   | keep                                                                       |                                                                                             |
+| `headerCloseLabel`, `headerCloseVariant`, `headerCloseColor`  | replace with `headerClose: { label, attrs }`                               | As for Dialog                                                                               |
 | `headerAttrs`, `bodyAttrs`                                    | keep                                                                       |                                                                                             |
-| `headerClass`, `bodyClass`, `footerClass`, `headerCloseClass` | replace with `headerAttrs`, `bodyAttrs`, `footerAttrs`, `headerCloseAttrs` |                                                                                             |
+| `headerClass`, `bodyClass`, `footerClass`, `headerCloseClass` | replace with `headerAttrs`, `bodyAttrs`, `footerAttrs`, `headerClose.attrs` |                                                                                             |
 
 | Slot / emit / exposed                                        | Disposition                                                                                 |
 | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
@@ -444,6 +443,8 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 | Q7  | **B.** v6 `cancel` + `preventDefault()` with the static bounce, the native `close` fallback that syncs state, and `closedby="none"` when Escape is disabled (where supported).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | Q8  | **A. As proposed.** Keep `title`, `titleTag`, `body`, `noHeader`, `noHeaderClose`, `headerCloseLabel`, `lazy` / `unmountLazy`, and `focus` reduced to `'ok' \| 'cancel' \| 'close'` (`'ok'` / `'cancel'` target the `BDialogActions` buttons). Remove `centered`, `titleVisuallyHidden`, Drawer `width` / `shadow`, `busy`, the other `focus` forms and the `breakpoint` event.                                                                                                                                                                                                                                                                                      |
 | Q9  | **B.** No `useDrawer`. `useDialog` keeps `create`, `hideAll` and its `show` / `hide` / `get` / `current` helpers (alongside `useToggle`). Remove `useScrollLock`, `useSafeScrollLock`, `useActivatedFocusTrap`, the `useModalManager` z-index code and the `focus-trap` / `@vueuse/integrations` peers.                                                                                                                                                                                                                                                                                                                                                              |
+
+Reconciled on 2026-11-14 with the prop-family rule in `BOOTSTRAP_V6_MIGRATION.md` (decided after these answers): Q8's `headerCloseLabel` and the `headerCloseAttrs` part attrs are grouped as `headerClose: { label, attrs }` on both `BDialog` and `BDrawer`, the object BOffcanvas already ships (`CloseButtonOptions` without `color` / `variant`), with `noHeaderClose` kept flat as the on-switch.
 
 ## Exports, docs and migration notes
 

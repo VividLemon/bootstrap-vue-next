@@ -5,7 +5,7 @@
 This is the plan and orchestrator handoff for the second part of the Bootstrap 6 migration: the components Bootstrap marks "New" in v6.
 It maps each v6 component to its BootstrapVueNext counterpart (or marks it as new), lists composable candidates, splits the research into parallel groups, and tells the orchestrating agent how to run the research and route questions to the maintainer.
 
-Work here is **research and decisions first**. Implementation waits until the maintainer has answered each group's questions and the foundations PR ([#164](https://github.com/VividLemon/bootstrap-vue-next/pull/164)) has settled.
+Work here is **research and decisions first**. Implementation waits until the maintainer has answered each group's questions (all groups are decided) and the foundations PR ([#164](https://github.com/VividLemon/bootstrap-vue-next/pull/164)) has settled (merged into `bootstrap-v6`).
 
 ## Maintainer rules (authoritative)
 
@@ -17,7 +17,7 @@ Work here is **research and decisions first**. Implementation waits until the ma
    - After these, `reka-ui` should no longer be needed as a dependency (`packages/bootstrap-vue-next/package.json` lists it as a peer and dev dependency); confirm during research.
 3. **Skip v6 features that duplicate what Vue already does.** Toggler is excluded: toggling a class or attribute on an element is native Vue reactivity. Judge every other new component on its own merits; most are not like Toggler.
 4. Breaking changes are expected. No compatibility aliases or shims.
-5. The cross-cutting conventions from the first part still apply (see `BOOTSTRAP_V6_MIGRATION.md`): CSS `@layer components`, `2xl` breakpoints and prefix classes, object-only `Responsive<T>` / `HoverState<T>` props, `<part>Color` objects, `*Attrs` replacing `*Class`, native CSS transitions with `noTransition`.
+5. The cross-cutting conventions from the first part still apply (see `BOOTSTRAP_V6_MIGRATION.md`): CSS `@layer components`, `2xl` breakpoints and prefix classes, object-only `Responsive<T>` / `HoverState<T>` props, the single `color` object and `<part>Color` objects, prop families as objects (3+ members, one concern, no on-switch), `*Attrs` replacing `*Class`, native CSS transitions with `noTransition`.
 
 ## Component map
 
@@ -81,7 +81,7 @@ Public, non-UI composables that could come with a component, for new and existin
 
 1. `AGENTS.md` — library rules (SSR safety, public API, docs data files, checks).
 2. [`architecture/BOOTSTRAP_V6_MIGRATION.md`](./BOOTSTRAP_V6_MIGRATION.md) — the first part's decisions, conventions, required checks and batch agent instructions. Its **Deferred components** section lists what was already changed on each counterpart ("Now") and what is pending.
-3. The open PRs on `VividLemon/bootstrap-vue-next`. Read each description and the review comments, because review can change a convention:
+3. The batch PRs on `VividLemon/bootstrap-vue-next` (#164, #166, #167 and #168 are merged into `bootstrap-v6`; #165 is open). Read each description and the review comments, because review changed several conventions:
 
    | PR                                                                            | Why it matters                                                                                                                                                                                                                                                                            |
    | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -118,7 +118,7 @@ Cross-cutting: [`BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`](./BOOTSTRAP_V6_SHOW_H
 You are the orchestrating agent for the research phase. You coordinate; the research subagents read and write their group documents; the maintainer decides.
 
 1. **Set up.**
-   - Work on branch `bootstrap-v6-new-components-plan` (stacked on `bootstrap-v6-foundations`). Agent worktrees in this project have repeatedly been created from `main`: check `git merge-base --is-ancestor 72c72e52 HEAD` and reset to `bootstrap-v6-new-components-plan` if it fails and nothing is committed.
+   - Work on branch `bootstrap-v6-new-components-plan` (targets `bootstrap-v6`). Agent worktrees in this project have repeatedly been created from `main`: check `git merge-base --is-ancestor 72c72e52 HEAD` and reset to `bootstrap-v6-new-components-plan` if it fails and nothing is committed.
    - Read this document, the required context above, and the "Batch agent instructions" and "Required checks" in `BOOTSTRAP_V6_MIGRATION.md`.
 2. **Launch the research subagents in parallel**, one per group (G1–G6), each read-only on code. Give each one: the maintainer rules, the component map rows for its group, the required context list, and its output file. Each subagent must:
    - compare the v6 docs, CSS and JS with v5 and with the current library component (template, props, slots, emits, composables, specs, docs)
@@ -133,7 +133,7 @@ You are the orchestrating agent for the research phase. You coordinate; the rese
    - Ask in batches, highest-impact first, each with options and your recommendation. Use the question tool for short multiple-choice batches; write longer comparisons into the group document and point to it.
    - Record every answer in the group document's decisions section as soon as it is given.
 4. **Keep everything durable.** Commit each group document on `bootstrap-v6-new-components-plan` as it lands, update the Research groups table above, and push so the PR stays current. Session scratchpads have been wiped before; nothing important may live only there.
-5. **Hand off to implementation** once a group's questions are answered and #164 has settled: implement per group in worktrees with stacked PRs, following the batch agent instructions and required checks in `BOOTSTRAP_V6_MIGRATION.md`. Fold the decisions into that plan's Deferred components section as each group lands.
+5. **Hand off to implementation** once a group's questions are answered (all are) and #164 has settled (merged): implement per group in worktrees with PRs into `bootstrap-v6`, following the batch agent instructions and required checks in `BOOTSTRAP_V6_MIGRATION.md`. Fold the decisions into that plan's Deferred components section as each group lands.
 
 ## Practical notes
 

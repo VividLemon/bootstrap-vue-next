@@ -138,7 +138,7 @@ Docs (`navbar.md`) still describe v5: `<BCollapse is-nav>`, `navbar-nav-scroll`,
 | `sticky`            | keep                                      | `'top' \| 'bottom'` → `sticky-top` / `sticky-bottom`. Responsive `{bp}:sticky-top` reachable via `class`; no prop change.                      |
 | `print`             | **remove**                                | Emits `d-print`, which never existed. v6 alpha.1 ships no print utilities; navbars are not hidden when printing.                               |
 | `noAutoClose`       | keep (small additive)                     | Rewired to the drawer. See Q3.                                                                                                                 |
-| `theme`, `bg`, `fg` | keep (root flat props)                    | `theme` tints brand / active link / navbar-text links via `--bs-theme-fg`; it does **not** color the background (`bg` does). Docs must say so. |
+| `color`             | keep (`{ theme, bg, fg }` object)         | `color.theme` tints brand / active link / navbar-text links via `--bs-theme-fg`; it does **not** color the background (`color.bg` does). Docs must say so. |
 | _new_ `translucent` | add (v6 equivalent)                       | `.navbar-translucent`. Same name as `BToast` / `BCard` `translucent`.                                                                          |
 | Slot `default`      | keep                                      |                                                                                                                                                |
 
@@ -184,7 +184,8 @@ Docs (`navbar.md`) still describe v5: `<BCollapse is-nav>`, `navbar-nav-scroll`,
 ## Proposed API
 
 ```ts
-interface BNavbarProps extends ColorExtendables {
+interface BNavbarProps {
+  color?: ColorExtendables | null;
   tag?: string; // 'nav'
   container?: boolean | "fluid" | Breakpoint; // 'fluid'
   expand?: boolean | Breakpoint; // true  (Q2)
@@ -205,7 +206,7 @@ No exposed methods on `BNavbar`; open/close goes through the Drawer's `v-model` 
 ### Usage
 
 ```vue-html
-<BNavbar expand="md" bg="1">
+<BNavbar expand="md" :color="{ bg: '1' }">
   <BNavbarBrand href="#">Navbar</BNavbarBrand>
   <BNavbarToggle target="nav-drawer" />
   <BDrawer id="nav-drawer" placement="end" title="Menu">
@@ -257,7 +258,7 @@ No exposed methods on `BNavbar`; open/close goes through the Drawer's `v-model` 
 | `translucent`         | `navbar-translucent`                            |
 | `fixed: 'top'`        | `fixed-top`                                     |
 | `sticky: 'bottom'`    | `sticky-bottom`                                 |
-| `theme` / `bg` / `fg` | `theme-*` / `bg-*` / `fg-*` (`useThemeClasses`) |
+| `color.theme` / `.bg` / `.fg` | `theme-*` / `bg-*` / `fg-*` (`useThemeClasses`) |
 
 ### Auto-close (`noAutoClose`)
 
@@ -267,7 +268,7 @@ No exposed methods on `BNavbar`; open/close goes through the Drawer's `v-model` 
 
 ### Dark navbars
 
-- v6: `data-bs-theme="dark"` on `.navbar`. Docs and demos use the plain attribute (`<BNavbar data-bs-theme="dark" bg="black">`); it falls through as an attr and is SSR-rendered. See Q5 for `v-b-color-mode`.
+- v6: `data-bs-theme="dark"` on `.navbar`. Docs and demos use the plain attribute (`<BNavbar data-bs-theme="dark" :color="{ bg: 'black' }">`); it falls through as an attr and is SSR-rendered. See Q5 for `v-b-color-mode`.
 
 ## a11y
 
@@ -399,14 +400,14 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - `BNavbarToggle` renders `.btn-icon`, `aria-controls`, `aria-expanded`; `target` is a string (Q4).
 - `print` removed. Add `class="print:d-none"` only if the user's build enables print utilities (alpha.1 ships none).
 - `.navbar-nav-scroll`, `.navbar-dark`, `.navbar-light` removed upstream; use `data-bs-theme` and `bg-*` (`bg-body-tertiary` → `bg-1`).
-- `theme` tints brand / active links, not the background; use `bg`.
+- `color.theme` tints brand / active links, not the background; use `color.bg`.
 - New `translucent`.
 - A navbar must not be inside a shrink-to-fit parent (`container-type: inline-size`).
 
 ## Docs and data changes
 
 - `navbar.data.ts`: `toggleable` → `expand`; remove `print`; add `translucent`; fix `BNavbarBrand` `tag` default; `BNavbarToggle.target` type and description (drawer, not "collapse/sidebar").
-- `navbar.md`: rewrite responsive section around the Drawer; remove `BSidebar`, `navbar-nav-scroll` (and `NavbarScroll.vue`), the 4-option `auto-close` text, printing; container-query note; color schemes (`bg` + `data-bs-theme`).
+- `navbar.md`: rewrite responsive section around the Drawer; remove `BSidebar`, `navbar-nav-scroll` (and `NavbarScroll.vue`), the 4-option `auto-close` text, printing; container-query note; color schemes (`color.bg` + `data-bs-theme`).
 - Demos: `NavbarOverview`, `NavbarOffcanvas`, `NavbarToggle`, `NavbarColorMode`, `NavbarItemDropdown`, `NavbarForm`, `NavbarInlineGroup`, `NavbarText` (fix `mb-lg-0` → `lg:mb-0`, `right` dropdown prop per G2).
 - Playground `TNavbar.vue`, `TScrollspy.vue`.
 - `collapse.data.ts` / `accordion.data.ts`: remove `isNav`.

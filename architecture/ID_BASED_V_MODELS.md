@@ -6,7 +6,7 @@ Some components select one or more of their children through two v-models at onc
 
 It also audits the components whose only v-model is an index, to judge whether standardizing on ids everywhere is practical. Those are **not** changed by this plan unless the maintainer decides so (see [Questions](#questions-for-the-maintainer)).
 
-Audited on `bootstrap-v6-new-components-plan` (stacked on `bootstrap-v6-foundations`, #164), including the navigation batch (#168), which does not change any v-model.
+Audited on `bootstrap-v6-new-components-plan` (then stacked on `bootstrap-v6-foundations`, #164), including the navigation batch (#168), which does not change any v-model. #164 and #168 have since merged into `bootstrap-v6`.
 
 ## Rules
 
@@ -94,7 +94,7 @@ Answered by the maintainer on 2026-11-09.
 
 ## Implementation split
 
-1. **`BTabs` id-only model** (independent of the new-components work; can go on the v6 branch after #168): remove `index`, refactor selection onto `activeId`, update specs, `tabs.data.ts`, demos, playground, `tabs.md` and the `btabs.md` migration notes.
+1. **`BTabs` id-only model** (independent of the new-components work; ready to start, #168 has merged into `bootstrap-v6`): remove `index`, refactor selection onto `activeId`, update specs, `tabs.data.ts`, demos, playground, `tabs.md` and the `btabs.md` migration notes.
 2. **`BAccordion`**: with the v6 Accordion rewrite (G5), already decided.
 3. **`BCarousel`**: with the v6 Carousel rewrite (G5); update `carousel.data.ts` ("The index of the currently active slide") and the migration notes.
 4. **`BStepper`**: built per Q2 in its G5 PR.
