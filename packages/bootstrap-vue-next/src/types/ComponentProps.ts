@@ -1084,7 +1084,7 @@ export interface BAlertProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProp
   modelValue?: boolean | number
   noHoverPause?: boolean
   noResumeOnHoverLeave?: boolean
-  progressProps?: Omit<BProgressBarProps, 'label' | 'max' | 'value'>
+  progress?: boolean | ProgressOptions
   showOnPause?: boolean
   title?: string
 }
@@ -1436,6 +1436,11 @@ export interface BThProps {
   scope?: TableThScope
 }
 
+/**
+ * Options for the countdown progress bar of BAlert and BToast. `max`, `value` and `label` are set by the component
+ */
+export type ProgressOptions = Omit<BProgressBarProps, 'label' | 'max' | 'value'>
+
 export interface BProgressBarProps {
   animated?: boolean
   color?: ColorExtendables | null
@@ -1519,9 +1524,8 @@ export interface BToastProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProp
   modelValue?: boolean | number
   noCloseButton?: boolean
   noHoverPause?: boolean
-  noProgress?: boolean
   noResumeOnHoverLeave?: boolean
-  progressProps?: Omit<BProgressBarProps, 'label' | 'max' | 'value'>
+  progress?: boolean | ProgressOptions
   showOnPause?: boolean
   title?: string
   toastAttrs?: Readonly<AttrsValue>

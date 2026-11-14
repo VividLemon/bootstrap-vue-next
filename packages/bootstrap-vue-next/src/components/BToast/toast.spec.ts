@@ -696,9 +696,9 @@ describe('toast', () => {
   })
 
   // BProgress rendering
-  it('renders BProgress when modelValue is number and noProgress is false', () => {
+  it('renders BProgress when modelValue is number and progress is true', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: 5000},
+      props: {modelValue: 5000, progress: true},
       slots: {default: 'content'},
     })
     const $progress = wrapper.findComponent(BProgress)
@@ -707,20 +707,31 @@ describe('toast', () => {
 
   it('does not render BProgress when modelValue is boolean', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: true},
+      props: {modelValue: true, progress: true},
       slots: {default: 'content'},
     })
     const $progress = wrapper.findComponent(BProgress)
     expect($progress.exists()).toBe(false)
   })
 
-  it('does not render BProgress when noProgress is true', () => {
+  it('does not render BProgress when progress is not set', () => {
     const wrapper = mount(BToast, {
-      props: {modelValue: 5000, noProgress: true},
+      props: {modelValue: 5000},
       slots: {default: 'content'},
     })
     const $progress = wrapper.findComponent(BProgress)
     expect($progress.exists()).toBe(false)
+  })
+
+  it('passes progress options to BProgress', () => {
+    const wrapper = mount(BToast, {
+      props: {modelValue: 5000, progress: {animated: true, color: {bg: 'danger'}}},
+      slots: {default: 'content'},
+    })
+    const $progress = wrapper.getComponent(BProgress)
+    expect($progress.props('animated')).toBe(true)
+    expect($progress.props('color')).toEqual({bg: 'danger'})
+    expect($progress.props('max')).toBe(5000)
   })
 
   // close-countdown emit

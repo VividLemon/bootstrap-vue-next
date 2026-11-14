@@ -27,7 +27,7 @@ export default {
             'isStatus',
             'noHoverPause',
             'noResumeOnHoverLeave',
-            'progressProps',
+            'progress',
             'showOnPause',
             'title',
           ]),
@@ -55,11 +55,6 @@ export default {
             type: 'boolean',
             default: false,
             description: 'Hides the close button in the toast header.',
-          },
-          noProgress: {
-            type: 'boolean',
-            default: false,
-            description: 'Hides the progress bar in the toast.',
           },
           toastAttrs: {
             type: 'Readonly<AttrsValue>',

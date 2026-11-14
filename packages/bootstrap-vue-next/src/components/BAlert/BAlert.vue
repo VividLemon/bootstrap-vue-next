@@ -81,13 +81,8 @@
       </div>
     </template>
     <BProgress
-      v-if="typeof modelValue === 'number' && props.progressProps !== undefined"
-      :animated="props.progressProps.animated"
-      :precision="props.progressProps.precision"
-      :show-progress="props.progressProps.showProgress"
-      :show-value="props.progressProps.showValue"
-      :striped="props.progressProps.striped"
-      :color="props.progressProps.color"
+      v-if="typeof modelValue === 'number' && progressOptions !== undefined"
+      v-bind="progressOptions"
       :max="modelValue"
       :value="remainingMs"
       height="4px"
@@ -127,7 +122,7 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   noTransition: false,
   noHoverPause: false,
   noResumeOnHoverLeave: false,
-  progressProps: undefined,
+  progress: false,
   unmountLazy: false,
   showOnPause: true,
   show: false,
@@ -154,6 +149,10 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   color: undefined,
 })
 const props = useDefaults(_props, 'BAlert')
+
+const progressOptions = computed(() =>
+  props.progress === false ? undefined : props.progress === true ? {} : props.progress
+)
 const computedColor = computed(() => resolvePartColor(props.color, {theme: 'info'}))
 const computedCloseColor = computed(() =>
   resolvePartColor(props.close?.color, {theme: 'secondary'})

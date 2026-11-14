@@ -707,29 +707,40 @@ describe('alert', () => {
   // BProgress
   it('does not render BProgress when modelValue is boolean', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: true, progressProps: {}},
+      props: {modelValue: true, progress: true},
       slots: {default: 'content'},
     })
     const $progress = wrapper.findComponent(BProgress)
     expect($progress.exists()).toBe(false)
   })
 
-  it('renders BProgress when modelValue is number and progressProps provided', () => {
+  it('renders BProgress when modelValue is number and progress is set', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: 5000, progressProps: {}},
+      props: {modelValue: 5000, progress: true},
       slots: {default: 'content'},
     })
     const $progress = wrapper.findComponent(BProgress)
     expect($progress.exists()).toBe(true)
   })
 
-  it('does not render BProgress when modelValue is number but no progressProps', () => {
+  it('does not render BProgress when modelValue is number but progress is not set', () => {
     const wrapper = mount(BAlert, {
       props: {modelValue: 5000},
       slots: {default: 'content'},
     })
     const $progress = wrapper.findComponent(BProgress)
     expect($progress.exists()).toBe(false)
+  })
+
+  it('passes progress options to BProgress', () => {
+    const wrapper = mount(BAlert, {
+      props: {modelValue: 5000, progress: {striped: true, color: {bg: 'danger'}}},
+      slots: {default: 'content'},
+    })
+    const $progress = wrapper.getComponent(BProgress)
+    expect($progress.props('striped')).toBe(true)
+    expect($progress.props('color')).toEqual({bg: 'danger'})
+    expect($progress.props('max')).toBe(5000)
   })
 
   // close-countdown emit
@@ -895,7 +906,7 @@ describe('alert', () => {
 
   it('renders the countdown progress bar full width', () => {
     const wrapper = mount(BAlert, {
-      props: {modelValue: 5000, progressProps: {}},
+      props: {modelValue: 5000, progress: true},
       slots: {default: 'content'},
     })
     // the progress is a direct child of the column flex container

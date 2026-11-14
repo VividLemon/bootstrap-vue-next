@@ -167,7 +167,7 @@ Objects:
 - `roundedSides: { top, bottom, start, end }` (BAvatar, BAvatarGroup, BImg, BCardImg, BOverlay). `rounded` stays a flat prop for all corners: it is the common case.
 - BLink (and every component extending its props) `underline: { color, offset, opacity }` replaces `color.underline`, `underlineOffset` and `underlineOpacity`.
 - BOverlay `spinner: { color, small, type }`. BOffcanvas `headerClose: { label, color, variant, attrs }` (`CloseButtonOptions`).
-- BAlert / BToast `close: { content, label, color, variant, attrs }` (feedback batch).
+- BAlert / BToast `close: { content, label, color, variant, attrs }` and `progress: boolean | { animated, color, precision, showProgress, showValue, striped }` (feedback batch). `progress` replaces `progressProps` and BToast's `noProgress`; the countdown bar is opt-in on both.
 - BPagination `labels: { firstPage, prevPage, nextPage, lastPage, page }` and `first` / `last: { text, attrs, number }`, `prev` / `next` / `ellipsis: { text, attrs }` (navigation batch).
 - BFormSpinbutton `labels: { increment, decrement }` and `repeat: { delay, interval, threshold, stepMultiplier }`; BFormSelect, BFormDatalist, BFormSelectOptionGroup, BFormRadioGroup and BFormCheckboxGroup `fields: { text, value, disabled, label, options }` (forms batch).
 - Tables (tables batch): `TableField` `color`, `sort: true | { direction, initialDirection, byFormatted, compare }`, `th: { class, style, attr }`, `td: { class, attr }`, `header: { title, abbr }`; `TableItem` `_rowColor` and `_cellColors`; BTableLite / BTable `thead: { attrs, trAttrs, color, rowColor }`, `tbody: { attrs, trAttrs }`, `tfoot: { attrs, trAttrs, color, rowColor }`; BTable `labels: { sortAsc, sortDesc, sortClear }` and `empty: { text, filteredText }`.

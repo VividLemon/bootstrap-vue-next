@@ -34,7 +34,7 @@ export default {
               'isStatus',
               'noHoverPause',
               'noResumeOnHoverLeave',
-              'progressProps',
+              'progress',
               'showOnPause',
               'title',
             ],

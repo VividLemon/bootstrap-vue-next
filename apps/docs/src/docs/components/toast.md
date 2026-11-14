@@ -29,7 +29,7 @@ commonly, create toasts using the [useToast](/docs/composables/useToast) composa
 - Toasts are slightly translucent by default. The `translucent` prop adds Bootstrap's `.toast-translucent` class (a backdrop blur and saturation filter) for stronger translucency.
 - Toasts fade in and out with Bootstrap's `.show` class. The `no-transition` prop adds `.toast-instant`, so the toast appears and disappears at once. Tune the fade with the `--bs-toast-transition-duration` and `--bs-toast-transition-timing` CSS variables.
 - Toasts use Vue's `Teleport` component for positioning. By default, toasts created with `useToast` are teleported to the body.
-- Toasts include built-in progress bar support via the `progress-props` prop when using timed dismissal.
+- Toasts include built-in progress bar support via the `progress` prop when using timed dismissal.
 - Toasts support `BLink` integration for interactive toast bodies.
 
 ## Positioning
@@ -63,7 +63,7 @@ For more information, please see the [Accessibility](#accessibility) section bel
 
 ### ProgressBar Integration
 
-As you may have noticed in that example, there was a built-in progress bar. This is triggered when using a value that is a `number` and when `progress-props` is not `undefined`. This was implemented because it can be difficult to modify the behavior of `BToast` when using a pure method, and the appearance of a ticking down progress bar is a "nice-to-have". Although it is not out of the box behavior by Bootstrap, its behavior is opt-in. This functions similarly to examples in `BAlert`
+As you may have noticed in that example, there was a built-in progress bar. This is triggered when using a value that is a `number` and when `progress` is `true` or an options object. This was implemented because it can be difficult to modify the behavior of `BToast` when using a pure method, and the appearance of a ticking down progress bar is a "nice-to-have". Although it is not out of the box behavior by Bootstrap, its behavior is opt-in. This functions similarly to examples in `BAlert`
 
 ## BLink Integration
 
