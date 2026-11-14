@@ -7,14 +7,14 @@
     :class="computedClasses"
     role="tabpanel"
     :aria-labelledby="computedButtonId"
-    v-bind="processedAttrs"
+    v-bind="computedAttrs"
   >
     <slot v-if="showSlot" />
   </component>
 </template>
 
 <script setup lang="ts">
-import {computed, inject, onUnmounted, ref, useAttrs, useTemplateRef, watch} from 'vue'
+import {computed, inject, mergeProps, onUnmounted, ref, useAttrs, useTemplateRef, watch} from 'vue'
 import {useId} from '../../composables/useId'
 import {useDefaults} from '../../composables/useDefaults'
 import type {TabType} from '../../types/Tab'
@@ -35,9 +35,8 @@ const _props = withDefaults(defineProps<Omit<BTabProps, 'active'>>(), {
   noBody: false,
   tag: 'div',
   title: undefined,
-  titleItemClass: undefined,
+  titleItemAttrs: undefined,
   titleLinkAttrs: undefined,
-  titleLinkClass: undefined,
 })
 const props = useDefaults(_props, 'BTab')
 const slots = defineSlots<BTabSlots>()
@@ -76,9 +75,8 @@ function updateTab() {
           disabled: props.disabled,
           title: props.title,
           titleComponent: slots.title,
-          titleItemClass: props.titleItemClass,
+          titleItemAttrs: props.titleItemAttrs,
           titleLinkAttrs: props.titleLinkAttrs,
-          titleLinkClass: props.titleLinkClass,
           onClick: attrs.onClick,
           el,
         }) as TabType
@@ -102,7 +100,6 @@ onUnmounted(() => {
 })
 
 const isActive = computed(() => parentData?.activeId.value === computedId.value)
-const show = ref(isActive.value)
 
 const computedLazy = computed(() => !!(parentData?.lazy.value || props.lazy))
 
@@ -119,15 +116,7 @@ watch(showSlot, (shown) => {
 })
 
 watch(isActive, (active) => {
-  if (active) {
-    activeModel.value = true
-    setTimeout(() => {
-      show.value = true
-    }, 0)
-    return
-  }
-  show.value = false
-  activeModel.value = false
+  activeModel.value = active
 })
 
 watch(activeModel, (active) => {
@@ -147,16 +136,22 @@ watch(activeModel, (active) => {
   }
 })
 
-const computedClasses = computed(() => [
-  {
-    'active': isActive.value,
-    'show': show.value,
-    'card-body': parentData?.card.value && props.noBody === false,
-    'fade': !parentData?.noTransition.value,
-  },
-  show.value ? parentData?.activeTabClass.value : parentData?.inactiveTabClass.value,
-  parentData?.tabClass.value,
-])
+// v6 fades a pane in from `.active` alone (CSS `@starting-style`); `.tab-pane-instant` opts out
+const computedClasses = computed(() => ({
+  'active': isActive.value,
+  'card-body': parentData?.card.value && props.noBody === false,
+  'tab-pane-instant': parentData?.noTransition.value,
+}))
+
+// Parent `tabAttrs` / `activeTabAttrs` / `inactiveTabAttrs`, then the tab's own attrs.
+// `class` and `style` merge
+const computedAttrs = computed(() =>
+  mergeProps(
+    parentData?.tabAttrs.value ?? {},
+    (isActive.value ? parentData?.activeTabAttrs.value : parentData?.inactiveTabAttrs.value) ?? {},
+    processedAttrs.value
+  )
+)
 
 defineExpose({
   activate: () => {

@@ -76,6 +76,11 @@ prop.
 
 <<< DEMO ./demo/NavVertical.vue#template{vue-html}
 
+Vertical pills render Bootstrap v6's `nav-pills-vertical` class instead of `flex-column`, which
+also stretches each item to the full width of the nav:
+
+<<< DEMO ./demo/NavVerticalPills.vue#template{vue-html}
+
 ## Dropdown support
 
 Use `<BNavItemDropdown>` to place dropdown items within your nav.
@@ -153,7 +158,9 @@ See the [`<BTabs>`](/docs/components/tabs) component for creating tabbable panes
 ## Card integration
 
 Use a `<BNav>` in a [`<BCard>`](/docs/components/card) header, by enabling the `card-header` prop
-on `<BNav>` and setting either the `pills` or `tabs` props:
+on `<BNav>` and setting either the `pills` or `tabs` props. With `tabs` it adds the
+`card-header-tabs` class; Bootstrap v6 has no `card-header-pills` class, so pills inside a card
+header render with their regular styling:
 
 **Tabs style:**
 
@@ -165,8 +172,8 @@ on `<BNav>` and setting either the `pills` or `tabs` props:
 
 **Plain style:**
 
-The `card-header` prop is only needed when you are applying `tabs` or `pills` style. Note that
-Bootstrap v5 SCSS does not have special styling for `active` state plain style nav items.
+The `card-header` prop is only needed when you are applying `tabs` style. Note that Bootstrap
+does not have special card header styling for plain style nav items.
 
 <<< DEMO ./demo/NavPlainCard.vue#template{vue-html}
 

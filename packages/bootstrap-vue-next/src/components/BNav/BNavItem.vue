@@ -2,7 +2,6 @@
   <li class="nav-item">
     <BLink
       class="nav-link"
-      :class="linkClass"
       :tabindex="props.disabled ? -1 : undefined"
       :aria-disabled="props.disabled ? true : undefined"
       v-bind="{...computedLinkProps, ...linkAttrs}"
@@ -30,7 +29,6 @@ const _props = withDefaults(defineProps<BNavItemProps>(), {
   href: undefined,
   icon: undefined,
   linkAttrs: undefined,
-  linkClass: undefined,
   noRel: undefined,
   opacity: undefined,
   prefetch: undefined,

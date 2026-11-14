@@ -712,12 +712,12 @@ type BPaginatonSharedScope = {
   content: string | number
 }
 export type BPaginationSlots = {
-  'page'?: (props: BPaginatonSharedScope) => any
-  'first-text'?: (props: BPaginatonSharedScope) => any
-  'prev-text'?: (props: BPaginatonSharedScope) => any
-  'next-text'?: (props: BPaginatonSharedScope) => any
-  'last-text'?: (props: BPaginatonSharedScope) => any
-  'ellipsis-text'?: (props: Record<string, never>) => any
+  page?: (props: BPaginatonSharedScope) => any
+  first?: (props: BPaginatonSharedScope) => any
+  prev?: (props: BPaginatonSharedScope) => any
+  next?: (props: BPaginatonSharedScope) => any
+  last?: (props: BPaginatonSharedScope) => any
+  ellipsis?: (props: Record<string, never>) => any
 }
 
 export type BTimeFieldSlots = {

@@ -7,40 +7,38 @@
       </template>
     </BTabsTabContent>
     <div
-      :class="[
-        props.navWrapperClass,
-        {'card-header': props.card, 'ms-auto': vertical && props.end},
-      ]"
+      :class="{'card-header': props.card, 'ms-auto': props.vertical && props.end}"
+      v-bind="props.navWrapperAttrs"
     >
       <ul
         class="nav"
-        :class="[navTabsClasses, props.navClass]"
+        :class="navTabsClasses"
         role="tablist"
         :aria-orientation="props.vertical ? 'vertical' : 'horizontal'"
+        v-bind="props.navAttrs"
       >
         <slot name="tabs-start" />
         <li
           v-for="(tab, idx) in tabs"
           :key="tab.id ?? tab.internalId"
           class="nav-item"
-          :class="tab.titleItemClass"
           role="presentation"
+          v-bind="tab.titleItemAttrs"
         >
           <button
             :id="tab.buttonId"
             class="nav-link"
-            :class="[
-              tab.navItemClasses,
-              tab.titleLinkClass,
-              tab.active ? props.activeNavLinkClass : props.inactiveNavLinkClass,
-            ]"
+            :class="{
+              active: tab.active,
+              disabled: tab.disabled !== undefined && tab.disabled !== false,
+            }"
             role="tab"
             :aria-controls="tab.id"
             :aria-selected="tab.active"
             :disabled="tab.disabled"
             :tabindex="props.noKeyNav ? undefined : tab.active ? undefined : -1"
             type="button"
-            v-bind="tab.titleLinkAttrs"
+            v-bind="tab.navItemAttrs"
             @keydown.left.exact="!props.vertical && keynav($event, -1)"
             @keydown.left.shift="!props.vertical && keynav($event, -999)"
             @keydown.up.exact="props.vertical && keynav($event, -1)"
@@ -76,6 +74,7 @@
 <script setup lang="ts">
 import {
   computed,
+  mergeProps,
   nextTick,
   onMounted,
   provide,
@@ -89,7 +88,8 @@ import {
 import {BvEvent} from '../../utils/classes'
 import {useAlignment} from '../../composables/useAlignment'
 import {useId} from '../../composables/useId'
-import type {TabType, BTabsProps, BTabsEmits, BTabsSlots} from '../../types'
+import type {BTabsEmits, BTabsProps, BTabsSlots, TabType} from '../../types'
+import type {AttrsValue} from '../../types/AnyValuedAttributes'
 import {tabsInjectionKey} from '../../utils/keys'
 import {useDefaults} from '../../composables/useDefaults'
 import {getSafeDocument, sortSlotElementsByPosition} from '../../utils/dom'
@@ -98,30 +98,30 @@ import BTab from './BTab.vue'
 import BTabsTabContent from '../BTabsTabContent.vue'
 
 const _props = withDefaults(defineProps<Omit<BTabsProps, 'modelValue' | 'activeIndex'>>(), {
-  activeNavItemClass: undefined,
-  activeNavLinkClass: undefined,
-  activeTabClass: undefined,
+  activeNavItemAttrs: undefined,
+  activeNavLinkAttrs: undefined,
+  activeTabAttrs: undefined,
   align: undefined,
   card: false,
-  contentClass: undefined,
+  contentAttrs: undefined,
   end: false,
   fill: false,
   id: undefined,
-  inactiveNavItemClass: undefined,
-  inactiveNavLinkClass: undefined,
-  inactiveTabClass: undefined,
+  inactiveNavItemAttrs: undefined,
+  inactiveNavLinkAttrs: undefined,
+  inactiveTabAttrs: undefined,
   justified: false,
   lazy: false,
-  navClass: undefined,
-  navItemClass: undefined,
-  navWrapperClass: undefined,
+  navAttrs: undefined,
+  navItemAttrs: undefined,
+  navWrapperAttrs: undefined,
   noTransition: false,
   noKeyNav: false,
   noNavStyle: false,
   pills: false,
   small: false,
   tag: 'div',
-  tabClass: undefined,
+  tabAttrs: undefined,
   underline: false,
   vertical: false,
 })
@@ -182,6 +182,15 @@ watch(
   }
 )
 
+// Attributes for a tab's `.nav-link` button. `class` and `style` from every source merge
+const getNavItemAttrs = (active: boolean, titleLinkAttrs: Readonly<AttrsValue> | undefined) =>
+  mergeProps(
+    props.navItemAttrs ?? {},
+    (active ? props.activeNavItemAttrs : props.inactiveNavItemAttrs) ?? {},
+    (active ? props.activeNavLinkAttrs : props.inactiveNavLinkAttrs) ?? {},
+    titleLinkAttrs ?? {}
+  )
+
 const tabs = computed(() => {
   if (tabsInternal.value.length === 0) {
     // fail back on the slot elements, the children haven't been registered yet
@@ -205,19 +214,11 @@ const tabs = computed(() => {
         disabled: tab.props?.disabled,
         title: tab.props?.title,
         titleComponent: (tab.children as {title: unknown})?.title,
-        titleItemClass: tab.props?.titleItemClass,
+        titleItemAttrs: tab.props?.titleItemAttrs,
         titleLinkAttrs: tab.props?.titleLinkAttrs,
-        titleLinkClass: tab.props?.titleLinkClass,
         onClick: tab.props?.onClick,
         active,
-        navItemClasses: [
-          {
-            active,
-            disabled: !(tab.props?.disabled === false || tab.props?.disabled === undefined),
-          },
-          active ? props.activeNavItemClass : props.inactiveNavItemClass,
-          props.navItemClass,
-        ],
+        navItemAttrs: getNavItemAttrs(active, tab.props?.titleLinkAttrs),
       }
     })
   }
@@ -228,14 +229,7 @@ const tabs = computed(() => {
     return {
       ...tab,
       active,
-      navItemClasses: [
-        {
-          active,
-          disabled: tab.disabled,
-        },
-        active ? props.activeNavItemClass : props.inactiveNavItemClass,
-        props.navItemClass,
-      ],
+      navItemAttrs: getNavItemAttrs(active, tab.titleLinkAttrs),
     }
   })
 })
@@ -316,7 +310,7 @@ updateInitialIndexAndId()
 const showEmpty = computed(() => !(tabs?.value && tabs.value.length > 0))
 
 const tabContentProps = computed(() => ({
-  contentClass: props.contentClass,
+  contentAttrs: props.contentAttrs,
   showEmpty: showEmpty.value,
   card: props.card,
 }))
@@ -331,11 +325,12 @@ const {alignment} = useAlignment(() => props.align)
 const navTabsClasses = computed(() => ({
   'nav-pills': props.pills,
   'nav-underline': props.underline,
-  'flex-column me-3': props.vertical,
+  'flex-column': props.vertical && !props.pills,
+  'nav-pills-vertical': props.vertical && props.pills,
+  'me-3': props.vertical,
   [alignment.value]: props.align !== undefined,
   'nav-fill': props.fill,
   'card-header-tabs': props.card && !props.pills && !props.underline,
-  'card-header-pills': props.card && props.pills,
   'nav-justified': props.justified,
   'nav-tabs': !props.noNavStyle && !props.pills && !props.underline,
   'small': props.small,
@@ -525,9 +520,9 @@ provide(tabsInjectionKey, {
   lazy: toRef(() => props.lazy),
   card: toRef(() => props.card),
   noTransition: toRef(() => props.noTransition),
-  activeTabClass: toRef(() => props.activeTabClass),
-  inactiveTabClass: toRef(() => props.inactiveTabClass),
-  tabClass: toRef(() => props.tabClass),
+  activeTabAttrs: toRef(() => props.activeTabAttrs),
+  inactiveTabAttrs: toRef(() => props.inactiveTabAttrs),
+  tabAttrs: toRef(() => props.tabAttrs),
   registerTab,
   unregisterTab,
   activeId,

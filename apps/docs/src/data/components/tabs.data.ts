@@ -23,20 +23,23 @@ export default {
           description:
             'Sets the zero-based index of the active tab. The `modelValue` (tab ID) takes priority over `index`.',
         },
-        activeNavItemClass: {
-          type: 'ClassValue',
+        activeNavItemAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for the active nav item tab control.',
+          description:
+            "Attributes for the active tab's control button (`.nav-link`). `class` and `style` merge with the component's own.",
         },
-        activeNavLinkClass: {
-          type: 'ClassValue',
+        activeNavLinkAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for the active nav link element.',
+          description:
+            "Attributes for the active tab's control button (`.nav-link`). Applied after `activeNavItemAttrs`. `class` and `style` merge with the component's own.",
         },
-        activeTabClass: {
-          type: 'ClassValue',
+        activeTabAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for the active tab.',
+          description:
+            "Attributes for the active tab pane. `class` and `style` merge with the component's own.",
         },
         align: {
           type: 'AlignmentJustifyContent',
@@ -49,10 +52,11 @@ export default {
           default: false, // TODO item not in string format
           description: 'Applies styles for tabs placed within a `BCard` component.',
         },
-        contentClass: {
-          type: 'ClassValue',
+        contentAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for the tab-content wrapper.',
+          description:
+            "Attributes for the `.tab-content` wrapper. `class` and `style` merge with the component's own.",
         },
         end: {
           type: 'boolean',
@@ -66,20 +70,23 @@ export default {
           description:
             'Proportionately fills horizontal space with nav items, with varying widths.',
         },
-        inactiveNavItemClass: {
-          type: 'ClassValue',
+        inactiveNavItemAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for inactive nav item tab controls.',
+          description:
+            "Attributes for inactive tab control buttons (`.nav-link`). `class` and `style` merge with the component's own.",
         },
-        inactiveNavLinkClass: {
-          type: 'ClassValue',
+        inactiveNavLinkAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for inactive nav link elements.',
+          description:
+            "Attributes for inactive tab control buttons (`.nav-link`). Applied after `inactiveNavItemAttrs`. `class` and `style` merge with the component's own.",
         },
-        inactiveTabClass: {
-          type: 'ClassValue',
+        inactiveTabAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for inactive tabs.',
+          description:
+            "Attributes for inactive tab panes. `class` and `style` merge with the component's own.",
         },
         justified: {
           type: 'boolean',
@@ -96,25 +103,29 @@ export default {
           default: undefined,
           description: 'Sets the ID of the active tab.',
         },
-        navClass: {
-          type: 'ClassValue',
+        navAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for the tablist (nav) wrapper.',
+          description:
+            "Attributes for the tablist (`ul.nav`). `class` and `style` merge with the component's own.",
         },
-        navItemClass: {
-          type: 'ClassValue',
+        navItemAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for the tab item element.',
+          description:
+            "Attributes for every tab control button (`.nav-link`). `class` and `style` merge with the component's own.",
         },
-        navWrapperClass: {
-          type: 'ClassValue',
+        navWrapperAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for the tab controls wrapper element.',
+          description:
+            "Attributes for the element that wraps the tab controls. `class` and `style` merge with the component's own.",
         },
         noTransition: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'Disables the fade transition when switching tabs.',
+          description:
+            'Disables the fade-in of the newly active tab pane (adds `tab-pane-instant` to each pane).',
         },
         noKeyNav: {
           type: 'boolean',
@@ -141,15 +152,17 @@ export default {
           default: false, // TODO item not in string format
           description: 'Renders the active nav item with an underline.',
         },
-        tabClass: {
-          type: 'ClassValue',
+        tabAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Sets the CSS class(es) for the tab element.',
+          description:
+            "Attributes for every tab pane. `class` and `style` merge with the component's own.",
         },
         vertical: {
           type: 'boolean',
           default: false, // TODO item not in string format
-          description: 'Renders the tab controls vertically.',
+          description:
+            'Renders the tab controls vertically (`flex-column`, or `nav-pills-vertical` with `pills`).',
         },
       } satisfies PropRecord<keyof BTabsProps>,
       emits: {
@@ -216,21 +229,17 @@ export default {
           description:
             "When the parent b-tabs has the 'card' prop set, do not render a card-body wrapper",
         },
-        titleItemClass: {
-          type: 'ClassValue',
-          default: undefined,
-          description: "CSS class (or classes) to apply to the tab's control button 'li' element",
-        },
-        titleLinkAttrs: {
-          type: 'AttrsValue',
-          default: undefined,
-          description: "Attributes to apply to the tab's control button inner link element",
-        },
-        titleLinkClass: {
-          type: 'ClassValue',
+        titleItemAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
           description:
-            "CSS class (or classes) to apply to the tab's control button inner link element",
+            "Attributes to apply to the tab's control `li` element. `class` and `style` merge with the component's own",
+        },
+        titleLinkAttrs: {
+          type: 'Readonly<AttrsValue>',
+          default: undefined,
+          description:
+            "Attributes to apply to the tab's control button (`.nav-link`). `class` and `style` merge with the component's own",
         },
       } satisfies PropRecord<keyof BTabProps>,
       exposed: {
