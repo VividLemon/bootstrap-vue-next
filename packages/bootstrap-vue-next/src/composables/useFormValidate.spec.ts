@@ -4,23 +4,23 @@ import {useFormValidate} from './useFormValidate'
 
 describe('useFormValidate', () => {
   it('maps true to an empty attribute value', () => {
-    expect(useFormValidate(true).value).toBe('')
+    expect(useFormValidate(true).validateAttr.value).toBe('')
   })
 
   it("maps 'valid' to 'valid'", () => {
-    expect(useFormValidate('valid').value).toBe('valid')
+    expect(useFormValidate('valid').validateAttr.value).toBe('valid')
   })
 
   it('omits the attribute for false and undefined', () => {
-    expect(useFormValidate(false).value).toBeUndefined()
-    expect(useFormValidate(undefined).value).toBeUndefined()
+    expect(useFormValidate(false).validateAttr.value).toBeUndefined()
+    expect(useFormValidate(undefined).validateAttr.value).toBeUndefined()
   })
 
   it('follows a ref', () => {
     const validate = ref<boolean | 'valid'>(false)
-    const result = useFormValidate(validate)
-    expect(result.value).toBeUndefined()
+    const {validateAttr} = useFormValidate(validate)
+    expect(validateAttr.value).toBeUndefined()
     validate.value = 'valid'
-    expect(result.value).toBe('valid')
+    expect(validateAttr.value).toBe('valid')
   })
 })

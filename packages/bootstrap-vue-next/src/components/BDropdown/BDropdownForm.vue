@@ -4,7 +4,7 @@
       class="dropdown-item-text"
       :class="props.formClass"
       :novalidate="props.novalidate"
-      :data-bs-validate="computedValidate"
+      :data-bs-validate="validateAttr"
       v-bind="processedAttrs.formAttrs"
     >
       <slot />
@@ -37,5 +37,5 @@ const processedAttrs = computed(() => {
   return {wrapperClass, formAttrs}
 })
 
-const computedValidate = useFormValidate(() => props.validate)
+const {validateAttr} = useFormValidate(() => props.validate)
 </script>

@@ -3,7 +3,7 @@
     :id="props.id"
     ref="_element"
     :novalidate="props.novalidate"
-    :data-bs-validate="computedValidate"
+    :data-bs-validate="validateAttr"
     :class="computedClasses"
   >
     <slot />
@@ -31,7 +31,7 @@ const computedClasses = computed(() => ({
   'form-floating': props.floating,
 }))
 
-const computedValidate = useFormValidate(() => props.validate)
+const {validateAttr} = useFormValidate(() => props.validate)
 
 defineExpose({
   element,
