@@ -54,7 +54,7 @@ All props compose Field markup; none duplicate a v6 JS behavior. Field is CSS on
 | -------------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------- |
 | `id`, `ariaInvalid`, `disabled`, `state`                                               | keep        |                                                       |
 | `label`, `labelFor`, `labelAttrs`, `labelVisuallyHidden`, `labelSize`                  | keep        | `labelSize` → `col-form-label-{sm,lg}` (exists in v6) |
-| `labelCols`, `contentCols`, `labelAlign`                                               | keep        | `Responsive<…>` since #165; horizontal mode           |
+| `labelCols`, `contentCols`, `labelAlign`                                               | keep        | `Responsive<…>` since #164; horizontal mode           |
 | `description`                                                                          | keep        | renders `.form-text`                                  |
 | `invalidFeedback`, `validFeedback`, `tooltip`, `feedbackAriaLive`                      | keep        |                                                       |
 | `floating`                                                                             | keep        |                                                       |
