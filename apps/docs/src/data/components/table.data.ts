@@ -128,7 +128,7 @@ export default {
           type: 'boolean | Breakpoint',
           default: false,
           description:
-            "Place the table in stacked mode. Set to true for always stacked, or set to one of the breakpoints to switch from stacked to normal: 'sm', 'md', 'lg', 'xl'",
+            "Place the table in Bootstrap's stacked mode. Set to true for always stacked (`table-stacked`), or set to one of the breakpoints to stack the table only while its container is narrower than it: 'sm', 'md', 'lg', 'xl', '2xl' (`stacked=\"md\"` renders `md:table-stacked`). A stacked table is wrapped in a `table-responsive` query container and its body cells get `data-cell` labels",
         },
         stickyHeader: {
           type: 'boolean | Numberish',
@@ -147,21 +147,16 @@ export default {
           description: 'Applies striping to the table columns',
         },
         tableAttrs: {
-          type: 'AttrsValue',
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Attributes to apply to the table element',
-        },
-        tableClass: {
-          type: 'ClassValue',
-          default: undefined,
-          description: 'Classes to apply to the table element',
+          description:
+            'Attributes to apply to the table element. `class` and `style` are merged with the table classes',
         },
       } satisfies PropRecord<keyof BTableSimpleProps>,
     } as const
 
     const BTableLite = {
       props: {
-        ...pick(buildCommonProps(), ['footColor', 'footRowColor', 'headColor', 'headRowColor']),
         align: {
           type: 'VerticalAlign',
           default: undefined,
@@ -171,14 +166,17 @@ export default {
           default: undefined,
           description: 'Text string to place in the caption element',
         },
-        detailsTdClass: {
-          type: 'ClassValue',
+        detailsTdAttrs: {
+          type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'CSS class (or classes) to apply to the td element in the details row',
+          description:
+            'Attributes (including `class` and `style`) to apply to the td element in the details row',
         },
-        fieldColumnClass: {
-          type: '(field: TableField) => Record<string, any>[] | string | Record<PropertyKey, any> | any[]',
+        fieldColumnAttrs: {
+          type: '((field: TableField) => AttrsValue) | Readonly<AttrsValue>',
           default: undefined,
+          description:
+            'Attributes (including `class` and `style`) to apply to every header and footer th element. Pass a function to compute them per field',
         },
         fields: {
           type: 'TableFieldRaw[]',
@@ -193,12 +191,6 @@ export default {
         items: {
           type: 'readonly Item[]',
           default: '() => []',
-        },
-        labelStacked: {
-          type: 'boolean',
-          default: false,
-          description:
-            'When set, the labels will appear as actual label elements, rather than with the data-label attribute',
         },
         modelValue: {
           type: 'any',
@@ -216,33 +208,23 @@ export default {
           description:
             'Name of a table field that contains a guaranteed unique value per row. For row expansion and selection to persist across item updates. Also speeds up table rendering and enables proper item tracking.',
         },
-        tbodyClass: {
-          type: 'ClassValue',
+        thead: {
+          type: 'TableHeadSection',
           default: undefined,
+          description:
+            'The table head: `attrs` (attributes, including `class` and `style`, for the `<thead>` element), `trAttrs` (attributes for its row), `color` and `rowColor` (color objects for the section and its row: `theme`, `bg`, `fg`)',
         },
-        tbodyTrAttrs: {
-          type: '((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue',
+        tfoot: {
+          type: 'TableHeadSection',
           default: undefined,
+          description:
+            'The table foot (shown with `foot-clone`): `attrs` (attributes, including `class` and `style`, for the `<tfoot>` element), `trAttrs` (attributes for its row), `color` and `rowColor` (color objects for the section and its row: `theme`, `bg`, `fg`). Each key left out falls back to the matching `thead` key',
         },
-        tbodyTrClass: {
-          type: '((item: TableItem | null, type: string) => string | any[] | null | undefined) | string | Record<PropertyKey, any> | any[]',
+        tbody: {
+          type: 'TableBodySection<Item>',
           default: undefined,
-        },
-        tfootClass: {
-          type: 'ClassValue',
-          default: undefined,
-        },
-        tfootTrClass: {
-          type: 'ClassValue',
-          default: undefined,
-        },
-        theadClass: {
-          type: 'ClassValue',
-          default: undefined,
-        },
-        theadTrClass: {
-          type: 'ClassValue',
-          default: undefined,
+          description:
+            'The table body: `attrs` (attributes, including `class` and `style`, for the `<tbody>` element) and `trAttrs` (attributes for every body row; pass a function `(item, type) => AttrsValue` to compute them per row and row type)',
         },
       } satisfies PropRecord,
       slots: {
@@ -609,16 +591,14 @@ export default {
           default: undefined,
           description: 'Array of fields to include when filtering.',
         },
-        emptyFilteredText: {
-          type: 'string',
-          default: 'There are no records matching your request',
+        empty: {
+          type: '{ text?: string; filteredText?: string }',
+          default: {
+            text: 'There are no records to show',
+            filteredText: 'There are no records matching your request',
+          },
           description:
-            'Text to display when no items are present in the `items` array after filtering',
-        },
-        emptyText: {
-          type: 'string',
-          default: 'There are no records to show',
-          description: 'Text to display when no items are present in the `items` array',
+            'Text to display when there are no items: `text` when the `items` array is empty, `filteredText` when filtering leaves no items. Keys left out keep their default',
         },
         initialSortDirection: {
           type: 'BTableInitialSortDirection',
@@ -636,8 +616,10 @@ export default {
           default: false,
         },
         mustSort: {
-          type: 'boolean | string[]',
+          type: 'boolean',
           default: false,
+          description:
+            "Sorting cannot be cleared by clicking a sorted column; it cycles between ascending and descending. A field's `sort.must` overrides this for that column",
         },
         noLocalSorting: {
           type: 'boolean',
@@ -740,23 +722,15 @@ export default {
           description:
             'When set, null and undefined values will always be sorted to the end of the list, regardless of sort direction. Only applies to the internal sort routine (not custom sortCompare functions)',
         },
-        labelSortAsc: {
-          type: 'string',
-          default: 'Click to sort ascending',
+        labels: {
+          type: '{ sortAsc?: string; sortDesc?: string; sortClear?: string }',
+          default: {
+            sortAsc: 'Click to sort ascending',
+            sortDesc: 'Click to sort descending',
+            sortClear: 'Click to clear sorting',
+          },
           description:
-            'Visually hidden label for a sortable column header when clicking will sort ascending',
-        },
-        labelSortClear: {
-          type: 'string',
-          default: 'Click to clear sorting',
-          description:
-            'Visually hidden label for a sortable column header when clicking will clear sorting',
-        },
-        labelSortDesc: {
-          type: 'string',
-          default: 'Click to sort descending',
-          description:
-            'Visually hidden label for a sortable column header when clicking will sort descending',
+            'Visually hidden labels for a sortable column header, for when clicking will sort ascending (`sortAsc`), sort descending (`sortDesc`) or clear sorting (`sortClear`). Keys left out keep their default',
         },
         stickySelect: {
           type: 'boolean',
@@ -781,13 +755,10 @@ export default {
           description:
             'Content to display when no items are present in the `items` array. Optionally scoped',
           scope: {
-            emptyFilteredText: {
-              type: 'string',
-              description: 'The value of the empty-filtered-text prop',
-            },
-            emptyText: {
-              type: 'string',
-              description: 'The value of the empty-text prop',
+            empty: {
+              type: '{ text: string; filteredText: string }',
+              description:
+                'The resolved `empty` prop: its `text` and `filteredText`, with their defaults',
             },
             fields: {
               type: 'TableField<Item>[]',
@@ -804,13 +775,10 @@ export default {
           description:
             'Content to display when no items are present in the filtered `items` array. Optionally scoped',
           scope: {
-            emptyFilteredText: {
-              type: 'string',
-              description: 'The value of the empty-filtered-text prop',
-            },
-            emptyText: {
-              type: 'string',
-              description: 'The value of the empty-text prop',
+            empty: {
+              type: '{ text: string; filteredText: string }',
+              description:
+                'The resolved `empty` prop: its `text` and `filteredText`, with their defaults',
             },
             fields: {
               type: 'TableField<Item>[]',
@@ -1063,12 +1031,6 @@ export default {
             default: undefined,
             description: 'Number of rows this cell spans',
           },
-          stackedHeading: {
-            type: 'string',
-            default: undefined,
-            description:
-              "Heading for the cell when in stacked mode. Only applicable to cells in the 'tbody' element",
-          },
           stickyColumn: {
             type: 'boolean',
             default: false,
@@ -1102,12 +1064,6 @@ export default {
           rowspan: {
             type: 'Numberish',
             default: undefined,
-          },
-          stackedHeading: {
-            type: 'string',
-            default: undefined,
-            description:
-              "Heading for the cell when in stacked mode. Only applicable to cells in the 'tbody' element",
           },
           stickyColumn: {
             type: 'boolean',

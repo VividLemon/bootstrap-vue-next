@@ -35,6 +35,7 @@ export type {
   TableFieldFormatter,
   TableFieldFormatterObject,
   TableFieldRaw,
+  TableFieldSort,
   TableItem,
   TableRowThead,
   TableRowType,

@@ -67,9 +67,9 @@ const items: TableItem<Person>[] = [
 ]
 
 const fields: Exclude<TableFieldRaw<Person>, string>[] = [
-  { key: 'first_name', label: 'First Name', sortable: true },
-  { key: 'last_name', label: 'Last Name', sortable: true },
-  { key: 'age', label: 'Age', sortable: true },
+  { key: 'first_name', label: 'First Name', sort: true },
+  { key: 'last_name', label: 'Last Name', sort: true },
+  { key: 'age', label: 'Age', sort: true },
 ]
 
 const filter = ref('')

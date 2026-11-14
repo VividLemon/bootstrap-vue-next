@@ -550,8 +550,8 @@ export type BOverlaySlots = {
 }
 
 type EmptySlotScope<Item> = {
-  emptyFilteredText: string
-  emptyText: string
+  /** The resolved `empty` prop: `text` and `filteredText`, with their defaults */
+  empty: {text: string; filteredText: string}
   fields: TableField<Item>[]
   items: readonly Item[]
 }

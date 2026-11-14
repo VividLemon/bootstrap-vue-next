@@ -73,7 +73,7 @@
         :clear-selected="selectedItemsController.clear"
       >
         {{ getTableFieldHeadLabel(field) }}
-        <span v-if="sortController.isSortable.value && field.sortable" class="visually-hidden">{{
+        <span v-if="sortController.isSortable.value && field.sort" class="visually-hidden">{{
           getSortLabel(field)
         }}</span>
       </slot>
@@ -82,7 +82,7 @@
       <BTr
         v-if="busyModel && slots['table-busy']"
         class="b-table-busy-slot"
-        :class="getBusyRowClasses"
+        v-bind="callTbodyTrAttrs(null, 'table-busy')"
       >
         <BTd :colspan="scope.fields.length">
           <slot name="table-busy" />
@@ -97,10 +97,10 @@
           <div role="alert" aria-live="polite">
             <div class="text-center my-2">
               <slot v-if="showEmptyFiltered" name="empty-filtered" v-bind="emptySlotScope">
-                {{ props.emptyFilteredText }}
+                {{ computedEmpty.filteredText }}
               </slot>
               <slot v-else name="empty" v-bind="emptySlotScope">
-                {{ props.emptyText }}
+                {{ computedEmpty.text }}
               </slot>
             </div>
           </div>
@@ -113,17 +113,12 @@
 <script setup lang="ts" generic="Item">
 import {resolvePartColor, toColorClasses} from '../../composables/useThemeClasses'
 import {useToNumber} from '@vueuse/core'
-import {computed, readonly, toRef, watch} from 'vue'
+import {computed, mergeProps, readonly, toRef, watch} from 'vue'
 import BTableLite from './BTableLite.vue'
 import BTd from './BTd.vue'
 import BTr from './BTr.vue'
 import type {BTableEmits, BTableLiteEmits, BTableProps, BTableSlots, CamelCase} from '../../types'
-import {
-  type TableField,
-  type TableFieldRaw,
-  type TableRowType,
-  type TableStrictClassValue,
-} from '../../types'
+import {type TableField, type TableFieldRaw, type TableRowType} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import {pick} from '../../utils/object'
 import {bTableLiteProps, bTableSimpleProps, getTableFieldHeadLabel} from '../../utils/tableUtils'
@@ -136,6 +131,7 @@ import {
   useTableSort,
 } from '../../composables/useTableHelpers'
 import {useItemExpansion} from '../../composables/useTableLiteHelpers'
+import {isFieldMustSort} from '../../types/TableTypes'
 
 const _props = withDefaults(
   defineProps<
@@ -166,9 +162,7 @@ const _props = withDefaults(
     sortCompare: undefined,
     sortNullLast: false,
     noFooterSorting: false,
-    labelSortAsc: 'Click to sort ascending',
-    labelSortClear: 'Click to clear sorting',
-    labelSortDesc: 'Click to sort descending',
+    labels: undefined,
     debounce: 0,
     debounceMaxWait: Number.NaN,
     // BTableLite props
@@ -177,28 +171,18 @@ const _props = withDefaults(
     caption: undefined,
     align: undefined,
     footClone: undefined,
-    labelStacked: undefined,
     showEmpty: false,
-    emptyText: 'There are no records to show',
-    emptyFilteredText: 'There are no records matching your request',
-    fieldColumnClass: undefined,
-    tbodyTrClass: undefined,
-    detailsTdClass: undefined,
-    headColor: undefined,
-    headRowColor: undefined,
-    footRowColor: undefined,
-    footColor: undefined,
+    empty: undefined,
+    fieldColumnAttrs: undefined,
+    detailsTdAttrs: undefined,
     modelValue: undefined,
     primaryKey: undefined,
-    tbodyClass: undefined,
-    tfootClass: undefined,
-    tfootTrClass: undefined,
-    theadClass: undefined,
-    theadTrClass: undefined,
+    tbody: undefined,
+    tfoot: undefined,
+    thead: undefined,
     // End BTableLite props
     // BTableSimple props
-    border: undefined,
-    theme: undefined,
+    tableAttrs: undefined,
     bordered: undefined,
     borderless: undefined,
     captionTop: undefined,
@@ -345,10 +329,7 @@ const {
       sortNullLast: () => props.sortNullLast,
     },
   },
-  stackedProps: {
-    stacked: () => props.stacked,
-    labelStacked: () => props.labelStacked,
-  },
+  stacked: () => props.stacked,
 })
 const selectedItemsController = useTableSelectedItems({
   selectable: () => props.selectable,
@@ -380,39 +361,40 @@ const tableClasses = computed(() => ({
   'b-table-no-border-collapse': props.noBorderCollapse,
   'b-table-no-sort-icon': props.noSortableIcon,
 }))
-const getBusyRowClasses = computed(() => [
-  props.tbodyTrClass
-    ? typeof props.tbodyTrClass === 'function'
-      ? props.tbodyTrClass(null, 'table-busy')
-      : props.tbodyTrClass
-    : null,
-])
-const getFieldColumnClasses = (field: TableField) => [
-  {
-    'b-table-sortable-column': sortController.isSortable.value && field.sortable,
-  },
-]
-// TODO this class has issues if the table has a variant already applied
-// Also the row should technically have aria-selected. Both things could probably just use a function with tbodyTrAttrs
-// But functional tbodyTrAttrs are not supported yet
-// Also the stuff for resolving functions could probably be made a util
-const getRowClasses = (item: Item | null, type: TableRowType): TableStrictClassValue => [
-  {
-    selected: props.selectable && !!item && selectedItemsController.has(item),
-  },
-  props.selectable && !!item && selectedItemsController.has(item)
-    ? [
-        toColorClasses('theme', selectionColor.value.theme),
-        toColorClasses('bg', selectionColor.value.bg),
-        toColorClasses('fg', selectionColor.value.fg),
-      ]
-    : null,
-  props.tbodyTrClass
-    ? typeof props.tbodyTrClass === 'function'
-      ? props.tbodyTrClass(item, type)
-      : props.tbodyTrClass
-    : null,
-]
+const callTbodyTrAttrs = (item: Item | null, type: TableRowType) =>
+  (typeof props.tbody?.trAttrs === 'function'
+    ? props.tbody.trAttrs(item, type)
+    : props.tbody?.trAttrs) ?? {}
+const getFieldColumnAttrs = (field: TableField<Item>) =>
+  mergeProps(
+    {
+      class: {
+        'b-table-sortable-column': sortController.isSortable.value && !!field.sort,
+      },
+    },
+    (typeof props.fieldColumnAttrs === 'function'
+      ? props.fieldColumnAttrs(field)
+      : props.fieldColumnAttrs) ?? {}
+  )
+// TODO the row should technically have aria-selected
+const getRowAttrs = (item: Item | null, type: TableRowType) => {
+  const isSelected = props.selectable && !!item && selectedItemsController.has(item)
+  return mergeProps(
+    {
+      class: [
+        {selected: isSelected},
+        isSelected
+          ? [
+              toColorClasses('theme', selectionColor.value.theme),
+              toColorClasses('bg', selectionColor.value.bg),
+              toColorClasses('fg', selectionColor.value.fg),
+            ]
+          : null,
+      ],
+    },
+    callTbodyTrAttrs(item, type)
+  )
+}
 
 const boundBTableLiteEmits = {
   onHeadClicked: ({key, field, event, isFooter = false}) => {
@@ -445,21 +427,30 @@ const boundBTableLiteEmits = {
 }
 const computedLiteProps = computed(() => ({
   ...pick(props, [...bTableLiteProps, ...bTableSimpleProps]),
-  tableAttrs: {
-    ariaBusy: busyModel.value,
-  },
+  tableAttrs: mergeProps(
+    {'aria-busy': busyModel.value, 'class': tableClasses.value},
+    props.tableAttrs ?? {}
+  ),
   items: computedDisplayItems.value,
   fields: computedFields.value as TableFieldRaw<Item>[],
-  tableClass: tableClasses.value,
-  tbodyTrClass: getRowClasses,
-  fieldColumnClass: getFieldColumnClasses,
+  tbody: {...props.tbody, trAttrs: getRowAttrs},
+  fieldColumnAttrs: getFieldColumnAttrs,
   id: computedId.value,
   ...boundBTableLiteEmits,
 }))
 
+const computedLabels = computed(() => ({
+  sortAsc: props.labels?.sortAsc ?? 'Click to sort ascending',
+  sortDesc: props.labels?.sortDesc ?? 'Click to sort descending',
+  sortClear: props.labels?.sortClear ?? 'Click to clear sorting',
+}))
+const computedEmpty = computed(() => ({
+  text: props.empty?.text ?? 'There are no records to show',
+  filteredText: props.empty?.filteredText ?? 'There are no records matching your request',
+}))
+
 const emptySlotScope = computed(() => ({
-  emptyFilteredText: props.emptyFilteredText,
-  emptyText: props.emptyText,
+  empty: computedEmpty.value,
   fields: computedFields.value,
   items: computedItems.value,
 }))
@@ -472,23 +463,19 @@ const showEmptyFiltered = computed(
 
 // Compute sr-only sort label for each field based on current sort state
 const getSortLabel = (field: TableField<Item>): string => {
-  if (!sortController.isSortable.value || !field.sortable) return ''
+  if (!sortController.isSortable.value || !field.sort) return ''
   const currentSort = sortByModel.value?.find((s) => s.key === field.key)
   if (!currentSort || currentSort.order === undefined) {
-    return props.labelSortAsc
+    return computedLabels.value.sortAsc
   }
   if (currentSort.order === 'asc') {
-    return props.labelSortDesc
+    return computedLabels.value.sortDesc
   }
   // Currently sorted descending
-  const mustSortValue = props.mustSort
-  if (
-    mustSortValue ||
-    (Array.isArray(mustSortValue) && mustSortValue.includes(field.key as string))
-  ) {
-    return props.labelSortAsc
+  if (isFieldMustSort(field, props.mustSort)) {
+    return computedLabels.value.sortAsc
   }
-  return props.labelSortClear
+  return computedLabels.value.sortClear
 }
 
 // Emit context-changed event when context (filter, sortBy, currentPage, perPage) changes

@@ -1,69 +1,3 @@
-@use "bootstrap/scss/layout/breakpoints" as bs-breakpoints;
-@use "bootstrap/scss/config" as bs;
-@use "../../styles/breakpoints" as bv;
-
-.b-table-stacked-label {
-  display: none;
-  font-weight: bold;
-}
-
-@each $breakpoint in map-keys(bs.$breakpoints) {
-  $infix: bv.infix($breakpoint);
-
-  @include bs-breakpoints.media-breakpoint-down($breakpoint) {
-    .table.b-table.b-table-stacked#{$infix} {
-      display: block;
-      width: 100%;
-    }
-
-    .table.b-table.b-table-stacked#{$infix} > thead,
-    .table.b-table.b-table-stacked#{$infix} > thead > tr.b-table-bottom-row,
-    .table.b-table.b-table-stacked#{$infix} > thead > tr.b-table-top-row {
-      display: none;
-    }
-
-    .table.b-table.b-table-stacked#{$infix} > caption,
-    .table.b-table.b-table-stacked#{$infix} > tbody,
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr,
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr > td,
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr > td > .b-table-stacked-label,
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr > th {
-      display: block;
-    }
-
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr > :first-child,
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr > [rowspan] + td,
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr > [rowspan] + th {
-      border-top-width: 3px;
-    }
-
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr > [data-label]::before {
-      content: attr(data-label);
-      width: 40%;
-      float: left;
-      text-align: right;
-      word-wrap: break-word;
-      font-weight: 700;
-      font-style: normal;
-      padding: 0 0.5rem 0 0;
-      margin: 0;
-    }
-
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr > [data-label]::after {
-      display: block;
-      clear: both;
-      content: "";
-    }
-
-    .table.b-table.b-table-stacked#{$infix} > tbody > tr > [data-label] > div {
-      display: inline-block;
-      width: 60%;
-      padding: 0 0 0 0.5rem;
-      margin: 0;
-    }
-  }
-}
-
 .b-table-sticky-header,
 .table-responsive,
 [class*=":table-responsive"] {
@@ -144,13 +78,6 @@
   }
 }
 
-.table.b-table > tbody > tr > .table-b-table-default,
-.table.b-table > tfoot > tr > .table-b-table-default,
-.table.b-table > thead > tr > .table-b-table-default {
-  color: var(--bs-fg-body);
-  background-color: var(--bs-bg-body);
-}
-
 // --- Header sort styling ---
 
 @function str-replace($string, $search, $replace: "") {
@@ -194,38 +121,36 @@ $b-table-sort-icon-bg-descending-dark: url("data:image/svg+xml,<svg xmlns='http:
   }
 }
 
-// Dark mode icon mixin - inner content (without thead/tfoot wrapper)
-@mixin table-sort-icons-dark-inner {
-  > tr {
-    > [aria-sort="none"] {
-      background-image: var(
-        --bvn-sort-icon-none,
-        bv-escape-svg($b-table-sort-icon-bg-not-sorted-dark)
-      );
-    }
+// The icon colors follow the nearest color mode: the OS preference by default (Bootstrap v6 sets
+// `color-scheme: light dark` on `:root`), overridden by the nearest `[data-bs-theme]` or
+// `.color-scheme-*` ancestor (or the table, `thead`, `tfoot` itself). Custom properties inherit,
+// so the closest declaration wins regardless of nesting order.
+:root {
+  --bv-table-sort-icon-none: #{bv-escape-svg($b-table-sort-icon-bg-not-sorted)};
+  --bv-table-sort-icon-asc: #{bv-escape-svg($b-table-sort-icon-bg-ascending)};
+  --bv-table-sort-icon-desc: #{bv-escape-svg($b-table-sort-icon-bg-descending)};
+}
 
-    > [aria-sort="ascending"] {
-      background-image: var(
-        --bvn-sort-icon-asc,
-        bv-escape-svg($b-table-sort-icon-bg-ascending-dark)
-      );
-    }
-
-    > [aria-sort="descending"] {
-      background-image: var(
-        --bvn-sort-icon-desc,
-        bv-escape-svg($b-table-sort-icon-bg-descending-dark)
-      );
-    }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bv-table-sort-icon-none: #{bv-escape-svg($b-table-sort-icon-bg-not-sorted-dark)};
+    --bv-table-sort-icon-asc: #{bv-escape-svg($b-table-sort-icon-bg-ascending-dark)};
+    --bv-table-sort-icon-desc: #{bv-escape-svg($b-table-sort-icon-bg-descending-dark)};
   }
 }
 
-// Dark mode icon mixin to avoid duplication
-@mixin table-sort-icons-dark {
-  > thead,
-  > tfoot {
-    @include table-sort-icons-dark-inner;
-  }
+[data-bs-theme="dark"],
+.color-scheme-dark {
+  --bv-table-sort-icon-none: #{bv-escape-svg($b-table-sort-icon-bg-not-sorted-dark)};
+  --bv-table-sort-icon-asc: #{bv-escape-svg($b-table-sort-icon-bg-ascending-dark)};
+  --bv-table-sort-icon-desc: #{bv-escape-svg($b-table-sort-icon-bg-descending-dark)};
+}
+
+[data-bs-theme="light"],
+.color-scheme-light {
+  --bv-table-sort-icon-none: #{bv-escape-svg($b-table-sort-icon-bg-not-sorted)};
+  --bv-table-sort-icon-asc: #{bv-escape-svg($b-table-sort-icon-bg-ascending)};
+  --bv-table-sort-icon-desc: #{bv-escape-svg($b-table-sort-icon-bg-descending)};
 }
 
 .table.b-table:not(.b-table-no-sort-icon) {
@@ -252,40 +177,18 @@ $b-table-sort-icon-bg-descending-dark: url("data:image/svg+xml,<svg xmlns='http:
       }
 
       > [aria-sort="none"] {
-        background-image: var(
-          --bvn-sort-icon-none,
-          bv-escape-svg($b-table-sort-icon-bg-not-sorted)
-        );
+        background-image: var(--bvn-sort-icon-none, var(--bv-table-sort-icon-none));
       }
 
       > [aria-sort="ascending"] {
-        background-image: var(--bvn-sort-icon-asc, bv-escape-svg($b-table-sort-icon-bg-ascending));
+        background-image: var(--bvn-sort-icon-asc, var(--bv-table-sort-icon-asc));
       }
 
       > [aria-sort="descending"] {
-        background-image: var(
-          --bvn-sort-icon-desc,
-          bv-escape-svg($b-table-sort-icon-bg-descending)
-        );
+        background-image: var(--bvn-sort-icon-desc, var(--bv-table-sort-icon-desc));
       }
     }
   }
-
-  // Apply dark mode icons via media query
-  @media (prefers-color-scheme: dark) {
-    @include table-sort-icons-dark;
-  }
-
-  // Apply dark mode icons when thead/tfoot explicitly uses the dark color mode
-  > thead[data-bs-theme="dark"],
-  > tfoot[data-bs-theme="dark"] {
-    @include table-sort-icons-dark-inner;
-  }
-}
-
-// Apply dark mode icons when entire table uses the dark color mode
-.table.b-table[data-bs-theme="dark"]:not(.b-table-no-sort-icon) {
-  @include table-sort-icons-dark;
 }
 
 .table.b-table:not(.b-table-no-sort-icon) {
@@ -307,13 +210,6 @@ $b-table-sort-icon-bg-descending-dark: url("data:image/svg+xml,<svg xmlns='http:
         }
       }
     }
-  }
-}
-
-// Dark mode icon overrides for explicit [data-bs-theme="dark"]
-[data-bs-theme="dark"] {
-  .table.b-table:not(.b-table-no-sort-icon) {
-    @include table-sort-icons-dark;
   }
 }
 

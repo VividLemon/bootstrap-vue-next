@@ -1,12 +1,6 @@
 <template>
   <div>
-    <BTable
-      :fields="fields"
-      :items="items"
-      class="custom-sort-icons"
-      striped
-      hover
-    />
+    <BTable :fields="fields" :items="items" class="custom-sort-icons" striped hover />
   </div>
 </template>
 
@@ -18,16 +12,16 @@ interface Person {
 }
 
 const fields = [
-  {key: 'first_name', label: 'First Name', sortable: true},
-  {key: 'last_name', label: 'Last Name', sortable: true},
-  {key: 'age', label: 'Age', sortable: true},
+  { key: 'first_name', label: 'First Name', sort: true },
+  { key: 'last_name', label: 'Last Name', sort: true },
+  { key: 'age', label: 'Age', sort: true },
 ]
 
 const items: Person[] = [
-  {first_name: 'John', last_name: 'Doe', age: 42},
-  {first_name: 'Jane', last_name: 'Smith', age: 36},
-  {first_name: 'Bob', last_name: 'Wilson', age: 55},
-  {first_name: 'Alice', last_name: 'Johnson', age: 28},
+  { first_name: 'John', last_name: 'Doe', age: 42 },
+  { first_name: 'Jane', last_name: 'Smith', age: 36 },
+  { first_name: 'Bob', last_name: 'Wilson', age: 55 },
+  { first_name: 'Alice', last_name: 'Johnson', age: 28 },
 ]
 </script>
 

@@ -4,12 +4,8 @@
     :class="computedClasses"
     :colspan="props.colspan"
     :rowspan="props.rowspan"
-    :data-label="props.stackedHeading"
   >
-    <div v-if="props.stackedHeading !== undefined">
-      <slot />
-    </div>
-    <slot v-else />
+    <slot />
   </th>
 </template>
 
@@ -22,7 +18,6 @@ import type {BThProps, BThSlots} from '../../types'
 const _props = withDefaults(defineProps<BThProps>(), {
   colspan: undefined,
   rowspan: undefined,
-  stackedHeading: undefined,
   stickyColumn: false,
   scope: undefined,
   color: undefined,
@@ -37,11 +32,6 @@ const computedClasses = computed(() => [
   toColorClasses('fg', computedColor.value.fg),
   {
     'b-table-sticky-column': props.stickyColumn,
-    'table-b-table-default':
-      props.stickyColumn &&
-      computedColor.value.theme == null &&
-      computedColor.value.bg == null &&
-      computedColor.value.fg == null,
   },
 ])
 

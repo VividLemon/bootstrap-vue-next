@@ -68,7 +68,6 @@ import type {
   TableFieldRaw,
   TablePrimaryKey,
   TableRowType,
-  TableStrictClassValue,
   TableThScope,
 } from './TableTypes'
 import type {PopoverPlacement} from './PopoverPlacement'
@@ -1323,48 +1322,42 @@ export interface BTableSimpleProps {
   striped?: boolean
   stripedColumns?: boolean
   tableAttrs?: Readonly<AttrsValue>
-  tableClass?: ClassValue
+}
+
+/** The table head (`<thead>`) or foot (`<tfoot>`): attributes, row attributes and colors */
+export interface TableHeadSection {
+  attrs?: Readonly<AttrsValue>
+  trAttrs?: Readonly<AttrsValue>
+  color?: ColorExtendables
+  rowColor?: ColorExtendables
+}
+
+/** The table body (`<tbody>`): attributes and row attributes (an object, or a function of the row) */
+export interface TableBodySection<Item> {
+  attrs?: Readonly<AttrsValue>
+  trAttrs?: ((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue
 }
 
 export interface BTableLiteProps<Item> extends BTableSimpleProps {
   align?: VerticalAlign
   caption?: string
-  detailsTdClass?: ClassValue
-  fieldColumnClass?:
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | ((field: TableField<Item>) => readonly Record<string, any>[])
-    | string
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | Readonly<Record<PropertyKey, any>>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | readonly any[]
+  detailsTdAttrs?: Readonly<AttrsValue>
+  fieldColumnAttrs?: ((field: TableField<Item>) => AttrsValue) | Readonly<AttrsValue>
   fields?: readonly TableFieldRaw<Item>[]
   footClone?: boolean
-  footColor?: ColorExtendables
-  footRowColor?: ColorExtendables
-  headColor?: ColorExtendables
-  headRowColor?: ColorExtendables
   items?: readonly Item[]
-  labelStacked?: boolean
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modelValue?: any
   expandedItems?: readonly Item[]
   // primaryKey?: Item extends object ? TablePrimaryKey<Item> : string
   primaryKey?: TablePrimaryKey<Item>
-  tbodyClass?: ClassValue
-  tbodyTrAttrs?: ((item: Item | null, type: TableRowType) => AttrsValue) | AttrsValue
-  // tbodyTransitionHandlers
-  // tbodyTransitionProps
-  tbodyTrClass?:
-    ((item: Item | null, type: TableRowType) => TableStrictClassValue) | TableStrictClassValue
-  tfootClass?: ClassValue
-  tfootTrClass?: ClassValue
-  theadClass?: ClassValue
-  theadTrClass?: ClassValue
+  tbody?: TableBodySection<Item>
+  /** Keys left out fall back to the matching `thead` key */
+  tfoot?: TableHeadSection
+  thead?: TableHeadSection
 }
 
-export interface BTableProps<Item>
-  extends Omit<BTableLiteProps<Item>, 'tableClass'>, FormDebounceOptions {
+export interface BTableProps<Item> extends BTableLiteProps<Item>, FormDebounceOptions {
   provider?: BTableProvider<Item>
   noProvider?: readonly NoProviderTypes[]
   noProviderPaging?: boolean
@@ -1373,7 +1366,7 @@ export interface BTableProps<Item>
   selectionColor?: ColorExtendables
   sortBy?: readonly BTableSortBy[]
   sortCompare?: BTableSortByComparerFunction<Item>
-  mustSort?: boolean | readonly string[] // TODO this is a string of fields, possibly generic
+  mustSort?: boolean
   initialSortDirection?: BTableInitialSortDirection
   selectable?: boolean
   multisort?: boolean
@@ -1388,9 +1381,7 @@ export interface BTableProps<Item>
   filterable?: readonly string[]
   // TODO
   // apiUrl?: string
-  labelSortAsc?: string
-  labelSortClear?: string
-  labelSortDesc?: string
+  labels?: {sortAsc?: string; sortDesc?: string; sortClear?: string}
   noFooterSorting?: boolean
   noLocalSorting?: boolean
   noSelectOnClick?: boolean
@@ -1398,8 +1389,7 @@ export interface BTableProps<Item>
   selectedItems?: readonly Item[]
   noSortableIcon?: boolean
   sortIconLeft?: boolean
-  emptyFilteredText?: string
-  emptyText?: string
+  empty?: {text?: string; filteredText?: string}
   showEmpty?: boolean
 }
 
@@ -1419,7 +1409,6 @@ export interface BTdProps {
   color?: ColorExtendables | null
   colspan?: Numberish
   rowspan?: Numberish
-  stackedHeading?: string
   stickyColumn?: boolean
 }
 
@@ -1431,7 +1420,6 @@ export interface BThProps {
   color?: ColorExtendables | null
   colspan?: Numberish
   rowspan?: Numberish
-  stackedHeading?: string
   stickyColumn?: boolean
   scope?: TableThScope
 }

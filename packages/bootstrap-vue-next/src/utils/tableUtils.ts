@@ -50,7 +50,6 @@ export const bTableSimpleProps = Object.freeze(
     stripedColumns: 0,
     color: 0,
     tableAttrs: 0,
-    tableClass: 0,
   } satisfies Record<keyof BTableSimpleProps, 0>)
 ) as readonly (keyof BTableSimpleProps)[]
 
@@ -58,33 +57,23 @@ export const bTableLiteProps = Object.freeze(
   Object.keys({
     align: 0,
     caption: 0,
-    detailsTdClass: 0,
-    fieldColumnClass: 0,
+    detailsTdAttrs: 0,
+    fieldColumnAttrs: 0,
     fields: 0,
     footClone: 0,
-    footColor: 0,
-    footRowColor: 0,
-    headColor: 0,
-    headRowColor: 0,
     items: 0,
-    labelStacked: 0,
     modelValue: 0,
     primaryKey: 0,
-    tbodyClass: 0,
-    tbodyTrAttrs: 0,
-    tbodyTrClass: 0,
-    tfootClass: 0,
+    tbody: 0,
+    tfoot: 0,
+    thead: 0,
     expandedItems: 0,
-    tfootTrClass: 0,
-    theadClass: 0,
-    theadTrClass: 0,
   } satisfies Record<keyof Omit<BTableLiteProps<unknown>, keyof BTableSimpleProps>, 0>)
 ) as readonly (keyof Omit<BTableLiteProps<unknown>, keyof BTableSimpleProps>)[]
 
-export type StackedProps = {
-  stacked: boolean | Breakpoint | undefined
-  labelStacked: boolean | undefined
-}
-
-export const getDataLabelAttr = (props: StackedProps, label: string) =>
-  props.stacked && props.labelStacked !== true ? {'data-label': label} : undefined
+/**
+ * The `data-cell` attribute Bootstrap's `.table-stacked` uses as the label of a stacked `<td>`.
+ * Only rendered while the table is stacked.
+ */
+export const getDataCellAttr = (stacked: boolean | Breakpoint | undefined, label: string) =>
+  stacked ? {'data-cell': label} : undefined

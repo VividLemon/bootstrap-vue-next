@@ -25,10 +25,10 @@ const items: TableItem<SortPerson>[] = [
 ]
 
 const fields: TableFieldRaw<SortPerson>[] = [
-  { key: 'last_name', sortable: true },
-  { key: 'first_name', sortable: true },
-  { key: 'age', sortable: true },
-  { key: 'isActive', sortable: false },
+  { key: 'last_name', sort: true },
+  { key: 'first_name', sort: true },
+  { key: 'age', sort: true },
+  { key: 'isActive' },
 ]
 
 const sortBy = ref<BTableSortBy[]>([{ key: 'first_name', order: 'desc' }])
