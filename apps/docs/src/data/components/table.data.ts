@@ -616,8 +616,10 @@ export default {
           default: false,
         },
         mustSort: {
-          type: 'boolean | string[]',
+          type: 'boolean',
           default: false,
+          description:
+            "Sorting cannot be cleared by clicking a sorted column; it cycles between ascending and descending. A field's `sort.must` overrides this for that column",
         },
         noLocalSorting: {
           type: 'boolean',

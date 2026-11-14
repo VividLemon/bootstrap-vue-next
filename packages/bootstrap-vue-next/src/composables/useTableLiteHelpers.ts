@@ -56,7 +56,7 @@ export const useTableFieldsMapper = <Item>({
             return {
               key: k,
               label,
-              td: {attr: getDataCellAttr(stackedValue, label)},
+              tdAttrs: getDataCellAttr(stackedValue, label),
             }
           }),
         }
@@ -71,26 +71,26 @@ export const useTableFieldsMapper = <Item>({
         if (isTableField(f)) {
           const label = f.label ?? startCase(f.key as string)
           const dataCellAttr = getDataCellAttr(stackedValue, label)
-          const fieldTdAttr = f.td?.attr
-          const tdAttr =
-            typeof fieldTdAttr === 'function'
+          const fieldTdAttrs = f.tdAttrs
+          const tdAttrs =
+            typeof fieldTdAttrs === 'function'
               ? (obj: unknown) => ({
                   ...dataCellAttr,
-                  ...(fieldTdAttr as (obj: unknown) => AttrsValue)(obj),
+                  ...(fieldTdAttrs as (obj: unknown) => AttrsValue)(obj),
                 })
-              : dataCellAttr || fieldTdAttr
-                ? {...dataCellAttr, ...fieldTdAttr}
+              : dataCellAttr || fieldTdAttrs
+                ? {...dataCellAttr, ...fieldTdAttrs}
                 : undefined
           return {
             ...(f as TableField),
-            td: {...f.td, attr: tdAttr},
+            tdAttrs,
           }
         }
         const label = startCase(f as string)
         return {
           key: f as string,
           label,
-          td: {attr: getDataCellAttr(stackedValue, label)},
+          tdAttrs: getDataCellAttr(stackedValue, label),
         }
       }),
     }

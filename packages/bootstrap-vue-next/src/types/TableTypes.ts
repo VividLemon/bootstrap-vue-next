@@ -1,4 +1,4 @@
-import type {ComputedRef, StyleValue} from 'vue'
+import type {ComputedRef} from 'vue'
 import type {ColorExtendables} from './ColorTypes'
 import type {MaybePromise} from './MaybePromise'
 import type {LiteralUnion} from './LiteralUnion'
@@ -112,20 +112,18 @@ export type TableField<T = any> = {
   sort?: boolean | TableFieldSort<T>
   stickyColumn?: boolean
   scope?: TableThScope
-  /** The header cell (`<th>`): class, style and attributes */
-  th?: {
-    class?: ClassValue
-    style?: StyleValue
-    attr?:
-      | AttrsValue
-      | ((obj: {value: unknown; key: string; item: T | null; type: TableRowThead}) => AttrsValue)
-  }
-  /** The data cell (`<td>`): class and attributes */
-  td?: {
-    class?:
-      TableStrictClassValue | ((value: unknown, key: string, item: T) => TableStrictClassValue)
-    attr?: AttrsValue | ((obj: {value: unknown; key: string; item: T}) => AttrsValue)
-  }
+  /**
+   * Attributes for the column's header cells (`<th>` in `<thead>` and `<tfoot>`), including `class` and `style`.
+   * A function is called for each cell
+   */
+  thAttrs?:
+    | AttrsValue
+    | ((obj: {value: unknown; key: string; item: T | null; type: TableRowThead}) => AttrsValue)
+  /**
+   * Attributes for the column's data cells (`<td>`), including `class` and `style`.
+   * A function is called for each cell
+   */
+  tdAttrs?: AttrsValue | ((obj: {value: unknown; key: string; item: T}) => AttrsValue)
 }
 
 /** Sorting options of a sortable column */
@@ -135,6 +133,8 @@ export type TableFieldSort<T = any> = {
   initialDirection?: BTableInitialSortDirection
   byFormatted?: boolean | TableFieldFormatter<T>
   compare?: BTableSortByComparerFunction<T>
+  /** Sorting this column cannot be cleared by clicking. Overrides the table's `mustSort` */
+  must?: boolean
 }
 
 /** Resolves a field's `sort` into whether it is sortable and its options */
@@ -144,6 +144,12 @@ export const getFieldSort = <T>(
   const sort = field?.sort
   return {sortable: !!sort, ...(typeof sort === 'object' ? sort : {})}
 }
+
+/** Whether a column's sorting cannot be cleared: the field's `sort.must`, else the table's `mustSort` */
+export const isFieldMustSort = <T>(
+  field: TableField<T> | null | undefined,
+  tableMustSort: boolean
+): boolean => getFieldSort(field).must ?? tableMustSort
 
 export type TableFieldRaw<T = unknown> = T extends object
   ? LiteralUnion<keyof T> | TableField<T>

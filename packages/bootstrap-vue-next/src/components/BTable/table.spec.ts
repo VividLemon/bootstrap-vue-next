@@ -3276,6 +3276,39 @@ describe('mustSort prop', () => {
     const sortEvents = wrapper.emitted('sorted') as BTableSortBy[][]
     expect(sortEvents[2][0]).toMatchObject({order: undefined})
   })
+
+  it('prevents clearing sort for a field with sort.must', async () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: simpleItems,
+        fields: [{key: 'age', sort: {must: true}}],
+      },
+    })
+    const header = wrapper.get('thead th')
+    await header.trigger('click')
+    await header.trigger('click')
+    await header.trigger('click')
+
+    const sortEvents = wrapper.emitted('sorted') as BTableSortBy[][]
+    expect(sortEvents[2][0]).toMatchObject({order: 'asc'})
+  })
+
+  it('lets a field with sort.must false clear sort when the table has mustSort', async () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: simpleItems,
+        fields: [{key: 'age', sort: {must: false}}],
+        mustSort: true,
+      },
+    })
+    const header = wrapper.get('thead th')
+    await header.trigger('click')
+    await header.trigger('click')
+    await header.trigger('click')
+
+    const sortEvents = wrapper.emitted('sorted') as BTableSortBy[][]
+    expect(sortEvents[2][0]).toMatchObject({order: undefined})
+  })
 })
 
 describe('slot pass-through', () => {
@@ -3647,7 +3680,7 @@ describe('filterByFormatted as function', () => {
     expect(rows[0].find('td').text()).toBe('92') // raw value shown since no formatter
   })
 
-  it('keeps a function th.attr and adds aria-sort to its result', () => {
+  it('keeps a function thAttrs and adds aria-sort to its result', () => {
     const wrapper = mount(BTable, {
       props: {
         items: [{name: 'A'}],
@@ -3655,13 +3688,27 @@ describe('filterByFormatted as function', () => {
           {
             key: 'name',
             sort: true,
-            th: {attr: ({type}: {type: string}) => ({'data-th': type})},
+            thAttrs: ({type}: {type: string}) => ({'data-th': type}),
           },
         ],
       },
     })
     const th = wrapper.get('thead th')
     expect(th.attributes('data-th')).toBe('top')
+    expect(th.attributes('aria-sort')).toBe('none')
+  })
+
+  it('merges a thAttrs class with the sort icon class', () => {
+    const wrapper = mount(BTable, {
+      props: {
+        items: [{name: 'A'}],
+        sortIconLeft: true,
+        fields: [{key: 'name', sort: true, thAttrs: {class: 'from-field'}}],
+      },
+    })
+    const th = wrapper.get('thead th')
+    expect(th.classes()).toContain('from-field')
+    expect(th.classes()).toContain('b-table-sort-icon-left')
     expect(th.attributes('aria-sort')).toBe('none')
   })
 })

@@ -1368,7 +1368,7 @@ export interface BTableProps<Item> extends BTableLiteProps<Item>, FormDebounceOp
   selectionColor?: ColorExtendables
   sortBy?: readonly BTableSortBy[]
   sortCompare?: BTableSortByComparerFunction<Item>
-  mustSort?: boolean | readonly string[] // TODO this is a string of fields, possibly generic
+  mustSort?: boolean
   initialSortDirection?: BTableInitialSortDirection
   selectable?: boolean
   multisort?: boolean

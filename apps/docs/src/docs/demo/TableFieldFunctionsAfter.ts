@@ -4,11 +4,9 @@ const fields = [
   {
     key: 'status',
     formatter: ({ value, key, item }: { value: any; key: any; item: any }) => value.toUpperCase(),
-    td: {
-      attr: ({ value, key, item }: { value: any; key: any; item: any }) => ({
-        class: value === 'active' ? 'text-success' : '',
-      }),
-    },
+    tdAttrs: ({ value, key, item }: { value: any; key: any; item: any }) => ({
+      class: value === 'active' ? 'text-success' : '',
+    }),
   },
 ]
 // #endregion snippet

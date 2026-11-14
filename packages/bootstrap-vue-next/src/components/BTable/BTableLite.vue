@@ -14,9 +14,8 @@
           :title="field.header?.title"
           :color="field.color"
           :abbr="field.header?.abbr"
-          :style="field.th?.style"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
-          v-bind="mergeProps(callFieldColumnAttrs(field), callThAttr(null, field, 'top') ?? {})"
+          v-bind="mergeProps(callFieldColumnAttrs(field), callThAttrs(null, field, 'top') ?? {})"
           @click="keyboardController.headerClicked(field, $event)"
           @keydown="keyboardController.handleHeaderKeydown(field, $event)"
         >
@@ -39,7 +38,7 @@
           :key="field.key"
           scope="col"
           :color="field.color"
-          :class="[field.class, field.th?.class]"
+          :class="[field.class, callThAttrs(null, field, 'top')?.class]"
         >
           <slot name="thead-sub" :items="props.items" :fields="computedFields" :field>
             {{ field.label }}
@@ -100,7 +99,7 @@
               v-for="field in computedFields"
               :key="field.key"
               :color="getCellColor(item, field)"
-              :class="getFieldRowClasses(field, item)"
+              :class="getFieldRowClasses(field)"
               v-bind="{
                 ...(field.isRowHeader ? {scope: 'row'} : undefined),
                 ...itemAttributes(item, field),
@@ -161,10 +160,9 @@
           :class="getFieldColumnClasses(field)"
           :title="field.header?.title"
           :abbr="field.header?.abbr"
-          :style="field.th?.style"
           :color="field.color"
           :tabindex="keyboardController.shouldHeaderBeFocusable(field) ? '0' : undefined"
-          v-bind="mergeProps(callFieldColumnAttrs(field), callThAttr(null, field, 'bottom') ?? {})"
+          v-bind="mergeProps(callFieldColumnAttrs(field), callThAttrs(null, field, 'bottom') ?? {})"
           @click="keyboardController.headerClicked(field, $event, true)"
           @keydown="keyboardController.handleHeaderKeydown(field, $event, true)"
         >
@@ -327,7 +325,6 @@ const computedTableAttrs = computed(() =>
 )
 const getFieldColumnClasses = (field: TableField) => [
   field.class,
-  field.th?.class,
   {
     'b-table-sticky-column': field.stickyColumn,
   },
@@ -336,23 +333,20 @@ const callFieldColumnAttrs = (field: TableField<Item>) =>
   (typeof props.fieldColumnAttrs === 'function'
     ? props.fieldColumnAttrs(field)
     : props.fieldColumnAttrs) ?? {}
-const getFieldRowClasses = (field: Readonly<TableField>, tr: Item) => [
+const getFieldRowClasses = (field: Readonly<TableField>) => [
   field.class,
-  typeof field.td?.class === 'function'
-    ? field.td.class(getByFieldKey(tr, field), field.key, tr)
-    : field.td?.class,
   {
     'b-table-sticky-column': field.stickyColumn,
   },
 ]
 const itemAttributes = (item: Item, field: TableField) =>
-  field.td?.attr && typeof field.td.attr === 'function'
-    ? field.td.attr({value: getByFieldKey(item, field), key: field.key, item})
-    : field.td?.attr
-const callThAttr = (item: Item | null, field: TableField<Item>, type: TableRowThead) =>
-  field.th?.attr && typeof field.th.attr === 'function'
-    ? field.th.attr({value: getByFieldKey(item, field), key: field.key, item, type})
-    : field.th?.attr
+  typeof field.tdAttrs === 'function'
+    ? field.tdAttrs({value: getByFieldKey(item, field), key: field.key, item})
+    : field.tdAttrs
+const callThAttrs = (item: Item | null, field: TableField<Item>, type: TableRowThead) =>
+  typeof field.thAttrs === 'function'
+    ? field.thAttrs({value: getByFieldKey(item, field), key: field.key, item, type})
+    : field.thAttrs
 const callTbodyTrAttrs = (item: Item | null, type: TableRowType) =>
   props.tbody?.trAttrs
     ? typeof props.tbody.trAttrs === 'function'

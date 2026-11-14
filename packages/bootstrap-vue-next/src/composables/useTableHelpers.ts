@@ -4,6 +4,7 @@ import {
   type MaybeRefOrGetter,
   onMounted,
   provide,
+  mergeProps,
   readonly,
   type Ref,
   toRef,
@@ -26,6 +27,7 @@ import {
   type BTableSortByComparerFunction,
   type BTableSortByOrder,
   getFieldSort,
+  isFieldMustSort,
   isTableField,
   isTableItem,
   type NoProviderTypes,
@@ -95,7 +97,7 @@ export const useTableMapper = <Item>({
         return {
           key: el as string,
           label,
-          td: {attr: getDataCellAttr(toValue(stacked), label)},
+          tdAttrs: getDataCellAttr(toValue(stacked), label),
         }
       }
 
@@ -111,30 +113,22 @@ export const useTableMapper = <Item>({
                 ? 'ascending'
                 : 'none'
 
-      // A function `th.attr` is called per header cell, so `aria-sort` is added to its result
-      const fieldThAttr = el.th?.attr
+      // The table's own header attributes; the field's `thAttrs` are merged over them.
+      // A function `thAttrs` is called per header cell, so it is merged per call
+      const sortAttrs = {
+        'aria-sort': sortValue,
+        'class': {
+          'b-table-sort-icon-left': toValue(pagination.sort.iconLeft) && sortValue !== undefined,
+        },
+      }
+      const fieldThAttrs = el.thAttrs
       return {
         ...(el as TableField<Item>),
-        th: {
-          ...el.th,
-          attr:
-            typeof fieldThAttr === 'function'
-              ? (obj: ThAttrContext) => ({
-                  'aria-sort': sortValue,
-                  ...(fieldThAttr as (obj: ThAttrContext) => AttrsValue)(obj),
-                })
-              : {
-                  'aria-sort': sortValue,
-                  ...fieldThAttr,
-                },
-          class: [
-            el.th?.class,
-            {
-              'b-table-sort-icon-left':
-                toValue(pagination.sort.iconLeft) && sortValue !== undefined,
-            },
-          ],
-        },
+        thAttrs:
+          typeof fieldThAttrs === 'function'
+            ? (obj: ThAttrContext) =>
+                mergeProps(sortAttrs, (fieldThAttrs as (obj: ThAttrContext) => AttrsValue)(obj))
+            : mergeProps(sortAttrs, fieldThAttrs ?? {}),
       }
     })
   )
@@ -652,7 +646,7 @@ export const useTableSort = <Item>({
   fields: MaybeRefOrGetter<readonly TableFieldRaw<Item>[]>
   sortBy: Ref<readonly BTableSortBy[] | undefined>
   initialSortDirection: MaybeRefOrGetter<BTableInitialSortDirection>
-  mustSort: MaybeRefOrGetter<boolean | readonly string[]>
+  mustSort: MaybeRefOrGetter<boolean>
   multisort: MaybeRefOrGetter<boolean>
   events: {
     onSorted: (sortBy: BTableSortBy) => void
@@ -703,13 +697,11 @@ export const useTableSort = <Item>({
     }
 
     const resolveOrder = (val: BTableSortByOrder | undefined): BTableSortByOrder | undefined => {
-      const mustSortValue = toValue(mustSort)
       // New sort: honor the configured initial direction
       if (val === undefined) return getInitialSortDirection()
       // Determine initial direction for this field
       const initial = getInitialSortDirection()
-      const must =
-        mustSortValue === true || (!!mustSortValue && mustSortValue.includes(fieldKey as string))
+      const must = isFieldMustSort(field, toValue(mustSort))
       if (val === 'asc') {
         if (initial === 'desc') {
           // If mustSort, cycle asc -> desc, else asc -> undefined

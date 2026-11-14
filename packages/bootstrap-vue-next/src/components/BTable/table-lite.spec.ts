@@ -1485,12 +1485,12 @@ describe('btablelite', () => {
     })
   })
 
-  describe('field thStyle', () => {
-    it('applies thStyle to header cells', () => {
+  describe('field thAttrs style', () => {
+    it('applies thAttrs style to header cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', label: 'A', th: {style: {width: '200px'}}}],
+          fields: [{key: 'a', label: 'A', thAttrs: {style: {width: '200px'}}}],
         },
       })
       expect(wrapper.get('thead th').attributes('style')).toContain('width: 200px')
@@ -1534,18 +1534,18 @@ describe('btablelite', () => {
     })
   })
 
-  describe('field tdAttr', () => {
-    it('applies static tdAttr to body cells', () => {
+  describe('field tdAttrs', () => {
+    it('applies static tdAttrs to body cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', label: 'A', td: {attr: {'data-test': 'hello'}}}],
+          fields: [{key: 'a', label: 'A', tdAttrs: {'data-test': 'hello'}}],
         },
       })
       expect(wrapper.get('tbody td').attributes('data-test')).toBe('hello')
     })
 
-    it('applies function tdAttr to body cells', () => {
+    it('applies function tdAttrs to body cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 42}],
@@ -1553,7 +1553,7 @@ describe('btablelite', () => {
             {
               key: 'a',
               label: 'A',
-              td: {attr: ({value}: {value: unknown}) => ({'data-value': String(value)})},
+              tdAttrs: ({value}: {value: unknown}) => ({'data-value': String(value)}),
             },
           ],
         },
@@ -1562,18 +1562,18 @@ describe('btablelite', () => {
     })
   })
 
-  describe('field tdClass', () => {
-    it('applies static tdClass to body cells', () => {
+  describe('field tdAttrs class', () => {
+    it('applies a static tdAttrs class to body cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', label: 'A', td: {class: 'custom-td'}}],
+          fields: [{key: 'a', label: 'A', tdAttrs: {class: 'custom-td'}}],
         },
       })
       expect(wrapper.get('tbody td').classes()).toContain('custom-td')
     })
 
-    it('applies function tdClass to body cells', () => {
+    it('applies a function tdAttrs class to body cells', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 42}],
@@ -1581,7 +1581,7 @@ describe('btablelite', () => {
             {
               key: 'a',
               label: 'A',
-              td: {class: (value: unknown) => (value === 42 ? 'is-42' : '')},
+              tdAttrs: ({value}: {value: unknown}) => ({class: value === 42 ? 'is-42' : ''}),
             },
           ],
         },
@@ -1595,7 +1595,7 @@ describe('btablelite', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', th: {class: 'th-class'}}],
+          fields: [{key: 'a', thAttrs: {class: 'th-class'}}],
           fieldColumnAttrs: {'class': 'col-class', 'data-foo': 'bar'},
         },
       })
@@ -1619,17 +1619,17 @@ describe('btablelite', () => {
       expect(wrapper.findAll('tfoot th')[1].classes()).toContain('col-b')
     })
 
-    it('merges fieldColumnAttrs class with the field thAttr class', () => {
+    it('merges fieldColumnAttrs class with the field thAttrs class', () => {
       const wrapper = mount(BTableLite, {
         props: {
           items: [{a: 1}],
-          fields: [{key: 'a', th: {attr: {class: 'from-th-attr'}}}],
+          fields: [{key: 'a', thAttrs: {class: 'from-th-attrs'}}],
           fieldColumnAttrs: {class: 'col-class'},
         },
       })
       const $th = wrapper.get('thead th')
       expect($th.classes()).toContain('col-class')
-      expect($th.classes()).toContain('from-th-attr')
+      expect($th.classes()).toContain('from-th-attrs')
     })
   })
 

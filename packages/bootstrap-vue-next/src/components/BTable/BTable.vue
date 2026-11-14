@@ -131,6 +131,7 @@ import {
   useTableSort,
 } from '../../composables/useTableHelpers'
 import {useItemExpansion} from '../../composables/useTableLiteHelpers'
+import {isFieldMustSort} from '../../types/TableTypes'
 
 const _props = withDefaults(
   defineProps<
@@ -438,6 +439,16 @@ const computedLiteProps = computed(() => ({
   ...boundBTableLiteEmits,
 }))
 
+const computedLabels = computed(() => ({
+  sortAsc: props.labels?.sortAsc ?? 'Click to sort ascending',
+  sortDesc: props.labels?.sortDesc ?? 'Click to sort descending',
+  sortClear: props.labels?.sortClear ?? 'Click to clear sorting',
+}))
+const computedEmpty = computed(() => ({
+  text: props.empty?.text ?? 'There are no records to show',
+  filteredText: props.empty?.filteredText ?? 'There are no records matching your request',
+}))
+
 const emptySlotScope = computed(() => ({
   empty: computedEmpty.value,
   fields: computedFields.value,
@@ -450,16 +461,6 @@ const showEmptyFiltered = computed(
   () => isFilterableTable.value && props.filter !== undefined && props.filter !== ''
 )
 
-const computedLabels = computed(() => ({
-  sortAsc: props.labels?.sortAsc ?? 'Click to sort ascending',
-  sortDesc: props.labels?.sortDesc ?? 'Click to sort descending',
-  sortClear: props.labels?.sortClear ?? 'Click to clear sorting',
-}))
-const computedEmpty = computed(() => ({
-  text: props.empty?.text ?? 'There are no records to show',
-  filteredText: props.empty?.filteredText ?? 'There are no records matching your request',
-}))
-
 // Compute sr-only sort label for each field based on current sort state
 const getSortLabel = (field: TableField<Item>): string => {
   if (!sortController.isSortable.value || !field.sort) return ''
@@ -471,11 +472,7 @@ const getSortLabel = (field: TableField<Item>): string => {
     return computedLabels.value.sortDesc
   }
   // Currently sorted descending
-  const mustSortValue = props.mustSort
-  if (
-    mustSortValue ||
-    (Array.isArray(mustSortValue) && mustSortValue.includes(field.key as string))
-  ) {
+  if (isFieldMustSort(field, props.mustSort)) {
     return computedLabels.value.sortAsc
   }
   return computedLabels.value.sortClear

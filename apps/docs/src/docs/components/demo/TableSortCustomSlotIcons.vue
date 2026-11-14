@@ -69,10 +69,10 @@ const icons = {
 }
 
 function getSortIcon(field: TableField<Person>): string {
-  // th.attr can be an object or function, so check if it's an object first
+  // thAttrs can be an object or function, so check if it's an object first
   const ariaSort =
-    typeof field.th?.attr === 'object' && field.th.attr !== null
-      ? field.th.attr['aria-sort']
+    typeof field.thAttrs === 'object' && field.thAttrs !== null
+      ? field.thAttrs['aria-sort']
       : undefined
 
   if (ariaSort === 'ascending') return icons.ascending

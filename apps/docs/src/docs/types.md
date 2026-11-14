@@ -634,23 +634,17 @@ interface TableField<T = Record<string, unknown>> {
   isRowHeader?: boolean
   sort?: boolean | TableFieldSort<T>
   stickyColumn?: boolean
-  td?: {
-    class?: TableStrictClassValue | ((value: unknown, key: string, item: T) => TableStrictClassValue)
-    attr?: AttrsValue | ((obj: {value: unknown; key: string; item: T}) => AttrsValue)
-  }
-  th?: {
-    class?: ClassValue
-    style?: StyleValue
-    attr?:
-      | AttrsValue
-      | ((obj: {value: unknown; key: string; item: T | null; type: TableRowThead}) => AttrsValue)
-  }
+  tdAttrs?: AttrsValue | ((obj: {value: unknown; key: string; item: T}) => AttrsValue)
+  thAttrs?:
+    | AttrsValue
+    | ((obj: {value: unknown; key: string; item: T | null; type: TableRowThead}) => AttrsValue)
 }
 type TableFieldSort<T = any> = {
   direction?: string
   initialDirection?: BTableInitialSortDirection
   byFormatted?: boolean | TableFieldFormatter<T>
   compare?: BTableSortByComparerFunction<T>
+  must?: boolean
 }
 type TableFieldRaw<T = Record<string, unknown>> = string | TableField<T>
 ```
