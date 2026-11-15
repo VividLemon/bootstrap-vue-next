@@ -4,7 +4,7 @@ Handoff for the orchestrating agent of the Bootstrap v6 work. It describes a pro
 
 Written 2026-11-09 from a session that fixed show/hide bugs on `main`. Breaking changes are allowed: the maintainer said "as many or as few as required".
 
-**Status: Decided** (2026-11-09). The orchestrator verified the v6 findings with tests, placed the work in the plan and routed the questions; see [Orchestration](#orchestration) and [Decisions](#decisions). Implementation has not started.
+**Status: S1 implemented** (2026-11-15; decided 2026-11-09). The orchestrator verified the v6 findings with tests, placed the work in the plan and routed the questions; see [Orchestration](#orchestration) and [Decisions](#decisions). The machine (S1) is implemented, see the 2026-11-15 update below; the orchestrator part (G1.2) has not started.
 
 **Update 2026-11-14: re-scoped.** Since this plan was written, most of the bugs that motivated it were fixed directly on `bootstrap-v6`, so S1 is now a cleanup that makes the lifecycle explicit, not a bug fix:
 
@@ -13,6 +13,19 @@ Written 2026-11-09 from a session that fixed show/hide bugs on `main`. Breaking 
 - Re-checked on `bootstrap-v6` at `14641f1ef` with the same kind of throwaway spec: catalog rows #5, #6, #7 and #11 are fixed (see [Verification](#verification-on-bootstrap-v6-foundations)). D2 ("don't patch #164") was overtaken: the fixes landed through #174 and #167.
 - Still open, and still S1's scope: the implicit state (`visible`, `isActive`, `instant`, `pending` and the delay timer instead of a `state` enum, D7), the transition table and generated tests, `dispose` semantics (D3), reversing a hide (D4), `sync` requests for a native `<dialog>` `close`, the `disabled` guard (D8), removing `noCloseOnBackdrop` / `noCloseOnEsc` from the core, and one owner of visibility for the orchestrator (G1.2), which now replaces #3374's store sync instead of an unpatched store.
 - Native adopters on `bootstrap-v6`: BCollapse (and BAccordionItem), BAlert and BToast. BModal, BOffcanvas, BDropdown and BPopover / BTooltip are still on `useLegacyShowHide` (the floating UI batch has not started).
+
+**Update 2026-11-15: S1 implemented** (branch `s1-show-hide-state-machine`). `src/composables/showHideMachine.ts` holds the machine and the transition table (`showHideTransitions`); `useShowHide` delegates to it and returns the read-only `state`. `architecture/ARIA_VISIBILITY.md` ("State machine") has the table and the event-order guarantees as built. What differs from the sketch below, and what is left for later steps:
+
+- **`visible` is not simply "`showing` or `shown`".** `state` changes when the request is accepted; `visible` (the state class) flips after the `delay`. During a delay phase `visible` keeps its previous value, so a show during a hide's delay never flickers.
+- **`dispose` (D3):** pending operations resolve `false`, an open `show(true)` cycle resolves `'dispose'` (it resolved `false` before). `state` keeps its last value, and requests after unmount resolve `false` without events.
+- **`show(true)` while already `shown`** joins the open cycle (it resolved `true` at once before).
+- **`toggle`** follows the yield rule too: a `toggle` listener that makes a request replaces the toggle.
+- **`disabled` (D8)** is an option of `useShowHide` (`{disabled}`, a ref or getter), not a prop it reads: BAlert and BToast have a `disabled` prop with another meaning. The hide on disable is an ordinary cancelable hide with trigger `'disabled'` and no trigger event.
+- **`noCloseOnBackdrop` / `noCloseOnEsc`** are removed from `UseShowHideProps`; no native adopter declared them. BModal / BOffcanvas keep them through `useLegacyShowHide`.
+- **A hide that already happened** (native `<dialog>` `close`) exists in the machine as `hide(trigger, {cancelable: false})` and is tested there. `useShowHide` does not expose it yet; G1.1 adds the entry point it needs.
+- **Listener that throws:** in the request phase the error reaches the caller and nothing changed. Vue's `emit` normally handles listener errors itself, so this only matters with a throwing `app.config.errorHandler`.
+- **Not done here, for G1.2:** the orchestrator controller and `create()` are untouched (store sync and `awaitDismissal` are still there). The controller can read `state` once components expose it; native adopters do not expose `state` from `defineExpose` or slot props yet. Catalog rows #12–#17 and #20–#25 stay with G1.2, #18 and #19 with their batches.
+- **Not used:** per-operation `AbortController`s (the delay timer is cleared and a superseded transition's result is ignored, which was enough) and `fast-check` (the generated sequences use a small seeded generator, no new dependency).
 
 ## Summary
 
