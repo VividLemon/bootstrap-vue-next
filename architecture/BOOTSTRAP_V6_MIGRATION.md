@@ -12,39 +12,39 @@ It is the single source of truth for the migration: implementation work follows 
 
 ## Status
 
-| Phase                                                                                                              | State                                                                 |
-| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
-| Color API (`theme` / `bg` / `fg` / `border`, `ThemeProp`)                                                          | Done (`641959ec`)                                                     |
-| Phase 0: workspace on Bootstrap 6, library SCSS on v6 Sass                                                         | Done (`80574a2c`)                                                     |
-| Phase 2a: foundations (CSS layer, breakpoints + responsive objects + grid, transition core, color + hover objects) | Done (`6e762b88`…`ee04af38`)                                          |
-| Phase 2b: component batches                                                                                        | In progress — see [Implementation progress](#implementation-progress) |
-| Phase 3: migration docs                                                                                            | Not started                                                           |
-| Deferred components                                                                                                | See [Deferred components](#deferred-components)                       |
-| Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source) |
+| Phase                                                                                                              | State                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Color API (`theme` / `bg` / `fg` / `border`, `ThemeProp`)                                                          | Done (`641959ec`)                                                                                                                                                                                           |
+| Phase 0: workspace on Bootstrap 6, library SCSS on v6 Sass                                                         | Done (`80574a2c`)                                                                                                                                                                                           |
+| Phase 2a: foundations (CSS layer, breakpoints + responsive objects + grid, transition core, color + hover objects) | Done, merged as [#164](https://github.com/VividLemon/bootstrap-vue-next/pull/164) (`79b78d79`)                                                                                                              |
+| Phase 2b: component batches                                                                                        | Wave 1 merged (#165–#168); wave 2 not started — see [Implementation progress](#implementation-progress)                                                                                                     |
+| Phase 3: migration docs                                                                                            | Not started                                                                                                                                                                                                 |
+| Deferred components                                                                                                | Plans decided and merged ([#169](https://github.com/VividLemon/bootstrap-vue-next/pull/169), `BOOTSTRAP_V6_NEW_COMPONENTS.md`); implementation not started. See [Deferred components](#deferred-components) |
+| Show/hide state machine (S1)                                                                                       | Not started — prerequisite for Dialog / Drawer / Menu, see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`                                                                                                        |
+| Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source)                                                                                                                          |
+| Post-migration (maybe): public `useTable` composable                                                               | Undecided — see `USE_TABLE_COMPOSABLE.md`                                                                                                                                                                   |
 
 ## Implementation progress
 
-Last updated: 2026-11-03. `bootstrap-v6` is local and not pushed.
+Last updated: 2026-11-15. `bootstrap-v6` is on `origin`; every batch lands as a PR into it.
 
 ### Phase 2b batches
 
-Review happens through stacked PRs on `origin`: the foundations (everything on `bootstrap-v6` up to the batches) are in [#164](https://github.com/VividLemon/bootstrap-vue-next/pull/164) (`bootstrap-v6-foundations` → `bootstrap-v6`), and each batch PR targets `bootstrap-v6-foundations`. After #164 merges, retarget each batch PR to `bootstrap-v6`. Wave 2 branch names must avoid existing remote branches such as `bootstrap-v6-card` and `bootstrap-v6-breadcrumb`.
+Each batch is reviewed as a PR into `bootstrap-v6` and squash-merged. Wave 1 and the foundations ([#164](https://github.com/VividLemon/bootstrap-vue-next/pull/164)) are merged. Wave 2 branch names must avoid existing remote branches such as `bootstrap-v6-card` and `bootstrap-v6-breadcrumb`.
 
-Each batch runs as an agent in its own git worktree under `.claude/worktrees/agent-<id>/` on branch `worktree-agent-<id>`, branched from `9380edda`. Uncommitted work stays in the worktree if the agent stops; check with `git -C .claude/worktrees/agent-<id> status`.
+Each batch runs as an agent in its own git worktree under `.claude/worktrees/`, branched from the current `origin/bootstrap-v6`. Uncommitted work stays in the worktree if the agent stops; check with `git -C .claude/worktrees/<name> status`.
 
-| Wave | Batch                                                | Plan section        | Branch                    | State                                                                                                                                                                                                             |
-| ---- | ---------------------------------------------------- | ------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1    | Forms and checks                                     | Forms               | `bootstrap-v6-forms`      | Done in `d4017e98`, `37133c92`, `623a742c`, `b7b89b11`, `7f1875a8`, `95100f61`, all checks pass; in review as [#165](https://github.com/VividLemon/bootstrap-vue-next/pull/165) (into `bootstrap-v6-foundations`) |
-| 1    | Tables                                               | Content             | `bootstrap-v6-tables`     | Done in `d37aec0f`, all checks pass; in review as [#166](https://github.com/VividLemon/bootstrap-vue-next/pull/166) (into `bootstrap-v6-foundations`)                                                             |
-| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `bootstrap-v6-feedback`   | Done in `6b596223`, `01431c7a`, `0ceaf2f3`, `ecd1bcee`, all checks pass; in review as [#167](https://github.com/VividLemon/bootstrap-vue-next/pull/167) (into `bootstrap-v6-foundations`)                         |
-| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `bootstrap-v6-navigation` | Done in `434ab6ac`, `c5d79b3a`, `e148bdfa`, all checks pass; in review as [#168](https://github.com/VividLemon/bootstrap-vue-next/pull/168) (into `bootstrap-v6-foundations`)                                     |
-| 2    | Buttons                                              | Buttons             | —                         | Not started                                                                                                                                                                                                       |
-| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                         | Not started                                                                                                                                                                                                       |
-| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                         | Not started                                                                                                                                                                                                       |
+| Wave | Batch                                                | Plan section        | Branch                    | State                                                                                    |
+| ---- | ---------------------------------------------------- | ------------------- | ------------------------- | ---------------------------------------------------------------------------------------- |
+| 1    | Forms and checks                                     | Forms               | `bootstrap-v6-forms`      | Merged as [#165](https://github.com/VividLemon/bootstrap-vue-next/pull/165) (`afa519b2`) |
+| 1    | Tables                                               | Content             | `bootstrap-v6-tables`     | Merged as [#166](https://github.com/VividLemon/bootstrap-vue-next/pull/166) (`9d1c103a`) |
+| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `bootstrap-v6-feedback`   | Merged as [#167](https://github.com/VividLemon/bootstrap-vue-next/pull/167) (`561b981f`) |
+| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `bootstrap-v6-navigation` | Merged as [#168](https://github.com/VividLemon/bootstrap-vue-next/pull/168) (`14641f1e`) |
+| 2    | Buttons                                              | Buttons             | —                         | Not started                                                                              |
+| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                         | Not started                                                                              |
+| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                         | Not started                                                                              |
 
-Known merge overlap: the navigation batch changed `BNavForm` (`formClass` → `formAttrs`, `validated` left alone), and the forms batch adds `validate` to the same file; expect a small conflict there. A dry-run merge (`git merge-tree`) of forms and navigation after the retarget showed no textual conflict.
-
-Known merge overlap: [#179](https://github.com/VividLemon/bootstrap-vue-next/pull/179) (`fix/v6-transition-stall-and-th-attr`, bounds the `useCssTransition` wait so `shown` / `hidden` fire when the page is not rendering, and keeps a function `thAttr` in `BTable`) conflicts with the tables batch (#166) in `useTableHelpers.ts`, where `thAttr` becomes `th.attr`. Whichever lands second carries the function handling over to `th.attr`.
+Both known merge overlaps (BNavForm between forms and navigation; `useTableHelpers.ts` between #179 and tables) were resolved in the merges.
 
 Tables batch follow-ups (from its report):
 
@@ -77,10 +77,12 @@ Forms batch follow-ups (from its report):
 
 ### Resuming
 
-1. Check each wave 1 worktree: if its branch has commits after `9380edda`, the batch finished — review and merge it. If it only has uncommitted changes, the agent stopped mid-task: resume the same agent if possible; otherwise start a new agent in that same worktree with the batch instructions below and tell it to continue from the existing changes.
-2. Merge finished batches one at a time onto `bootstrap-v6` with `git cherry-pick 9380edda..<branch>` (keeps history linear), then run the checks below on the combined result.
-3. Start wave 2 after wave 1 is merged, then Phase 3 (migration docs), then the cleanup section, then [Post-migration](#post-migration-api-docs-generated-from-source).
-4. Update this section and the Status table after each merge.
+1. Start each batch from the current `origin/bootstrap-v6` in its own worktree, with the batch agent instructions below.
+2. When a batch's checks pass, push its branch and open a PR into `bootstrap-v6`.
+3. After the PR merges, update this section and the Status table.
+4. Order: wave 2, then the show/hide machine (S1) and the new components (see `BOOTSTRAP_V6_NEW_COMPONENTS.md`), then Phase 3 (migration docs), then the cleanup section, then [Post-migration](#post-migration-api-docs-generated-from-source).
+
+Known failure on `bootstrap-v6`: `test:unit:ci` exits non-zero on three unhandled "Maximum recursive updates exceeded in component <BTabs>" errors from the BTabs specs, although every test passes. It is the BTabs issue listed under the cleanup section.
 
 ### Required checks
 
@@ -93,7 +95,7 @@ Forms batch follow-ups (from its report):
 
 Every batch agent receives these instructions plus its batch's components and plan section.
 
-1. **Base check first.** Worktrees for this project have been created from `main` by mistake. Run `git merge-base --is-ancestor 9380edda HEAD`; if it fails and there are no commits yet, `git reset --hard bootstrap-v6`. Then `pnpm install --frozen-lockfile --ignore-scripts`.
+1. **Base check first.** Worktrees for this project have been created from `main` by mistake. Run `git merge-base --is-ancestor origin/bootstrap-v6 HEAD`; if it fails and there are no commits yet, `git reset --hard origin/bootstrap-v6`. Then `pnpm install --frozen-lockfile --ignore-scripts`.
 2. **Read** `AGENTS.md`, this plan (implement exactly what it says for the batch, including the cross-cutting rules), and `architecture/ARIA_VISIBILITY.md` plus the JSDoc in `useShowHide.ts` / `useCssTransition.ts` when moving a component to the native transition path. Bootstrap v6 references: `packages/bootstrap-vue-next/node_modules/bootstrap/dist/css/bootstrap.css`, `scss/`, `js/src/`, and https://getbootstrap.com/docs/6.0/. The original research reports are lost, so re-derive details from the code and v6 sources; when something wasn't anticipated, follow v6 native behavior, make the smallest correct change, and report it.
 3. **Rules.** No compatibility shims. Apply the part attrs rule to every in-scope component (specs for the class merge). Update specs, docs `*.data.ts`, `apps/docs/src/utils/*.ts`, docs pages and demos, and playground usages. Do not write `migration-data` pages or edit this plan. Keep `ComponentProps.ts` edits inside the batch's interfaces, line-local. No `git commit --no-verify`.
 4. **Verify** with the required checks above, plus a headless Chromium check (installed `playwright-core`) where behavior or layout changed — via the package dev server on port 5174 with a temporary `src/App.vue` (reverted before committing) or a static SSR render with v6 `bootstrap.css` and the built library CSS. Report what could not be verified.
