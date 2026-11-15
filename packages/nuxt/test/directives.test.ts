@@ -33,8 +33,10 @@ describe('directives', async () => {
     const page = await createPage('/')
 
     await page.click('#modal-trigger')
-    await page.waitForSelector('#my-modal.show')
-    expect(await page.locator('#my-modal .modal-body').textContent()).toContain('Directive modal body')
+    await page.waitForSelector('#my-modal[open]')
+    expect(await page.locator('#my-modal .dialog-body').textContent()).toContain(
+      'Directive modal body',
+    )
 
     await page.close()
   })

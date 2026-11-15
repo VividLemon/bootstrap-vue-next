@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {type Component, type ComponentPublicInstance, type MaybeRef, type Ref} from 'vue'
-import type {BModalProps, BPopoverProps, BToastProps, BTooltipProps} from './ComponentProps'
+import type {BDialogProps, BPopoverProps, BToastProps, BTooltipProps} from './ComponentProps'
 import type {ContainerPosition} from './Alignment'
-import type {BModalSlots, BPopoverSlots, BToastSlots, BTooltipSlots} from './ComponentSlots'
-import type {BModalEmits, BPopoverEmits, BToastEmits, BTooltipEmits} from './ComponentEmits'
+import type {BDialogSlots, BPopoverSlots, BToastSlots, BTooltipSlots} from './ComponentSlots'
+import type {BDialogEmits, BPopoverEmits, BToastEmits, BTooltipEmits} from './ComponentEmits'
 import type {BvTriggerableEvent} from '../utils'
 
 // Common
@@ -159,11 +159,11 @@ export type PopoverOrchestratorArrayValue = ArrayValue<
 // Modals
 export type ModalOrchestratorCreateParamBase<
   ComponentProps extends Record<string, any> = Record<string, any>,
-> = OrchestratorCreateBase<BModalProps, ComponentProps, BModalSlots, BModalEmits>
+> = OrchestratorCreateBase<BDialogProps, ComponentProps, BDialogSlots, BDialogEmits>
 export type ModalOrchestratorCreateParam<
   ComponentProps extends Record<string, any> = Record<string, any>,
 > = MaybeRef<ModalOrchestratorCreateParamBase<ComponentProps>>
-export type ModalOrchestratorArrayValue = ArrayValue<BModalProps, BModalSlots, BModalEmits>
+export type ModalOrchestratorArrayValue = ArrayValue<BDialogProps, BDialogSlots, BDialogEmits>
 
 export type OrchestratorArrayValue =
   | ToastOrchestratorArrayValue

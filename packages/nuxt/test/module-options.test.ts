@@ -33,14 +33,14 @@ describe('module-options', async () => {
     await page.close()
   })
 
-  it('configured BModal.teleportTo is applied at runtime', async () => {
+  it('configured BDialog defaults are applied at runtime', async () => {
     const page = await createPage('/')
 
-    await page.click('#configured-modal-trigger')
-    await page.waitForSelector('#custom-teleport #configured-modal.show')
-    expect(
-      await page.locator('#custom-teleport #configured-modal .modal-body').textContent(),
-    ).toContain('Configured modal body')
+    await page.click('#configured-dialog-trigger')
+    await page.waitForSelector('#configured-dialog[open].dialog-lg')
+    expect(await page.locator('#configured-dialog .dialog-body').textContent()).toContain(
+      'Configured dialog body',
+    )
 
     await page.close()
   })

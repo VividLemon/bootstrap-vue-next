@@ -11,12 +11,12 @@
     >
       Open modal
     </BButton>
-    <BModal
+    <BDialog
       id="my-modal"
       title="Directive modal"
     >
       Directive modal body
-    </BModal>
+    </BDialog>
     <span
       id="popover-el"
       v-b-popover.hover

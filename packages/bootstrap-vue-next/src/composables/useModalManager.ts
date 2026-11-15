@@ -1,17 +1,6 @@
-import {getSSRHandler, tryOnScopeDispose, unrefElement} from '@vueuse/core'
-import {
-  type ComponentInternalInstance,
-  computed,
-  getCurrentInstance,
-  inject,
-  type Ref,
-  toValue,
-  watch,
-} from 'vue'
+import {tryOnScopeDispose} from '@vueuse/core'
+import {type ComponentInternalInstance, getCurrentInstance, inject, type Ref, watch} from 'vue'
 import {modalManagerKey} from '../utils/keys'
-import {getSafeDocument} from '../utils/dom'
-
-const modalOpenClassName = 'modal-open'
 
 export const useSharedModalStack = () => {
   const modalManagerPlugin = inject(modalManagerKey, null)
@@ -24,49 +13,24 @@ export const useSharedModalStack = () => {
     modalManagerPlugin?.removeRegistry(modal)
   }
 
-  const updateHTMLAttrs = getSSRHandler('updateHTMLAttrs', (selector, attribute, value) => {
-    const el =
-      typeof selector !== 'string'
-        ? unrefElement(selector)
-        : selector
-          ? getSafeDocument()?.querySelector(selector)
-          : undefined
-    if (!el) return
-
-    if (attribute === 'class') {
-      el.classList.toggle(modalOpenClassName, value === modalOpenClassName)
-    } else {
-      el.setAttribute(attribute, value)
-    }
-  })
-
-  tryOnScopeDispose(() => {
-    if (modalManagerPlugin?.countStack.value === 0) {
-      updateHTMLAttrs('body', 'class', '')
-    }
-  })
-
-  watch(
-    () => modalManagerPlugin?.countStack.value,
-    (newValue) => {
-      if (newValue === undefined) return
-      updateHTMLAttrs('body', 'class', newValue > 0 ? modalOpenClassName : '')
-    }
-  )
-
   return {
     ...modalManagerPlugin,
     dispose,
   }
 }
 
+/**
+ * Registers the current `BDialog` and keeps it in the stack of open dialogs while it is open.
+ * The stack is only bookkeeping for `useModal()` (`show` / `hide` / `hideAll` / `get`): the
+ * browser's top layer orders open dialogs, so there is no z-index or position math.
+ */
 export const useModalManager = (modalOpen: Readonly<Ref<boolean>>, initialValue: boolean) => {
-  const {pushRegistry, pushStack, removeStack, stack, dispose, countStack} = useSharedModalStack()
+  const {pushRegistry, pushStack, removeStack, dispose} = useSharedModalStack()
 
   const currentModal = getCurrentInstance()
 
-  if (!currentModal || currentModal.type.__name !== 'BModal') {
-    throw new Error('useModalManager must only use in BModal component')
+  if (!currentModal || currentModal.type.__name !== 'BDialog') {
+    throw new Error('useModalManager must only be used in the BDialog component')
   }
 
   pushRegistry?.(currentModal)
@@ -87,17 +51,4 @@ export const useModalManager = (modalOpen: Readonly<Ref<boolean>>, initialValue:
   setInStack(initialValue, initialValue)
 
   watch(modalOpen, setInStack)
-
-  return {
-    activePosition: computed(() =>
-      stack?.value.findIndex((el) => toValue(el.exposed?.id) === toValue(currentModal.exposed?.id))
-    ),
-    activeModalCount: countStack,
-    stackWithoutSelf: computed(
-      () =>
-        stack?.value.filter(
-          (el) => toValue(el.exposed?.id) !== toValue(currentModal.exposed?.id)
-        ) ?? []
-    ),
-  }
 }

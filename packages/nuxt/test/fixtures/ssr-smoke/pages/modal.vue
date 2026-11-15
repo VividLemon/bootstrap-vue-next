@@ -1,14 +1,12 @@
 <template>
   <div id="modal-page">
-    <BModal
+    <BDialog
       id="test-modal"
       title="Test Modal"
     >
       Modal content
-    </BModal>
-    <BButton>
-      Open modal
-    </BButton>
+    </BDialog>
+    <BButton> Open modal </BButton>
   </div>
 </template>
 
