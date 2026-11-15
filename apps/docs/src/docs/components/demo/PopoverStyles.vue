@@ -4,9 +4,10 @@
     <BPopover
       title="Danger!"
       style="
-        --bs-popover-header-bg: var(--bs-danger);
+        --bs-popover-header-bg: var(--bs-danger-bg);
+        --bs-popover-header-color: var(--bs-danger-contrast);
         --bs-popover-bg: var(--bs-danger-bg-subtle);
-        --bs-popover-border-color: var(--bs-emphasis-color);
+        --bs-popover-border-color: var(--bs-danger-border);
       "
     >
       <template #target>

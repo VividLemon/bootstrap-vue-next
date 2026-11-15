@@ -105,8 +105,8 @@ slot, and the slots (as always) take precedence over the props.
 
 ## Custom Classes and Colors
 
-Custom classes can be applied to the tooltip using the `title-class` prop or `body-class` prop
-(depending on which prop or slot you use to populate the tooltip):
+Attributes, including custom classes, can be applied to the tooltip with the `title-attrs` prop or the `body-attrs` prop
+(depending on which prop or slot you use to populate the tooltip). `class` and `style` are merged with the component's own:
 
 <<< FRAGMENT ./demo/TooltipCustomClass.vue#template{vue-html}
 
@@ -116,12 +116,12 @@ See [Color Themes](/docs/reference/color-variants) for the available values.
 
 <<< DEMO ./demo/TooltipVariant.vue#template{vue-html}
 
-`body-class` and `title-class` are reactive and can be changed while the tooltip is open.
+`body-attrs` and `title-attrs` are reactive and can be changed while the tooltip is open.
 
 Refer to the [tooltip directive](/docs/directives/BTooltip) docs on applying custom
 classes to the directive version.
 
-For finer control, use the bootstrap 5 css variables to apply styles directly.
+For finer control, use Bootstrap's `--bs-tooltip-*` CSS variables to apply styles directly.
 
 <<< DEMO ./demo/TooltipStyles.vue#template{vue-html}
 
@@ -155,3 +155,9 @@ props can be used to control what's considered clipping.
 ## Accessibility
 
 For information on managing ARIA attributes for tooltip triggers, see the [ARIA Trigger Registration for Component Visibility](/docs/reference/accessibility#aria-trigger-registration-for-component-visibility) section in the Accessibility reference.
+
+While a tooltip is shown, its id is added to the trigger element's `aria-describedby` attribute (other ids in the attribute are kept) and removed again once it is hidden.
+
+Pressing <kbd>Esc</kbd> hides an open tooltip (trigger `'esc'` on the `hide` and `hidden` events), wherever focus is. The key press is consumed, so a tooltip inside a dialog closes first and the next <kbd>Esc</kbd> closes the dialog. Tooltips with `manual` or `no-auto-close` are left open.
+
+Tooltips fade with Bootstrap's CSS transition: `shown` and `hidden` are emitted when it ended. `no-transition` adds the `tooltip-instant` class, which skips it.
