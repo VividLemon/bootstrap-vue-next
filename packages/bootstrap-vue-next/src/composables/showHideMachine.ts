@@ -136,6 +136,8 @@ export interface ShowRequestOptions {
 export interface HideRequestOptions {
   /** Do not emit the trigger's own event (`ok`, `close`, ...) before `hide` */
   noTriggerEmit?: boolean
+  /** The name of the trigger's own event. Defaults to the trigger */
+  triggerEvent?: string
   /** Skip the delay and the transition (`visible` prop) */
   instant?: boolean
   /**
@@ -342,7 +344,12 @@ export const createShowHideMachine = (host: ShowHideMachineHost): ShowHideMachin
 
   const hide = (
     trigger?: string,
-    {noTriggerEmit = false, instant = false, cancelable = true}: HideRequestOptions = {}
+    {
+      noTriggerEmit = false,
+      triggerEvent = trigger,
+      instant = false,
+      cancelable = true,
+    }: HideRequestOptions = {}
   ): Promise<ShowHideResult> => {
     if (disposed) return Promise.resolve(false)
     const cell = transition('hide')
@@ -356,8 +363,8 @@ export const createShowHideMachine = (host: ShowHideMachineHost): ShowHideMachin
     // one that counts: emitting `hide` again or starting another hide would supersede it
     const before = revision
     let prevented = false
-    if (trigger && !noTriggerEmit) {
-      prevented = host.emit(trigger, {cancelable, trigger, signal})
+    if (trigger && triggerEvent && !noTriggerEmit) {
+      prevented = host.emit(triggerEvent, {cancelable, trigger, signal})
       if (revision !== before || disposed) return listenerResult()
     }
     prevented = host.emit('hide', {cancelable, trigger, signal}) || prevented
