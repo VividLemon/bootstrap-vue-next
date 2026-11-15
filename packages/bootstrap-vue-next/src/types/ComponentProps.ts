@@ -1499,7 +1499,7 @@ export interface BToastProps extends BLinkProps, ShowHideProps {
 
 export interface BPopoverProps extends TeleporterProps, ShowHideProps {
   body?: string
-  bodyClass?: ClassValue
+  bodyAttrs?: Readonly<AttrsValue>
   boundary?: Boundary | RootBoundary
   boundaryPadding?: Padding
   click?: boolean
@@ -1535,7 +1535,7 @@ export interface BPopoverProps extends TeleporterProps, ShowHideProps {
     string | Readonly<ComponentPublicInstance> | Readonly<HTMLElement> | null
   >
   title?: string
-  titleClass?: ClassValue
+  titleAttrs?: Readonly<AttrsValue>
   tooltip?: boolean
 }
 
