@@ -355,25 +355,31 @@ describe('button', () => {
     expect(wrapper.attributes('type')).toBeUndefined()
   })
 
-  it('has attr to when prop to', () => {
+  it('passes to to BLink when prop to', () => {
     const wrapper = mount(BButton, {
       props: {to: '/abc'},
     })
-    expect(wrapper.attributes('to')).toBe('/abc')
+    expect(wrapper.getComponent(BLink).props('to')).toBe('/abc')
+    // `to` is a prop of the link, never an HTML attribute
+    expect(wrapper.attributes('to')).toBeUndefined()
   })
 
-  it('has attr to when prop href and prop to', () => {
+  it('passes to to BLink when prop href and prop to', () => {
     const wrapper = mount(BButton, {
       props: {href: '/abc', to: '/def'},
     })
-    expect(wrapper.attributes('to')).toBe('/def')
+    expect(wrapper.getComponent(BLink).props('to')).toBe('/def')
+    // `to` is a prop of the link, never an HTML attribute
+    expect(wrapper.attributes('to')).toBeUndefined()
   })
 
-  it('has attr to when prop to and prop tag', () => {
+  it('passes to to BLink when prop to and prop tag', () => {
     const wrapper = mount(BButton, {
       props: {tag: 'div', to: '/def'},
     })
-    expect(wrapper.attributes('to')).toBe('/def')
+    expect(wrapper.getComponent(BLink).props('to')).toBe('/def')
+    // `to` is a prop of the link, never an HTML attribute
+    expect(wrapper.attributes('to')).toBeUndefined()
   })
 
   it('does not have attr to by default', () => {
@@ -395,14 +401,6 @@ describe('button', () => {
     })
     const $blink = wrapper.getComponent(BLink)
     expect($blink.props('routerComponentName')).toBe('foobar')
-  })
-
-  it('has nested prop routerTag when prop routerTag and prop to', () => {
-    const wrapper = mount(BButton, {
-      props: {to: '/abc', routerTag: 'foobar'},
-    })
-    const $blink = wrapper.getComponent(BLink)
-    expect($blink.props('routerTag')).toBe('foobar')
   })
 
   it('emits click when clicked', async () => {
