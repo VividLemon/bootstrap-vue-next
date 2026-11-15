@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     directives: { all: false, vBTooltip: true },
     plugin: {
       components: {
-        BModal: { teleportTo: '#custom-teleport' },
+        BDialog: { size: 'lg' },
         BLink: { routerComponentName: 'NuxtLink' },
       },
     },

@@ -47,6 +47,8 @@ export const componentsWithExternalPath = {
   BDatePicker: '/components/BDatePicker',
   BDateRangeField: '/components/BDateField',
   BDateRangePicker: '/components/BDatePicker',
+  BDialog: '/components/BDialog',
+  BDialogActions: '/components/BDialog',
   BDropdown: '/components/BDropdown',
   BDropdownDivider: '/components/BDropdown',
   BDropdownForm: '/components/BDropdown',
@@ -83,7 +85,6 @@ export const componentsWithExternalPath = {
   BInputGroupText: '/components/BInputGroup',
   BListGroup: '/components/BListGroup',
   BListGroupItem: '/components/BListGroup',
-  BModal: '/components/BModal',
   BNav: '/components/BNav',
   BNavForm: '/components/BNav',
   BNavItem: '/components/BNav',
@@ -287,11 +288,12 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BTh: ComponentProps.BThProps
   BProgressBar: ComponentProps.BProgressBarProps
   BInputGroupAddon: ComponentProps.BInputGroupAddonProps
+  BDialog: ComponentProps.BDialogProps
+  BDialogActions: ComponentProps.BDialogActionsProps
   BDropdown: ComponentProps.BDropdownProps
   BToast: ComponentProps.BToastProps
   BPopover: ComponentProps.BPopoverProps
   BTooltip: ComponentProps.BTooltipProps
-  BModal: ComponentProps.BModalProps
   BCardFooter: ComponentProps.BCardFooterProps
   BCardHeader: ComponentProps.BCardHeaderProps
   BCardImg: ComponentProps.BCardImgProps

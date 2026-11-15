@@ -71,14 +71,3 @@ export const sortSlotElementsByPosition = (
   if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1
   return 0
 }
-
-const defaultZModelIndex = 1055
-export const getModalZIndex = (element?: Readonly<HTMLElement | null>): number => {
-  const win = getSafeWindow()
-  const doc = getSafeDocument()
-  if (win === null || doc === null) return defaultZModelIndex
-  const target = element ?? doc.body
-  const raw = win.getComputedStyle(target).getPropertyValue('--bs-modal-zindex').trim()
-  const parsed = Number.parseInt(raw, 10)
-  return Number.isFinite(parsed) ? parsed : defaultZModelIndex
-}

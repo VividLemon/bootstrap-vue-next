@@ -1,5 +1,10 @@
 import {BvCarouselEvent, BvEvent, BvTriggerableEvent} from '../utils'
-import type {BTableProviderContext, BTableSortBy, TableHeadClickedEventObject, TableRowEvent} from './TableTypes'
+import type {
+  BTableProviderContext,
+  BTableSortBy,
+  TableHeadClickedEventObject,
+  TableRowEvent,
+} from './TableTypes'
 import type {AcceptableValue, DateValue, TimeValue} from 'reka-ui'
 
 export interface showHideEmits {
@@ -25,11 +30,10 @@ export interface BAutocompleteEmits {
 export interface BDropdownEmits extends showHideEmits {
   'split-click': [value: MouseEvent]
 }
-export interface BModalEmits extends showHideEmits {
-  backdrop: [value: BvTriggerableEvent]
+export interface BDialogEmits extends showHideEmits {
+  /** Escape or another close request, before `hide`. Cancelable */
   cancel: [value: BvTriggerableEvent]
-  close: [value: BvTriggerableEvent]
-  esc: [value: BvTriggerableEvent]
+  /** `ok()` was called, before `hide`. Cancelable */
   ok: [value: BvTriggerableEvent]
 }
 

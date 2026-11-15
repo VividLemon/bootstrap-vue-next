@@ -84,8 +84,7 @@ export function getDirectiveInstance(
 ): DirectiveInstanceState | undefined {
   const elWithProps = el as Record<string, unknown>
   return (elWithProps[propertyName] as Record<string, unknown> | undefined)?.[uid] as
-    | DirectiveInstanceState
-    | undefined
+    DirectiveInstanceState | undefined
 }
 
 /**
@@ -127,8 +126,7 @@ export function cleanupDirectiveInstance(
 ): void {
   const elWithProps = el as Record<string, unknown>
   const instance = (elWithProps[propertyName] as Record<string, unknown> | undefined)?.[uid] as
-    | DirectiveInstanceState
-    | undefined
+    DirectiveInstanceState | undefined
   if (instance) {
     instance.destroying = true
     delete (elWithProps[propertyName] as Record<string, unknown>)[uid]

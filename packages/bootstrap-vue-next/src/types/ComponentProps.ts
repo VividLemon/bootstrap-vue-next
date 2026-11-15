@@ -1556,65 +1556,44 @@ export interface BCardHeadFootProps {
 export type BCardFooterProps = BCardHeadFootProps
 export type BCardHeaderProps = BCardHeadFootProps
 
-export interface BModalProps extends TeleporterProps, ShowHideProps {
-  bodyColor?: ColorExtendables
-  cancelColor?: ColorExtendables
-  focus?:
-    | 'ok'
-    | 'cancel'
-    | 'close'
-    | boolean
-    | string
-    | Readonly<ComponentPublicInstance>
-    | Readonly<HTMLElement>
-    | null
-  backdropFirst?: boolean
+export interface BDialogProps extends ShowHideProps {
+  /** `true` closes on a backdrop click, `'static'` bounces instead, `false` ignores the click */
+  backdrop?: boolean | 'static'
   body?: string
   bodyAttrs?: Readonly<AttrsValue>
-  bodyClass?: ClassValue
-  bodyScrolling?: boolean
-  busy?: boolean
-  buttonSize?: Size
-  cancelClass?: ClassValue
-  cancelDisabled?: boolean
-  cancelTitle?: string
-  cancelVariant?: ButtonVariant | null
-  centered?: boolean
-  contentClass?: ClassValue
-  dialogClass?: ClassValue
-  footerClass?: ClassValue
+  bodyColor?: ColorExtendables
+  /** Autofocus the header close button, or the `BDialogActions` OK / Cancel button */
+  focus?: 'ok' | 'cancel' | 'close'
+  footerAttrs?: Readonly<AttrsValue>
   footerColor?: ColorBorderExtendables
   fullscreen?: boolean | Breakpoint
   headerAttrs?: Readonly<AttrsValue>
-  headerClass?: ClassValue
-  headerCloseClass?: ClassValue
-  headerCloseColor?: ColorExtendables
-  headerCloseLabel?: string
-  headerCloseVariant?: ButtonVariant | null
+  headerClose?: Pick<CloseButtonOptions, 'label' | 'attrs'>
   headerColor?: ColorBorderExtendables
-  noBackdrop?: boolean
-  noFooter?: boolean
+  id?: string
+  /** Escape closes the dialog. `false` bounces instead */
+  keyboard?: boolean
+  /** `false` opens a non-modal dialog: no backdrop, no focus containment, the page stays usable */
+  modal?: boolean
+  modelValue?: boolean
   noHeader?: boolean
   noHeaderClose?: boolean
-  id?: string
-  modalClass?: ClassValue
-  modelValue?: boolean
-  noCloseOnBackdrop?: boolean
-  noCloseOnEsc?: boolean
-  noTrap?: boolean
-  noStacking?: boolean
-  okClass?: ClassValue
-  okColor?: ColorExtendables
+  scrollable?: boolean
+  size?: 'sm' | 'lg' | 'xl'
+  slide?: 'down' | 'up'
+  title?: string
+  titleAttrs?: Readonly<AttrsValue>
+  titleTag?: string
+}
+
+export interface BDialogActionsProps {
+  cancelAttrs?: Readonly<AttrsValue>
+  cancelDisabled?: boolean
+  cancelTitle?: string
+  okAttrs?: Readonly<AttrsValue>
   okDisabled?: boolean
   okOnly?: boolean
   okTitle?: string
-  okVariant?: ButtonVariant | null
-  scrollable?: boolean
-  size?: Size | 'xl'
-  title?: string
-  titleClass?: ClassValue
-  titleVisuallyHidden?: boolean
-  titleTag?: string
 }
 
 export interface ShowHideProps {
