@@ -18,47 +18,13 @@
         v-bind="props.navAttrs"
       >
         <slot name="tabs-start" />
-        <li
-          v-for="(tab, idx) in tabs"
-          :key="tab.id ?? tab.internalId"
-          class="nav-item"
-          role="presentation"
-          v-bind="tab.titleItemAttrs"
-        >
-          <button
-            :id="tab.buttonId"
-            class="nav-link"
-            :class="{
-              active: tab.active,
-              disabled: tab.disabled !== undefined && tab.disabled !== false,
-            }"
-            role="tab"
-            :aria-controls="tab.id"
-            :aria-selected="tab.active"
-            :disabled="tab.disabled"
-            :tabindex="props.noKeyNav ? undefined : tab.active ? undefined : -1"
-            type="button"
-            v-bind="tab.navItemAttrs"
-            @keydown.left.exact="!props.vertical && keynav($event, -1)"
-            @keydown.left.shift="!props.vertical && keynav($event, -999)"
-            @keydown.up.exact="props.vertical && keynav($event, -1)"
-            @keydown.up.shift="props.vertical && keynav($event, -999)"
-            @keydown.right.exact="!props.vertical && keynav($event, 1)"
-            @keydown.right.shift="!props.vertical && keynav($event, 999)"
-            @keydown.down.exact="props.vertical && keynav($event, 1)"
-            @keydown.down.shift="props.vertical && keynav($event, 999)"
-            @keydown.page-up="keynav($event, -999)"
-            @keydown.page-down="keynav($event, 999)"
-            @keydown.home="keynav($event, -999)"
-            @keydown.end="keynav($event, 999)"
-            @click.stop="(e) => handleClick(e, idx)"
-          >
-            <component :is="tab.titleComponent" v-if="tab.titleComponent" />
-            <template v-else>
-              {{ tab.title }}
-            </template>
-          </button>
-        </li>
+        <BTabsNavItems
+          :tabs="getTabs"
+          :vertical="props.vertical"
+          :no-key-nav="props.noKeyNav"
+          @keynav="keynav"
+          @tab-click="handleClick"
+        />
         <slot name="tabs-end" />
       </ul>
     </div>
@@ -96,6 +62,7 @@ import {getSafeDocument, sortSlotElementsByPosition} from '../../utils/dom'
 import {flattenFragments} from '../../utils/flattenFragments'
 import BTab from './BTab.vue'
 import BTabsTabContent from '../BTabsTabContent.vue'
+import BTabsNavItems from '../BTabsNavItems.vue'
 
 const _props = withDefaults(defineProps<Omit<BTabsProps, 'modelValue' | 'activeIndex'>>(), {
   activeNavItemAttrs: undefined,
@@ -306,6 +273,10 @@ function updateInitialIndexAndId() {
 }
 
 updateInitialIndexAndId()
+
+// Passed to BTabsNavItems as a function, so the tabs are read in that component's render, not in
+// BTabs' render (see BTabsNavItems)
+const getTabs = () => tabs.value
 
 const showEmpty = computed(() => !(tabs?.value && tabs.value.length > 0))
 
