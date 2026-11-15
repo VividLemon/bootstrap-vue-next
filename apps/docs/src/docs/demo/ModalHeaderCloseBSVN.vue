@@ -1,7 +1,9 @@
 <!-- #region template -->
-<BModal>
-  <template #header-close>
-    <BIcon icon="x-lg" />
+<BDialog>
+  <template #header-close="{ close }">
+    <BButton variant="link" aria-label="Close" @click="close()">
+      <BIcon icon="x-lg" />
+    </BButton>
   </template>
-</BModal>
+</BDialog>
 <!-- #endregion template -->

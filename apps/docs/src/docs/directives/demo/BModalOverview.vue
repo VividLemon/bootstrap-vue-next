@@ -2,9 +2,9 @@
   <!-- #region template -->
   <div>
     <BButton v-b-modal.modal-overview :color="{ theme: 'primary' }">Show Modal</BButton>
-    <BModal id="modal-overview" title="Hello Modal!">
+    <BDialog id="modal-overview" title="Hello Modal!">
       <p>This modal can be triggered with the v-b-modal directive.</p>
-    </BModal>
+    </BDialog>
   </div>
   <!-- #endregion template -->
 </template>

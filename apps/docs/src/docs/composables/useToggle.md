@@ -7,9 +7,9 @@ description: 'You can use `useToggle` to get the closest toggleable component in
   <template #html>
 
 ```vue
-<BModal @hide="(e) => e.trigger === 'sometrigger' && doSomething()">
+<BDialog @hide="(e) => e.trigger === 'sometrigger' && doSomething()">
   <MyComponent />
-</BModal>
+</BDialog>
 ```
 
 <hr />

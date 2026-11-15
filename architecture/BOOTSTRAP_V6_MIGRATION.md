@@ -21,7 +21,8 @@ It is the single source of truth for the migration: implementation work follows 
 | Phase 2b: component batches                                                                                        | Wave 1 merged (#165–#168); wave 2 not started — see [Implementation progress](#implementation-progress)                                                                                                     |
 | Phase 3: migration docs                                                                                            | Not started                                                                                                                                                                                                 |
 | Deferred components                                                                                                | Plans decided and merged ([#169](https://github.com/VividLemon/bootstrap-vue-next/pull/169), `BOOTSTRAP_V6_NEW_COMPONENTS.md`); implementation not started. See [Deferred components](#deferred-components) |
-| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`                                                                         |
+| Show/hide state machine (S1)                                                                                       | Done, merged as [#182](https://github.com/VividLemon/bootstrap-vue-next/pull/182) — `showHideMachine.ts` behind `useShowHide`, read-only `state`                                                            |
+| G1 Overlays                                                                                                        | Step 1 (Dialog core: `BDialog`, `BDialogActions`, `useDialogBase`) implemented; steps 2–4 (orchestrator / `useDialog`, Drawer, cleanup) open — see `BOOTSTRAP_V6_OVERLAYS.md`                               |
 | Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source)                                                                                                                          |
 | Post-migration (maybe): public `useTable` composable                                                               | Undecided — see `USE_TABLE_COMPOSABLE.md`                                                                                                                                                                   |
 
@@ -311,6 +312,8 @@ Bootstrap v6 lets CSS own all motion: JavaScript toggles a state class (`.show`,
 These map to components Bootstrap marks "New" in v6 and need large structural changes. Each will be migrated in its own pass. Changes marked **now** are applied during the current migration so the API stays uniform; everything else is pending and must be done when the component is migrated.
 
 ### BModal → Dialog
+
+**Dialog core is implemented** (`BDialog` on a native `<dialog>`, G1 step 1; see the status note at the top of `BOOTSTRAP_V6_OVERLAYS.md`). Of the pending list below, only the `useModal` result redesign is left (G1 step 2).
 
 - **Now:** `noFade` / `noAnimation` → `noTransition`; `transProps` removed from its props; color families → `headerColor`, `bodyColor`, `footerColor`, `headerCloseColor`, `okColor`, `cancelColor`; `--bs-modal-zindex` now comes from v6 `$zindex-levels` (`dialog`, 1040).
 - **Pending:**

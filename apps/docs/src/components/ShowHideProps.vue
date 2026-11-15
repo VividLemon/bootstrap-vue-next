@@ -28,7 +28,7 @@ const mappedComponents: ComponentMap = {
   showHideProps: [
     'BCollapse',
     'BDropdown',
-    'BModal',
+    'BDialog',
     'BNavItemDropdown',
     'BOffcanvas',
     'BPopover',
@@ -46,15 +46,14 @@ const migrationMap: MigrationMap = {
   lazy: { oldProp: 'lazy', components: ['BAccordion', 'BAccordionItem', 'showHideProps'] },
   modelValue: { oldProp: 'visible', components: ['showHideProps'] },
   noTransition: { oldProp: 'skip-animation', components: ['showHideProps'] },
-  noBackdrop: { oldProp: 'hide-backdrop', components: ['BModal', 'BOffcanvas'] },
+  noBackdrop: { oldProp: 'hide-backdrop', components: ['BOffcanvas'] },
   noEllipsis: { oldProp: 'hide-ellipsis', components: ['BPagination'] },
-  noFooter: { oldProp: 'hide-footer', components: ['BModal'] },
   noGotoEndButtons: { oldProp: 'hide-goto-end-buttons', components: ['BPagination'] },
   noHeader: {
     oldProp: 'hide-header',
-    components: ['BModal', 'BOffcanvas', 'BPlaceholderCard', 'BPlaceholderTable'],
+    components: ['BDialog', 'BOffcanvas', 'BPlaceholderCard', 'BPlaceholderTable'],
   },
-  noHeaderClose: { oldProp: 'hide-header-close', components: ['BModal', 'BOffcanvas'] },
+  noHeaderClose: { oldProp: 'hide-header-close', components: ['BDialog', 'BOffcanvas'] },
   noWrapper: { oldProp: 'skip-wrapper', components: ['dropdownCommon'] },
   show: { oldProp: '', components: ['showHideProps'] },
   unmountLazy: {

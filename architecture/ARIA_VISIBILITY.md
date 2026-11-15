@@ -2,7 +2,7 @@
 
 ## Overview
 
-Show/hide components (BCollapse, BOffcanvas, BModal, BDropdown, BAlert, BToast, BPopover, BTooltip) share one system for visibility state, `v-model`, cancelable events and ARIA attributes on registered triggers.
+Show/hide components (BCollapse, BOffcanvas, BDialog, BDropdown, BAlert, BToast, BPopover, BTooltip) share one system for visibility state, `v-model`, cancelable events and ARIA attributes on registered triggers.
 
 With Bootstrap v6 the system is being moved to Bootstrap's **native transition** model: CSS owns all motion, JavaScript toggles a state class, waits for the element's transition to end, then fires the event. See `architecture/BOOTSTRAP_V6_MIGRATION.md`, section "Transitions (native, no Vue `<Transition>`)".
 
@@ -10,8 +10,8 @@ During the migration there are two paths:
 
 | Path               | Composables                              | Components                                                                  |
 | ------------------ | ---------------------------------------- | --------------------------------------------------------------------------- |
-| Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse (+ BAccordionItem, which renders it), BAlert, BToast              |
-| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BModal, BOffcanvas, BDropdown (deferred); BPopover / BTooltip (later batch) |
+| Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse (+ BAccordionItem, which renders it), BAlert, BToast, BDialog (through `useDialogBase`) |
+| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BOffcanvas, BDropdown (deferred); BPopover / BTooltip (later batch)         |
 
 Both paths share `useShowHideRegistration` (app registry + trigger registry + `aria-expanded`), so ARIA behavior is identical on both.
 
@@ -58,6 +58,10 @@ It resolves `true` when finished **and still the latest call**, `false` when a n
 ### `useShowHide({modelValue, props, emit, element, id}, {transition, disabled})`
 
 Props read: `visible`, `show`, `initialAnimation`, `lazy`, `unmountLazy`, `delay`. It does not know triggers such as `'esc'` or `'backdrop'`: a component that must not close on them (BDialog / BDrawer `backdrop` / `keyboard`) decides that before it calls `hide()`.
+
+`triggerEvent` (optional): maps a hide trigger to the name of the event emitted for it before `hide`, or `undefined` for none. The default is an event named like the trigger. BDialog maps `'ok'` → `ok`, `'esc'` → `cancel` and nothing else.
+
+`syncHidden(trigger?)` (returned): the component was already hidden from outside (the browser closed a native `<dialog>`). A hide that cannot be refused and skips the transition: `hide` is emitted with `cancelable: false`, then `update:modelValue` and `hidden`.
 
 `disabled` (optional, a ref or getter; **not** read from `props`, because BAlert and BToast have a `disabled` prop with another meaning): while it is `true`, a show request resolves `'show-prevented'` without events (and writes `modelValue` back); turning it on while `showing` / `shown` hides with trigger `'disabled'` (an ordinary, cancelable hide without a trigger event). For Menu (G2).
 
@@ -131,7 +135,7 @@ Guarantees:
 6. **Unmount is silent.** No `hide` / `hidden`; `state` keeps its last value; later requests resolve `false` without events.
 7. **`event.signal`** on request events (and their `-prevented` events) aborts when the machine next carries out a show or hide, or on unmount. A refused request leaves it running.
 
-The machine also takes a hide that already happened and cannot be refused (`hide(trigger, {cancelable: false})`: events with `cancelable: false`). `useShowHide` does not expose it yet; Dialog core (G1.1) uses it for a native `<dialog>` `close`.
+The machine also takes a hide that already happened and cannot be refused (`hide(trigger, {cancelable: false})`: events with `cancelable: false`). `useShowHide` exposes it as `syncHidden()`; `useDialogBase` calls it on a native `<dialog>` `close`.
 
 ### Adopting it in a component
 
@@ -149,6 +153,18 @@ const classes = computed(() => ({
 ```
 
 Checklist: check the `-instant` class exists in `node_modules/bootstrap/dist/css/bootstrap.css`; remove the Vue `<Transition>`; keep the element mounted while hidden unless the v6 component removes it (then `v-if="isActive"`); emit component-specific events from `shown` / `hidden`.
+
+### `useDialogBase` (BDialog; BDrawer will reuse it)
+
+`src/composables/useDialogBase.ts` wraps `useShowHide` for a native `<dialog>` (the port of v6 `dialog-base.ts`):
+
+- The `transition` callback opens and closes the element: on show it awaits `nextTick` (lazy content is in the DOM), calls `showModal()` / `show()` and then `run()`; on hide it runs the exit transition and calls `close()` afterwards (`deferClose`, v6 Dialog) or closes first (instant, and v6 Drawer). Vue never binds `open`.
+- It returns `isHiding` (`.hiding`: from the start of a hide until `hidden`), `isInstant` (`-instant`), `bouncing` (`-static`) and `closedby` for the component's class and attribute bindings.
+- Escape (`keydown` on the dialog, plus the native `cancel` for close requests without a key press) and backdrop clicks (`pointerdown` + `click` on the dialog element itself) are checked against `keyboard` / `backdrop` **before** `hide()`. A disabled one emits `hide-prevented` (cancelable) and bounces.
+- Page scroll lock is `dialog-open` on `<html>`, kept while any locking dialog is open.
+- A native `close` that the library did not cause becomes `syncHidden('native')`. A `<form method="dialog">` submit is prevented and becomes `hide('submit', submitter.value)`.
+- `hide(trigger, value)` keeps `value` as `returnValue` when the hide is carried out.
+- v6 transitions `visibility`, so at the moment of `showModal()` the content still computes to hidden and the browser's focusing steps would find nothing. The element is made visible without a transition just before opening (inline style, removed right after), so native initial focus works.
 
 ### BCollapse
 
