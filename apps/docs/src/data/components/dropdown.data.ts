@@ -25,7 +25,7 @@ import {
 } from '../../types'
 import { linkProps, linkTo } from '../../utils/linkProps'
 import { dropdownEmits, dropdownProps, dropdownSlots } from '../../utils/dropdownCommon'
-import { omit, pick } from '../../utils/objectUtils'
+import { pick } from '../../utils/objectUtils'
 import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
@@ -133,7 +133,7 @@ export default {
           _opts: {
             linkTo,
           },
-          _data: omit(linkProps, ['routerTag']),
+          _data: linkProps,
         },
       },
       emits: {

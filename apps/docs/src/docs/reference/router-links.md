@@ -5,6 +5,23 @@ description: >
   For more information, see the official Vue Router docs and official Nuxt.js docs.
 ---
 
+## How `BLink` picks a router
+
+`BLink` works with vue-router, Nuxt and VitePress, and without any router, with no configuration. For a link with a `to` prop it looks for a globally registered router component and renders through it:
+
+| Environment | What renders the link | Notes |
+| --- | --- | --- |
+| vue-router | `RouterLink` in `custom` mode | Registered by `app.use(router)`. `href`, navigation and the active state come from the router |
+| Nuxt | `NuxtLink` in `custom` mode | The BootstrapVueNext Nuxt module registers `NuxtLink` globally and sets `router-component-name`. `BLink` triggers NuxtLink's prefetching itself (see [below](#nuxt-js-specific-router-link-props)) |
+| VitePress | a plain `<a href>` | VitePress has no link component: its router handles clicks on any same-origin `<a href>`. Wrap paths in `withBase()` yourself when the site has a `base` |
+| No router | a plain `<a href>` | `to` is used as the `href`. A named route cannot be resolved and renders `#` |
+
+In every case the result is a single `<a>` element, so classes, attributes, listeners and directives on `BLink` (and on components that render it, such as `BButton` or `BNavItem`) land on that anchor.
+
+A plain `<a href>` is also what you get, with any router, for links that are not routes: `href` without `to`, a `to` that is a full URL (`https://…`, `mailto:…`), and disabled links. In Nuxt this also applies to links with a `target` and to hash-only links such as `to="#section"`.
+
+To render links through another component, register it globally and pass its name (or the component itself) as `router-component-name`. It receives `to` and `replace`, plus the link's attributes, and renders itself.
+
 ## Common router link props
 
 In the following sections, we are using the `BLink` component to render router links. `BLink` is the building block of most of BootstrapVue's actionable components. You could use any other component that supports link generation such as `BLink`, `BButton`, `BAvatar`, `BBreadcrumbItem`, `BListGroupItem`, `BNavItem`, `BDropdownItem`, and `BPaginationNav`. Note that not all props are available on all components. Refer to the respective component documentation for details.
@@ -60,30 +77,6 @@ Setting replace prop will call `router.replace()` instead of `router.push()` whe
 ```
 
 </HighlightCard>
-
-### `router-tag`
-
-- type: `string`
-- default: 'a'
-
-Sometimes we want `RouterLink` to render as another tag, e.g `<li>`. Then we can use `router-tag` prop to specify which tag to render to, and it will still listen to click events for navigation. `router-tag` translates to the `tag` prop on the final rendered `RouterLink`.
-
-<HighlightCard>
-
-```vue
-<BLink to="/foo" router-tag="li">foo</BLink>
-
-<!-- Renders as -->
-<li>foo</li>
-```
-
-</HighlightCard>
-
-<BAlert variant="info" :model-value="true" class="my-5">
-
-Note: Changing the tag from anything other than `<a>` is discouraged, as it hinders accessibility of keyboard and/or screen-reader users, and is also not very SEO friendly.
-
-</BAlert>
 
 ### `active-class`
 
@@ -152,6 +145,8 @@ With components that support router links (have a `to` prop), you will want to s
 ## Nuxt.js-specific router link props
 
 When BootstrapVueNext detects that your app is running under [Nuxt.js](https://nuxt.com), it will render a [`NuxtLink`](https://nuxt.com/docs/api/components/nuxt-link#nuxtlink) sub component instead of a `RouterLink`. `NuxtLink` supports all of the above router link props, plus the following additional Nuxt.js specific props.
+
+`BLink` renders `NuxtLink` in `custom` mode, where `NuxtLink` leaves prefetching to the component that uses it. `BLink` does that for you: it prefetches when the link scrolls into view or, with `prefetch-on`, when it is hovered or focused, honouring `prefetch`, `no-prefetch`, `prefetch-on` and your Nuxt defaults, and it adds `prefetched-class` once the link was prefetched.
 
 ### `prefetch`
 

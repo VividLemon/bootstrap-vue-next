@@ -1,5 +1,5 @@
-import type {BLinkProps} from 'bootstrap-vue-next'
-import type {PropRecord, PropRecordWithOptions} from '../types'
+import type { BLinkProps } from 'bootstrap-vue-next'
+import type { PropRecord, PropRecordWithOptions } from '../types'
 
 export const linkTo = '/docs/components/link'
 
@@ -84,12 +84,7 @@ export const linkProps = {
     type: 'string',
     default: 'router-link',
     description:
-      'BootstrapVue auto detects between `<router-link>` and `<nuxt-link>`. Set this this property to explicity set the name of the router component.',
-  },
-  routerTag: {
-    type: 'string',
-    default: 'a',
-    description: 'Set the tag type for the link',
+      "The globally registered component that renders links with a `to` prop. vue-router's `RouterLink` is found by default and the Nuxt module sets `NuxtLink`. Any other component receives `to` and renders itself. See [Router Links](/docs/reference/router-links#how-blink-picks-a-router)",
   },
   stretched: {
     type: 'boolean',

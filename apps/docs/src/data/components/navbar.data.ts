@@ -16,9 +16,9 @@ import {
   type PropRecord,
   type SlotRecord,
 } from '../../types'
-import {omit, pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
-import {linkProps, linkTo} from '../../utils/linkProps'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
+import { linkProps, linkTo } from '../../utils/linkProps'
 
 export default {
   load: (): ComponentReference => ({
@@ -30,7 +30,7 @@ export default {
               default: 'nav',
             },
           }),
-          ['tag', 'variant']
+          ['tag', 'variant'],
         ),
         container: {
           type: "boolean | 'fluid' | Breakpoint",
@@ -82,13 +82,13 @@ export default {
               default: 'ul',
             },
           }),
-          ['tag']
+          ['tag'],
         ) satisfies PropRecord<Exclude<keyof BNavbarBrandProps, keyof typeof linkProps>>,
         'BLink props': {
           _opts: {
             linkTo,
           },
-          _data: omit(linkProps, ['routerTag']),
+          _data: linkProps,
         },
       },
       slots: {
@@ -105,7 +105,7 @@ export default {
               default: 'ul',
             },
           }),
-          ['tag']
+          ['tag'],
         ),
         align: {
           type: 'AlignmentJustifyContent',
@@ -145,7 +145,7 @@ export default {
               default: 'ul',
             },
           }),
-          ['disabled']
+          ['disabled'],
         ),
         label: {
           type: 'string',
