@@ -161,15 +161,17 @@
       </template>
     </BTable>
     <!-- Info modal -->
-    <BModal
+    <BDialog
       :id="infoModal.id"
       v-model="infoModal.open"
       :title="infoModal.title"
-      :ok-only="true"
       @hide="resetInfoModal"
     >
       <pre>{{ infoModal.content }}</pre>
-    </BModal>
+      <template #footer>
+        <BDialogActions ok-only />
+      </template>
+    </BDialog>
     <BRow
       ><BCol
         >Displayed Items ({{ displayItems.length }}):

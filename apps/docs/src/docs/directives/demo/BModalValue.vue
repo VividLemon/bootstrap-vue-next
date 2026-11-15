@@ -5,9 +5,9 @@
       <BButton v-b-modal="'modal-value'" :color="{ theme: 'primary' }">String Value</BButton>
       <BButton v-b-modal="['modal-value']" :color="{ theme: 'success' }">Array Value</BButton>
     </div>
-    <BModal id="modal-value" title="Using Directive Value">
+    <BDialog id="modal-value" title="Using Directive Value">
       <p>The modal ID can be specified as a string or array value.</p>
-    </BModal>
+    </BDialog>
   </div>
   <!-- #endregion template -->
 </template>

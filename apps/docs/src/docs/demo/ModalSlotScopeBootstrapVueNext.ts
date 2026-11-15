@@ -1,13 +1,13 @@
 // #region snippet
-interface BModalSlotsData {
+interface BDialogSlotsData {
   id: string
   visible: boolean
-  active: boolean // Same as visible
+  active: boolean // also true while the dialog hides
   cancel: () => void
   close: () => void
-  ok: () => void
-  show: (trigger?: string, noTriggerEmit?: boolean) => void
-  hide: (trigger?: string, noTriggerEmit?: boolean) => void
-  toggle: (trigger?: string, noTriggerEmit?: boolean) => void
+  ok: (value?: unknown) => void
+  show: () => void
+  hide: (trigger?: string, value?: unknown) => void
+  toggle: () => void
 }
 // #endregion snippet

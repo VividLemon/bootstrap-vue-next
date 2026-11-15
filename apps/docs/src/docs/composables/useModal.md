@@ -43,6 +43,8 @@ You can also use component slots to render what you want. This is done through t
 
 ### Return Value
 
+`BDialog` has no built-in buttons. A dialog created without a `footer` slot gets [`BDialogActions`](/docs/components/dialog#ok-and-cancel-buttons) (OK and Cancel) as its footer; pass your own through `slots.footer`, for example `slots: { footer: () => h(BDialogActions, { okOnly: true }) }`.
+
 The `create` method returns a controller object. Call `.show()` to display the modal; `.show()` returns a promise that resolves to a `BvTriggerableEvent` when the modal closes.
 Using `options.resolveOnHide`, the promise resolves when hide begins rather than after the full hide lifecycle.
 

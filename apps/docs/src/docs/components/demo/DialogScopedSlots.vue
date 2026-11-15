@@ -1,24 +1,24 @@
 <template>
   <div>
-    <BButton @click="show = true">Open Modal</BButton>
+    <BButton @click="show = true">Open Dialog</BButton>
 
-    <BModal v-model="show">
+    <BDialog v-model="show">
       <template #header="{ close }">
-        <!-- Emulate built in modal header close button action -->
+        <h5 class="dialog-title">Dialog Header</h5>
+        <!-- Same as the built-in header close button -->
         <BButton size="sm" variant="outline" :color="{ theme: 'danger' }" @click="close()">
-          Close Modal
+          Close Dialog
         </BButton>
-        <h5>Modal Header</h5>
       </template>
 
       <template #default="scope">
-        <p>Modal Body with button</p>
-        <BButton @click="scope.hide()">Hide Modal</BButton>
+        <p>Dialog Body with button</p>
+        <BButton @click="scope.hide()">Hide Dialog</BButton>
       </template>
 
       <template #footer="{ ok, cancel, hide }">
-        <b>Custom Footer</b>
-        <!-- Emulate built in modal footer ok and cancel button actions -->
+        <b class="me-auto">Custom Footer</b>
+        <!-- Same as the BDialogActions buttons -->
         <BButton size="sm" :color="{ theme: 'success' }" @click="ok()"> OK </BButton>
         <BButton size="sm" :color="{ theme: 'danger' }" @click="cancel()"> Cancel </BButton>
         <!-- Button with custom close trigger value -->
@@ -31,7 +31,7 @@
           Forget it
         </BButton>
       </template>
-    </BModal>
+    </BDialog>
   </div>
 </template>
 
