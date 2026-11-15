@@ -1,6 +1,6 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {h, nextTick} from 'vue'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vitest'
 import BTabs from './BTabs.vue'
 import BTab from './BTab.vue'
 import BFormInput from '../BFormInput/BFormInput.vue'
@@ -1391,5 +1391,53 @@ describe('tabs', () => {
     })
     await nextTick()
     expect(wrapper.text()).not.toContain('No tabs available')
+  })
+
+  // A render-function slot passes new objects and functions to BTab on every render. BTabs used to
+  // read them in its own render, so rendering the slot re-triggered BTabs ("Maximum recursive updates")
+  it('does not loop when render-function tabs pass new attrs, handlers and title slots each render', async () => {
+    const errorHandler = vi.fn<(err: unknown) => void>()
+    const onClick = vi.fn<(id: string) => void>()
+    const wrapper = mount(BTabs, {
+      global: {config: {errorHandler}},
+      slots: {
+        default: () => [
+          h(
+            BTab,
+            {
+              id: 'tab-1',
+              titleItemAttrs: {'class': 'item', 'data-x': 'y'},
+              titleLinkAttrs: {class: 'link', style: {margin: '1px'}},
+              onClick: () => onClick('tab-1'),
+            },
+            {default: () => 'one', title: () => 'First'}
+          ),
+          h(
+            BTab,
+            {
+              id: 'tab-2',
+              titleItemAttrs: {class: 'item'},
+              titleLinkAttrs: {class: 'link'},
+              onClick: () => onClick('tab-2'),
+            },
+            {default: () => 'two', title: () => 'Second'}
+          ),
+        ],
+      },
+    })
+    await nextTick()
+
+    const buttons = wrapper.findAll('button')
+    expect(buttons).toHaveLength(2)
+    expect(wrapper.get('li').classes()).toContain('item')
+    expect(buttons[0]?.classes()).toContain('link')
+    expect(buttons[0]?.text()).toBe('First')
+
+    await buttons[1]?.trigger('click')
+    await nextTick()
+
+    expect(onClick).toHaveBeenCalledWith('tab-2')
+    expect(wrapper.findAll('button')[1]?.classes()).toContain('active')
+    expect(errorHandler).not.toHaveBeenCalled()
   })
 })

@@ -82,8 +82,6 @@ Forms batch follow-ups (from its report):
 3. After the PR merges, update this section and the Status table.
 4. Order: wave 2, then the show/hide machine (S1) and the new components (see `BOOTSTRAP_V6_NEW_COMPONENTS.md`), then Phase 3 (migration docs), then the cleanup section, then [Post-migration](#post-migration-api-docs-generated-from-source).
 
-Known failure on `bootstrap-v6`: `test:unit:ci` exits non-zero on three unhandled "Maximum recursive updates exceeded in component <BTabs>" errors from the BTabs specs, although every test passes. It is the BTabs issue listed under the cleanup section.
-
 ### Required checks
 
 - `pnpm --filter bootstrap-vue-next run test:lint`, `test:unit:ci`, `build`
@@ -362,7 +360,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 - Docs notes for visual v6 changes that need no code change (e.g. `.btn` is now `inline-flex` with a gap).
 - Nuxt builds print PostCSS `Lexical error` warnings: Nuxt's CSS minifier (`postcss-calc`) doesn't understand v6's relative color syntax (`oklch(from … calc(l * .9) …)`) in Bootstrap's own CSS. Builds succeed; decide whether to document it or configure the minifier for Nuxt users.
 - Spec type-checking (`vue-tsc -p tsconfig.vitest.json`) already fails in many existing specs; it is not part of the required checks.
-- Review `BTabs` usage as a whole. Do not fix the issue below separately before then. Known problem (on `bootstrap-v6` since before the navigation batch): clicking any tab throws "Maximum recursive updates exceeded in component <BTabs>" when a `BTab` receives a prop that is a new object or function on every render, which is the normal case with render functions / JSX (for example `h(BTab, {titleLinkAttrs: {class: 'a'}})` or an inline `onClick`). Templates are not affected. The navigation batch widens it: `titleItemClass` (a string) becomes `titleItemAttrs` (an object). Reproduction and details: `btabs-usage-review-todo.md` in the review session's shared notes folder.
+- Review `BTabs` usage as a whole (registration, the slot-reading watcher, index/id selection). The "Maximum recursive updates exceeded in component <BTabs>" loop is fixed: BTabs rendered its default slot and read every BTab's registered props in the same render, so a prop that was a new object or function on each render (render functions / JSX, e.g. `h(BTab, {titleLinkAttrs: {class: 'a'}})` or an inline `onClick`) re-triggered BTabs. The nav items now render in the internal `BTabsNavItems` component, which reads the tabs in its own render.
 - Final checks: library lint, unit tests and build; docs build; playground and Nuxt builds; a pass over the built CSS for classes or variables missing from v6.
 
 ## Post-migration: API docs generated from source
