@@ -99,8 +99,8 @@ For reactive or complex content, always use slots instead of props. Slots provid
 
 ## Custom Classes and Colors
 
-Custom classes can be applied to the popover's title `<div>` by using the `title-class` prop and to
-the popover's body `<div>` by using the `body-class` prop:
+Attributes, including custom classes, can be applied to the popover's title `<div>` with the `title-attrs` prop and to
+the popover's body `<div>` with the `body-attrs` prop. `class` and `style` are merged with the component's own:
 
 <<< FRAGMENT ./demo/PopoverCustomClass.vue#template{vue-html}
 
@@ -110,12 +110,12 @@ See [Color Themes](/docs/reference/color-variants) for the available values.
 
 <<< DEMO ./demo/PopoverVariant.vue#template{vue-html}
 
-`body-class` and `title-class` are reactive and can be changed while the popover is open.
+`body-attrs` and `title-attrs` are reactive and can be changed while the popover is open.
 
 Refer to the [popover directive](/docs/directives/BPopover) docs on applying custom
 classes to the directive version.
 
-For finer control, use the bootstrap 5 css variables to apply styles directly.
+For finer control, use Bootstrap's `--bs-popover-*` CSS variables to apply styles directly.
 
 <<< DEMO ./demo/PopoverStyles.vue#template{vue-html}
 
@@ -201,10 +201,18 @@ in this situation.
 Additionally, do not rely solely on `hover` as the trigger for your popovers, as
 this will make them impossible to trigger for keyboard users.
 
+### Dismissing with the keyboard
+
+Pressing <kbd>Esc</kbd> hides an open popover (trigger `'esc'` on the `hide` and `hidden` events), wherever focus is. The key press is consumed, so a popover inside a dialog closes first and the next <kbd>Esc</kbd> closes the dialog. Popovers with `manual` or `no-auto-close` are left open.
+
+### Transitions
+
+Popovers fade with Bootstrap's CSS transition: `shown` and `hidden` are emitted when it ended. `no-transition` adds the `popover-instant` class, which skips it. Duration and easing come from the `--bs-popover-transition-duration` and `--bs-popover-transition-timing` CSS variables.
+
 ### Content Considerations
 
-The content displayed in popovers is tied to the trigger element with the `aria-describedby`
-attribute. As a result, the entirety of the popover's content will be announced to assistive
+While a popover is shown, its id is added to the trigger element's `aria-describedby`
+attribute (other ids in the attribute are kept) and removed again once it is hidden. As a result, the entirety of the popover's content will be announced to assistive
 technology users as one long, uninterrupted stream. Keep content concise and well-structured.
 
 When including interactive controls (such as form elements or links) in popovers, be aware that:

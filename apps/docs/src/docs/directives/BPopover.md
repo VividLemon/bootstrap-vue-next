@@ -102,8 +102,8 @@ The directive accepts any property from `BPopoverProps`. Common properties inclu
 - `title` - The popover header text
 - `body` - The popover body content
 - `delay` - Show/hide delay in milliseconds or `{show: number, hide: number}`
-- `bodyClass` - Custom class for the popover body
-- `titleClass` - Custom class for the popover title
+- `bodyAttrs` - Attributes (such as `class`) for the popover body
+- `titleAttrs` - Attributes (such as `class`) for the popover title
 - `placement` - Position: `'auto'` | `'auto-start'` | `'auto-end'` | `'top'` | `'top-start'` | `'top-end'` | `'bottom'` | `'bottom-start'` | `'bottom-end'` | `'left'` | `'left-start'` | `'left-end'` | `'right'` | `'right-start'` | `'right-end'`
 - `click` - Enable click trigger
 - `hover` - Enable hover trigger
@@ -124,8 +124,8 @@ import type {BPopoverProps} from 'bootstrap-vue-next'
 :::tip Rendering Behavior
 **Popovers can display both `title` AND `body` simultaneously:**
 
-- `title` → renders in header with `titleClass` applied
-- `body` → renders in body with `bodyClass` applied
+- `title` → renders in header with `titleAttrs` applied
+- `body` → renders in body with `bodyAttrs` applied
 - Both provided → displays header + body (like a card)
 
 This differs from tooltips, which only display either title or body, never both.
