@@ -1,0 +1,18 @@
+// main.ts — BootstrapVueNext entry (replaces Vue.use(BootstrapVue) / Vue.use(IconsPlugin))
+import {createApp} from 'vue'
+import App from './App.vue'
+// import router from './router'
+
+import 'bootstrap/dist/css/bootstrap.css' // Bootstrap 5.3+, not 4
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
+
+const app = createApp(App)
+// app.use(router)
+
+// Option B (legacy plugin approach) instead of <BApp> in App.vue. The plugin renders nothing, so you must ALSO put
+// <BOrchestrator /> (import {BOrchestrator} from 'bootstrap-vue-next') once in the root template, or
+// useModal/useToast/usePopover().create() will throw:
+// import {createBootstrap} from 'bootstrap-vue-next/plugins/createBootstrap'
+// app.use(createBootstrap({components: {/* BButton: {variant: 'primary'} */}}))
+
+app.mount('#app')

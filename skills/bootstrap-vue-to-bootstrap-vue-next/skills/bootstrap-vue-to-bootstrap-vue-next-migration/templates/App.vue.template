@@ -1,0 +1,16 @@
+<!-- App.vue — BApp hosts the modal/toast/popover orchestrators, registries and RTL support.
+     Composables (useModal/useToast/usePopover) must be called in CHILD components, not here. -->
+<template>
+  <BApp :defaults="defaults">
+    <RouterView />
+  </BApp>
+</template>
+
+<script setup lang="ts">
+import {BApp} from 'bootstrap-vue-next'
+
+// Former Vue.use(BootstrapVue, { BButton: { variant: 'primary' } }) config goes here.
+const defaults = {
+  // BButton: {variant: 'primary'},
+}
+</script>

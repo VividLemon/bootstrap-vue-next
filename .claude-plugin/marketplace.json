@@ -1,0 +1,17 @@
+{
+  "name": "bootstrap-vue-next",
+  "description": "Agent skills published by BootstrapVueNext. Each plugin is one skill set for one migration path.",
+  "owner": {
+    "name": "BootstrapVueNext",
+    "url": "https://github.com/bootstrap-vue-next/bootstrap-vue-next"
+  },
+  "plugins": [
+    {
+      "name": "bootstrap-vue-to-bootstrap-vue-next",
+      "source": "./skills/bootstrap-vue-to-bootstrap-vue-next",
+      "description": "Migrate a Vue 2 + BootstrapVue (Bootstrap 4) app to Vue 3 + BootstrapVueNext v1 (Bootstrap 5). Not for upgrading between BootstrapVueNext versions.",
+      "category": "migration",
+      "tags": ["bootstrap-vue", "bootstrap-vue-next", "vue", "migration"]
+    }
+  ]
+}

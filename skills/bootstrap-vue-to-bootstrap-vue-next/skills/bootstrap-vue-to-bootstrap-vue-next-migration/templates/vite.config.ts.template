@@ -1,0 +1,22 @@
+// vite.config.ts — auto-import + tree-shake BootstrapVueNext components (replaces global registration)
+import {defineConfig} from 'vite'
+import vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite'
+import {BootstrapVueNextResolver} from 'bootstrap-vue-next/resolvers'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    Components({
+      resolvers: [
+        BootstrapVueNextResolver({
+          // Keep old BootstrapVue alias tags working while migrating (optional):
+          aliases: {
+            // BBtn: 'BButton',
+            // BInput: 'BFormInput',
+          },
+        }),
+      ],
+    }),
+  ],
+})

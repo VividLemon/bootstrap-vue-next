@@ -1,0 +1,1068 @@
+{
+ "generatedFrom": {
+  "bootstrap-vue": "9a246f45fc813f161df291fc7d6197febf8afaf4",
+  "bootstrap-vue-next": "07767892df7f178d502e64562fb562234647651e"
+ },
+ "rules": [
+  {
+   "id": "import-bootstrap-vue",
+   "category": "setup",
+   "pattern": "from\\s+['\"]bootstrap-vue(?:/[^'\"]*)?['\"]|require\\(\\s*['\"]bootstrap-vue['\"]",
+   "flags": "g",
+   "message": "Import from `bootstrap-vue`; switch to `bootstrap-vue-next` (named component imports or the unplugin resolver).",
+   "ref": "references/setup-and-dependencies.md"
+  },
+  {
+   "id": "vue-use-bootstrapvue",
+   "category": "setup",
+   "pattern": "Vue\\.use\\(\\s*(?:BootstrapVue|BootstrapVueIcons|IconsPlugin|\\w+Plugin)\\b",
+   "flags": "g",
+   "message": "Vue 2 global plugin install. Use `createApp(App)` + `<BApp>` (recommended), or `app.use(createBootstrap())` plus a `<BOrchestrator />` in the root template. Icon plugins have no equivalent.",
+   "ref": "references/setup-and-dependencies.md"
+  },
+  {
+   "id": "bv-css",
+   "category": "setup",
+   "pattern": "bootstrap-vue/(?:dist/bootstrap-vue(?:\\.min)?\\.css|src/index\\.scss)",
+   "flags": "g",
+   "message": "BootstrapVue stylesheet. Import `bootstrap/dist/css/bootstrap.css` (Bootstrap 5) and `bootstrap-vue-next/dist/bootstrap-vue-next.css`.",
+   "ref": "references/setup-and-dependencies.md"
+  },
+  {
+   "id": "bv-icons",
+   "category": "setup",
+   "pattern": "</?(?:BIcon\\w*|b-icon(?:-[\\w-]+)?|BIconstack|b-iconstack)(?=[\\s>/])",
+   "flags": "g",
+   "message": "BootstrapVue icon components were not carried over. Use unplugin-icons (e.g. `<IBiCheck />`) or bootstrap-icons.",
+   "ref": "references/upstream-guide/components/bavatar.md"
+  },
+  {
+   "id": "old-deps",
+   "category": "setup",
+   "pattern": "['\"](?:popper\\.js|portal-vue|vue-functional-data-merge|@nuxt/opencollective)['\"]",
+   "flags": "g",
+   "message": "Dependency used only by BootstrapVue; remove it unless your own code uses it.",
+   "ref": "references/setup-and-dependencies.md"
+  },
+  {
+   "id": "dep-bootstrap-vue",
+   "category": "setup",
+   "pattern": "\"bootstrap-vue\"\\s*:\\s*\"",
+   "flags": "g",
+   "message": "`bootstrap-vue` dependency: remove it and add `bootstrap-vue-next` (Vue 3 + Bootstrap 5.3 required).",
+   "ref": "references/setup-and-dependencies.md"
+  },
+  {
+   "id": "dep-bootstrap-4",
+   "category": "setup",
+   "pattern": "\"bootstrap\"\\s*:\\s*\"[\\^~>=\\s]*[1-4]\\.",
+   "flags": "g",
+   "message": "Bootstrap 4 (or older) dependency: BootstrapVueNext needs `bootstrap@^5.3`.",
+   "ref": "references/setup-and-dependencies.md"
+  },
+  {
+   "id": "bv-nuxt-module",
+   "category": "setup",
+   "pattern": "['\"]bootstrap-vue/nuxt['\"]",
+   "flags": "g",
+   "message": "BootstrapVue Nuxt 2 module. Use `@bootstrap-vue-next/nuxt` on Nuxt 3+.",
+   "ref": "references/setup-and-dependencies.md"
+  },
+  {
+   "id": "bvModal",
+   "category": "api",
+   "pattern": "\\$bvModal\\b",
+   "flags": "g",
+   "message": "`$bvModal` was removed: use `useModal()` (`create`, `show`, `hide`) or a template ref. `show(id)` is unchanged but `hide(id)` \u2192 `hide(undefined, id)` (signature is `hide(trigger?, id?)`). `msgBoxOk`/`msgBoxConfirm` become `useModal().create({...}).show()`. Requires a `<BApp>` ancestor (not in the same component).",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "bvToast",
+   "category": "api",
+   "pattern": "\\$bvToast\\b",
+   "flags": "g",
+   "message": "`$bvToast` was removed: use `useToast().create({ title, body, ... }).show()`; `hide(id)` \u2192 `useToast().hide(undefined, id)`. Requires a `<BApp>` ancestor (not in the same component).",
+   "ref": "references/upstream-guide/components/btoast.md"
+  },
+  {
+   "id": "root-bv-events",
+   "category": "api",
+   "pattern": "\\$root\\.\\$(?:emit|on|once|off)\\(\\s*['\"]bv::",
+   "flags": "g",
+   "message": "`$root` `bv::` events are not supported in Vue 3 / BootstrapVueNext. Use composables (`useModal`, `useToggle`, `useToast`), template refs or v-model.",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "bv-config-import",
+   "category": "api",
+   "pattern": "BVConfigPlugin|BVModalPlugin|BVToastPlugin",
+   "flags": "g",
+   "message": "BootstrapVue plugin objects. Global prop defaults move to `<BApp :defaults>` or `createBootstrap({ components: {...} })`.",
+   "ref": "references/setup-and-dependencies.md"
+  },
+  {
+   "id": "sync-modifier",
+   "category": "vue3",
+   "pattern": ":[\\w-]+\\.sync\\s*=",
+   "flags": "g",
+   "message": "`.sync` is gone in Vue 3: use `v-model:<prop>` (and `v-model` for the primary model).",
+   "ref": "references/upstream-guide/patterns/sync-modifier.md"
+  },
+  {
+   "id": "slot-attr",
+   "category": "vue3",
+   "pattern": "\\s(?:slot|slot-scope)\\s*=\\s*\"",
+   "flags": "g",
+   "message": "Vue 2 `slot=`/`slot-scope=` syntax: use `<template #name=\"scope\">`.",
+   "ref": "https://v3-migration.vuejs.org/breaking-changes/"
+  },
+  {
+   "id": "native-modifier",
+   "category": "vue3",
+   "pattern": "@[\\w-]+\\.native\\b|v-on:[\\w-]+\\.native\\b",
+   "flags": "g",
+   "message": "`.native` modifier removed in Vue 3; listeners fall through as attrs.",
+   "ref": "references/upstream-guide/patterns/native-events.md"
+  },
+  {
+   "id": "html-props",
+   "category": "vue3",
+   "pattern": "(?<!\\b(?:const|let|var))\\s:?(?!v-html)(?:html|[a-z]+(?:-[a-z]+)*-html)\\s*=(?!=)",
+   "flags": "g",
+   "message": "`html` / `*-html` props were removed in favour of slots (use explicit `v-html` inside the slot if you must).",
+   "ref": "references/upstream-guide/patterns/v-html-props.md"
+  },
+  {
+   "id": "component-b-sidebar",
+   "category": "component",
+   "pattern": "</?(?:BSidebar|b-sidebar)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BSidebar`: Renamed to `BOffcanvas` (`right` \u2192 `placement=\"end\"`, `no-slide` \u2192 `no-animation`, `no-enforce-focus` \u2192 `no-trap`).",
+   "ref": "references/upstream-guide/components/bsidebar.md"
+  },
+  {
+   "id": "component-b-jumbotron",
+   "category": "component",
+   "pattern": "</?(?:BJumbotron|b-jumbotron)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BJumbotron`: Removed (dropped in Bootstrap 5). Rebuild with utility classes, e.g. `<div class=\"p-5 mb-4 bg-body-tertiary rounded-3\">`.",
+   "ref": "references/upstream-guide/components/bjumbotron.md"
+  },
+  {
+   "id": "component-b-media",
+   "category": "component",
+   "pattern": "</?(?:BMedia|b-media)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BMedia`: Removed. Use flex utilities (`d-flex`, `flex-shrink-0`, `flex-grow-1 ms-3`).",
+   "ref": "references/upstream-guide/components/bmedia.md"
+  },
+  {
+   "id": "component-b-media-aside",
+   "category": "component",
+   "pattern": "</?(?:BMediaAside|b-media-aside)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BMediaAside`: Removed with BMedia. Use `<div class=\"flex-shrink-0\">`.",
+   "ref": "references/upstream-guide/components/bmedia.md"
+  },
+  {
+   "id": "component-b-media-body",
+   "category": "component",
+   "pattern": "</?(?:BMediaBody|b-media-body)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BMediaBody`: Removed with BMedia. Use `<div class=\"flex-grow-1 ms-3\">`.",
+   "ref": "references/upstream-guide/components/bmedia.md"
+  },
+  {
+   "id": "component-b-embed",
+   "category": "component",
+   "pattern": "</?(?:BEmbed|b-embed)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BEmbed`: Removed. Use Bootstrap 5 `.ratio .ratio-16x9` classes (or `BAspect`).",
+   "ref": "references/upstream-guide/components/bembed.md"
+  },
+  {
+   "id": "component-b-pagination-nav",
+   "category": "component",
+   "pattern": "</?(?:BPaginationNav|b-pagination-nav)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BPaginationNav`: Not implemented. Use `BPagination` with your router, or plain links.",
+   "ref": "references/upstream-guide/components/bpaginationnav.md"
+  },
+  {
+   "id": "component-b-img-lazy",
+   "category": "component",
+   "pattern": "</?(?:BImgLazy|b-img-lazy)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BImgLazy`: Removed. Use `<BImg lazy>` (native `loading=\"lazy\"`).",
+   "ref": "references/upstream-guide/components/bimglazy.md"
+  },
+  {
+   "id": "component-b-card-img-lazy",
+   "category": "component",
+   "pattern": "</?(?:BCardImgLazy|b-card-img-lazy)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BCardImgLazy`: Removed. Use `<BCardImg>` / `<BImg lazy>`.",
+   "ref": "references/upstream-guide/components/bcardimglazy.md"
+  },
+  {
+   "id": "component-b-input-group-append",
+   "category": "component",
+   "pattern": "</?(?:BInputGroupAppend|b-input-group-append)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BInputGroupAppend`: Removed (Bootstrap 5). Place children directly inside `BInputGroup`, or use the `append` slot / prop.",
+   "ref": "references/upstream-guide/components/binputgroup.md"
+  },
+  {
+   "id": "component-b-input-group-prepend",
+   "category": "component",
+   "pattern": "</?(?:BInputGroupPrepend|b-input-group-prepend)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BInputGroupPrepend`: Removed (Bootstrap 5). Place children directly inside `BInputGroup`, or use the `prepend` slot / prop.",
+   "ref": "references/upstream-guide/components/binputgroup.md"
+  },
+  {
+   "id": "component-b-input-group-addon",
+   "category": "component",
+   "pattern": "</?(?:BInputGroupAddon|b-input-group-addon)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BInputGroupAddon`: Removed (Bootstrap 5). Place children directly inside `BInputGroup`.",
+   "ref": "references/upstream-guide/components/binputgroup.md"
+  },
+  {
+   "id": "component-b-toaster",
+   "category": "component",
+   "pattern": "</?(?:BToaster|b-toaster)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BToaster`: Removed. Toast placement/orchestration is handled by `<BApp>` + `useToast()` (or `<BOrchestrator>`).",
+   "ref": "references/upstream-guide/components/btoaster.md"
+  },
+  {
+   "id": "component-b-skeleton",
+   "category": "component",
+   "pattern": "</?(?:BSkeleton|b-skeleton)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BSkeleton`: Removed. Use `BPlaceholder`.",
+   "ref": "references/upstream-guide/components/bskeleton.md"
+  },
+  {
+   "id": "component-b-skeleton-wrapper",
+   "category": "component",
+   "pattern": "</?(?:BSkeletonWrapper|b-skeleton-wrapper)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BSkeletonWrapper`: Removed. Use `BPlaceholderWrapper` (`loading` prop + `loading` slot).",
+   "ref": "references/upstream-guide/components/bskeleton.md"
+  },
+  {
+   "id": "component-b-skeleton-table",
+   "category": "component",
+   "pattern": "</?(?:BSkeletonTable|b-skeleton-table)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BSkeletonTable`: Removed. Use `BPlaceholderTable`.",
+   "ref": "references/upstream-guide/components/bskeleton.md"
+  },
+  {
+   "id": "component-b-skeleton-img",
+   "category": "component",
+   "pattern": "</?(?:BSkeletonImg|b-skeleton-img)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BSkeletonImg`: Removed. Use `BPlaceholderWrapper` / `BPlaceholder`.",
+   "ref": "references/upstream-guide/components/bskeleton.md"
+  },
+  {
+   "id": "component-b-skeleton-icon",
+   "category": "component",
+   "pattern": "</?(?:BSkeletonIcon|b-skeleton-icon)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BSkeletonIcon`: Removed (icons not supported). Use `BPlaceholderWrapper` with your icon in the `loading` slot.",
+   "ref": "references/upstream-guide/components/bskeleton.md"
+  },
+  {
+   "id": "component-b-button-close",
+   "category": "component",
+   "pattern": "</?(?:BButtonClose|b-button-close)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BButtonClose`: Renamed to `BCloseButton`; `content` and `text-variant` props removed (Bootstrap 5 uses an SVG icon; use `variant=\"white\"` style classes as needed).",
+   "ref": "references/upstream-guide/components/bbuttonclose.md"
+  },
+  {
+   "id": "component-b-form-datepicker",
+   "category": "component",
+   "pattern": "</?(?:BFormDatepicker|b-form-datepicker)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BFormDatepicker`: No stable equivalent. Experimental `BDatePicker` / `BDateField` exist with a different API \u2014 migrate manually or keep a third-party date picker.",
+   "ref": "references/upstream-guide/components/bformdatepicker.md"
+  },
+  {
+   "id": "component-b-calendar",
+   "category": "component",
+   "pattern": "</?(?:BCalendar|b-calendar)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BCalendar`: No stable equivalent. Experimental `BDatePicker` has a different API \u2014 migrate manually.",
+   "ref": "references/upstream-guide/components/bcalendar.md"
+  },
+  {
+   "id": "component-b-form-timepicker",
+   "category": "component",
+   "pattern": "</?(?:BFormTimepicker|b-form-timepicker)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BFormTimepicker`: No stable equivalent. Experimental `BTimeField` has a different (segmented-field) API \u2014 migrate manually.",
+   "ref": "references/upstream-guide/components/bformtimepicker.md"
+  },
+  {
+   "id": "component-b-time",
+   "category": "component",
+   "pattern": "</?(?:BTime|b-time)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BTime`: No stable equivalent. Experimental `BTimeField` has a different API \u2014 migrate manually.",
+   "ref": "references/upstream-guide/components/btime.md"
+  },
+  {
+   "id": "component-b-card-sub-title",
+   "category": "component",
+   "pattern": "</?(?:BCardSubTitle|b-card-sub-title)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BCardSubTitle`: Renamed to `BCardSubtitle` (lower-case t); `sub-title*` props become `text` / `tag` / `text-variant` (and `subtitle*` on BCard).",
+   "ref": "references/upstream-guide/components/bcard.md"
+  },
+  {
+   "id": "component-b-form-row",
+   "category": "component",
+   "pattern": "</?(?:BFormRow|b-form-row)(?=[\\s>/])",
+   "flags": "g",
+   "message": "`BFormRow`: Still exported but **deprecated**; renders `.row` with Bootstrap 5 gutters, not BS4 `.form-row` tight gutters. Prefer `<BRow class=\"g-2\">` (verify spacing visually).",
+   "ref": "references/upstream-guide/components/bform.md"
+  },
+  {
+   "id": "alias-b-btn",
+   "category": "alias",
+   "pattern": "</?(?:BBtn|b-btn)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BBtn` is not registered by BootstrapVueNext. Rename to `BButton` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-btn-group",
+   "category": "alias",
+   "pattern": "</?(?:BBtnGroup|b-btn-group)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BBtnGroup` is not registered by BootstrapVueNext. Rename to `BButtonGroup` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-btn-toolbar",
+   "category": "alias",
+   "pattern": "</?(?:BBtnToolbar|b-btn-toolbar)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BBtnToolbar` is not registered by BootstrapVueNext. Rename to `BButtonToolbar` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-btn-close",
+   "category": "alias",
+   "pattern": "</?(?:BBtnClose|b-btn-close)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BBtnClose` is not registered by BootstrapVueNext. Rename to `BCloseButton` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dd",
+   "category": "alias",
+   "pattern": "</?(?:BDd|b-dd)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDd` is not registered by BootstrapVueNext. Rename to `BDropdown` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dd-item",
+   "category": "alias",
+   "pattern": "</?(?:BDdItem|b-dd-item)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDdItem` is not registered by BootstrapVueNext. Rename to `BDropdownItem` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dropdown-item-btn",
+   "category": "alias",
+   "pattern": "</?(?:BDropdownItemBtn|b-dropdown-item-btn)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDropdownItemBtn` is not registered by BootstrapVueNext. Rename to `BDropdownItemButton` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dd-item-button",
+   "category": "alias",
+   "pattern": "</?(?:BDdItemButton|b-dd-item-button)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDdItemButton` is not registered by BootstrapVueNext. Rename to `BDropdownItemButton` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dd-item-btn",
+   "category": "alias",
+   "pattern": "</?(?:BDdItemBtn|b-dd-item-btn)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDdItemBtn` is not registered by BootstrapVueNext. Rename to `BDropdownItemButton` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dd-divider",
+   "category": "alias",
+   "pattern": "</?(?:BDdDivider|b-dd-divider)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDdDivider` is not registered by BootstrapVueNext. Rename to `BDropdownDivider` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dd-form",
+   "category": "alias",
+   "pattern": "</?(?:BDdForm|b-dd-form)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDdForm` is not registered by BootstrapVueNext. Rename to `BDropdownForm` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dd-text",
+   "category": "alias",
+   "pattern": "</?(?:BDdText|b-dd-text)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDdText` is not registered by BootstrapVueNext. Rename to `BDropdownText` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dd-group",
+   "category": "alias",
+   "pattern": "</?(?:BDdGroup|b-dd-group)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDdGroup` is not registered by BootstrapVueNext. Rename to `BDropdownGroup` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-dd-header",
+   "category": "alias",
+   "pattern": "</?(?:BDdHeader|b-dd-header)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDdHeader` is not registered by BootstrapVueNext. Rename to `BDropdownHeader` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-checkbox-group",
+   "category": "alias",
+   "pattern": "</?(?:BCheckboxGroup|b-checkbox-group)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BCheckboxGroup` is not registered by BootstrapVueNext. Rename to `BFormCheckboxGroup` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-check-group",
+   "category": "alias",
+   "pattern": "</?(?:BCheckGroup|b-check-group)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BCheckGroup` is not registered by BootstrapVueNext. Rename to `BFormCheckboxGroup` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-checkbox",
+   "category": "alias",
+   "pattern": "</?(?:BCheckbox|b-checkbox)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BCheckbox` is not registered by BootstrapVueNext. Rename to `BFormCheckbox` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-check",
+   "category": "alias",
+   "pattern": "</?(?:BCheck|b-check)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BCheck` is not registered by BootstrapVueNext. Rename to `BFormCheckbox` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-datepicker",
+   "category": "alias",
+   "pattern": "</?(?:BDatepicker|b-datepicker)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDatepicker` (\u2192 old `BFormDatepicker`) has no stable equivalent in BootstrapVueNext \u2014 see upstream-guide/components/bformdatepicker.md; do not auto-migrate.",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-file",
+   "category": "alias",
+   "pattern": "</?(?:BFile|b-file)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BFile` is not registered by BootstrapVueNext. Rename to `BFormFile` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-radio-group",
+   "category": "alias",
+   "pattern": "</?(?:BRadioGroup|b-radio-group)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BRadioGroup` is not registered by BootstrapVueNext. Rename to `BFormRadioGroup` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-radio",
+   "category": "alias",
+   "pattern": "</?(?:BRadio|b-radio)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BRadio` is not registered by BootstrapVueNext. Rename to `BFormRadio` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-rating",
+   "category": "alias",
+   "pattern": "</?(?:BRating|b-rating)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BRating` is not registered by BootstrapVueNext. Rename to `BFormRating` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-select",
+   "category": "alias",
+   "pattern": "</?(?:BSelect|b-select)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BSelect` is not registered by BootstrapVueNext. Rename to `BFormSelect` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-select-option",
+   "category": "alias",
+   "pattern": "</?(?:BSelectOption|b-select-option)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BSelectOption` is not registered by BootstrapVueNext. Rename to `BFormSelectOption` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-select-option-group",
+   "category": "alias",
+   "pattern": "</?(?:BSelectOptionGroup|b-select-option-group)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BSelectOptionGroup` is not registered by BootstrapVueNext. Rename to `BFormSelectOptionGroup` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-spinbutton",
+   "category": "alias",
+   "pattern": "</?(?:BSpinbutton|b-spinbutton)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BSpinbutton` is not registered by BootstrapVueNext. Rename to `BFormSpinbutton` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-tags",
+   "category": "alias",
+   "pattern": "</?(?:BTags|b-tags)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BTags` is not registered by BootstrapVueNext. Rename to `BFormTags` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-tag",
+   "category": "alias",
+   "pattern": "</?(?:BTag|b-tag)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BTag` is not registered by BootstrapVueNext. Rename to `BFormTag` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-textarea",
+   "category": "alias",
+   "pattern": "</?(?:BTextarea|b-textarea)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BTextarea` is not registered by BootstrapVueNext. Rename to `BFormTextarea` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-timepicker",
+   "category": "alias",
+   "pattern": "</?(?:BTimepicker|b-timepicker)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BTimepicker` (\u2192 old `BFormTimepicker`) has no stable equivalent in BootstrapVueNext \u2014 see upstream-guide/components/bformtimepicker.md; do not auto-migrate.",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-datalist",
+   "category": "alias",
+   "pattern": "</?(?:BDatalist|b-datalist)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BDatalist` is not registered by BootstrapVueNext. Rename to `BFormDatalist` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-nav-item-dd",
+   "category": "alias",
+   "pattern": "</?(?:BNavItemDd|b-nav-item-dd)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BNavItemDd` is not registered by BootstrapVueNext. Rename to `BNavItemDropdown` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-nav-dropdown",
+   "category": "alias",
+   "pattern": "</?(?:BNavDropdown|b-nav-dropdown)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BNavDropdown` is not registered by BootstrapVueNext. Rename to `BNavItemDropdown` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-nav-dd",
+   "category": "alias",
+   "pattern": "</?(?:BNavDd|b-nav-dd)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BNavDd` is not registered by BootstrapVueNext. Rename to `BNavItemDropdown` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "alias-b-nav-toggle",
+   "category": "alias",
+   "pattern": "</?(?:BNavToggle|b-nav-toggle)(?=[\\s>/])",
+   "flags": "g",
+   "message": "Alias `BNavToggle` is not registered by BootstrapVueNext. Rename to `BNavbarToggle` (or configure `BootstrapVueNextResolver({ aliases })`).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "dir-v-b-hover",
+   "category": "directive",
+   "pattern": "\\sv-b-hover\\b",
+   "flags": "g",
+   "message": "`v-b-hover` removed: use VueUse `useElementHover()`.",
+   "ref": "references/upstream-guide/directives/v-b-hover.md"
+  },
+  {
+   "id": "dir-v-b-visible",
+   "category": "directive",
+   "pattern": "\\sv-b-visible\\b",
+   "flags": "g",
+   "message": "`v-b-visible` removed: use VueUse `useElementVisibility()`.",
+   "ref": "references/upstream-guide/directives/v-b-visible.md"
+  },
+  {
+   "id": "dir-v-b-tooltip",
+   "category": "review",
+   "pattern": "\\sv-b-tooltip\\b",
+   "flags": "g",
+   "message": "`v-b-tooltip` exists but modifiers/value handling changed; review placement and trigger modifiers.",
+   "ref": "references/upstream-guide/directives/v-b-tooltip.md"
+  },
+  {
+   "id": "dir-v-b-popover",
+   "category": "review",
+   "pattern": "\\sv-b-popover\\b",
+   "flags": "g",
+   "message": "`v-b-popover` exists but value object, triggers and `custom-class` (\u2192 `body-class`) changed.",
+   "ref": "references/upstream-guide/directives/v-b-popover.md"
+  },
+  {
+   "id": "dir-v-b-modal",
+   "category": "review",
+   "pattern": "\\sv-b-modal\\b",
+   "flags": "g",
+   "message": "`v-b-modal` still exists (as `vBModal`); review if you relied on `$root` events.",
+   "ref": "references/upstream-guide/directives/v-b-modal.md"
+  },
+  {
+   "id": "dir-registration",
+   "category": "directive",
+   "pattern": "\\bVB(?:Hover|Visible|Tooltip|Popover|Modal|Toggle|Scrollspy)(?:Plugin)?\\b",
+   "flags": "g",
+   "message": "BootstrapVue directive export. New names are camel-case `vBTooltip`, `vBPopover`, `vBModal`, `vBToggle`, `vBScrollspy` (hover/visible removed).",
+   "ref": "references/component-map.md"
+  },
+  {
+   "id": "prop-bmodal-hide-header-close",
+   "category": "prop",
+   "pattern": "<(?:BModal|b-modal)(?=[\\s>/])[^>]*?\\s:?hide-header-close(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`hide-header-close` \u2192 `no-header-close` (BModal).",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "prop-bmodal-hide-footer",
+   "category": "prop",
+   "pattern": "<(?:BModal|b-modal)(?=[\\s>/])[^>]*?\\s:?hide-footer(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`hide-footer` \u2192 `no-footer` (BModal).",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "prop-bmodal-hide-header",
+   "category": "prop",
+   "pattern": "<(?:BModal|b-modal)(?=[\\s>/])[^>]*?\\s:?hide-header(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`hide-header` \u2192 `no-header` (BModal).",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "prop-bmodal-hide-backdrop",
+   "category": "prop",
+   "pattern": "<(?:BModal|b-modal)(?=[\\s>/])[^>]*?\\s:?hide-backdrop(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`hide-backdrop` \u2192 `no-backdrop` (BModal).",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "prop-bmodal-no-enforce-focus",
+   "category": "prop",
+   "pattern": "<(?:BModal|b-modal)(?=[\\s>/])[^>]*?\\s:?no-enforce-focus(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`no-enforce-focus` \u2192 `no-trap` (BModal).",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "prop-bmodal-title-sr-only",
+   "category": "prop",
+   "pattern": "<(?:BModal|b-modal)(?=[\\s>/])[^>]*?\\s:?title-sr-only(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`title-sr-only` \u2192 `title-visually-hidden` (BModal).",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "deprecated-bmodal-aria-label",
+   "category": "prop",
+   "pattern": "<(?:BModal|b-modal)(?=[\\s>/])[^>]*?\\s:?aria-label(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`aria-label` is removed/deprecated on BModal; see guide.",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "deprecated-bmodal-auto-focus-button",
+   "category": "prop",
+   "pattern": "<(?:BModal|b-modal)(?=[\\s>/])[^>]*?\\s:?auto-focus-button(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`auto-focus-button` is removed/deprecated on BModal; see guide.",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "deprecated-bmodal-ignore-enforce-focus-selector",
+   "category": "prop",
+   "pattern": "<(?:BModal|b-modal)(?=[\\s>/])[^>]*?\\s:?ignore-enforce-focus-selector(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`ignore-enforce-focus-selector` is removed/deprecated on BModal; see guide.",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "prop-bpopover-custom-class",
+   "category": "prop",
+   "pattern": "<(?:BPopover|b-popover)(?=[\\s>/])[^>]*?\\s:?custom-class(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`custom-class` \u2192 `body-class` (BPopover).",
+   "ref": "references/upstream-guide/components/bpopover.md"
+  },
+  {
+   "id": "prop-bsidebar-no-slide",
+   "category": "prop",
+   "pattern": "<(?:BSidebar|b-sidebar)(?=[\\s>/])[^>]*?\\s:?no-slide(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`no-slide` \u2192 `no-animation` (BSidebar, BOffcanvas).",
+   "ref": "references/upstream-guide/components/bsidebar.md"
+  },
+  {
+   "id": "prop-btoast-toast-title",
+   "category": "prop",
+   "pattern": "<(?:BToast|b-toast)(?=[\\s>/])[^>]*?\\s:?toast-title(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`toast-title` \u2192 `title` (BToast).",
+   "ref": "references/upstream-guide/components/btoast.md"
+  },
+  {
+   "id": "deprecated-btoast-toaster",
+   "category": "prop",
+   "pattern": "<(?:BToast|b-toast)(?=[\\s>/])[^>]*?\\s:?toaster(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`toaster` is removed/deprecated on BToast; see guide.",
+   "ref": "references/upstream-guide/components/btoast.md"
+  },
+  {
+   "id": "prop-rounded-top",
+   "category": "prop",
+   "pattern": "\\s:?rounded\\s*=\\s*\"top\"",
+   "flags": "g",
+   "message": "`rounded=\"top\"` \u2192 `rounded-top` prop (Bootstrap 5 start/end naming).",
+   "ref": "references/upstream-guide/props/rounded-radius-element.md"
+  },
+  {
+   "id": "prop-rounded-bottom",
+   "category": "prop",
+   "pattern": "\\s:?rounded\\s*=\\s*\"bottom\"",
+   "flags": "g",
+   "message": "`rounded=\"bottom\"` \u2192 `rounded-bottom` prop (Bootstrap 5 start/end naming).",
+   "ref": "references/upstream-guide/props/rounded-radius-element.md"
+  },
+  {
+   "id": "prop-rounded-left",
+   "category": "prop",
+   "pattern": "\\s:?rounded\\s*=\\s*\"left\"",
+   "flags": "g",
+   "message": "`rounded=\"left\"` \u2192 `rounded-start` prop (Bootstrap 5 start/end naming).",
+   "ref": "references/upstream-guide/props/rounded-radius-element.md"
+  },
+  {
+   "id": "prop-rounded-right",
+   "category": "prop",
+   "pattern": "\\s:?rounded\\s*=\\s*\"right\"",
+   "flags": "g",
+   "message": "`rounded=\"right\"` \u2192 `rounded-end` prop (Bootstrap 5 start/end naming).",
+   "ref": "references/upstream-guide/props/rounded-radius-element.md"
+  },
+  {
+   "id": "prop-hide-ellipsis",
+   "category": "prop",
+   "pattern": "<(?:BCollapse|b-collapse|BDropdown|b-dropdown|BModal|b-modal|BNavItemDropdown|b-nav-item-dropdown|BSidebar|b-sidebar|BOffcanvas|BPopover|b-popover|BToast|b-toast|BTooltip|b-tooltip|BPagination|b-pagination|BFormGroup|b-form-group|BAccordion|BAccordionItem|BSkeletonTable|b-skeleton-table)(?=[\\s>/])[^>]*?\\s:?hide-ellipsis(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`hide-ellipsis` \u2192 `no-ellipsis`.",
+   "ref": "references/upstream-guide/patterns/show-hide.md"
+  },
+  {
+   "id": "prop-hide-goto-end-buttons",
+   "category": "prop",
+   "pattern": "<(?:BCollapse|b-collapse|BDropdown|b-dropdown|BModal|b-modal|BNavItemDropdown|b-nav-item-dropdown|BSidebar|b-sidebar|BOffcanvas|BPopover|b-popover|BToast|b-toast|BTooltip|b-tooltip|BPagination|b-pagination|BFormGroup|b-form-group|BAccordion|BAccordionItem|BSkeletonTable|b-skeleton-table)(?=[\\s>/])[^>]*?\\s:?hide-goto-end-buttons(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`hide-goto-end-buttons` \u2192 `no-goto-end-buttons`.",
+   "ref": "references/upstream-guide/patterns/show-hide.md"
+  },
+  {
+   "id": "prop-appear",
+   "category": "prop",
+   "pattern": "<(?:BCollapse|b-collapse|BDropdown|b-dropdown|BModal|b-modal|BNavItemDropdown|b-nav-item-dropdown|BSidebar|b-sidebar|BOffcanvas|BPopover|b-popover|BToast|b-toast|BTooltip|b-tooltip|BPagination|b-pagination|BFormGroup|b-form-group|BAccordion|BAccordionItem|BSkeletonTable|b-skeleton-table)(?=[\\s>/])[^>]*?\\s:?appear(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`appear` \u2192 `initial-animation`.",
+   "ref": "references/upstream-guide/patterns/show-hide.md"
+  },
+  {
+   "id": "prop-label-sr-only",
+   "category": "prop",
+   "pattern": "<(?:BCollapse|b-collapse|BDropdown|b-dropdown|BModal|b-modal|BNavItemDropdown|b-nav-item-dropdown|BSidebar|b-sidebar|BOffcanvas|BPopover|b-popover|BToast|b-toast|BTooltip|b-tooltip|BPagination|b-pagination|BFormGroup|b-form-group|BAccordion|BAccordionItem|BSkeletonTable|b-skeleton-table)(?=[\\s>/])[^>]*?\\s:?label-sr-only(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`label-sr-only` \u2192 `label-visually-hidden`.",
+   "ref": "references/upstream-guide/patterns/show-hide.md"
+  },
+  {
+   "id": "prop-title-sr-only",
+   "category": "prop",
+   "pattern": "<(?:BCollapse|b-collapse|BDropdown|b-dropdown|BModal|b-modal|BNavItemDropdown|b-nav-item-dropdown|BSidebar|b-sidebar|BOffcanvas|BPopover|b-popover|BToast|b-toast|BTooltip|b-tooltip|BPagination|b-pagination|BFormGroup|b-form-group|BAccordion|BAccordionItem|BSkeletonTable|b-skeleton-table)(?=[\\s>/])[^>]*?\\s:?title-sr-only(?=[\\s=>/])",
+   "flags": "g",
+   "message": "`title-sr-only` \u2192 `title-visually-hidden`.",
+   "ref": "references/upstream-guide/patterns/show-hide.md"
+  },
+  {
+   "id": "event-dismissed",
+   "category": "event",
+   "pattern": "@dismissed\\b|v-on:dismissed\\b|#dismiss\\b|v-slot:dismiss\\b",
+   "flags": "g",
+   "message": "BAlert `dismissed` event \u2192 `hidden` (any hide, incl. countdown expiry) or `close` (close button only) \u2014 there is NO `closed` event; `dismiss` slot \u2192 `close`.",
+   "ref": "references/guide-corrections-and-gaps.md"
+  },
+  {
+   "id": "event-form-value-payload",
+   "category": "event",
+   "pattern": "<(?:BFormInput|b-form-input|BInput|b-input|BFormTextarea|b-form-textarea|BTextarea|b-textarea|BFormSelect|b-form-select|BSelect|b-select|BFormCheckbox|b-form-checkbox|BCheckbox|b-checkbox|BCheck|b-check|BFormCheckboxGroup|b-form-checkbox-group|BCheckboxGroup|b-checkbox-group|BFormRadio|b-form-radio|BRadio|b-radio|BFormRadioGroup|b-form-radio-group|BRadioGroup|b-radio-group|BFormRating|b-form-rating|BRating|b-rating|BFormSpinbutton|b-form-spinbutton|BSpinbutton|b-spinbutton|BFormTags|b-form-tags|BTags|b-tags|BFormFile|b-form-file|BFile|b-file|BPagination|b-pagination)(?=[\\s>/])[^>]*?\\s(?:@|v-on:)(?:input|change|update)(?=[\\s=.>])",
+   "flags": "g",
+   "message": "`@input` / `@change` / `@update` on form controls (and BPagination) no longer receive the value: they are not component events, so the handler gets a native DOM `Event` or never fires. Use `@update:model-value`.",
+   "ref": "references/silent-behaviour-changes.md"
+  },
+  {
+   "id": "alert-countdown-units",
+   "category": "event",
+   "pattern": "(?:@|v-on:)dismiss-count-down\\b|<(?:BAlert|b-alert)(?=[\\s>/])[^>]*?\\s:show\\s*=\\s*\"\\d+\"",
+   "flags": "g",
+   "message": "BAlert auto-dismiss changed units: numeric `show` was SECONDS, numeric `v-model` / `model-value` is MILLISECONDS. `@dismiss-count-down` (seconds) \u2192 `@close-countdown` (ms).",
+   "ref": "references/silent-behaviour-changes.md"
+  },
+  {
+   "id": "method-renamed",
+   "category": "api",
+   "pattern": "\\.(?:setSlide|selectAllRows|clearSelected|selectRow|unselectRow|isRowSelected|firstTab|previousTab|nextTab|lastTab|updatePopper|setSelectionRange|setRangeText|setCustomValidity|reportValidity|focusFirst|focusLast|focusCurrent)\\(",
+   "flags": "g",
+   "message": "Possible BootstrapVue component method called through a ref. Renamed, moved or removed: `setSlide` \u2192 `slideTo`; table selection methods \u2192 `ref.selection.*`; BTabs navigation methods gone (use `v-model:index`); native input methods \u2192 `ref.element.*`; `updatePopper` / `focusFirst` etc. gone. Ignore hits on native DOM elements.",
+   "ref": "references/silent-behaviour-changes.md"
+  },
+  {
+   "id": "value-left-right-align",
+   "category": "prop",
+   "pattern": "\\s(?:align|label-align(?:-(?:sm|md|lg|xl))?)\\s*=\\s*\"(?:left|right)\"",
+   "flags": "g",
+   "message": "`align` / `label-align*` value `left` / `right` \u2192 `start` / `end` (BPagination, BCard, BFormGroup, BNav, BTabs, BNavbarNav).",
+   "ref": "references/silent-behaviour-changes.md"
+  },
+  {
+   "id": "ts-bv-types",
+   "category": "api",
+   "pattern": "\\bBv(?:TableField(?:Array)?|TableCtxObject|TableProviderCallback|TableFormatterCallback|TableSortCompareCallback|TableFilterCallback|TableVariant|ModalEvent|MsgBoxOptions|ToastOptions|Modal|Toast)\\b",
+   "flags": "g",
+   "message": "bootstrap-vue TypeScript type. See the type-name map (e.g. `BvTableField` \u2192 `TableField`, `BvModalEvent` \u2192 `BvTriggerableEvent`, `BvTableCtxObject` \u2192 `BTableProviderContext`).",
+   "ref": "references/silent-behaviour-changes.md"
+  },
+  {
+   "id": "modal-slots",
+   "category": "slot",
+   "pattern": "#modal-(?:header|header-close|title|footer|ok|cancel|backdrop)\\b|v-slot:modal-",
+   "flags": "g",
+   "message": "BModal `modal-*` slots were renamed (`modal-footer` \u2192 `footer`, `modal-title` \u2192 `title`, `modal-ok` \u2192 `ok`, \u2026).",
+   "ref": "references/upstream-guide/components/bmodal.md"
+  },
+  {
+   "id": "dropdown-left-right",
+   "category": "prop",
+   "pattern": "<(?:BDropdown|b-dropdown|BNavItemDropdown|b-nav-item-dropdown|BSidebar|b-sidebar|BDd|b-dd)(?=[\\s>/])[^>]*?\\s:?(?:dropup|dropleft|dropright|right)(?=[\\s>/=])",
+   "flags": "g",
+   "message": "BDropdown `dropup`/`dropleft`/`dropright`/`right` were replaced by `placement` (e.g. `placement=\"bottom-end\"`). Also matches BSidebar `right`.",
+   "ref": "references/upstream-guide/components/bdropdown.md"
+  },
+  {
+   "id": "button-block",
+   "category": "prop",
+   "pattern": "<(?:BButton|b-button)\\b[^>]*\\sblock(?=[\\s>/=])",
+   "flags": "g",
+   "message": "BButton `block` removed in Bootstrap 5: wrap in `<div class=\"d-grid\">`.",
+   "ref": "references/upstream-guide/components/bbutton.md"
+  },
+  {
+   "id": "prop-router-link-removed",
+   "category": "prop",
+   "pattern": "<(?:BLink|b-link|BButton|b-button|b-btn|BBadge|b-badge|BAvatar|b-avatar|BNavItem|b-nav-item|BDropdownItem|b-dropdown-item|b-dd-item|BListGroupItem|b-list-group-item|BBreadcrumbItem|b-breadcrumb-item|BNavbarBrand|b-navbar-brand)(?=[\\s>/])[^>]*?\\s:?(?:append|exact|exact-path|exact-path-active-class|event)(?=[\\s=>/])",
+   "flags": "g",
+   "message": "Router-link props `append`, `exact`, `exact-path`, `exact-path-active-class`, `event` were removed from link-capable components (Vue Router 4). `exact-active-class` and `active-class` remain.",
+   "ref": "references/upstream-guide/components/blink.md"
+  },
+  {
+   "id": "prop-html-field",
+   "category": "prop",
+   "pattern": "\\s:?html-field\\s*=",
+   "flags": "g",
+   "message": "`html-field` was removed from select / checkbox-group / radio-group / datalist options; use the `option` slot.",
+   "ref": "references/guide-corrections-and-gaps.md"
+  },
+  {
+   "id": "slot-table-renamed",
+   "category": "slot",
+   "pattern": "#(?:emptyfiltered|row-details)\\b|v-slot:(?:emptyfiltered|row-details)\\b",
+   "flags": "g",
+   "message": "BTable slot renamed: `emptyfiltered` \u2192 `empty-filtered`, `row-details` \u2192 `row-expansion`. Other table slots (`cell(key)`, `head(key)`, `top-row`, `empty`, \u2026) keep their names; check scopes.",
+   "ref": "references/upstream-guide/components/btable.md"
+  },
+  {
+   "id": "bs5-mlmrplprmsmepspe",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])(?:ml|mr|pl|pr)-(?:sm-|md-|lg-|xl-)?(?:[0-5]|auto|n[1-5])\\b",
+   "flags": "g",
+   "message": "`ml/mr/pl/pr-*` \u2192 `ms/me/ps/pe-*`.",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-leftrightstartend",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])(?:float|text)-(?:sm-|md-|lg-|xl-)?(?:left|right)\\b",
+   "flags": "g",
+   "message": "`*-left/right` \u2192 `*-start/end`.",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-borderroundedleftrightst",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])border-(?:left|right)(?:-0)?\\b|(?<![\\w-])rounded-(?:left|right)\\b",
+   "flags": "g",
+   "message": "`border/rounded-left/right` \u2192 `-start/-end`.",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-dropdownmenuleftrightdro",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])dropdown-menu-(?:sm-|md-|lg-|xl-)?(?:left|right)\\b",
+   "flags": "g",
+   "message": "`dropdown-menu-left/right` \u2192 `dropdown-menu-start/end`.",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-sronlyvisuallyhiddenfocu",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])sr-only(?:-focusable)?\\b",
+   "flags": "g",
+   "message": "`sr-only` \u2192 `visually-hidden` (`-focusable`).",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-badgetextbgbbadgevariant",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])badge-(?:primary|secondary|success|danger|warning|info|light|dark)\\b",
+   "flags": "g",
+   "message": "`badge-*` \u2192 `text-bg-*` (BBadge `variant` still works).",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-badgepillroundedpill",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])badge-pill\\b",
+   "flags": "g",
+   "message": "`badge-pill` \u2192 `rounded-pill`.",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-fontweightfwfontitalicfs",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])font-weight-\\w+|(?<![\\w-])font-italic\\b",
+   "flags": "g",
+   "message": "`font-weight-*` \u2192 `fw-*`, `font-italic` \u2192 `fst-italic`.",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-noguttersg0brownogutters",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])no-gutters\\b",
+   "flags": "g",
+   "message": "`no-gutters` \u2192 `g-0` (BRow `no-gutters` prop still accepted).",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-formrowformgroupforminli",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])form-row\\b|(?<![\\w-])form-group\\b|(?<![\\w-])form-inline\\b",
+   "flags": "g",
+   "message": "`form-row`/`form-group`/`form-inline` were removed in Bootstrap 5; use grid + spacing utilities (`row g-2`, `mb-3`).",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-customformclassesformsel",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])custom-(?:select|control|checkbox|radio|switch|file|range)\\b",
+   "flags": "g",
+   "message": "`custom-*` form classes \u2192 `form-select`, `form-check`, `form-switch`, `form-range`, \u2026",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-embedresponsiveratiorati",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])embed-responsive(?:-\\w+)?\\b",
+   "flags": "g",
+   "message": "`embed-responsive*` \u2192 `ratio ratio-16x9`.",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-bootstrap4onlycomponentc",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])jumbotron\\b|(?<![\\w-])media-body\\b|(?<![\\w-])card-deck\\b|(?<![\\w-])card-columns\\b",
+   "flags": "g",
+   "message": "Bootstrap 4-only component class (removed in Bootstrap 5).",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-bootstrap5usesdatabsattr",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])data-(?:toggle|target|dismiss)=",
+   "flags": "g",
+   "message": "Bootstrap 5 uses `data-bs-*` attributes (only relevant if you use Bootstrap JS directly).",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  },
+  {
+   "id": "bs5-textmonospacefontmonospa",
+   "category": "bootstrap5",
+   "pattern": "(?<![\\w-])text-monospace\\b|(?<![\\w-])rounded-sm\\b|(?<![\\w-])rounded-lg\\b",
+   "flags": "g",
+   "message": "`text-monospace` \u2192 `font-monospace`; `rounded-sm/lg` \u2192 `rounded-1/3`.",
+   "ref": "references/bootstrap4-to-5-classes.md"
+  }
+ ],
+ "verifiedAgainst": {
+  "bootstrap-vue": "2.23.1 (npm)",
+  "bootstrap-vue-next": "1.2.4 (tag bootstrapvuenext-v1.2.4)"
+ }
+}
