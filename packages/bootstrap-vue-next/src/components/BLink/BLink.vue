@@ -47,6 +47,7 @@ import {useDefaults} from '../../composables/useDefaults'
 import {useLinkClasses} from '../../composables/useLinkClasses'
 import {collapseInjectionKey, navbarInjectionKey} from '../../utils/keys'
 import {toPascalCase} from '../../utils/stringUtils'
+import {warn} from '../../utils/console'
 import type {BLinkEmits, BLinkProps, BLinkSlots} from '../../types'
 
 // The template has three branches and must keep exactly one root element (no comments between
@@ -208,6 +209,11 @@ const nativeHref = computed(() => {
     return `${to.path}${query}${hash}` || fallback
   }
   // A named route cannot be resolved without a router
+  warn(
+    'BLink',
+    'The `to` prop is a named route, but no router is installed to resolve it. Rendering href="#".',
+    to
+  )
   return fallback
 })
 
