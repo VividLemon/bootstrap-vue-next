@@ -17,7 +17,7 @@ import type {
 } from './ColorTypes'
 import type {AttrsValue, ClassValue} from './AnyValuedAttributes'
 import type {CheckboxOptionRaw, CheckboxValue} from './CheckboxTypes'
-import type {Size} from './Size'
+import type {ButtonSize, Size} from './Size'
 import type {AriaInvalid} from './AriaInvalid'
 import type {
   FormValidate,
@@ -1121,7 +1121,7 @@ export interface BButtonProps extends BLinkProps {
   loadingText?: string
   pill?: boolean
   pressed?: boolean
-  size?: Size
+  size?: ButtonSize
   styled?: boolean
   squared?: boolean
   tag?: string
@@ -1131,7 +1131,9 @@ export interface BButtonProps extends BLinkProps {
 
 export interface BButtonGroupProps {
   ariaLabel?: string
-  size?: Size
+  /** Separates the buttons with a divider line (`.btn-group-divider`) */
+  divider?: boolean
+  size?: ButtonSize
   tag?: string
   vertical?: boolean
 }

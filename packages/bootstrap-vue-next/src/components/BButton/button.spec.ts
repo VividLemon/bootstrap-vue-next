@@ -1,8 +1,10 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it} from 'vitest'
+import {h} from 'vue'
 import BSpinner from '../BSpinner/BSpinner.vue'
 import BButton from './BButton.vue'
 import BLink from '../BLink/BLink.vue'
+import BInputGroup from '../BInputGroup/BInputGroup.vue'
 
 describe('button', () => {
   enableAutoUnmount(afterEach)
@@ -691,5 +693,27 @@ describe('button', () => {
     })
     expect(wrapper.classes()).toContain('btn-link')
     expect(wrapper.classes()).toContain('theme-info')
+  })
+
+  it.each(['xs', 'sm', 'lg'] as const)('has class btn-%s when prop size is %s', (size) => {
+    const wrapper = mount(BButton, {props: {size}})
+    expect(wrapper.classes()).toContain(`btn-${size}`)
+  })
+
+  it('does not have class input-group-btn outside an input group', () => {
+    const wrapper = mount(BButton)
+    expect(wrapper.classes()).not.toContain('input-group-btn')
+  })
+
+  it('has class input-group-btn inside a BInputGroup, as a button and as a link', () => {
+    const wrapper = mount(BInputGroup, {
+      slots: {
+        default: () => [h(BButton, {id: 'button'}), h(BButton, {id: 'link', href: '#foo'})],
+      },
+    })
+    expect(wrapper.get('#button').classes()).toContain('input-group-btn')
+    expect(wrapper.get('#link').classes()).toContain('input-group-btn')
+    // Bootstrap's rule is `.input-group > .input-group-btn`
+    expect(wrapper.get('#button').element.parentElement).toBe(wrapper.element)
   })
 })

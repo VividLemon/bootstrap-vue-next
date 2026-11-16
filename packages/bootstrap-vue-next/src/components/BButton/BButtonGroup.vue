@@ -14,6 +14,7 @@ provide(buttonGroupKey, true)
 
 const _props = withDefaults(defineProps<BButtonGroupProps>(), {
   ariaLabel: 'Group',
+  divider: false,
   size: undefined,
   tag: 'div',
   vertical: false,
@@ -25,5 +26,6 @@ const computedClasses = computed(() => ({
   'btn-group': !props.vertical,
   [`btn-group-${props.size}`]: props.size !== undefined,
   'btn-group-vertical': props.vertical,
+  'btn-group-divider': props.divider,
 }))
 </script>
