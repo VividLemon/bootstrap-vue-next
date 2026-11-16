@@ -22,8 +22,7 @@ The active state of last element is automatically set if it is `undefined`.
 You may also manually place individual `BBreadcrumbItem` child components in the default slot of
 the `BBreadcrumb` component, as an alternative to using the `items` prop, for greater control
 over the content of each item. Unlike the `items` prop, manually placed items need an explicit
-`<li class="breadcrumb-divider" />` between them. An empty divider renders the default chevron;
-add content (such as `/` or an SVG icon) to the divider to use a custom separator:
+`<BBreadcrumbDivider />` between them:
 
 <<< DEMO ./demo/BreadcrumbManual.vue
 
@@ -32,6 +31,17 @@ and its `.breadcrumb-item` receives `aria-current="page"` (configurable via the 
 
 `BBreadcrumbItem` also supports the various `RouterLink` props such as `to`, etc. See the
 [Router Links](/docs/reference/router-links) refererence page for more information.
+
+## Dividers
+
+A divider is an `<li class="breadcrumb-divider">` between two items. It is decoration, so it is rendered with `aria-hidden="true"`. An empty divider shows Bootstrap's default chevron; give it content (such as `/` or an icon) for a custom separator:
+
+- with the `items` prop, fill the `divider` slot of `BBreadcrumb`; it is rendered in every divider
+- between manually placed items, put the content in `BBreadcrumbDivider`
+
+<<< DEMO ./demo/BreadcrumbDivider.vue#template{vue-html}
+
+To change the default chevron everywhere, set the `--bs-breadcrumb-divider-icon` CSS variable.
 
 ## Slots
 

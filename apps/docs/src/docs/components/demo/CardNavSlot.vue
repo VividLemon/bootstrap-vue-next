@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BCard title="Card Title" body-class="text-center" header-tag="nav">
+  <BCard title="Card Title" :body-attrs="{ class: 'text-center' }" header-tag="nav">
     <template #header>
       <BNav card-header tabs>
         <BNavItem active>Active</BNavItem>

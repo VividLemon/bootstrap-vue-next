@@ -68,14 +68,14 @@ Alternatively you can manually place images inside `BCard` using the sub-compone
 <<< DEMO ./demo/CardImages.vue#template{vue-html}
 
 **Note:** Setting `img-placement` to `start` or `end` adds `.card-row` to the card and uses
-`.card-img-start` / `.card-img-end` on the image, as in Bootstrap 6. You may need to apply
+`.card-img-start` / `.card-img-end` on the image, as in Bootstrap 6. A `start` image is rendered before the body and an `end` image after it (likewise `top` before and `bottom` after). You may need to apply
 additional styles, as images will "stretch" in height if you have content that is taller than your image. Note headers and footers are not supported when images are left or right
 aligned. You may find the [Horizontal Card Layout](#horizontal-card-layout) example to be more
 flexible when creating a responsive horizontal card.
 
 #### Overlay image
 
-Place the image in the background of the card by setting the boolean prop `overlay`:
+Place the image in the background of the card by setting `img-placement="overlay"`:
 
 <<< DEMO ./demo/CardOverlayImage.vue#template{vue-html}
 
@@ -101,14 +101,13 @@ card.
 
 ## Horizontal card layout
 
-Using a combination of grid components, utility classes and individual card sub-components, cards
-can be made horizontal in a mobile-friendly and responsive way.
+Bootstrap's `.card-row` lays a card out horizontally. With individual card sub-components you
+control the parts yourself.
 
-In the example below, we remove the row grid gutters with the `class="g-0"` prop on `BRow` and use
-`md` props on `BCol` to make the card horizontal at the `md` breakpoint. Class `rounded-0`
-removes the rounding of the `BCardImg` corners while class `overflow-hidden` on `BCard` will
-appropriately clip the image's corners based on the border-radius of the card. Further adjustments
-may be needed depending on your card content.
+In the example below, `class="card-row"` on a `no-body` `BCard` puts the image and the body side by
+side. `placement="start"` on `BCardImg` renders `.card-img-start`, which rounds the image's outer
+corners to match the card, and the `w-50` and `object-fit-cover` utilities size it. Further
+adjustments may be needed depending on your card content.
 
 <<< DEMO ./demo/CardHorizontal.vue#template{vue-html}
 
@@ -125,6 +124,12 @@ the `color` prop's `theme`, `bg` and `border` keys. Solid backgrounds may requir
 `fg` key to adjust the text color. `bg` accepts values like `primary`, `subtle-primary`, `muted-primary` or a neutral layer such as `1`; `border` accepts values like `primary`, `subtle-primary` or `muted`.
 See [Color Themes](/docs/reference/color-variants) for all values and
 [registering custom themes](/docs/components/button#custom-themes).
+
+### Subtle and translucent
+
+Set `subtle` to tint the card's borders, header and footer with its theme instead of filling the whole card, and `translucent` for a semi-transparent card with a blurred backdrop.
+
+<<< DEMO ./demo/CardSubtleTranslucent.vue#template{vue-html}
 
 ### Solid
 
