@@ -1,7 +1,7 @@
 <template>
   <!-- #region template -->
   <BCard no-body>
-    <BCardHeader header-tag="nav">
+    <BCardHeader tag="nav">
       <BNav card-header tabs>
         <BNavItem active>Active</BNavItem>
         <BNavItem>Inactive</BNavItem>

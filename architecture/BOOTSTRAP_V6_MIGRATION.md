@@ -42,7 +42,7 @@ Each batch runs as an agent in its own git worktree under `.claude/worktrees/`, 
 | 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `bootstrap-v6-navigation` | Merged as [#168](https://github.com/VividLemon/bootstrap-vue-next/pull/168) (`14641f1e`) |
 | 2    | Buttons                                              | Buttons             | —                         | Not started                                                                              |
 | 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                         | Not started                                                                              |
-| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                         | Not started                                                                              |
+| 2    | Breadcrumb and card                                  | Breadcrumb and Card | `bootstrap-v6-wave2-breadcrumb-card` | PR open                                                                       |
 
 Both known merge overlaps (BNavForm between forms and navigation; `useTableHelpers.ts` between #179 and tables) were resolved in the merges.
 
@@ -65,6 +65,14 @@ Feedback batch follow-ups (from its report):
 - v6 `.alert` has no bottom margin, so consecutive alerts sit flush. Native behavior; mention it in the migration notes.
 - `showOnPause` on `BAlert` / `BToast` has no effect (before or after). Decide whether to remove it.
 - Expect a merge conflict in `architecture/ARIA_VISIBILITY.md` (native/legacy table) with the floating UI batch.
+
+Breadcrumb and card batch follow-ups (from its report):
+
+- `BCard` `headerClass` / `bodyClass` / `footerClass` → `headerAttrs` / `bodyAttrs` / `footerAttrs`, and `BBreadcrumb` `olClass` is removed in favor of the existing `olAttrs` (the part attrs rule). Migration notes.
+- `BCard` `img-placement="end"` now renders the image after the body, as v6's `.card-row` expects; before, it rendered first.
+- Body colors were already passed to `BCardBody` (`bodyColor`); nothing to do for that plan item.
+- Manually placed breadcrumb items use `<BBreadcrumbDivider />` in the docs instead of a raw `<li class="breadcrumb-divider" />`; the raw markup still works but has no `aria-hidden`.
+- `CardHorizontal.vue` now uses `.card-row` with `BCardImg placement="start"` instead of grid columns; it is no longer responsive at `md`.
 
 Forms batch follow-ups (from its report):
 
