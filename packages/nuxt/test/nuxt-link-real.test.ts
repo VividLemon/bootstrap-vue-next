@@ -58,22 +58,17 @@ describe('BLink with the real NuxtLink', async () => {
     })
     // Listeners first, then the page, so nothing logged while it loads is missed
     await page.goto(url('/'), { waitUntil: 'hydration' })
-    const prefetched = () =>
-      page.evaluate(() => (window as unknown as { __prefetched: string[] }).__prefetched)
 
     // Visible links are prefetched by BLink through NuxtLink's slot, since NuxtLink does not
-    // observe anything in `custom` mode
-    await page.waitForFunction(() =>
-      (window as unknown as { __prefetched: string[] }).__prefetched.includes('/users/7'),
-    )
-    expect(await prefetched()).toContain('/about')
-    expect(await prefetched()).not.toContain('/users/9')
-    expect(await prefetched()).not.toContain('/users/8')
+    // observe anything in `custom` mode. NuxtLink reports it through `prefetched`, which BLink
+    // turns into `prefetched-class`
+    await page.waitForSelector('#user.was-prefetched')
+    await page.waitForSelector('#about.was-prefetched')
+    // Not prefetched: `prefetch: false`, and the hover-only link before it is hovered
+    expect((await page.getAttribute('#no-prefetch', 'class')) ?? '').not.toContain('was-prefetched')
+    expect((await page.getAttribute('#interaction', 'class')) ?? '').not.toContain('was-prefetched')
 
     await page.hover('#interaction')
-    await page.waitForFunction(() =>
-      (window as unknown as { __prefetched: string[] }).__prefetched.includes('/users/8'),
-    )
     await page.waitForSelector('#interaction.was-prefetched')
 
     // A client-side navigation keeps the window (a full page load would lose the marker)

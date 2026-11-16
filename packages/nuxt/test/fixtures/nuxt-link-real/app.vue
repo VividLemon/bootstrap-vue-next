@@ -12,12 +12,14 @@
         to="/about"
         class="mine"
         data-x="1"
+        prefetched-class="was-prefetched"
       >
         About
       </BLink>
       <BLink
         id="user"
         :to="{ name: 'users-id', params: { id: 7 } }"
+        prefetched-class="was-prefetched"
       >
         User 7
       </BLink>
@@ -33,6 +35,7 @@
         id="no-prefetch"
         to="/users/9"
         :prefetch="false"
+        prefetched-class="was-prefetched"
       >
         Never prefetched
       </BLink>

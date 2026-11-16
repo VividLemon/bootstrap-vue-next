@@ -268,8 +268,8 @@ describe('link with vue-router', () => {
 })
 
 /**
- * A stand-in with the shape of Nuxt's NuxtLink in `custom` mode: a static `useLink`, the
- * prefetch props, plain route links delegated to RouterLink, and the slot props NuxtLink adds
+ * A stand-in for Nuxt's NuxtLink in `custom` mode, registered as `NuxtLink`: the prefetch props,
+ * plain route links delegated to RouterLink, and the slot props NuxtLink adds
  * (`prefetch`, `prefetched`, `shouldPrefetch`). The real component is covered by the Nuxt module's
  * e2e tests.
  */
@@ -311,7 +311,7 @@ const makeNuxtLink = () => {
       }
     },
   })
-  return {NuxtLink: Object.assign(NuxtLink, {useLink: () => ({})}), prefetch, received}
+  return {NuxtLink, prefetch, received}
 }
 
 describe('link with NuxtLink', () => {

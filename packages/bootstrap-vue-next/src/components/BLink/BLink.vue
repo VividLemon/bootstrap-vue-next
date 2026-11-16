@@ -7,9 +7,9 @@
   >
     <template #default="link">
       <a
-        :ref="setAnchor"
+        ref="anchor"
         v-bind="routedAnchorAttrs(link)"
-        @click="clicked($event, link.navigate)"
+        @click="clicked($event, link)"
         @pointerenter="prefetchOnInteraction"
         @focus="prefetchOnInteraction"
       >
@@ -36,13 +36,13 @@ import {useIntersectionObserver} from '@vueuse/core'
 import {
   type Component,
   computed,
-  type ComponentPublicInstance,
   getCurrentInstance,
   inject,
-  shallowRef,
+  type UnwrapRef,
   useAttrs,
+  useTemplateRef,
 } from 'vue'
-import type {RouteLocationRaw, Router} from 'vue-router'
+import type {RouteLocationRaw, Router, UseLinkReturn} from 'vue-router'
 import {useDefaults} from '../../composables/useDefaults'
 import {useLinkClasses} from '../../composables/useLinkClasses'
 import {collapseInjectionKey, navbarInjectionKey} from '../../utils/keys'
@@ -92,19 +92,31 @@ const attrs = useAttrs()
 
 const instance = getCurrentInstance()
 
+/** What RouterLink passes to its default slot (vue-router types it as `UnwrapRef<UseLinkReturn>`) */
+type RouterLinkSlotScope = UnwrapRef<UseLinkReturn>
+
 /**
- * What RouterLink and NuxtLink pass to their default slot in `custom` mode. The prefetch members
- * are NuxtLink's.
+ * What NuxtLink passes to its default slot in `custom` mode. Nuxt does not export this type
+ * (`NuxtLinkSlotProps<true>` in `nuxt/dist/app/components/nuxt-link.d.ts`), so it is copied here
  */
-interface RouterLinkSlotProps {
-  href?: string | null
-  navigate: (e?: MouseEvent) => unknown
-  isActive?: boolean
-  isExactActive?: boolean
-  prefetch?: () => unknown
-  prefetched?: boolean
-  shouldPrefetch?: (mode: 'visibility' | 'interaction') => boolean
+type NuxtLinkSlotScope = Omit<RouterLinkSlotScope, 'href' | 'route'> & {
+  href: string | null
+  prefetch: () => Promise<void>
+  prefetched: boolean
+  shouldPrefetch: (mode: 'visibility' | 'interaction') => boolean
 }
+
+// The slot scope comes from whatever component is registered under the router name, so it is
+// checked before use instead of trusted
+const isRouterLinkSlotScope = (value: unknown): value is RouterLinkSlotScope =>
+  typeof value === 'object' &&
+  value !== null &&
+  typeof (value as {navigate?: unknown}).navigate === 'function'
+
+const isNuxtLinkSlotScope = (value: unknown): value is NuxtLinkSlotScope =>
+  isRouterLinkSlotScope(value) &&
+  typeof (value as {prefetch?: unknown}).prefetch === 'function' &&
+  typeof (value as {shouldPrefetch?: unknown}).shouldPrefetch === 'function'
 
 /**
  * `vue-router` and `nuxt` are optional, so neither can be imported. The router component is
@@ -119,17 +131,19 @@ const routerComponent = computed<Component | null>(() => {
 })
 
 /**
- * Recognised by shape, not by name: both real components carry a static `useLink`, and only
- * NuxtLink has the prefetch props. Anything else registered under the same name (a stub, a
- * wrapper) is treated as an ordinary component, because it cannot be trusted to implement the
- * `custom` slot
+ * Recognised by name: `RouterLink` / `router-link` and `NuxtLink` / `nuxt-link` (or a component
+ * object with that `name`) get the `custom` slot. Anything else is an ordinary component
  */
 const routerKind = computed<'router' | 'nuxt' | 'component' | null>(() => {
   const component = routerComponent.value
   if (!component) return null
-  if (typeof component !== 'object' || !('useLink' in component)) return 'component'
-  const componentProps = (component as {props?: Record<string, unknown>}).props
-  return componentProps && 'prefetchOn' in componentProps ? 'nuxt' : 'router'
+  const name = props.routerComponentName
+  const resolvedName = toPascalCase(
+    typeof name === 'string' ? name : ((component as {name?: string}).name ?? '')
+  )
+  if (resolvedName === 'RouterLink') return 'router'
+  if (resolvedName === 'NuxtLink') return 'nuxt'
+  return 'component'
 })
 
 /** A URL with a protocol, or protocol-relative: never a route */
@@ -159,7 +173,8 @@ const routerProps = computed(() => ({
     : undefined),
 }))
 
-// We do not know what this component accepts. Props it does not declare end up as attributes
+// Some other router system, or one we do not explicitly support: we do not know what it accepts,
+// so it gets everything we have. Props it does not declare end up as attributes
 const componentProps = computed(() => ({
   to: props.to,
   replace: props.replace,
@@ -245,22 +260,23 @@ const anchorAttrs = computed(() => {
   }
 })
 
-/** The latest slot props of NuxtLink, for prefetching */
-let nuxtLink: RouterLinkSlotProps | undefined
+/** The latest slot scope of NuxtLink, for prefetching */
+let nuxtLink: NuxtLinkSlotScope | undefined
 
-const routedAnchorAttrs = (link: RouterLinkSlotProps) => {
-  nuxtLink = strategy.value === 'nuxt' ? link : undefined
+const routedAnchorAttrs = (link: unknown) => {
+  nuxtLink = strategy.value === 'nuxt' && isNuxtLinkSlotScope(link) ? link : undefined
+  const scope = isRouterLinkSlotScope(link) ? link : undefined
   return {
     ...anchorAttrs.value,
-    'href': link.href ?? nativeHref.value,
-    'aria-current': link.isExactActive ? ('page' as const) : undefined,
+    'href': scope?.href ?? nativeHref.value,
+    'aria-current': scope?.isExactActive ? ('page' as const) : undefined,
     'class': [
       anchorClasses.value,
       {
-        [props.activeClass]: link.isActive === true,
-        [props.exactActiveClass]: link.isExactActive === true,
+        [props.activeClass]: scope?.isActive === true,
+        [props.exactActiveClass]: scope?.isExactActive === true,
       },
-      link.prefetched ? props.prefetchedClass : undefined,
+      nuxtLink?.prefetched ? props.prefetchedClass : undefined,
     ],
   }
 }
@@ -268,23 +284,20 @@ const routedAnchorAttrs = (link: RouterLinkSlotProps) => {
 // In `custom` mode NuxtLink does not prefetch by itself (it has no element to watch), but hands
 // out what is needed to do it: `shouldPrefetch()` applies `prefetch` /
 // `prefetchOn` and the app defaults, `prefetch()` does the work once
-const anchor = shallowRef<HTMLElement | null>(null)
-const setAnchor = (el: Element | ComponentPublicInstance | null) => {
-  anchor.value = el instanceof HTMLElement ? el : null
-}
+const anchorElement = useTemplateRef<HTMLAnchorElement>('anchor')
 const prefetchOnInteraction = () => {
-  if (nuxtLink?.shouldPrefetch?.('interaction')) void nuxtLink.prefetch?.()
+  if (nuxtLink?.shouldPrefetch('interaction')) void nuxtLink.prefetch()
 }
 useIntersectionObserver(
   // Only Nuxt links are observed
-  () => (strategy.value === 'nuxt' ? anchor.value : null),
+  () => (strategy.value === 'nuxt' ? anchorElement.value : null),
   (entries) => {
     if (!entries.some((entry) => entry.isIntersecting)) return
-    if (nuxtLink?.shouldPrefetch?.('visibility')) void nuxtLink.prefetch?.()
+    if (nuxtLink?.shouldPrefetch('visibility')) void nuxtLink.prefetch()
   }
 )
 
-const clicked = (e: MouseEvent, navigate?: RouterLinkSlotProps['navigate']): void => {
+const clicked = (e: MouseEvent, link?: unknown): void => {
   if (props.disabled) {
     e.preventDefault()
     e.stopImmediatePropagation()
@@ -301,6 +314,6 @@ const clicked = (e: MouseEvent, navigate?: RouterLinkSlotProps['navigate']): voi
   emit('click', e)
   // The router skips the navigation itself when a listener prevented the event, a modifier key
   // is held, or the link has a `target`
-  void navigate?.(e)
+  if (isRouterLinkSlotScope(link)) void link.navigate(e)
 }
 </script>

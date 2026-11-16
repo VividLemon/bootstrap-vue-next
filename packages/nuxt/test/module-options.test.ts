@@ -48,8 +48,12 @@ describe('module-options', async () => {
   it('configured BLink.routerComponentName is applied at runtime', async () => {
     const page = await createPage('/')
 
-    expect(await page.locator('#configured-link').getAttribute('data-router-component')).toBe(
-      'NuxtLink',
+    // The stand-in NuxtLink marks its links active through the `custom` slot scope
+    expect(await page.locator('#configured-link').getAttribute('class')).toContain(
+      'router-link-active',
+    )
+    expect(await page.locator('#configured-link').getAttribute('href')).toBe(
+      '/module-options-target',
     )
 
     await page.close()
