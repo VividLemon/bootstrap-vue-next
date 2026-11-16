@@ -17,9 +17,15 @@ In addition, groups should be given an explicit label, as most assistive technol
 
 ## Sizing
 
-Set the `size` prop to `lg` or `sm` to render larger or smaller buttons. You do not need to specify the size on the individual buttons.
+Set the `size` prop to `lg`, `sm` or `xs` to render larger or smaller buttons. You do not need to specify the size on the individual buttons.
 
 <<< DEMO ./demo/ButtonGroupSizing.vue#template{vue-html}
+
+## Dividers
+
+Set the `divider` prop to draw a line between the buttons of a group. It is most useful for groups of solid buttons with the same color, and it also works with `vertical`.
+
+<<< DEMO ./demo/ButtonGroupDivider.vue#template{vue-html}
 
 ## Vertical variation
 

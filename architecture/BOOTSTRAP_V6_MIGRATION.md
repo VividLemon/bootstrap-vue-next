@@ -40,7 +40,7 @@ Each batch runs as an agent in its own git worktree under `.claude/worktrees/`, 
 | 1    | Tables                                               | Content             | `bootstrap-v6-tables`     | Merged as [#166](https://github.com/VividLemon/bootstrap-vue-next/pull/166) (`9d1c103a`) |
 | 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `bootstrap-v6-feedback`   | Merged as [#167](https://github.com/VividLemon/bootstrap-vue-next/pull/167) (`561b981f`) |
 | 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `bootstrap-v6-navigation` | Merged as [#168](https://github.com/VividLemon/bootstrap-vue-next/pull/168) (`14641f1e`) |
-| 2    | Buttons                                              | Buttons             | —                         | Not started                                                                              |
+| 2    | Buttons                                              | Buttons             | `bootstrap-v6-wave2-buttons` | PR open                                                                               |
 | 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                         | Not started                                                                              |
 | 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                         | Not started                                                                              |
 
@@ -65,6 +65,12 @@ Feedback batch follow-ups (from its report):
 - v6 `.alert` has no bottom margin, so consecutive alerts sit flush. Native behavior; mention it in the migration notes.
 - `showOnPause` on `BAlert` / `BToast` has no effect (before or after). Decide whether to remove it.
 - Expect a merge conflict in `architecture/ARIA_VISIBILITY.md` (native/legacy table) with the floating UI batch.
+
+Buttons batch follow-ups (from its report):
+
+- New type `ButtonSize` (`Size | 'xs'`) for `BButton` and `BButtonGroup` `size`. Components that pass their own `size` on to a button (`BDropdown`, `BFormFile`, ...) keep `Size`.
+- `BButton` adds `input-group-btn` whenever a `BInputGroup` is an ancestor, also when it is not a direct child (v6's rule only matches direct children, so the class is inert there).
+- Toolbar demos no longer add `mx-1` / `me-1`; v6 `.btn-toolbar` has a gap. Mention in the migration notes.
 
 Forms batch follow-ups (from its report):
 
