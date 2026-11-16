@@ -56,15 +56,15 @@ Each batch is reviewed as a PR into `bootstrap-v6` and squash-merged. Wave 1 and
 
 Each batch runs as an agent in its own git worktree under `.claude/worktrees/`, branched from the current `origin/bootstrap-v6`. Uncommitted work stays in the worktree if the agent stops; check with `git -C .claude/worktrees/<name> status`.
 
-| Wave | Batch                                                | Plan section        | Branch                    | State                                                                                    |
-| ---- | ---------------------------------------------------- | ------------------- | ------------------------- | ---------------------------------------------------------------------------------------- |
-| 1    | Forms and checks                                     | Forms               | `bootstrap-v6-forms`      | Merged as [#165](https://github.com/VividLemon/bootstrap-vue-next/pull/165) (`afa519b2`) |
-| 1    | Tables                                               | Content             | `bootstrap-v6-tables`     | Merged as [#166](https://github.com/VividLemon/bootstrap-vue-next/pull/166) (`9d1c103a`) |
-| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `bootstrap-v6-feedback`   | Merged as [#167](https://github.com/VividLemon/bootstrap-vue-next/pull/167) (`561b981f`) |
-| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `bootstrap-v6-navigation` | Merged as [#168](https://github.com/VividLemon/bootstrap-vue-next/pull/168) (`14641f1e`) |
-| 2    | Buttons                                              | Buttons             | —                         | Not started                                                                              |
-| 2    | Floating UI (popover, tooltip)                       | Floating UI         | `floating-ui-native`      | PR open                                                                                  |
-| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                         | Not started                                                                              |
+| Wave | Batch                                                | Plan section        | Branch                       | State                                                                                    |
+| ---- | ---------------------------------------------------- | ------------------- | ---------------------------- | ---------------------------------------------------------------------------------------- |
+| 1    | Forms and checks                                     | Forms               | `bootstrap-v6-forms`         | Merged as [#165](https://github.com/VividLemon/bootstrap-vue-next/pull/165) (`afa519b2`) |
+| 1    | Tables                                               | Content             | `bootstrap-v6-tables`        | Merged as [#166](https://github.com/VividLemon/bootstrap-vue-next/pull/166) (`9d1c103a`) |
+| 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `bootstrap-v6-feedback`      | Merged as [#167](https://github.com/VividLemon/bootstrap-vue-next/pull/167) (`561b981f`) |
+| 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `bootstrap-v6-navigation`    | Merged as [#168](https://github.com/VividLemon/bootstrap-vue-next/pull/168) (`14641f1e`) |
+| 2    | Buttons                                              | Buttons             | `bootstrap-v6-wave2-buttons` | PR open                                                                                  |
+| 2    | Floating UI (popover, tooltip)                       | Floating UI         | `floating-ui-native`         | PR open                                                                                  |
+| 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                            | Not started                                                                              |
 
 Both known merge overlaps (BNavForm between forms and navigation; `useTableHelpers.ts` between #179 and tables) were resolved in the merges.
 
@@ -95,6 +95,12 @@ Floating UI batch follow-ups (from its report):
 - The migration pages and their "After" fragments (`bpopover.md`, `btooltip.md`, `v-b-popover.md`, `v-b-tooltip.md`, `*DirectiveCustomClassAfter.html`, `PopoverVariantBSVN.vue`) still show `bodyClass` / `titleClass`; they are Phase 3.
 - `usePopover` / the orchestrator were not changed. For G1.2: popovers and tooltips rendered in `BOrchestrator` still sit in a `<TransitionGroup>` and get `teleport-disabled`.
 - `useLegacyShowHide` is now used by BModal (until #183), BOffcanvas and BDropdown only.
+
+Buttons batch follow-ups (from its report):
+
+- New type `ButtonSize` (`Size | 'xs'`) for `BButton` and `BButtonGroup` `size`. Components that pass their own `size` on to a button (`BDropdown`, `BFormFile`, ...) keep `Size`.
+- `BButton` adds `input-group-btn` whenever a `BInputGroup` is an ancestor, also when it is not a direct child (v6's rule only matches direct children, so the class is inert there).
+- Toolbar demos no longer add `mx-1` / `me-1`; v6 `.btn-toolbar` has a gap. Mention in the migration notes.
 
 Forms batch follow-ups (from its report):
 

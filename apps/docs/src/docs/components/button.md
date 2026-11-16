@@ -26,7 +26,7 @@ Note the `type` prop has no effect when either `href` or `to` props are set.
 
 ## Sizing
 
-Fancy larger or smaller buttons? Specify `lg` or `sm` via the `size` prop.
+Fancy larger or smaller buttons? Specify `lg`, `sm` or `xs` via the `size` prop. `xs` exists for buttons and button groups only; form controls have no extra small size.
 
 <<< DEMO ./demo/ButtonSizing.vue#template{vue-html}
 
