@@ -37,7 +37,6 @@ const _props = withDefaults(defineProps<BBreadcrumbItemProps>(), {
   rel: undefined,
   replace: undefined,
   routerComponentName: undefined,
-  routerTag: undefined,
   target: undefined,
   to: undefined,
   underline: undefined,

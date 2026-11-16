@@ -84,7 +84,6 @@ export default {
             'exactActiveClass',
             'replace',
             'routerComponentName',
-            'routerTag',
           ]),
         },
       },

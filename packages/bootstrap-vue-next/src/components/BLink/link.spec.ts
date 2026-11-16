@@ -610,14 +610,28 @@ describe('link', () => {
     expect(wrapper.attributes('href')).toBe('/custom')
   })
 
-  it('renders NuxtLink when routerComponentName is set to "NuxtLink"', () => {
+  it('renders NuxtLink in custom mode when routerComponentName is set to "NuxtLink"', () => {
+    const received = vi.fn<(props: Record<string, unknown>) => void>()
     const NuxtLink = defineComponent({
       name: 'NuxtLink',
       props: {
         to: {type: [String, Object], required: true},
+        custom: {type: Boolean, default: false},
       },
       setup(props, {slots}) {
-        return () => h('a', {'href': String(props.to), 'data-nuxt-link': 'true'}, slots.default?.())
+        return () => {
+          received({...props})
+          // Like RouterLink and NuxtLink, unwrap a single-element slot so the anchor is the root
+          return slots.default?.({
+            href: String(props.to),
+            navigate: () => Promise.resolve(),
+            isActive: false,
+            isExactActive: false,
+            prefetch: () => Promise.resolve(),
+            prefetched: false,
+            shouldPrefetch: () => false,
+          })[0]
+        }
       },
     })
 
@@ -632,8 +646,31 @@ describe('link', () => {
       },
     })
 
+    expect(wrapper.element.tagName).toBe('A')
     expect(wrapper.attributes('href')).toBe('/nuxt-page')
-    expect(wrapper.attributes('data-nuxt-link')).toBe('true')
+    expect(wrapper.findAll('a')).toHaveLength(1)
+    expect(received).toHaveBeenLastCalledWith(expect.objectContaining({custom: true}))
+  })
+
+  it('does not throw when a component registered as NuxtLink gives no slot scope', async () => {
+    const NuxtLink = defineComponent({
+      name: 'NuxtLink',
+      props: {to: {type: [String, Object], required: true}},
+      setup(_, {slots}) {
+        return () => slots.default?.()[0]
+      },
+    })
+
+    const wrapper = mount(BLink, {
+      props: {to: '/nuxt-page', routerComponentName: 'NuxtLink'},
+      global: {plugins: [router], components: {NuxtLink}},
+    })
+
+    expect(wrapper.element.tagName).toBe('A')
+    // No href from the slot: falls back to the href the router resolves
+    expect(wrapper.attributes('href')).toBe('/nuxt-page')
+    await expect(wrapper.trigger('click')).resolves.not.toThrow()
+    expect(wrapper.emitted('click')).toHaveLength(1)
   })
 
   it('falls back to anchor tag when routerComponentName resolves to unknown string', () => {

@@ -153,7 +153,6 @@ export interface BLinkProps {
   rel?: string
   replace?: boolean
   routerComponentName?: string | Component
-  routerTag?: string
   stretched?: boolean
   target?: LinkTarget
   to?: RouteLocationRaw
@@ -289,7 +288,7 @@ export interface BDropdownHeaderProps {
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
-export interface BDropdownItemProps extends Omit<BLinkProps, 'routerTag'> {
+export interface BDropdownItemProps extends BLinkProps {
   linkClass?: ClassValue
   wrapperAttrs?: Readonly<AttrsValue>
 }
@@ -753,7 +752,7 @@ export interface BListGroupProps {
   tag?: string
 }
 
-export interface BListGroupItemProps extends Omit<BLinkProps, 'routerTag'> {
+export interface BListGroupItemProps extends BLinkProps {
   action?: boolean
   button?: boolean
   tag?: string
@@ -778,7 +777,7 @@ export interface BNavFormProps extends BFormProps {
   formAttrs?: Readonly<AttrsValue>
 }
 
-export interface BNavItemProps extends Omit<BLinkProps, 'routerTag'> {
+export interface BNavItemProps extends BLinkProps {
   linkAttrs?: Readonly<AttrsValue>
 }
 
@@ -797,7 +796,7 @@ export interface BNavbarProps {
   toggleable?: boolean | Breakpoint
 }
 
-export interface BNavbarBrandProps extends Omit<BLinkProps, 'routerTag'> {
+export interface BNavbarBrandProps extends BLinkProps {
   tag?: string
 }
 
@@ -1052,7 +1051,7 @@ export interface BSpinnerProps {
   color?: (Omit<ColorExtendables, 'theme'> & {theme?: ThemeColor | null}) | null
 }
 
-export interface BAlertProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProps {
+export interface BAlertProps extends BLinkProps, ShowHideProps {
   alertAttrs?: Readonly<AttrsValue>
   body?: string
   bodyAttrs?: Readonly<AttrsValue>
@@ -1071,8 +1070,7 @@ export interface BAlertProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProp
   title?: string
 }
 
-export interface BAvatarProps
-  extends Omit<BLinkProps, 'routerTag' | 'icon'>, RadiusElementExtendables {
+export interface BAvatarProps extends Omit<BLinkProps, 'icon'>, RadiusElementExtendables {
   alt?: string
   badge?: boolean | string
   badgeColor?: ColorExtendables
@@ -1095,7 +1093,7 @@ export interface BAvatarGroupProps extends RadiusElementExtendables {
   tag?: string
 }
 
-export interface BBadgeProps extends Omit<BLinkProps, 'routerTag'> {
+export interface BBadgeProps extends BLinkProps {
   dotIndicator?: boolean
   pill?: boolean
   placement?: CombinedPlacement
@@ -1110,7 +1108,7 @@ export interface BBreadcrumbProps {
   olClass?: ClassValue
 }
 
-export interface BBreadcrumbItemProps extends Omit<BLinkProps, 'routerTag'> {
+export interface BBreadcrumbItemProps extends BLinkProps {
   ariaCurrent?: string
   text?: string
 }
@@ -1483,7 +1481,7 @@ export interface BDropdownProps extends TeleporterProps, ShowHideProps {
   placement?: FloatingPlacement
 }
 
-export interface BToastProps extends Omit<BLinkProps, 'routerTag'>, ShowHideProps {
+export interface BToastProps extends BLinkProps, ShowHideProps {
   body?: string
   bodyAttrs?: Readonly<AttrsValue>
   close?: CloseButtonOptions
