@@ -16,7 +16,7 @@ import {
   type PropRecord,
   type SlotRecord,
 } from '../../types'
-import { omit, pick } from '../../utils/objectUtils'
+import { pick } from '../../utils/objectUtils'
 import { buildCommonProps } from '../../utils/commonProps'
 import { linkProps, linkTo } from '../../utils/linkProps'
 
@@ -88,7 +88,7 @@ export default {
           _opts: {
             linkTo,
           },
-          _data: omit(linkProps, ['routerTag']),
+          _data: linkProps,
         },
       },
       slots: {
