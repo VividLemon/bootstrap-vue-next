@@ -276,6 +276,11 @@ Bootstrap v6 lets CSS own all motion: JavaScript toggles a state class (`.show`,
 
 - `opacity` + `opacityHover`, `underlineOffset` + `underlineOffsetHover`, `underlineOpacity` + `underlineOpacityHover` collapse to `HoverState<…>` objects on `BLink` and every component that forwards link props.
 - Link opacity values are `10…100` in steps of 10 (already done).
+- Router integration, part of v6: [#185](https://github.com/VividLemon/bootstrap-vue-next/pull/185) (replaces #156). `BLink` follows vue-router's "Extending RouterLink" pattern: `<RouterLink custom>` / `<NuxtLink custom>` with our single `<a>` built from the slot scope, a plain `<a href>` for no router / VitePress / external / disabled, Nuxt prefetch driven from the slot (`prefetch()`, `shouldPrefetch()`, `prefetched`). Removes `routerTag` and `useBLinkTagResolver`; the other breaking changes are listed in the PR and belong in the `blink` migration notes. Open decision from that PR: render no `href` on a disabled link (VitePress 2 navigates disabled links because its capture-phase listener runs before ours).
+- Follow-up to look into (after #185): type-check our use of the router slot scopes against the routers' own types, so a breaking change in vue-router's or Nuxt's `custom` slot shows up as a type error here.
+  - Internal-only types such as `MaybeRouterLink` / `MaybeNuxtLink` (the slot scope `BLink` reads), checked with `satisfies` / assignability against the upstream types. They must stay out of the public API and the emitted `.d.ts`: a consumer without vue-router or Nuxt must never hit "Cannot find module". Only `import type {…}`, never a value import.
+  - vue-router: exports what is needed (`UseLinkReturn`, `RouterLink` / `_RouterLinkI`, so `ComponentSlots<typeof RouterLink>['default']`). It is already an optional peer and dev dependency of the core package.
+  - Nuxt: the `custom` slot type (`NuxtLinkSlotProps<true>` in `nuxt/dist/app/components/nuxt-link.d.ts`) is not exported; only `NuxtLinkProps`, `NuxtLinkComponent` and `defineNuxtLink` are. Deriving it from the overloaded `NuxtLinkComponent` constructor is fragile, and the core package does not depend on `nuxt`. Options: run the Nuxt check in `packages/nuxt` (which already depends on `nuxt`), or later open a PR to Nuxt to export the slot props type.
 
 ### Breadcrumb and Card
 
