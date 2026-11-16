@@ -15,6 +15,4 @@ export interface CheckboxOption {
 }
 
 export type CheckboxOptionRaw =
-  | string
-  | number
-  | (Partial<CheckboxOption> & Record<string, unknown>)
+  string | number | (Partial<CheckboxOption> & Record<string, unknown>)
