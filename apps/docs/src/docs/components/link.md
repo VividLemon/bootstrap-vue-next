@@ -80,12 +80,13 @@ Disable link functionality by setting the `disabled` prop to true.
 
 <<< DEMO ./demo/LinkDisabled.vue#template{vue-html}
 
-Disabling a link will set the Bootstrap v5 `.disabled` class on the link as well as handles stopping
-event propagation, preventing the default action from occurring, and removing the link from the
-document tab sequence (`tabindex="-1"`).
+Disabling a link renders it without `href`, so neither the browser nor a client-side router (such
+as VitePress, which picks up clicks on any `<a href>`) can follow it. It also sets the `.disabled`
+class, `role="link"` and `aria-disabled="true"`, removes the link from the tab sequence
+(`tabindex="-1"`), and stops the `click` event.
 
 ::: info NOTE
-Bootstrap v5 CSS currently does not style disabled links differently than non-disabled
+Bootstrap CSS does not style disabled links differently than non-disabled
 links. You can use the following custom CSS to style disabled links (by preventing hover style
 changes).
 :::

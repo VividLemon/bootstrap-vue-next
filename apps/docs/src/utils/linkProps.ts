@@ -24,7 +24,7 @@ export const linkProps = {
     type: 'boolean',
     default: false,
     description:
-      "When set to `true`, disables the link's functionality. See above for details and limitations",
+      'When set to `true`, disables the link: it renders without `href`, with `aria-disabled` and `tabindex="-1"`, and does not emit `click`. See above for details and limitations',
   },
   exactActiveClass: {
     type: 'string',
