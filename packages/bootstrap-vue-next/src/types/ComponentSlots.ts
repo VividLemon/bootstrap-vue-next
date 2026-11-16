@@ -151,12 +151,18 @@ export type BBreadcrumbItemSlots = {
   default?: (props: Record<string, never>) => any
 }
 
+export type BBreadcrumbDividerSlots = {
+  default?: (props: Record<string, never>) => any
+}
+
 export type BBreadcrumbSlots = {
   append?: (props: Record<string, never>) => any
 
   default?: (props: Record<string, never>) => any
 
   prepend?: (props: Record<string, never>) => any
+  /** Content of the dividers rendered between `items`. Empty renders the default chevron */
+  divider?: (props: Record<string, never>) => any
 }
 
 export type BBadgeSlots = {

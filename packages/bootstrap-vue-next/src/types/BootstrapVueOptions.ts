@@ -24,6 +24,7 @@ export const componentsWithExternalPath = {
   BAvatarGroup: '/components/BAvatar',
   BBadge: '/components/BBadge',
   BBreadcrumb: '/components/BBreadcrumb',
+  BBreadcrumbDivider: '/components/BBreadcrumb',
   BBreadcrumbItem: '/components/BBreadcrumb',
   BButton: '/components/BButton',
   BButtonGroup: '/components/BButton',
@@ -297,6 +298,7 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BCol: ComponentProps.BColProps
   BDropdownForm: never
   BDropdownHeader: never
+  BBreadcrumbDivider: never
   BFormInvalidFeedback: ComponentProps.BFormInvalidFeedbackProps
   BFormValidFeedback: ComponentProps.BFormValidFeedbackProps
   BFormGroup: ComponentProps.BFormGroupProps

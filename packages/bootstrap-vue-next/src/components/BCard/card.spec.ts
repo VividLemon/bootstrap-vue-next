@@ -200,12 +200,13 @@ describe('card', () => {
     expect($header.exists()).toBe(true)
   })
 
-  it('child BCardHeader is given class of headerClass', () => {
+  it('child BCardHeader merges headerAttrs', () => {
     const wrapper = mount(BCard, {
-      props: {header: 'foobar', headerClass: ['foobar']},
+      props: {header: 'foobar', headerAttrs: {'class': ['foobar'], 'data-x': '1'}},
     })
     const $header = wrapper.getComponent(BCardHeader)
-    expect($header.classes()).toContain('foobar')
+    expect($header.classes()).toEqual(expect.arrayContaining(['card-header', 'foobar']))
+    expect($header.attributes('data-x')).toBe('1')
   })
 
   it('child BCardHeader has internal prop bg as prop headerColor.bg', () => {
@@ -327,12 +328,13 @@ describe('card', () => {
     expect(wrapper.text()).toBe('slots')
   })
 
-  it('child BCardBody is given prop bodyClass', () => {
+  it('child BCardBody merges bodyAttrs', () => {
     const wrapper = mount(BCard, {
-      props: {bodyClass: ['foobar']},
+      props: {bodyAttrs: {'class': ['foobar'], 'data-x': '1'}},
     })
     const $body = wrapper.getComponent(BCardBody)
-    expect($body.classes()).toContain('foobar')
+    expect($body.classes()).toEqual(expect.arrayContaining(['card-body', 'foobar']))
+    expect($body.attributes('data-x')).toBe('1')
   })
 
   it('child BCardBody has internal prop bg as prop bodyColor.bg', () => {
@@ -429,12 +431,13 @@ describe('card', () => {
     expect($footer.exists()).toBe(true)
   })
 
-  it('child BCardFooter contains class prop footerClass', () => {
+  it('child BCardFooter merges footerAttrs', () => {
     const wrapper = mount(BCard, {
-      props: {footer: 'foobar', footerClass: ['foobar']},
+      props: {footer: 'foobar', footerAttrs: {'class': ['foobar'], 'data-x': '1'}},
     })
     const $footer = wrapper.getComponent(BCardFooter)
-    expect($footer.classes()).toContain('foobar')
+    expect($footer.classes()).toEqual(expect.arrayContaining(['card-footer', 'foobar']))
+    expect($footer.attributes('data-x')).toBe('1')
   })
 
   it('child BCardFooter has internal prop bg as prop footerColor.bg', () => {
@@ -589,5 +592,37 @@ describe('card', () => {
     })
     const $body = wrapper.getComponent(BCardBody)
     expect($body.props('overlay')).toBe(true)
+  })
+
+  it.each([
+    ['subtle', 'card-subtle'],
+    ['translucent', 'card-translucent'],
+  ])('has class %s when prop %s', (prop, expected) => {
+    const wrapper = mount(BCard, {props: {[prop]: true}})
+    expect(wrapper.classes()).toContain(expected)
+  })
+
+  it('does not have the subtle or translucent class by default', () => {
+    const wrapper = mount(BCard)
+    expect(wrapper.classes()).toEqual(['card'])
+  })
+
+  it.each([
+    ['top', ['IMG', 'DIV']],
+    ['start', ['IMG', 'DIV']],
+    ['bottom', ['DIV', 'IMG']],
+    // Bootstrap v6: `.card-row > .card-body + .card-img-end`
+    ['end', ['DIV', 'IMG']],
+  ] as const)('imgPlacement %s orders image and body as %j', (imgPlacement, order) => {
+    const wrapper = mount(BCard, {props: {imgSrc: '/abc', imgPlacement}})
+    expect(Array.from(wrapper.element.children).map((el) => el.tagName)).toEqual(order)
+  })
+
+  it('imgPlacement end renders card-row with the image after the body', () => {
+    const wrapper = mount(BCard, {props: {imgSrc: '/abc', imgPlacement: 'end'}})
+    expect(wrapper.classes()).toContain('card-row')
+    const last = wrapper.element.lastElementChild
+    expect(last?.classList.contains('card-img-end')).toBe(true)
+    expect(last?.previousElementSibling?.classList.contains('card-body')).toBe(true)
   })
 })
