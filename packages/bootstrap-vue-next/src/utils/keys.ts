@@ -1,4 +1,4 @@
-import type {ComponentInternalInstance, ComputedRef, InjectionKey, Ref, ShallowRef} from 'vue'
+import type {ComponentInternalInstance, ComputedRef, InjectionKey, Ref} from 'vue'
 import type {TabType} from '../types/Tab'
 import type {AttrsValue} from '../types/AnyValuedAttributes'
 import type {Numberish, ValidationState} from '../types/CommonTypes'
@@ -84,14 +84,9 @@ export const avatarGroupInjectionKey: InjectionKey<{
 // BAccordion
 export const accordionInjectionKey: InjectionKey<{
   openItem: Readonly<Ref<string | readonly string[] | undefined>>
-  free: Readonly<Ref<boolean>>
-  initialAnimation: Readonly<Ref<boolean>>
+  name: Readonly<Ref<string | undefined>>
   lazy: Readonly<Ref<boolean>>
-  unmountLazy: Readonly<Ref<boolean>>
-  setOpenItem: (id: string) => void
-  setCloseItem: (id: string) => void
-  registerAccordionItem: (id: string, el: Readonly<ShallowRef<HTMLElement | null>>) => void
-  unregisterAccordionItem: (id: string) => void
+  setItemOpen: (id: string, open: boolean) => void
 }> = createBvnInjectionKey('accordion')
 
 // BFormCheckboxGroup

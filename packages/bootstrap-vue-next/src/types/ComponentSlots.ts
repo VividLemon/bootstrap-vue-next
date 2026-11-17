@@ -134,8 +134,8 @@ export type BAlertSlots = BToastSlots
 
 export type BAccordionItemSlots = {
   default?: (props: Record<string, never>) => any
-
-  title?: (props: Record<string, never>) => any
+  icon?: (props: {open: boolean}) => any
+  title?: (props: {open: boolean}) => any
 }
 
 export type BAutocompleteSlots = {
