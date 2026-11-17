@@ -1,162 +1,98 @@
 <template>
-  <div
-    ref="_el"
+  <details
+    :id="computedId"
     class="accordion-item"
-    v-bind="props.wrapperAttrs"
-    :class="processedAttrs.wrapperClass"
+    :name="parentData?.name.value"
+    :open="modelValue"
+    :style="computedStyle"
+    @toggle="onToggle"
   >
-    <BCollapse
-      :id="computedId"
-      v-model="modelValue"
-      class="accordion-collapse"
-      :class="props.collapseClass"
-      :aria-labelledby="`${computedId}-heading`"
-      v-bind="processedAttrs.collapseAttrs"
-      :tag="props.tag"
-      :show="props.show"
-      :horizontal="props.horizontal"
-      :visible="props.visible"
-      :is-nav="props.isNav"
-      :no-transition="props.noTransition"
-      :lazy="props.lazy || parentData?.lazy.value"
-      :unmount-lazy="props.unmountLazy || parentData?.unmountLazy.value"
-      @show="emit('show', $event)"
-      @shown="emit('shown', $event)"
-      @hide="emit('hide', $event)"
-      @hidden="emit('hidden', $event)"
-      @hide-prevented="emit('hide-prevented', $event)"
-      @show-prevented="emit('show-prevented', $event)"
-      @toggle-prevented="emit('toggle-prevented', $event)"
-      @toggle="emit('toggle', $event)"
-    >
-      <template #header="{visible: toggleVisible, toggle: slotToggle}">
-        <component
-          :is="props.headerTag"
-          :id="`${computedId}-heading`"
-          class="accordion-header"
-          :class="props.headerClass"
-          v-bind="props.headerAttrs"
+    <summary class="accordion-header" v-bind="props.headerAttrs">
+      <slot name="title" :open="modelValue">{{ props.title }}</slot>
+      <slot name="icon" :open="modelValue">
+        <svg
+          class="accordion-icon"
+          aria-hidden="true"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
         >
-          <button
-            class="accordion-button"
-            v-bind="props.buttonAttrs"
-            :class="[{collapsed: !toggleVisible}, props.buttonClass]"
-            type="button"
-            :aria-expanded="toggleVisible ? 'true' : 'false'"
-            :aria-controls="computedId"
-            @click="slotToggle"
-          >
-            <slot name="title"> {{ props.title }} </slot>
-          </button>
-        </component>
-      </template>
-      <div class="accordion-body" v-bind="props.bodyAttrs" :class="props.bodyClass">
-        <slot />
-      </div>
-    </BCollapse>
-  </div>
+          <path d="m2 5 6 6 6-6" />
+        </svg>
+      </slot>
+    </summary>
+    <div class="accordion-body" v-bind="props.bodyAttrs">
+      <slot v-if="renderBody" />
+    </div>
+  </details>
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  inject,
-  nextTick,
-  onMounted,
-  onUnmounted,
-  useAttrs,
-  useTemplateRef,
-  watch,
-} from 'vue'
-import BCollapse from '../BCollapse/BCollapse.vue'
+import {computed, type CSSProperties, inject, ref, watch} from 'vue'
 import {accordionInjectionKey} from '../../utils/keys'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import type {BAccordionItemEmits, BAccordionItemProps, BAccordionItemSlots} from '../../types'
 import {isReadOnlyArray} from '../../utils/object'
-
-defineOptions({
-  inheritAttrs: false,
-})
+import {accordionNoTransitionStyle} from './accordionNoTransitionStyle'
 
 const _props = withDefaults(defineProps<Omit<BAccordionItemProps, 'modelValue'>>(), {
   bodyAttrs: undefined,
-  bodyClass: undefined,
-  buttonAttrs: undefined,
-  buttonClass: undefined,
-  collapseClass: undefined,
   headerAttrs: undefined,
-  headerClass: undefined,
-  headerTag: 'h2',
-  horizontal: undefined,
   id: undefined,
-  isNav: undefined,
   lazy: false,
   noTransition: false,
-  unmountLazy: false,
-  tag: undefined,
   title: undefined,
-  show: undefined,
-  visible: false,
-  wrapperAttrs: undefined,
 })
 const props = useDefaults(_props, 'BAccordionItem')
 const emit = defineEmits<BAccordionItemEmits>()
 defineSlots<BAccordionItemSlots>()
-const attrs = useAttrs()
 
-const processedAttrs = computed(() => {
-  const {class: wrapperClass, ...collapseAttrs} = attrs
-  return {wrapperClass, collapseAttrs}
+const modelValue = defineModel<Exclude<BAccordionItemProps['modelValue'], undefined>>({
+  default: false,
 })
 
 const parentData = inject(accordionInjectionKey, null)
 
 const computedId = useId(() => props.id, 'accordion_item')
 
-const modelValue = defineModel<Exclude<BAccordionItemProps['modelValue'], undefined>>({
-  default: false,
+const openInParent = computed(() => {
+  const open = parentData?.openItem.value
+  return isReadOnlyArray(open) ? open.includes(computedId.value) : open === computedId.value
 })
 
-if (modelValue.value) {
-  parentData?.setOpenItem(computedId.value)
-} else {
-  modelValue.value =
-    (isReadOnlyArray(parentData?.openItem.value)
-      ? parentData?.openItem.value.includes(computedId.value)
-      : parentData?.openItem.value === computedId.value) && !parentData?.initialAnimation.value
+if (parentData) {
+  // Synchronous during setup, so the server renders the same `open` attribute as the client
+  if (modelValue.value) parentData.setItemOpen(computedId.value, true)
+  else if (openInParent.value) modelValue.value = true
 }
 
-const el = useTemplateRef('_el')
-parentData?.registerAccordionItem(computedId.value, el)
-
-onUnmounted(() => {
-  parentData?.unregisterAccordionItem(computedId.value)
+watch(openInParent, (open) => {
+  if (open !== modelValue.value) modelValue.value = open
+})
+watch(modelValue, (open) => {
+  if (parentData && open !== openInParent.value) parentData.setItemOpen(computedId.value, open)
 })
 
-onMounted(() => {
-  if (!modelValue.value && parentData?.openItem.value === computedId.value) {
-    nextTick(() => {
-      modelValue.value = true
-    })
-  }
-})
+// The native `toggle` event covers every browser-driven change: clicks, keyboard, find-in-page,
+// fragment navigation and `name` exclusivity closing a sibling
+const onToggle = (event: Event) => {
+  const {open} = event.currentTarget as HTMLDetailsElement
+  if (open !== modelValue.value) modelValue.value = open
+  emit('toggle', event as ToggleEvent)
+}
 
-const openInParent = computed(() =>
-  isReadOnlyArray(parentData?.openItem.value)
-    ? parentData?.openItem.value.includes(computedId.value)
-    : parentData?.openItem.value === computedId.value
+const hasOpened = ref(modelValue.value)
+watch(modelValue, (open) => {
+  if (open) hasOpened.value = true
+})
+const renderBody = computed(
+  () => !(props.lazy || parentData?.lazy.value) || hasOpened.value || modelValue.value
 )
 
-watch(
-  () => parentData?.openItem.value,
-  () => (modelValue.value = openInParent.value)
+const computedStyle = computed<CSSProperties | undefined>(() =>
+  props.noTransition ? accordionNoTransitionStyle : undefined
 )
-watch(modelValue, () => {
-  if (modelValue.value && !openInParent.value) {
-    parentData?.setOpenItem(computedId.value)
-  } else if (!modelValue.value && openInParent.value) {
-    parentData?.setCloseItem(computedId.value)
-  }
-})
 </script>

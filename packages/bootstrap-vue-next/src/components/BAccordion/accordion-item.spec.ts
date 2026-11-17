@@ -1,580 +1,207 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it} from 'vitest'
+import {h, nextTick} from 'vue'
+import {renderToString} from 'vue/server-renderer'
 import BAccordionItem from './BAccordionItem.vue'
-import BCollapse from '../BCollapse/BCollapse.vue'
-import {nextTick, ref} from 'vue'
-import {accordionInjectionKey} from '../../utils/keys'
+
+/** Simulates the browser toggling a `<details>` (click, keyboard, find-in-page, `name` exclusivity) */
+const nativeToggle = async (el: Element, open: boolean) => {
+  // happy-dom dispatches `toggle` synchronously when `open` changes (browsers do it async)
+  ;(el as HTMLDetailsElement).open = open
+  await nextTick()
+}
 
 describe('accordion-item', () => {
   enableAutoUnmount(afterEach)
 
-  it('has static class accordion-item', () => {
-    const wrapper = mount(BAccordionItem)
-    expect(wrapper.classes()).toContain('accordion-item')
-  })
-
-  it('root is div', () => {
-    const wrapper = mount(BAccordionItem)
-    expect(wrapper.element.tagName).toBe('DIV')
-  })
-
-  it('contains b-collapse', () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.exists()).toBe(true)
-  })
-
-  it('b-collapse contains static class accordion-collapse', () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.get('.accordion-item > .collapse')
-    expect($bcollapse.classes()).toContain('accordion-collapse')
-  })
-
-  it('b-collapse has child div', () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    const [$div] = $bcollapse.findAll('div')
-    expect($div.exists()).toBe(true)
-  })
-
-  it('b-collapse child div contains static class accordion-body', () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    const [, $div] = $bcollapse.findAll('div')
-    expect($div.classes()).toContain('accordion-body')
-  })
-
-  it('b-collapse child div contains default slot', () => {
-    const wrapper = mount(BAccordionItem, {
-      slots: {default: 'foobar'},
+  describe('markup', () => {
+    it('renders details.accordion-item as root', () => {
+      const wrapper = mount(BAccordionItem)
+      expect(wrapper.element.tagName).toBe('DETAILS')
+      expect(wrapper.classes()).toEqual(['accordion-item'])
     })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    const [$div] = $bcollapse.findAll('div')
-    expect($div.text()).toBe('foobar')
-  })
 
-  it('b-collapse has id attr has default id', () => {
-    const wrapper = mount(BAccordionItem)
-    const [$bcollapse] = wrapper.findComponent(BCollapse).findAll('*')
-    expect($bcollapse.attributes('id')).toBeDefined()
-  })
-
-  it('b-collapse has id attr has prop id', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {id: 'spam&eggs'},
+    it('renders summary.accordion-header and div.accordion-body', () => {
+      const wrapper = mount(BAccordionItem, {props: {title: 'Title'}, slots: {default: 'Body'}})
+      const summary = wrapper.get('summary')
+      expect(summary.classes()).toEqual(['accordion-header'])
+      expect(summary.text()).toBe('Title')
+      expect(wrapper.get('div.accordion-body').text()).toBe('Body')
     })
-    const $bcollapse = wrapper.get('.accordion-item > .collapse')
-    expect($bcollapse.attributes('id')).toBe('spam&eggs')
-  })
 
-  it('passes noTransition to b-collapse', async () => {
-    const wrapper = mount(BAccordionItem, {props: {noTransition: true}})
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('noTransition')).toBe(true)
-    expect(wrapper.get('.accordion-item > .collapse').classes()).toContain('transition-none')
-    await wrapper.setProps({noTransition: false})
-    expect($bcollapse.props('noTransition')).toBe(false)
-  })
-
-  it('b-collapse has prop visible', async () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {visible: true},
+    it('does not render v5 accordion markup', () => {
+      const wrapper = mount(BAccordionItem, {props: {title: 'Title'}})
+      const html = wrapper.html()
+      expect(html).not.toContain('accordion-button')
+      expect(html).not.toContain('accordion-collapse')
+      expect(html).not.toContain('collapse')
+      expect(html).not.toContain('aria-expanded')
+      expect(html).not.toContain('aria-controls')
+      expect(wrapper.find('h2').exists()).toBe(false)
+      expect(wrapper.find('button').exists()).toBe(false)
     })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('visible')).toBe(true)
-    await wrapper.setProps({visible: false})
-    expect($bcollapse.props('visible')).toBe(false)
-  })
 
-  it('b-collapse has aria-labelledby with prop id', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {id: 'foobar'},
+    it('renders the default icon with aria-hidden', () => {
+      const wrapper = mount(BAccordionItem)
+      const icon = wrapper.get('summary svg.accordion-icon')
+      expect(icon.attributes('aria-hidden')).toBe('true')
     })
-    const $bcollapse = wrapper.get('.accordion-item > .collapse')
-    expect($bcollapse.attributes('aria-labelledby')).toBe('foobar-heading')
-  })
 
-  it('headerTag is h2 by default', () => {
-    const wrapper = mount(BAccordionItem)
-    const $h2 = wrapper.find('h2')
-    expect($h2.exists()).toBe(true)
-  })
-
-  it('header tag is prop headerTag', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {headerTag: 'h3'},
+    it('title slot overrides title prop and receives open', () => {
+      const wrapper = mount(BAccordionItem, {
+        props: {title: 'Prop', modelValue: true},
+        slots: {title: (p: {open: boolean}) => h('b', `Slot ${p.open}`)},
+      })
+      expect(wrapper.get('summary b').text()).toBe('Slot true')
+      expect(wrapper.get('summary').text()).not.toContain('Prop')
     })
-    const $h3 = wrapper.find('h3')
-    expect($h3.exists()).toBe(true)
-  })
 
-  it('h2 child has static class accordion-header', () => {
-    const wrapper = mount(BAccordionItem)
-    const $h2 = wrapper.get('h2')
-    expect($h2.classes()).toContain('accordion-header')
-  })
-
-  it('h2 child has id attr has default id', () => {
-    const wrapper = mount(BAccordionItem)
-    const $h2 = wrapper.get('h2')
-    expect($h2.attributes('id')).toBeDefined()
-  })
-
-  it('h2 child has id attr has prop id', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {id: 'foobar'},
+    it('icon slot replaces the default icon', () => {
+      const wrapper = mount(BAccordionItem, {slots: {icon: () => h('i', {class: 'my-icon'})}})
+      expect(wrapper.find('svg.accordion-icon').exists()).toBe(false)
+      expect(wrapper.find('summary i.my-icon').exists()).toBe(true)
     })
-    const $h2 = wrapper.get('h2')
-    expect($h2.attributes('id')).toBe('foobar-heading')
-  })
 
-  it('h2 child has button child', () => {
-    const wrapper = mount(BAccordionItem)
-    const $h2 = wrapper.get('h2')
-    const $button = $h2.find('button')
-    expect($button.exists()).toBe(true)
-  })
-
-  it('h2 child button child has static class accordion-button', () => {
-    const wrapper = mount(BAccordionItem)
-    const $h2 = wrapper.get('h2')
-    const $button = $h2.get('button')
-    expect($button.classes()).toContain('accordion-button')
-  })
-
-  it('h2 child button child has type attribute button', () => {
-    const wrapper = mount(BAccordionItem)
-    const $h2 = wrapper.get('h2')
-    const $button = $h2.get('button')
-    expect($button.attributes('type')).toBe('button')
-  })
-
-  it('h2 child button child has aria-expanded false by default', () => {
-    const wrapper = mount(BAccordionItem)
-    const $h2 = wrapper.get('h2')
-    const $button = $h2.get('button')
-    expect($button.attributes('aria-expanded')).toBe('false')
-  })
-
-  it('h2 child button child has aria-expanded true when visible true', async () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {visible: true},
+    it('uses the id prop', () => {
+      const wrapper = mount(BAccordionItem, {props: {id: 'foo'}})
+      expect(wrapper.attributes('id')).toBe('foo')
     })
-    const $button = wrapper.get('.accordion-button')
-    await nextTick()
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect($button.attributes('aria-expanded')).toBe('true')
-  })
 
-  it('h2 child button child has aria-controls as id', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {id: 'foobar'},
+    it('generates an id when none is given', () => {
+      const wrapper = mount(BAccordionItem)
+      expect(wrapper.attributes('id')).toBeTruthy()
     })
-    const $h2 = wrapper.get('h2')
-    const $button = $h2.get('button')
-    expect($button.attributes('aria-controls')).toBe('foobar')
-  })
 
-  it('h2 child button child class collapsed when visible false', async () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {visible: false},
+    it('has no name outside an accordion', () => {
+      const wrapper = mount(BAccordionItem)
+      expect(wrapper.attributes('name')).toBeUndefined()
     })
-    const $h2 = wrapper.get('h2')
-    const $button = $h2.get('button')
-    expect($button.classes()).toContain('collapsed')
-    await wrapper.setProps({visible: true})
-    await nextTick()
 
-    await new Promise((resolve) => setTimeout(resolve, 30))
-
-    expect($button.classes()).not.toContain('collapsed')
-  })
-
-  it('renders title prop as button text', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {title: 'my title'},
+    it('passes attrs to the details root', () => {
+      const wrapper = mount(BAccordionItem, {attrs: {'class': 'foo', 'data-x': '1'}})
+      expect(wrapper.classes()).toContain('foo')
+      expect(wrapper.classes()).toContain('accordion-item')
+      expect(wrapper.attributes('data-x')).toBe('1')
     })
-    const $button = wrapper.get('.accordion-button')
-    expect($button.text()).toBe('my title')
   })
 
-  it('title slot overrides title prop', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {title: 'prop title'},
-      slots: {title: 'slot title'},
+  describe('part attrs', () => {
+    it('headerAttrs merge into the summary', () => {
+      const wrapper = mount(BAccordionItem, {
+        props: {headerAttrs: {'class': 'h-extra', 'data-h': 'y'}},
+      })
+      const summary = wrapper.get('summary')
+      expect(summary.classes()).toEqual(['accordion-header', 'h-extra'])
+      expect(summary.attributes('data-h')).toBe('y')
     })
-    const $button = wrapper.get('.accordion-button')
-    expect($button.text()).toBe('slot title')
-  })
 
-  it('renders title slot content', () => {
-    const wrapper = mount(BAccordionItem, {
-      slots: {title: '<strong>Bold Title</strong>'},
+    it('bodyAttrs merge into the body', () => {
+      const wrapper = mount(BAccordionItem, {
+        props: {bodyAttrs: {class: 'b-extra', style: 'color: red;'}},
+      })
+      const body = wrapper.get('.accordion-body')
+      expect(body.classes()).toEqual(['accordion-body', 'b-extra'])
+      expect(body.attributes('style')).toContain('color: red')
     })
-    const $button = wrapper.get('.accordion-button')
-    expect($button.find('strong').exists()).toBe(true)
-    expect($button.text()).toBe('Bold Title')
   })
 
-  it('applies bodyClass to accordion-body div', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {bodyClass: 'custom-body'},
+  describe('open state', () => {
+    it('is closed by default', () => {
+      const wrapper = mount(BAccordionItem)
+      expect((wrapper.element as HTMLDetailsElement).open).toBe(false)
     })
-    const $body = wrapper.get('.accordion-body')
-    expect($body.classes()).toContain('custom-body')
-  })
 
-  it('applies bodyAttrs to accordion-body div', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {bodyAttrs: {'data-testid': 'body-content'}},
+    it('modelValue true opens the details', () => {
+      const wrapper = mount(BAccordionItem, {props: {modelValue: true}})
+      expect((wrapper.element as HTMLDetailsElement).open).toBe(true)
     })
-    const $body = wrapper.get('.accordion-body')
-    expect($body.attributes('data-testid')).toBe('body-content')
-  })
 
-  it('applies buttonClass to accordion button', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {buttonClass: 'custom-button'},
+    it('reacts to modelValue changes', async () => {
+      const wrapper = mount(BAccordionItem, {props: {modelValue: false}})
+      await wrapper.setProps({modelValue: true})
+      expect((wrapper.element as HTMLDetailsElement).open).toBe(true)
+      await wrapper.setProps({modelValue: false})
+      expect((wrapper.element as HTMLDetailsElement).open).toBe(false)
     })
-    const $button = wrapper.get('.accordion-button')
-    expect($button.classes()).toContain('custom-button')
-  })
 
-  it('applies buttonAttrs to accordion button', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {buttonAttrs: {'data-testid': 'btn-toggle'}},
+    it('syncs a native toggle into v-model and emits toggle', async () => {
+      const wrapper = mount(BAccordionItem)
+      await nativeToggle(wrapper.element, true)
+      expect(wrapper.emitted('update:modelValue')).toEqual([[true]])
+      expect(wrapper.emitted('toggle')).toHaveLength(1)
+      await nativeToggle(wrapper.element, false)
+      expect(wrapper.emitted('update:modelValue')).toEqual([[true], [false]])
+      expect(wrapper.emitted('toggle')).toHaveLength(2)
     })
-    const $button = wrapper.get('.accordion-button')
-    expect($button.attributes('data-testid')).toBe('btn-toggle')
-  })
 
-  it('applies collapseClass to BCollapse element', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {collapseClass: 'custom-collapse'},
+    it('does not emit update:modelValue when the toggle matches the model', async () => {
+      const wrapper = mount(BAccordionItem, {props: {modelValue: true}})
+      wrapper.element.dispatchEvent(new Event('toggle'))
+      await nextTick()
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+      expect(wrapper.emitted('toggle')).toHaveLength(1)
     })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    const $collapseEl = $bcollapse
-      .findAll('*')
-      .find((el) => el.classes().includes('accordion-collapse'))
-    expect($collapseEl?.classes()).toContain('custom-collapse')
-  })
 
-  it('applies headerClass to header element', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {headerClass: 'custom-header'},
+    it('does not emit show/hide lifecycle events', async () => {
+      const wrapper = mount(BAccordionItem)
+      await nativeToggle(wrapper.element, true)
+      for (const name of ['show', 'shown', 'hide', 'hidden', 'show-prevented', 'hide-prevented']) {
+        expect(wrapper.emitted(name)).toBeUndefined()
+      }
     })
-    const $h2 = wrapper.get('h2')
-    expect($h2.classes()).toContain('custom-header')
   })
 
-  it('applies headerAttrs to header element', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {headerAttrs: {'data-testid': 'header-el'}},
+  describe('lazy', () => {
+    it('renders the body content by default while closed', () => {
+      const wrapper = mount(BAccordionItem, {slots: {default: 'Body'}})
+      expect(wrapper.get('.accordion-body').text()).toBe('Body')
     })
-    const $h2 = wrapper.get('h2')
-    expect($h2.attributes('data-testid')).toBe('header-el')
-  })
 
-  it('applies wrapperAttrs to root div', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {wrapperAttrs: {'data-testid': 'wrapper'}},
+    it('lazy keeps the body empty until first opened, then keeps it', async () => {
+      const wrapper = mount(BAccordionItem, {props: {lazy: true}, slots: {default: 'Body'}})
+      const body = wrapper.get('.accordion-body')
+      expect(body.text()).toBe('')
+      await nativeToggle(wrapper.element, true)
+      expect(wrapper.get('.accordion-body').text()).toBe('Body')
+      await nativeToggle(wrapper.element, false)
+      expect(wrapper.get('.accordion-body').text()).toBe('Body')
     })
-    expect(wrapper.attributes('data-testid')).toBe('wrapper')
-  })
 
-  it('passes tag prop to BCollapse', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {tag: 'section'},
+    it('lazy renders immediately when initially open', () => {
+      const wrapper = mount(BAccordionItem, {
+        props: {lazy: true, modelValue: true},
+        slots: {default: 'Body'},
+      })
+      expect(wrapper.get('.accordion-body').text()).toBe('Body')
     })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('tag')).toBe('section')
   })
 
-  it('passes show prop to BCollapse', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {show: true},
+  describe('noTransition', () => {
+    it('sets no inline style by default', () => {
+      const wrapper = mount(BAccordionItem)
+      expect(wrapper.attributes('style')).toBeUndefined()
     })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('show')).toBe(true)
-  })
 
-  it('passes horizontal prop to BCollapse', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {horizontal: true},
+    it('sets the transition tokens to zero inline', () => {
+      const wrapper = mount(BAccordionItem, {props: {noTransition: true}})
+      const style = wrapper.attributes('style')
+      expect(style).toContain('--bs-accordion-panel-transition-duration: 0s')
+      expect(style).toContain('--bs-accordion-transition-duration: 0s')
+      expect(style).toContain('--bs-accordion-btn-icon-transition: none')
     })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('horizontal')).toBe(true)
   })
 
-  it('passes isNav prop to BCollapse', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {isNav: true},
+  describe('ssr', () => {
+    it('renders the open attribute on the server', async () => {
+      const html = await renderToString(
+        h(BAccordionItem, {id: 'x', modelValue: true, title: 'T'}, {default: () => 'B'})
+      )
+      expect(html).toMatch(/<details[^>]*\sopen/)
     })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('isNav')).toBe(true)
-  })
 
-  it('passes lazy prop to BCollapse', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {lazy: true},
+    it('does not render open when closed', async () => {
+      const html = await renderToString(h(BAccordionItem, {id: 'x', title: 'T'}))
+      expect(html).not.toMatch(/<details[^>]*\sopen/)
     })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('lazy')).toBe(true)
-  })
-
-  it('passes unmountLazy prop to BCollapse', () => {
-    const wrapper = mount(BAccordionItem, {
-      props: {unmountLazy: true},
-    })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('unmountLazy')).toBe(true)
-  })
-
-  it('applies class attr to root wrapper div (inheritAttrs false)', () => {
-    const wrapper = mount(BAccordionItem, {
-      attrs: {class: 'custom-wrapper-class'},
-    })
-    expect(wrapper.classes()).toContain('custom-wrapper-class')
-    expect(wrapper.classes()).toContain('accordion-item')
-  })
-
-  it('applies non-class attrs to BCollapse inner element (inheritAttrs false)', () => {
-    const wrapper = mount(BAccordionItem, {
-      attrs: {'data-custom': 'value'},
-    })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    const $collapseEl = $bcollapse
-      .findAll('*')
-      .find((el) => el.classes().includes('accordion-collapse'))
-    expect($collapseEl?.attributes('data-custom')).toBe('value')
-  })
-
-  it.each([
-    {eventName: 'show'},
-    {eventName: 'shown'},
-    {eventName: 'hide'},
-    {eventName: 'hidden'},
-    {eventName: 'hide-prevented'},
-    {eventName: 'show-prevented'},
-    {eventName: 'toggle-prevented'},
-    {eventName: 'toggle'},
-  ])('emits $eventName event from BCollapse', async ({eventName}) => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    await $bcollapse.vm.$emit(eventName, new Event(eventName))
-    expect(wrapper.emitted(eventName)).toBeDefined()
-    expect(wrapper.emitted(eventName)).toHaveLength(1)
-  })
-
-  it('has modelValue false by default', () => {
-    const wrapper = mount(BAccordionItem)
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('modelValue')).toBe(false)
-  })
-
-  it('button click toggles modelValue via BCollapse', async () => {
-    const wrapper = mount(BAccordionItem)
-    const $button = wrapper.get('.accordion-button')
-    await $button.trigger('click')
-    await nextTick()
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.emitted('update:modelValue')).toBeDefined()
-  })
-
-  it('uses lazy from parent accordion injection when own lazy is false', () => {
-    const wrapper = mount(BAccordionItem, {
-      global: {
-        provide: {
-          [accordionInjectionKey as symbol]: {
-            openItem: ref(undefined),
-            free: ref(false),
-            initialAnimation: ref(false),
-            lazy: ref(true),
-            unmountLazy: ref(false),
-            setOpenItem: vi.fn<() => void>(),
-            setCloseItem: vi.fn<() => void>(),
-            registerAccordionItem: vi.fn<() => void>(),
-            unregisterAccordionItem: vi.fn<() => void>(),
-          },
-        },
-      },
-    })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('lazy')).toBe(true)
-  })
-
-  it('uses unmountLazy from parent accordion injection when own unmountLazy is false', () => {
-    const wrapper = mount(BAccordionItem, {
-      global: {
-        provide: {
-          [accordionInjectionKey as symbol]: {
-            openItem: ref(undefined),
-            free: ref(false),
-            initialAnimation: ref(false),
-            lazy: ref(false),
-            unmountLazy: ref(true),
-            setOpenItem: vi.fn<() => void>(),
-            setCloseItem: vi.fn<() => void>(),
-            registerAccordionItem: vi.fn<() => void>(),
-            unregisterAccordionItem: vi.fn<() => void>(),
-          },
-        },
-      },
-    })
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('unmountLazy')).toBe(true)
-  })
-
-  it('calls registerAccordionItem on mount with parent injection', () => {
-    const registerAccordionItem = vi.fn<() => void>()
-    mount(BAccordionItem, {
-      props: {id: 'test-item'},
-      global: {
-        provide: {
-          [accordionInjectionKey as symbol]: {
-            openItem: ref(undefined),
-            free: ref(false),
-            initialAnimation: ref(false),
-            lazy: ref(false),
-            unmountLazy: ref(false),
-            setOpenItem: vi.fn<() => void>(),
-            setCloseItem: vi.fn<() => void>(),
-            registerAccordionItem,
-            unregisterAccordionItem: vi.fn<() => void>(),
-          },
-        },
-      },
-    })
-    expect(registerAccordionItem).toHaveBeenCalledWith('test-item', expect.anything())
-  })
-
-  it('calls unregisterAccordionItem on unmount with parent injection', () => {
-    const unregisterAccordionItem = vi.fn<() => void>()
-    const wrapper = mount(BAccordionItem, {
-      props: {id: 'test-item'},
-      global: {
-        provide: {
-          [accordionInjectionKey as symbol]: {
-            openItem: ref(undefined),
-            free: ref(false),
-            initialAnimation: ref(false),
-            lazy: ref(false),
-            unmountLazy: ref(false),
-            setOpenItem: vi.fn<() => void>(),
-            setCloseItem: vi.fn<() => void>(),
-            registerAccordionItem: vi.fn<() => void>(),
-            unregisterAccordionItem,
-          },
-        },
-      },
-    })
-    wrapper.unmount()
-    expect(unregisterAccordionItem).toHaveBeenCalledWith('test-item')
-  })
-
-  it('opens when parent openItem matches its id', async () => {
-    const openItem = ref<string | readonly string[] | undefined>('test-item')
-    const wrapper = mount(BAccordionItem, {
-      props: {id: 'test-item'},
-      global: {
-        provide: {
-          [accordionInjectionKey as symbol]: {
-            openItem,
-            free: ref(false),
-            initialAnimation: ref(false),
-            lazy: ref(false),
-            unmountLazy: ref(false),
-            setOpenItem: vi.fn<() => void>(),
-            setCloseItem: vi.fn<() => void>(),
-            registerAccordionItem: vi.fn<() => void>(),
-            unregisterAccordionItem: vi.fn<() => void>(),
-          },
-        },
-      },
-    })
-    await nextTick()
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('modelValue')).toBe(true)
-  })
-
-  it('opens when parent openItem array includes its id', async () => {
-    const openItem = ref<string | readonly string[] | undefined>(['test-item', 'other'])
-    const wrapper = mount(BAccordionItem, {
-      props: {id: 'test-item'},
-      global: {
-        provide: {
-          [accordionInjectionKey as symbol]: {
-            openItem,
-            free: ref(false),
-            initialAnimation: ref(false),
-            lazy: ref(false),
-            unmountLazy: ref(false),
-            setOpenItem: vi.fn<() => void>(),
-            setCloseItem: vi.fn<() => void>(),
-            registerAccordionItem: vi.fn<() => void>(),
-            unregisterAccordionItem: vi.fn<() => void>(),
-          },
-        },
-      },
-    })
-    await nextTick()
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('modelValue')).toBe(true)
-  })
-
-  it('closes when parent openItem changes away from its id', async () => {
-    const openItem = ref<string | readonly string[] | undefined>('test-item')
-    const wrapper = mount(BAccordionItem, {
-      props: {id: 'test-item'},
-      global: {
-        provide: {
-          [accordionInjectionKey as symbol]: {
-            openItem,
-            free: ref(false),
-            initialAnimation: ref(false),
-            lazy: ref(false),
-            unmountLazy: ref(false),
-            setOpenItem: vi.fn<() => void>(),
-            setCloseItem: vi.fn<() => void>(),
-            registerAccordionItem: vi.fn<() => void>(),
-            unregisterAccordionItem: vi.fn<() => void>(),
-          },
-        },
-      },
-    })
-    await nextTick()
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    const $bcollapse = wrapper.findComponent(BCollapse)
-    expect($bcollapse.props('modelValue')).toBe(true)
-    openItem.value = 'other-item'
-    await nextTick()
-    expect($bcollapse.props('modelValue')).toBe(false)
-  })
-
-  it('calls setOpenItem when modelValue becomes true', async () => {
-    const setOpenItem = vi.fn<() => void>()
-    const wrapper = mount(BAccordionItem, {
-      props: {id: 'test-item', modelValue: false},
-      global: {
-        provide: {
-          [accordionInjectionKey as symbol]: {
-            openItem: ref(undefined),
-            free: ref(false),
-            initialAnimation: ref(false),
-            lazy: ref(false),
-            unmountLazy: ref(false),
-            setOpenItem,
-            setCloseItem: vi.fn<() => void>(),
-            registerAccordionItem: vi.fn<() => void>(),
-            unregisterAccordionItem: vi.fn<() => void>(),
-          },
-        },
-      },
-    })
-    await wrapper.setProps({modelValue: true})
-    await nextTick()
-    expect(setOpenItem).toHaveBeenCalledWith('test-item')
   })
 })

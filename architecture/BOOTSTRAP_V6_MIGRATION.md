@@ -20,7 +20,7 @@ It is the single source of truth for the migration: implementation work follows 
 | Phase 2b: component batches                                                                                        | Wave 1 merged (#165–#168); wave 2 not started — see [Implementation progress](#implementation-progress)                                                                                                     |
 | Phase 3: migration docs                                                                                            | Not started                                                                                                                                                                                                 |
 | Deferred components                                                                                                | Plans decided and merged ([#169](https://github.com/VividLemon/bootstrap-vue-next/pull/169), `BOOTSTRAP_V6_NEW_COMPONENTS.md`); implementation not started. See [Deferred components](#deferred-components) |
-| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md` |
+| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`                                                                         |
 | Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source)                                                                                                                          |
 | Post-migration (maybe): public `useTable` composable                                                               | Undecided — see `USE_TABLE_COMPOSABLE.md`                                                                                                                                                                   |
 
@@ -318,9 +318,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### BAccordion / BAccordionItem
 
-- **Now:** behavior changes with `BCollapse` (native transitions); `BAccordionItem` has `noTransition` (`BAccordion` itself does not yet).
-- **Pending:** the item header button still renders the v5 accordion `collapsed` class.
-- **Pending:** v6 Accordion markup; part attrs (`bodyClass`, `buttonClass`, `collapseClass`, `headerClass` → merge into `bodyAttrs` / `buttonAttrs` / `headerAttrs` / `wrapperAttrs`); `initialAnimation` naming review.
+- **Done (G5, `bootstrap-v6-g5-accordion`):** native `<details>` / `<summary>` markup, no `BCollapse`; `name`-based exclusivity; `v-model` of ids only (`index` removed); native `toggle` event only; `lazy` kept, `unmountLazy` / `initialAnimation` removed; `gap`, `size`, `color`, `name`, `noTransition` on `BAccordion`; `headerAttrs` / `bodyAttrs` only (see `BOOTSTRAP_V6_DISPLAY.md`).
 
 ### BCarousel
 

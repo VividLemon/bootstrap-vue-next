@@ -1,528 +1,220 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it} from 'vitest'
-import {nextTick} from 'vue'
+import {defineComponent, h, nextTick, ref} from 'vue'
+import {renderToString} from 'vue/server-renderer'
 import BAccordion from './BAccordion.vue'
 import BAccordionItem from './BAccordionItem.vue'
-import BCollapse from '../BCollapse/BCollapse.vue'
+
+const nativeToggle = async (el: Element, open: boolean) => {
+  // happy-dom dispatches `toggle` synchronously when `open` changes (browsers do it async)
+  ;(el as HTMLDetailsElement).open = open
+  await nextTick()
+}
+
+const items = (ids: string[] = ['a', 'b', 'c']) =>
+  ids.map((id) => h(BAccordionItem, {id, title: id}, {default: () => `body ${id}`}))
+
+const isOpen = (wrapper: ReturnType<typeof mount>, id: string) =>
+  (wrapper.get(`#${id}`).element as HTMLDetailsElement).open
 
 describe('accordion', () => {
   enableAutoUnmount(afterEach)
 
-  it('has static class accordion', () => {
-    const wrapper = mount(BAccordion)
-    expect(wrapper.classes()).toContain('accordion')
-  })
-
-  it('root element is a div', () => {
-    const wrapper = mount(BAccordion)
-    expect(wrapper.element.tagName).toBe('DIV')
-  })
-
-  it('has computed id by default', () => {
-    const wrapper = mount(BAccordion)
-    expect(wrapper.attributes('id')).toBeDefined()
-  })
-
-  it('has id when prop id is set', () => {
-    const wrapper = mount(BAccordion, {
-      props: {id: 'abc'},
+  describe('markup', () => {
+    it('renders div.accordion', () => {
+      const wrapper = mount(BAccordion)
+      expect(wrapper.element.tagName).toBe('DIV')
+      expect(wrapper.classes()).toEqual(['accordion'])
     })
-    expect(wrapper.attributes('id')).toBe('abc')
-  })
 
-  it('has class accordion-flush when flush is true', async () => {
-    const wrapper = mount(BAccordion, {
-      props: {flush: true},
+    it('uses the id prop', () => {
+      const wrapper = mount(BAccordion, {props: {id: 'acc'}})
+      expect(wrapper.attributes('id')).toBe('acc')
     })
-    expect(wrapper.classes()).toContain('accordion-flush')
-    await wrapper.setProps({flush: false})
-    expect(wrapper.classes()).not.toContain('accordion-flush')
-  })
 
-  it('renders default slot', () => {
-    const wrapper = mount(BAccordion, {
-      slots: {default: 'foobar'},
+    it('flush adds accordion-flush', () => {
+      const wrapper = mount(BAccordion, {props: {flush: true}})
+      expect(wrapper.classes()).toContain('accordion-flush')
     })
-    expect(wrapper.text()).toBe('foobar')
-  })
 
-  it('has free prop', () => {
-    const wrapper = mount(BAccordion, {
-      props: {free: true},
+    it('gap adds accordion-gap', () => {
+      const wrapper = mount(BAccordion, {props: {gap: true}})
+      expect(wrapper.classes()).toContain('accordion-gap')
     })
-    expect(wrapper.props('free')).toBe(true)
-  })
 
-  it.each([
-    {propName: 'free'},
-    {propName: 'flush'},
-    {propName: 'initialAnimation'},
-    {propName: 'lazy'},
-    {propName: 'unmountLazy'},
-  ])('$propName prop defaults to false', ({propName}) => {
-    const wrapper = mount(BAccordion)
-    expect(wrapper.props(propName)).toBe(false)
-  })
-
-  const complexAccordion = {
-    template: `
-    <BAccordion v-model="modelValue" v-model:index="index" :free="free">
-      <BAccordionItem id="1">1</BAccordionItem>
-      <BAccordionItem id="2">2</BAccordionItem>
-    </BAccordion>
-    `,
-    data() {
-      return {
-        index: undefined,
-        modelValue: undefined,
-      }
-    },
-    props: {
-      free: {
-        type: Boolean,
-        default: false,
-      },
-    },
-    components: {
-      BAccordion,
-      BAccordionItem,
-    },
-  }
-
-  it('renders in complex structure', async () => {
-    const wrapper = await mount(complexAccordion)
-    expect(wrapper.findComponent({name: 'b-accordion-item'}).text()).toBe('1')
-  })
-
-  it('renders multiple accordion items', async () => {
-    const wrapper = await mount(complexAccordion)
-    const items = wrapper.findAllComponents({name: 'b-accordion-item'})
-    expect(items).toHaveLength(2)
-    expect(items[0].text()).toBe('1')
-    expect(items[1].text()).toBe('2')
-  })
-
-  it('has modelValue updates index when set', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: true},
+    it('size sm adds accordion-sm, md adds nothing', async () => {
+      const wrapper = mount(BAccordion, {props: {size: 'sm'}})
+      expect(wrapper.classes()).toContain('accordion-sm')
+      await wrapper.setProps({size: 'md'})
+      expect(wrapper.classes()).toEqual(['accordion'])
     })
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-    await wrapper.setData({modelValue: '1'})
-    expect(wrapper.vm.index).toEqual(0)
-    await wrapper.setData({modelValue: ['1', '2']})
-    expect(wrapper.vm.index).toEqual([0, 1])
-    await wrapper.setData({modelValue: '2'})
-    expect(wrapper.vm.index).toEqual(1)
-    await wrapper.setData({modelValue: ['1', '2']})
-    expect(wrapper.vm.index).toEqual([0, 1])
-  })
 
-  it('has index updates modelValue when set', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: true},
+    it('color theme adds theme class', () => {
+      const wrapper = mount(BAccordion, {props: {color: {theme: 'primary'}}})
+      expect(wrapper.classes()).toContain('theme-primary')
     })
-    expect(wrapper.vm.index).toEqual(undefined)
-    await wrapper.setData({index: 0})
-    expect(wrapper.vm.modelValue).toEqual('1')
-    await wrapper.setData({index: [0, 1]})
-    expect(wrapper.vm.modelValue).toEqual(['1', '2'])
-  })
 
-  it('has modelValue and index update as array when free is set to true', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: true},
+    it('noTransition sets the transition tokens inline', () => {
+      const wrapper = mount(BAccordion, {props: {noTransition: true}})
+      expect(wrapper.attributes('style')).toContain('--bs-accordion-panel-transition-duration: 0s')
     })
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-    expect(wrapper.vm.index).toEqual(undefined)
-    const buttons = wrapper.findAll('button')
-    await buttons[0].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-
-    await wrapper.vm.$nextTick()
-    expect(wrapper.vm.modelValue).toEqual(['1'])
-    expect(wrapper.vm.index).toEqual([0])
-
-    await buttons[1].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual(['1', '2'])
-    expect(wrapper.vm.index).toEqual([0, 1])
-
-    await buttons[0].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual(['2'])
-    expect(wrapper.vm.index).toEqual([1])
-
-    await buttons[1].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-    expect(wrapper.vm.index).toEqual(undefined)
   })
 
-  it('non-free mode allows only one item open at a time via clicks', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: false},
+  describe('name', () => {
+    it('items share the accordion id as name', () => {
+      const wrapper = mount(BAccordion, {props: {id: 'acc'}, slots: {default: () => items()}})
+      const names = wrapper.findAll('details').map((d) => d.attributes('name'))
+      expect(names).toEqual(['acc', 'acc', 'acc'])
     })
-    const buttons = wrapper.findAll('button')
 
-    await buttons[0].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual('1')
-    expect(wrapper.vm.index).toEqual(0)
-
-    await buttons[1].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual('2')
-    expect(wrapper.vm.index).toEqual(1)
-  })
-
-  it('non-free mode clicking same item toggles it closed', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: false},
+    it('name prop overrides the generated name', () => {
+      const wrapper = mount(BAccordion, {
+        props: {id: 'acc', name: 'group'},
+        slots: {default: () => items()},
+      })
+      expect(wrapper.get('details').attributes('name')).toBe('group')
     })
-    const buttons = wrapper.findAll('button')
 
-    await buttons[0].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual('1')
-    expect(wrapper.vm.index).toEqual(0)
-
-    await buttons[0].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-    expect(wrapper.vm.index).toEqual(undefined)
-  })
-
-  it('non-free mode modelValue updates index when set', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: false},
+    it('free omits the name', () => {
+      const wrapper = mount(BAccordion, {props: {free: true}, slots: {default: () => items()}})
+      expect(wrapper.get('details').attributes('name')).toBeUndefined()
     })
-    await wrapper.setData({modelValue: '2'})
-    expect(wrapper.vm.index).toEqual(1)
-    await wrapper.setData({modelValue: '1'})
-    expect(wrapper.vm.index).toEqual(0)
   })
 
-  it('non-free mode index updates modelValue when set', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: false},
+  describe('exclusive v-model', () => {
+    it('opens the item matching modelValue', () => {
+      const wrapper = mount(BAccordion, {props: {modelValue: 'b'}, slots: {default: () => items()}})
+      expect(isOpen(wrapper, 'a')).toBe(false)
+      expect(isOpen(wrapper, 'b')).toBe(true)
+      expect(isOpen(wrapper, 'c')).toBe(false)
     })
-    await wrapper.setData({index: 1})
-    expect(wrapper.vm.modelValue).toEqual('2')
-    await wrapper.setData({index: 0})
-    expect(wrapper.vm.modelValue).toEqual('1')
-  })
 
-  it('non-free mode setting modelValue to unknown id resets to undefined', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: false},
+    it('changing modelValue moves the open item', async () => {
+      const wrapper = mount(BAccordion, {props: {modelValue: 'a'}, slots: {default: () => items()}})
+      await wrapper.setProps({modelValue: 'c'})
+      expect(isOpen(wrapper, 'a')).toBe(false)
+      expect(isOpen(wrapper, 'c')).toBe(true)
+      await wrapper.setProps({modelValue: undefined})
+      expect(isOpen(wrapper, 'c')).toBe(false)
     })
-    await wrapper.setData({modelValue: 'unknown'})
-    await nextTick()
-    await nextTick()
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-  })
 
-  it('non-free mode setting index out of bounds resets to undefined', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: false},
+    it('a native toggle updates the model', async () => {
+      const wrapper = mount(BAccordion, {slots: {default: () => items()}})
+      await nativeToggle(wrapper.get('#b').element, true)
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['b'])
     })
-    await wrapper.setData({index: 99})
-    await nextTick()
-    await nextTick()
-    expect(wrapper.vm.index).toEqual(undefined)
-  })
 
-  it('non-free mode array modelValue takes first element', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: false},
+    it('native exclusivity closing a sibling keeps a single id', async () => {
+      const wrapper = mount(BAccordion, {props: {modelValue: 'a'}, slots: {default: () => items()}})
+      // The browser closes "a" and opens "b"; both toggle events arrive in either order
+      await nativeToggle(wrapper.get('#a').element, false)
+      await nativeToggle(wrapper.get('#b').element, true)
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['b'])
     })
-    await wrapper.setData({modelValue: ['1', '2']})
-    expect(wrapper.vm.index).toEqual(0)
-  })
 
-  it('setting modelValue to undefined clears index', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: true},
+    it('closing the open item clears the model', async () => {
+      const wrapper = mount(BAccordion, {props: {modelValue: 'a'}, slots: {default: () => items()}})
+      await nativeToggle(wrapper.get('#a').element, false)
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([undefined])
     })
-    await wrapper.setData({modelValue: '1'})
-    expect(wrapper.vm.index).toEqual(0)
 
-    await wrapper.setData({modelValue: undefined})
-    expect(wrapper.vm.index).toEqual(undefined)
-  })
-
-  it('setting index to undefined clears modelValue', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: true},
-    })
-    await wrapper.setData({index: 0})
-    expect(wrapper.vm.modelValue).toEqual('1')
-
-    await wrapper.setData({index: undefined})
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-  })
-
-  const complexAccordionWithFreeToggle = {
-    template: `
-    <BAccordion v-model="modelValue" v-model:index="index" :free="free">
-      <BAccordionItem id="1">1</BAccordionItem>
-      <BAccordionItem id="2">2</BAccordionItem>
-    </BAccordion>
-    `,
-    data() {
-      return {
-        index: undefined,
-        modelValue: undefined,
-        free: false,
-      }
-    },
-    components: {
-      BAccordion,
-      BAccordionItem,
-    },
-  }
-
-  it('switching free from true to false with array modelValue takes first element', async () => {
-    const wrapper = await mount(complexAccordionWithFreeToggle)
-    await wrapper.setData({free: true})
-    await wrapper.setData({modelValue: ['1', '2']})
-    await nextTick()
-    expect(wrapper.vm.modelValue).toEqual(['1', '2'])
-
-    await wrapper.setData({free: false})
-    await nextTick()
-    expect(wrapper.vm.modelValue).toEqual('1')
-  })
-
-  it('switching free from false to true with string modelValue converts to array', async () => {
-    const wrapper = await mount(complexAccordionWithFreeToggle)
-    await wrapper.setData({modelValue: '1'})
-    await nextTick()
-    expect(wrapper.vm.modelValue).toEqual('1')
-
-    await wrapper.setData({free: true})
-    await nextTick()
-    expect(wrapper.vm.modelValue).toEqual(['1'])
-  })
-
-  it('switching free does not affect undefined modelValue', async () => {
-    const wrapper = await mount(complexAccordionWithFreeToggle)
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-
-    await wrapper.setData({free: true})
-    await nextTick()
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-
-    await wrapper.setData({free: false})
-    await nextTick()
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-  })
-
-  it('provides lazy prop to accordion items', async () => {
-    const wrapper = mount(BAccordion, {
-      props: {lazy: true},
-      slots: {
-        default: {
-          components: {BAccordionItem},
-          template: '<BAccordionItem id="a1">content</BAccordionItem>',
+    it('opening an item while another is open replaces the id', async () => {
+      const Parent = defineComponent({
+        setup() {
+          const open = ref<string | readonly string[] | undefined>('a')
+          return () =>
+            h(
+              BAccordion,
+              {
+                'modelValue': open.value,
+                'onUpdate:modelValue': (v: typeof open.value) => (open.value = v),
+              },
+              {default: () => items()}
+            )
         },
-      },
+      })
+      const wrapper = mount(Parent)
+      await nativeToggle(wrapper.get('#c').element, true)
+      await nextTick()
+      expect(isOpen(wrapper, 'c')).toBe(true)
+      expect(isOpen(wrapper, 'a')).toBe(false)
     })
-    const $collapse = wrapper.findComponent(BCollapse)
-    expect($collapse.props('lazy')).toBe(true)
-  })
 
-  it('provides unmountLazy prop to accordion items', async () => {
-    const wrapper = mount(BAccordion, {
-      props: {unmountLazy: true},
-      slots: {
-        default: {
-          components: {BAccordionItem},
-          template: '<BAccordionItem id="a1">content</BAccordionItem>',
+    it('an item with v-model true opens in the parent', () => {
+      const wrapper = mount(BAccordion, {
+        slots: {
+          default: () => [
+            h(BAccordionItem, {id: 'a'}),
+            h(BAccordionItem, {id: 'b', modelValue: true}),
+          ],
         },
-      },
+      })
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['b'])
     })
-    const $collapse = wrapper.findComponent(BCollapse)
-    expect($collapse.props('unmountLazy')).toBe(true)
   })
 
-  it('free mode with index as single number updates modelValue to single id', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: true},
+  describe('free v-model', () => {
+    it('opens every listed item', () => {
+      const wrapper = mount(BAccordion, {
+        props: {free: true, modelValue: ['a', 'c']},
+        slots: {default: () => items()},
+      })
+      expect(isOpen(wrapper, 'a')).toBe(true)
+      expect(isOpen(wrapper, 'b')).toBe(false)
+      expect(isOpen(wrapper, 'c')).toBe(true)
     })
-    await wrapper.setData({index: 1})
-    expect(wrapper.vm.modelValue).toEqual('2')
-  })
 
-  it('free mode setting index out of bounds resets to undefined', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: true},
+    it('native toggles add and remove ids', async () => {
+      const wrapper = mount(BAccordion, {
+        props: {free: true, modelValue: ['a']},
+        slots: {default: () => items()},
+      })
+      await nativeToggle(wrapper.get('#b').element, true)
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([['a', 'b']])
     })
-    await wrapper.setData({index: 99})
-    await nextTick()
-    await nextTick()
-    expect(wrapper.vm.index).toEqual(undefined)
-  })
 
-  it('free mode setting modelValue to unknown id resets to undefined', async () => {
-    const wrapper = await mount(complexAccordion, {
-      props: {free: true},
+    it('removing the last id clears the model', async () => {
+      const wrapper = mount(BAccordion, {
+        props: {free: true, modelValue: ['a']},
+        slots: {default: () => items()},
+      })
+      await nativeToggle(wrapper.get('#a').element, false)
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([undefined])
     })
-    await wrapper.setData({modelValue: ['unknown']})
-    await nextTick()
-    await nextTick()
-    expect(wrapper.vm.modelValue).toEqual(undefined)
-  })
 
-  const threeItemAccordion = {
-    template: `
-    <BAccordion v-model="modelValue" v-model:index="index" :free="free">
-      <BAccordionItem id="a">A</BAccordionItem>
-      <BAccordionItem id="b">B</BAccordionItem>
-      <BAccordionItem id="c">C</BAccordionItem>
-    </BAccordion>
-    `,
-    data() {
-      return {
-        index: undefined,
-        modelValue: undefined,
-      }
-    },
-    props: {
-      free: {
-        type: Boolean,
-        default: false,
-      },
-    },
-    components: {
-      BAccordion,
-      BAccordionItem,
-    },
-  }
-
-  it('renders three accordion items', async () => {
-    const wrapper = await mount(threeItemAccordion)
-    const items = wrapper.findAllComponents({name: 'b-accordion-item'})
-    expect(items).toHaveLength(3)
-  })
-
-  it('non-free mode with three items only one is open at a time', async () => {
-    const wrapper = await mount(threeItemAccordion, {
-      props: {free: false},
+    it('switching free on wraps the id in an array', async () => {
+      const wrapper = mount(BAccordion, {props: {modelValue: 'a'}, slots: {default: () => items()}})
+      await wrapper.setProps({free: true})
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([['a']])
     })
-    const buttons = wrapper.findAll('button')
 
-    await buttons[0].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual('a')
-    expect(wrapper.vm.index).toEqual(0)
-
-    await buttons[2].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual('c')
-    expect(wrapper.vm.index).toEqual(2)
-
-    await buttons[1].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual('b')
-    expect(wrapper.vm.index).toEqual(1)
-  })
-
-  it('free mode with three items allows multiple open', async () => {
-    const wrapper = await mount(threeItemAccordion, {
-      props: {free: true},
+    it('switching free off keeps the first id', async () => {
+      const wrapper = mount(BAccordion, {
+        props: {free: true, modelValue: ['b', 'c']},
+        slots: {default: () => items()},
+      })
+      await wrapper.setProps({free: false})
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['b'])
     })
-    const buttons = wrapper.findAll('button')
-
-    await buttons[0].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual(['a'])
-
-    await buttons[1].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual(['a', 'b'])
-
-    await buttons[2].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual(['a', 'b', 'c'])
-    expect(wrapper.vm.index).toEqual([0, 1, 2])
   })
 
-  it('free mode closing middle item removes it from array', async () => {
-    const wrapper = await mount(threeItemAccordion, {
-      props: {free: true},
+  describe('lazy', () => {
+    it('lazy is inherited by items', async () => {
+      const wrapper = mount(BAccordion, {props: {lazy: true}, slots: {default: () => items()}})
+      expect(wrapper.get('#a .accordion-body').text()).toBe('')
+      await nativeToggle(wrapper.get('#a').element, true)
+      expect(wrapper.get('#a .accordion-body').text()).toBe('body a')
     })
-    const buttons = wrapper.findAll('button')
-
-    await buttons[0].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    await buttons[1].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    await buttons[2].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual(['a', 'b', 'c'])
-
-    await buttons[1].trigger('click')
-    await new Promise((resolve) => setTimeout(resolve, 30))
-    expect(wrapper.vm.modelValue).toEqual(['a', 'c'])
-    expect(wrapper.vm.index).toEqual([0, 2])
   })
 
-  it('index as array in free mode updates modelValue correctly', async () => {
-    const wrapper = await mount(threeItemAccordion, {
-      props: {free: true},
+  describe('ssr', () => {
+    it('renders exactly one open item for an exclusive model', async () => {
+      const html = await renderToString(
+        h(BAccordion, {id: 'acc', modelValue: 'b'}, {default: () => items()})
+      )
+      expect(html.match(/<details[^>]*\sopen/g)).toHaveLength(1)
+      expect(html).toMatch(/<details[^>]*id="b"[^>]*\sopen|<details[^>]*\sopen[^>]*id="b"/)
+      expect(html).toContain('name="acc"')
     })
-    await wrapper.setData({index: [0, 2]})
-    expect(wrapper.vm.modelValue).toEqual(['a', 'c'])
-  })
-
-  const initialModelAccordion = {
-    template: `
-    <BAccordion v-model="modelValue" v-model:index="index">
-      <BAccordionItem id="x">X</BAccordionItem>
-      <BAccordionItem id="y">Y</BAccordionItem>
-    </BAccordion>
-    `,
-    data() {
-      return {
-        index: undefined,
-        modelValue: 'x',
-      }
-    },
-    components: {
-      BAccordion,
-      BAccordionItem,
-    },
-  }
-
-  it('initial modelValue sets the correct index', async () => {
-    const wrapper = await mount(initialModelAccordion)
-    await nextTick()
-    expect(wrapper.vm.index).toEqual(0)
-  })
-
-  const initialIndexAccordion = {
-    template: `
-    <BAccordion v-model="modelValue" v-model:index="index">
-      <BAccordionItem id="x">X</BAccordionItem>
-      <BAccordionItem id="y">Y</BAccordionItem>
-    </BAccordion>
-    `,
-    data() {
-      return {
-        index: 1,
-        modelValue: undefined,
-      }
-    },
-    components: {
-      BAccordion,
-      BAccordionItem,
-    },
-  }
-
-  it('initial index sets the correct modelValue', async () => {
-    const wrapper = await mount(initialIndexAccordion)
-    await nextTick()
-    expect(wrapper.vm.modelValue).toEqual('y')
   })
 })
