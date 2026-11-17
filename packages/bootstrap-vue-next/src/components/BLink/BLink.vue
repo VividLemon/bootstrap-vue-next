@@ -26,7 +26,13 @@
   >
     <slot />
   </component>
-  <a v-else :href="nativeHref" v-bind="anchorAttrs" :class="anchorClasses" @click="clicked($event)">
+  <a
+    v-else
+    :href="props.disabled ? undefined : nativeHref"
+    v-bind="anchorAttrs"
+    :class="anchorClasses"
+    @click="clicked($event)"
+  >
     <slot />
   </a>
 </template>
@@ -58,6 +64,9 @@ import type {BLinkEmits, BLinkProps, BLinkSlots} from '../../types'
 //    slot; the anchor itself is ours. With one element in the slot it stays single-root.
 // 2. A component that is neither RouterLink nor NuxtLink: it gets `to` and renders itself.
 // 3. A plain anchor: no router, VitePress, external URLs, `href` only, and disabled links.
+//    A disabled link has no `href`, as Bootstrap recommends, so nothing can follow it. Preventing
+//    the click is not enough: VitePress handles link clicks in the capture phase on `window`,
+//    before this component's own listener runs.
 defineOptions({
   inheritAttrs: false,
 })
@@ -252,6 +261,9 @@ const anchorAttrs = computed(() => {
   const rest = Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class'))
   // An attribute the parent set stays unless this component has a value of its own for it
   return {
+    // Without `href` an anchor is not a link to assistive technology, and `aria-disabled` needs a
+    // role to apply to. A role the parent set (BButton's `button`) wins
+    ...(props.disabled && {role: 'link'}),
     ...rest,
     ...(props.target !== undefined && {target: props.target}),
     ...(computedRel.value !== undefined && {rel: computedRel.value}),

@@ -157,11 +157,13 @@ describe('link with vue-router', () => {
     expect(router.currentRoute.value.path).toBe('/')
   })
 
-  it('a disabled link is a plain anchor that keeps its resolved href and does not navigate', async () => {
+  it('a disabled link is a plain anchor without href that does not navigate', async () => {
     const wrapper = mountLink({to: {name: 'user', params: {id: '7'}}, disabled: true})
     expect(wrapper.findComponent(RouterLink).exists()).toBe(false)
-    expect(wrapper.attributes('href')).toBe('/users/7')
+    expect(wrapper.attributes('href')).toBeUndefined()
+    expect(wrapper.attributes('role')).toBe('link')
     expect(wrapper.attributes('aria-disabled')).toBe('true')
+    expect(wrapper.attributes('tabindex')).toBe('-1')
     await wrapper.trigger('click')
     await flushPromises()
     expect(router.currentRoute.value.path).toBe('/')
@@ -170,7 +172,11 @@ describe('link with vue-router', () => {
 
   it('switches between the router and the plain anchor when disabled changes', async () => {
     const wrapper = mountLink({to: '/about', disabled: true})
+    expect(wrapper.attributes('href')).toBeUndefined()
     await wrapper.setProps({disabled: false})
+    expect(wrapper.attributes('href')).toBe('/about')
+    expect(wrapper.attributes('role')).toBeUndefined()
+    expect(wrapper.attributes('aria-disabled')).toBeUndefined()
     expect(wrapper.findComponent(RouterLink).exists()).toBe(true)
     expect(wrapper.element.tagName).toBe('A')
     await wrapper.trigger('click')
@@ -450,6 +456,22 @@ describe('link without a router (plain anchor, also VitePress)', () => {
     expect(event.defaultPrevented).toBe(false)
     expect(wrapper.emitted('click')).toHaveLength(1)
     expectNoWarnings(warn)
+  })
+
+  it('a disabled link has no href, which VitePress and the browser cannot follow', () => {
+    // VitePress handles clicks in the capture phase on `window`, before BLink's own listener
+    // could prevent them, but it skips anchors without `href`
+    for (const props of [{to: '/guide/'}, {href: '/guide/'}, {}]) {
+      const wrapper = mount(BLink, {props: {...props, disabled: true}})
+      expect(wrapper.attributes('href')).toBeUndefined()
+      expect(wrapper.attributes('role')).toBe('link')
+      expect(wrapper.attributes('aria-disabled')).toBe('true')
+    }
+  })
+
+  it('keeps a role set by the parent on a disabled link', () => {
+    const wrapper = mount(BLink, {props: {href: '/x', disabled: true}, attrs: {role: 'button'}})
+    expect(wrapper.attributes('role')).toBe('button')
   })
 
   it('prevents the click of a disabled link, so nothing navigates', () => {
