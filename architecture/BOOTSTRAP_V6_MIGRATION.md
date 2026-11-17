@@ -20,7 +20,7 @@ It is the single source of truth for the migration: implementation work follows 
 | Phase 2b: component batches                                                                                        | Wave 1 merged (#165–#168); wave 2 not started — see [Implementation progress](#implementation-progress)                                                                                                     |
 | Phase 3: migration docs                                                                                            | Not started                                                                                                                                                                                                 |
 | Deferred components                                                                                                | Plans decided and merged ([#169](https://github.com/VividLemon/bootstrap-vue-next/pull/169), `BOOTSTRAP_V6_NEW_COMPONENTS.md`); implementation not started. See [Deferred components](#deferred-components) |
-| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md` |
+| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`                                                                         |
 | Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source)                                                                                                                          |
 | Post-migration (maybe): public `useTable` composable                                                               | Undecided — see `USE_TABLE_COMPOSABLE.md`                                                                                                                                                                   |
 
@@ -341,6 +341,10 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 - **Now:** `tag*` / `addButton*` colors → `tagColor` / `addButtonColor`.
 - **Pending:** v6 Chips markup; part attrs (`inputClass`, `tagClass` → `*Attrs`).
+
+### BStepper (new)
+
+- **Done (G5, `bootstrap-v6-g5-stepper`):** new `BStepper` / `BStepperItem` on v6 `.stepper` markup (see `BOOTSTRAP_V6_DISPLAY.md`).
 
 ### Other new-in-v6 counterparts
 

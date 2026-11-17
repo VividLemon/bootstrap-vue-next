@@ -138,6 +138,14 @@ export type BAccordionSlots = {
   default?: (props: Record<string, never>) => any
 }
 
+export type BStepperSlots = {
+  default?: (props: Record<string, never>) => any
+}
+
+export type BStepperItemSlots = {
+  default?: (props: Record<string, never>) => any
+}
+
 export type BAvatarSlots = {
   badge?: (props: Record<string, never>) => any
 

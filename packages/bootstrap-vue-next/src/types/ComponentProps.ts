@@ -1042,6 +1042,24 @@ export interface BContainerProps {
   tag?: string
 }
 
+export interface BStepperProps {
+  horizontal?: boolean | Breakpoint
+  modelValue?: number
+  overflow?: boolean
+  tag?: string
+}
+
+export interface BStepperItemProps {
+  active?: boolean
+  button?: boolean
+  color?: Pick<ColorExtendables, 'theme'> | null
+  current?: boolean
+  disabled?: boolean
+  href?: string
+  tag?: string
+  to?: RouteLocationRaw
+}
+
 export interface BSpinnerProps {
   label?: string
   role?: string
