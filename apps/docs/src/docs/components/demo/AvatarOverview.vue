@@ -1,33 +1,28 @@
 <template>
   <!-- #region template -->
   <p>Using stand-alone:</p>
-  <div class="d-flex mb-4" style="column-gap: 1%">
-    <BAvatar />
+  <div class="d-flex gap-2 mb-4">
+    <BAvatar text="JC" />
     <BAvatar :color="{ theme: 'primary' }" text="BV" />
-    <BAvatar :color="{ theme: 'info' }" src="https://picsum.photos/300/300" />
-    <BAvatar :color="{ theme: 'success' }" />
+    <BAvatar src="https://picsum.photos/300/300" alt="Super Kitty" />
+    <BAvatar :color="{ theme: 'success' }" variant="subtle" text="AG" status="online" />
   </div>
   <p>Using in components (list group) example:</p>
   <BListGroup style="max-width: 300px">
-    <BListGroupItem class="d-flex align-items-center">
-      <BAvatar class="mx-3" />
+    <BListGroupItem class="d-flex align-items-center gap-3">
+      <BAvatar text="JC" />
       <span class="me-auto">J. Circlehead</span>
       <BBadge>5</BBadge>
     </BListGroupItem>
-    <BListGroupItem class="d-flex align-items-center">
-      <BAvatar :color="{ theme: 'primary' }" text="BV" class="mx-3" />
+    <BListGroupItem class="d-flex align-items-center gap-3">
+      <BAvatar :color="{ theme: 'primary' }" text="BV" />
       <span class="me-auto">BootstrapVueNext</span>
       <BBadge>12</BBadge>
     </BListGroupItem>
-    <BListGroupItem class="d-flex align-items-center">
-      <BAvatar :color="{ theme: 'info' }" src="https://picsum.photos/300/300" class="mx-3" />
+    <BListGroupItem class="d-flex align-items-center gap-3">
+      <BAvatar src="https://picsum.photos/300/300" alt="Super Kitty" />
       <span class="me-auto">Super Kitty</span>
       <BBadge>9</BBadge>
-    </BListGroupItem>
-    <BListGroupItem class="d-flex align-items-center">
-      <BAvatar :color="{ theme: 'success' }" class="mx-3" />
-      <span class="me-auto">ACME group</span>
-      <BBadge>7</BBadge>
     </BListGroupItem>
   </BListGroup>
   <!-- #endregion template -->

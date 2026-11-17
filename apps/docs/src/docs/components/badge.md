@@ -24,8 +24,7 @@ text.
 ### Positioned
 
 Use the `placement` property to position it relative to a parent [link](/docs/components/link) or [button](/docs/components/button).
-Note that for links of buttons, you haveto manually apply the `postition-relative` class to the badge's parent,
-unlike with [`Avatars`](/docs/components/avatar) where that is hanlded automatically.
+Note that you have to apply the `position-relative` class to the badge's parent.
 
 <<< DEMO ./demo/BadgePositioned.vue#template{vue-html}
 

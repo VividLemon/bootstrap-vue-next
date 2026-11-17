@@ -4,15 +4,8 @@ import type {AttrsValue} from '../types/AnyValuedAttributes'
 import type {Numberish, ValidationState} from '../types/CommonTypes'
 import type {LiteralUnion} from '../types/LiteralUnion'
 import type {Size} from '../types/Size'
-import type {RadiusElementExtendables} from '../types/RadiusElement'
-import type {
-  BgColor,
-  ButtonVariant,
-  ColorExtendables,
-  FgColor,
-  MaybeArray,
-  ThemeProp,
-} from '../types/ColorTypes'
+import type {AvatarSize} from '../types/AvatarTypes'
+import type {ButtonVariant, ColorExtendables} from '../types/ColorTypes'
 import type {CheckboxValue} from '../types/CheckboxTypes'
 import type {RadioValue} from '../types/RadioTypes'
 import type {BreadcrumbItemRaw} from '../types/BreadcrumbTypes'
@@ -72,13 +65,8 @@ export const listGroupInjectionKey: InjectionKey<{
 
 // BAvatarGroup
 export const avatarGroupInjectionKey: InjectionKey<{
-  overlapScale: Readonly<Ref<number>>
-  size: Readonly<Ref<LiteralUnion<Size, Numberish> | undefined>>
-  square: Readonly<Ref<boolean>>
-  roundedProps: Readonly<Ref<RadiusElementExtendables>>
-  theme: Readonly<Ref<ThemeProp | null>>
-  bg: Readonly<Ref<MaybeArray<BgColor> | null>>
-  fg: Readonly<Ref<MaybeArray<FgColor> | null>>
+  overlap: Readonly<Ref<number>>
+  size: Readonly<Ref<LiteralUnion<AvatarSize, Numberish> | undefined>>
 }> = createBvnInjectionKey('avatarGroup')
 
 // BAccordion

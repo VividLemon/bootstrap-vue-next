@@ -7,16 +7,14 @@ import {h} from 'vue'
 describe('avatar-group', () => {
   enableAutoUnmount(afterEach)
 
-  // Helper to get inner div
-  const getInnerDiv = (wrapper: ReturnType<typeof mount>) => wrapper.find('.b-avatar-group-inner')
-
   describe('rendering', () => {
-    it('has static class b-avatar-group', () => {
+    it('has static class avatar-stack', () => {
       const wrapper = mount(BAvatarGroup)
-      expect(wrapper.classes()).toContain('b-avatar-group')
+      expect(wrapper.classes()).toContain('avatar-stack')
+      expect(wrapper.html()).not.toContain('b-avatar')
     })
 
-    it('has role group attribute', () => {
+    it('has role group', () => {
       const wrapper = mount(BAvatarGroup)
       expect(wrapper.attributes('role')).toBe('group')
     })
@@ -27,515 +25,109 @@ describe('avatar-group', () => {
     })
 
     it('tag changes with prop tag', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {tag: 'span'},
-      })
+      const wrapper = mount(BAvatarGroup, {props: {tag: 'span'}})
       expect(wrapper.element.tagName).toBe('SPAN')
     })
 
-    it('tag is reactive', async () => {
+    it('renders avatars as direct children (no inner wrapper)', () => {
       const wrapper = mount(BAvatarGroup, {
-        props: {tag: 'div'},
+        slots: {default: () => [h(BAvatar, {text: 'A'}), h(BAvatar, {text: 'B'})]},
       })
-      expect(wrapper.element.tagName).toBe('DIV')
-      await wrapper.setProps({tag: 'section'})
-      expect(wrapper.element.tagName).toBe('SECTION')
+      const children = Array.from(wrapper.element.children)
+      expect(children).toHaveLength(2)
+      expect(children.every((c) => c.classList.contains('avatar'))).toBe(true)
     })
 
-    it('has inner div with class b-avatar-group-inner', () => {
-      const wrapper = mount(BAvatarGroup)
-      const inner = getInnerDiv(wrapper)
-      expect(inner.exists()).toBe(true)
-      expect(inner.element.tagName).toBe('DIV')
-    })
-
-    it('inner div persists when tag changes', async () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {tag: 'div'},
-      })
-      await wrapper.setProps({tag: 'span'})
-      const inner = getInnerDiv(wrapper)
-      expect(inner.exists()).toBe(true)
-      expect(inner.classes()).toContain('b-avatar-group-inner')
-    })
-  })
-
-  describe('slot', () => {
-    it('renders default slot text', () => {
-      const wrapper = mount(BAvatarGroup, {
-        slots: {default: 'foobar'},
-      })
-      const inner = getInnerDiv(wrapper)
-      expect(inner.text()).toBe('foobar')
-    })
-
-    it('renders default slot HTML', () => {
-      const wrapper = mount(BAvatarGroup, {
-        slots: {default: '<span class="custom">hello</span>'},
-      })
-      const inner = getInnerDiv(wrapper)
-      const span = inner.find('.custom')
-      expect(span.exists()).toBe(true)
-      expect(span.text()).toBe('hello')
-    })
-
-    it('renders empty when no slot content', () => {
-      const wrapper = mount(BAvatarGroup)
-      const inner = getInnerDiv(wrapper)
-      expect(inner.text()).toBe('')
-    })
-
-    it('renders multiple BAvatar children', () => {
-      const wrapper = mount(BAvatarGroup, {
-        slots: {
-          default: () => [h(BAvatar), h(BAvatar), h(BAvatar)],
-        },
-      })
-      const avatars = wrapper.findAllComponents(BAvatar)
-      expect(avatars).toHaveLength(3)
-    })
-  })
-
-  describe('overlap', () => {
-    it('defaults to 0.3', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {size: '40px'},
-      })
-      const inner = getInnerDiv(wrapper)
-      // overlapScale = 0.3 / 2 = 0.15
-      expect(inner.attributes('style')).toContain('calc(40px * 0.15)')
-    })
-
-    it('applies custom overlap value', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {overlap: 0.5, size: '40px'},
-      })
-      const inner = getInnerDiv(wrapper)
-      // overlapScale = 0.5 / 2 = 0.25
-      expect(inner.attributes('style')).toContain('calc(40px * 0.25)')
-    })
-
-    it('clamps overlap to minimum 0', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {overlap: -0.5, size: '40px'},
-      })
-      const inner = getInnerDiv(wrapper)
-      // overlapScale = Math.min(Math.max(-0.5, 0), 1) / 2 = 0
-      expect(inner.attributes('style')).toContain('calc(40px * 0)')
-    })
-
-    it('clamps overlap to maximum 1', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {overlap: 2, size: '40px'},
-      })
-      const inner = getInnerDiv(wrapper)
-      // overlapScale = Math.min(Math.max(2, 0), 1) / 2 = 0.5
-      expect(inner.attributes('style')).toContain('calc(40px * 0.5)')
-    })
-
-    it('has no padding style when size is undefined', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {overlap: 0.5},
-      })
-      const inner = getInnerDiv(wrapper)
-      expect(inner.attributes('style')).toBeUndefined()
-    })
-
-    it('overlap is reactive', async () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {overlap: 0.4, size: '40px'},
-      })
-      const inner = getInnerDiv(wrapper)
-      // overlapScale = 0.4 / 2 = 0.2
-      expect(inner.attributes('style')).toContain('calc(40px * 0.2)')
-      await wrapper.setProps({overlap: 0.6})
-      // overlapScale = 0.6 / 2 = 0.3
-      expect(inner.attributes('style')).toContain('calc(40px * 0.3)')
-    })
-
-    it('applies paddingLeft and paddingRight', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {overlap: 0.4, size: '40px'},
-      })
-      const inner = getInnerDiv(wrapper)
-      const style = inner.attributes('style')
-      expect(style).toContain('padding-left')
-      expect(style).toContain('padding-right')
-    })
-
-    it('accepts string overlap value', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {overlap: '0.6', size: '40px'},
-      })
-      const inner = getInnerDiv(wrapper)
-      // overlapScale = 0.6 / 2 = 0.3
-      expect(inner.attributes('style')).toContain('calc(40px * 0.3)')
+    it('passes attrs such as aria-label to the root', () => {
+      const wrapper = mount(BAvatarGroup, {attrs: {'aria-label': 'Team'}})
+      expect(wrapper.attributes('aria-label')).toBe('Team')
     })
   })
 
   describe('size', () => {
-    it('size is undefined by default', () => {
-      const wrapper = mount(BAvatarGroup)
-      const inner = getInnerDiv(wrapper)
-      expect(inner.attributes('style')).toBeUndefined()
+    it.each(['xs', 'sm', 'lg', 'xl'] as const)('size %s adds avatar-stack-%s', (size) => {
+      const wrapper = mount(BAvatarGroup, {props: {size}})
+      expect(wrapper.classes()).toContain(`avatar-stack-${size}`)
     })
 
-    it('applies padding style with numeric size', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {size: 50},
-      })
-      const inner = getInnerDiv(wrapper)
-      // Default overlap = 0.3, overlapScale = 0.15
-      expect(inner.attributes('style')).toContain('calc(50px * 0.15)')
+    it('size md adds no stack size class', () => {
+      const wrapper = mount(BAvatarGroup, {props: {size: 'md'}})
+      expect(wrapper.classes()).toEqual(['avatar-stack'])
     })
 
-    it('applies padding style with px size', () => {
+    it('custom size adds no class and is set on each child avatar', () => {
       const wrapper = mount(BAvatarGroup, {
-        props: {size: '60px'},
+        props: {size: '5rem'},
+        slots: {default: () => [h(BAvatar, {text: 'A', size: 'sm'})]},
       })
-      const inner = getInnerDiv(wrapper)
-      expect(inner.attributes('style')).toContain('calc(60px * 0.15)')
+      expect(wrapper.classes()).toEqual(['avatar-stack'])
+      const avatar = wrapper.get('.avatar')
+      expect(avatar.attributes('style')).toContain('--bs-avatar-size: 5rem')
+      expect(avatar.classes()).not.toContain('avatar-sm')
     })
 
-    it('applies padding style with em size', () => {
+    it('numeric size is converted to px on children', () => {
       const wrapper = mount(BAvatarGroup, {
-        props: {size: '3em'},
+        props: {size: 40},
+        slots: {default: () => h(BAvatar)},
       })
-      const inner = getInnerDiv(wrapper)
-      expect(inner.attributes('style')).toContain('calc(3em * 0.15)')
+      expect(wrapper.get('.avatar').attributes('style')).toContain('--bs-avatar-size: 40px')
     })
 
-    it('applies padding style with rem size', () => {
+    it('literal group size wins over the child size', () => {
       const wrapper = mount(BAvatarGroup, {
-        props: {size: '3rem'},
+        props: {size: 'lg'},
+        slots: {default: () => h(BAvatar, {size: 'sm'})},
       })
-      const inner = getInnerDiv(wrapper)
-      expect(inner.attributes('style')).toContain('calc(3rem * 0.15)')
+      const avatar = wrapper.get('.avatar')
+      expect(avatar.classes()).toContain('avatar-lg')
+      expect(avatar.classes()).not.toContain('avatar-sm')
     })
 
-    it('size is reactive', async () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {size: '40px'},
-      })
-      const inner = getInnerDiv(wrapper)
-      expect(inner.attributes('style')).toContain('calc(40px * 0.15)')
-      await wrapper.setProps({size: '80px'})
-      expect(inner.attributes('style')).toContain('calc(80px * 0.15)')
-    })
-
-    it('handles string numeric size', () => {
-      const wrapper = mount(BAvatarGroup, {
-        props: {size: '100'},
-      })
-      const inner = getInnerDiv(wrapper)
-      expect(inner.attributes('style')).toContain('calc(100px * 0.15)')
+    it('child keeps its own size when the group has none', () => {
+      const wrapper = mount(BAvatarGroup, {slots: {default: () => h(BAvatar, {size: 'xl'})}})
+      expect(wrapper.get('.avatar').classes()).toContain('avatar-xl')
     })
   })
 
-  describe('provide/inject integration with BAvatar children', () => {
-    describe('size', () => {
-      it('child BAvatar inherits size from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {size: '60px'},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.attributes('style')).toContain('width: 60px')
-        expect(avatar.attributes('style')).toContain('height: 60px')
-      })
-
-      it('group size overrides child BAvatar size', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {size: '80px'},
-          slots: {
-            default: () => h(BAvatar, {size: '30px'}),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.attributes('style')).toContain('width: 80px')
-        expect(avatar.attributes('style')).toContain('height: 80px')
-      })
-
-      it('child BAvatar uses named size from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {size: 'lg'},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('b-avatar-lg')
-      })
-
-      it('child BAvatar uses sm size from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {size: 'sm'},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('b-avatar-sm')
-      })
+  describe('overlap', () => {
+    it('default overlap sets no inline spacing on children', () => {
+      const wrapper = mount(BAvatarGroup, {slots: {default: () => h(BAvatar)}})
+      expect(wrapper.get('.avatar').attributes('style')).toBeUndefined()
     })
 
-    describe('square', () => {
-      it('child BAvatar inherits square from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {square: true},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('rounded-0')
+    it('custom overlap sets --bs-avatar-stack-spacing on children', () => {
+      const wrapper = mount(BAvatarGroup, {
+        props: {overlap: 0.5},
+        slots: {default: () => h(BAvatar)},
       })
-
-      it('child BAvatar is not square when group square is false', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {square: false},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).not.toContain('rounded-0')
-      })
+      expect(wrapper.get('.avatar').attributes('style')).toContain(
+        '--bs-avatar-stack-spacing: -0.5'
+      )
     })
 
-    describe('theme', () => {
-      it('child BAvatar inherits theme from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {color: {theme: 'primary'}},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('theme-primary')
+    it('string overlap is converted to a number', () => {
+      const wrapper = mount(BAvatarGroup, {
+        props: {overlap: '0'},
+        slots: {default: () => h(BAvatar)},
       })
-
-      it('group theme overrides child BAvatar theme', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {color: {theme: 'danger'}},
-          slots: {
-            default: () => h(BAvatar, {theme: 'success'}),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('theme-danger')
-        expect(avatar.classes()).not.toContain('theme-success')
-      })
+      expect(wrapper.get('.avatar').attributes('style')).toContain('--bs-avatar-stack-spacing: 0')
     })
 
-    describe('bg', () => {
-      it('child BAvatar inherits bg from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {color: {bg: 'primary', theme: null}},
-          slots: {
-            default: () => h(BAvatar, {theme: null}),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('bg-primary')
+    it('overlap is reactive', async () => {
+      const wrapper = mount(BAvatarGroup, {
+        props: {overlap: 0.5},
+        slots: {default: () => h(BAvatar)},
       })
+      await wrapper.setProps({overlap: 0.1})
+      expect(wrapper.get('.avatar').attributes('style')).toContain(
+        '--bs-avatar-stack-spacing: -0.1'
+      )
     })
 
-    describe('fg', () => {
-      it('child BAvatar inherits fg from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {color: {fg: 'danger', theme: null}},
-          slots: {
-            default: () => h(BAvatar, {theme: null}),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('fg-danger')
-      })
-    })
-
-    describe('rounded', () => {
-      it('child BAvatar inherits rounded from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {rounded: 'pill'},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('rounded-pill')
-      })
-
-      it('group rounded overrides child BAvatar rounded', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {rounded: 'pill'},
-          slots: {
-            default: () => h(BAvatar, {rounded: 'circle'}),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('rounded-pill')
-        expect(avatar.classes()).not.toContain('rounded-circle')
-      })
-
-      it('child BAvatar inherits roundedTop from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {roundedSides: {top: 'pill'}},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('rounded-top-pill')
-      })
-
-      it('child BAvatar inherits roundedBottom from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {roundedSides: {bottom: 'pill'}},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('rounded-bottom-pill')
-      })
-
-      it('child BAvatar inherits roundedStart from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {roundedSides: {start: 'pill'}},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('rounded-start-pill')
-      })
-
-      it('child BAvatar inherits roundedEnd from group', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {roundedSides: {end: 'pill'}},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('rounded-end-pill')
-      })
-    })
-
-    describe('overlap margin on children', () => {
-      it('child BAvatar has negative margin styles from group overlap', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {size: '40px', overlap: 0.4},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        const style = avatar.attributes('style')
-        // overlapScale = 0.4 / 2 = 0.2
-        expect(style).toContain('calc(40px * -0.2)')
-      })
-
-      it('child BAvatar has no margin when overlap is 0', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {size: '40px', overlap: 0},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        const style = avatar.attributes('style')
-        // overlapScale = 0 / 2 = 0, so no margin style
-        expect(style).not.toContain('margin-left')
-        expect(style).not.toContain('margin-right')
-      })
-
-      it('multiple BAvatar children all get overlap margins', () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {size: '40px', overlap: 0.4},
-          slots: {
-            default: () => [h(BAvatar), h(BAvatar), h(BAvatar)],
-          },
-        })
-        const avatars = wrapper.findAllComponents(BAvatar)
-        expect(avatars).toHaveLength(3)
-        for (const avatar of avatars) {
-          expect(avatar.attributes('style')).toContain('calc(40px * -0.2)')
-        }
-      })
-    })
-
-    describe('prop reactivity through injection', () => {
-      it('child BAvatar updates when group size changes', async () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {size: '40px'},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.attributes('style')).toContain('width: 40px')
-        await wrapper.setProps({size: '80px'})
-        expect(avatar.attributes('style')).toContain('width: 80px')
-      })
-
-      it('child BAvatar updates when group theme changes', async () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {color: {theme: 'primary'}},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('theme-primary')
-        await wrapper.setProps({color: {theme: 'danger'}})
-        expect(avatar.classes()).toContain('theme-danger')
-        expect(avatar.classes()).not.toContain('theme-primary')
-      })
-
-      it('child BAvatar updates when group square changes', async () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {square: false},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).not.toContain('rounded-0')
-        await wrapper.setProps({square: true})
-        expect(avatar.classes()).toContain('rounded-0')
-      })
-
-      it('child BAvatar updates when group rounded changes', async () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {rounded: 'circle'},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.classes()).toContain('rounded-circle')
-        await wrapper.setProps({rounded: 'pill'})
-        expect(avatar.classes()).toContain('rounded-pill')
-        expect(avatar.classes()).not.toContain('rounded-circle')
-      })
-
-      it('child BAvatar overlap margin updates when group overlap changes', async () => {
-        const wrapper = mount(BAvatarGroup, {
-          props: {size: '40px', overlap: 0.4},
-          slots: {
-            default: () => h(BAvatar),
-          },
-        })
-        const avatar = wrapper.findComponent(BAvatar)
-        expect(avatar.attributes('style')).toContain('calc(40px * -0.2)')
-        await wrapper.setProps({overlap: 0.8})
-        // overlapScale = 0.8 / 2 = 0.4
-        expect(avatar.attributes('style')).toContain('calc(40px * -0.4)')
-      })
+    it('avatars outside a group get no spacing', () => {
+      const wrapper = mount(BAvatar)
+      expect(wrapper.attributes('style')).toBeUndefined()
     })
   })
 })

@@ -407,8 +407,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### BAvatar / BAvatarGroup
 
-- **Now:** `badge*` colors → `badgeColor`.
-- **Pending:** v6 Avatar markup and classes; library `_avatar.scss` vs v6 avatar CSS.
+- **Done (G5, `bootstrap-v6-g5-avatar`):** v6 `.avatar` / `.avatar-img` / `.avatar-status` / `.avatar-stack` markup; `_avatar.scss` deleted; `variant: 'subtle'`, `status` / `statusLabel`, `xs`–`xl` sizes added; link, button, badge, rounding and group color props removed (see `BOOTSTRAP_V6_DISPLAY.md`).
 
 ### BFormTags → Chips
 
