@@ -590,4 +590,19 @@ describe('card', () => {
     const $body = wrapper.getComponent(BCardBody)
     expect($body.props('overlay')).toBe(true)
   })
+
+  it('does not have class hover-lift by default', () => {
+    const wrapper = mount(BCard)
+    expect(wrapper.classes()).not.toContain('hover-lift')
+  })
+
+  it('has class hover-lift when hoverLift', () => {
+    const wrapper = mount(BCard, {props: {hoverLift: true}})
+    expect(wrapper.classes()).toEqual(['card', 'hover-lift'])
+  })
+
+  it('keeps user classes with hoverLift', () => {
+    const wrapper = mount(BCard, {props: {hoverLift: true}, attrs: {class: 'h-100'}})
+    expect(wrapper.classes()).toEqual(['card', 'hover-lift', 'h-100'])
+  })
 })

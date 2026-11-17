@@ -254,7 +254,7 @@ const globalData = inject(appInfoKey, {
   githubDocsDirectory: '',
 })
 
-const isLargeScreen = useMediaQuery('(min-width: 992px)', { ssrWidth: 1024 })
+const isLargeScreen = useMediaQuery('(min-width: 1024px)', { ssrWidth: 1024 })
 const sidebar = ref(false)
 const onThisPage = ref(false)
 
@@ -739,7 +739,7 @@ watch(
 }
 
 // Sidebar onscreen.
-@media (min-width: 992px) {
+@media (min-width: 1024px) {
   .bd-layout {
     display: grid !important;
     grid-template-areas: 'sidebar main';
@@ -805,7 +805,7 @@ watch(
 // Sidebar width.
 .bd-sidebar,
 .otp-sidebar {
-  @media (min-width: 992px) {
+  @media (min-width: 1024px) {
     min-width: 12.5rem;
   }
 
@@ -813,7 +813,7 @@ watch(
   .offcanvas-lg.offcanvas-start,
   .offcanvas.offcanvas-end,
   .offcanvas-lg.offcanvas-end {
-    @media (min-width: 992px) {
+    @media (min-width: 1024px) {
       width: 12.5rem !important;
     }
 
@@ -873,7 +873,7 @@ watch(
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1024px) {
   .offcanvas-header.offcanvas-hidden-width .btn-close {
     display: none !important;
   }
