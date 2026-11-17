@@ -72,6 +72,7 @@ export const componentsWithExternalPath = {
   BFormSelectOption: '/components/BFormSelect',
   BFormSelectOptionGroup: '/components/BFormSelect',
   BFormSpinbutton: '/components/BFormSpinbutton',
+  BFormStrength: '/components/BFormStrength',
   BFormTag: '/components/BFormTags',
   BFormTags: '/components/BFormTags',
   BFormText: '/components/BForm',
@@ -146,6 +147,7 @@ export const composablesWithExternalPath = {
   useBootstrapColorMode: '/composables/useBootstrapColorMode',
   useBvColorMode: '/composables/useBootstrapColorMode',
   useModal: '/composables/useModal',
+  usePasswordStrength: '/composables/usePasswordStrength',
   useSharedScrollLock: '/composables/useSharedScrollLock',
   useScrollspy: '/composables/useScrollspy',
   useToast: '/composables/useToast',
@@ -225,6 +227,7 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BFormSelectOption: ComponentProps.BFormSelectOptionProps<BFormSelectOption>
   BFormSelectOptionGroup: ComponentProps.BFormSelectOptionGroupProps
   BFormSpinbutton: ComponentProps.BFormSpinbuttonProps
+  BFormStrength: ComponentProps.BFormStrengthProps
   BFormTag: ComponentProps.BFormTagProps
   BFormTags: ComponentProps.BFormTagsProps
   BFormTextarea: ComponentProps.BFormTextareaProps
