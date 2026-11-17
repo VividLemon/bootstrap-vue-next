@@ -1,70 +1,52 @@
 <template>
-  <BContainer>
-    <BRow>
-      <BCol :cols="{ xs: 4 }">
-        <BNav
-          ref="navTarget"
-          pills
-          vertical
+  <BRow>
+    <BCol :cols="{ xs: 4 }">
+      <BNav ref="nav" pills vertical>
+        <BNavItem
+          v-for="section in sections"
+          :key="section.id"
+          :href="`#${section.id}`"
+          :active="current === section.id"
+          :link-attrs="{ 'aria-current': current === section.id ? 'location' : undefined }"
         >
-          <BNavItem
-            href="#section1"
-            @click="scrollIntoView"
-            >Section 1</BNavItem
-          >
-          <BNavItem
-            href="#section2"
-            @click="scrollIntoView"
-            >Section 2</BNavItem
-          >
-          <BNavItem
-            href="#section3"
-            @click="scrollIntoView"
-            >Section 3</BNavItem
-          >
-        </BNav>
-      </BCol>
-      <BCol :cols="{ xs: 8 }">
-        <div
-          ref="scrollContent"
-          style="height: 300px; overflow-y: auto; border: 1px solid #dee2e6; padding: 1rem"
-        >
-          <h4 id="section1">Section 1</h4>
-          <p
-            v-for="i in 4"
-            :key="`s1-${i}`"
-          >
-            {{ loremText }}
-          </p>
-          <h4 id="section2">Section 2</h4>
-          <p
-            v-for="i in 4"
-            :key="`s2-${i}`"
-          >
-            {{ loremText }}
-          </p>
-          <h4 id="section3">Section 3</h4>
-          <p
-            v-for="i in 4"
-            :key="`s3-${i}`"
-          >
-            {{ loremText }}
-          </p>
-        </div>
-      </BCol>
-    </BRow>
-  </BContainer>
+          {{ section.title }}
+        </BNavItem>
+      </BNav>
+    </BCol>
+    <BCol :cols="{ xs: 8 }">
+      <div
+        ref="content"
+        class="border rounded p-3"
+        style="height: 300px; overflow-y: auto"
+        tabindex="0"
+      >
+        <template v-for="section in sections" :key="section.id">
+          <h4 :id="section.id">{{ section.title }}</h4>
+          <p v-for="i in 4" :key="i">{{ loremText }}</p>
+        </template>
+      </div>
+    </BCol>
+  </BRow>
+  <p class="mt-2">
+    Current: <strong>{{ current ?? 'none' }}</strong>
+  </p>
 </template>
 
 <script setup lang="ts">
-import {useTemplateRef} from 'vue'
-import {useScrollspy} from 'bootstrap-vue-next'
+import { useTemplateRef } from 'vue'
+import { useScrollspy } from 'bootstrap-vue-next/composables/useScrollspy'
 
 const loremText =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 
-const scrollContent = useTemplateRef('scrollContent')
-const navTarget = useTemplateRef('navTarget')
+const sections = [
+  { id: 'spy-basic-1', title: 'Section 1' },
+  { id: 'spy-basic-2', title: 'Section 2' },
+  { id: 'spy-basic-3', title: 'Section 3' },
+]
 
-const {scrollIntoView} = useScrollspy(scrollContent, navTarget)
+const content = useTemplateRef('content')
+const nav = useTemplateRef('nav')
+
+const { current } = useScrollspy(content, nav)
 </script>

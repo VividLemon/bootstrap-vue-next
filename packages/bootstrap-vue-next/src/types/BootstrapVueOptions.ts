@@ -137,7 +137,6 @@ export const componentNames = Object.freeze(
 export const directivesWithExternalPath = {
   vBColorMode: '/directives/BColorMode',
   vBPopover: '/directives/BPopover',
-  vBScrollspy: '/directives/BScrollspy',
   vBToggle: '/directives/BToggle',
   vBTooltip: '/directives/BTooltip',
 } as const satisfies Record<DirectiveType, string>
