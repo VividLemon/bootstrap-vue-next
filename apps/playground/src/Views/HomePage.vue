@@ -92,6 +92,7 @@ import TTable from '../components/Comps/TTable.vue'
 import TTableSimple from '../components/Comps/TTableSimple.vue'
 import TTabs from '../components/Comps/TTabs.vue'
 import TToast from '../components/Comps/TToast.vue'
+import TStepper from '../components/Comps/TStepper.vue'
 import TTooltip from '../components/Comps/TTooltip.vue'
 import {useLocalStorage} from '@vueuse/core'
 
@@ -133,6 +134,7 @@ const comps: {name: string; is: unknown; disabled?: true}[] = [
   {name: 'Pagination', is: TPagination},
   {name: 'Popover', is: TPopover},
   {name: 'Scrollspy', is: TScrollspy},
+  {name: 'Stepper', is: TStepper},
   {name: 'Table', is: TTable},
   {name: 'TableSimple', is: TTableSimple},
   {name: 'Tabs', is: TTabs},

@@ -70,6 +70,14 @@ export const listGroupInjectionKey: InjectionKey<{
   numbered: Readonly<Ref<boolean>>
 }> = createBvnInjectionKey('listGroup')
 
+// BStepper
+export const stepperInjectionKey: InjectionKey<{
+  step: Readonly<Ref<number | undefined>>
+  register: (key: symbol, el: Readonly<Ref<HTMLElement | null>>) => void
+  unregister: (key: symbol) => void
+  indexOf: (key: symbol) => number
+}> = createBvnInjectionKey('stepper')
+
 // BAvatarGroup
 export const avatarGroupInjectionKey: InjectionKey<{
   overlapScale: Readonly<Ref<number>>

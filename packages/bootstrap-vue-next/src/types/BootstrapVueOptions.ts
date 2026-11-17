@@ -111,6 +111,8 @@ export const componentsWithExternalPath = {
   BProgress: '/components/BProgress',
   BRow: '/components/BContainer',
   BSpinner: '/components/BSpinner',
+  BStepper: '/components/BStepper',
+  BStepperItem: '/components/BStepper',
   BTab: '/components/BTabs',
   BTabs: '/components/BTabs',
   BToast: '/components/BToast',
@@ -260,6 +262,8 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BCollapse: ComponentProps.BCollapseProps
   BContainer: ComponentProps.BContainerProps
   BSpinner: ComponentProps.BSpinnerProps
+  BStepper: ComponentProps.BStepperProps
+  BStepperItem: ComponentProps.BStepperItemProps
   BAccordionItem: ComponentProps.BAccordionItemProps
   BAlert: ComponentProps.BAlertProps
   BAvatar: ComponentProps.BAvatarProps
