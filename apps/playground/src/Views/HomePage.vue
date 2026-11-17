@@ -74,7 +74,7 @@ import TFormRadio from '../components/Comps/TFormRadio.vue'
 import TFormRadioGroup from '../components/Comps/TFormRadioGroup.vue'
 import TFormRating from '../components/Comps/TFormRating.vue'
 import TFormSelect from '../components/Comps/TFormSelect.vue'
-import TFormTags from '../components/Comps/TFormTags.vue'
+import TFormChips from '../components/Comps/TFormChips.vue'
 import TFormTextarea from '../components/Comps/TFormTextarea.vue'
 import TImg from '../components/Comps/TImg.vue'
 import TInputGroup from '../components/Comps/TInputGroup.vue'
@@ -119,7 +119,7 @@ const comps: {name: string; is: unknown; disabled?: true}[] = [
   {name: 'FormRadioGroup', is: TFormRadioGroup},
   {name: 'FormRating', is: TFormRating},
   {name: 'FormSelect', is: TFormSelect},
-  {name: 'FormTags', is: TFormTags},
+  {name: 'FormChips', is: TFormChips},
   {name: 'FormTextarea', is: TFormTextarea},
   {name: 'Img', is: TImg},
   {name: 'InputGroup', is: TInputGroup},

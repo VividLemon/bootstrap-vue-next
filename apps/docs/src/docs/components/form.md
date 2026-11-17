@@ -86,7 +86,7 @@ See also:
 - [`BFormCheckbox`](/docs/components/form-checkbox) Checkbox Inputs
 - [`BFormFile`](/docs/components/form-file) File Input
 - [`BFormSpinbutton`](/docs/components/form-spinbutton) Numerical range spinbutton input
-- [`BFormTags`](/docs/components/form-tags) Customizable tag input
+- [`BFormChips`](/docs/components/form-chips) Chip input for a list of values
 - [`BFormRating`](/docs/components/form-rating) Custom rating form input and display
 - [`BButton`](/docs/components/button) Buttons
 - [`BFormGroup`](/docs/components/form-group) Form Input wrapper to generate form-groups that

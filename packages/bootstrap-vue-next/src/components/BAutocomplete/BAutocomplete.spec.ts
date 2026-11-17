@@ -523,7 +523,7 @@ describe('BAutocomplete', () => {
       expect(selection.classes()).toContain('b-autocomplete-selection-tags')
     })
 
-    it('renders BFormTag elements in tags mode', () => {
+    it('renders BChip elements in tags mode', () => {
       const wrapper = mount(BAutocomplete, {
         props: {
           multiple: true,
@@ -536,7 +536,7 @@ describe('BAutocomplete', () => {
           modelValue: [1, 2],
         },
       })
-      const tags = wrapper.findAll('.b-form-tag')
+      const tags = wrapper.findAll('.chip')
       expect(tags.length).toBe(2)
     })
   })
@@ -1014,7 +1014,7 @@ describe('BAutocomplete', () => {
       await input.trigger('keydown', {key: 'Backspace'})
       await nextTick()
 
-      const tags = wrapper.findAll('.b-form-tag')
+      const tags = wrapper.findAll('.chip')
       expect(tags.length).toBe(2)
       // First tag (not last) should be muted
       expect(tags[0].classes()).toContain('b-autocomplete-tag-muted')
@@ -1031,7 +1031,7 @@ describe('BAutocomplete', () => {
           modelValue: ['apple', 'banana'],
         },
       })
-      const tags = wrapper.findAll('.b-form-tag')
+      const tags = wrapper.findAll('.chip')
       expect(tags.length).toBe(2)
       tags.forEach((tag) => {
         expect(tag.classes()).not.toContain('b-autocomplete-tag-muted')
