@@ -752,6 +752,13 @@ export interface BFormTextareaProps extends CommonInputProps {
   maxRows?: Numberish
 }
 
+export interface BFormAdornProps {
+  endText?: string
+  size?: Size
+  startText?: string
+  tag?: string
+}
+
 export interface BInputGroupProps {
   append?: string
   id?: string
