@@ -103,7 +103,7 @@ invalid), `true` (for valid), or `null` (no validation state).
 <<< DEMO ./demo/FormInputStateLive.vue
 
 ::: info TIP
-Use the [`BFormGroup`](/docs/components/form-group) component to automatically generate markup similar to above.
+Use the [`BFormField`](/docs/components/form-field) component to automatically generate markup similar to above.
 :::
 
 ## Conveying contextual state to assistive technologies and colorblind users

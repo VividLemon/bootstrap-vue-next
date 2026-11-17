@@ -1,7 +1,7 @@
 <template>
   <!-- #region template -->
-  <BFormGroup label="Enter your name">
+  <BFormField label="Enter your name">
     <BFormInput id="input-id" />
-  </BFormGroup>
+  </BFormField>
   <!-- #endregion template -->
 </template>

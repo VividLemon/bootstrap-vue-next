@@ -40,7 +40,7 @@ The `unchecked-value` prop does not affect the native `<input>`'s `value` attrib
 
 When binding multiple checkboxes together, you must set the `name` prop to the same value for all `BFormCheckbox`s in the group individually. This will inform users of assistive technologies that the checkboxes are related and enables native browser keyboard navigation.
 
-Whenever using multiple checkboxes, it is recommended that the checkboxes be placed in a [`BFormGroup`](/docs/components/form-group) component to associate a label with the entire group of checkboxes. See examples above.
+Whenever using multiple checkboxes, it is recommended that the checkboxes be placed in a [`BFormField`](/docs/components/form-field) component to associate a label with the entire group of checkboxes. See examples above.
 
 ## Inline and stacked checkboxes
 

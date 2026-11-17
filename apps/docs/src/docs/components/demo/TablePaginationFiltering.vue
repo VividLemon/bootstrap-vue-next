@@ -2,17 +2,17 @@
   <div>
     <BRow class="mb-3">
       <BCol :cols="{ md: 6 }">
-        <BFormGroup label="Filter" label-for="filter-input">
+        <BFormField label="Filter" label-for="filter-input">
           <BFormInput
             id="filter-input"
             v-model="filter"
             type="search"
             placeholder="Type to search"
           />
-        </BFormGroup>
+        </BFormField>
       </BCol>
       <BCol :cols="{ md: 6 }">
-        <BFormGroup label="Per page" label-for="per-page-select">
+        <BFormField label="Per page" label-for="per-page-select">
           <BFormSelect
             id="per-page-select"
             v-model="perPage"
@@ -22,7 +22,7 @@
               { value: 15, text: '15' },
             ]"
           />
-        </BFormGroup>
+        </BFormField>
       </BCol>
     </BRow>
 

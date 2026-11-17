@@ -2,7 +2,7 @@
   <BContainer fluid>
     <BRow>
       <BCol>
-        <BFormGroup label="Tags validation example" label-for="tags-validation" :state="state">
+        <BFormField label="Tags validation example" label-for="tags-validation" :state="state">
           <!-- <label for="tags-basic">Type a new tag and press enter</label> -->
           <BFormTags
             v-model="value"
@@ -27,7 +27,7 @@
               spaces or press enter.
             </div>
           </template>
-        </BFormGroup>
+        </BFormField>
       </BCol>
     </BRow>
     <BRow>
@@ -37,21 +37,21 @@
     </BRow>
     <BRow>
       <BCol>
-        <BFormGroup
+        <BFormField
           label="Enter your name"
           label-for="input-1"
           valid-feedback="Thank you!"
           label-visually-hidden
         >
           <BFormInput id="input-1" v-model="name" :state="state" trim />
-        </BFormGroup>
+        </BFormField>
       </BCol>
     </BRow>
     <BRow>
       <BCol>
         <h4 class="mt-4 mb-3">Using label-attrs prop</h4>
 
-        <BFormGroup
+        <BFormField
           label="Aktiv:"
           label-for="test-active-fixed"
           :label-align="{ md: 'end' }"
@@ -60,9 +60,9 @@
           class="align-items-center test-form-group"
         >
           <BFormCheckbox id="test-active-fixed" placeholder="" switch />
-        </BFormGroup>
+        </BFormField>
 
-        <BFormGroup
+        <BFormField
           label="Standard:"
           label-for="test-default-fixed"
           :label-align="{ md: 'end' }"
@@ -71,9 +71,9 @@
           class="align-items-center test-form-group"
         >
           <BFormCheckbox id="test-default-fixed" placeholder="" switch />
-        </BFormGroup>
+        </BFormField>
 
-        <BFormGroup
+        <BFormField
           label="Name:"
           label-for="test-name-fixed"
           :label-align="{ md: 'end' }"
@@ -82,7 +82,7 @@
           class="align-items-center test-form-group"
         >
           <BFormInput id="test-name-fixed" placeholder="Enter name" />
-        </BFormGroup>
+        </BFormField>
       </BCol>
     </BRow>
     <BRow>
@@ -93,7 +93,7 @@
           This tests that legend clicks work correctly in horizontal fieldset mode.
         </p>
 
-        <BFormGroup
+        <BFormField
           label="Click me to focus input"
           :label-cols="{ md: 4 }"
           :label-align="{ md: 'end' }"
@@ -104,12 +104,12 @@
             v-model="legendTestValue"
             placeholder="Should focus when legend is clicked"
           />
-        </BFormGroup>
+        </BFormField>
 
         <p class="fg-2 small">
           ✓ Clicking the legend should focus the input<br />
           ✓ No console errors should appear<br />
-          ✓ Works because BFormGroup now accesses $el from BCol component ref
+          ✓ Works because BFormField now accesses $el from BCol component ref
         </p>
       </BCol>
     </BRow>

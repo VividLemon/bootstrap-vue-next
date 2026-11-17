@@ -9,7 +9,7 @@
     <BRow class="pt-3">
       <BCol>
         <h4 class="m-2">validation</h4>
-        <BFormGroup label="Tags validation example" label-for="tags-validation" :state="state">
+        <BFormField label="Tags validation example" label-for="tags-validation" :state="state">
           <BFormTags
             v-model="tags"
             input-id="tags-validation"
@@ -29,7 +29,7 @@
               spaces or press enter.
             </div>
           </template>
-        </BFormGroup>
+        </BFormField>
       </BCol>
     </BRow>
   </BContainer>
