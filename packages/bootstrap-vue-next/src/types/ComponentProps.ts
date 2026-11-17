@@ -37,8 +37,11 @@ import type {
 import type {
   Breakpoint,
   ColsOffsetNumbers,
+  ColsNumbers,
   ColsOrderNumbers,
   ColsValue,
+  GridFlow,
+  GridStartNumbers,
   GutterNumbers,
   Responsive,
   RowColsNumbers,
@@ -1642,6 +1645,21 @@ export interface BColProps {
   order?: Responsive<ColsOrderNumbers>
   offset?: Responsive<ColsOffsetNumbers>
   cols?: Responsive<ColsValue>
+}
+
+export interface BGridProps {
+  tag?: string
+  columns?: Numberish
+  rows?: Numberish
+  gap?: string
+  flow?: Responsive<GridFlow>
+}
+
+export interface BGridItemProps {
+  tag?: string
+  cols?: Responsive<ColsNumbers>
+  start?: Responsive<GridStartNumbers>
+  fill?: Responsive<boolean>
 }
 
 export interface BFormGroupProps {

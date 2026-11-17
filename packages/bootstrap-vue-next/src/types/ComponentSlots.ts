@@ -624,6 +624,12 @@ export type BColSlots = {
 export type BRowSlots = {
   default?: (props: Record<string, never>) => any
 }
+export type BGridSlots = {
+  default?: (props: Record<string, never>) => any
+}
+export type BGridItemSlots = {
+  default?: (props: Record<string, never>) => any
+}
 export type BContainerSlots = {
   default?: (props: Record<string, never>) => any
 }

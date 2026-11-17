@@ -224,7 +224,7 @@ Bootstrap v6 lets CSS own all motion: JavaScript toggles a state class (`.show`,
 - Rewrite `BCol`'s `.col` fallback detection so prefix classes don't add a stray `.col`.
 - Types: remove `'fill'` from alignment values; row-cols `1…6 | 'auto'`; gutters `0…12` passed straight through (document the new spacing scale, no remap); include `order-0`.
 - Fix `useContainerClasses` (shared with `BNavbar`). Delete unused `utils/getBreakpointProps.ts`. Update grid docs tables (breakpoints, container widths).
-- CSS Grid mode (`BGrid`): deferred.
+- CSS Grid mode: `BGrid` / `BGridItem` (G6, see `BOOTSTRAP_V6_LAYOUT.md`).
 
 ### Buttons
 
@@ -349,7 +349,6 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### Deferred features
 
-- CSS Grid mode (`BGrid`, `.grid` / `g-col-*`).
 - Bump to the next Bootstrap prerelease to pick up upstream fixes (nav fill/justified pills; spinner grow + sm).
 - A future v6 `.btn-icon` feature on `BButton` needs a new prop name: `icon` is already taken by `BLink`'s `icon-link`.
 
