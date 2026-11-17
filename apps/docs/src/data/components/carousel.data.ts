@@ -16,284 +16,221 @@ import {
 import { pick } from '../../utils/objectUtils'
 import { buildCommonProps } from '../../utils/commonProps'
 
+const navArgs = {
+  value: {
+    type: 'BvCarouselEvent',
+    description:
+      'The slide `direction`, `from` and `to` indices, and the target slide as `relatedTarget`',
+  },
+}
+
 export default {
   load: (): ComponentReference => ({
     BCarousel: {
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.carousel' },
       props: {
         ...pick(buildCommonProps(), ['id']),
-        background: {
-          type: 'string',
-          default: undefined,
-          description: "Set the CSS color of the carousel's background",
+        auto: {
+          type: 'boolean',
+          default: false,
+          description: 'Slides keep their own width (`.carousel-auto`)',
+        },
+        autoplay: {
+          type: 'boolean',
+          default: false,
+          description:
+            'Advances the slides every `interval`. Stops for good once the user interacts with the carousel. Use with `play-pause` (WCAG 2.2.2)',
+        },
+        center: {
+          type: 'boolean',
+          default: false,
+          description: 'Snaps slides to the center (`.carousel-center`)',
         },
         controls: {
           type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'Enable the previous and next controls',
+          default: false,
+          description: 'Renders the previous and next buttons in the control bar',
         },
         controlsNextText: {
           type: 'string',
           default: 'Next',
-          description: 'Set the text for the "Next" control',
+          description: 'Visually hidden label of the next button',
         },
         controlsPrevText: {
           type: 'string',
           default: 'Previous',
-          description: 'Set the text for the "Previous" control',
+          description: 'Visually hidden label of the previous button',
+        },
+        ends: {
+          type: 'CarouselEnds',
+          default: 'loop',
+          description:
+            "Behavior past the first or last slide: `'loop'` continues seamlessly (falls back to `'wrap'` where it can't), `'wrap'` jumps to the other end, `'stop'` stops and disables the prev / next button",
         },
         fade: {
           type: 'boolean',
-          default: false, // TODO item not in string format
-          description:
-            'When set, changes the slide animation to a crossfade instead of a sliding effect',
-        },
-        imgHeight: {
-          type: 'string',
-          default: undefined,
-          description: "Set the default image 'height' attribute for all b-carousel-slide children",
-        },
-        imgWidth: {
-          type: 'string',
-          default: undefined,
-          description: "Set the default image 'width' attribute for all b-carousel-slide children",
+          default: false,
+          description: 'Crossfades slides instead of scrolling (`.carousel-fade`)',
         },
         indicators: {
           type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'Enable the indicator buttons for jumping to specific slides',
+          default: false,
+          description: 'Renders one indicator button per slide in the control bar',
         },
         indicatorsButtonLabel: {
           type: 'string',
           default: 'Slide',
-          description: 'Set the aria-label for the indicator buttons',
+          description: 'Prefix of the indicator labels, followed by the 1-based slide number',
         },
         interval: {
           type: 'number',
-          default: 5000, // TODO item not in string format
-          description: 'Set the delay time (in milliseconds) between slides',
+          default: 5000,
+          description:
+            'Autoplay delay in milliseconds. A slide `interval` overrides it for that slide',
         },
         keyboard: {
           type: 'boolean',
-          default: true, // TODO item not in string format
-          description: 'Enable keyboard navigation with the right and left arrow keys',
+          default: true,
+          description: 'Navigates with the left and right arrow keys (mirrored in RTL)',
         },
         labelIndicators: {
           type: 'string',
           default: 'Select a slide to display',
-          description: 'Set the aria-label for the indicators',
+          description: '`aria-label` of the indicator group',
         },
         modelValue: {
           type: 'number',
-          default: 0, // TODO item not in string format
-          description: 'The index of the currently active slide',
+          default: 0,
+          description:
+            'Index of the active slide. Updates when a slide settles (also on user scrolling); setting it navigates',
         },
         noTransition: {
           type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'When set, slides change without a transition',
-        },
-        noHoverPause: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
+          default: false,
           description:
-            'When set, disables the pausing of the slide show when the current slide is hovered',
+            "Scrolls instantly and sets `--bs-carousel-fade-duration: 0s`. `ends: 'loop'` behaves like `'wrap'`",
         },
-        noTouch: {
+        overlay: {
           type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'Disable controlling the slides via touch swipes',
-        },
-        noWrap: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'Do not restart the slide show when the end is reached',
-        },
-        ride: {
-          type: "boolean | 'carousel'",
-          default: false, // TODO item not in string format
+          default: false,
           description:
-            'Set to "carousel" to animate slides automatically, true to animate on first interaction, false to disable animation',
+            'Places the control bar over the slides (`.carousel-overlay`, `.carousel-overlay-controls`) with subtle buttons',
         },
-        rideReverse: {
+        pause: {
+          type: "'hover' | false",
+          default: 'hover',
+          description: 'Pauses autoplay while the pointer is over the carousel',
+        },
+        pauseLabel: {
+          type: 'string',
+          default: 'Pause',
+          description: 'Label of the play/pause button while playing',
+        },
+        playLabel: {
+          type: 'string',
+          default: 'Play',
+          description: 'Label of the play/pause button while paused',
+        },
+        playPause: {
           type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'When set, the carousel will animate in the reverse direction',
-        },
-        touchThreshold: {
-          type: 'Numberish',
-          default: 50, // TODO item not in string format
+          default: false,
           description:
-            'The minimum distance the touch swipe must move to prevent the slide show from being paused',
+            'Renders a play/pause button (`.carousel-control-play-pause`) in the control bar',
         },
       } satisfies PropRecord<keyof BCarouselProps>,
       emits: {
         'update:model-value': {
-          description: 'Standard event to update the v-model', // TODO similar content to BAlert/update:model-value (identical description)
+          description: 'Emitted when the active slide changes',
           args: {
-            'update:model-value': {
-              description: 'modelValue',
+            value: {
+              description: 'Index of the active slide',
               type: 'number',
             },
           },
         },
         slide: {
-          description: 'Fires immediately when the carousel starts its slide transition.',
-          args: {
-            value: {
-              type: 'BvCarouselEvent',
-              description: 'Indicates the slide `direction`, `from`, and `to` indices',
-            },
-          },
+          description:
+            'Fired before the carousel navigates; call `preventDefault()` to cancel. Not fired for free scrolling by the user',
+          args: navArgs,
         },
         slid: {
-          description: 'Fired when the carousel has completed its slide transition.',
-          args: {
-            value: {
-              type: 'BvCarouselEvent',
-              description: 'Indicates the slide `direction`, `from`, and `to` indices',
-            },
-          },
-        },
-        'prev-click': {
-          description: 'Emitted when the previous slide control is clicked',
-          args: {
-            click: {
-              description: 'Native click event',
-              type: 'MouseEvent',
-            },
-          },
-        },
-        'next-click': {
-          description: 'Emitted when the next slide control is clicked',
-          args: {
-            click: {
-              description: 'Native click event',
-              type: 'MouseEvent',
-            },
-          },
+          description:
+            'Fired when the slide has settled. A multi-slide scroll can fire intermediate `slid` events',
+          args: navArgs,
         },
       } satisfies EmitRecord<keyof BCarouselEmits | 'update:model-value'>,
       slots: {
         default: {
-          description: 'Content (slides) to place in the carousel',
+          description: 'The `BCarouselSlide` components',
+        },
+        controls: {
+          description: 'Replaces the control bar (indicators, play/pause, prev/next)',
+          scope: {
+            prev: { type: '() => void', description: 'Goes to the previous slide' },
+            next: { type: '() => void', description: 'Goes to the next slide' },
+            to: { type: '(index: number) => void', description: 'Goes to a slide' },
+            cycle: { type: '() => void', description: 'Starts autoplay' },
+            pause: { type: '() => void', description: 'Pauses autoplay' },
+            togglePlay: { type: '() => void', description: 'Toggles autoplay' },
+            playing: { type: 'boolean', description: 'Whether autoplay is on' },
+            index: { type: 'number', description: 'Index of the active slide' },
+            count: { type: 'number', description: 'Number of slides' },
+            canPrev: {
+              type: 'boolean',
+              description: "`false` at the start with `ends: 'stop'`",
+            },
+            canNext: { type: 'boolean', description: "`false` at the end with `ends: 'stop'`" },
+          },
         },
       } satisfies SlotRecord<keyof BCarouselSlots>,
       exposed: {
-        next: {
-          type: '() => void',
-          description: 'Goes to the next slide',
-        },
-        prev: {
-          type: '() => void',
-          description: 'Goes to the previous slide',
-        },
+        next: { type: '() => void', description: 'Goes to the next slide' },
+        prev: { type: '() => void', description: 'Goes to the previous slide' },
+        to: { type: '(index: number) => void', description: 'Goes to the slide at `index`' },
+        cycle: { type: '() => void', description: 'Starts autoplay' },
         pause: {
           type: '() => void',
-          description: 'Pauses the automatic cycling of slides',
+          description: 'Pauses autoplay (it resumes after a hover if it was playing)',
         },
-        resume: {
+        nextWhenVisible: {
           type: '() => void',
-          description: 'Resumes the automatic cycling of slides',
+          description: 'Goes to the next slide only when the page and the carousel are visible',
         },
+        playing: { type: 'Readonly<Ref<boolean>>', description: 'Whether autoplay is on' },
       } satisfies ExposedRecord,
     },
     BCarouselSlide: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.carousel-item' },
       props: {
         ...pick(buildCommonProps(), ['id']),
-        background: {
-          type: 'string',
-          default: undefined,
-          description: "CSS color to use as the slide's background color", // TODO similar content to BCarousel/background (similar description)
-        },
-        caption: {
-          type: 'string',
-          default: undefined,
-          description: 'Text content to place in the caption',
-        },
-        captionTag: {
-          type: 'string',
-          default: 'h3',
-          description:
-            'Specify the HTML tag to render instead of the default tag for the caption wrapper',
-        },
-        contentTag: {
-          type: 'string',
-          default: 'div',
-          description:
-            'Specify the HTML tag to render instead of the default tag for the content wrapper',
-        },
-        contentVisibleUp: {
-          type: 'string',
-          default: undefined,
-          description:
-            'Specify the breakpoint that the textual content will start to be shown. Leave at default to always show the textual content',
-        },
         imgAlt: {
           type: 'string',
           default: undefined,
-          description: "Sets the value of the 'alt' attribute on the image",
-        },
-        imgBlank: {
-          type: 'boolean',
-          default: false, // TODO item not in string format
-          description: 'If set, will render a blank image instead of the img-src',
-        },
-        imgBlankColor: {
-          type: 'string',
-          default: 'transparent',
-          description: 'Set the CSS color to use as the fill of the blank image',
-        },
-        imgHeight: {
-          type: 'Numberish',
-          default: undefined,
-          description: "Set the default image 'height' attribute for all b-carousel-slide children",
+          description: 'Alt text of the slide image',
         },
         imgSrc: {
           type: 'string',
           default: undefined,
-          description: 'Sets the URL of the image',
+          description: 'URL of an `<img class="d-block w-100">` rendered in the slide',
         },
         imgSrcset: {
-          type: 'string | string[]',
+          type: 'string | readonly string[]',
           default: undefined,
-          description: 'Sets the srcset attribute for the image',
-        },
-        imgWidth: {
-          type: 'Numberish',
-          default: undefined,
-          description: "Set the default image 'width' attribute for all b-carousel-slide children",
+          description: 'Candidate image sources (`srcset`) of the slide image',
         },
         interval: {
           type: 'number',
           default: undefined,
-          description: 'Set the delay time (in milliseconds) before the slide is shown', // TODO similar content to BCarousel/interval (similar description)
-        },
-        text: {
-          type: 'string',
-          default: undefined,
-          description: 'Text content to place in the text of the slide',
-        },
-        textTag: {
-          type: 'string',
-          default: 'p',
-          description:
-            'Specify the HTML tag to render instead of the default tag for the text wrapper',
+          description: 'Autoplay delay of this slide in milliseconds (`data-bs-interval`)',
         },
       } satisfies PropRecord<keyof BCarouselSlideProps>,
       emits: {},
       slots: {
-        caption: {
-          description: 'Content to place in caption',
-        },
         default: {
-          description: 'Content to place in the carousel slide',
+          description: 'Content of the slide, including any caption',
         },
         img: {
-          description: 'Slot for img element or image component',
-        },
-        text: {
-          description: 'Content to place in text area of the slide',
+          description: 'Replaces the image rendered by `img-src`',
         },
       } satisfies SlotRecord<keyof BCarouselSlideSlots>,
     },

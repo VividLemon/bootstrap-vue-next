@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {Placement} from './Alignment'
+import type {CarouselControlsSlotProps} from './CarouselTypes'
 import type {ValidationState} from './CommonTypes'
 import type {LiteralUnion} from './LiteralUnion'
 import type {SelectOption} from './SelectTypes'
@@ -255,16 +256,12 @@ export type BCardTitleSlots = {
 }
 
 export type BCarouselSlots = {
+  controls?: (props: CarouselControlsSlotProps) => any
   default?: (props: Record<string, never>) => any
 }
 export type BCarouselSlideSlots = {
-  caption?: (props: Record<string, never>) => any
-
   default?: (props: Record<string, never>) => any
-
   img?: (props: Record<string, never>) => any
-
-  text?: (props: Record<string, never>) => any
 }
 
 export type BDropdownSlots = {
