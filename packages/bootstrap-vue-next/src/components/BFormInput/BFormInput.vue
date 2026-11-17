@@ -25,12 +25,11 @@
 </template>
 
 <script setup lang="ts">
-import {computed, inject, useTemplateRef} from 'vue'
+import {computed, useTemplateRef} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {normalizeInput} from '../../utils/normalizeInput'
 import type {BFormInputProps} from '../../types'
 import {useFormInput} from '../../composables/useFormInput'
-import {inputGroupKey} from '../../utils/keys'
 
 const _props = withDefaults(defineProps<Omit<BFormInputProps, 'modelValue'>>(), {
   max: undefined,
@@ -71,8 +70,6 @@ const [modelValue, modelModifiers] = defineModel<
 
 const input = useTemplateRef('_input')
 
-const inInputGroup = inject(inputGroupKey, false)
-
 const {
   computedId,
   computedAriaInvalid,
@@ -87,15 +84,13 @@ const {
 } = useFormInput(props, input, modelValue, modelModifiers)
 
 const computedClasses = computed(() => {
-  const isRange = props.type === 'range'
   const isColor = props.type === 'color'
   return [
     stateClass.value,
     {
-      'form-range': isRange,
-      'form-control': isColor || (!props.plaintext && !isRange) || (isRange && inInputGroup),
+      'form-control': isColor || !props.plaintext,
       'form-control-color': isColor,
-      'form-control-plaintext': props.plaintext && !isRange && !isColor,
+      'form-control-plaintext': props.plaintext && !isColor,
       [`form-control-${props.size}`]: !!props.size,
     },
   ]

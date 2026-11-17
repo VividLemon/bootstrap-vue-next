@@ -1,9 +1,5 @@
 <template>
-  <BRow
-    v-for="type in inputTypes"
-    :key="type"
-    class="my-1"
-  >
+  <BRow v-for="type in inputTypes" :key="type" class="my-1">
     <BCol :cols="{ sm: 3 }">
       <label :for="`type-${type}`"
         >Type <code>{{ type }}</code
@@ -11,16 +7,13 @@
       >
     </BCol>
     <BCol :cols="{ sm: 9 }">
-      <BFormInput
-        :id="`type-${type}`"
-        :type="type"
-      />
+      <BFormInput :id="`type-${type}`" :type="type" />
     </BCol>
   </BRow>
 </template>
 
 <script setup lang="ts">
-import {type InputType} from 'bootstrap-vue-next'
+import { type InputType } from 'bootstrap-vue-next'
 
 const inputTypes = [
   'text',
@@ -32,7 +25,6 @@ const inputTypes = [
   'tel',
   'date',
   'time',
-  'range',
   'color',
   'datetime-local',
   'month',
