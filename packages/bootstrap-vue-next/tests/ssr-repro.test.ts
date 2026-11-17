@@ -4,9 +4,9 @@ import {createSSRApp, h} from 'vue'
 import {renderToString} from 'vue/server-renderer'
 import BFormInput from '../src/components/BFormInput/BFormInput.vue'
 import BFormTextarea from '../src/components/BFormTextarea/BFormTextarea.vue'
-import BFormGroup from '../src/components/BFormGroup/BFormGroup.vue'
+import BFormField from '../src/components/BFormField/BFormField.vue'
 
-describe('SSR BFormTextarea in BFormGroup', () => {
+describe('SSR BFormTextarea in BFormField', () => {
   it('renders BFormTextarea alone without error', async () => {
     const app = createSSRApp({
       render() {
@@ -17,10 +17,10 @@ describe('SSR BFormTextarea in BFormGroup', () => {
     expect(html).toContain('textarea')
   })
 
-  it('renders BFormTextarea inside BFormGroup without error', async () => {
+  it('renders BFormTextarea inside BFormField without error', async () => {
     const app = createSSRApp({
       render() {
-        return h(BFormGroup, null, {
+        return h(BFormField, null, {
           default: () => h(BFormTextarea),
         })
       },
@@ -30,11 +30,11 @@ describe('SSR BFormTextarea in BFormGroup', () => {
   })
 })
 
-describe('SSR BFormGroup floating label', () => {
+describe('SSR BFormField floating label', () => {
   it('renders a label element (never a legend) in floating mode so hydration matches', async () => {
     const app = createSSRApp({
       render() {
-        return h(BFormGroup, {floating: true, label: 'Email'}, () =>
+        return h(BFormField, {floating: true, label: 'Email'}, () =>
           h(BFormInput, {id: 'email-input'})
         )
       },

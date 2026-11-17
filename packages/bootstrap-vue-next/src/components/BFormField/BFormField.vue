@@ -1,7 +1,8 @@
 <template>
-  <fieldset
+  <component
+    :is="rootTag"
     :id="computedId"
-    :disabled="props.disabled"
+    :disabled="rootTag === 'fieldset' ? props.disabled : undefined"
     :aria-invalid="computedAriaInvalid"
     :aria-labelledby="isFieldset && isHorizontal ? labelId : undefined"
     v-bind="$attrs"
@@ -9,7 +10,7 @@
   >
     <!-- End of definitions -->
     <BFormRow v-if="isHorizontal">
-      <BFormGroupLabel
+      <BFormFieldLabel
         v-if="labelShowing"
         v-bind="labelComponentProps"
         @legend-click="onLegendClick"
@@ -17,7 +18,7 @@
         <template v-if="slots.label" #label>
           <slot name="label" />
         </template>
-      </BFormGroupLabel>
+      </BFormFieldLabel>
       <BCol v-bind="contentColProps" ref="content">
         <slot
           :id="computedId"
@@ -25,7 +26,7 @@
           :description-id="descriptionId"
           :label-id="labelId"
         />
-        <BFormGroupContent v-bind="contentComponentProps">
+        <BFormFieldContent v-bind="contentComponentProps">
           <template v-if="slots['invalid-feedback']" #invalid-feedback>
             <slot name="invalid-feedback" />
           </template>
@@ -35,12 +36,12 @@
           <template v-if="slots.description" #description>
             <slot name="description" />
           </template>
-        </BFormGroupContent>
+        </BFormFieldContent>
       </BCol>
     </BFormRow>
     <template v-else>
       <div v-if="isFloating" ref="content" class="form-floating">
-        <BFormGroupLabel
+        <BFormFieldLabel
           v-if="labelShowing"
           v-bind="labelComponentProps"
           @legend-click="onLegendClick"
@@ -48,14 +49,14 @@
           <template v-if="slots.label" #label>
             <slot name="label" />
           </template>
-        </BFormGroupLabel>
+        </BFormFieldLabel>
         <slot
           :id="computedId"
           :aria-describedby="computedAriaDescribedby"
           :description-id="descriptionId"
           :label-id="labelId"
         />
-        <BFormGroupContent v-bind="contentComponentProps">
+        <BFormFieldContent v-bind="contentComponentProps">
           <template v-if="slots['invalid-feedback']" #invalid-feedback>
             <slot name="invalid-feedback" />
           </template>
@@ -65,10 +66,10 @@
           <template v-if="slots.description" #description>
             <slot name="description" />
           </template>
-        </BFormGroupContent>
+        </BFormFieldContent>
       </div>
       <template v-else>
-        <BFormGroupLabel
+        <BFormFieldLabel
           v-if="labelShowing"
           v-bind="labelComponentProps"
           @legend-click="onLegendClick"
@@ -76,14 +77,14 @@
           <template v-if="slots.label" #label>
             <slot name="label" />
           </template>
-        </BFormGroupLabel>
+        </BFormFieldLabel>
         <slot
           :id="computedId"
           :aria-describedby="computedAriaDescribedby"
           :description-id="descriptionId"
           :label-id="labelId"
         />
-        <BFormGroupContent v-bind="contentComponentProps">
+        <BFormFieldContent v-bind="contentComponentProps">
           <template v-if="slots['invalid-feedback']" #invalid-feedback>
             <slot name="invalid-feedback" />
           </template>
@@ -93,10 +94,10 @@
           <template v-if="slots.description" #description>
             <slot name="description" />
           </template>
-        </BFormGroupContent>
+        </BFormFieldContent>
       </template>
     </template>
-  </fieldset>
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -108,11 +109,11 @@ import BFormRow from '../BForm/BFormRow.vue'
 import {getResponsiveClasses, responsiveKeys} from '../../utils/responsive'
 import {useStateClass} from '../../composables/useStateClass'
 import {useId} from '../../composables/useId'
-import type {BFormGroupProps, BFormGroupSlots, ColsValue, Responsive} from '../../types'
+import type {BFormFieldProps, BFormFieldSlots, ColsValue, Responsive} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import {useProvideFormGroupData} from '../../composables/useProvideFormGroupData'
-import BFormGroupContent from '../BFormGroupContent.vue'
-import BFormGroupLabel from '../BFormGroupLabel.vue'
+import BFormFieldContent from '../BFormFieldContent.vue'
+import BFormFieldLabel from '../BFormFieldLabel.vue'
 
 defineOptions({
   inheritAttrs: false,
@@ -120,7 +121,7 @@ defineOptions({
 
 const INPUTS = ['input', 'select', 'textarea']
 
-const _props = withDefaults(defineProps<BFormGroupProps>(), {
+const _props = withDefaults(defineProps<BFormFieldProps>(), {
   ariaInvalid: undefined,
   contentCols: undefined,
   description: undefined,
@@ -140,8 +141,8 @@ const _props = withDefaults(defineProps<BFormGroupProps>(), {
   tooltip: false,
   validFeedback: undefined,
 })
-const props = useDefaults(_props, 'BFormGroup')
-const slots = defineSlots<BFormGroupSlots>()
+const props = useDefaults(_props, 'BFormField')
+const slots = defineSlots<BFormFieldSlots>()
 
 const computedState = toRef(() => props.state)
 const computedDisabled = toRef(() => props.disabled)
@@ -176,10 +177,15 @@ const isFloating = computed(() => props.floating && !isHorizontal.value)
 
 const {stateClass} = useStateClass(computedState)
 
+// A single control is a v6 `.form-field`; several controls under one legend are a v6 `.form-group`.
+// Horizontal layouts use the grid (`.row` + `.col-form-label`) instead, as in the v6 layout docs
 const computedClasses = computed(() => [
-  'b-form-group',
+  'b-form-field',
   stateClass.value,
-  {'form-field': !isHorizontal.value},
+  {
+    'form-field': !isHorizontal.value && !isFieldset.value,
+    'form-group': !isHorizontal.value && isFieldset.value,
+  },
 ])
 const {ariaInvalid: computedAriaInvalid} = useAriaInvalid(() => props.ariaInvalid, computedState)
 
@@ -214,10 +220,7 @@ const labelTag = computed(() => (!isFieldset.value ? 'label' : 'legend'))
 const labelClasses = computed(() => [
   isHorizontal.value ? 'col-form-label' : 'form-label',
   {
-    'bv-no-focus-ring': !isFloating.value && !computedLabelFor.value,
-    'col-form-label': isHorizontal.value || (!isFloating.value && !computedLabelFor.value),
-    'pt-0': !isHorizontal.value && !isFloating.value && !computedLabelFor.value,
-    'd-block': !isHorizontal.value && !isFloating.value && !!computedLabelFor.value,
+    'pt-0': isHorizontal.value && isFieldset.value,
     [`col-form-label-${props.labelSize}`]: !!props.labelSize,
     'visually-hidden': props.labelVisuallyHidden,
   },
@@ -230,6 +233,12 @@ const validFeedbackId = useId(undefined, '_BV_feedback_valid_')
 const descriptionId = useId(undefined, '_BV_description_')
 
 const isFieldset = computed(() => !isFloating.value && !computedLabelFor.value)
+
+// The root tag only follows what is known before the children render (an explicit `labelFor`,
+// `floating`). Following the auto-detected label target too would replace the root element after
+// the first render, which remounts the slotted control and re-registers it in a loop. The classes
+// (`form-field` / `form-group`) and the label tag still follow the detected target
+const rootTag = computed(() => (props.labelFor || isFloating.value ? 'div' : 'fieldset'))
 
 const hasDescription = computed(() => !!slots.description || !!props.description)
 const hasInvalidFeedback = computed(() => !!slots['invalid-feedback'] || !!props.invalidFeedback)

@@ -2,20 +2,20 @@
   <!-- #region template -->
   <BDropdown text="Dropdown with form" auto-close="outside">
     <BDropdownForm>
-      <BFormGroup
+      <BFormField
         label="Email address:"
         label-for="email"
         description="We'll never share your email with anyone else."
       >
         <BFormInput id="email" type="email" placeholder="Enter email" required />
-      </BFormGroup>
-      <BFormGroup
+      </BFormField>
+      <BFormField
         label="Password:"
         label-for="password"
         description="We'll never share your email with anyone else."
       >
         <BFormInput id="password" type="password" required />
-      </BFormGroup>
+      </BFormField>
       <BFormCheckbox id="remember" name="remember" value="remember" checked>
         Remember me</BFormCheckbox
       >

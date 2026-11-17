@@ -4,7 +4,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest'
 import BTabs from './BTabs.vue'
 import BTab from './BTab.vue'
 import BFormInput from '../BFormInput/BFormInput.vue'
-import BFormGroup from '../BFormGroup/BFormGroup.vue'
+import BFormField from '../BFormField/BFormField.vue'
 
 describe('tabs', () => {
   enableAutoUnmount(afterEach)
@@ -448,10 +448,10 @@ describe('tabs', () => {
 
     const HelloWorld = {
       template: ` 
-      <BFormGroup label="msg">
+      <BFormField label="msg">
         <BFormInput v-model="msg" />
         <slot :msg="msg"/>      
-      </BFormGroup>`,
+      </BFormField>`,
       data() {
         return {
           msg,
@@ -459,7 +459,7 @@ describe('tabs', () => {
       },
       components: {
         BFormInput,
-        BFormGroup,
+        BFormField,
       },
     }
 

@@ -89,7 +89,7 @@ See also:
 - [`BFormChips`](/docs/components/form-chips) Chip input for a list of values
 - [`BFormRating`](/docs/components/form-rating) Custom rating form input and display
 - [`BButton`](/docs/components/button) Buttons
-- [`BFormGroup`](/docs/components/form-group) Form Input wrapper to generate form-groups that
+- [`BFormField`](/docs/components/form-field) Form Input wrapper to generate form-groups that
   support labels, help text and feedback
 - [`BInputGroup`](/docs/components/input-group) Form Inputs with add-ons
 - [`BFormRow`](/docs/components/grid-system) Create grid rows and columns with tighter margins

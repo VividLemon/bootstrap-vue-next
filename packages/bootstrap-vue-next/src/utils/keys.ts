@@ -262,7 +262,7 @@ export const orchestratorRegistryKey: InjectionKey<{
 }> = createBvnRegistryInjectionKey('orchestrator')
 
 /**
- * Provided by an ancestor BFormGroup (or boundary like BFormFloatingLabel). Called once at
+ * Provided by an ancestor BFormField (or boundary like BFormFloatingLabel). Called once at
  * descendant setup to obtain state/disabled and a `track` callback. Call `track(idRef)` to
  * claim the group's `<label for="...">` target — used by form controls without their own
  * label (BFormInput, BFormTextarea, BFormSelect, or a plain BFormCheckbox/BFormRadio with

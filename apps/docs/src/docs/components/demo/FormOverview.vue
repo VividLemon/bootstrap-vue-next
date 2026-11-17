@@ -1,6 +1,6 @@
 <template>
   <BForm v-if="show" @submit="onSubmit" @reset="onReset">
-    <BFormGroup
+    <BFormField
       id="input-group-1"
       label="Email address:"
       label-for="input-1"
@@ -13,21 +13,21 @@
         placeholder="Enter email"
         required
       />
-    </BFormGroup>
+    </BFormField>
 
-    <BFormGroup id="input-group-2" label="Your Name:" label-for="input-2">
+    <BFormField id="input-group-2" label="Your Name:" label-for="input-2">
       <BFormInput id="input-2" v-model="form.name" placeholder="Enter name" required />
-    </BFormGroup>
-    <BFormGroup id="input-group-3" label="Food:" label-for="input-3">
+    </BFormField>
+    <BFormField id="input-group-3" label="Food:" label-for="input-3">
       <BFormSelect id="input-3" v-model="form.food" :options="foods" required />
-    </BFormGroup>
+    </BFormField>
 
-    <BFormGroup id="input-group-4">
+    <BFormField id="input-group-4">
       <BFormCheckboxGroup id="checkboxes-4" v-model="form.checked">
         <BFormCheckbox value="me">Check me out</BFormCheckbox>
         <BFormCheckbox value="that">Check that out</BFormCheckbox>
       </BFormCheckboxGroup>
-    </BFormGroup>
+    </BFormField>
     <BButton type="submit" :color="{ theme: 'primary' }">Submit</BButton>
     <BButton type="reset" :color="{ theme: 'danger' }">Reset</BButton>
   </BForm>

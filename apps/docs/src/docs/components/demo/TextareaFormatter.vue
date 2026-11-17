@@ -1,5 +1,5 @@
 <template>
-  <BFormGroup
+  <BFormField
     label="Textarea with formatter (on input)"
     label-for="textarea-formatter"
     description="We will convert your text to lowercase instantly"
@@ -11,11 +11,11 @@
       placeholder="Enter your text"
       :formatter="formatter"
     />
-  </BFormGroup>
+  </BFormField>
 
   <p style="white-space: pre-line"><b>Value:</b> {{ textFormatter }}</p>
 
-  <BFormGroup
+  <BFormField
     label="Textarea with lazy formatter (on blur)"
     label-for="textarea-lazy"
     description="This one is a little lazy!"
@@ -28,18 +28,13 @@
       lazy-formatter
       :formatter="formatter"
     />
-  </BFormGroup>
+  </BFormField>
 
-  <p
-    class="mb-0"
-    style="white-space: pre-line"
-  >
-    <b>Value:</b> {{ textFormatter2 }}
-  </p>
+  <p class="mb-0" style="white-space: pre-line"><b>Value:</b> {{ textFormatter2 }}</p>
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const textFormatter = ref('')
 const textFormatter2 = ref('')
