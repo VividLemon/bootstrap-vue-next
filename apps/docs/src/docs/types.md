@@ -270,6 +270,13 @@ export type ColsOrderNumbers = ColsBaseNumbers | 0 | '0' | 'first' | 'last'
 
 type ColsOffsetNumber = Exclude<ColsNumber, 12> | 0
 export type ColsOffsetNumbers = ColsOffsetNumber | `${ColsOffsetNumber}`
+
+// CSS Grid (`BGridItem` `start`): `g-start-1` … `g-start-11`
+type GridStartNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
+export type GridStartNumbers = GridStartNumber | `${GridStartNumber}`
+
+// CSS Grid (`BGrid` `flow`): `grid-auto-flow-*`
+export type GridFlow = 'row' | 'column' | 'dense'
 ```
 
 </BCard>

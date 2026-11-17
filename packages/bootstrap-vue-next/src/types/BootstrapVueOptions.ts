@@ -82,6 +82,8 @@ export const componentsWithExternalPath = {
   BFormText: '/components/BForm',
   BFormTextarea: '/components/BFormTextarea',
   BFormValidFeedback: '/components/BForm',
+  BGrid: '/components/BGrid',
+  BGridItem: '/components/BGrid',
   BImg: '/components/BImg',
   BInput: '/components/BFormInput',
   BInputGroup: '/components/BInputGroup',
@@ -302,6 +304,8 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BCardHeader: ComponentProps.BCardHeaderProps
   BCardImg: ComponentProps.BCardImgProps
   BCol: ComponentProps.BColProps
+  BGrid: ComponentProps.BGridProps
+  BGridItem: ComponentProps.BGridItemProps
   BDropdownForm: never
   BDropdownHeader: never
   BBreadcrumbDivider: never
