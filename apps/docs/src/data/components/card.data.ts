@@ -82,6 +82,12 @@ export default {
           default: "''",
           description: 'Text content to place in the card body, default slot takes precedence',
         },
+        hoverLift: {
+          type: 'boolean',
+          default: false,
+          description:
+            'Lifts the card and deepens its shadow on hover and keyboard focus (`hover-lift`). Tune it with the `--bs-hover-lift-*` CSS variables; the motion is skipped with reduced motion',
+        },
         imgAlt: {
           type: 'string',
           default: undefined,
