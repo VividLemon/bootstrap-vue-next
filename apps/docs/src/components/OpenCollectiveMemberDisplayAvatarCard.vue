@@ -6,13 +6,9 @@
       class="d-flex flex-column align-items-center mx-1"
     >
       <template #img>
-        <BAvatar
-          class="mt-2"
-          :src="member.image ?? undefined"
-          :href="member.profile"
-          target="_blank"
-          :alt="member.name"
-        />
+        <BLink :href="member.profile" target="_blank" class="d-inline-flex mt-2">
+          <BAvatar :src="member.image ?? undefined" :alt="member.name" />
+        </BLink>
       </template>
       <span>
         {{ member.name }}
@@ -31,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import type {CollectiveMembersResponse} from '../types'
+import type { CollectiveMembersResponse } from '../types'
 
 defineProps<{
   members?: CollectiveMembersResponse[]

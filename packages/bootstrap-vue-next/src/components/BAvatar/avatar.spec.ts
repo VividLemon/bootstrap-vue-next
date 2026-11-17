@@ -1,650 +1,193 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it} from 'vitest'
-import {ref} from 'vue'
 import BAvatar from './BAvatar.vue'
-import BLink from '../BLink/BLink.vue'
-import BBadge from '../BBadge/BBadge.vue'
-import {avatarGroupInjectionKey} from '../../utils/keys'
+import {h} from 'vue'
 
 describe('avatar', () => {
   enableAutoUnmount(afterEach)
 
-  it('has static b-avatar class', () => {
-    const wrapper = mount(BAvatar)
-    expect(wrapper.classes()).toContain('b-avatar')
-  })
-
-  it('tag is button when prop button is true', () => {
-    const wrapper = mount(BAvatar, {
-      props: {button: true},
+  describe('rendering', () => {
+    it('renders a span with static class avatar', () => {
+      const wrapper = mount(BAvatar)
+      expect(wrapper.element.tagName).toBe('SPAN')
+      expect(wrapper.classes()).toContain('avatar')
     })
-    expect(wrapper.element.tagName).toBe('BUTTON')
-  })
 
-  it('has attr type when prop button to be default button', () => {
-    const wrapper = mount(BAvatar, {
-      props: {button: true},
+    it('does not render v5 library classes', () => {
+      const wrapper = mount(BAvatar, {props: {text: 'AB'}})
+      expect(wrapper.html()).not.toContain('b-avatar')
+      expect(wrapper.classes()).not.toContain('badge')
+      expect(wrapper.classes()).not.toContain('rounded-circle')
     })
-    expect(wrapper.attributes('type')).toBe('button')
-  })
 
-  it('has attr type when prop button to be prop buttonType', () => {
-    const wrapper = mount(BAvatar, {
-      props: {button: true, buttonType: 'submit'},
+    it('renders nothing inside by default', () => {
+      const wrapper = mount(BAvatar)
+      expect(wrapper.element.children).toHaveLength(0)
+      expect(wrapper.text()).toBe('')
     })
-    expect(wrapper.attributes('type')).toBe('submit')
-  })
 
-  it('does not have attr type when prop buttonType but not prop button', () => {
-    const wrapper = mount(BAvatar, {
-      props: {button: false, buttonType: 'submit'},
+    it('has no theme class by default', () => {
+      const wrapper = mount(BAvatar)
+      expect(wrapper.classes().some((c) => c.startsWith('theme-'))).toBe(false)
     })
-    expect(wrapper.attributes('type')).toBeUndefined()
-  })
 
-  it('tag is default span', () => {
-    const wrapper = mount(BAvatar)
-    expect(wrapper.element.tagName).toBe('SPAN')
-  })
-
-  it('has class `b-avatar-sm` when prop size is `sm`', () => {
-    const wrapper = mount(BAvatar, {props: {size: 'sm'}})
-    expect(wrapper.attributes('style')).toBeUndefined()
-    expect(wrapper.classes()).toContain('b-avatar-sm')
-  })
-
-  it('does not include a b-avatar size class when size is undefined (default)', () => {
-    const wrapper = mount(BAvatar)
-    expect(wrapper.attributes('style')).toBeUndefined()
-    expect(wrapper.classes()).not.toContain('b-avatar-md')
-    expect(wrapper.classes()).not.toContain('b-avatar-sm')
-    expect(wrapper.classes()).not.toContain('b-avatar-lg')
-  })
-
-  it('has class `b-avatar-lg` when prop size is `lg`', () => {
-    const wrapper = mount(BAvatar, {props: {size: 'lg'}})
-    expect(wrapper.attributes('style')).toBeUndefined()
-    expect(wrapper.classes()).toContain('b-avatar-lg')
-  })
-
-  it('converts to `px` when prop size is a numeric value', async () => {
-    const wrapper1 = mount(BAvatar, {props: {size: 20}})
-    expect(wrapper1.attributes('style')).toEqual('width: 20px; height: 20px;')
-    await wrapper1.setProps({size: '24.5'})
-    expect(wrapper1.attributes('style')).toEqual('width: 24.5px; height: 24.5px;')
-  })
-
-  it('applies correct styles when prop size ends in `px`, `em` or `rem`', async () => {
-    const wrapper1 = mount(BAvatar, {props: {size: '5px'}})
-    expect(wrapper1.attributes('style')).toEqual('width: 5px; height: 5px;')
-    await wrapper1.setProps({size: '5em'})
-    expect(wrapper1.attributes('style')).toEqual('width: 5em; height: 5em;')
-    await wrapper1.setProps({size: '5rem'})
-    expect(wrapper1.attributes('style')).toEqual('width: 5rem; height: 5rem;')
-  })
-
-  it('does not apply styles when prop size is a non-decimal numeric value', () => {
-    const wrapper = mount(BAvatar, {props: {size: '0x123'}})
-    expect(wrapper.attributes('style')).toBeUndefined()
-  })
-
-  it('style does not have width: lg etc when prop size is a literal Size value', () => {
-    const wrapper = mount(BAvatar, {props: {size: 'lg'}})
-    expect(wrapper.attributes('style')).toBeUndefined()
-  })
-
-  // Default content rendering
-  it('renders default SVG icon when no slot, src, or text', () => {
-    const wrapper = mount(BAvatar)
-    const $span = wrapper.find('.b-avatar-img')
-    expect($span.exists()).toBe(true)
-    const $svg = $span.find('svg')
-    expect($svg.exists()).toBe(true)
-    expect($svg.classes()).toContain('bi')
-    expect($svg.classes()).toContain('bi-person-fill')
-  })
-
-  // Text rendering
-  it('renders text when prop text is set', () => {
-    const wrapper = mount(BAvatar, {props: {text: 'BV'}})
-    const $span = wrapper.find('.b-avatar-text')
-    expect($span.exists()).toBe(true)
-    expect($span.text()).toBe('BV')
-  })
-
-  it('does not render SVG when text is set', () => {
-    const wrapper = mount(BAvatar, {props: {text: 'AB'}})
-    expect(wrapper.find('svg').exists()).toBe(false)
-  })
-
-  it('applies text font-size style for custom sizes', () => {
-    const wrapper = mount(BAvatar, {props: {text: 'AB', size: '4em'}})
-    const $span = wrapper.find('.b-avatar-text')
-    expect($span.attributes('style')).toContain('font-size')
-    expect($span.attributes('style')).toContain('calc(4em * 0.4)')
-  })
-
-  it('does not apply text font-size style for literal sizes', () => {
-    const wrapper = mount(BAvatar, {props: {text: 'AB', size: 'lg'}})
-    const $span = wrapper.find('.b-avatar-text')
-    expect($span.attributes('style')).toBeUndefined()
-  })
-
-  // Image rendering
-  it('renders img when prop src is set', () => {
-    const wrapper = mount(BAvatar, {props: {src: 'https://example.com/avatar.png'}})
-    const $span = wrapper.find('.b-avatar-img')
-    expect($span.exists()).toBe(true)
-    const $img = $span.find('img')
-    expect($img.exists()).toBe(true)
-    expect($img.attributes('src')).toBe('https://example.com/avatar.png')
-  })
-
-  it('has default alt attribute of avatar on img', () => {
-    const wrapper = mount(BAvatar, {props: {src: 'https://example.com/avatar.png'}})
-    const $img = wrapper.find('img')
-    expect($img.attributes('alt')).toBe('avatar')
-  })
-
-  it('has custom alt attribute on img when prop alt is set', () => {
-    const wrapper = mount(BAvatar, {
-      props: {src: 'https://example.com/avatar.png', alt: 'User Photo'},
+    it('has no inline style by default', () => {
+      const wrapper = mount(BAvatar)
+      expect(wrapper.attributes('style')).toBeUndefined()
     })
-    const $img = wrapper.find('img')
-    expect($img.attributes('alt')).toBe('User Photo')
   })
 
-  it('does not render SVG when src is set', () => {
-    const wrapper = mount(BAvatar, {props: {src: 'https://example.com/avatar.png'}})
-    expect(wrapper.find('svg').exists()).toBe(false)
-  })
-
-  it('does not render text span when src is set', () => {
-    const wrapper = mount(BAvatar, {props: {src: 'https://example.com/avatar.png', text: 'AB'}})
-    expect(wrapper.find('.b-avatar-text').exists()).toBe(false)
-  })
-
-  // Default slot rendering
-  it('renders default slot content', () => {
-    const wrapper = mount(BAvatar, {
-      slots: {default: '<span class="custom-content">Hello</span>'},
+  describe('content', () => {
+    it('renders img.avatar-img when src is set', () => {
+      const wrapper = mount(BAvatar, {props: {src: '/a.png'}})
+      const img = wrapper.get('img')
+      expect(img.classes()).toContain('avatar-img')
+      expect(img.attributes('src')).toBe('/a.png')
+      expect(img.attributes('alt')).toBe('avatar')
     })
-    const $span = wrapper.find('.b-avatar-custom')
-    expect($span.exists()).toBe(true)
-    expect($span.find('.custom-content').exists()).toBe(true)
-    expect($span.text()).toBe('Hello')
-  })
 
-  it('default slot takes priority over src', () => {
-    const wrapper = mount(BAvatar, {
-      props: {src: 'https://example.com/avatar.png'},
-      slots: {default: 'Custom'},
+    it('uses the alt prop', () => {
+      const wrapper = mount(BAvatar, {props: {src: '/a.png', alt: 'mdo'}})
+      expect(wrapper.get('img').attributes('alt')).toBe('mdo')
     })
-    expect(wrapper.find('.b-avatar-custom').exists()).toBe(true)
-    expect(wrapper.find('img').exists()).toBe(false)
-  })
 
-  it('default slot takes priority over text', () => {
-    const wrapper = mount(BAvatar, {
-      props: {text: 'AB'},
-      slots: {default: 'Custom'},
+    it('renders text directly inside .avatar', () => {
+      const wrapper = mount(BAvatar, {props: {text: 'BV'}})
+      expect(wrapper.text()).toBe('BV')
+      expect(wrapper.find('span span').exists()).toBe(false)
     })
-    expect(wrapper.find('.b-avatar-custom').exists()).toBe(true)
-    expect(wrapper.find('.b-avatar-text').exists()).toBe(false)
-  })
 
-  // Image error handling
-  it('emits img-error on image error', async () => {
-    const wrapper = mount(BAvatar, {props: {src: 'https://example.com/bad.png'}})
-    const $img = wrapper.find('img')
-    await $img.trigger('error')
-    expect(wrapper.emitted('img-error')).toBeDefined()
-    expect(wrapper.emitted('img-error')!.length).toBe(1)
-  })
-
-  it('falls back to SVG icon after image error', async () => {
-    const wrapper = mount(BAvatar, {props: {src: 'https://example.com/bad.png'}})
-    expect(wrapper.find('img').exists()).toBe(true)
-    const $img = wrapper.find('img')
-    await $img.trigger('error')
-    await wrapper.vm.$nextTick()
-    expect(wrapper.find('img').exists()).toBe(false)
-    expect(wrapper.find('svg').exists()).toBe(true)
-  })
-
-  it('updates img when src prop changes', async () => {
-    const wrapper = mount(BAvatar, {props: {src: 'https://example.com/a.png'}})
-    expect(wrapper.find('img').attributes('src')).toBe('https://example.com/a.png')
-    await wrapper.setProps({src: 'https://example.com/b.png'})
-    expect(wrapper.find('img').attributes('src')).toBe('https://example.com/b.png')
-  })
-
-  // Theme classes
-  it('has theme-secondary class by default', () => {
-    const wrapper = mount(BAvatar)
-    expect(wrapper.classes()).toContain('theme-secondary')
-  })
-
-  it('has theme-{theme} class when prop theme is set', () => {
-    const wrapper = mount(BAvatar, {props: {color: {theme: 'primary'}}})
-    expect(wrapper.classes()).toContain('theme-primary')
-  })
-
-  it('has bg-{bg} class when prop bg is set', () => {
-    const wrapper = mount(BAvatar, {props: {color: {bg: 'danger'}}})
-    expect(wrapper.classes()).toContain('bg-danger')
-  })
-
-  it('has fg-{fg} class when prop fg is set', () => {
-    const wrapper = mount(BAvatar, {props: {color: {fg: 'white'}}})
-    expect(wrapper.classes()).toContain('fg-white')
-  })
-
-  // Square prop
-  it('has rounded-0 class when prop square is true', () => {
-    const wrapper = mount(BAvatar, {props: {square: true}})
-    expect(wrapper.classes()).toContain('rounded-0')
-  })
-
-  it('does not have rounded-circle class when prop square is true', () => {
-    const wrapper = mount(BAvatar, {props: {square: true}})
-    expect(wrapper.classes()).not.toContain('rounded-circle')
-  })
-
-  it('has rounded-circle class by default', () => {
-    const wrapper = mount(BAvatar)
-    expect(wrapper.classes()).toContain('rounded-circle')
-  })
-
-  // Button behavior
-  it('has btn class when prop button is true', () => {
-    const wrapper = mount(BAvatar, {props: {button: true}})
-    expect(wrapper.classes()).toContain('btn')
-  })
-
-  it('has btn-solid and theme class when prop button is true', () => {
-    const wrapper = mount(BAvatar, {props: {button: true, color: {theme: 'primary'}}})
-    expect(wrapper.classes()).toContain('btn-solid')
-    expect(wrapper.classes()).toContain('theme-primary')
-  })
-
-  it('does not have btn class when prop button is false', () => {
-    const wrapper = mount(BAvatar)
-    expect(wrapper.classes()).not.toContain('btn')
-  })
-
-  // Click events
-  it('emits click event when button is clicked', async () => {
-    const wrapper = mount(BAvatar, {props: {button: true}})
-    await wrapper.trigger('click')
-    expect(wrapper.emitted('click')).toBeDefined()
-    expect(wrapper.emitted('click')!.length).toBe(1)
-  })
-
-  it('does not emit click when not a button or link', async () => {
-    const wrapper = mount(BAvatar)
-    await wrapper.trigger('click')
-    expect(wrapper.emitted('click')).toBeUndefined()
-  })
-
-  it('does not emit click when disabled button', async () => {
-    const wrapper = mount(BAvatar, {props: {button: true, disabled: true}})
-    await wrapper.trigger('click')
-    expect(wrapper.emitted('click')).toBeUndefined()
-  })
-
-  // Disabled prop
-  it('has disabled attribute when prop disabled is true', () => {
-    const wrapper = mount(BAvatar, {props: {disabled: true}})
-    expect(wrapper.attributes('disabled')).toBeDefined()
-  })
-
-  it('does not have disabled attribute when prop disabled is false', () => {
-    const wrapper = mount(BAvatar)
-    expect(wrapper.attributes('disabled')).toBeUndefined()
-  })
-
-  // Link behavior
-  it('renders as BLink when prop href is set', () => {
-    const wrapper = mount(BAvatar, {props: {href: '/profile'}})
-    const $link = wrapper.findComponent(BLink)
-    expect($link.exists()).toBe(true)
-  })
-
-  it('does not have type attribute when rendered as link', () => {
-    const wrapper = mount(BAvatar, {props: {href: '/profile'}})
-    expect(wrapper.attributes('type')).toBeUndefined()
-  })
-
-  it('emits click event when link is clicked', async () => {
-    const wrapper = mount(BAvatar, {props: {href: '/profile'}})
-    await wrapper.trigger('click')
-    expect(wrapper.emitted('click')).toBeDefined()
-  })
-
-  it('does not emit click when disabled link', async () => {
-    const wrapper = mount(BAvatar, {props: {href: '/profile', disabled: true}})
-    await wrapper.trigger('click')
-    expect(wrapper.emitted('click')).toBeUndefined()
-  })
-
-  // Badge rendering
-  it('does not show badge by default', () => {
-    const wrapper = mount(BAvatar)
-    const $badge = wrapper.findComponent(BBadge)
-    expect($badge.exists()).toBe(false)
-  })
-
-  it('shows badge when prop badge is true', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true}})
-    const $badge = wrapper.findComponent(BBadge)
-    expect($badge.exists()).toBe(true)
-  })
-
-  it('shows badge when prop badge is empty string', () => {
-    const wrapper = mount(BAvatar, {props: {badge: ''}})
-    const $badge = wrapper.findComponent(BBadge)
-    expect($badge.exists()).toBe(true)
-  })
-
-  it('shows badge with text when prop badge is a string', () => {
-    const wrapper = mount(BAvatar, {props: {badge: '5'}})
-    const $badge = wrapper.findComponent(BBadge)
-    expect($badge.exists()).toBe(true)
-    expect($badge.text()).toBe('5')
-  })
-
-  it.each([
-    {
-      name: 'badgeColor.theme to theme',
-      props: {badge: true, badgeColor: {theme: 'danger'}},
-      prop: 'color',
-      key: 'theme',
-      expected: 'danger',
-    },
-    {
-      name: 'default badgeColor.theme of primary to theme',
-      props: {badge: true},
-      prop: 'color',
-      key: 'theme',
-      expected: 'primary',
-    },
-    {
-      name: 'badgePill to pill',
-      props: {badge: true, badgePill: true},
-      prop: 'pill',
-      expected: true,
-    },
-    {
-      name: 'badgeDotIndicator to dotIndicator',
-      props: {badge: true, badgeDotIndicator: true},
-      prop: 'dotIndicator',
-      expected: true,
-    },
-    {
-      name: 'implicit dot when badge is true and no text or slot',
-      props: {badge: true},
-      prop: 'dotIndicator',
-      expected: true,
-    },
-    {
-      name: 'no implicit dot when badge has text',
-      props: {badge: 'N'},
-      prop: 'dotIndicator',
-      expected: false,
-    },
-    {
-      name: 'badgePlacement to placement',
-      props: {badge: true, badgePlacement: 'top-start'},
-      prop: 'placement',
-      expected: 'top-start',
-    },
-    {
-      name: 'default badgePlacement of bottom-end to placement',
-      props: {badge: true},
-      prop: 'placement',
-      expected: 'bottom-end',
-    },
-    {
-      name: 'badgeColor.bg to bg',
-      props: {badge: true, badgeColor: {bg: 'success'}},
-      prop: 'color',
-      key: 'bg',
-      expected: 'success',
-    },
-    {
-      name: 'badgeColor.fg to fg',
-      props: {badge: true, badgeColor: {fg: 'white'}},
-      prop: 'color',
-      key: 'fg',
-      expected: 'white',
-    },
-  ] as const)('passes to BBadge: $name', (testCase) => {
-    const {props, prop, expected} = testCase
-    const wrapper = mount(BAvatar, {props: {...props}})
-    const $badge = wrapper.getComponent(BBadge)
-    const value = $badge.props(prop)
-    expect('key' in testCase ? (value as Record<string, unknown>)?.[testCase.key] : value).toBe(
-      expected
-    )
-  })
-
-  it('renders badge slot content', () => {
-    const wrapper = mount(BAvatar, {
-      slots: {badge: '<span class="custom-badge">!</span>'},
+    it('src takes precedence over text', () => {
+      const wrapper = mount(BAvatar, {props: {src: '/a.png', text: 'BV'}})
+      expect(wrapper.find('img').exists()).toBe(true)
+      expect(wrapper.text()).toBe('')
     })
-    const $badge = wrapper.findComponent(BBadge)
-    expect($badge.exists()).toBe(true)
-    expect($badge.find('.custom-badge').exists()).toBe(true)
-  })
 
-  it('badge slot shows badge without badge prop', () => {
-    const wrapper = mount(BAvatar, {
-      slots: {badge: 'Badge Text'},
+    it('default slot takes precedence over src and text', () => {
+      const wrapper = mount(BAvatar, {
+        props: {src: '/a.png', text: 'BV'},
+        slots: {default: () => h('i', {class: 'icon'})},
+      })
+      expect(wrapper.find('img').exists()).toBe(false)
+      expect(wrapper.find('i.icon').exists()).toBe(true)
+      expect(wrapper.text()).toBe('')
     })
-    const $badge = wrapper.findComponent(BBadge)
-    expect($badge.exists()).toBe(true)
-    expect($badge.text()).toBe('Badge Text')
-  })
 
-  it('applies badge font-size style for custom sizes', () => {
-    const wrapper = mount(BAvatar, {props: {badge: true, size: '4em'}})
-    const $badge = wrapper.getComponent(BBadge)
-    expect($badge.attributes('style')).toContain('font-size')
-    expect($badge.attributes('style')).toContain('calc(4em * 0.27999999999999997)')
-  })
-
-  // badge class with default slot
-  it('has badge class when theme is set and has default slot', () => {
-    const wrapper = mount(BAvatar, {
-      props: {color: {theme: 'primary'}},
-      slots: {default: 'Custom'},
+    it('falls back to text and emits img-error when the image fails', async () => {
+      const wrapper = mount(BAvatar, {props: {src: '/bad.png', text: 'BV'}})
+      await wrapper.get('img').trigger('error')
+      expect(wrapper.emitted('img-error')).toHaveLength(1)
+      expect(wrapper.emitted('img-error')?.[0]?.[0]).toBeInstanceOf(Event)
+      expect(wrapper.find('img').exists()).toBe(false)
+      expect(wrapper.text()).toBe('BV')
     })
-    expect(wrapper.classes()).toContain('badge')
+
+    it('renders a new image when src changes after an error', async () => {
+      const wrapper = mount(BAvatar, {props: {src: '/bad.png'}})
+      await wrapper.get('img').trigger('error')
+      expect(wrapper.find('img').exists()).toBe(false)
+      await wrapper.setProps({src: '/good.png'})
+      expect(wrapper.get('img').attributes('src')).toBe('/good.png')
+    })
   })
 
-  it('does not have badge class when button is true even with default slot', () => {
-    const wrapper = mount(BAvatar, {
-      props: {button: true, color: {theme: 'primary'}},
-      slots: {default: 'Custom'},
+  describe('size', () => {
+    it.each(['xs', 'sm', 'lg', 'xl'] as const)('size %s adds class avatar-%s', (size) => {
+      const wrapper = mount(BAvatar, {props: {size}})
+      expect(wrapper.classes()).toContain(`avatar-${size}`)
+      expect(wrapper.attributes('style')).toBeUndefined()
     })
-    expect(wrapper.classes()).not.toContain('badge')
+
+    it('size md adds no class', () => {
+      const wrapper = mount(BAvatar, {props: {size: 'md'}})
+      expect(wrapper.classes()).not.toContain('avatar-md')
+      expect(wrapper.attributes('style')).toBeUndefined()
+    })
+
+    it('numeric size sets --bs-avatar-size in px', () => {
+      const wrapper = mount(BAvatar, {props: {size: 64}})
+      expect(wrapper.attributes('style')).toContain('--bs-avatar-size: 64px')
+    })
+
+    it('custom string size sets --bs-avatar-size as is', () => {
+      const wrapper = mount(BAvatar, {props: {size: '5rem'}})
+      expect(wrapper.attributes('style')).toContain('--bs-avatar-size: 5rem')
+    })
+
+    it('does not set inline width or height', () => {
+      const wrapper = mount(BAvatar, {props: {size: '5rem'}})
+      expect(wrapper.attributes('style')).not.toContain('width')
+      expect(wrapper.attributes('style')).not.toContain('height')
+    })
   })
 
-  // Group injection
-  it('uses size from parent group', () => {
-    const wrapper = mount(BAvatar, {
-      global: {
-        provide: {
-          [avatarGroupInjectionKey as unknown as symbol]: {
-            overlapScale: ref(0.15),
-            size: ref('60px'),
-            square: ref(false),
-            roundedProps: ref({
-              rounded: 'circle',
-              roundedSides: {top: undefined, bottom: undefined, start: undefined, end: undefined},
-            }),
-            rounded: ref('circle' as const),
-            roundedSides: {
-              top: ref(undefined),
-              bottom: ref(undefined),
-              start: ref(undefined),
-              end: ref(undefined),
-            },
-            theme: ref(null),
-            bg: ref(null),
-            fg: ref(null),
-          },
-        },
-      },
+  describe('color and variant', () => {
+    it('color theme adds theme class', () => {
+      const wrapper = mount(BAvatar, {props: {color: {theme: 'primary'}}})
+      expect(wrapper.classes()).toContain('theme-primary')
     })
-    expect(wrapper.attributes('style')).toContain('width: 60px')
-    expect(wrapper.attributes('style')).toContain('height: 60px')
+
+    it('color bg and fg add utility classes', () => {
+      const wrapper = mount(BAvatar, {props: {color: {bg: 'subtle-primary', fg: 'primary'}}})
+      expect(wrapper.classes()).toContain('bg-subtle-primary')
+      expect(wrapper.classes()).toContain('fg-primary')
+    })
+
+    it('variant subtle adds avatar-subtle', () => {
+      const wrapper = mount(BAvatar, {props: {variant: 'subtle'}})
+      expect(wrapper.classes()).toContain('avatar-subtle')
+    })
+
+    it('variant null adds no variant class', () => {
+      const wrapper = mount(BAvatar, {props: {variant: null}})
+      expect(wrapper.classes()).toEqual(['avatar'])
+    })
   })
 
-  it('uses variant from parent group', () => {
-    const wrapper = mount(BAvatar, {
-      global: {
-        provide: {
-          [avatarGroupInjectionKey as unknown as symbol]: {
-            overlapScale: ref(0.15),
-            size: ref(undefined),
-            square: ref(false),
-            roundedProps: ref({
-              rounded: 'circle',
-              roundedSides: {top: undefined, bottom: undefined, start: undefined, end: undefined},
-            }),
-            rounded: ref('circle' as const),
-            roundedSides: {
-              top: ref(undefined),
-              bottom: ref(undefined),
-              start: ref(undefined),
-              end: ref(undefined),
-            },
-            theme: ref('danger'),
-            bg: ref(null),
-            fg: ref(null),
-          },
-        },
-      },
+  describe('status', () => {
+    it('does not render a status by default', () => {
+      const wrapper = mount(BAvatar)
+      expect(wrapper.find('.avatar-status').exists()).toBe(false)
     })
-    expect(wrapper.classes()).toContain('theme-danger')
+
+    it.each(['online', 'offline', 'busy', 'away'] as const)('renders status %s', (status) => {
+      const wrapper = mount(BAvatar, {props: {status}})
+      const el = wrapper.get('.avatar-status')
+      expect(el.element.tagName).toBe('SPAN')
+      expect(el.classes()).toContain(`status-${status}`)
+      expect(el.attributes('role')).toBe('img')
+      expect(el.attributes('aria-label')).toBe(
+        `${status.charAt(0).toUpperCase()}${status.slice(1)}`
+      )
+    })
+
+    it('statusLabel overrides the label', () => {
+      const wrapper = mount(BAvatar, {props: {status: 'busy', statusLabel: 'Beschäftigt'}})
+      expect(wrapper.get('.avatar-status').attributes('aria-label')).toBe('Beschäftigt')
+    })
+
+    it('status renders after the content', () => {
+      const wrapper = mount(BAvatar, {props: {src: '/a.png', status: 'online'}})
+      const children = Array.from(wrapper.element.children)
+      expect(children[0]?.tagName).toBe('IMG')
+      expect(children[1]?.classList.contains('avatar-status')).toBe(true)
+    })
+
+    it('status renders with a default slot', () => {
+      const wrapper = mount(BAvatar, {
+        props: {status: 'away'},
+        slots: {default: 'X'},
+      })
+      expect(wrapper.find('.avatar-status').exists()).toBe(true)
+    })
   })
 
-  it('uses square from parent group', () => {
-    const wrapper = mount(BAvatar, {
-      global: {
-        provide: {
-          [avatarGroupInjectionKey as unknown as symbol]: {
-            overlapScale: ref(0.15),
-            size: ref(undefined),
-            square: ref(true),
-            roundedProps: ref({
-              rounded: 'circle',
-              roundedSides: {top: undefined, bottom: undefined, start: undefined, end: undefined},
-            }),
-            rounded: ref('circle' as const),
-            roundedSides: {
-              top: ref(undefined),
-              bottom: ref(undefined),
-              start: ref(undefined),
-              end: ref(undefined),
-            },
-            theme: ref(null),
-            bg: ref(null),
-            fg: ref(null),
-          },
-        },
-      },
+  describe('attrs', () => {
+    it('passes attrs and classes to the root', () => {
+      const wrapper = mount(BAvatar, {attrs: {'aria-label': 'User', 'class': 'foo'}})
+      expect(wrapper.attributes('aria-label')).toBe('User')
+      expect(wrapper.classes()).toContain('foo')
+      expect(wrapper.classes()).toContain('avatar')
     })
-    expect(wrapper.classes()).toContain('rounded-0')
-  })
-
-  it('applies margin styles from parent group overlapScale', () => {
-    const wrapper = mount(BAvatar, {
-      global: {
-        provide: {
-          [avatarGroupInjectionKey as unknown as symbol]: {
-            overlapScale: ref(0.15),
-            size: ref('40px'),
-            square: ref(false),
-            roundedProps: ref({
-              rounded: 'circle',
-              roundedSides: {top: undefined, bottom: undefined, start: undefined, end: undefined},
-            }),
-            rounded: ref('circle' as const),
-            roundedSides: {
-              top: ref(undefined),
-              bottom: ref(undefined),
-              start: ref(undefined),
-              end: ref(undefined),
-            },
-            theme: ref(null),
-            bg: ref(null),
-            fg: ref(null),
-          },
-        },
-      },
-    })
-    expect(wrapper.attributes('style')).toContain('margin-left: calc(40px * -0.15)')
-    expect(wrapper.attributes('style')).toContain('margin-right: calc(40px * -0.15)')
-  })
-
-  it('uses bg from parent group', () => {
-    const wrapper = mount(BAvatar, {
-      global: {
-        provide: {
-          [avatarGroupInjectionKey as unknown as symbol]: {
-            overlapScale: ref(0.15),
-            size: ref(undefined),
-            square: ref(false),
-            roundedProps: ref({
-              rounded: 'circle',
-              roundedSides: {top: undefined, bottom: undefined, start: undefined, end: undefined},
-            }),
-            rounded: ref('circle' as const),
-            roundedSides: {
-              top: ref(undefined),
-              bottom: ref(undefined),
-              start: ref(undefined),
-              end: ref(undefined),
-            },
-            theme: ref(null),
-            bg: ref('subtle-warning'),
-            fg: ref(null),
-          },
-        },
-      },
-    })
-    expect(wrapper.classes()).toContain('bg-subtle-warning')
-  })
-
-  it('uses fg from parent group', () => {
-    const wrapper = mount(BAvatar, {
-      global: {
-        provide: {
-          [avatarGroupInjectionKey as unknown as symbol]: {
-            overlapScale: ref(0.15),
-            size: ref(undefined),
-            square: ref(false),
-            roundedProps: ref({
-              rounded: 'circle',
-              roundedSides: {top: undefined, bottom: undefined, start: undefined, end: undefined},
-            }),
-            rounded: ref('circle' as const),
-            roundedSides: {
-              top: ref(undefined),
-              bottom: ref(undefined),
-              start: ref(undefined),
-              end: ref(undefined),
-            },
-            theme: ref(null),
-            bg: ref(null),
-            fg: ref('emphasis-danger'),
-          },
-        },
-      },
-    })
-    expect(wrapper.classes()).toContain('fg-emphasis-danger')
   })
 })

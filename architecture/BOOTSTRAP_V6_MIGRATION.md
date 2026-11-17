@@ -20,7 +20,7 @@ It is the single source of truth for the migration: implementation work follows 
 | Phase 2b: component batches                                                                                        | Wave 1 merged (#165–#168); wave 2 not started — see [Implementation progress](#implementation-progress)                                                                                                     |
 | Phase 3: migration docs                                                                                            | Not started                                                                                                                                                                                                 |
 | Deferred components                                                                                                | Plans decided and merged ([#169](https://github.com/VividLemon/bootstrap-vue-next/pull/169), `BOOTSTRAP_V6_NEW_COMPONENTS.md`); implementation not started. See [Deferred components](#deferred-components) |
-| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md` |
+| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`                                                                         |
 | Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source)                                                                                                                          |
 | Post-migration (maybe): public `useTable` composable                                                               | Undecided — see `USE_TABLE_COMPOSABLE.md`                                                                                                                                                                   |
 
@@ -334,8 +334,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### BAvatar / BAvatarGroup
 
-- **Now:** `badge*` colors → `badgeColor`.
-- **Pending:** v6 Avatar markup and classes; library `_avatar.scss` vs v6 avatar CSS.
+- **Done (G5, `bootstrap-v6-g5-avatar`):** v6 `.avatar` / `.avatar-img` / `.avatar-status` / `.avatar-stack` markup; `_avatar.scss` deleted; `variant: 'subtle'`, `status` / `statusLabel`, `xs`–`xl` sizes added; link, button, badge, rounding and group color props removed (see `BOOTSTRAP_V6_DISPLAY.md`).
 
 ### BFormTags → Chips
 

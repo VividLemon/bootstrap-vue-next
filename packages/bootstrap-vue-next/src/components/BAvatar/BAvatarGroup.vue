@@ -1,55 +1,39 @@
 <template>
-  <component :is="props.tag" class="b-avatar-group" role="group">
-    <div class="b-avatar-group-inner" :style="paddingStyle">
-      <slot />
-    </div>
+  <component :is="props.tag" class="avatar-stack" :class="computedClasses" role="group">
+    <slot />
   </component>
 </template>
 
 <script setup lang="ts">
-import {resolvePartColor} from '../../composables/useThemeClasses'
-import {computed, provide, type StyleValue, toRef} from 'vue'
+import {computed, provide, toRef} from 'vue'
 import {avatarGroupInjectionKey} from '../../utils/keys'
 import {useDefaults} from '../../composables/useDefaults'
 import {useToNumber} from '@vueuse/core'
-import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
-import type {BAvatarGroupProps, BAvatarGroupSlots} from '../../types'
+import type {AvatarSize, BAvatarGroupProps, BAvatarGroupSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BAvatarGroupProps>(), {
   overlap: 0.3,
   size: undefined,
-  square: false,
   tag: 'div',
-  // RadiusElementExtendables props
-  rounded: 'circle',
-  roundedSides: undefined,
-  // End RadiusElementExtendables props
-  color: undefined,
 })
 const props = useDefaults(_props, 'BAvatarGroup')
-const computedColor = computed(() => resolvePartColor(props.color, {}))
 defineSlots<BAvatarGroupSlots>()
+
+const STACK_SIZES: ReadonlySet<unknown> = new Set(
+  Object.keys({xs: null, sm: null, lg: null, xl: null} satisfies Record<
+    Exclude<AvatarSize, 'md'>,
+    null
+  >)
+)
 
 const overlapNumber = useToNumber(() => props.overlap)
 
-const {style: computedSize} = useNumberishToStyle(() => props.size)
-const overlapScale = computed(() => Math.min(Math.max(overlapNumber.value, 0), 1) / 2)
-
-const paddingStyle = computed<StyleValue>(() => {
-  const value = computedSize.value ? `calc(${computedSize.value} * ${overlapScale.value})` : null
-  return value ? {paddingLeft: value, paddingRight: value} : {}
-})
+const computedClasses = computed(() => ({
+  [`avatar-stack-${props.size}`]: STACK_SIZES.has(props.size),
+}))
 
 provide(avatarGroupInjectionKey, {
-  overlapScale,
+  overlap: overlapNumber,
   size: toRef(() => props.size),
-  square: toRef(() => props.square),
-  roundedProps: computed(() => ({
-    rounded: props.rounded,
-    roundedSides: props.roundedSides,
-  })),
-  theme: toRef(() => computedColor.value.theme ?? null),
-  bg: toRef(() => computedColor.value.bg ?? null),
-  fg: toRef(() => computedColor.value.fg ?? null),
 })
 </script>

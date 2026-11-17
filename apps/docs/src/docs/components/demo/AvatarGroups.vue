@@ -1,13 +1,11 @@
 <template>
   <!-- #region template -->
-  <BAvatarGroup size="60px">
-    <BAvatar />
+  <BAvatarGroup aria-label="Team">
+    <BAvatar src="https://picsum.photos/80/80/?image=40" alt="Ann" />
     <BAvatar text="BV" :color="{ theme: 'primary' }" />
-    <BAvatar src="https://picsum.photos/300/300" :color="{ theme: 'info' }" />
+    <BAvatar src="https://picsum.photos/80/80/?image=64" alt="Ben" />
     <BAvatar text="OK" :color="{ theme: 'danger' }" />
-    <BAvatar :color="{ theme: 'warning' }" />
-    <BAvatar src="https://picsum.photos/320/320" :color="{ theme: 'inverse' }" />
-    <BAvatar :color="{ theme: 'success' }" />
+    <BAvatar text="+3" :color="{ theme: 'secondary' }" />
   </BAvatarGroup>
   <!-- #endregion template -->
 </template>
