@@ -123,17 +123,14 @@ export type BFormSpinbuttonEmits = {
   change: [value: number | null]
 }
 
-export type BFormTagEmits = {
-  remove: [value: string]
+export type BChipEmits = {
+  remove: [value: string, event: MouseEvent]
 }
 
-export type BFormTagsEmits = {
-  'blur': [value: FocusEvent]
-  'focus': [value: FocusEvent]
-  'focusin': [value: FocusEvent]
-  'focusout': [value: FocusEvent]
-  'tag-added': [value: readonly string[]]
-  'tag-state': [...args: readonly string[][]]
+export type BFormChipsEmits = {
+  add: [value: string, event: BvEvent]
+  remove: [value: string, event: BvEvent]
+  select: [values: string[]]
 }
 
 export type BLinkEmits = {

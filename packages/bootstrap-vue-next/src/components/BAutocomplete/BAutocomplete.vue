@@ -32,11 +32,13 @@
             :selected="selectedOptions"
             :remove="removeSelected"
           >
-            <BFormTag
+            <BChip
               v-for="(opt, i) in selectedOptions"
               :key="optionKey(opt, i)"
-              :title="String(opt.text)"
+              :value="String(opt.text)"
               :disabled="props.disabled"
+              :dismissible="!props.disabled"
+              :dismiss-label="`Remove ${opt.text}`"
               :color="{theme: 'secondary'}"
               :class="{
                 'b-autocomplete-tag-muted': pendingDelete && !isLastSelectedOption(opt, i),
@@ -45,7 +47,7 @@
               @remove="removeSelected(opt)"
             >
               {{ opt.text }}
-            </BFormTag>
+            </BChip>
           </slot>
           <template v-else>
             <span
@@ -179,7 +181,7 @@ import {useId} from '../../composables/useId'
 import BInputGroup from '../BInputGroup/BInputGroup.vue'
 import BButton from '../BButton/BButton.vue'
 import BFormInput from '../BFormInput/BFormInput.vue'
-import BFormTag from '../BFormTags/BFormTag.vue'
+import BChip from '../BFormChips/BChip.vue'
 import BCloseButton from '../BButton/BCloseButton.vue'
 import {useFormSelect} from '../../composables/useFormSelect'
 import {useAriaInvalid} from '../../composables/useAriaInvalid'

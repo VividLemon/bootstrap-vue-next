@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {Placement} from './Alignment'
-import type {ClassValue} from './AnyValuedAttributes'
-import type {ButtonVariant, ColorExtendables} from './ColorTypes'
 import type {ValidationState} from './CommonTypes'
 import type {LiteralUnion} from './LiteralUnion'
 import type {SelectOption} from './SelectTypes'
 import type {Size} from './Size'
 import type {SpinnerType} from './SpinnerType'
 import type {BSpinnerProps} from './ComponentProps'
-import type {InputType} from './InputType'
 import type {TableField} from './TableTypes'
 import type {DateRange, DateValue, SegmentPart, TimeValue} from 'reka-ui'
 import type {StringAriaInvalid} from './AriaInvalid'
@@ -501,59 +498,16 @@ export type BFormSpinbuttonSlots = {
   increment?: (props: {hasFocus: boolean}) => any
 }
 
-export type BFormTagSlots = {
-  default?: (props: Record<string, never>) => any
+export type BChipSlots = {
+  'default'?: (props: Record<string, never>) => any
+  'dismiss-icon'?: (props: Record<string, never>) => any
+  'icon'?: (props: Record<string, never>) => any
+  'img'?: (props: Record<string, never>) => any
 }
 
-export type BFormTagsSlots = {
-  'add-button-text'?: (props: Record<string, never>) => any
-
-  'default'?: (props: {
-    addButtonText: string
-    addButtonVariant: ButtonVariant | null
-    addButtonColor: ColorExtendables
-    addTag: (tag?: string) => void
-    disableAddButton: boolean
-    disabled: boolean
-    duplicateTagText: string
-    duplicateTags: string[]
-    form: string | undefined
-    inputAttrs: Record<string, unknown>
-    inputClass: ClassValue
-    inputHandlers: {
-      input: (e: Event | string) => void
-      keydown: (e: KeyboardEvent) => void
-      change: (e: Event) => void
-    }
-    inputId: string
-    inputType: InputType
-    invalidTagText: string
-    invalidTags: string[]
-    isDuplicate: boolean
-    isInvalid: boolean
-    isLimitReached: boolean
-    limitTagsText: string
-    limit: number
-    noTagRemove: boolean
-    placeholder: string
-    removeTag: (tag?: string) => void
-    required: boolean
-    separator: string | readonly string[] | undefined
-    size: Size | undefined
-    state: ValidationState
-    tagClass: ClassValue
-    tagPills: boolean
-    tagRemoveLabel: string | undefined
-    tagColor: ColorExtendables
-    tags: string[]
-  }) => any
-  'tag'?: (props: {
-    tag: string
-    tagClass: ClassValue
-    tagColor: ColorExtendables
-    tagPills: boolean
-    removeTag: (tag?: string) => void
-  }) => any
+export type BFormChipsSlots = {
+  'chip'?: (props: {value: string; index: number; selected: boolean; remove: () => boolean}) => any
+  'dismiss-icon'?: (props: Record<string, never>) => any
 }
 
 export type BLinkSlots = {

@@ -4,18 +4,15 @@
       <BCol>
         <BFormGroup label="Tags validation example" label-for="tags-validation" :state="state">
           <!-- <label for="tags-basic">Type a new tag and press enter</label> -->
-          <BFormTags
+          <BFormChips
+            id="tags-validation"
             v-model="value"
-            :tag-color="{ theme: 'warning' }"
+            :color="{ theme: 'warning' }"
             autofocus
-            separator=" ,"
-            remove-on-delete
+            separator=" "
             name="tag-names"
-            no-outer-focus
-            no-add-on-enter
             :input-attrs="{'aria-describedby': 'tags-validation-help'}"
-            :tag-validator="tagValidator"
-            @tag-state="onTagState"
+            @add="onAdd"
           />
           <template #invalid-feedback>
             You must provide at least 3 tags and no more than 8
@@ -117,20 +114,15 @@
 </template>
 
 <script setup lang="ts">
+import type {BvEvent} from 'bootstrap-vue-next'
 import {computed, ref} from 'vue'
 
 const value = ref(['apple', 'orange'])
 
 const state = computed(() => value.value.length > 2 && value.value.length < 9)
 
-const tagValidator = (tag: string) => tag === tag.toLowerCase() && tag.length > 2 && tag.length < 6
-const onTagState = (valid: string[], invalid: string[], duplicate: string[]) => {
-   
-  console.log({
-    valid,
-    invalid,
-    duplicate,
-  })
+const onAdd = (tag: string, event: BvEvent) => {
+  if (!(tag === tag.toLowerCase() && tag.length > 2 && tag.length < 6)) event.preventDefault()
 }
 
 const name = ref('')
