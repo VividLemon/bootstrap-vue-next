@@ -119,6 +119,10 @@ export type BFormRangeEmits = {
   change: [value: number]
 }
 
+export type BFormOtpEmits = {
+  complete: [value: string]
+}
+
 export type BFormStrengthEmits = {
   change: [value: PasswordStrengthChange]
 }
