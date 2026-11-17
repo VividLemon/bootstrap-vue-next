@@ -340,7 +340,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 ### BFormTags → Chips
 
 - **Now:** `tag*` / `addButton*` colors → `tagColor` / `addButtonColor`.
-- **Pending:** v6 Chips markup; part attrs (`inputClass`, `tagClass` → `*Attrs`).
+- **Done (G4, [#201](https://github.com/VividLemon/bootstrap-vue-next/pull/201)):** replaced by `BFormChips` / `BChip` (v6 Chips markup, `chipAttrs`, `inputAttrs`).
 
 ### Other new-in-v6 counterparts
 
