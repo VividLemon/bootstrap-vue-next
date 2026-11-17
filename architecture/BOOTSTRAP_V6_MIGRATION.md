@@ -20,7 +20,7 @@ It is the single source of truth for the migration: implementation work follows 
 | Phase 2b: component batches                                                                                        | Wave 1 merged (#165–#168); wave 2 not started — see [Implementation progress](#implementation-progress)                                                                                                     |
 | Phase 3: migration docs                                                                                            | Not started                                                                                                                                                                                                 |
 | Deferred components                                                                                                | Plans decided and merged ([#169](https://github.com/VividLemon/bootstrap-vue-next/pull/169), `BOOTSTRAP_V6_NEW_COMPONENTS.md`); implementation not started. See [Deferred components](#deferred-components) |
-| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md` |
+| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`                                                                         |
 | Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source)                                                                                                                          |
 | Post-migration (maybe): public `useTable` composable                                                               | Undecided — see `USE_TABLE_COMPOSABLE.md`                                                                                                                                                                   |
 
@@ -324,8 +324,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### BCarousel
 
-- **Now:** `noAnimation` → `noTransition`.
-- **Pending:** v6 Carousel rewrite (removed `.carousel-control-prev/next`, `.carousel-caption`, `.carousel-dark`, `.carousel-stacked`; `data-bs-ride` → autoplay; `wrap` → `ends`); replace `<Transition>`.
+- **Done (G5, `bootstrap-v6-g5-carousel`):** v6 scroll-snap rewrite on an internal engine ported from `carousel.ts`; no `<TransitionGroup>`; `autoplay` / `ends` / `pause` / `playPause` / `overlay` / `center` / `auto`; cancelable `slide`; captions and swipe props removed (see `BOOTSTRAP_V6_DISPLAY.md`).
 
 ### BOverlay
 

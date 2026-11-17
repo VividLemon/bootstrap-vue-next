@@ -1,948 +1,373 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
+import {h, nextTick} from 'vue'
+import {renderToString} from 'vue/server-renderer'
 import BCarousel from './BCarousel.vue'
 import BCarouselSlide from './BCarouselSlide.vue'
-import BImg from '../BImg/BImg.vue'
-import {TransitionGroup, h, nextTick} from 'vue'
+import type {BvCarouselEvent} from '../../utils/classes'
+import type {CarouselControlsSlotProps} from '../../types'
+
+const slides = (n = 3) =>
+  Array.from({length: n}, (_, i) =>
+    h(BCarouselSlide, {key: i, id: `s${i}`}, {default: () => `Slide ${i}`})
+  )
+
+const activeSlide = (wrapper: ReturnType<typeof mount>) =>
+  wrapper.findAll('.carousel-item').findIndex((s) => s.classes().includes('active'))
+
+// No layout in happy-dom: drive the engine's no-observer / no-animation path
+beforeEach(() => {
+  vi.stubGlobal('IntersectionObserver', undefined)
+  vi.stubGlobal('requestAnimationFrame', undefined)
+})
+afterEach(() => {
+  vi.unstubAllGlobals()
+  vi.restoreAllMocks()
+  vi.useRealTimers()
+})
 
 describe('carousel', () => {
   enableAutoUnmount(afterEach)
 
-  it('has static class carousel', () => {
-    const wrapper = mount(BCarousel)
-    expect(wrapper.classes()).toContain('carousel')
-  })
-
-  it('has static class slide', () => {
-    const wrapper = mount(BCarousel)
-    expect(wrapper.classes()).toContain('slide')
-  })
-
-  it('has static class pointer-event', () => {
-    const wrapper = mount(BCarousel)
-    expect(wrapper.classes()).toContain('pointer-event')
-  })
-
-  it('tag is div', () => {
-    const wrapper = mount(BCarousel)
-    expect(wrapper.element.tagName).toBe('DIV')
-  })
-
-  it('has attr id', () => {
-    const wrapper = mount(BCarousel)
-    expect(wrapper.attributes('id')).toBeDefined()
-  })
-
-  it('has attr id when prop id', () => {
-    const wrapper = mount(BCarousel)
-    expect(wrapper.attributes('id')).toBeDefined()
-    expect(wrapper.attributes('id')).toContain('carousel')
-  })
-
-  it('uses custom id when prop id is set', () => {
-    const wrapper = mount(BCarousel, {
-      props: {id: 'my-carousel'},
-    })
-    expect(wrapper.attributes('id')).toBe('my-carousel')
-  })
-
-  it('id is reactive', async () => {
-    const wrapper = mount(BCarousel, {
-      props: {id: 'first-id'},
-    })
-    expect(wrapper.attributes('id')).toBe('first-id')
-    await wrapper.setProps({id: 'second-id'})
-    expect(wrapper.attributes('id')).toBe('second-id')
-  })
-
-  it('has div with class carousel-inner', () => {
-    const wrapper = mount(BCarousel)
-    const $div = wrapper.find('.carousel-inner')
-    expect($div.exists()).toBe(true)
-  })
-
-  it('element that has class carousel-inner is div', () => {
-    const wrapper = mount(BCarousel)
-    const $div = wrapper.get('.carousel-inner')
-    expect($div.element.tagName).toBe('DIV')
-  })
-
-  describe('fade', () => {
-    it('does not have class carousel-fade by default', () => {
-      const wrapper = mount(BCarousel)
-      expect(wrapper.classes()).not.toContain('carousel-fade')
+  describe('markup', () => {
+    it('renders v6 markup without v5 classes', () => {
+      const wrapper = mount(BCarousel, {slots: {default: () => slides()}})
+      expect(wrapper.classes()).toEqual(['carousel'])
+      const inner = wrapper.get('.carousel-inner')
+      expect(inner.attributes('tabindex')).toBe('0')
+      expect(wrapper.findAll('.carousel-inner > .carousel-item')).toHaveLength(3)
+      const html = wrapper.html()
+      for (const cls of ['slide', 'pointer-event', 'carousel-control-prev', 'carousel-caption']) {
+        expect(html).not.toContain(`class="${cls}`)
+      }
     })
 
-    it('has class carousel-fade when prop fade is true', () => {
-      const wrapper = mount(BCarousel, {
-        props: {fade: true},
-      })
-      expect(wrapper.classes()).toContain('carousel-fade')
+    it('marks the modelValue slide active', async () => {
+      const wrapper = mount(BCarousel, {props: {modelValue: 1}, slots: {default: () => slides()}})
+      await nextTick()
+      expect(activeSlide(wrapper)).toBe(1)
     })
 
-    it('carousel-fade class is reactive', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {fade: false},
-      })
-      expect(wrapper.classes()).not.toContain('carousel-fade')
-      await wrapper.setProps({fade: true})
-      expect(wrapper.classes()).toContain('carousel-fade')
-      await wrapper.setProps({fade: false})
-      expect(wrapper.classes()).not.toContain('carousel-fade')
+    it('renders no control bar by default', () => {
+      const wrapper = mount(BCarousel, {slots: {default: () => slides()}})
+      expect(wrapper.find('button').exists()).toBe(false)
+    })
+
+    it.each([
+      ['fade', 'carousel-fade'],
+      ['center', 'carousel-center'],
+      ['auto', 'carousel-auto'],
+      ['overlay', 'carousel-overlay'],
+    ] as const)('%s adds %s', (prop, cls) => {
+      const wrapper = mount(BCarousel, {props: {[prop]: true}})
+      expect(wrapper.classes()).toContain(cls)
+    })
+
+    it('noTransition sets the fade duration to 0s', () => {
+      const wrapper = mount(BCarousel, {props: {noTransition: true}})
+      expect(wrapper.attributes('style')).toContain('--bs-carousel-fade-duration: 0s')
     })
   })
 
   describe('indicators', () => {
-    it('does not have element with class carousel-indicators by default', () => {
-      const wrapper = mount(BCarousel)
-      const $div = wrapper.find('.carousel-indicators')
-      expect($div.exists()).toBe(false)
+    it('renders one 1-based labelled button per slide', () => {
+      const wrapper = mount(BCarousel, {
+        props: {indicators: true, id: 'c1'},
+        slots: {default: () => slides()},
+      })
+      const group = wrapper.get('.carousel-indicators')
+      expect(group.attributes('aria-label')).toBe('Select a slide to display')
+      const buttons = group.findAll('button')
+      expect(buttons.map((b) => b.attributes('aria-label'))).toEqual([
+        'Slide 1',
+        'Slide 2',
+        'Slide 3',
+      ])
+      expect(buttons.every((b) => b.attributes('data-bs-target') === '#c1')).toBe(true)
+      expect(buttons[0]?.classes()).toContain('active')
+      expect(buttons[0]?.attributes('aria-current')).toBe('true')
+      expect(buttons[1]?.attributes('aria-current')).toBeUndefined()
     })
 
-    it('has element with class carousel-indicators if prop indicator', () => {
+    it('clicking an indicator moves to that slide and emits slide/slid', async () => {
       const wrapper = mount(BCarousel, {
         props: {indicators: true},
+        slots: {default: () => slides()},
       })
-      const $div = wrapper.find('.carousel-indicators')
-      expect($div.exists()).toBe(true)
-    })
-
-    it('element with class carousel-indicators tag is div', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-      })
-      const $div = wrapper.get('.carousel-indicators')
-      expect($div.element.tagName).toBe('DIV')
-    })
-
-    it('div with carousel-indicators class has no button child by default', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-      })
-      const $div = wrapper.get('.carousel-indicators')
-      const $button = $div.find('button')
-      expect($button.exists()).toBe(false)
-    })
-
-    it('renders one indicator button per slide', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const buttons = wrapper.get('.carousel-indicators').findAll('button')
-      expect(buttons).toHaveLength(3)
-    })
-
-    it('renders indicator buttons with type button', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => [h(BCarouselSlide)]},
-      })
-      const button = wrapper.get('.carousel-indicators button')
-      expect(button.attributes('type')).toBe('button')
-    })
-
-    it('indicator buttons have data-bs-target attribute', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => [h(BCarouselSlide)]},
-      })
-      const button = wrapper.get('.carousel-indicators button')
-      expect(button.attributes('data-bs-target')).toBeDefined()
-    })
-
-    it('first indicator button has active class by default', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const buttons = wrapper.get('.carousel-indicators').findAll('button')
-      expect(buttons[0].classes()).toContain('active')
-      expect(buttons[1].classes()).not.toContain('active')
-    })
-
-    it('active indicator matches modelValue', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true, modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const buttons = wrapper.get('.carousel-indicators').findAll('button')
-      expect(buttons[0].classes()).not.toContain('active')
-      expect(buttons[1].classes()).toContain('active')
-      expect(buttons[2].classes()).not.toContain('active')
-    })
-
-    it('active indicator button has aria-current true', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const buttons = wrapper.get('.carousel-indicators').findAll('button')
-      expect(buttons[0].attributes('aria-current')).toBe('true')
-      expect(buttons[1].attributes('aria-current')).toBeUndefined()
-    })
-
-    it('indicator button has aria-label using indicatorsButtonLabel prop', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const buttons = wrapper.get('.carousel-indicators').findAll('button')
-      expect(buttons[0].attributes('aria-label')).toBe('Slide 0')
-      expect(buttons[1].attributes('aria-label')).toBe('Slide 1')
-    })
-
-    it('indicator button uses custom indicatorsButtonLabel', () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true, indicatorsButtonLabel: 'Go to'},
-        slots: {default: () => [h(BCarouselSlide)]},
-      })
-      const button = wrapper.get('.carousel-indicators button')
-      expect(button.attributes('aria-label')).toBe('Go to 0')
-    })
-
-    it('clicking indicator button updates modelValue', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true, modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const buttons = wrapper.get('.carousel-indicators').findAll('button')
-      await buttons[2].trigger('click')
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([2])
-    })
-
-    it('indicators are reactive to prop changes', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: false},
-      })
-      expect(wrapper.find('.carousel-indicators').exists()).toBe(false)
-      await wrapper.setProps({indicators: true})
-      expect(wrapper.find('.carousel-indicators').exists()).toBe(true)
+      await wrapper.findAll('.carousel-indicators button')[2]?.trigger('click')
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
+      const slide = wrapper.emitted<[BvCarouselEvent]>('slide')?.[0]?.[0]
+      expect(slide?.from).toBe(0)
+      expect(slide?.to).toBe(2)
+      expect(slide?.direction).toBe('left')
+      expect(slide?.cancelable).toBe(true)
+      expect(wrapper.emitted('slid')).toHaveLength(1)
+      expect(activeSlide(wrapper)).toBe(2)
     })
   })
 
   describe('controls', () => {
-    it('does not have element with class carousel-control-prev by default', () => {
-      const wrapper = mount(BCarousel)
-      const $button = wrapper.find('.carousel-control-prev')
-      expect($button.exists()).toBe(false)
+    it('renders prev/next icon buttons with hidden labels in a bar below the slides', () => {
+      const wrapper = mount(BCarousel, {props: {controls: true}, slots: {default: () => slides()}})
+      const bar = wrapper.element.lastElementChild as HTMLElement
+      expect(bar.className).toBe('d-flex justify-content-between align-items-center')
+      const buttons = wrapper.findAll('button.btn-icon')
+      expect(buttons).toHaveLength(2)
+      expect(buttons[0]?.find('.carousel-icon-prev').exists()).toBe(true)
+      expect(buttons[0]?.get('.visually-hidden').text()).toBe('Previous')
+      expect(buttons[1]?.find('.carousel-icon-next').exists()).toBe(true)
+      expect(buttons[1]?.get('.visually-hidden').text()).toBe('Next')
     })
 
-    it('has element with class carousel-control-prev when prop controls', () => {
+    it('overlay uses the overlay bar and subtle buttons', () => {
       const wrapper = mount(BCarousel, {
-        props: {controls: true},
+        props: {controls: true, overlay: true},
+        slots: {default: () => slides()},
       })
-      const $button = wrapper.find('.carousel-control-prev')
-      expect($button.exists()).toBe(true)
+      expect(wrapper.find('.carousel-overlay-controls').exists()).toBe(true)
+      expect(wrapper.get('button.btn-icon').classes()).toEqual(
+        expect.arrayContaining(['btn-subtle', 'theme-secondary'])
+      )
     })
 
-    it('element with class carousel-control-prev is tag button', () => {
+    it('next and prev move the model', async () => {
+      const wrapper = mount(BCarousel, {props: {controls: true}, slots: {default: () => slides()}})
+      const [prev, next] = wrapper.findAll('button.btn-icon')
+      await next?.trigger('click')
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1])
+      await prev?.trigger('click')
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([0])
+    })
+
+    it('ends wrap jumps from the first slide to the last', async () => {
       const wrapper = mount(BCarousel, {
-        props: {controls: true},
+        props: {controls: true, ends: 'wrap'},
+        slots: {default: () => slides()},
       })
-      const $button = wrapper.get('.carousel-control-prev')
-      expect($button.element.tagName).toBe('BUTTON')
+      await wrapper.findAll('button.btn-icon')[0]?.trigger('click')
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
     })
 
-    it('button with class carousel-control-prev has static attr as button', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-prev')
-      expect($button.attributes('type')).toBe('button')
-    })
-
-    it('button with class carousel-control-prev has child element with class carousel-control-prev-icon', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-prev')
-      const $span = $button.find('.carousel-control-prev-icon')
-      expect($span.exists()).toBe(true)
-    })
-
-    it('element with class carousel-control-prev-icon is tag span', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-prev')
-      const $span = $button.get('.carousel-control-prev-icon')
-      expect($span.element.tagName).toBe('SPAN')
-    })
-
-    it('element with class carousel-control-prev-icon has static attr aria-hidden to be true', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-prev')
-      const $span = $button.get('.carousel-control-prev-icon')
-      expect($span.attributes('aria-hidden')).toBe('true')
-    })
-
-    it('button with class carousel-control-prev has child element with class visually-hidden', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-prev')
-      const $span = $button.find('.visually-hidden')
-      expect($span.exists()).toBe(true)
-    })
-
-    it('button whos class is carousel-control-prev child element with class visually-hidden has is tag span', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-prev')
-      const $span = $button.get('.visually-hidden')
-      expect($span.element.tagName).toBe('SPAN')
-    })
-
-    it('button whos class is carousel-control-prev child element with class visually-hidden has text is prop controlsPrevText', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, controlsPrevText: 'foobar'},
-      })
-      const $button = wrapper.get('.carousel-control-prev')
-      const $span = $button.get('.visually-hidden')
-      expect($span.text()).toBe('foobar')
-    })
-
-    it('button whos class is carousel-control-prev child element with class visually-hidden has text previous by default', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-prev')
-      const $span = $button.get('.visually-hidden')
-      expect($span.text()).toBe('Previous')
-    })
-
-    it('does not have element with class carousel-control-next by default', () => {
-      const wrapper = mount(BCarousel)
-      const $button = wrapper.find('.carousel-control-next')
-      expect($button.exists()).toBe(false)
-    })
-
-    it('has element with class carousel-control-next when prop controls', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.find('.carousel-control-next')
-      expect($button.exists()).toBe(true)
-    })
-
-    it('element with class carousel-control-next is tag button', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-next')
-      expect($button.element.tagName).toBe('BUTTON')
-    })
-
-    it('button with class carousel-control-next has static attr as button', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-next')
-      expect($button.attributes('type')).toBe('button')
-    })
-
-    it('button with class carousel-control-next has child element with class carousel-control-next-icon', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-next')
-      const $span = $button.find('.carousel-control-next-icon')
-      expect($span.exists()).toBe(true)
-    })
-
-    it('button whos class is carousel-control-next child element with class carousel-control-next-icon is tag span', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-next')
-      const $span = $button.get('.carousel-control-next-icon')
-      expect($span.element.tagName).toBe('SPAN')
-    })
-
-    it('element with class carousel-control-next-icon has static attr aria-hidden to be true', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-next')
-      const $span = $button.get('.carousel-control-next-icon')
-      expect($span.attributes('aria-hidden')).toBe('true')
-    })
-
-    it('button with class carousel-control-next has child element with class visually-hidden', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-next')
-      const $span = $button.find('.visually-hidden')
-      expect($span.exists()).toBe(true)
-    })
-
-    it('button whos class is carousel-control-next has child element with class visually-hidden is tag span', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-next')
-      const $span = $button.get('.visually-hidden')
-      expect($span.element.tagName).toBe('SPAN')
-    })
-
-    it('button whos class is carousel-control-next child element with class visually-hidden has text is prop controlsNextText', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, controlsNextText: 'foobar'},
-      })
-      const $button = wrapper.get('.carousel-control-next')
-      const $span = $button.get('.visually-hidden')
-      expect($span.text()).toBe('foobar')
-    })
-
-    it('buttons whos class is carousel-control-next child element with class visually-hidden has text previous by default', () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true},
-      })
-      const $button = wrapper.get('.carousel-control-next')
-      const $span = $button.get('.visually-hidden')
-      expect($span.text()).toBe('Next')
-    })
-
-    it('controlsPrevText is reactive', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, controlsPrevText: 'Back'},
-      })
-      const $span = wrapper.get('.carousel-control-prev .visually-hidden')
-      expect($span.text()).toBe('Back')
-      await wrapper.setProps({controlsPrevText: 'Go Back'})
-      expect($span.text()).toBe('Go Back')
-    })
-
-    it('controlsNextText is reactive', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, controlsNextText: 'Forward'},
-      })
-      const $span = wrapper.get('.carousel-control-next .visually-hidden')
-      expect($span.text()).toBe('Forward')
-      await wrapper.setProps({controlsNextText: 'Go Forward'})
-      expect($span.text()).toBe('Go Forward')
-    })
-
-    it('controls are reactive to prop changes', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: false},
-      })
-      expect(wrapper.find('.carousel-control-prev').exists()).toBe(false)
-      expect(wrapper.find('.carousel-control-next').exists()).toBe(false)
-      await wrapper.setProps({controls: true})
-      expect(wrapper.find('.carousel-control-prev').exists()).toBe(true)
-      expect(wrapper.find('.carousel-control-next').exists()).toBe(true)
-    })
-  })
-
-  describe('events', () => {
-    it('emits prev-click when prev control is clicked', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-prev').trigger('click')
-      expect(wrapper.emitted('prev-click')).toHaveLength(1)
-      expect(wrapper.emitted('prev-click')![0][0]).toBeInstanceOf(MouseEvent)
-    })
-
-    it('emits next-click when next control is clicked', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-next').trigger('click')
-      expect(wrapper.emitted('next-click')).toHaveLength(1)
-      expect(wrapper.emitted('next-click')![0][0]).toBeInstanceOf(MouseEvent)
-    })
-
-    it('clicking next emits update:modelValue', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-next').trigger('click')
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([1])
-    })
-
-    it('clicking prev emits update:modelValue', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-prev').trigger('click')
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([0])
-    })
-
-    it('does not navigate when prev-click event is prevented', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {
-          'controls': true,
-          'modelValue': 1,
-          'onPrev-click': (e: MouseEvent) => e.preventDefault(),
-        },
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-prev').trigger('click')
-      expect(wrapper.emitted('prev-click')).toHaveLength(1)
-      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-    })
-
-    it('does not navigate when next-click event is prevented', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {
-          'controls': true,
-          'modelValue': 0,
-          'onNext-click': (e: MouseEvent) => e.preventDefault(),
-        },
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-next').trigger('click')
-      expect(wrapper.emitted('next-click')).toHaveLength(1)
-      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-    })
-  })
-
-  describe('navigation', () => {
-    it('wraps to first slide when navigating past last slide', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-next').trigger('click')
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([0])
-    })
-
-    it('wraps to last slide when navigating before first slide', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-prev').trigger('click')
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([2])
-    })
-
-    it('does not wrap past last slide when noWrap is true', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 1, noWrap: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-next').trigger('click')
-      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-    })
-
-    it('does not wrap before first slide when noWrap is true', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 0, noWrap: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-prev').trigger('click')
-      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-    })
-
-    it('navigates forward in the middle of slides', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 1},
-        slots: {
-          default: () => [h(BCarouselSlide), h(BCarouselSlide), h(BCarouselSlide)],
-        },
-      })
-      await wrapper.get('.carousel-control-next').trigger('click')
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([2])
-    })
-
-    it('navigates backward in the middle of slides', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 1},
-        slots: {
-          default: () => [h(BCarouselSlide), h(BCarouselSlide), h(BCarouselSlide)],
-        },
-      })
-      await wrapper.get('.carousel-control-prev').trigger('click')
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([0])
-    })
-  })
-
-  describe('direction', () => {
-    it('uses forward (next) direction when navigating from first to second slide with 2 slides', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-next').trigger('click')
-      await nextTick()
-      const tg = wrapper.findComponent(TransitionGroup)
-      expect(tg.props('enterFromClass')).toContain('carousel-item-next')
-    })
-
-    it('uses forward (next) direction when wrapping from last to first slide with 2 slides', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-next').trigger('click')
-      await nextTick()
-      const tg = wrapper.findComponent(TransitionGroup)
-      expect(tg.props('enterFromClass')).toContain('carousel-item-next')
-    })
-
-    it('uses backward (prev) direction when navigating from second to first slide with 2 slides', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-prev').trigger('click')
-      await nextTick()
-      const tg = wrapper.findComponent(TransitionGroup)
-      expect(tg.props('enterFromClass')).toContain('carousel-item-prev')
-    })
-
-    it('uses backward (prev) direction when wrapping from first to last slide with 2 slides', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-prev').trigger('click')
-      await nextTick()
-      const tg = wrapper.findComponent(TransitionGroup)
-      expect(tg.props('enterFromClass')).toContain('carousel-item-prev')
-    })
-
-    it('uses forward direction when navigating next with 3 or more slides', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {controls: true, modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      await wrapper.get('.carousel-control-next').trigger('click')
-      await nextTick()
-      const tg = wrapper.findComponent(TransitionGroup)
-      expect(tg.props('enterFromClass')).toContain('carousel-item-next')
-    })
-
-    it('uses backward direction when navigating prev with 3 or more slides', async () => {
+    it('ends loop continues from the last slide to the first through a clone', async () => {
       const wrapper = mount(BCarousel, {
         props: {controls: true, modelValue: 2},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide), h(BCarouselSlide)]},
+        slots: {default: () => slides()},
+        attachTo: document.body,
       })
-      await wrapper.get('.carousel-control-prev').trigger('click')
+      await wrapper.findAll('button.btn-icon')[1]?.trigger('click')
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([0])
+      expect(wrapper.emitted<[BvCarouselEvent]>('slid')?.[0]?.[0]?.to).toBe(0)
+      expect(wrapper.find('.carousel-item-clone').exists()).toBe(false)
+    })
+
+    it('ends stop disables prev at the start and next at the end', async () => {
+      const wrapper = mount(BCarousel, {
+        props: {controls: true, ends: 'stop'},
+        slots: {default: () => slides(2)},
+      })
       await nextTick()
-      const tg = wrapper.findComponent(TransitionGroup)
-      expect(tg.props('enterFromClass')).toContain('carousel-item-prev')
+      const [prev, next] = wrapper.findAll('button.btn-icon')
+      expect(prev?.attributes('disabled')).toBeDefined()
+      expect(next?.attributes('disabled')).toBeUndefined()
+      await next?.trigger('click')
+      await nextTick()
+      expect(prev?.attributes('disabled')).toBeUndefined()
+      expect(next?.attributes('disabled')).toBeDefined()
+    })
+
+    it('a prevented slide event cancels navigation', async () => {
+      const wrapper = mount(BCarousel, {
+        props: {controls: true, onSlide: (e: BvCarouselEvent) => e.preventDefault()},
+        slots: {default: () => slides()},
+      })
+      await wrapper.findAll('button.btn-icon')[1]?.trigger('click')
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+      expect(wrapper.emitted('slid')).toBeUndefined()
+      expect(activeSlide(wrapper)).toBe(0)
+    })
+
+    it('does not emit prev-click / next-click any more', async () => {
+      const wrapper = mount(BCarousel, {props: {controls: true}, slots: {default: () => slides()}})
+      await wrapper.findAll('button.btn-icon')[1]?.trigger('click')
+      expect(wrapper.emitted('next-click')).toBeUndefined()
     })
   })
 
-  describe('modelValue', () => {
-    it('defaults to 0', () => {
-      const wrapper = mount(BCarousel, {
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const slides = wrapper.get('.carousel-inner').findAll('.carousel-item')
-      expect(slides[0].isVisible()).toBe(true)
+  describe('v-model', () => {
+    it('a model change navigates and emits slide', async () => {
+      const wrapper = mount(BCarousel, {props: {modelValue: 0}, slots: {default: () => slides()}})
+      await wrapper.setProps({modelValue: 2})
+      expect(activeSlide(wrapper)).toBe(2)
+      expect(wrapper.emitted('slide')).toHaveLength(1)
     })
 
-    it('shows the slide matching modelValue', () => {
+    it('a prevented model change reverts the model', async () => {
       const wrapper = mount(BCarousel, {
-        props: {modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
+        props: {modelValue: 0, onSlide: (e: BvCarouselEvent) => e.preventDefault()},
+        slots: {default: () => slides()},
       })
-      const slides = wrapper.get('.carousel-inner').findAll('.carousel-item')
-      expect(slides[0].attributes('style')).toContain('display: none')
-      expect(slides[1].attributes('style')).not.toContain('display: none')
-    })
-
-    it('first slide has active class when modelValue is 0', () => {
-      const wrapper = mount(BCarousel, {
-        props: {modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const slides = wrapper.get('.carousel-inner').findAll('.carousel-item')
-      expect(slides[0].classes()).toContain('active')
-      expect(slides[1].classes()).not.toContain('active')
-    })
-
-    it('second slide has active class when modelValue is 1', () => {
-      const wrapper = mount(BCarousel, {
-        props: {modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const slides = wrapper.get('.carousel-inner').findAll('.carousel-item')
-      expect(slides[0].classes()).not.toContain('active')
-      expect(slides[1].classes()).toContain('active')
+      await wrapper.setProps({modelValue: 1})
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([0])
+      expect(activeSlide(wrapper)).toBe(0)
     })
   })
 
-  describe('noTransition', () => {
-    it('does not apply transition none style by default', () => {
-      const wrapper = mount(BCarousel, {
-        slots: {default: () => [h(BCarouselSlide)]},
-      })
-      const slide = wrapper.get('.carousel-item')
-      expect(slide.attributes('style')).not.toContain('transition: none')
+  describe('keyboard', () => {
+    it('ArrowRight / ArrowLeft navigate', async () => {
+      const wrapper = mount(BCarousel, {slots: {default: () => slides()}})
+      await wrapper.trigger('keydown', {key: 'ArrowRight'})
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1])
+      await wrapper.trigger('keydown', {key: 'ArrowLeft'})
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([0])
     })
 
-    it('applies transition none style when noTransition is true', () => {
-      const wrapper = mount(BCarousel, {
-        props: {noTransition: true},
-        slots: {default: () => [h(BCarouselSlide)]},
-      })
-      const slide = wrapper.get('.carousel-item')
-      expect(slide.attributes('style')).toContain('transition: none')
+    it('keyboard false ignores arrows', async () => {
+      const wrapper = mount(BCarousel, {props: {keyboard: false}, slots: {default: () => slides()}})
+      await wrapper.trigger('keydown', {key: 'ArrowRight'})
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
     })
   })
 
-  describe('slides', () => {
-    it('only renders BCarouselSlide components as slides', () => {
+  describe('autoplay', () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+      vi.spyOn(HTMLElement.prototype, 'getClientRects').mockReturnValue([
+        {} as DOMRect,
+      ] as unknown as DOMRectList)
+    })
+
+    it('advances after the interval and marks the root playing', async () => {
       const wrapper = mount(BCarousel, {
+        props: {autoplay: true, interval: 1000, indicators: true},
+        slots: {default: () => slides()},
+      })
+      await nextTick()
+      expect(wrapper.classes()).toContain('carousel-playing')
+      expect(wrapper.attributes('style')).toContain('--bs-carousel-interval: 1000ms')
+      vi.advanceTimersByTime(1000)
+      await nextTick()
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1])
+    })
+
+    it('uses the slide interval', async () => {
+      const wrapper = mount(BCarousel, {
+        props: {autoplay: true, interval: 1000},
         slots: {
           default: () => [
-            h(BCarouselSlide),
-            h('div', {class: 'not-a-slide'}, 'ignored'),
-            h(BCarouselSlide),
+            h(BCarouselSlide, {interval: 3000}, () => 'A'),
+            h(BCarouselSlide, () => 'B'),
           ],
         },
       })
-      const slides = wrapper.get('.carousel-inner').findAll('.carousel-item')
-      expect(slides).toHaveLength(2)
-    })
-
-    it('renders slides inside carousel-inner', () => {
-      const wrapper = mount(BCarousel, {
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const inner = wrapper.get('.carousel-inner')
-      const slides = inner.findAll('.carousel-item')
-      expect(slides).toHaveLength(2)
-    })
-
-    it('renders no slides when no slot content is provided', () => {
-      const wrapper = mount(BCarousel)
-      const slides = wrapper.get('.carousel-inner').findAll('.carousel-item')
-      expect(slides).toHaveLength(0)
-    })
-  })
-
-  describe('exposed methods', () => {
-    it('exposes next method', () => {
-      const wrapper = mount(BCarousel, {
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      expect(wrapper.vm.next).toBeTypeOf('function')
-    })
-
-    it('exposes prev method', () => {
-      const wrapper = mount(BCarousel, {
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      expect(wrapper.vm.prev).toBeTypeOf('function')
-    })
-
-    it('exposes pause method', () => {
-      const wrapper = mount(BCarousel)
-      expect(wrapper.vm.pause).toBeTypeOf('function')
-    })
-
-    it('exposes resume method', () => {
-      const wrapper = mount(BCarousel)
-      expect(wrapper.vm.resume).toBeTypeOf('function')
-    })
-
-    it('calling next emits update:modelValue', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      wrapper.vm.next()
       await nextTick()
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([1])
-    })
-
-    it('calling prev emits update:modelValue', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      wrapper.vm.prev()
-      await nextTick()
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([0])
-    })
-
-    it('calling next wraps around when at last slide', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {modelValue: 1},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      wrapper.vm.next()
-      await nextTick()
-      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([0])
-    })
-
-    it('calling prev wraps around when at first slide', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {modelValue: 0},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      wrapper.vm.prev()
-      await nextTick()
-      expect(wrapper.emitted('update:modelValue')![0]).toEqual([2])
-    })
-
-    it('calling next respects noWrap', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {modelValue: 1, noWrap: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      wrapper.vm.next()
-      await nextTick()
+      expect(wrapper.get('.carousel-item').attributes('data-bs-interval')).toBe('3000')
+      vi.advanceTimersByTime(1000)
       expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-    })
-
-    it('calling prev respects noWrap', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {modelValue: 0, noWrap: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      wrapper.vm.prev()
+      vi.advanceTimersByTime(2000)
       await nextTick()
-      expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1])
     })
-  })
 
-  describe('provide', () => {
-    it('provides background to child slides via injection', () => {
+    it('stops for good when a control is used', async () => {
       const wrapper = mount(BCarousel, {
-        props: {background: 'red'},
-        slots: {default: () => [h(BCarouselSlide)]},
+        props: {autoplay: true, interval: 1000, controls: true},
+        slots: {default: () => slides()},
       })
-      const slide = wrapper.findComponent(BCarouselSlide)
-      expect(slide.exists()).toBe(true)
-      // Background is set via computedStyle in BCarouselSlide which uses the injected value
-      // happy-dom strips color values from CSS background shorthand, so we verify
-      // the style attribute is present (background is always set on the slide)
-      expect(slide.attributes('style')).toContain('background:')
-    })
-
-    it('provides imgWidth to child slides', () => {
-      const wrapper = mount(BCarousel, {
-        props: {imgWidth: '500'},
-        slots: {default: () => [h(BCarouselSlide)]},
-      })
-      const img = wrapper.findComponent(BImg)
-      expect(img.props('width')).toBe('500')
-    })
-
-    it('provides imgHeight to child slides', () => {
-      const wrapper = mount(BCarousel, {
-        props: {imgHeight: '300'},
-        slots: {default: () => [h(BCarouselSlide)]},
-      })
-      const img = wrapper.findComponent(BImg)
-      expect(img.props('height')).toBe('300')
-    })
-
-    it('slide own imgWidth overrides carousel provided imgWidth', () => {
-      const wrapper = mount(BCarousel, {
-        props: {imgWidth: '500'},
-        slots: {default: () => [h(BCarouselSlide, {imgWidth: '200'})]},
-      })
-      const img = wrapper.findComponent(BImg)
-      expect(img.props('width')).toBe('200')
-    })
-
-    it('slide own imgHeight overrides carousel provided imgHeight', () => {
-      const wrapper = mount(BCarousel, {
-        props: {imgHeight: '300'},
-        slots: {default: () => [h(BCarouselSlide, {imgHeight: '100'})]},
-      })
-      const img = wrapper.findComponent(BImg)
-      expect(img.props('height')).toBe('100')
-    })
-  })
-
-  describe('ride', () => {
-    it('does not auto-advance by default', async () => {
-      vi.useFakeTimers()
-      try {
-        const wrapper = mount(BCarousel, {
-          props: {modelValue: 0, interval: 100},
-          slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-        })
-        vi.advanceTimersByTime(500)
-        await nextTick()
-        expect(wrapper.emitted('update:modelValue')).toBeUndefined()
-      } finally {
-        vi.useRealTimers()
-      }
-    })
-
-    it('auto-advances when ride is carousel', async () => {
-      vi.useFakeTimers()
-      try {
-        const wrapper = mount(BCarousel, {
-          props: {modelValue: 0, ride: 'carousel', interval: 100},
-          slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-        })
-        vi.advanceTimersByTime(150)
-        await nextTick()
-        expect(wrapper.emitted('update:modelValue')).toBeDefined()
-        expect(wrapper.emitted('update:modelValue')![0]).toEqual([1])
-      } finally {
-        vi.useRealTimers()
-      }
-    })
-  })
-
-  describe('aria', () => {
-    it('gives aria-label on the carousel-indicators with prop labelIndicators', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => h(BCarouselSlide)},
-      })
-
-      const div = wrapper.get('.carousel-indicators')
-      expect(div.attributes('aria-label')).toBe('Select a slide to display')
-      await wrapper.setProps({labelIndicators: 'foobar'})
-      expect(div.attributes('aria-label')).toBe('foobar')
-    })
-
-    it('gives aria-owns on the carousel-indicators with the id of the carousel', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide)]},
-      })
-      const div = wrapper.get('.carousel-indicators')
-      const ariaOwnership = div.attributes('aria-owns')
-      expect(ariaOwnership).toContain('carousel-button-ownership')
-      const buttons = div.findAll('button')
-      for (const button of buttons) {
-        expect(button.attributes('aria-controls')).toBe(ariaOwnership)
-      }
-    })
-
-    it('button contains aria-described by of the carousel-item', async () => {
-      const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => [h(BCarouselSlide), h(BCarouselSlide, {id: 'foobar!!!'})]},
-      })
-      const div = wrapper.get('.carousel-indicators')
-      const [first, second] = div.findAll('button')
       await nextTick()
-      expect(first.attributes('aria-describedby')).toBeDefined()
-      expect(first.attributes('aria-describedby')).toContain('__carousel-slide___')
-      expect(second.attributes('aria-describedby')).toBe('foobar!!!')
+      await wrapper.findAll('button.btn-icon')[1]?.trigger('click')
+      expect(wrapper.classes()).not.toContain('carousel-playing')
+      vi.advanceTimersByTime(5000)
+      expect(wrapper.emitted('update:modelValue')).toEqual([[1]])
     })
 
-    it('default labelIndicators value is correct', () => {
+    it('pauses on hover and resumes on leave', async () => {
       const wrapper = mount(BCarousel, {
-        props: {indicators: true},
-        slots: {default: () => [h(BCarouselSlide)]},
+        props: {autoplay: true, interval: 1000},
+        slots: {default: () => slides()},
       })
-      const div = wrapper.get('.carousel-indicators')
-      expect(div.attributes('aria-label')).toBe('Select a slide to display')
+      await nextTick()
+      await wrapper.trigger('mouseenter')
+      expect(wrapper.classes()).not.toContain('carousel-playing')
+      await wrapper.trigger('mouseleave')
+      expect(wrapper.classes()).toContain('carousel-playing')
+    })
+
+    it('pause false does not pause on hover', async () => {
+      const wrapper = mount(BCarousel, {
+        props: {autoplay: true, pause: false},
+        slots: {default: () => slides()},
+      })
+      await nextTick()
+      await wrapper.trigger('mouseenter')
+      expect(wrapper.classes()).toContain('carousel-playing')
+    })
+
+    it('playPause toggles with labels and the paused class', async () => {
+      const wrapper = mount(BCarousel, {
+        props: {autoplay: true, playPause: true},
+        slots: {default: () => slides()},
+      })
+      await nextTick()
+      const button = wrapper.get('.carousel-control-play-pause')
+      expect(button.attributes('aria-label')).toBe('Pause')
+      expect(button.classes()).not.toContain('paused')
+      await button.trigger('click')
+      expect(button.attributes('aria-label')).toBe('Play')
+      expect(button.classes()).toContain('paused')
+      expect(wrapper.classes()).not.toContain('carousel-playing')
+      await button.trigger('click')
+      expect(wrapper.classes()).toContain('carousel-playing')
+    })
+  })
+
+  describe('controls slot and exposed', () => {
+    it('the controls slot replaces the bar and receives navigation props', async () => {
+      let scope: CarouselControlsSlotProps | undefined
+      const wrapper = mount(BCarousel, {
+        props: {controls: true, indicators: true},
+        slots: {
+          default: () => slides(),
+          controls: (p: CarouselControlsSlotProps) => {
+            scope = p
+            return h('button', {class: 'custom', onClick: p.next}, 'Go')
+          },
+        },
+      })
+      expect(wrapper.find('.carousel-indicators').exists()).toBe(false)
+      expect(scope?.count).toBe(3)
+      expect(scope?.index).toBe(0)
+      await wrapper.get('.custom').trigger('click')
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([1])
+    })
+
+    it('exposes to, next, prev', async () => {
+      const wrapper = mount(BCarousel, {slots: {default: () => slides()}})
+      const vm = wrapper.vm as unknown as {
+        to: (i: number) => void
+        next: () => void
+        prev: () => void
+      }
+      vm.to(2)
+      await nextTick()
+      expect(activeSlide(wrapper)).toBe(2)
+      vm.prev()
+      await nextTick()
+      expect(activeSlide(wrapper)).toBe(1)
+      vm.next()
+      await nextTick()
+      expect(activeSlide(wrapper)).toBe(2)
+    })
+  })
+
+  describe('ssr', () => {
+    it('renders the active slide and indicator on the server', async () => {
+      const html = await renderToString(
+        h(BCarousel, {id: 'c', modelValue: 1, indicators: true}, {default: () => slides()})
+      )
+      expect(html.match(/class="carousel-item active"/g)).toHaveLength(1)
+      expect(html).toContain('id="s1" class="carousel-item active"')
+      expect(html.match(/aria-current="true"/g)).toHaveLength(1)
+      expect(html).toContain('aria-label="Slide 2"')
     })
   })
 })

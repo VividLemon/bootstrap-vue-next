@@ -1,22 +1,23 @@
 <template>
-  <BCarousel ref="myCarousel">
-    <BCarouselSlide img-src="https://picsum.photos/1024/480/?image=37" />
-    <BCarouselSlide img-src="https://picsum.photos/1024/480/?image=38" />
-    <BCarouselSlide img-src="https://picsum.photos/1024/480/?image=39" />
+  <!-- #region template -->
+  <BCarousel ref="carousel" indicators>
+    <BCarouselSlide><div class="p-5 text-center bg-2 rounded">Slide 1</div></BCarouselSlide>
+    <BCarouselSlide><div class="p-5 text-center bg-2 rounded">Slide 2</div></BCarouselSlide>
+    <BCarouselSlide><div class="p-5 text-center bg-2 rounded">Slide 3</div></BCarouselSlide>
+    <BCarouselSlide><div class="p-5 text-center bg-2 rounded">Slide 4</div></BCarouselSlide>
   </BCarousel>
-
-  <BButtonGroup class="mt-3">
-    <BButton :color="{ theme: 'danger' }" @click="prev">Previous Slide</BButton>
-    <BButton :color="{ theme: 'success' }" @click="next">Next Slide</BButton>
-  </BButtonGroup>
+  <div class="d-flex gap-2 mt-2">
+    <BButton size="sm" @click="carousel?.prev()">Prev</BButton>
+    <BButton size="sm" @click="carousel?.next()">Next</BButton>
+    <BButton size="sm" @click="carousel?.to(3)">Last</BButton>
+    <BButton size="sm" @click="carousel?.cycle()">Cycle</BButton>
+    <BButton size="sm" @click="carousel?.pause()">Pause</BButton>
+  </div>
+  <!-- #endregion template -->
 </template>
 
 <script setup lang="ts">
-import { BCarousel } from 'bootstrap-vue-next/components/BCarousel'
 import { useTemplateRef } from 'vue'
 
-const myCarousel = useTemplateRef('myCarousel')
-
-const prev = () => myCarousel.value?.prev()
-const next = () => myCarousel.value?.next()
+const carousel = useTemplateRef('carousel')
 </script>

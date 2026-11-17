@@ -1,324 +1,284 @@
 <template>
   <div
     :id="computedId"
-    ref="_element"
-    class="carousel slide pointer-event"
+    ref="_root"
+    class="carousel"
     :class="computedClasses"
+    :style="computedStyle"
+    @keydown="engine.onKeydown"
+    @mouseenter="engine.onMouseenter"
+    @mouseleave="engine.onMouseleave"
   >
-    <div
-      v-if="props.indicators"
-      class="carousel-indicators"
-      :aria-label="props.labelIndicators"
-      :aria-owns="buttonOwnership"
-    >
-      <!-- :data-bs-target="`#${computedId}`" is required since the classes target elems with that attr -->
-      <button
-        v-for="(_, i) in slides.length"
-        :key="i"
-        type="button"
-        data-bs-target=""
-        :class="i === modelValue ? 'active' : ''"
-        :aria-current="i === modelValue ? true : undefined"
-        :aria-label="`${props.indicatorsButtonLabel} ${i}`"
-        :aria-controls="buttonOwnership"
-        :aria-describedby="slideValues?.[i]?._id"
-        @click="slideTo(i)"
-      />
+    <div ref="_viewport" class="carousel-inner" tabindex="0" @pointerdown="engine.onPointerdown">
+      <slot />
     </div>
-
-    <div ref="_relatedTarget" class="carousel-inner">
-      <TransitionGroup v-bind="transitionGroupProps">
-        <component
-          :is="slide"
-          v-for="(slide, i) in slides"
-          v-show="i === modelValue"
-          :key="i"
-          ref="_slideValues"
-          :class="{active: i === modelValue && isTransitioning === false}"
-          :style="props.noTransition && {transition: 'none'}"
-        />
-      </TransitionGroup>
-    </div>
-
-    <template v-if="props.controls">
-      <button class="carousel-control-prev" type="button" @click="onClickPrev">
-        <span class="carousel-control-prev-icon" aria-hidden="true" />
-        <span class="visually-hidden">{{ props.controlsPrevText }}</span>
-      </button>
-      <button class="carousel-control-next" type="button" @click="onClickNext">
-        <span class="carousel-control-next-icon" aria-hidden="true" />
-        <span class="visually-hidden">{{ props.controlsNextText }}</span>
-      </button>
-    </template>
+    <slot name="controls" v-bind="controlsSlotProps">
+      <div
+        v-if="hasBar"
+        :class="
+          props.overlay
+            ? 'carousel-overlay-controls'
+            : 'd-flex justify-content-between align-items-center'
+        "
+      >
+        <div
+          v-if="props.indicators"
+          class="carousel-indicators"
+          :aria-label="props.labelIndicators"
+        >
+          <button
+            v-for="i in slideCount"
+            :key="i"
+            type="button"
+            :data-bs-target="`#${computedId}`"
+            :class="{active: i - 1 === activeIndex}"
+            :aria-current="i - 1 === activeIndex ? 'true' : undefined"
+            :aria-label="`${props.indicatorsButtonLabel} ${i}`"
+            @click="onIndicator(i - 1)"
+          />
+        </div>
+        <span v-else />
+        <div v-if="props.playPause || props.controls" class="d-flex gap-1">
+          <button
+            v-if="props.playPause"
+            type="button"
+            class="btn-icon btn-sm carousel-control-play-pause"
+            :class="[buttonClasses, {paused: !engine.playing.value}]"
+            :aria-label="engine.playing.value ? props.pauseLabel : props.playLabel"
+            @click="engine.togglePlay"
+          >
+            <span class="carousel-icon-pause" aria-hidden="true" />
+            <span class="carousel-icon-play" aria-hidden="true" />
+          </button>
+          <template v-if="props.controls">
+            <button
+              ref="_prev"
+              type="button"
+              class="btn-icon btn-sm"
+              :class="buttonClasses"
+              :disabled="!engine.canPrev.value || undefined"
+              @click="onControl(engine.prev)"
+            >
+              <span class="carousel-icon-prev" aria-hidden="true" />
+              <span class="visually-hidden">{{ props.controlsPrevText }}</span>
+            </button>
+            <button
+              ref="_next"
+              type="button"
+              class="btn-icon btn-sm"
+              :class="buttonClasses"
+              :disabled="!engine.canNext.value || undefined"
+              @click="onControl(engine.next)"
+            >
+              <span class="carousel-icon-next" aria-hidden="true" />
+              <span class="visually-hidden">{{ props.controlsNextText }}</span>
+            </button>
+          </template>
+        </div>
+      </div>
+    </slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import {BvCarouselEvent} from '../../utils'
-import {computed, onMounted, provide, ref, toRef, useTemplateRef, watch} from 'vue'
+import {
+  computed,
+  type CSSProperties,
+  nextTick,
+  provide,
+  readonly,
+  ref,
+  type Ref,
+  shallowRef,
+  useTemplateRef,
+  watch,
+  onUpdated,
+} from 'vue'
+import {BvCarouselEvent} from '../../utils/classes'
 import {useId} from '../../composables/useId'
-import {onKeyStroke, useElementHover, useIntervalFn, useSwipe, useToNumber} from '@vueuse/core'
-import type BCarouselSlide from './BCarouselSlide.vue'
 import {useDefaults} from '../../composables/useDefaults'
-import type {Numberish} from '../../types/CommonTypes'
 import {getSlotElements} from '../../utils/getSlotElements'
 import {carouselInjectionKey} from '../../utils/keys'
-import type {BCarouselEmits, BCarouselProps, BCarouselSlots} from '../../types'
+import {sortSlotElementsByPosition} from '../../utils/dom'
+import type {
+  BCarouselEmits,
+  BCarouselProps,
+  BCarouselSlots,
+  CarouselControlsSlotProps,
+} from '../../types'
+import {type CarouselSlideDetail, useCarouselEngine} from './useCarouselEngine'
 
 const _props = withDefaults(defineProps<Omit<BCarouselProps, 'modelValue'>>(), {
-  background: undefined,
+  auto: false,
+  autoplay: false,
+  center: false,
   controls: false,
   controlsNextText: 'Next',
   controlsPrevText: 'Previous',
+  ends: 'loop',
   fade: false,
   id: undefined,
-  imgHeight: undefined,
-  imgWidth: undefined,
   indicators: false,
   indicatorsButtonLabel: 'Slide',
   interval: 5000,
-  labelIndicators: 'Select a slide to display',
   keyboard: true,
+  labelIndicators: 'Select a slide to display',
   noTransition: false,
-  noHoverPause: false,
-  noTouch: false,
-  noWrap: false,
-  ride: false,
-  rideReverse: false,
-  touchThreshold: 50,
+  overlay: false,
+  pause: 'hover',
+  pauseLabel: 'Pause',
+  playLabel: 'Play',
+  playPause: false,
 })
 const props = useDefaults(_props, 'BCarousel')
 const emit = defineEmits<BCarouselEmits>()
 const slots = defineSlots<BCarouselSlots>()
 
-const computedId = useId(() => props.id, 'carousel')
-const buttonOwnership = useId(undefined, 'carousel-button-ownership')
-
 const modelValue = defineModel<Exclude<BCarouselProps['modelValue'], undefined>>({default: 0})
 
-const slideValues = useTemplateRef<InstanceType<typeof BCarouselSlide>[]>('_slideValues')
+const computedId = useId(() => props.id, 'carousel')
 
-const touchThresholdNumber = useToNumber(() => props.touchThreshold)
-const slideInterval = ref<Numberish | null>(null)
-onMounted(() => {
-  slideInterval.value =
-    slideValues.value?.find((slid) => slid.$el.style.display !== 'none')?._interval ?? null
-})
-const intervalNumber = useToNumber(() => slideInterval.value ?? props.interval)
+const root = useTemplateRef<HTMLElement>('_root')
+const viewport = useTemplateRef<HTMLElement>('_viewport')
+const prevControl = useTemplateRef<HTMLElement>('_prev')
+const nextControl = useTemplateRef<HTMLElement>('_next')
 
-const isTransitioning = ref(false)
-const rideStarted = ref(false)
-const direction = ref<'start' | 'end'>('start')
-const relatedTarget = useTemplateRef('_relatedTarget')
-const element = useTemplateRef('_element')
+// Counted from the slot vnodes so server and client render the same indicators
+const slideCount = computed(() => getSlotElements(slots.default, 'BCarouselSlide').length)
 
-let previousModelValue = modelValue.value
-let isInternalChange = false
+/** The slide the carousel rests on. The model follows it; the model drives navigation */
+const activeIndex = ref(modelValue.value)
 
-const isHovering = useElementHover(element)
-
-const {pause, resume} = useIntervalFn(
-  () => {
-    if (props.rideReverse) {
-      prev()
-      return
-    }
-    next()
-  },
-  intervalNumber,
-  {immediate: props.ride === 'carousel'}
-)
-
-const isRiding = computed(
-  () => (props.ride === true && rideStarted.value === true) || props.ride === 'carousel'
-)
-const slides = computed(() => getSlotElements(slots.default, 'BCarouselSlide'))
-const computedClasses = computed(() => ({'carousel-fade': props.fade}))
-
-const buildBvCarouselEvent = (event: 'slid' | 'slide') =>
-  new BvCarouselEvent(event, {
+const buildEvent = (type: 'slide' | 'slid', detail: CarouselSlideDetail) =>
+  new BvCarouselEvent(type, {
     componentId: computedId.value,
-    cancelable: false,
-    target: element.value,
-    direction: direction.value === 'start' ? 'right' : 'left',
-    from: previousModelValue,
-    to: modelValue.value,
-    relatedTarget: relatedTarget.value?.children[modelValue.value] ?? null,
+    cancelable: type === 'slide',
+    target: root.value,
+    relatedTarget: detail.relatedTarget,
+    direction: detail.direction,
+    from: detail.from,
+    to: detail.to,
   })
 
-watch(modelValue, (newValue, oldValue) => {
-  if (!isInternalChange) {
-    // External v-model change: determine direction from the new/old values
-    const lastIndex = slides.value.length - 1
-    const wrappedForward = oldValue === lastIndex && newValue === 0
-    const wrappedBackward = oldValue === 0 && newValue === lastIndex
-    if (wrappedForward) {
-      direction.value = 'start'
-    } else if (wrappedBackward) {
-      direction.value = 'end'
-    } else {
-      direction.value = newValue > oldValue ? 'start' : 'end'
-    }
-  }
-  isInternalChange = false
-  // If one ever thinks to change the transitions dependence on modelValue and thinks it is appropriate to remove this isTransitioning line, be careful
-  // This directly effects how transitions are applied. The watch is for if you have an external change to modelValue, and doesn't directly call slideTo
-  isTransitioning.value = true
-})
-const slideTo = (value: number): void => {
-  if (isTransitioning.value === true) return
-
-  if (props.ride === true) {
-    rideStarted.value = true
-  }
-  if (isRiding.value === true) {
-    resume()
-  }
-  let nextValue = value
-  if (nextValue >= slides.value.length) {
-    if (props.noWrap) return
-    nextValue = 0
-  }
-  if (nextValue < 0) {
-    if (props.noWrap) return
-    nextValue = slides.value.length - 1
-  }
-  if (nextValue === modelValue.value) return
-  // Set direction based on the original requested value (before wrapping) so that
-  // next() always animates forward and prev() always animates backward, regardless
-  // of how many slides there are. This fixes the 2-slide case where wrap-detection
-  // heuristics in the watcher would otherwise produce the wrong direction.
-  // Note: `value` is the raw index passed by the caller (e.g. modelValue+1 for next()),
-  // while `nextValue` is the resolved/wrapped index that becomes the new modelValue.
-  direction.value = value > modelValue.value ? 'start' : 'end'
-  // Mark as internal so the modelValue watcher skips its direction heuristics.
-  // A race condition here is not possible because the isTransitioning guard above
-  // ensures slideTo cannot be called again until the current transition completes.
-  isInternalChange = true
-  isTransitioning.value = true
-  previousModelValue = modelValue.value
-  modelValue.value = nextValue
-}
-
-const prev = (): void => {
-  slideTo(modelValue.value - 1)
-}
-const next = (): void => {
-  slideTo(modelValue.value + 1)
-}
-
-const {lengthX} = useSwipe(element, {
-  passive: true,
-  onSwipeStart() {
-    if (props.noTouch) return
-    pause()
+const engine = useCarouselEngine({
+  root,
+  viewport,
+  prevControl,
+  nextControl,
+  activeIndex,
+  count: slideCount,
+  autoplay: () => props.autoplay,
+  ends: () => props.ends,
+  fade: () => props.fade,
+  center: () => props.center,
+  auto: () => props.auto,
+  interval: () => props.interval,
+  keyboard: () => props.keyboard,
+  pauseOnHover: () => props.pause === 'hover',
+  noTransition: () => props.noTransition,
+  onSlide: (detail) => {
+    const event = buildEvent('slide', detail)
+    emit('slide', event)
+    return !event.defaultPrevented
   },
-  onSwipeEnd() {
-    if (props.noTouch) return
-    const resumeRiding = () => {
-      if (isRiding.value === false) return
-      resume()
-    }
-    if (lengthX.value >= touchThresholdNumber.value) {
-      next()
-      resumeRiding()
-      return
-    }
-    if (lengthX.value <= -touchThresholdNumber.value) {
-      prev()
-      resumeRiding()
-    }
+  onSlid: (detail) => {
+    emit('slid', buildEvent('slid', detail))
   },
 })
 
-const onClickPrev = (event: MouseEvent) => {
-  emit('prev-click', event)
-  if (event.defaultPrevented) return
-  prev()
-}
-const onClickNext = (event: MouseEvent) => {
-  emit('next-click', event)
-  if (event.defaultPrevented) return
-  next()
-}
-
-const onMouseEnter = () => {
-  if (props.noHoverPause) return
-  pause()
-}
-const onMouseLeave = () => {
-  if (!isRiding.value) return
-  resume()
-}
-watch(isHovering, (newValue) => {
-  if (newValue) {
-    onMouseEnter()
-    return
-  }
-  onMouseLeave()
+watch(activeIndex, (value) => {
+  if (modelValue.value !== value) modelValue.value = value
 })
-onKeyStroke(
-  ['ArrowLeft', 'ArrowRight'],
-  (event) => {
-    if (!props.keyboard) return
-    if (event.key === 'ArrowLeft') {
-      prev()
-    } else {
-      next()
-    }
-  },
-  {target: element, passive: true}
-)
+watch(modelValue, (value) => {
+  if (value === activeIndex.value) return
+  const result = engine.to(value)
+  // A prevented or impossible change caused by `v-model` reverts the model
+  if (result === 'prevented' || result === 'invalid') modelValue.value = activeIndex.value
+})
 
 watch(
-  () => props.ride,
-  () => {
-    rideStarted.value = false
-  }
+  () => props.autoplay,
+  (value) => engine.setPlaying(value)
+)
+watch(
+  () => [slideCount.value, props.fade] as const,
+  () => nextTick(() => engine.refresh())
 )
 
-const enterDirectionClass = computed(
-  () => `carousel-item-${direction.value === 'start' ? 'next' : 'prev'}`
-)
-const orderDirectionClass = computed(() => `carousel-item-${direction.value}`)
-const transitionGroupProps = computed(() => ({
-  enterFromClass: `carousel-item ${enterDirectionClass.value}`,
-  enterActiveClass: `carousel-item ${enterDirectionClass.value}`,
-  enterToClass: `carousel-item ${enterDirectionClass.value} ${orderDirectionClass.value}`,
-  leaveFromClass: 'carousel-item active',
-  leaveActiveClass: 'carousel-item active',
-  leaveToClass: `carousel-item active ${orderDirectionClass.value}`,
-  onBeforeLeave: () => {
-    emit('slide', buildBvCarouselEvent('slide'))
+const computedClasses = computed(() => ({
+  'carousel-fade': props.fade,
+  'carousel-center': props.center,
+  'carousel-auto': props.auto,
+  'carousel-overlay': props.overlay,
+  'carousel-playing': engine.cycling.value,
+}))
+
+const computedStyle = computed<CSSProperties | undefined>(() => {
+  const style: Record<string, string> = {}
+  if (engine.cycling.value) style['--bs-carousel-interval'] = `${engine.currentInterval.value}ms`
+  if (props.noTransition) style['--bs-carousel-fade-duration'] = '0s'
+  return Object.keys(style).length ? (style as CSSProperties) : undefined
+})
+
+const hasBar = computed(() => props.indicators || props.controls || props.playPause)
+const buttonClasses = computed(() => (props.overlay ? 'btn-subtle theme-secondary' : undefined))
+
+// Every control is an explicit interaction: it stops autoplay for good (WCAG 2.2.2)
+const onControl = (action: () => void) => {
+  engine.pauseFromInteraction()
+  action()
+}
+const onIndicator = (index: number) => {
+  engine.pauseFromInteraction()
+  engine.to(index)
+}
+
+// Slides register to learn their index: render order during setup, DOM order after updates
+interface CarouselItem {
+  key: symbol
+  el: Readonly<Ref<HTMLElement | null>>
+}
+const items = shallowRef<readonly CarouselItem[]>([])
+const sortItems = () => {
+  const sorted = [...items.value].sort((a, b) => sortSlotElementsByPosition(a.el.value, b.el.value))
+  if (sorted.some((item, i) => item !== items.value[i])) items.value = sorted
+}
+onUpdated(sortItems)
+
+provide(carouselInjectionKey, {
+  activeIndex: readonly(activeIndex),
+  register: (key, el) => {
+    items.value = [...items.value, {key, el}]
   },
-  onAfterLeave: () => {
-    emit('slid', buildBvCarouselEvent('slid'))
-    isTransitioning.value = false
+  unregister: (key) => {
+    items.value = items.value.filter((item) => item.key !== key)
   },
-  // carousel-item class is removed from the slide during the transition,
-  // as is included within enter classes.
-  // The first slide recovers carousel-item class,
-  onAfterEnter: (el: Readonly<Element>) => {
-    if (modelValue.value !== 0) {
-      el.classList.add('carousel-item')
-    }
-  },
-  onEnter: (el: Readonly<Element>) => {
-    slideInterval.value = slideValues.value?.find((slid) => slid.$el === el)?._interval ?? null
-  },
+  indexOf: (key) => items.value.findIndex((item) => item.key === key),
+})
+
+const controlsSlotProps = computed<CarouselControlsSlotProps>(() => ({
+  prev: () => onControl(engine.prev),
+  next: () => onControl(engine.next),
+  to: (index: number) => onIndicator(index),
+  cycle: () => engine.setPlaying(true),
+  pause: engine.pause,
+  togglePlay: engine.togglePlay,
+  playing: engine.playing.value,
+  index: activeIndex.value,
+  count: slideCount.value,
+  canPrev: engine.canPrev.value,
+  canNext: engine.canNext.value,
 }))
 
 defineExpose({
-  resume,
-  pause,
-  next,
-  prev,
-  slideTo,
-})
-
-provide(carouselInjectionKey, {
-  background: toRef(() => props.background),
-  width: toRef(() => props.imgWidth),
-  height: toRef(() => props.imgHeight),
+  next: engine.next,
+  prev: engine.prev,
+  to: (index: number) => {
+    engine.to(index)
+  },
+  cycle: () => engine.setPlaying(true),
+  pause: engine.pause,
+  nextWhenVisible: engine.nextWhenVisible,
+  playing: engine.playing,
 })
 </script>

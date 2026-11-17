@@ -37,9 +37,10 @@ const createBvnRegistryInjectionKey = (name: string) =>
 
 // BCarousel
 export const carouselInjectionKey: InjectionKey<{
-  background: Readonly<Ref<string | undefined>>
-  width: Readonly<Ref<string | undefined>>
-  height: Readonly<Ref<string | undefined>>
+  activeIndex: Readonly<Ref<number>>
+  register: (key: symbol, el: Readonly<Ref<HTMLElement | null>>) => void
+  unregister: (key: symbol) => void
+  indexOf: (key: symbol) => number
 }> = createBvnInjectionKey('carousel')
 
 // BTabs
