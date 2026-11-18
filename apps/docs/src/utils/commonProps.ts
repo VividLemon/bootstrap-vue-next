@@ -419,11 +419,6 @@ const commonProps = () =>
       description:
         'Shows a countdown progress bar when `model-value` is a number. `true` uses the defaults; an object (`animated`, `color`, `precision`, `showProgress`, `showValue`, `striped`) shows it with those options',
     },
-    showOnPause: {
-      type: 'boolean',
-      default: true,
-      description: 'Keeps the component visible when paused',
-    },
     addButtonColor: {
       type: 'ColorExtendables',
       default: undefined,

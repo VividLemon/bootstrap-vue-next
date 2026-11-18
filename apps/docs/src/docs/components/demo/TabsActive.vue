@@ -1,7 +1,7 @@
 <template>
   <!-- #region template -->
   <BTabs
-    :active-nav-item-attrs="{ class: 'fw-bold text-uppercase fg-danger' }"
+    :active-nav-link-attrs="{ class: 'fw-bold text-uppercase fg-danger' }"
     :active-tab-attrs="{ class: 'fw-bold fg-success' }"
     :content-attrs="{ class: 'mt-3' }"
   >

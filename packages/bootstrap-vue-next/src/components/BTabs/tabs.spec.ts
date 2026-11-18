@@ -1044,43 +1044,11 @@ describe('tabs', () => {
     expect(button.attributes('data-custom')).toBe('value')
   })
 
-  // --- activeNavItemAttrs / inactiveNavItemAttrs ---
+  // --- navLinkAttrs ---
 
-  it('active tab button has activeNavItemAttrs', () => {
+  it('all tab buttons have navLinkAttrs', () => {
     const wrapper = mount(BTabs, {
-      props: {activeNavItemAttrs: {class: 'nav-active'}},
-      slots: {
-        default: () => [
-          h(BTab, {id: 'tab-1', title: 'First'}, () => 'one'),
-          h(BTab, {id: 'tab-2', title: 'Second'}, () => 'two'),
-        ],
-      },
-    })
-    const buttons = wrapper.findAll('button')
-    expect(buttons[0].classes()).toContain('nav-active')
-    expect(buttons[1].classes()).not.toContain('nav-active')
-  })
-
-  it('inactive tab button has inactiveNavItemAttrs', () => {
-    const wrapper = mount(BTabs, {
-      props: {inactiveNavItemAttrs: {class: 'nav-inactive'}},
-      slots: {
-        default: () => [
-          h(BTab, {id: 'tab-1', title: 'First'}, () => 'one'),
-          h(BTab, {id: 'tab-2', title: 'Second'}, () => 'two'),
-        ],
-      },
-    })
-    const buttons = wrapper.findAll('button')
-    expect(buttons[0].classes()).not.toContain('nav-inactive')
-    expect(buttons[1].classes()).toContain('nav-inactive')
-  })
-
-  // --- navItemAttrs ---
-
-  it('all tab buttons have navItemAttrs', () => {
-    const wrapper = mount(BTabs, {
-      props: {navItemAttrs: {class: 'all-nav'}},
+      props: {navLinkAttrs: {class: 'all-nav'}},
       slots: {
         default: () => [
           h(BTab, {id: 'tab-1', title: 'First'}, () => 'one'),
@@ -1213,11 +1181,10 @@ describe('tabs', () => {
     expect(pane.classes()).toContain('tab-pane-instant')
   })
 
-  it('merges navItemAttrs, state attrs and titleLinkAttrs on the tab button', () => {
+  it('merges navLinkAttrs, state attrs and titleLinkAttrs on the tab button', () => {
     const wrapper = mount(BTabs, {
       props: {
-        navItemAttrs: {class: 'a', style: {color: 'red'}},
-        activeNavItemAttrs: {class: 'b'},
+        navLinkAttrs: {class: 'a', style: {color: 'red'}},
         activeNavLinkAttrs: {class: 'c'},
       },
       slots: {
@@ -1231,9 +1198,7 @@ describe('tabs', () => {
       },
     })
     const button = wrapper.get('button')
-    expect(button.classes()).toEqual(
-      expect.arrayContaining(['nav-link', 'active', 'a', 'b', 'c', 'd'])
-    )
+    expect(button.classes()).toEqual(expect.arrayContaining(['nav-link', 'active', 'a', 'c', 'd']))
     expect(button.attributes('style')).toContain('color: red')
     expect(button.attributes('style')).toContain('margin: 1px')
   })

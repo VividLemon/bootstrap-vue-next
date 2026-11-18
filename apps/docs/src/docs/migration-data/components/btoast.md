@@ -20,7 +20,6 @@ match:
   - append-toast
   - b-toaster-*
   - progress
-  - show-on-pause
 tags:
   - migration
   - components
@@ -89,7 +88,6 @@ Please see [useToast](/docs/composables/useToast) for the modern method of progr
 **New props in BootstrapVueNext:**
 
 - `progress` - Show a countdown progress bar on timed toasts (`true`, or an options object)
-- `show-on-pause` - Control visibility when countdown is paused
 - `interval` - Control countdown timer update frequency (default: `'requestAnimationFrame'`)
 - `solid` - Disable toast transparency (same as BootstrapVue)
 

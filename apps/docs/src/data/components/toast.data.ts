@@ -28,7 +28,6 @@ export default {
             'noHoverPause',
             'noResumeOnHoverLeave',
             'progress',
-            'showOnPause',
             'title',
           ]),
 

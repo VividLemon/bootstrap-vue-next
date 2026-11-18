@@ -20,7 +20,7 @@ It is the single source of truth for the migration: implementation work follows 
 | Phase 2b: component batches                                                                                        | Wave 1 merged (#165–#168); wave 2 not started — see [Implementation progress](#implementation-progress)                                                                                                     |
 | Phase 3: migration docs                                                                                            | Not started                                                                                                                                                                                                 |
 | Deferred components                                                                                                | Plans decided and merged ([#169](https://github.com/VividLemon/bootstrap-vue-next/pull/169), `BOOTSTRAP_V6_NEW_COMPONENTS.md`); implementation not started. See [Deferred components](#deferred-components) |
-| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md` |
+| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`                                                                         |
 | Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source)                                                                                                                          |
 | Post-migration (maybe): public `useTable` composable                                                               | Undecided — see `USE_TABLE_COMPOSABLE.md`                                                                                                                                                                   |
 
@@ -54,7 +54,7 @@ Tables batch follow-ups (from its report):
 
 Navigation batch follow-ups (from its report):
 
-- `BTabs` `navItemAttrs` / `activeNavItemAttrs` / `inactiveNavItemAttrs` target the `.nav-link` button, as the old `*NavItemClass` props did; the `<li>` is only reachable through `BTab` `titleItemAttrs`. Decide whether to rename or retarget them.
+- `BTabs` `navItemAttrs` is renamed `navLinkAttrs` (it always targeted the `.nav-link` button), and `activeNavItemAttrs` / `inactiveNavItemAttrs` are removed because they duplicated `activeNavLinkAttrs` / `inactiveNavLinkAttrs`. The `<li>` stays reachable through `BTab` `titleItemAttrs`.
 - Tab panes now toggle only `.active` (v6 fades with `@starting-style`); `fade` / `show` and the timer are gone. There are no `shown` / `hidden` tab events.
 - `b-pagination-pills` stays custom CSS (v6 has no pagination pills); the docs say so.
 - Not checked visually: dark mode, `NavPillCard.vue` (pills in a card header now render as normal v6 pills), fill/justified pills.
@@ -63,7 +63,7 @@ Feedback batch follow-ups (from its report):
 
 - `BAlert` and `BToast` are on the native path; nothing renders while hidden (before, a hidden element stayed in the DOM). Migration notes: `shown` / `hidden` timing, `solid` → `translucent`, `*Class` → `*Attrs`, no `fade` / `show` / `alert-dismissible` classes.
 - v6 `.alert` has no bottom margin, so consecutive alerts sit flush. Native behavior; mention it in the migration notes.
-- `showOnPause` on `BAlert` / `BToast` has no effect (before or after). Decide whether to remove it.
+- `showOnPause` is removed from `BAlert` / `BToast`: it never had an effect, because a paused countdown never hides the component.
 - Expect a merge conflict in `architecture/ARIA_VISIBILITY.md` (native/legacy table) with the floating UI batch.
 
 Forms batch follow-ups (from its report):

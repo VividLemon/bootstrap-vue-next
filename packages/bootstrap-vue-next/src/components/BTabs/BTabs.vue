@@ -65,7 +65,6 @@ import BTabsTabContent from '../BTabsTabContent.vue'
 import BTabsNavItems from '../BTabsNavItems.vue'
 
 const _props = withDefaults(defineProps<Omit<BTabsProps, 'modelValue' | 'activeIndex'>>(), {
-  activeNavItemAttrs: undefined,
   activeNavLinkAttrs: undefined,
   activeTabAttrs: undefined,
   align: undefined,
@@ -74,13 +73,12 @@ const _props = withDefaults(defineProps<Omit<BTabsProps, 'modelValue' | 'activeI
   end: false,
   fill: false,
   id: undefined,
-  inactiveNavItemAttrs: undefined,
   inactiveNavLinkAttrs: undefined,
   inactiveTabAttrs: undefined,
   justified: false,
   lazy: false,
   navAttrs: undefined,
-  navItemAttrs: undefined,
+  navLinkAttrs: undefined,
   navWrapperAttrs: undefined,
   noTransition: false,
   noKeyNav: false,
@@ -150,10 +148,9 @@ watch(
 )
 
 // Attributes for a tab's `.nav-link` button. `class` and `style` from every source merge
-const getNavItemAttrs = (active: boolean, titleLinkAttrs: Readonly<AttrsValue> | undefined) =>
+const getNavLinkAttrs = (active: boolean, titleLinkAttrs: Readonly<AttrsValue> | undefined) =>
   mergeProps(
-    props.navItemAttrs ?? {},
-    (active ? props.activeNavItemAttrs : props.inactiveNavItemAttrs) ?? {},
+    props.navLinkAttrs ?? {},
     (active ? props.activeNavLinkAttrs : props.inactiveNavLinkAttrs) ?? {},
     titleLinkAttrs ?? {}
   )
@@ -185,7 +182,7 @@ const tabs = computed(() => {
         titleLinkAttrs: tab.props?.titleLinkAttrs,
         onClick: tab.props?.onClick,
         active,
-        navItemAttrs: getNavItemAttrs(active, tab.props?.titleLinkAttrs),
+        navLinkAttrs: getNavLinkAttrs(active, tab.props?.titleLinkAttrs),
       }
     })
   }
@@ -196,7 +193,7 @@ const tabs = computed(() => {
     return {
       ...tab,
       active,
-      navItemAttrs: getNavItemAttrs(active, tab.titleLinkAttrs),
+      navLinkAttrs: getNavLinkAttrs(active, tab.titleLinkAttrs),
     }
   })
 })
