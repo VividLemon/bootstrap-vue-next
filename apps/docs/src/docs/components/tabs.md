@@ -121,8 +121,8 @@ additional custom styling.
 ## Active attributes
 
 To apply classes (or any other attributes) to the currently active control or tab use the
-`active-nav-item-attrs` and `active-tab-attrs` props. The matching `inactive-*-attrs` props target
-the inactive ones, and `nav-item-attrs` / `tab-attrs` apply to all of them. `class` and `style`
+`active-nav-link-attrs` and `active-tab-attrs` props. The matching `inactive-*-attrs` props target
+the inactive ones, and `nav-link-attrs` / `tab-attrs` apply to all of them. `class` and `style`
 merge with the component's own.
 
 <<< DEMO ./demo/TabsActive.vue#template{vue-html}

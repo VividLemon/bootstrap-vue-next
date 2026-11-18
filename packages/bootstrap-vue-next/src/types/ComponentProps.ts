@@ -997,7 +997,6 @@ export interface BTabProps {
 }
 
 export interface BTabsProps {
-  activeNavItemAttrs?: Readonly<AttrsValue>
   activeNavLinkAttrs?: Readonly<AttrsValue>
   activeTabAttrs?: Readonly<AttrsValue>
   align?: AlignmentJustifyContent
@@ -1007,14 +1006,13 @@ export interface BTabsProps {
   fill?: boolean
   id?: string
   index?: number
-  inactiveNavItemAttrs?: Readonly<AttrsValue>
   inactiveNavLinkAttrs?: Readonly<AttrsValue>
   inactiveTabAttrs?: Readonly<AttrsValue>
   justified?: boolean
   lazy?: boolean
   modelValue?: string
   navAttrs?: Readonly<AttrsValue>
-  navItemAttrs?: Readonly<AttrsValue>
+  navLinkAttrs?: Readonly<AttrsValue>
   navWrapperAttrs?: Readonly<AttrsValue>
   noTransition?: boolean
   noKeyNav?: boolean
@@ -1066,7 +1064,6 @@ export interface BAlertProps extends BLinkProps, ShowHideProps {
   noHoverPause?: boolean
   noResumeOnHoverLeave?: boolean
   progress?: boolean | ProgressOptions
-  showOnPause?: boolean
   title?: string
 }
 
@@ -1495,7 +1492,6 @@ export interface BToastProps extends BLinkProps, ShowHideProps {
   noHoverPause?: boolean
   noResumeOnHoverLeave?: boolean
   progress?: boolean | ProgressOptions
-  showOnPause?: boolean
   title?: string
   toastAttrs?: Readonly<AttrsValue>
   translucent?: boolean

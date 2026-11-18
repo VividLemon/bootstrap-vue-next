@@ -80,7 +80,6 @@ For information on managing ARIA attributes for alert triggers (when using dismi
 ## Timer Props
 
 - `Immediate`: Setting this property to `false` will cause a timer to not start immediately upon render. A timer that is not started is not rendered. It must manually be started with `resume()` or `restart()`. Default is `true`.
-- `showOnPause`: Setting this property to `false` will override the behavior of showing the Alert when the timer is paused. Default is `true`.
 
 ## Internationalization
 

@@ -19,7 +19,7 @@
       :disabled="tab.disabled"
       :tabindex="props.noKeyNav ? undefined : tab.active ? undefined : -1"
       type="button"
-      v-bind="tab.navItemAttrs"
+      v-bind="tab.navLinkAttrs"
       @keydown.left.exact="!props.vertical && emit('keynav', $event, -1)"
       @keydown.left.shift="!props.vertical && emit('keynav', $event, -999)"
       @keydown.up.exact="props.vertical && emit('keynav', $event, -1)"
@@ -62,7 +62,7 @@ export interface TabsNavItem {
   title?: string
   titleComponent?: Slot | unknown
   titleItemAttrs?: Readonly<AttrsValue>
-  navItemAttrs?: Readonly<AttrsValue>
+  navLinkAttrs?: Readonly<AttrsValue>
   disabled?: boolean
   active: boolean
 }

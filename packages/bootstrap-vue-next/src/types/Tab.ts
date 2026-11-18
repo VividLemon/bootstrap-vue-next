@@ -12,6 +12,6 @@ export interface TabType {
   titleItemAttrs?: Readonly<AttrsValue>
   titleLinkAttrs?: Readonly<AttrsValue>
   onClick?: (event: Event) => void
-  navItemAttrs?: Readonly<AttrsValue>
+  navLinkAttrs?: Readonly<AttrsValue>
   el: Ref<HTMLElement | null>
 }

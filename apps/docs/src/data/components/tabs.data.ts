@@ -23,17 +23,11 @@ export default {
           description:
             'Sets the zero-based index of the active tab. The `modelValue` (tab ID) takes priority over `index`.',
         },
-        activeNavItemAttrs: {
-          type: 'Readonly<AttrsValue>',
-          default: undefined,
-          description:
-            "Attributes for the active tab's control button (`.nav-link`). `class` and `style` merge with the component's own.",
-        },
         activeNavLinkAttrs: {
           type: 'Readonly<AttrsValue>',
           default: undefined,
           description:
-            "Attributes for the active tab's control button (`.nav-link`). Applied after `activeNavItemAttrs`. `class` and `style` merge with the component's own.",
+            "Attributes for the active tab's control button (`.nav-link`). `class` and `style` merge with the component's own.",
         },
         activeTabAttrs: {
           type: 'Readonly<AttrsValue>',
@@ -70,17 +64,11 @@ export default {
           description:
             'Proportionately fills horizontal space with nav items, with varying widths.',
         },
-        inactiveNavItemAttrs: {
-          type: 'Readonly<AttrsValue>',
-          default: undefined,
-          description:
-            "Attributes for inactive tab control buttons (`.nav-link`). `class` and `style` merge with the component's own.",
-        },
         inactiveNavLinkAttrs: {
           type: 'Readonly<AttrsValue>',
           default: undefined,
           description:
-            "Attributes for inactive tab control buttons (`.nav-link`). Applied after `inactiveNavItemAttrs`. `class` and `style` merge with the component's own.",
+            "Attributes for inactive tab control buttons (`.nav-link`). `class` and `style` merge with the component's own.",
         },
         inactiveTabAttrs: {
           type: 'Readonly<AttrsValue>',
@@ -109,7 +97,7 @@ export default {
           description:
             "Attributes for the tablist (`ul.nav`). `class` and `style` merge with the component's own.",
         },
-        navItemAttrs: {
+        navLinkAttrs: {
           type: 'Readonly<AttrsValue>',
           default: undefined,
           description:

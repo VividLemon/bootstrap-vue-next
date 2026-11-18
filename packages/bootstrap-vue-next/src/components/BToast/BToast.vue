@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="isToastMounted"
+    v-if="isActive"
     :id="props.id"
     ref="_element"
     class="toast"
@@ -123,7 +123,6 @@ const _props = withDefaults(defineProps<Omit<BToastProps, 'modelValue'>>(), {
   noResumeOnHoverLeave: false,
   progress: false,
   unmountLazy: false,
-  showOnPause: true,
   show: false,
   title: undefined,
   toastAttrs: undefined,
@@ -176,6 +175,7 @@ const computedId = useId(() => props.id, 'toast')
 // of a freshly mounted toast). `.toast-instant` skips the transition.
 const {run} = useCssTransition(element)
 
+// `isActive`: mounted from the start of a show until `hidden`, so the fade-out can run
 const {visible, isActive, instant, contentShowing, show, hide, toggle} = useShowHide(
   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
   {transition: () => run()}
@@ -212,9 +212,6 @@ watchEffect(() => {
 
 const computedTag = computed(() => (computedLink.value ? BLink : 'div'))
 const computedBodyAttrs = computed(() => ({...props.bodyAttrs, ...computedLinkProps.value}))
-
-// Mounted from the start of a show until `hidden`, so the fade-out can run
-const isToastMounted = computed(() => isActive.value || (props.showOnPause && isPaused.value))
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({

@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="isAlertMounted"
+    v-if="isActive"
     :id="props.id"
     ref="_element"
     class="alert"
@@ -102,7 +102,6 @@ const _props = withDefaults(defineProps<Omit<BAlertProps, 'modelValue'>>(), {
   noResumeOnHoverLeave: false,
   progress: false,
   unmountLazy: false,
-  showOnPause: true,
   show: false,
   title: undefined,
   visible: false,
@@ -153,6 +152,7 @@ const computedId = useId(() => props.id, 'alert')
 // removed from the DOM. `.alert-instant` removes it at once.
 const {run} = useCssTransition(element)
 
+// `isActive`: mounted from the start of a show until `hidden`, so the `.hiding` exit transition can run
 const {visible, isActive, instant, contentShowing, show, hide, toggle} = useShowHide(
   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
   {transition: () => run()}
@@ -189,9 +189,6 @@ watchEffect(() => {
 
 const computedTag = computed(() => (computedLink.value ? BLink : 'div'))
 const computedBodyAttrs = computed(() => ({...props.bodyAttrs, ...computedLinkProps.value}))
-
-// Mounted from the start of a show until `hidden`, so the `.hiding` exit transition can run
-const isAlertMounted = computed(() => isActive.value || (props.showOnPause && isPaused.value))
 
 const {classes: colorClasses} = useThemeClasses(
   computed(() => ({
