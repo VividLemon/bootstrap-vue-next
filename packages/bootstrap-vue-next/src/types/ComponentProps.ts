@@ -28,6 +28,7 @@ import type {
 } from './CommonTypes'
 import type {CommonInputProps, FormDebounceOptions} from './FormCommonInputProps'
 import type {RadioOption, RadioValue} from './RadioTypes'
+import type {FormRangeTick} from './FormRangeTypes'
 import type {
   ComplexSelectOptionRaw,
   SelectOption,
@@ -561,6 +562,25 @@ export interface BFormRadioGroupProps<
   state?: ValidationState
   fields?: OptionFields
 }
+export interface BFormRangeProps {
+  ariaInvalid?: AriaInvalid
+  bubble?: boolean
+  color?: Pick<ColorExtendables, 'theme'> | null
+  disabled?: boolean
+  form?: string
+  formatter?: (value: number) => string
+  id?: string
+  max?: Numberish
+  min?: Numberish
+  modelValue?: number
+  name?: string
+  required?: boolean
+  state?: ValidationState
+  step?: Numberish
+  ticks?: readonly FormRangeTick[]
+  wrapperAttrs?: Readonly<AttrsValue>
+}
+
 export interface BFormRatingProps {
   clearLabel?: string
   color?: ColorExtendables | null

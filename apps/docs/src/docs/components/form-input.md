@@ -1,13 +1,16 @@
 ---
 title: Form Input
-description: 'Create various type inputs such as: `text`, `password`, `number`, `url`, `email`, `search`, `range`, `date` and more.'
+description: 'Create various type inputs such as: `text`, `password`, `number`, `url`, `email`, `search`, `date` and more.'
 ---
 
 <<< DEMO ./demo/FormInputOverview.vue
 
 ## Input type
 
-`BFormInput` defaults to a `text` input, but you can set the `type` prop to one of the supported native browser HTML5 types: `text`, `password`, `email`, `number`, `url`, `tel`, `search`, `date`, `datetime-local`, `month`, `week`, `time`, `range`, or `color`.
+`BFormInput` defaults to a `text` input, but you can set the `type` prop to one of the supported native browser HTML5 types: `text`, `password`, `email`, `number`, `url`, `tel`, `search`, `date`, `datetime-local`, `month`, `week`, `time`, or `color`.
+
+For a range slider, use [`BFormRange`](/docs/components/form-range): `type="range"` is no longer
+supported by `BFormInput`.
 
 <<< DEMO ./demo/FormInputTypes.vue
 
@@ -28,7 +31,6 @@ If the `type` prop is set to an input type that is not supported (see above), a 
 - For date and time style inputs, where supported, the displayed value in the GUI may be different
   from what is returned by its value (i.e. ordering of year-month-date)
 - Regardless of input type, the value is **always** returned as a string representation
-- Older version of Firefox may not support `readonly` for `range` type inputs
 - Input types that do not support `min`, `max` and `step` (i.e. `text`, `password`, `tel`, `email`,
   `url`, etc.) will silently ignore these values (although they will still be rendered on the input
   markup) if values are provided
@@ -42,27 +44,6 @@ If the `type` prop is set to an input type that is not supported (see above), a 
   IME composition is completed
   :::
 
-### Range type input
-
-Inputs with type `range` render using Bootstrap v5's `.form-range` class. The track (the
-background) and thumb (the value) are both styled to appear the same across browsers.
-
-Range inputs have implicit values for `min` and `max` of `0` and `100` respectively. You may specify
-new values for those using the `min` and `max` props.
-
-<<< DEMO ./demo/FormInputRange.vue
-
-By default, range inputs "snap" to integer values. To change this, you can specify a `step` value.
-In the example below, we double the number of steps by using step="0.5".
-
-<<< DEMO ./demo/FormInputRangeStep.vue
-
-::: info NOTE
-Range inputs (as do all input types) return their value as a string. You may need to
-convert the value to a native number by using `Number(value)`, `parseInt(value, 10)`,
-`parseFloat(value)`, or use the `number` prop.
-:::
-
 ## Control sizing
 
 Set heights using the `size` prop to `sm` or `lg` for small or large respectively.
@@ -72,10 +53,6 @@ To control width, place the input inside standard Bootstrap grid column.
 <<< DEMO ./demo/FormInputSize.vue#template{vue-html}
 
 ::: info NOTE
-Input type `range` currently does not support control sizing. If is placed inside a
-`BInputGroup` which has its `size` prop set, then the associated controls as sized,
-but the range control stays the same size.
-
 The native HTML `<input>` attribute `size` (which sets a horizontal width on the `<input>`
 in characters) is not supported. Use styling, utility classes, or the layout rows (`BRow`) and
 columns (`BCol`) to set the desired width.
@@ -149,7 +126,7 @@ Formatting does not occur if a `formatter` is not provided.
 <<< DEMO ./demo/FormInputFormatter.vue
 
 ::: info NOTE
-When using a non-text-like input (i.e. `color`, `range`, `date`, `number`, `email` etc.),
+When using a non-text-like input (i.e. `color`, `date`, `number`, `email` etc.),
 ensure that your formatter function returns the value in the expected format (`date` ->
 '2000-06-01', `color` -> '#ff0000', etc.) for the input type. The formatter **must** return the
 value as a _string_.
@@ -166,7 +143,7 @@ If you want to have `<BFormInput readonly>` elements in your form styled as plai
 `plaintext` prop (no need to set `readonly`) to remove the default form field styling and preserve
 the correct margin and padding.
 
-The `plaintext` option is not supported by input types `color` or `range`.
+The `plaintext` option is not supported by input type `color`.
 
 ## Disabling mousewheel events on numeric-like inputs
 
@@ -198,7 +175,7 @@ from an array of options using the same options object as [`<BFormSelect>`](/doc
 - Datalists work in conjunction with the browser's built in auto-complete, displaying datalist
   options first, followed by auto-complete options. To only display datalist options, set
   `autocomplete="off"` on `<BFormInput>`.
-- Datalists **cannot** be applied to input fields with type `password`, `range` or `color`.
+- Datalists **cannot** be applied to input fields with type `password` or `color`.
 - Not all browsers fully support `<datalist>` and implementations can be buggy. It is recommended
   that datalists be treated as an enhancement and not be relied upon at this time. Check
   [Can I use](https://caniuse.com/datalist) for full support details on all browsers. In particular

@@ -5,17 +5,7 @@
       <BFormSelect id="bg-color" v-model="bg" :options="bgs" />
 
       <label for="bg-opacity">Opacity</label>
-      <div class="d-inline">
-        <BFormInput
-          id="bg-opacity"
-          v-model.number="opacity"
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          class="d-inline"
-        />
-      </div>
+      <BFormRange id="bg-opacity" v-model="opacity" :min="0" :max="1" :step="0.01" />
 
       {{ opacity.toFixed(2) }}
 

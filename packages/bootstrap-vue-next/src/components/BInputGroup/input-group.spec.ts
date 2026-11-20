@@ -1,6 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import BInputGroup from './BInputGroup.vue'
-import BFormInput from '../BFormInput/BFormInput.vue'
 import {afterEach, describe, expect, it} from 'vitest'
 import {defineComponent, inject} from 'vue'
 import {inputGroupKey} from '../../utils/keys'
@@ -153,27 +152,5 @@ describe('input-group', () => {
     })
     mount(BInputGroup, {slots: {default: Child}})
     expect(injected).toBe(true)
-  })
-
-  it('range input inside input group has both form-range and form-control classes', () => {
-    const wrapper = mount(BInputGroup, {
-      slots: {
-        default: {
-          components: {BFormInput},
-          template: '<BFormInput type="range" />',
-        },
-      },
-    })
-    const input = wrapper.find('input')
-    expect(input.classes()).toContain('form-range')
-    expect(input.classes()).toContain('form-control')
-  })
-
-  it('range input outside input group does not have form-control class', () => {
-    const wrapper = mount(BFormInput, {
-      props: {type: 'range'},
-    })
-    expect(wrapper.classes()).toContain('form-range')
-    expect(wrapper.classes()).not.toContain('form-control')
   })
 })
