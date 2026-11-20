@@ -336,9 +336,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### BAccordion / BAccordionItem
 
-- **Now:** behavior changes with `BCollapse` (native transitions); `BAccordionItem` has `noTransition` (`BAccordion` itself does not yet).
-- **Pending:** the item header button still renders the v5 accordion `collapsed` class.
-- **Pending:** v6 Accordion markup; part attrs (`bodyClass`, `buttonClass`, `collapseClass`, `headerClass` → merge into `bodyAttrs` / `buttonAttrs` / `headerAttrs` / `wrapperAttrs`); `initialAnimation` naming review.
+- **Done (G5, `bootstrap-v6-g5-accordion`):** native `<details>` / `<summary>` markup, no `BCollapse`; `name`-based exclusivity; `v-model` of ids only (`index` removed); native `toggle` event only; `lazy` kept, `unmountLazy` / `initialAnimation` removed; `gap`, `size`, `color`, `name`, `noTransition` on `BAccordion`; `headerAttrs` / `bodyAttrs` only (see `BOOTSTRAP_V6_DISPLAY.md`).
 
 ### BCarousel
 

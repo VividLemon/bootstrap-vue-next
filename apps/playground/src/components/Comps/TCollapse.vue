@@ -67,9 +67,9 @@
         </div>
       </BCol>
       <BCol>
-        <BAccordion flush free>
-          <BAccordionItem id="iddddd" title="Accordion Item #1" visible>
-            Accordion is also using collapse. Openned by visible prop
+        <BAccordion v-model="accordionOpen" flush free>
+          <BAccordionItem id="iddddd" title="Accordion Item #1">
+            Opened by the accordion v-model
           </BAccordionItem>
 
           <BAccordionItem v-model="collapseState" title="Openned with v-model">
@@ -100,5 +100,6 @@
 // Please do not commit this file
 import {ref, useTemplateRef} from 'vue'
 const collapseState = ref(true)
+const accordionOpen = ref<string | readonly string[] | undefined>(['iddddd'])
 const collapseRef = useTemplateRef('collapseRef')
 </script>
