@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import BCardBody from './BCardBody.vue'
 import BCardTitle from './BCardTitle.vue'
 import BCardSubtitle from './BCardSubtitle.vue'

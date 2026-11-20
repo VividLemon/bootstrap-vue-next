@@ -1,5 +1,5 @@
 import {mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import {defineComponent, ref, type EmitFn} from 'vue'
 import {BvTriggerableEvent} from '../utils'
 import {useLegacyShowHide} from './useLegacyShowHide'

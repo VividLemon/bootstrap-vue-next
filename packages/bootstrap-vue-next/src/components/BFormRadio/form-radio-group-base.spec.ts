@@ -1,4 +1,4 @@
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import BFormRadioGroupBase from './BFormRadioGroupBase.vue'
 import BFormRadio from './BFormRadio.vue'

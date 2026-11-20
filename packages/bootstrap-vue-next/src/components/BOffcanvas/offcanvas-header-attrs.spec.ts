@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, beforeEach, describe, expect, it} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it} from 'vite-plus/test'
 import BOffcanvas from './BOffcanvas.vue'
 import {createBootstrap} from '../../plugins'
 

@@ -21,39 +21,24 @@ jobs:
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Vite+ (Node 24, Bun from packageManager)
+        # Pin an exact release: the floating v1 tag is frozen at v1.15.0
+        uses: voidzero-dev/setup-vp@v1.22.0
         with:
-          node-version: 24.x.x
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-
-      - name: Get PNPM Store Directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup PNPM Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: '24'
+          cache: true # caches Bun's package data (detects bun.lock)
+          run-install: false
 
       - name: Install Dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile
+        run: vp install --frozen-lockfile --ignore-scripts
 
       - name: Build Library
-        run: pnpm run build
+        run: vp run build
 
       - name: Upload build artifacts for downstream jobs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-artifacts
           include-hidden-files: true
@@ -65,87 +50,59 @@ jobs:
           retention-days: 1
 
       - name: Validate Docs Page Structure
-        run: pnpm --filter docs run test:unit:ci
+        run: vp run --filter docs test:unit:ci
 
       - name: Run publint
-        run: pnpm --filter bootstrap-vue-next run publint
+        run: vp run --filter bootstrap-vue-next publint
 
       - name: Run publint on Nuxt package
-        run: pnpm --filter @bootstrap-vue-next/nuxt run publint
+        run: vp run --filter @bootstrap-vue-next/nuxt publint
 
-      - run: pnpx pkg-pr-new publish './packages/bootstrap-vue-next' './packages/nuxt' --template './templates/vite'
+      - name: Publish preview packages
+        # --bun packs with `bun pm pack`, which rewrites workspace: dependencies
+        run: bun x pkg-pr-new publish './packages/bootstrap-vue-next' './packages/nuxt' --template './templates/vite' --bun
 
   test-lint:
     runs-on: ubuntu-latest
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Vite+ (Node 24, Bun from packageManager)
+        # Pin an exact release: the floating v1 tag is frozen at v1.15.0
+        uses: voidzero-dev/setup-vp@v1.22.0
         with:
-          node-version: 24.x.x
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-
-      - name: Get PNPM Store Directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup PNPM Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: '24'
+          cache: true # caches Bun's package data (detects bun.lock)
+          run-install: false
 
       - name: Install Dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile
+        run: vp install --frozen-lockfile --ignore-scripts
 
       - name: Test Lint
-        run: pnpm run test:lint:ci
+        run: vp run test:lint:ci
 
   test-unit:
     runs-on: ubuntu-latest
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Vite+ (Node 24, Bun from packageManager)
+        # Pin an exact release: the floating v1 tag is frozen at v1.15.0
+        uses: voidzero-dev/setup-vp@v1.22.0
         with:
-          node-version: 24.x.x
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-
-      - name: Get PNPM Store Directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup PNPM Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: '24'
+          cache: true # caches Bun's package data (detects bun.lock)
+          run-install: false
 
       - name: Install Dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile
+        run: vp install --frozen-lockfile --ignore-scripts
 
       - name: Test Unit
-        run: pnpm run test:unit:ci
+        run: vp run test:unit:ci
 
   test-nuxt-e2e:
     needs: build
@@ -153,42 +110,29 @@ jobs:
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Vite+ (Node 24, Bun from packageManager)
+        # Pin an exact release: the floating v1 tag is frozen at v1.15.0
+        uses: voidzero-dev/setup-vp@v1.22.0
         with:
-          node-version: 24.x.x
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-
-      - name: Get PNPM Store Directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup PNPM Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: '24'
+          cache: true # caches Bun's package data (detects bun.lock)
+          run-install: false
 
       - name: Install Dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile
+        run: vp install --frozen-lockfile --ignore-scripts
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: packages
 
       - name: Install Playwright browser for Nuxt tests
-        run: pnpm dlx playwright@1.62.1 install --with-deps chromium
+        # Use the package's own playwright-core so the browser build always matches it
+        working-directory: packages/nuxt
+        run: bun x playwright-core install --with-deps chromium
 
       - name: Run Nuxt Playwright tests
-        run: pnpm --filter @bootstrap-vue-next/nuxt run test:e2e
+        run: vp run --filter @bootstrap-vue-next/nuxt test:e2e

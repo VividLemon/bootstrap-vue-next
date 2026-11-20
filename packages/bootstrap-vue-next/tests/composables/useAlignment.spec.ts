@@ -1,5 +1,5 @@
 import {useAlignment} from '../../src/composables/useAlignment'
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vite-plus/test'
 import {reactive} from 'vue'
 import type {AlignmentJustifyContent} from '../../src/types'
 

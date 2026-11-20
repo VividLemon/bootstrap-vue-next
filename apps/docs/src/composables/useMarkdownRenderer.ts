@@ -18,18 +18,12 @@ const defaultRender =
 
 md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
   const token = tokens[idx]
-  const hrefIndex = token?.attrIndex('href')
+  // markdown-it 15 types attribute values as `string | number`
+  const href = token?.attrGet('href')
 
-  if (hrefIndex !== undefined && hrefIndex >= 0 && token?.attrs) {
-    const href = token.attrs[hrefIndex]?.[1]
-    // Only add base to internal links (starting with /)
-    if (
-      href?.startsWith('/') &&
-      !href.startsWith('//') &&
-      token.attrs[hrefIndex]?.[1] !== undefined
-    ) {
-      token.attrs[hrefIndex][1] = withBase(href)
-    }
+  // Only add base to internal links (starting with /)
+  if (typeof href === 'string' && href.startsWith('/') && !href.startsWith('//')) {
+    token?.attrSet('href', withBase(href))
   }
 
   return defaultRender(tokens, idx, options, env, self)

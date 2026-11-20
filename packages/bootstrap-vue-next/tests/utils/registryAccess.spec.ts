@@ -1,4 +1,4 @@
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vite-plus/test'
 import {type ComponentInternalInstance, readonly, ref} from 'vue'
 import {getActiveShowHide, getShowHideValue} from '../../src/utils/registryAccess'
 import type {RegisterShowHideInstances, RegisterShowHideMapValue} from '../../src/utils/keys'

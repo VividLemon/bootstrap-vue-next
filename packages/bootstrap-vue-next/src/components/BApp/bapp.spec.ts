@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import {defineComponent, h, inject, type Ref} from 'vue'
 import BApp from './BApp.vue'
 import BAlert from '../BAlert/BAlert.vue'
@@ -553,7 +553,9 @@ describe('BApp defaults for prefixed color objects', () => {
   })
 
   it('replaces the BApp color object default when the prop is passed (no deep merge)', () => {
-    const $button = mountAlert({close: {content: 'X', color: {fg: 'white'}}}).get('.btn-close-custom')
+    const $button = mountAlert({close: {content: 'X', color: {fg: 'white'}}}).get(
+      '.btn-close-custom'
+    )
     expect($button.classes()).toContain('fg-white')
     expect($button.classes()).not.toContain('bg-subtle-danger')
     expect($button.classes()).toContain('theme-secondary')

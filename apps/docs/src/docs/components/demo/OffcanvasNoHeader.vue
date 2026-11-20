@@ -14,7 +14,7 @@
             Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
             in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
           </p>
-          <BImg src="https://picsum.photos/500/500/?image=54" fluid thumbnail />
+          <BImg :src="imageSrc" fluid thumbnail />
           <BButton :color="{ theme: 'primary' }" block @click="() => scope.hide()"
             >Close Offcanvas</BButton
           >
@@ -23,3 +23,9 @@
     </BOffcanvas>
   </div>
 </template>
+
+<script setup lang="ts">
+// Kept out of the template: vue-tsc >=3.3.12 loses slot-scope variables after an inline URL
+// in a template attribute (https://github.com/vuejs/language-tools/issues/6240)
+const imageSrc = 'https://picsum.photos/500/500/?image=54'
+</script>

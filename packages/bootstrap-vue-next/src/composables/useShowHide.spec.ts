@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import {customRef, defineComponent, type EmitFn, h, nextTick, ref, type Ref, watch} from 'vue'
 import {useShowHide, type UseShowHideProps, type UseShowHideReturn} from './useShowHide'
 import {

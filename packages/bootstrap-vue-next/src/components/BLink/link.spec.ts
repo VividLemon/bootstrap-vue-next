@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import BLink from './BLink.vue'
 import {createRouter, createWebHistory} from 'vue-router'
 import {defineComponent, h, markRaw, ref} from 'vue'

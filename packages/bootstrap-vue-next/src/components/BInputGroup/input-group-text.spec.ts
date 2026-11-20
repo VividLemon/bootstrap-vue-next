@@ -1,6 +1,6 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import BInputGroupText from './BInputGroupText.vue'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 
 describe('input-group-text', () => {
   enableAutoUnmount(afterEach)

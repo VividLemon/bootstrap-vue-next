@@ -30,19 +30,19 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "tsx watch src/cli.ts",
-    "lint": "pnpm run lint:eslint",
+    "dev": "vpx --watch src/cli.ts",
+    "lint": "bun run lint:eslint",
     "lint:eslint": "eslint . --fix --cache",
     "test:lint": "eslint src tests",
-    "test:lint:ci": "pnpm run test:lint",
-    "test:unit:ci": "node --import tsx --test tests/**/*.test.ts",
+    "test:lint:ci": "bun run test:lint",
+    "test:unit:ci": "node --import vite-plus/register --test tests/**/*.test.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "type-check": "pnpm run typecheck",
+    "type-check": "bun run typecheck",
     "start": "node dist/src/cli.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -50,9 +50,10 @@
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.9.0",
-    "tsx": "^4.23.12",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.67.0"
+    "typescript-eslint": "^8.67.0",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
   },
   "repository": {
     "type": "git",

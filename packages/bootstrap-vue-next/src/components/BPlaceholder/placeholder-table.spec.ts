@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import BPlaceholderTable from './BPlaceholderTable.vue'
 import BPlaceholder from './BPlaceholder.vue'
 import BTableSimple from '../BTable//BTableSimple.vue'

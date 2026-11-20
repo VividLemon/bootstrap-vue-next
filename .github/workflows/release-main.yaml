@@ -25,68 +25,109 @@ jobs:
 
     steps:
       - name: Use Release Please
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         id: release
 
       # The logic below handles the npm publication:
 
       - name: Clone Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         if: ${{ steps.release.outputs.releases_created == 'true' }}
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Vite+ (Node 24, Bun from packageManager)
+        # Pin an exact release: the floating v1 tag is frozen at v1.15.0
+        uses: voidzero-dev/setup-vp@v1.22.0
         with:
-          node-version: 24.x.x
-          registry-url: 'https://registry.npmjs.org'
-        if: ${{ steps.release.outputs.releases_created == 'true' }}
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-        if: ${{ steps.release.outputs.releases_created == 'true' }}
-
-      - name: Get PNPM Store Directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-        if: ${{ steps.release.outputs.releases_created == 'true' }}
-
-      - name: Setup PNPM Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: '24'
+          cache: true # caches Bun's package data (detects bun.lock)
+          run-install: false
         if: ${{ steps.release.outputs.releases_created == 'true' }}
 
       - name: Install Dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile
+        run: vp install --frozen-lockfile --ignore-scripts
         if: ${{ steps.release.outputs.releases_created == 'true' }}
 
       - name: Build Library
-        run: pnpm run build --filter bootstrap-vue-next --filter @bootstrap-vue-next/nuxt --filter @bootstrap-vue-next/mcp
+        run: vp run --filter bootstrap-vue-next --filter @bootstrap-vue-next/nuxt --filter @bootstrap-vue-next/mcp build
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+
+      # bun publish supports neither npm trusted publishing (OIDC) nor provenance, so Bun only packs
+      # (`bun pm pack` rewrites workspace: dependencies) and npm publishes the tarball, which keeps
+      # trusted publishing through id-token: write and automatic provenance. Needs npm >= 11.5.1.
+      - name: Ensure npm supports trusted publishing
+        run: |
+          if ! node -e "const [a,b,c]=process.argv[1].split('.').map(Number);process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)" "$(npm --version)"; then
+            npm install -g npm@^11.5.1
+          fi
+          npm --version
         if: ${{ steps.release.outputs.releases_created == 'true' }}
 
       - name: Publish Main
-        run: pnpm publish --tag latest --filter bootstrap-vue-next --access=public
+        working-directory: packages/bootstrap-vue-next
+        run: |
+          bun pm pack --destination "$RUNNER_TEMP/pack-main" --ignore-scripts
+          npm publish "$RUNNER_TEMP"/pack-main/*.tgz --tag latest --access public
         if: ${{ steps.release.outputs.releases_created == 'true' && steps.release.outputs['packages/bootstrap-vue-next--release_created'] == 'true' }}
 
       - name: Publish Nuxt
-        run: pnpm publish --tag latest --filter @bootstrap-vue-next/nuxt --access=public
+        working-directory: packages/nuxt
+        run: |
+          bun pm pack --destination "$RUNNER_TEMP/pack-nuxt" --ignore-scripts
+          npm publish "$RUNNER_TEMP"/pack-nuxt/*.tgz --tag latest --access public
         if: ${{ steps.release.outputs.releases_created == 'true' && steps.release.outputs['packages/nuxt--release_created'] == 'true' }}
 
       - name: Publish MCP
-        run: pnpm publish --tag latest --filter @bootstrap-vue-next/mcp --access=public
+        working-directory: packages/mcp
+        run: |
+          bun pm pack --destination "$RUNNER_TEMP/pack-mcp" --ignore-scripts
+          npm publish "$RUNNER_TEMP"/pack-mcp/*.tgz --tag latest --access public
         if: ${{ steps.release.outputs.releases_created == 'true' && steps.release.outputs['packages/mcp--release_created'] == 'true' }}
 
-  deploy-docs:
+  # Building and deploying the docs are separate jobs on purpose: when
+  # upload-pages-artifact and deploy-pages run in the same job, deploy-pages can
+  # list the run's artifacts before the just-finalized upload is visible and fail
+  # with 'No artifacts named "github-pages"' (actions/deploy-pages#451).
+  build-docs:
     needs: release-please
     if: ${{ needs.release-please.outputs.releases_created == 'true' && needs.release-please.outputs.bootstrap_vue_next_release_created == 'true' }}
     permissions:
       contents: read
+      pages: read # configure-pages reads the Pages site config
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Vite+ (Node 24, Bun from packageManager)
+        # Pin an exact release: the floating v1 tag is frozen at v1.15.0
+        uses: voidzero-dev/setup-vp@v1.22.0
+        with:
+          node-version: '24'
+          cache: true # caches Bun's package data (detects bun.lock)
+          run-install: false
+
+      - name: Install Dependencies
+        run: vp install --frozen-lockfile --ignore-scripts
+
+      - name: Build Documentation
+        # `docs...` also builds the workspace packages the docs depend on (bootstrap-vue-next), first
+        run: vp run --filter 'docs...' build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./apps/docs/.vitepress/dist
+
+  deploy-docs:
+    needs: build-docs
+    permissions:
       pages: write
       id-token: write
 
@@ -99,48 +140,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Clone Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24.x.x
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-
-      - name: Get PNPM Store Directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup PNPM Cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install Dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile
-
-      - name: Build Documentation
-        run: pnpm run build --filter docs
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./apps/docs/.vitepress/dist
-
       - name: Deploy Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

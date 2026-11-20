@@ -1,6 +1,6 @@
 import {useRadiusElementClasses as useRadiusElementClassesBase} from '../../src/composables/useRadiusElementClasses'
 import type {RadiusElementExtendables} from '../../src/types/RadiusElement'
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vite-plus/test'
 import {computed} from 'vue'
 
 const useRadiusElementClasses = (getter: () => RadiusElementExtendables) =>

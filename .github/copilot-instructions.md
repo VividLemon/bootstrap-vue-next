@@ -6,31 +6,31 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Required Setup
 
-- Install Node.js 20.x or 22.x (engine requires >=22.0.0 but 20.x works with warnings)
-- Install pnpm globally: `npm install -g pnpm@10.13.1` (ONLY pnpm is allowed as package manager) Use the version specified in the packageManager field of the package.json file
+- Install Node.js 24.x (engine requires >=24.0.0); the tools run on Node
+- Install Bun (ONLY Bun is allowed as package manager): <https://bun.sh/docs/installation>. Use the version specified in the packageManager field of the package.json file
 - Clone repository and open the **root** directory (not subdirectories like packages/bootstrap-vue-next)
 
 ### Bootstrap, Build, and Test the Repository
 
-1. `pnpm install --ignore-scripts --frozen-lockfile` -- takes 2 seconds. Use `--ignore-scripts` to avoid docs build network issues.
-2. `pnpm --filter bootstrap-vue-next run build` -- takes 27 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
-3. `pnpm --filter bootstrap-vue-next run test:unit:ci` -- takes 40 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
-4. `pnpm --filter bootstrap-vue-next run test:lint` -- takes 12 seconds. NEVER CANCEL. Set timeout to 30+ minutes.
+1. `bun install --ignore-scripts --frozen-lockfile` -- takes 2 seconds. Use `--ignore-scripts` to avoid docs build network issues.
+2. `bun run --filter bootstrap-vue-next build` -- takes 27 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
+3. `bun run --filter bootstrap-vue-next test:unit:ci` -- takes 40 seconds. NEVER CANCEL. Set timeout to 60+ minutes.
+4. `bun run --filter bootstrap-vue-next test:lint` -- takes 12 seconds. NEVER CANCEL. Set timeout to 30+ minutes.
 
 ### Build Individual Components
 
-- Bootstrap Vue Next core package: `pnpm --filter bootstrap-vue-next run build` -- 27 seconds
-- Nuxt package: `pnpm --filter @bootstrap-vue-next/nuxt run build` -- 25 seconds
-- MCP package: `pnpm --filter @bootstrap-vue-next/mcp run build` -- ~5 seconds
-- Playground app: `pnpm --filter playground run build` -- 8 seconds
+- Bootstrap Vue Next core package: `bun run --filter bootstrap-vue-next build` -- 27 seconds
+- Nuxt package: `bun run --filter @bootstrap-vue-next/nuxt build` -- 25 seconds
+- MCP package: `bun run --filter @bootstrap-vue-next/mcp build` -- ~5 seconds
+- Playground app: `bun run --filter playground build` -- 8 seconds
 - **NEVER** try to build docs app directly - it fails due to network connectivity (OpenCollective API)
 
 ### Development Servers
 
-- Core package dev server: `pnpm --filter bootstrap-vue-next run dev` (runs on <http://localhost:5174>)
-- Playground app dev server: `pnpm --filter playground run dev` (runs on <http://localhost:5173>)
-- Docs dev server: `pnpm --filter docs run dev` (runs on <http://localhost:8000>)
-- All dev servers: `pnpm dev` (starts all development environments in parallel)
+- Core package dev server: `bun run --filter bootstrap-vue-next dev` (runs on <http://localhost:5174>)
+- Playground app dev server: `bun run --filter playground dev` (runs on <http://localhost:5173>)
+- Docs dev server: `bun run --filter docs dev` (runs on <http://localhost:8000>)
+- All dev servers: `bun run dev` (starts all development environments in parallel)
 
 ### Exporting public files in the main bootstrap-vue-next package
 
@@ -68,22 +68,22 @@ add new props to the core packages' components, you must build the documentation
 
 ### Always Validate Changes
 
-- ALWAYS run `pnpm --filter bootstrap-vue-next run test:lint` before committing (12 seconds)
-- ALWAYS run `pnpm --filter bootstrap-vue-next run test:unit:ci` after making changes (40 seconds)
-- ALWAYS run `pnpm --filter bootstrap-vue-next run build` to ensure buildability (27 seconds)
-- For linting fixes: `pnpm --filter bootstrap-vue-next run lint` (auto-fixes issues)
+- ALWAYS run `bun run --filter bootstrap-vue-next test:lint` before committing (12 seconds)
+- ALWAYS run `bun run --filter bootstrap-vue-next test:unit:ci` after making changes (40 seconds)
+- ALWAYS run `bun run --filter bootstrap-vue-next build` to ensure buildability (27 seconds)
+- For linting fixes: `bun run --filter bootstrap-vue-next lint` (auto-fixes issues)
 
 ### Manual Testing Scenarios
 
 - Test component changes using the core package dev server at <http://localhost:5174>
 - Use `./packages/bootstrap-vue-next/src/App.vue` as a test area for changes
 - Test real-world usage with the playground app at <http://localhost:5173>
-- The playground mimics user library usage but requires `pnpm build` for changes (no hot-reload)
+- The playground mimics user library usage but requires `bun run build` for changes (no hot-reload)
 
 ### CI Validation
 
 - The CI runs: build, test:lint:ci, test:unit:ci
-- Use `pnpm run test:ci` to run the same tests locally
+- Use `bun run test:ci` to run the same tests locally
 - NEVER CANCEL builds or tests - they are designed for long runs
 
 ## Repository Structure
@@ -119,8 +119,9 @@ templates/
 ### Important Files
 
 - `package.json` - Root workspace configuration
-- `pnpm-workspace.yaml` - Workspace package definitions
-- `turbo.json` - Task pipeline configuration
+- `package.json` `workspaces` - Workspace package definitions and the dependency catalog
+- `vite.config.ts` - Vite+ root config: workspace-wide lint (Oxlint) and format (Oxfmt) settings
+- `bunfig.toml` - Bun install settings (hoisted linker, minimum release age)
 - `vitest.config.ts` - Test workspace setup
 - `.github/workflows/ci.yaml` - CI pipeline
 
@@ -148,16 +149,16 @@ templates/
 
 1. Edit files in `packages/bootstrap-vue-next/src/components/`
 2. Test using `packages/bootstrap-vue-next/src/App.vue`
-3. Run `pnpm --filter bootstrap-vue-next run dev` for hot-reload testing
-4. Run `pnpm --filter bootstrap-vue-next run test:unit:ci` to validate
-5. Run `pnpm --filter bootstrap-vue-next run test:lint` before committing
+3. Run `bun run --filter bootstrap-vue-next dev` for hot-reload testing
+4. Run `bun run --filter bootstrap-vue-next test:unit:ci` to validate
+5. Run `bun run --filter bootstrap-vue-next test:lint` before committing
 6. **ALWAYS update documentation** in `apps/docs/src/data/components/*.data.ts` when adding/modifying props, events, or slots
 
 ### Testing Changes End-to-End
 
 1. Make changes in `packages/bootstrap-vue-next/`
-2. Run `pnpm --filter bootstrap-vue-next run build`
-3. Test in playground: `pnpm --filter playground run dev`
+2. Run `bun run --filter bootstrap-vue-next build`
+3. Test in playground: `bun run --filter playground dev`
 4. Check real usage scenarios in the playground app
 
 ### Adding New Components
@@ -183,12 +184,12 @@ templates/
 
 ### Command Timing (measured)
 
-- `pnpm install --ignore-scripts --frozen-lockfile`: ~2 seconds
-- `pnpm --filter bootstrap-vue-next run build`: ~27 seconds
-- `pnpm --filter bootstrap-vue-next run test:unit:ci`: ~40 seconds (1567 tests)
-- `pnpm --filter bootstrap-vue-next run test:lint`: ~12 seconds
-- `pnpm --filter playground run build`: ~8 seconds
-- `pnpm --filter @bootstrap-vue-next/nuxt run build`: ~25 seconds
+- `bun install --ignore-scripts --frozen-lockfile`: ~2 seconds
+- `bun run --filter bootstrap-vue-next build`: ~27 seconds
+- `bun run --filter bootstrap-vue-next test:unit:ci`: ~40 seconds (1567 tests)
+- `bun run --filter bootstrap-vue-next test:lint`: ~12 seconds
+- `bun run --filter playground build`: ~8 seconds
+- `bun run --filter @bootstrap-vue-next/nuxt build`: ~25 seconds
 
 ### CRITICAL TIMEOUT WARNINGS
 
@@ -203,12 +204,12 @@ templates/
 ### Network-Related Build Failures
 
 - Docs build fails due to OpenCollective API calls: **EXPECTED**
-- Use `pnpm install --ignore-scripts` to skip problematic prepare scripts
-- Filter builds to specific packages to avoid docs: `pnpm --filter bootstrap-vue-next run build`
+- Use `bun install --ignore-scripts` to skip problematic prepare scripts
+- Filter builds to specific packages to avoid docs: `bun run --filter bootstrap-vue-next build`
 
 ### Engine Version Warnings
 
-- Repository requires Node.js >=22.0.0 but works with 20.x (shows warnings)
+- Repository requires Node.js >=24.0.0
 - Warnings are safe to ignore during development
 
 ### Generated Files
@@ -218,8 +219,9 @@ templates/
 
 ## Package Manager Rules
 
-- **ONLY pnpm is allowed** - npm and yarn will cause errors
-- Use exact version `pnpm@10.13.1` for consistency
+- **ONLY Bun is allowed as the package manager** - npm, pnpm and yarn will cause errors
+- Use the exact Bun version from the `packageManager` field of the root package.json for consistency
+- Bun only installs: tools run on Node. Tasks run through Vite+ (`vp run`), which the root scripts call
 - Always use `--frozen-lockfile` for reproducible installs
 - Use workspace filters: `--filter <package-name>` for targeted operations
 
@@ -233,7 +235,7 @@ templates/
 
 - Vitest for unit testing with Vue Test Utils
 - 1567+ tests across components
-- Coverage reports available via `pnpm --filter bootstrap-vue-next run test:coverage`
+- Coverage reports available via `bun run --filter bootstrap-vue-next test:coverage`
 - Tests use Happy DOM environment for performance
 
 ### Nuxt / SSR E2E Tests
@@ -241,7 +243,7 @@ templates/
 The `packages/nuxt/` package contains end-to-end tests that run against a real Nuxt application. These tests are essential for catching Nuxt-specific and SSR-specific bugs that unit tests cannot detect.
 
 - E2e tests live in `packages/nuxt/test/` (e.g., `ssr-smoke.test.ts`, `basic.test.ts`)
-- Run with: `pnpm --filter @bootstrap-vue-next/nuxt run test:e2e`
+- Run with: `bun run --filter @bootstrap-vue-next/nuxt test:e2e`
 - **ALWAYS write e2e tests in `packages/nuxt/test/` when fixing Nuxt-specific or SSR-specific bugs**
 - Fixture Nuxt apps used by the tests are located in `packages/nuxt/test/fixtures/`
 - The tests use Vitest with `@nuxt/test-utils` for browser/SSR testing

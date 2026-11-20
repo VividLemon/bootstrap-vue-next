@@ -1,6 +1,6 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {type ComputedRef, h, nextTick, ref} from 'vue'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import BTab from './BTab.vue'
 import BTabs from './BTabs.vue'
 import {tabsInjectionKey} from '../../utils/keys'

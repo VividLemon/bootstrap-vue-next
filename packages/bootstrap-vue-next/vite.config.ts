@@ -1,4 +1,4 @@
-import {defineConfig} from 'vite'
+import {defineConfig, lazyPlugins} from 'vite-plus'
 import vue from '@vitejs/plugin-vue'
 import dts from 'unplugin-dts/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -128,7 +128,7 @@ export default defineConfig({
     },
   },
 
-  plugins: [
+  plugins: lazyPlugins(async () => [
     vueDevTools(),
     vue({
       include: [/\.vue$/, /\.md$/],
@@ -147,7 +147,7 @@ export default defineConfig({
         )
       },
     }),
-  ],
+  ]),
 
   server: {
     host: true,

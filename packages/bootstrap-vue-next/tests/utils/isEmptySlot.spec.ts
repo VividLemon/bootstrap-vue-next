@@ -1,6 +1,6 @@
 import {mount} from '@vue/test-utils'
 import {isEmptySlot} from '../../src/utils/dom'
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vite-plus/test'
 import BSpinner from '../../src/components/BSpinner/BSpinner.vue'
 
 describe('isEmptySlot', () => {

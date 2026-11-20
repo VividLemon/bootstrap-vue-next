@@ -1,5 +1,5 @@
 import {pick} from '../../src/utils/object'
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vite-plus/test'
 
 describe('pick', () => {
   it('picks out a value when pickables is an array', () => {

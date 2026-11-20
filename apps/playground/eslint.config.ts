@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { globalIgnores } from 'eslint/config'
 import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
 import pluginVue from 'eslint-plugin-vue'
@@ -20,7 +21,8 @@ export default defineConfigWithVueTs(
   ...pluginVue.configs['flat/essential'],
   vueTsConfigs.recommended,
 
-  ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
+  // Oxlint rules live in the `lint` block of the root vite.config.ts (Vite+ monorepo layout)
+  ...(await pluginOxlint.buildFromConfigFile(fileURLToPath(new URL('../../vite.config.ts', import.meta.url)))),
 
   skipFormatting,
 )

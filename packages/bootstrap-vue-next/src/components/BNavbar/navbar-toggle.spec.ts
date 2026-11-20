@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import {type ComponentInternalInstance, readonly, ref} from 'vue'
 import BNavbarToggle from './BNavbarToggle.vue'
 import {

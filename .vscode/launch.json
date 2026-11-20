@@ -4,11 +4,12 @@
       "name": "Launch nuxt dev",
       "request": "launch",
       "runtimeArgs": [
-        "dev",
+        "run",
         "--filter",
-        "nuxt"
+        "@bootstrap-vue-next/nuxt",
+        "dev"
       ],
-      "runtimeExecutable": "pnpm",
+      "runtimeExecutable": "bun",
       "skipFiles": [
         "<node_internals>/**"
       ],
@@ -18,11 +19,12 @@
       "name": "Launch app dev",
       "request": "launch",
       "runtimeArgs": [
-        "dev",
+        "run",
         "--filter",
-        "bootstrap-vue-next"
+        "bootstrap-vue-next",
+        "dev"
       ],
-      "runtimeExecutable": "pnpm",
+      "runtimeExecutable": "bun",
       "skipFiles": [
         "<node_internals>/**"
       ],
@@ -32,11 +34,12 @@
       "name": "Launch app unit test",
       "request": "launch",
       "runtimeArgs": [
-        "test:unit",
+        "run",
         "--filter",
-        "bootstrap-vue-next"
+        "bootstrap-vue-next",
+        "test:unit"
       ],
-      "runtimeExecutable": "pnpm",
+      "runtimeExecutable": "bun",
       "skipFiles": [
         "<node_internals>/**"
       ],

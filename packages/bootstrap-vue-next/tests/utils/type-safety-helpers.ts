@@ -2,7 +2,7 @@
  * Shared test utilities for type-safe options components
  */
 import {mount} from '@vue/test-utils'
-import {expect} from 'vitest'
+import {expect} from 'vite-plus/test'
 import type {Component} from 'vue'
 
 /**

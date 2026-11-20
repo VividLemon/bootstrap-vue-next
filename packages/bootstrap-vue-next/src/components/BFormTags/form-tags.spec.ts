@@ -1,6 +1,6 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {h, nextTick} from 'vue'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import BFormTags from './BFormTags.vue'
 import BFormTag from './BFormTag.vue'
 

@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import BCarousel from './BCarousel.vue'
 import BCarouselSlide from './BCarouselSlide.vue'
 import BImg from '../BImg/BImg.vue'

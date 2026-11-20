@@ -1,5 +1,5 @@
 import {BvEvent} from '../../src/utils'
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vite-plus/test'
 
 describe('utils/BvEvent class', () => {
   it('BvEvent is instance of BvEvent', () => {

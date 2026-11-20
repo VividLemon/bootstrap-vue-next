@@ -1,6 +1,6 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import BProgressBar from './BProgressBar.vue'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import {progressInjectionKey} from '../../utils/keys'
 import {ref} from 'vue'
 

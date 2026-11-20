@@ -1,0 +1,5 @@
+[install]
+# pnpm ran with shamefully-hoist=true; keep the same flat node_modules layout
+linker = "hoisted"
+# Same supply-chain policy pnpm 11+ applied by default: ignore versions published less than a day ago
+minimumReleaseAge = 86400

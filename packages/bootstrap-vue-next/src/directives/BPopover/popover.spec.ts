@@ -1,5 +1,5 @@
 import {enableAutoUnmount, flushPromises, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import {nextTick} from 'vue'
 import {vBPopover} from './index'
 
