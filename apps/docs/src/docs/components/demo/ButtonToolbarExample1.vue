@@ -1,19 +1,16 @@
 <template>
   <!-- #region template -->
-  <BButtonToolbar
-    key-nav
-    aria-label="Toolbar with button groups"
-  >
-    <BButtonGroup class="mx-1">
+  <BButtonToolbar key-nav aria-label="Toolbar with button groups">
+    <BButtonGroup>
       <BButton>&laquo;</BButton>
       <BButton>&lsaquo;</BButton>
     </BButtonGroup>
-    <BButtonGroup class="mx-1">
+    <BButtonGroup>
       <BButton>Edit</BButton>
       <BButton>Undo</BButton>
       <BButton>Redo</BButton>
     </BButtonGroup>
-    <BButtonGroup class="mx-1">
+    <BButtonGroup>
       <BButton>&rsaquo;</BButton>
       <BButton>&raquo;</BButton>
     </BButtonGroup>

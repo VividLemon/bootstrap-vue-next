@@ -28,6 +28,11 @@ export default {
               color: {
                 default: { theme: 'secondary' },
               },
+              size: {
+                type: 'ButtonSize',
+                description:
+                  "Set the size of the button: 'xs', 'sm' or 'lg'. Inside a `BInputGroup` the button also gets the `input-group-btn` class",
+              },
             }),
             ['color', 'size', 'tag', 'variant'],
           ),

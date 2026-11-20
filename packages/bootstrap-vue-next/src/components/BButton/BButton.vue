@@ -34,13 +34,14 @@
 
 <script setup lang="ts">
 import {resolvePartColor, useButtonThemeClasses} from '../../composables/useThemeClasses'
-import {computed, useTemplateRef} from 'vue'
+import {computed, inject, useTemplateRef} from 'vue'
 import BSpinner from '../BSpinner/BSpinner.vue'
 import {useBLinkHelper} from '../../composables/useBLinkHelper'
 import BLink from '../BLink/BLink.vue'
 import {useLinkClasses} from '../../composables/useLinkClasses'
 import {onKeyStroke} from '@vueuse/core'
 import {useDefaults} from '../../composables/useDefaults'
+import {inputGroupKey} from '../../utils/keys'
 import type {BButtonEmits, BButtonProps, BButtonSlots} from '../../types'
 
 const _props = withDefaults(defineProps<Omit<BButtonProps, 'pressed'>>(), {
@@ -126,6 +127,9 @@ const {classes: linkValueClasses} = useLinkClasses(
 const {classes: buttonThemeClasses} = useButtonThemeClasses(
   computed(() => ({...computedColor.value, variant: props.variant, styled: props.styled}))
 )
+// Bootstrap v6 stacks a button inside an input group with `.input-group-btn`
+const inInputGroup = inject(inputGroupKey, false)
+
 const computedClasses = computed(() => [
   variantIsLinkType.value === true && computedLink.value === false
     ? linkValueClasses.value
@@ -133,6 +137,7 @@ const computedClasses = computed(() => [
   buttonThemeClasses.value,
   {
     [`btn-${props.size}`]: props.size !== undefined,
+    'input-group-btn': inInputGroup,
     'active': props.active || pressedValue.value,
     'rounded-pill': props.pill,
     'rounded-0': props.squared,

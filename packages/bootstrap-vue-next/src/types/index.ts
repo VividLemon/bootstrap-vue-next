@@ -61,7 +61,7 @@ export type {
   ThemeValue,
   ThemeColors,
 } from './ColorTypes'
-export type {BaseSize, Size} from './Size'
+export type {BaseSize, ButtonSize, Size} from './Size'
 export type {BootstrapVueOptions, showHide} from './BootstrapVueOptions'
 export type * from './ComponentEmits'
 export type {BreadcrumbItem, BreadcrumbItemRaw} from './BreadcrumbTypes'

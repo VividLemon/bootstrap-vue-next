@@ -1,15 +1,10 @@
 <template>
   <!-- #region template -->
-  <BButton
-    size="sm"
-    class="mx-1"
-    >Small Button</BButton
-  >
-  <BButton class="mx-1">Default Button</BButton>
-  <BButton
-    size="lg"
-    class="mx-1"
-    >Large Button</BButton
-  >
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <BButton size="xs">Extra Small Button</BButton>
+    <BButton size="sm">Small Button</BButton>
+    <BButton>Default Button</BButton>
+    <BButton size="lg">Large Button</BButton>
+  </div>
   <!-- #endregion template -->
 </template>

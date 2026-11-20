@@ -1,10 +1,5 @@
 export type RadioValue =
-  | boolean
-  | string
-  | readonly unknown[]
-  | Readonly<Record<string, unknown>>
-  | number
-  | null
+  boolean | string | readonly unknown[] | Readonly<Record<string, unknown>> | number | null
 
 export interface RadioOption {
   text: string

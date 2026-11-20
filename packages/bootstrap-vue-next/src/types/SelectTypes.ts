@@ -1,10 +1,5 @@
 export type SelectValue =
-  | string
-  | boolean
-  | readonly unknown[]
-  | Readonly<Record<string, unknown>>
-  | number
-  | null
+  string | boolean | readonly unknown[] | Readonly<Record<string, unknown>> | number | null
 
 export interface SelectOption<T = unknown> {
   value: T
