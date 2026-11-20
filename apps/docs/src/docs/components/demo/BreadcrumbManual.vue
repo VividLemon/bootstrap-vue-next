@@ -1,11 +1,11 @@
 <template>
   <BBreadcrumb>
     <BBreadcrumbItem href="#home"> Home </BBreadcrumbItem>
-    <li class="breadcrumb-divider" />
+    <BBreadcrumbDivider />
     <BBreadcrumbItem href="#foo">Foo</BBreadcrumbItem>
-    <li class="breadcrumb-divider" />
+    <BBreadcrumbDivider />
     <BBreadcrumbItem href="#bar" @click="alertEvent">Bar</BBreadcrumbItem>
-    <li class="breadcrumb-divider" />
+    <BBreadcrumbDivider />
     <BBreadcrumbItem active>Baz</BBreadcrumbItem>
   </BBreadcrumb>
 </template>

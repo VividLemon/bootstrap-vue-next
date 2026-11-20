@@ -1,9 +1,11 @@
 <template>
   <nav :id="props.id" aria-label="breadcrumb">
-    <ol class="breadcrumb" :class="props.olClass" v-bind="props.olAttrs">
+    <ol class="breadcrumb" v-bind="props.olAttrs">
       <slot name="prepend" />
       <template v-for="(item, i) in breadcrumbItemObjects" :key="i">
-        <li v-if="i > 0" class="breadcrumb-divider" />
+        <BBreadcrumbDivider v-if="i > 0">
+          <slot name="divider" />
+        </BBreadcrumbDivider>
         <BBreadcrumbItem v-bind="item">
           {{ item.text }}
         </BBreadcrumbItem>
@@ -18,6 +20,7 @@
 import {computed} from 'vue'
 import {useBreadcrumb} from '../../composables/useBreadcrumb'
 import {useDefaults} from '../../composables/useDefaults'
+import BBreadcrumbDivider from './BBreadcrumbDivider.vue'
 import BBreadcrumbItem from './BBreadcrumbItem.vue'
 import type {BBreadcrumbProps, BBreadcrumbSlots, BreadcrumbItem} from '../../types'
 
@@ -25,7 +28,6 @@ const _props = withDefaults(defineProps<BBreadcrumbProps>(), {
   items: undefined,
   id: undefined,
   olAttrs: undefined,
-  olClass: undefined,
 })
 const props = useDefaults(_props, 'BBreadcrumb')
 defineSlots<BBreadcrumbSlots>()

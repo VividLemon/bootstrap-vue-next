@@ -1,4 +1,5 @@
 import type {
+  BBreadcrumbDividerSlots,
   BBreadcrumbItemEmits,
   BBreadcrumbItemProps,
   BBreadcrumbItemSlots,
@@ -32,19 +33,19 @@ export default {
         olAttrs: {
           type: 'Readonly<AttrsValue>',
           default: undefined,
-          description: 'Attributes to be applied to the inner ol element',
-        },
-        olClass: {
-          type: 'ClassValue',
-          default: undefined,
-          description: 'Class to be applied to the inner ol element',
+          description:
+            'Attributes to be applied to the inner ol element. `class` and `style` are merged',
         },
       } satisfies PropRecord<keyof BBreadcrumbProps>,
       emits: {},
       slots: {
         default: {
           description:
-            'Content (breadcrumb items) to place in the breadcrumb. Place a `<li class="breadcrumb-divider" />` between manually placed items.',
+            'Content (breadcrumb items) to place in the breadcrumb. Place a `BBreadcrumbDivider` between manually placed items.',
+        },
+        divider: {
+          description:
+            'Content of the dividers rendered between the items of the `items` prop. Without it, the default chevron is shown',
         },
         append: {
           description: 'Content to append to the breadcrumb',
@@ -53,6 +54,16 @@ export default {
           description: 'Content to prepend to the breadcrumb',
         },
       } satisfies SlotRecord<keyof BBreadcrumbSlots>,
+    },
+    BBreadcrumbDivider: {
+      props: {},
+      emits: {},
+      slots: {
+        default: {
+          description:
+            'Content of the divider, such as `/` or an icon. Without it, the default chevron is shown',
+        },
+      } satisfies SlotRecord<keyof BBreadcrumbDividerSlots>,
     },
     BBreadcrumbItem: {
       props: {
