@@ -61,7 +61,7 @@ export const componentsWithExternalPath = {
   BFormDatalist: '/components/BForm',
   BFormFile: '/components/BFormFile',
   BFormFloatingLabel: '/components/BForm',
-  BFormGroup: '/components/BFormGroup',
+  BFormField: '/components/BFormField',
   BFormInput: '/components/BFormInput',
   BFormInvalidFeedback: '/components/BForm',
   BFormRadio: '/components/BFormRadio',
@@ -299,7 +299,7 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BDropdownHeader: never
   BFormInvalidFeedback: ComponentProps.BFormInvalidFeedbackProps
   BFormValidFeedback: ComponentProps.BFormValidFeedbackProps
-  BFormGroup: ComponentProps.BFormGroupProps
+  BFormField: ComponentProps.BFormFieldProps
   BNavItemDropdown: ComponentProps.BDropdownProps
   BRow: ComponentProps.BRowProps
   BInput: ComponentProps.BFormInputProps

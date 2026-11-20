@@ -3,7 +3,7 @@
     <!-- User Interface controls -->
     <BRow>
       <BCol :cols="{ lg: 6 }" class="my-1">
-        <BFormGroup
+        <BFormField
           v-slot="{ ariaDescribedby }"
           label="Sort"
           label-for="sort-by-select"
@@ -36,11 +36,11 @@
               <option value="desc">Desc</option>
             </BFormSelect>
           </BInputGroup>
-        </BFormGroup>
+        </BFormField>
       </BCol>
 
       <BCol :cols="{ sm: 5, md: 6 }" class="my-1">
-        <BFormGroup
+        <BFormField
           label="Initial Direction"
           label-for="initial-sort-direction"
           :label-cols="{ sm: 6, md: 4, lg: 3 }"
@@ -54,10 +54,10 @@
             :options="sortDirectionOptions"
             size="sm"
           />
-        </BFormGroup>
+        </BFormField>
       </BCol>
       <BCol :cols="{ lg: 6 }" class="my-1">
-        <BFormGroup
+        <BFormField
           v-slot="{ ariaDescribedby }"
           label="Filter On"
           description="Leave all unchecked to filter on all data"
@@ -77,10 +77,10 @@
               >Active</BFormCheckbox
             >
           </div>
-        </BFormGroup>
+        </BFormField>
       </BCol>
       <BCol :cols="{ lg: 6 }" class="my-1">
-        <BFormGroup
+        <BFormField
           label="Filter"
           label-for="filter-input"
           :label-cols="{ sm: 3 }"
@@ -99,7 +99,7 @@
               <BButton :disabled="!filter" @click="filter = ''">Clear</BButton>
             </BInputGroupText>
           </BInputGroup>
-        </BFormGroup>
+        </BFormField>
       </BCol>
 
       <BCol :cols="{ sm: 7, md: 6 }" class="my-1">
@@ -113,7 +113,7 @@
         />
       </BCol>
       <BCol :cols="{ sm: 5, md: 6 }" class="my-1">
-        <BFormGroup
+        <BFormField
           label="Per page"
           label-for="per-page-select"
           :label-cols="{ sm: 6, md: 4, lg: 3 }"
@@ -122,7 +122,7 @@
           class="mb-0"
         >
           <BFormSelect id="per-page-select" v-model="perPage" :options="pageOptions" size="sm" />
-        </BFormGroup>
+        </BFormField>
       </BCol>
     </BRow>
     <!-- Main table element for typed table-->

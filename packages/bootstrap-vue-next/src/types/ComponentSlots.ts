@@ -292,7 +292,7 @@ export type BFormFileSlots = {
   'drop-placeholder'?: (props: Record<string, never>) => any
 }
 
-export type BFormGroupSlots = {
+export type BFormFieldSlots = {
   'invalid-feedback'?: (props: Record<string, never>) => any
 
   'valid-feedback'?: (props: Record<string, never>) => any

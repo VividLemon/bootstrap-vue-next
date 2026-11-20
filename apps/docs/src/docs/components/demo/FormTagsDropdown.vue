@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BFormGroup label="Tagged input using dropdown" label-for="tags-with-dropdown">
+    <BFormField label="Tagged input using dropdown" label-for="tags-with-dropdown">
       <BFormTags id="tags-with-dropdown" v-model="value" no-outer-focus class="mb-2">
         <template #default="{ tags, disabled, addTag, removeTag }">
           <ul v-if="tags.length > 0" class="list-inline d-inline-block mb-2">
@@ -25,7 +25,7 @@
           >
             <template #button-content> &#x1f50d; <span>Choose tags</span> </template>
             <BDropdownForm @submit.stop.prevent="() => {}">
-              <BFormGroup
+              <BFormField
                 label="Search tags"
                 label-for="tag-search-input"
                 :label-cols="{ md: 'auto' }"
@@ -41,7 +41,7 @@
                   size="sm"
                   autocomplete="off"
                 />
-              </BFormGroup>
+              </BFormField>
             </BDropdownForm>
             <BDropdownDivider />
             <BDropdownItemButton
@@ -57,7 +57,7 @@
           </BDropdown>
         </template>
       </BFormTags>
-    </BFormGroup>
+    </BFormField>
   </div>
 </template>
 

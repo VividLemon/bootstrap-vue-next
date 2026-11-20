@@ -1640,7 +1640,7 @@ export interface BColProps {
   cols?: Responsive<ColsValue>
 }
 
-export interface BFormGroupProps {
+export interface BFormFieldProps {
   contentCols?: Responsive<ColsValue>
   labelCols?: Responsive<ColsValue>
   labelAlign?: Responsive<AlignmentTextHorizontal>

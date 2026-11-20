@@ -1,5 +1,5 @@
 <template>
-  <BFormGroup
+  <BFormField
     label="Active:"
     label-for="status"
     :label-align="{ md: 'end' }"
@@ -8,11 +8,8 @@
       class: 'custom-label-field',
     }"
   >
-    <BFormCheckbox
-      id="status"
-      switch
-    />
-  </BFormGroup>
+    <BFormCheckbox id="status" switch />
+  </BFormField>
 </template>
 
 <style scoped>

@@ -72,7 +72,7 @@ export const useTextareaResize = (
     height.value = 'auto'
     await nextTick() // We need to wait for the dom to update. These cannot be batched in the same tick
     // Re-check input.value after await since the element may have been unmounted
-    // (e.g., during SSR hydration when BFormGroup re-renders its wrapper element)
+    // (e.g., during SSR hydration when BFormField re-renders its wrapper element)
     if (!input.value) return
     const {scrollHeight} = input.value
     // Place the original old height back on the element, just in case `computedProp`

@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BFormGroup
+  <BFormField
     label="My Label:"
     label-for="my-input"
     :label-cols="{ md: 3 }"
@@ -10,6 +10,6 @@
     }"
   >
     <BFormInput id="my-input" />
-  </BFormGroup>
+  </BFormField>
   <!-- #endregion template -->
 </template>

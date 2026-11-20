@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BFormGroup v-slot="{ ariaDescribedby }" label="Table Options" :label-cols="{ lg: 2 }">
+    <BFormField v-slot="{ ariaDescribedby }" label="Table Options" :label-cols="{ lg: 2 }">
       <div class="d-flex flex-wrap column-gap-5">
         <BFormCheckbox v-model="striped" :aria-describedby="ariaDescribedby">Striped</BFormCheckbox>
         <BFormCheckbox v-model="stripedColumns" :aria-describedby="ariaDescribedby"
@@ -26,17 +26,17 @@
           >No border collapse</BFormCheckbox
         >
       </div>
-    </BFormGroup>
+    </BFormField>
 
-    <BFormGroup label="Theme" label-for="table-style-theme" :label-cols="{ lg: 2 }" class="my-2">
+    <BFormField label="Theme" label-for="table-style-theme" :label-cols="{ lg: 2 }" class="my-2">
       <BFormSelect id="table-style-theme" v-model="theme" :options="themes">
         <template #first>
           <option :value="null">-- None --</option>
         </template>
       </BFormSelect>
-    </BFormGroup>
+    </BFormField>
 
-    <BFormGroup
+    <BFormField
       label="Head Theme"
       label-for="head-style-theme"
       :label-cols="{ lg: 2 }"
@@ -47,9 +47,9 @@
           <option :value="null">-- None --</option>
         </template>
       </BFormSelect>
-    </BFormGroup>
+    </BFormField>
 
-    <BFormGroup
+    <BFormField
       label="Foot Theme"
       label-for="foot-style-theme"
       :label-cols="{ lg: 2 }"
@@ -60,7 +60,7 @@
           <option :value="null">-- None --</option>
         </template>
       </BFormSelect>
-    </BFormGroup>
+    </BFormField>
 
     <BTable
       :striped="striped"

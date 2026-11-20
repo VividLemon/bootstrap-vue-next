@@ -1,9 +1,9 @@
 ---
-title: Form Group
-description: 'The `BFormGroup` component is the easiest way to add some structure to forms. Its purpose is to pair form controls with a legend or label, and to provide help text and invalid/valid feedback text, as well as visual (color) contextual state feedback.'
+title: Form Field
+description: 'The `BFormField` component is the easiest way to add some structure to forms. Its purpose is to pair form controls with a legend or label, and to provide help text and invalid/valid feedback text, as well as visual (color) contextual state feedback.'
 ---
 
-<<< DEMO ./demo/FormGroupOverview.vue
+<<< DEMO ./demo/FormFieldOverview.vue
 
 ## Label
 
@@ -11,14 +11,14 @@ Use the prop `label` to set the content of the generated `<legend>` or `<label>`
 using the named slot `label`, You may optionally visually hide the label text while still making it
 available to screen readers by setting the prop `label-visually-hidden`.
 
-`BFormGroup` always renders a `<fieldset>` element. By default the label is placed inside a
-`<legend>`; when a label target is known (either via the `label-for` prop, or auto-detected
-from a single child input — see [Automatic Inheriting of id](#automatic-inheriting-of-id)), a
-`<label>` element with the `for` attribute is rendered instead.
+By default the label is placed inside a `<legend>`; when a label target is known (either via the
+`label-for` prop, or auto-detected from a single child input — see
+[Automatic Inheriting of id](#automatic-inheriting-of-id)), a `<label>` element with the `for`
+attribute is rendered instead. See [Markup](#markup) for the root element.
 
 If you provide an input `id` value to the `label-for` prop, the `id` must exist on the input
-contained within the `BFormGroup`. When specifying the id, **do not** prepend it with `#`. The
-`label-for` prop should only be used when you have a single form input inside the `BFormGroup`
+contained within the `BFormField`. When specifying the id, **do not** prepend it with `#`. The
+`label-for` prop should only be used when you have a single form input inside the `BFormField`
 component. Do not set the `label-for` prop when using `BFormRadioGroup`, `BFormCheckboxGroup`,
 `BFormRadio`, `BFormCheckbox` or `BFormFile` components (or when placing multiple inputs in
 the same form group) — these inputs include integrated label element(s) and the `<legend>`
@@ -30,24 +30,46 @@ You can also apply additional attributes to the label via the `label-attrs` prop
 padding and text alignment utility classes (`:label-attrs="{class: 'fw-bold'}"`). Its `class` and
 `style` merge with the component's own label classes.
 
-In stacked (non-horizontal) mode the `BFormGroup` root gets Bootstrap's `.form-field` class, which
-lays out the label, control, feedback and description as a grid with a consistent gap. Horizontal
-mode keeps the grid row layout.
+### Markup
+
+`BFormField` renders Bootstrap v6's [Field](https://getbootstrap.com/docs/6.0/forms/field/) markup:
+
+| Mode                                           | Root                                          | Label                                      |
+| ---------------------------------------------- | --------------------------------------------- | ------------------------------------------ |
+| Single control (`label-for`, or auto-detected) | `.form-field`                                 | `<label class="form-label" for>`           |
+| Group (checks, radios, several inputs)         | `<fieldset class="form-group">`               | `<legend class="form-label">`              |
+| Floating                                       | `<div class="form-field">` > `.form-floating` | `<label for>`                              |
+| Horizontal                                     | grid row (`.row` + columns)                   | `.col-form-label` (`pt-0` on a `<legend>`) |
+
+`.form-field` lays out the label, control, feedback and description as a grid with a consistent
+gap; `.form-group` groups several fields under one legend. The root also has the library class
+`b-form-field`.
+
+The root is a `<div>` when `label-for` is set (or in floating mode) and a `<fieldset>` otherwise.
+An auto-detected single control keeps the `<fieldset>` root (with the `.form-field` class and a
+`<label for>`), because the target is only known after the control renders and replacing the root
+element would remount it. Set `label-for` to get a `<div>` root.
+
+::: info NOTE
+Horizontal mode has no `.form-field`, so Bootstrap's native `:user-invalid` feedback for controls
+inside a `BInputGroup` (`.form-field:has(.input-group .form-control:user-invalid)`) doesn't show
+there. Prop-driven `state` still shows the feedback.
+:::
 
 ### Automatic Inheriting of id
 
-The `BFormGroup` component automatically inherits the id of its child input components, such as BFormInput and BFormTextarea. This functionality ensures that the label element's for attribute is correctly set to match the id of the input component, providing proper association between the label and the input field.
+The `BFormField` component automatically inherits the id of its child input components, such as BFormInput and BFormTextarea. This functionality ensures that the label element's for attribute is correctly set to match the id of the input component, providing proper association between the label and the input field.
 
-<<< DEMO ./demo/FormGroupId.vue#template{vue-html}
+<<< DEMO ./demo/FormFieldId.vue#template{vue-html}
 
-### Multiple inputs in one form group
+### Multiple inputs in one form field
 
-When more than one input registers inside a `BFormGroup` (for example, a `BInputGroup` with
-two `BFormInput`s), the label `for` association is ambiguous, so `BFormGroup` keeps the
+When more than one input registers inside a `BFormField` (for example, a `BInputGroup` with
+two `BFormInput`s), the label `for` association is ambiguous, so `BFormField` keeps the
 label as a `<legend>` instead of auto-binding it to one input. Give each child input its own
 accessible name via `aria-label` (or a visually hidden `<label>`).
 
-<<< DEMO ./demo/FormGroupMultipleInputs.vue#template{vue-html}
+<<< DEMO ./demo/FormFieldMultipleInputs.vue#template{vue-html}
 
 ### Horizontal layout
 
@@ -70,11 +92,11 @@ columns does not exceed `12`.
 See the [Grid System](/docs/components/grid-system#how-it-works) docs for further information.
 
 ```vue-html
-<BFormGroup :label-cols="{ xs: 12, sm: 4, lg: 3 }" :content-cols="{ sm: true, lg: 7 }">
+<BFormField :label-cols="{ xs: 12, sm: 4, lg: 3 }" :content-cols="{ sm: true, lg: 7 }">
 <!-- label: col-12 sm:col-4 lg:col-3, content: sm:col lg:col-7 -->
 ```
 
-<<< DEMO ./demo/FormGroupHorizontalLayout.vue#template{vue-html}
+<<< DEMO ./demo/FormFieldHorizontalLayout.vue#template{vue-html}
 
 You can also set the label cols to `'auto'`.
 
@@ -84,7 +106,7 @@ You can control the label text size match the size of your form input(s) via the
 `label-size` prop. Values can be `'sm'` or `'lg'` for small or large label, respectively. Sizes work
 for both horizontal and non-horizontal form groups.
 
-<<< DEMO ./demo/FormGroupLabelSize.vue#template{vue-html}
+<<< DEMO ./demo/FormFieldLabelSize.vue#template{vue-html}
 
 ### Label text alignment
 
@@ -100,7 +122,7 @@ When using horizontal layout (with `label-cols` or `content-cols` props), the la
 
 This is particularly useful when you need to override the default column widths with custom sizing:
 
-<<< DEMO ./demo/FormGroupWrapperAttrsBasic.vue#template{vue-html}
+<<< DEMO ./demo/FormFieldWrapperAttrsBasic.vue#template{vue-html}
 
 **Important Notes:**
 
@@ -112,20 +134,20 @@ This is particularly useful when you need to override the default column widths 
 
 **Common use case:** You need more precise control over column widths than Bootstrap's 12-column grid provides. For example, setting a label to exactly 120px wide using flexbox properties:
 
-<<< DEMO ./demo/FormGroupWrapperAttrsCustom.vue{vue}
+<<< DEMO ./demo/FormFieldWrapperAttrsCustom.vue{vue}
 
-## Nested form groups
+## Nested form fields
 
-Feel free to nest `BFormGroup` components to produce advanced form layouts and semantic grouping
+Feel free to nest `BFormField` components to produce advanced form layouts and semantic grouping
 of related form controls:
 
-<<< DEMO ./demo/FormGroupNested.vue#template{vue-html}
+<<< DEMO ./demo/FormFieldNested.vue#template{vue-html}
 
-## Disabled form group
+## Disabled form field
 
-Setting the `disabled` prop will disable the rendered `<fieldset>` and, on most browsers, will
-disable all the input elements contained within the fieldset, regardless of whether `label-for`
-is set.
+Setting the `disabled` prop disables the controls inside `BFormField`: a `<fieldset>` root gets
+the `disabled` attribute (which disables every input inside it), and the library's form controls
+read `disabled` from the field in every mode, including the `<div>` root.
 
 ## Validation state feedback
 
@@ -139,14 +161,14 @@ Generally speaking, you'll want to use a particular state for specific types of 
   a form and want to encourage a user through the rest of the fields
 - `null` Displays no validation state (neither valid nor invalid)
 
-To apply one of the contextual state icons on `BFormGroup`, set the `state` prop to `false` (for
+To apply one of the contextual state icons on `BFormField`, set the `state` prop to `false` (for
 invalid), `true` (for valid), or `null` (no validation state).
 
 Bootstrap uses sibling CSS selectors of invalid or valid inputs to show the feedback text.
 Some form controls (such as checkboxes, radios, and file inputs, or inputs inside input-groups) are
 wrapped in additional markup that will no longer make the feedback text a sibling of the input, and
 hence the feedback will not show. In these situations you will need to set the validity `state` on
-the `BFormGroup` _as well as_ the input.
+the `BFormField` _as well as_ the input.
 
 Feedback will also be shown when the parent `BForm` has the `validate` prop set and the user has
 interacted with an input that fails (or, with `validate="valid"`, passes) native browser validation
@@ -159,9 +181,9 @@ assistive technologies when setting a contextual `invalid` state.
 
 ### Automatic passing of state to child
 
-For some elements the child input element will automatically receive the state of the form group. `:state="false"` on the `BFormGroup` will automatically give the appropriate class to the input element. Explicit sets of the `state` prop to the child element will override this.
+For some elements the child input element will automatically receive the state of the form group. `:state="false"` on the `BFormField` will automatically give the appropriate class to the input element. Explicit sets of the `state` prop to the child element will override this.
 
-<<< DEMO ./demo/FormGroupState.vue#template{vue-html}
+<<< DEMO ./demo/FormFieldState.vue#template{vue-html}
 
 ### Invalid feedback
 
@@ -189,23 +211,23 @@ the feedback so that it shows as a static tooltip when visible, by setting the p
 
 ::: Info NOTE
 When using `BInputGroup`, `BFormFile`, `BFormRadioGroup`, `BFormRadio`,
-`BFormCheckboxGroup` or `BFormCheckbox` inside a `BFormGroup`, setting an invalid (or
+`BFormCheckboxGroup` or `BFormCheckbox` inside a `BFormField`, setting an invalid (or
 valid) `state` on the `input` alone will **not** trigger the invalid (or valid) feedback to show
-(due to limitations with the Bootstrap 5 validation CSS). To get around this, **you must also**
-set the invalid/valid `state` on `BFormGroup`. Native browser validation will **not** trigger
+(due to limitations with the Bootstrap validation CSS). To get around this, **you must also**
+set the invalid/valid `state` on `BFormField`. Native browser validation will **not** trigger
 the invalid feedback to show when using one of the above-mentioned form controls.
 :::
 
 ## Floating labels
 
-BFormGroup supports the [Floating labels](https://getbootstrap.com/docs/6.0/forms/floating-labels/) feature of Bootstrap.
+BFormField supports the [Floating labels](https://getbootstrap.com/docs/6.0/forms/floating-labels/) feature of Bootstrap.
 As Bootstrap v6 requires, the label is rendered before the control inside the `.form-floating` wrapper.
 
 You can make a floating label by setting the property `floating` to true and specify a placeholder on the `BFormInput`.
 
 ### Example
 
-<<< DEMO ./demo/FormGroupFloatingLabels.vue
+<<< DEMO ./demo/FormFieldFloatingLabels.vue
 
 ### Restrictions
 
@@ -216,28 +238,27 @@ Floating labels have a few restrictions.
 
 ## Accessibility
 
-`BFormGroup` always renders the input control(s) inside an HTML `<fieldset>` element. When no
-label target is known (no `label-for`, and not auto-detected from a single child input), the
-label content is placed inside the fieldset's `<legend>` element. By nature of this markup,
+When no label target is known (no `label-for`, and not auto-detected from a single child input),
+`BFormField` renders a `<fieldset>` and places the label content inside its `<legend>` element. By nature of this markup,
 the legend content is automatically associated to the containing input control(s).
 
 It is **highly recommended** that you provide a unique `id` prop on your input element and set the
-`label-for` prop to this Id, when you have only a single input in the `BFormGroup`.
+`label-for` prop to this Id, when you have only a single input in the `BFormField`.
 
-When multiple form controls are placed inside `BFormGroup` (i.e. a series or radio or checkbox
+When multiple form controls are placed inside `BFormField` (i.e. a series or radio or checkbox
 inputs, or a series of related inputs), **do not set** the `label-for` prop, as a label can only be
 associated with a single input. It is best to use the default rendered markup that produces a
 `<fieldset>` + `<legend>` which will describe the group of inputs.
 
-When placing multiple form controls inside a `BFormGroup` (and you are not nesting
-`BFormGroup` components), it is recommended to give each control its own associated `label`
+When placing multiple form controls inside a `BFormField` (and you are not nesting
+`BFormField` components), it is recommended to give each control its own associated `label`
 (which may be visually hidden using the `.visually-hidden` class) and set the labels `for` attribute to the
 `id` of the associated input control. Alternatively, you can set the `aria-label` attribute on each
 input control instead of using a `label`. For `BFormRadio` and `BFormCheckbox` (or the
 group versions), you do not need to set individual labels, as the rendered markup for these types of
 inputs already includes a `label` element.
 
-When the `BFormGroup` has a `label-for` prop set, the `aria-describedby` attribute will be
+When the `BFormField` has a `label-for` prop set, the `aria-describedby` attribute will be
 auto-assigned to the input. When the form group has multiple form controls, make sure to set the
 attribute to each control yourself by using the `ariaDescribedby` prop value from the optionally
 scoped `default` slot.

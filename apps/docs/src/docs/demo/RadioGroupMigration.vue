@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
   <div>
-    <BFormGroup
+    <BFormField
       class="form-group"
       label="Color"
       label-for="color-group"
@@ -18,7 +18,7 @@
       >
         <template #option="val"> <div v-html="val.html" /> </template>
       </BFormRadioGroup>
-    </BFormGroup>
+    </BFormField>
     <b>model = </b>{{ model }}
   </div>
 </template>

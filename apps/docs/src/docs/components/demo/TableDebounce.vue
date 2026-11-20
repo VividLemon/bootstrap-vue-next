@@ -1,13 +1,13 @@
 <template>
   <div>
-    <BFormGroup label="Filter" label-for="filter-input" class="mb-3">
+    <BFormField label="Filter" label-for="filter-input" class="mb-3">
       <BFormInput
         id="filter-input"
         v-model="filter"
         type="search"
         placeholder="Type to search (with 500ms debounce)..."
       />
-    </BFormGroup>
+    </BFormField>
 
     <p class="fg-2">
       Debounce delays filtering by 500ms after you stop typing. Without debounce, every keystroke

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BFormGroup label="Tagged input using select" label-for="tags-component-select">
+    <BFormField label="Tagged input using select" label-for="tags-component-select">
       <!-- Prop `add-on-change` is needed to enable adding tags vie the `change` event -->
       <BFormTags
         id="tags-component-select"
@@ -35,7 +35,7 @@
           </BFormSelect>
         </template>
       </BFormTags>
-    </BFormGroup>
+    </BFormField>
   </div>
 </template>
 
