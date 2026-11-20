@@ -362,7 +362,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### Other new-in-v6 counterparts
 
-- `BAutocomplete` → Combobox; `BDatePicker` / `BDateRangePicker` → Datepicker (hard-coded z-index 1050 now ties with popovers); `BFormOtp` → OTP input; `vBScrollspy` → Scrollspy; `BFormInput type="range"` → Range; `BFormGroup` → Field (review once Field is adopted).
+- `BAutocomplete` → Combobox; `BDatePicker` / `BDateRangePicker` → Datepicker (hard-coded z-index 1050 now ties with popovers); `BFormOtp` → OTP input (G4, [#200](https://github.com/VividLemon/bootstrap-vue-next/pull/200)); `vBScrollspy` → Scrollspy; `BFormInput type="range"` → Range; `BFormGroup` → Field (review once Field is adopted).
 - `BApp` / `BOrchestrator`: toast container and `<Transition>` usage follow the native transition path.
 
 ### Deferred features
