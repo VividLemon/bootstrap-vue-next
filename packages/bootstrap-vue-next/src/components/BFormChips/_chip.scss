@@ -1,0 +1,14 @@
+// `.chip-img` sizes and rounds the element it is on; BChip puts it on a wrapper around the `img`
+// slot, so the image inside fills it
+.chip-img {
+  display: inline-flex;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  > img,
+  > svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}

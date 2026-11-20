@@ -72,8 +72,8 @@ export const componentsWithExternalPath = {
   BFormSelectOption: '/components/BFormSelect',
   BFormSelectOptionGroup: '/components/BFormSelect',
   BFormSpinbutton: '/components/BFormSpinbutton',
-  BFormTag: '/components/BFormTags',
-  BFormTags: '/components/BFormTags',
+  BChip: '/components/BFormChips',
+  BFormChips: '/components/BFormChips',
   BFormText: '/components/BForm',
   BFormTextarea: '/components/BFormTextarea',
   BFormValidFeedback: '/components/BForm',
@@ -224,8 +224,8 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BFormSelectOption: ComponentProps.BFormSelectOptionProps<BFormSelectOption>
   BFormSelectOptionGroup: ComponentProps.BFormSelectOptionGroupProps
   BFormSpinbutton: ComponentProps.BFormSpinbuttonProps
-  BFormTag: ComponentProps.BFormTagProps
-  BFormTags: ComponentProps.BFormTagsProps
+  BChip: ComponentProps.BChipProps
+  BFormChips: ComponentProps.BFormChipsProps
   BFormTextarea: ComponentProps.BFormTextareaProps
   BInputGroup: ComponentProps.BInputGroupProps
   BInputGroupText: ComponentProps.BInputGroupTextProps
