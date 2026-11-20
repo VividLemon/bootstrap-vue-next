@@ -360,6 +360,10 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 - **Now:** `tag*` / `addButton*` colors → `tagColor` / `addButtonColor`.
 - **Pending:** v6 Chips markup; part attrs (`inputClass`, `tagClass` → `*Attrs`).
 
+### BStepper (new)
+
+- **Done (G5, `bootstrap-v6-g5-stepper`):** new `BStepper` / `BStepperItem` on v6 `.stepper` markup (see `BOOTSTRAP_V6_DISPLAY.md`).
+
 ### Other new-in-v6 counterparts
 
 - `BAutocomplete` → Combobox; `BDatePicker` / `BDateRangePicker` → Datepicker (hard-coded z-index 1050 now ties with popovers); `BFormOtp` → OTP input; `vBScrollspy` → Scrollspy; `BFormInput type="range"` → Range; `BFormGroup` → Field (review once Field is adopted).
