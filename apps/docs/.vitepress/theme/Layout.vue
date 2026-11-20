@@ -146,7 +146,7 @@
         </BRow>
         <BRow v-else>
           <div class="bd-content">
-            <aside ref="_target" class="otp-sidebar">
+            <aside class="otp-sidebar">
               <ClientOnly>
                 <BOffcanvas
                   id="otp-menu"
@@ -158,7 +158,7 @@
                   header-class="pb-0 d-flex offcanvas-hidden-width"
                   body-class="py-2"
                 >
-                  <PageContents :contents="contents" :active-id="activeId" />
+                  <PageContents ref="_toc" :contents="contents" :active-id="activeId" />
                 </BOffcanvas>
               </ClientOnly>
             </aside>
@@ -190,8 +190,10 @@ import {
   type ComponentPublicInstance,
   computed,
   inject,
+  nextTick,
   onMounted,
   ref,
+  shallowRef,
   useTemplateRef,
   watch,
 } from 'vue'
@@ -207,7 +209,7 @@ import List from '~icons/bi/list'
 import { useData, useRoute, withBase } from 'vitepress'
 import { VPNavBarSearch } from 'vitepress/theme'
 import { appInfoKey } from './keys'
-import { useMediaQuery } from '@vueuse/core'
+import { useMediaQuery, useMutationObserver } from '@vueuse/core'
 import PageContents from '../../src/components/PageContents.vue'
 import MigrationNav from '../../src/components/MigrationNav.vue'
 import { type ContentsItem, type HeaderItem } from '../../src/types'
@@ -218,29 +220,47 @@ const { page } = useData()
 const route = useRoute()
 
 const content = useTemplateRef<ComponentPublicInstance<HTMLElement>>('_content')
-const target = useTemplateRef<ComponentPublicInstance<HTMLElement>>('_target')
+// The "On this page" nav. It moves into a teleported offcanvas on small screens, so spy on the
+// rendered nav itself rather than on the aside
+const target = useTemplateRef<ComponentPublicInstance>('_toc')
 
-const { current: activeId, list: items } = useScrollspy(content, target, {
-  // Select headings and elements for the table of contents:
-  // - h1-h6 headings (excluding those inside demo examples or card bodies)
-  // - div elements with IDs (for component reference sections)
-  // - #component-reference and .component-reference h3 elements
-  // This creates the hierarchical structure for the "On this page" navigation
-  contentQuery: [
-    ':scope h1:not([class*="demo"] *):not(.card-body *)',
-    ':scope h2:not([class*="demo"] *):not(.card-body *)',
-    ':scope h3:not([class*="demo"] *):not(.card-body *)',
-    ':scope h4:not([class*="demo"] *):not(.card-body *)',
-    ':scope h5:not([class*="demo"] *):not(.card-body *)',
-    ':scope h6:not([class*="demo"] *):not(.card-body *)',
-    ':scope > div > [id]:not(.card)',
-    '#component-reference',
-    '.component-reference h3',
-  ].join(', '),
-  targetQuery: ':scope [href]',
-  rootMargin: '0px 0px -25%',
-  manual: true,
-})
+// Headings and elements for the "On this page" navigation:
+// - h1-h6 headings (excluding those inside demo examples or card bodies)
+// - div elements with IDs (for component reference sections)
+// - #component-reference and .component-reference h3 elements
+// The navigation is rendered from these first; useScrollspy then spies on its links
+const headingsQuery = [
+  ':scope h1:not([class*="demo"] *):not(.card-body *)',
+  ':scope h2:not([class*="demo"] *):not(.card-body *)',
+  ':scope h3:not([class*="demo"] *):not(.card-body *)',
+  ':scope h4:not([class*="demo"] *):not(.card-body *)',
+  ':scope h5:not([class*="demo"] *):not(.card-body *)',
+  ':scope h6:not([class*="demo"] *):not(.card-body *)',
+  ':scope > div > [id]:not(.card)',
+  '#component-reference',
+  '.component-reference h3',
+].join(', ')
+
+const contentEl = computed(() => (content.value?.$el as HTMLElement | undefined) ?? null)
+const headingEls = shallowRef<HTMLElement[]>([])
+
+const updateHeadings = () => {
+  const found = contentEl.value
+    ? Array.from(contentEl.value.querySelectorAll<HTMLElement>(headingsQuery)).filter((el) => el.id)
+    : []
+  const unchanged =
+    found.length === headingEls.value.length && found.every((el, i) => el === headingEls.value[i])
+  if (!unchanged) headingEls.value = found
+}
+
+onMounted(updateHeadings)
+watch(
+  () => route.path,
+  () => nextTick(updateHeadings),
+)
+useMutationObserver(contentEl, updateHeadings, { childList: true })
+
+const { current: activeId } = useScrollspy(content, target)
 
 const globalData = inject(appInfoKey, {
   discordUrl: '',
@@ -336,16 +356,12 @@ const set = (newValue: keyof typeof map) => {
 }
 
 const headers = computed(() =>
-  items.value.map((item) => {
-    const rawTag = item.el?.tagName?.toUpperCase() ?? ''
+  headingEls.value.map((el): HeaderItem => {
+    const rawTag = el.tagName.toUpperCase()
     const isHeading = /^H[1-6]$/.test(rawTag)
     const tag = isHeading ? rawTag : 'DIV'
     const level = tag.startsWith('H') ? Number.parseInt(tag.replace('H', '')) : 3
-    return {
-      ...item,
-      tag,
-      level,
-    } as HeaderItem
+    return { id: el.id, el, text: el.textContent, tag, level }
   }),
 )
 

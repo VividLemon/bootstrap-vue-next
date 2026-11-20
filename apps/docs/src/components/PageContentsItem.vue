@@ -1,7 +1,10 @@
 <template>
   <BNavItem
     :href="buildLink(item)"
-    :link-attrs="{ class: 'otp-link' }"
+    :link-attrs="{
+      class: 'otp-link',
+      'aria-current': item.id === activeId ? 'location' : undefined,
+    }"
     :active="item.id === activeId"
   >
     <template #default>{{ props.item.text }}</template>

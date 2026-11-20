@@ -76,6 +76,7 @@ export type {
   SelectOptionRaw,
 } from './SelectTypes'
 export type {InputType} from './InputType'
+export type {ScrollspySection, UseScrollspyOptions} from './Scrollspy'
 export type {LinkTarget} from './LinkTarget'
 export type {LinkOpacity, LinkUnderline, UnderlineOffset, UnderlineOpacity} from './LinkDecorators'
 export type {HoverState} from './HoverState'

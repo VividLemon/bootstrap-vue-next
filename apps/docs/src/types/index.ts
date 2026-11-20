@@ -1,5 +1,3 @@
-import type {useScrollspy} from 'bootstrap-vue-next'
-
 export * from './deprecation'
 
 export type ComponentItem = Exclude<keyof ComponentReference, 'component' | 'sections'>
@@ -12,18 +10,18 @@ export interface PropReference {
 
 export type PropRecordWithOptions = {
   _data: PropRecord // Allows for a single section or multiple sections
-  _opts?: {linkTo?: string}
+  _opts?: { linkTo?: string }
 }
 // Flat variant
 export type PropRecord<T extends string = string> = Record<T, PropReference>
 // Multiple sections variant
 export type PropRecordWithMultipleSections = {
   [defaultPropSectionSymbol]: PropRecord | PropRecordWithOptions
-} & {[key: string]: PropRecord | PropRecordWithOptions}
+} & { [key: string]: PropRecord | PropRecordWithOptions }
 // Options variant
 export const defaultPropSectionSymbol = '_defaultPropSection'
 
-export type EmitArgReference = Record<string, {type: string; description?: string}>
+export type EmitArgReference = Record<string, { type: string; description?: string }>
 export type EmitReference = {
   args?: EmitArgReference
   description?: string
@@ -108,6 +106,11 @@ export type CollectivePartialResponse = {
   members: CollectiveMembersResponse[]
 }
 
-export type ScrollspyItem = ReturnType<typeof useScrollspy>['list']['value'][0]
-export type HeaderItem = ScrollspyItem & {tag: string; level: number}
-export type ContentsItem = HeaderItem & {children: ContentsItem[]}
+export type HeaderItem = {
+  id: string
+  el: HTMLElement
+  text: string | null
+  tag: string
+  level: number
+}
+export type ContentsItem = HeaderItem & { children: ContentsItem[] }
