@@ -111,6 +111,8 @@ Each group runs as one read-only research subagent. Components sharing a v6 base
 | G5 Display             | Accordion, Avatar, Carousel, Stepper, Prose                               | #164 (Collapse), #167 (Badge)                                                | `architecture/BOOTSTRAP_V6_DISPLAY.md`     | Decided |
 | G6 Layout and behavior | Scrollspy, CSS Grid, container-query helpers                              | #164 (breakpoints, responsive)                                               | `architecture/BOOTSTRAP_V6_LAYOUT.md`      | Decided |
 
+G5 implementation (one PR per component into `bootstrap-v6`): Prose — PR open (`bootstrap-v6-g5-prose`, docs only).
+
 Cross-cutting: [`BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`](./BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md) (S1 implemented) replaces the show/hide lifecycle with an explicit state machine. It is its own PR (S1) after #164 and before G1's Dialog core, and is implemented (`showHideMachine.ts` behind `useShowHide`); G1 (Dialog, Drawer, orchestrator) and G2 (Menu `disabled`) build on it. Implementation order across groups starts with S1.
 
 Post-migration, undecided: [`USE_TABLE_COMPOSABLE.md`](./USE_TABLE_COMPOSABLE.md) proposes a public `useTable` composable so users can drive `BTableLite` without the `BTable` wrapper (BTable stays as a thin wrapper). A benchmark decides whether it is worth doing.
