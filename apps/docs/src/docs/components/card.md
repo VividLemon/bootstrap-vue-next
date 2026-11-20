@@ -154,6 +154,15 @@ assistive technologies – such as screen readers. Ensure that information denot
 either obvious from the content itself (e.g. the visible text), or is included through alternative
 means, such as additional text hidden with the `.visually-hidden` class.
 
+## Hover lift
+
+Set `hover-lift` to lift the card and deepen its shadow on hover, and on keyboard focus when the card
+itself is focusable (for example `tag="a"`). It renders Bootstrap's `.hover-lift` helper, so the
+`--bs-hover-lift-*` CSS variables tune it and reduced motion turns the movement off. See
+[Utility classes](/docs/reference/utility-classes#hover-lift) for using it on other components.
+
+<<< DEMO ./demo/CardHoverLift.vue#template{vue-html}
+
 ## Nav integration
 
 Integrate [`BNav`](/docs/components/nav) into card headers easily.
@@ -177,8 +186,8 @@ for laying out series of cards.
 ### Default card group
 
 Use card groups to render cards as a single, attached element with equal width and height columns.
-Bootstrap 6 card groups use a container query, so place `BCardGroup` inside a parent with the
-`.contains-inline` class or the cards will remain stacked. For grid-style layouts of cards (the
+Bootstrap 6 card groups use a [container query](/docs/reference/container-queries), so place
+`BCardGroup` inside a parent with the `.contains-inline` class or the cards will remain stacked. For grid-style layouts of cards (the
 replacement for the removed `deck` and `columns` modes), use `BRow`/`BCol`.
 
 When using card groups with footers, their content will automatically line up.

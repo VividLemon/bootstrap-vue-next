@@ -282,7 +282,7 @@ each body row into a vertical block. Make any table stacked at all widths by set
 `'lg'`, `'xl'` or `'2xl'` to only stack the table while it is narrower than that breakpoint
 (`stacked="md"` renders `md:table-stacked`).
 
-Bootstrap's stacked tables use container queries, so the breakpoint is compared against the width of
+Bootstrap's stacked tables use [container queries](/docs/reference/container-queries), so the breakpoint is compared against the width of
 the table's wrapper rather than the viewport. A stacked table is therefore always rendered inside a
 `table-responsive` wrapper `<div>` (or the `{breakpoint}:table-responsive` wrapper when `responsive`
 is also set), which acts as the query container.

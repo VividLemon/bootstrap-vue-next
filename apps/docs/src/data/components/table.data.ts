@@ -33,6 +33,7 @@ import {
 } from '../../types'
 import { pick } from '../../utils/objectUtils'
 import { buildCommonProps, colorBorderProp } from '../../utils/commonProps'
+import { containerQueryNote } from '../../utils/containerQueries'
 
 export default {
   load: (): ComponentReference => {
@@ -127,8 +128,7 @@ export default {
         stacked: {
           type: 'boolean | Breakpoint',
           default: false,
-          description:
-            "Place the table in Bootstrap's stacked mode. Set to true for always stacked (`table-stacked`), or set to one of the breakpoints to stack the table only while its container is narrower than it: 'sm', 'md', 'lg', 'xl', '2xl' (`stacked=\"md\"` renders `md:table-stacked`). A stacked table is wrapped in a `table-responsive` query container and its body cells get `data-cell` labels",
+          description: `Place the table in Bootstrap's stacked mode. Set to true for always stacked (\`table-stacked\`), or set to one of the breakpoints to stack the table only while its container is narrower than it: 'sm', 'md', 'lg', 'xl', '2xl' (\`stacked="md"\` renders \`md:table-stacked\`). ${containerQueryNote}. A stacked table is wrapped in a \`table-responsive\` query container and its body cells get \`data-cell\` labels`,
         },
         stickyHeader: {
           type: 'boolean | Numberish',

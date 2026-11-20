@@ -4,10 +4,11 @@ import type {
   BListGroupProps,
   BListGroupSlots,
 } from 'bootstrap-vue-next'
-import type {ComponentReference, PropRecord, SlotRecord} from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
-import type {linkProps} from '../../utils/linkProps'
+import type { ComponentReference, PropRecord, SlotRecord } from '../../types'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
+import type { linkProps } from '../../utils/linkProps'
+import { containerQueryNote } from '../../utils/containerQueries'
 
 export default {
   load: (): ComponentReference => ({
@@ -22,8 +23,7 @@ export default {
         horizontal: {
           type: 'boolean | Breakpoint',
           default: false, // TODO item not in string format
-          description:
-            "When set, renders the list group horizontally rather than vertically (`list-group-horizontal`). Set to a breakpoint to switch to horizontal at that breakpoint (`horizontal=\"md\"` renders `md:list-group-horizontal`). Breakpoint values use container queries, so the list group needs a query-container ancestor such as `.contains-inline`",
+          description: `When set, renders the list group horizontally rather than vertically (\`list-group-horizontal\`). Set to a breakpoint to switch to horizontal at that breakpoint (\`horizontal="md"\` renders \`md:list-group-horizontal\`). ${containerQueryNote}, so the list group needs a query-container ancestor such as \`.contains-inline\``,
         },
         numbered: {
           type: 'boolean',
