@@ -1,450 +1,61 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it} from 'vitest'
-import {ref} from 'vue'
+import {h} from 'vue'
 import BCarouselSlide from './BCarouselSlide.vue'
-import BImg from '../BImg/BImg.vue'
-import {carouselInjectionKey} from '../../utils/keys'
 
 describe('carousel-slide', () => {
   enableAutoUnmount(afterEach)
 
-  // --- Root element ---
-  it('tag is div', () => {
+  it('renders div.carousel-item', () => {
     const wrapper = mount(BCarouselSlide)
     expect(wrapper.element.tagName).toBe('DIV')
+    expect(wrapper.classes()).toEqual(['carousel-item'])
   })
 
-  it('has static class carousel-item', () => {
-    const wrapper = mount(BCarouselSlide)
-    expect(wrapper.classes()).toContain('carousel-item')
-  })
-
-  it('has attr id', () => {
-    const wrapper = mount(BCarouselSlide)
-    expect(wrapper.attributes('id')).toBeDefined()
-  })
-
-  it('has auto-generated id containing carousel-slide', () => {
-    const wrapper = mount(BCarouselSlide)
-    expect(wrapper.attributes('id')).toContain('carousel-slide')
-  })
-
-  it('has attr id when prop id is provided', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {id: 'custom-id'},
-    })
-    expect(wrapper.attributes('id')).toBe('custom-id')
-  })
-
-  // --- BImg component ---
-  it('renders BImg component by default', () => {
-    const wrapper = mount(BCarouselSlide)
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.exists()).toBe(true)
-  })
-
-  it('BImg has d-block and w-100 classes', () => {
-    const wrapper = mount(BCarouselSlide)
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.classes()).toContain('d-block')
-    expect(bImg.classes()).toContain('w-100')
-  })
-
-  it('BImg receives imgAlt as alt prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {imgAlt: 'Test Alt'},
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.attributes('alt')).toBe('Test Alt')
-  })
-
-  it.each([
-    {caseName: 'imgSrc as src', slideProp: 'imgSrc', imageProp: 'src', value: 'test.jpg'},
-    {caseName: 'imgWidth as width', slideProp: 'imgWidth', imageProp: 'width', value: 200},
-    {caseName: 'imgHeight as height', slideProp: 'imgHeight', imageProp: 'height', value: 150},
-    {caseName: 'imgBlank as blank', slideProp: 'imgBlank', imageProp: 'blank', value: true},
-    {
-      caseName: 'imgBlankColor as blankColor',
-      slideProp: 'imgBlankColor',
-      imageProp: 'blankColor',
-      value: 'blue',
-    },
-    {
-      caseName: 'imgSrcset string as srcset',
-      slideProp: 'imgSrcset',
-      imageProp: 'srcset',
-      value: 'test.jpg 1x, test2.jpg 2x',
-    },
-    {
-      caseName: 'imgSrcset array as srcset',
-      slideProp: 'imgSrcset',
-      imageProp: 'srcset',
-      value: ['test.jpg 1x', 'test2.jpg 2x'],
-    },
-  ])('BImg receives $caseName prop', ({slideProp, imageProp, value}) => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {[slideProp]: value},
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props(imageProp)).toEqual(value)
-  })
-
-  it('BImg blank prop defaults to false', () => {
-    const wrapper = mount(BCarouselSlide)
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('blank')).toBe(false)
-  })
-
-  it('BImg blankColor defaults to transparent', () => {
-    const wrapper = mount(BCarouselSlide)
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('blankColor')).toBe('transparent')
-  })
-
-  it('BImg receives width from parent injection when imgWidth is not set', () => {
-    const wrapper = mount(BCarouselSlide, {
-      global: {
-        provide: {
-          [carouselInjectionKey as symbol]: {
-            background: ref(undefined),
-            width: ref('500'),
-            height: ref('300'),
-          },
-        },
-      },
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('width')).toBe('500')
-  })
-
-  it('BImg receives height from parent injection when imgHeight is not set', () => {
-    const wrapper = mount(BCarouselSlide, {
-      global: {
-        provide: {
-          [carouselInjectionKey as symbol]: {
-            background: ref(undefined),
-            width: ref('500'),
-            height: ref('300'),
-          },
-        },
-      },
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('height')).toBe('300')
-  })
-
-  it('BImg imgWidth prop takes precedence over parent injection width', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {imgWidth: 200},
-      global: {
-        provide: {
-          [carouselInjectionKey as symbol]: {
-            background: ref(undefined),
-            width: ref('500'),
-            height: ref('300'),
-          },
-        },
-      },
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('width')).toBe(200)
-  })
-
-  it('BImg imgHeight prop takes precedence over parent injection height', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {imgHeight: 100},
-      global: {
-        provide: {
-          [carouselInjectionKey as symbol]: {
-            background: ref(undefined),
-            width: ref('500'),
-            height: ref('300'),
-          },
-        },
-      },
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.props('height')).toBe(100)
-  })
-
-  // --- img slot ---
-  it('img slot overrides default BImg', () => {
-    const wrapper = mount(BCarouselSlide, {
-      slots: {
-        img: '<img src="custom.jpg" alt="Custom" />',
-      },
-    })
-    const bImg = wrapper.findComponent(BImg)
-    expect(bImg.exists()).toBe(false)
-    const img = wrapper.find('img')
-    expect(img.exists()).toBe(true)
-    expect(img.attributes('src')).toBe('custom.jpg')
-  })
-
-  // --- Content area ---
-  it('does not render content area when no caption, text, or default slot', () => {
-    const wrapper = mount(BCarouselSlide)
+  it('has no inline background and no caption markup', () => {
+    const wrapper = mount(BCarouselSlide, {slots: {default: 'Text'}})
+    expect(wrapper.attributes('style')).toBeUndefined()
     expect(wrapper.find('.carousel-caption').exists()).toBe(false)
+    expect(wrapper.text()).toBe('Text')
   })
 
-  it('renders content area when caption prop is provided', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Test Caption'},
-    })
-    expect(wrapper.find('.carousel-caption').exists()).toBe(true)
+  it('uses the id prop', () => {
+    const wrapper = mount(BCarouselSlide, {props: {id: 'foo'}})
+    expect(wrapper.attributes('id')).toBe('foo')
   })
 
-  it('renders content area when text prop is provided', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {text: 'Test Text'},
-    })
-    expect(wrapper.find('.carousel-caption').exists()).toBe(true)
-  })
-
-  it('renders content area when default slot is provided', () => {
-    const wrapper = mount(BCarouselSlide, {
-      slots: {default: 'Default content'},
-    })
-    expect(wrapper.find('.carousel-caption').exists()).toBe(true)
-  })
-
-  it('content area tag defaults to div', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Test'},
-    })
-    const caption = wrapper.find('.carousel-caption')
-    expect(caption.element.tagName).toBe('DIV')
-  })
-
-  it('content area uses contentTag prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Test', contentTag: 'section'},
-    })
-    const caption = wrapper.find('.carousel-caption')
-    expect(caption.element.tagName).toBe('SECTION')
-  })
-
-  // --- Caption ---
-  it('renders caption text from caption prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'My Caption'},
-    })
-    expect(wrapper.find('.carousel-caption').text()).toContain('My Caption')
-  })
-
-  it('caption tag defaults to h3', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'My Caption'},
-    })
-    const h3 = wrapper.find('.carousel-caption h3')
-    expect(h3.exists()).toBe(true)
-    expect(h3.text()).toBe('My Caption')
-  })
-
-  it('caption tag uses captionTag prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'My Caption', captionTag: 'h1'},
-    })
-    const h1 = wrapper.find('.carousel-caption h1')
-    expect(h1.exists()).toBe(true)
-    expect(h1.text()).toBe('My Caption')
-  })
-
-  it('caption slot overrides caption prop text', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Prop Caption'},
-      slots: {caption: 'Slot Caption'},
-    })
-    const caption = wrapper.find('.carousel-caption')
-    expect(caption.text()).toContain('Slot Caption')
-    expect(caption.text()).not.toContain('Prop Caption')
-  })
-
-  it('renders caption slot content', () => {
-    const wrapper = mount(BCarouselSlide, {
-      slots: {caption: '<strong>Bold Caption</strong>'},
-    })
-    const strong = wrapper.find('.carousel-caption strong')
-    expect(strong.exists()).toBe(true)
-    expect(strong.text()).toBe('Bold Caption')
-  })
-
-  it('does not render caption element when no caption prop or slot', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {text: 'Some text'},
-    })
-    const h3 = wrapper.find('.carousel-caption h3')
-    expect(h3.exists()).toBe(false)
-  })
-
-  // --- Text ---
-  it('renders text from text prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {text: 'My Text'},
-    })
-    expect(wrapper.find('.carousel-caption').text()).toContain('My Text')
-  })
-
-  it('text tag defaults to p', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {text: 'My Text'},
-    })
-    const p = wrapper.find('.carousel-caption p')
-    expect(p.exists()).toBe(true)
-    expect(p.text()).toBe('My Text')
-  })
-
-  it('text tag uses textTag prop', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {text: 'My Text', textTag: 'span'},
-    })
-    const captionEl = wrapper.find('.carousel-caption')
-    const span = captionEl.find('span')
-    expect(span.exists()).toBe(true)
-    expect(span.text()).toBe('My Text')
-    expect(captionEl.find('p').exists()).toBe(false)
-  })
-
-  it('text slot overrides text prop text', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {text: 'Prop Text'},
-      slots: {text: 'Slot Text'},
-    })
-    const caption = wrapper.find('.carousel-caption')
-    expect(caption.text()).toContain('Slot Text')
-    expect(caption.text()).not.toContain('Prop Text')
-  })
-
-  it('renders text slot content', () => {
-    const wrapper = mount(BCarouselSlide, {
-      slots: {text: '<em>Italic Text</em>'},
-    })
-    const em = wrapper.find('.carousel-caption em')
-    expect(em.exists()).toBe(true)
-    expect(em.text()).toBe('Italic Text')
-  })
-
-  it('does not render text element when no text prop or slot', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Some caption'},
-    })
-    const p = wrapper.find('.carousel-caption p')
-    expect(p.exists()).toBe(false)
-  })
-
-  // --- Default slot ---
-  it('default slot renders inside content area', () => {
-    const wrapper = mount(BCarouselSlide, {
-      slots: {default: '<div class="custom-content">Hello</div>'},
-    })
-    const content = wrapper.find('.carousel-caption .custom-content')
-    expect(content.exists()).toBe(true)
-    expect(content.text()).toBe('Hello')
-  })
-
-  it('renders caption, text, and default slot together', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Cap', text: 'Txt'},
-      slots: {default: '<div class="extra">Extra</div>'},
-    })
-    const caption = wrapper.find('.carousel-caption')
-    expect(caption.text()).toContain('Cap')
-    expect(caption.text()).toContain('Txt')
-    expect(caption.text()).toContain('Extra')
-  })
-
-  // --- Background style ---
-  it('has background style attribute', () => {
+  it('renders no image without imgSrc', () => {
     const wrapper = mount(BCarouselSlide)
-    expect(wrapper.attributes('style')).toBeDefined()
-    expect(wrapper.attributes('style')).toContain('background:')
+    expect(wrapper.find('img').exists()).toBe(false)
   })
 
-  it('has background style attribute when background prop is set', () => {
+  it('renders img.d-block.w-100 with imgSrc, imgAlt and imgSrcset', () => {
     const wrapper = mount(BCarouselSlide, {
-      props: {background: 'red'},
+      props: {imgSrc: '/a.png', imgAlt: 'A', imgSrcset: '/a.png 1x, /a2.png 2x'},
     })
-    expect(wrapper.attributes('style')).toBeDefined()
-    expect(wrapper.attributes('style')).toContain('background:')
+    const img = wrapper.get('img')
+    expect(img.classes()).toEqual(expect.arrayContaining(['d-block', 'w-100']))
+    expect(img.attributes('src')).toBe('/a.png')
+    expect(img.attributes('alt')).toBe('A')
+    expect(img.attributes('srcset')).toBe('/a.png 1x, /a2.png 2x')
   })
 
-  it('has background style attribute with parent injection', () => {
+  it('img slot replaces the image', () => {
     const wrapper = mount(BCarouselSlide, {
-      global: {
-        provide: {
-          [carouselInjectionKey as symbol]: {
-            background: ref('green'),
-            width: ref(undefined),
-            height: ref(undefined),
-          },
-        },
-      },
+      props: {imgSrc: '/a.png'},
+      slots: {img: () => h('picture', {class: 'custom'})},
     })
-    expect(wrapper.attributes('style')).toBeDefined()
-    expect(wrapper.attributes('style')).toContain('background:')
+    expect(wrapper.find('img').exists()).toBe(false)
+    expect(wrapper.find('picture.custom').exists()).toBe(true)
   })
 
-  // --- contentVisibleUp ---
-  it('does not have d-none class by default', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Test'},
-    })
-    const caption = wrapper.find('.carousel-caption')
-    expect(caption.classes()).not.toContain('d-none')
+  it('interval renders data-bs-interval', () => {
+    const wrapper = mount(BCarouselSlide, {props: {interval: 2000}})
+    expect(wrapper.attributes('data-bs-interval')).toBe('2000')
   })
 
-  it('contentVisibleUp adds d-none class to content area', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Test', contentVisibleUp: 'md'},
-    })
-    const caption = wrapper.find('.carousel-caption')
-    expect(caption.classes()).toContain('d-none')
-  })
-
-  it('contentVisibleUp adds d-{breakpoint}-block class to content area', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Test', contentVisibleUp: 'md'},
-    })
-    const caption = wrapper.find('.carousel-caption')
-    expect(caption.classes()).toContain('d-md-block')
-  })
-
-  it('contentVisibleUp with lg breakpoint adds d-lg-block class', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {caption: 'Test', contentVisibleUp: 'lg'},
-    })
-    const caption = wrapper.find('.carousel-caption')
-    expect(caption.classes()).toContain('d-none')
-    expect(caption.classes()).toContain('d-lg-block')
-  })
-
-  // --- Exposed properties ---
-  it('exposes _id', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {id: 'exposed-id'},
-    })
-    const vm = wrapper.vm as unknown as {_id: string}
-    expect(vm._id).toBe('exposed-id')
-  })
-
-  it('exposes _id with auto-generated value when no id prop', () => {
+  it('is not active outside a carousel', () => {
     const wrapper = mount(BCarouselSlide)
-    const vm = wrapper.vm as unknown as {_id: string}
-    expect(vm._id).toBeDefined()
-    expect(vm._id).toContain('carousel-slide')
-  })
-
-  it('exposes _interval', () => {
-    const wrapper = mount(BCarouselSlide, {
-      props: {interval: 5000},
-    })
-    const vm = wrapper.vm as unknown as {_interval: number | undefined}
-    expect(vm._interval).toBe(5000)
-  })
-
-  it('exposes _interval as undefined when not set', () => {
-    const wrapper = mount(BCarouselSlide)
-    const vm = wrapper.vm as unknown as {_interval: number | undefined}
-    expect(vm._interval).toBeUndefined()
+    expect(wrapper.classes()).not.toContain('active')
   })
 })
