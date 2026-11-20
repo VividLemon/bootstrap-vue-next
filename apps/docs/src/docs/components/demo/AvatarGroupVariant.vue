@@ -1,11 +1,10 @@
 <template>
   <!-- #region template -->
-  <BAvatarGroup :color="{ theme: 'success' }">
-    <BAvatar />
-    <BAvatar :color="{ theme: 'info' }" />
-    <BAvatar />
-    <BAvatar />
-    <BAvatar />
+  <BAvatarGroup class="theme-success" aria-label="Team">
+    <BAvatar text="A" />
+    <BAvatar text="B" :color="{ theme: 'info' }" />
+    <BAvatar text="C" />
+    <BAvatar text="D" />
   </BAvatarGroup>
   <!-- #endregion template -->
 </template>

@@ -10,12 +10,12 @@ with a single **theme** concept. A `.theme-<name>` class sets a handful of CSS v
 and components that read those variables are colored automatically. BootstrapVueNext exposes this through one `color` object
 prop per component, whose keys map to those classes.
 
-| `color` key                       | Purpose                         | Rendered class     |
-| --------------------------------- | ------------------------------- | ------------------ |
-| `theme`                           | Colors the component by a theme | `theme-<theme>`    |
-| `bg`                              | Background color                | `bg-<value>`       |
-| `fg`                              | Foreground (text) color         | `fg-<value>`       |
-| `border` (components with a border) | Border color                  | `border-<value>`   |
+| `color` key                         | Purpose                         | Rendered class   |
+| ----------------------------------- | ------------------------------- | ---------------- |
+| `theme`                             | Colors the component by a theme | `theme-<theme>`  |
+| `bg`                                | Background color                | `bg-<value>`     |
+| `fg`                                | Foreground (text) color         | `fg-<value>`     |
+| `border` (components with a border) | Border color                    | `border-<value>` |
 
 ```vue-html
 <BBadge :color="{ theme: 'success' }">Success</BBadge>
@@ -93,14 +93,14 @@ Renders `.border-<value>`. Values are one of:
 
 ### Migrating from v5 values
 
-| v5 prop and value                      | New prop and value                       |
-| -------------------------------------- | ---------------------------------------- |
-| `variant="primary"` (non-button)       | `:color="{ theme: 'primary' }"`          |
-| `bg-variant="primary-subtle"`          | `:color="{ bg: 'subtle-primary' }"`      |
-| `text-variant="danger-emphasis"`       | `:color="{ fg: 'emphasis-danger' }"`     |
-| `text-variant="body-secondary"`        | `:color="{ fg: '2' }"`                   |
-| `text-variant="body"`                  | `:color="{ fg: 'body' }"`                |
-| `border-variant="primary-subtle"`      | `:color="{ border: 'subtle-primary' }"`  |
+| v5 prop and value                      | New prop and value                                                 |
+| -------------------------------------- | ------------------------------------------------------------------ |
+| `variant="primary"` (non-button)       | `:color="{ theme: 'primary' }"`                                    |
+| `bg-variant="primary-subtle"`          | `:color="{ bg: 'subtle-primary' }"`                                |
+| `text-variant="danger-emphasis"`       | `:color="{ fg: 'emphasis-danger' }"`                               |
+| `text-variant="body-secondary"`        | `:color="{ fg: '2' }"`                                             |
+| `text-variant="body"`                  | `:color="{ fg: 'body' }"`                                          |
+| `border-variant="primary-subtle"`      | `:color="{ border: 'subtle-primary' }"`                            |
 | `text-variant="white-50"` / `black-50` | removed, use `fg: 'white'` / `fg: 'black'` with an opacity utility |
 
 ## Combining values
@@ -128,27 +128,26 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 <BTable :thead="{ color: { theme: 'inverse' } }" :selection-color="{ bg: 'subtle-primary' }" />
 ```
 
-| Component                                     | Color object props                                                             |
-| --------------------------------------------- | ------------------------------------------------------------------------------ |
-| `BAlert`, `BToast`                            | `close.color`                                                                  |
-| `BAvatar`                                     | `badge-color`                                                                  |
-| `BCard`                                       | `header-color`, `body-color`, `footer-color` (with `border`), `subtitle-color` (`fg` only) |
-| `BCardBody`                                   | `subtitle-color` (`fg` only)                                                   |
-| `BDropdown`, `BNavItemDropdown`               | `split-color`                                                                  |
-| `BDropdownGroup`                              | `header-color`                                                                 |
-| `BFormCheckbox`, `BFormRadio` and their groups | `button-color`                                                                |
-| `BFormTags`                                   | `tag-color`, `add-button-color`                                                |
-| `BModal`                                      | `header-color`, `footer-color` (with `border`), `body-color`, `header-close-color`, `ok-color`, `cancel-color` |
-| `BOffcanvas`                                  | `header-close.color`                                                           |
-| `BOverlay`                                    | `spinner.color`                                                                |
-| `BPlaceholderCard`, `BPlaceholderTable`       | `header-color`, `footer-color`                                                 |
-| `BTable`, `BTableLite`                        | `thead.color`, `thead.rowColor`, `tfoot.color`, `tfoot.rowColor`, `selection-color` (`BTable` only) |
+| Component                                      | Color object props                                                                                             |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `BAlert`, `BToast`                             | `close.color`                                                                                                  |
+| `BCard`                                        | `header-color`, `body-color`, `footer-color` (with `border`), `subtitle-color` (`fg` only)                     |
+| `BCardBody`                                    | `subtitle-color` (`fg` only)                                                                                   |
+| `BDropdown`, `BNavItemDropdown`                | `split-color`                                                                                                  |
+| `BDropdownGroup`                               | `header-color`                                                                                                 |
+| `BFormCheckbox`, `BFormRadio` and their groups | `button-color`                                                                                                 |
+| `BFormTags`                                    | `tag-color`, `add-button-color`                                                                                |
+| `BModal`                                       | `header-color`, `footer-color` (with `border`), `body-color`, `header-close-color`, `ok-color`, `cancel-color` |
+| `BOffcanvas`                                   | `header-close.color`                                                                                           |
+| `BOverlay`                                     | `spinner.color`                                                                                                |
+| `BPlaceholderCard`, `BPlaceholderTable`        | `header-color`, `footer-color`                                                                                 |
+| `BTable`, `BTableLite`                         | `thead.color`, `thead.rowColor`, `tfoot.color`, `tfoot.rowColor`, `selection-color` (`BTable` only)            |
 
 `*-variant` props such as `ok-variant` or `button-variant` select a button style, not a color, so they stay separate.
 
 ### Defaults are merged per key
 
-Some components and parts have a built-in default. For example `BButton`, `BBadge` and `BAvatar` default to
+Some components and parts have a built-in default. For example `BButton` and `BBadge` default to
 `:color="{ theme: 'secondary' }"`, `BAlert` to `{ theme: 'info' }`, `ok-color` to `{ theme: 'primary' }`, and BAlert / BToast `close.color`,
 `cancel-color`, `button-color`, `tag-color`, `add-button-color`, and the BModal `header-close-color` and BOffcanvas `header-close.color`, default to `{ theme: 'secondary' }`.
 The object you pass is merged with that default key by key:

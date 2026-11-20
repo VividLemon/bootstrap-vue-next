@@ -1,104 +1,55 @@
 <template>
-  <component
-    :is="computedTag"
-    class="b-avatar"
-    :class="computedClasses"
-    :style="computedStyle"
-    v-bind="computedLinkProps"
-    :type="props.button && !computedLink ? props.buttonType : undefined"
-    :disabled="props.disabled || null"
-    :color="null"
-    @click="clicked"
-  >
-    <span v-if="hasDefaultSlot" class="b-avatar-custom">
-      <slot />
-    </span>
-    <span v-else-if="!!localSrc" class="b-avatar-img">
-      <img :src="localSrc" :alt="props.alt" @error="onImgError" />
-    </span>
-    <span v-else-if="!!props.text" class="b-avatar-text" :style="textFontStyle">
-      {{ props.text }}
-    </span>
-    <span v-else class="b-avatar-img"
-      ><svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="80%"
-        height="80%"
-        fill="currentColor"
-        class="bi bi-person-fill"
-        viewBox="0 0 16 16"
-      >
-        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-      </svg>
-    </span>
-    <BBadge
-      v-if="showBadge"
-      :pill="props.badgePill"
-      :dot-indicator="props.badgeDotIndicator || badgeImplicitlyDot"
-      :color="badgeColor"
-      :style="badgeStyle"
-      :placement="props.badgePlacement"
-    >
-      <slot name="badge">
-        {{ badgeText }}
-      </slot>
-    </BBadge>
-  </component>
+  <span class="avatar" :class="computedClasses" :style="computedStyle">
+    <slot>
+      <img
+        v-if="!!localSrc"
+        class="avatar-img"
+        :src="localSrc"
+        :alt="props.alt"
+        @error="onImgError"
+      />
+      <template v-else-if="!!props.text">{{ props.text }}</template>
+    </slot>
+    <span
+      v-if="props.status"
+      class="avatar-status"
+      :class="`status-${props.status}`"
+      role="img"
+      :aria-label="computedStatusLabel"
+    />
+  </span>
 </template>
 
 <script setup lang="ts">
 import {avatarGroupInjectionKey} from '../../utils/keys'
-import {computed, type CSSProperties, inject, ref, type StyleValue, watch} from 'vue'
-import BLink from '../BLink/BLink.vue'
-import BBadge from '../BBadge/BBadge.vue'
-import {useBLinkHelper} from '../../composables/useBLinkHelper'
-import {isEmptySlot} from '../../utils/dom'
+import {computed, type CSSProperties, inject, ref, watch} from 'vue'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
-import {useRadiusElementClasses} from '../../composables/useRadiusElementClasses'
-import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
-import type {BAvatarEmits, BAvatarProps, BAvatarSlots, Size} from '../../types'
+import {useThemeClasses} from '../../composables/useThemeClasses'
+import type {AvatarSize, BAvatarEmits, BAvatarProps, BAvatarSlots} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 
 const _props = withDefaults(defineProps<BAvatarProps>(), {
   alt: 'avatar',
-  badge: false,
-  badgeColor: undefined,
-  badgePlacement: 'bottom-end',
-  badgeDotIndicator: false,
-  badgePill: false,
-  button: false,
-  buttonType: 'button',
-  size: undefined,
-  square: false,
-  src: undefined,
-  text: undefined,
-  // Link props
-  // All others use defaults
-  active: undefined,
-  activeClass: undefined,
-  disabled: undefined,
-  exactActiveClass: undefined,
-  href: undefined,
-  opacity: undefined,
-  rel: undefined,
-  replace: undefined,
-  stretched: false,
-  routerComponentName: undefined,
-  target: undefined,
-  underline: undefined,
-  // End link props
-  // Theme is here as well
-  // RadiusElementExtendables props
-  rounded: 'circle',
-  roundedSides: undefined,
-  // End RadiusElementExtendables props
   color: undefined,
+  size: undefined,
+  src: undefined,
+  status: undefined,
+  statusLabel: undefined,
+  text: undefined,
+  variant: null,
 })
 const props = useDefaults(_props, 'BAvatar')
-const computedColor = computed(() => resolvePartColor(props.color, {theme: 'secondary'}))
-const badgeColor = computed(() => resolvePartColor(props.badgeColor, {theme: 'primary'}))
 const emit = defineEmits<BAvatarEmits>()
-const slots = defineSlots<BAvatarSlots>()
+defineSlots<BAvatarSlots>()
+
+const parentData = inject(avatarGroupInjectionKey, null)
+
+/** Default `--bs-avatar-stack-spacing` overlap in Bootstrap's CSS */
+const DEFAULT_OVERLAP = 0.3
+
+const AVATAR_SIZES: ReadonlySet<string> = new Set(
+  Object.keys({xs: null, sm: null, md: null, lg: null, xl: null} satisfies Record<AvatarSize, null>)
+)
 
 const localSrc = ref(props.src)
 watch(
@@ -108,122 +59,41 @@ watch(
   }
 )
 
-const {computedLink, computedLinkProps} = useBLinkHelper(props)
-
-const parentData = inject(avatarGroupInjectionKey, null)
-
-const SIZES: ReadonlySet<string | null> = new Set(
-  Object.freeze([
-    null,
-    ...Object.keys({
-      lg: null,
-      sm: null,
-    } satisfies Record<Size, null>),
-  ] as (string | null)[])
-)
-const FONT_SIZE_SCALE = 0.4
-const BADGE_FONT_SIZE_SCALE = FONT_SIZE_SCALE * 0.7
-
-const hasDefaultSlot = computed(() => !isEmptySlot(slots.default))
-const hasBadgeSlot = computed(() => !isEmptySlot(slots.badge))
-
-const showBadge = computed(() => !!props.badge || props.badge === '' || hasBadgeSlot.value)
-const computedSquare = computed(() => parentData?.square.value || props.square)
-
-// const computedPropSize = useNumberishToStyle(() => props.size)
-// const propSizeIsLiteralSize = (val: unknown): val is Size =>
-//   !!val && typeof val === 'string' && SIZES.includes(val)
-// const computedParentSize = useNumberishToStyle(() => parentData?.size.value)
-// const computedSize = computed(() => computedParentSize.value ?? computedPropSize.value)
-// const computedPropSizeIsLiteralSize = computed(() => propSizeIsLiteralSize(computedSize.value))
-
+// The group's size wins over the avatar's own size, as before
 const {style: computedSize} = useNumberishToStyle(() => parentData?.size.value ?? props.size)
-const computedSizeIsLiteralSize = computed(
-  () => !!computedSize.value && SIZES.has(computedSize.value)
+const computedSizeIsLiteral = computed(
+  () => computedSize.value !== undefined && AVATAR_SIZES.has(computedSize.value)
 )
 
-const computedTheme = computed(() => parentData?.theme.value ?? computedColor.value.theme)
-const computedRounded = computed(() => parentData?.roundedProps.value.rounded ?? props.rounded)
-// The group's sides win key by key, as the separate side props did
-const computedRoundedSides = computed(() => {
-  const groupSides = parentData?.roundedProps.value.roundedSides
-  return {
-    top: groupSides?.top ?? props.roundedSides?.top,
-    bottom: groupSides?.bottom ?? props.roundedSides?.bottom,
-    start: groupSides?.start ?? props.roundedSides?.start,
-    end: groupSides?.end ?? props.roundedSides?.end,
-  }
-})
-
-const {classes: radiusElementClasses} = useRadiusElementClasses(
-  computed(() => ({
-    rounded: computedRounded.value,
-    roundedSides: computedRoundedSides.value,
-  }))
+const computedStatusLabel = computed(
+  () =>
+    props.statusLabel ??
+    (props.status ? `${props.status.charAt(0).toUpperCase()}${props.status.slice(1)}` : undefined)
 )
 
-const badgeText = computed(() => (props.badge === true ? '' : props.badge))
-const badgeImplicitlyDot = computed(() => !badgeText.value && !hasBadgeSlot.value)
+const {classes: colorClasses} = useThemeClasses(() => props.color ?? {})
 
-const {classes: colorClasses} = useThemeClasses(
-  computed(() => ({
-    bg: parentData?.bg.value ?? computedColor.value.bg,
-    fg: parentData?.fg.value ?? computedColor.value.fg,
-    theme: computedTheme.value,
-  }))
-)
 const computedClasses = computed(() => [
   colorClasses.value,
-  // Square overwrites all else
-  computedSquare.value === true ? undefined : radiusElementClasses.value,
   {
-    [`b-avatar-${computedSize.value}`]:
-      computedSizeIsLiteralSize.value && computedSize.value !== 'md',
-    'btn-solid': props.button && computedTheme.value !== null,
-    'badge': !props.button && computedTheme.value !== null && hasDefaultSlot.value,
-    'btn': props.button,
-    // Square is the same as rounded-0 class
-    'rounded-0': computedSquare.value === true,
+    [`avatar-${computedSize.value}`]: computedSizeIsLiteral.value && computedSize.value !== 'md',
+    [`avatar-${props.variant}`]: !!props.variant,
   },
 ])
 
-const badgeStyle = computed<StyleValue>(() => ({
-  fontSize:
-    (!computedSizeIsLiteralSize.value
-      ? `calc(${computedSize.value} * ${BADGE_FONT_SIZE_SCALE})`
-      : '') || '',
-}))
-
-const textFontStyle = computed<StyleValue>(() => {
-  const fontSize = !computedSizeIsLiteralSize.value
-    ? `calc(${computedSize.value} * ${FONT_SIZE_SCALE})`
-    : null
-  return fontSize ? {fontSize} : {}
+const computedStyle = computed<CSSProperties | undefined>(() => {
+  const style: Record<string, string> = {}
+  if (computedSize.value && !computedSizeIsLiteral.value) {
+    // `.avatar` declares `--bs-avatar-size` itself, so it must be set on the avatar
+    style['--bs-avatar-size'] = computedSize.value
+  }
+  const overlap = parentData?.overlap.value
+  if (overlap !== undefined && Number.isFinite(overlap) && overlap !== DEFAULT_OVERLAP) {
+    // `.avatar` declares `--bs-avatar-stack-spacing` itself too, a value on the stack never reaches it
+    style['--bs-avatar-stack-spacing'] = `${-overlap}`
+  }
+  return Object.keys(style).length ? (style as CSSProperties) : undefined
 })
-
-const marginStyle = computed(() => {
-  const overlapScale = parentData?.overlapScale?.value || 0
-
-  const value =
-    computedSize.value && overlapScale ? `calc(${computedSize.value} * -${overlapScale})` : null
-  return value ? {marginLeft: value, marginRight: value} : {}
-})
-
-const computedTag = computed(() => (computedLink.value ? BLink : props.button ? 'button' : 'span'))
-
-const computedStyle = computed<CSSProperties>(() => ({
-  ...marginStyle.value,
-  ...(!computedSizeIsLiteralSize.value
-    ? {
-        width: computedSize.value,
-        height: computedSize.value,
-      }
-    : undefined),
-}))
-
-const clicked = (e: Readonly<MouseEvent>): void => {
-  if (!props.disabled && (computedLink.value || props.button)) emit('click', e)
-}
 
 const onImgError = (e: Readonly<Event>) => {
   localSrc.value = undefined

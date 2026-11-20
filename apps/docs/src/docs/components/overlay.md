@@ -74,7 +74,7 @@ corners, you can use the [RadiusElementExtendables](/docs/types#radiuselementext
 `rounded` (all corners) and `rounded-sides` (an object with `top`, `bottom`, `start` and `end` keys) to apply rounding to
 the overlay's corners to match the obscured content's rounded corners. Possible values for these
 props are the values of [RadiusElementExtendables](/docs/types#radiuselement).
-See the [BAvatar documentation](/docs/components/avatar#rounding) for a detailed explanation of how these
+See the [BImg documentation](/docs/components/image#rounded-corners) for a detailed explanation of how these
 props work.
 
 <<< DEMO ./demo/OverlayRounding.vue
@@ -88,11 +88,11 @@ Place custom content in the overlay (replacing the default spinner) via the opti
 
 The following scope properties are available to the `overlay` slot:
 
-| Property | Description                                     |
-| -------- | ----------------------------------------------- |
+| Property | Description                                      |
+| -------- | ------------------------------------------------ |
 | `type`   | The `spinner` prop's `type` (default `'border'`) |
-| `color`  | The `spinner` prop's `color` object             |
-| `small`  | The `spinner` prop's `small` (default `false`)  |
+| `color`  | The `spinner` prop's `color` object              |
+| `small`  | The `spinner` prop's `small` (default `false`)   |
 
 When placing interactive content in the overlay, you should focus the container of the custom
 content or one of the focusable controls in the overlay content for accessibility reasons. You can

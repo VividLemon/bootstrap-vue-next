@@ -54,6 +54,7 @@ import type {
 } from './Alignment'
 import type {RadiusElementExtendables} from './RadiusElement'
 import type {SpinnerType} from './SpinnerType'
+import type {AvatarSize, AvatarStatus, AvatarVariant} from './AvatarTypes'
 import type {BadgeVariant} from './BadgeTypes'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {ButtonType} from './ButtonType'
@@ -1067,26 +1068,20 @@ export interface BAlertProps extends BLinkProps, ShowHideProps {
   title?: string
 }
 
-export interface BAvatarProps extends Omit<BLinkProps, 'icon'>, RadiusElementExtendables {
+export interface BAvatarProps {
   alt?: string
-  badge?: boolean | string
-  badgeColor?: ColorExtendables
-  badgePlacement?: CombinedPlacement
-  badgePill?: boolean
-  badgeDotIndicator?: boolean
-  button?: boolean
-  buttonType?: ButtonType
-  size?: LiteralUnion<Size, Numberish>
-  square?: boolean
+  color?: ColorExtendables | null
+  size?: LiteralUnion<AvatarSize, Numberish>
   src?: string
+  status?: AvatarStatus
+  statusLabel?: string
   text?: string
+  variant?: AvatarVariant | null
 }
 
-export interface BAvatarGroupProps extends RadiusElementExtendables {
-  color?: ColorExtendables | null
+export interface BAvatarGroupProps {
   overlap?: Numberish
-  size?: LiteralUnion<Size, Numberish>
-  square?: boolean
+  size?: LiteralUnion<AvatarSize, Numberish>
   tag?: string
 }
 
