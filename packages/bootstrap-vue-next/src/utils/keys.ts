@@ -216,6 +216,8 @@ export const defaultsKey: InjectionKey<Ref<Partial<BvnComponentProps>>> =
   createBvnRegistryInjectionKey('defaults')
 
 export const inputGroupKey: InjectionKey<boolean> = createBvnInjectionKey('inputGroup')
+/** Provided by BFormAdorn: inner controls render `.form-ghost` instead of `.form-control` */
+export const formAdornKey: InjectionKey<boolean> = createBvnInjectionKey('formAdorn')
 export const buttonGroupKey: InjectionKey<boolean> = createBvnInjectionKey('buttonGroup')
 
 export type OrchestratorStoreObject = {

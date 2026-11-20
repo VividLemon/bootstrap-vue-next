@@ -30,7 +30,7 @@ import {useDefaults} from '../../composables/useDefaults'
 import {normalizeInput} from '../../utils/normalizeInput'
 import type {BFormInputProps} from '../../types'
 import {useFormInput} from '../../composables/useFormInput'
-import {inputGroupKey} from '../../utils/keys'
+import {formAdornKey} from '../../utils/keys'
 
 const _props = withDefaults(defineProps<Omit<BFormInputProps, 'modelValue'>>(), {
   max: undefined,
@@ -71,7 +71,8 @@ const [modelValue, modelModifiers] = defineModel<
 
 const input = useTemplateRef('_input')
 
-const inInputGroup = inject(inputGroupKey, false)
+// Inside BFormAdorn the wrapper is the visible control, so the input is a borderless ghost
+const inFormAdorn = inject(formAdornKey, false)
 
 const {
   computedId,
@@ -87,15 +88,14 @@ const {
 } = useFormInput(props, input, modelValue, modelModifiers)
 
 const computedClasses = computed(() => {
-  const isRange = props.type === 'range'
+  if (inFormAdorn) return [stateClass.value, 'form-ghost']
   const isColor = props.type === 'color'
   return [
     stateClass.value,
     {
-      'form-range': isRange,
-      'form-control': isColor || (!props.plaintext && !isRange) || (isRange && inInputGroup),
+      'form-control': isColor || !props.plaintext,
       'form-control-color': isColor,
-      'form-control-plaintext': props.plaintext && !isRange && !isColor,
+      'form-control-plaintext': props.plaintext && !isColor,
       [`form-control-${props.size}`]: !!props.size,
     },
   ]

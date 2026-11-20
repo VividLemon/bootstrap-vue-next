@@ -349,6 +349,14 @@ export type BFormSelectOptionGroupSlots<T> = {
   option: (props: SelectOption<T>) => any
 }
 
+export type BFormAdornSlots = {
+  default?: (props: Record<string, never>) => any
+
+  end?: (props: Record<string, never>) => any
+
+  start?: (props: Record<string, never>) => any
+}
+
 export type BInputGroupSlots = {
   append?: (props: Record<string, never>) => any
 

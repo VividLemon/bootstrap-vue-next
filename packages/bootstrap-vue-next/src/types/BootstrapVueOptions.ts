@@ -56,6 +56,7 @@ export const componentsWithExternalPath = {
   BDropdownItemButton: '/components/BDropdown',
   BDropdownText: '/components/BDropdown',
   BForm: '/components/BForm',
+  BFormAdorn: '/components/BFormAdorn',
   BFormCheckbox: '/components/BFormCheckbox',
   BFormCheckboxGroup: '/components/BFormCheckbox',
   BFormDatalist: '/components/BForm',
@@ -66,6 +67,7 @@ export const componentsWithExternalPath = {
   BFormInvalidFeedback: '/components/BForm',
   BFormRadio: '/components/BFormRadio',
   BFormRadioGroup: '/components/BFormRadio',
+  BFormRange: '/components/BFormRange',
   BFormRating: '/components/BFormRating',
   BFormRow: '/components/BForm',
   BFormSelect: '/components/BFormSelect',
@@ -212,6 +214,7 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BFormFloatingLabel: ComponentProps.BFormFloatingLabelProps
   BFormRow: ComponentProps.BFormRowProps
   BFormText: ComponentProps.BFormTextProps
+  BFormAdorn: ComponentProps.BFormAdornProps
   BFormCheckbox: ComponentProps.BFormCheckboxProps
   BFormCheckboxGroup: ComponentProps.BFormCheckboxGroupProps
   BFormDatalist: ComponentProps.BFormDatalistProps
@@ -219,6 +222,7 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BFormInput: ComponentProps.BFormInputProps
   BFormRadio: ComponentProps.BFormRadioProps
   BFormRadioGroup: ComponentProps.BFormRadioGroupProps
+  BFormRange: ComponentProps.BFormRangeProps
   BFormRating: ComponentProps.BFormRatingProps
   BFormSelect: ComponentProps.BFormSelectProps
   BFormSelectOption: ComponentProps.BFormSelectOptionProps<BFormSelectOption>

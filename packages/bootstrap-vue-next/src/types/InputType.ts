@@ -8,7 +8,6 @@ export type InputType =
   | 'tel'
   | 'date'
   | 'time'
-  | 'range'
   | 'color'
   | 'datetime'
   | 'datetime-local'
