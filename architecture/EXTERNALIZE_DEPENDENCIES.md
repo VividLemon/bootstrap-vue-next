@@ -60,24 +60,24 @@ The saving grows with how much vueuse and Floating UI the app and the library bo
 1. **`vite.config.ts`**: derive `external` from `package.json` so the list can't drift:
 
    ```ts
-   import pkg from "./package.json" with { type: "json" };
+   import pkg from './package.json' with {type: 'json'}
 
    const runtimeDeps = [
      ...Object.keys(pkg.dependencies ?? {}),
      ...Object.keys(pkg.peerDependencies ?? {}),
-   ];
+   ]
    // `vue` and subpaths such as `@vueuse/integrations/useFocusTrap`
    const external = (id: string) =>
-     runtimeDeps.some((dep) => id === dep || id.startsWith(`${dep}/`));
+     runtimeDeps.some((dep) => id === dep || id.startsWith(`${dep}/`))
    ```
 
    `bootstrap` (Sass only) is never imported from JS, so including peers is harmless.
 
 2. **`package.json`**:
-   - `dependencies` holds every package imported at runtime: `@vueuse/core`, `@floating-ui/vue`, plus `@vueuse/integrations` and `focus-trap` while `BModal` / `BOffcanvas` still use `useActivatedFocusTrap` (the v6 Dialog work removes them, G1 Q9), and `reka-ui` until the v6 Combobox / OTP / Datepicker work removes it (G2, G4). `@floating-ui/core` stays only if imported directly.
+   - `dependencies` holds every package imported at runtime: `@vueuse/core`, `@floating-ui/vue`, plus `@vueuse/integrations` and `focus-trap` while `BModal` / `BOffcanvas` still use `useActivatedFocusTrap` (the v6 Dialog work removes them, G1 Q9), and `reka-ui` (it stays: `BCombobox` and `BDatepicker` are built on it, G2 / G4). `@floating-ui/core` stays only if imported directly.
    - Widen ranges to caret: `@vueuse/core: ^14.2.1` (today `~14.2.1`, which blocks deduplication with any 14.3+ app).
-   - Remove from optional `peerDependencies` every package that is now in `dependencies`; keep `vue` (required) and `vue-router` (optional, type-only). `vanilla-calendar-pro` stays a required peer as decided in G4 Q5; it is external through the same rule.
-   - `@internationalized/date` stays an optional peer while reka-ui is used (reka-ui depends on it itself).
+   - Remove from optional `peerDependencies` every package that is now in `dependencies`; keep `vue` (required) and `vue-router` (optional, type-only). (`vanilla-calendar-pro` is no longer used: G4's Datepicker moved to reka-ui on 2026-11-20.)
+   - `@internationalized/date` stays an optional peer (reka-ui depends on it, and `BDatepicker` converts its ISO strings through it).
 
 3. **Nuxt module** (`packages/nuxt`): it already adds `bootstrap-vue-next` to `vite.optimizeDeps.include`; check that dev prebundling and the SSR build resolve the external packages (no `transpile` change expected).
 

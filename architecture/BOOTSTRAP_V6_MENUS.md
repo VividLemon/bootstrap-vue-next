@@ -6,7 +6,7 @@
 - **Combobox** (`combobox.ts`) is a **select-only** combobox: a `button.form-control.combobox-toggle` opening a Menu of `[data-bs-value]` items, with optional search, `multiple`, `name` and `placeholder`. It has no free-text entry and no async options. `BAutocomplete` (reka-ui, free-text input) is removed and replaced (rule 2).
 - **Nav overflow** (`nav-overflow.ts`) is the Priority+ pattern. A `.nav-overflow` wrapper (a container query container) measures the nav with a `ResizeObserver` and moves items that don't fit into a "More" Menu. Bootstrap clones and moves DOM nodes, which can't be ported to Vue as-is. The proposal is an `overflow` feature on `BNav` built on item registration.
 - **Port, don't wrap.** Every behavior is reimplemented in Vue on `useShowHide` + `useCssTransition` (#164) and the existing `@floating-ui/vue` dependency. Bootstrap's JS classes mutate DOM that Vue owns (they move menus, clone items and toggle classes), so wrapping them is not viable.
-- **reka-ui:** once `BAutocomplete` goes, reka-ui is still used by `BFormOtp` and the six date/time components (G4) and their types in `ComponentProps.ts` / `ComponentEmits.ts` / `ComponentSlots.ts`. Nothing else in `packages/`, `apps/` or `packages/nuxt` imports it, so it can be dropped once G4 lands.
+- **reka-ui:** stays (revised 2026-11-20). `BCombobox` is built on reka-ui's `Combobox*` primitives with the v6 API and markup below, and G4's `BDatepicker` uses it too.
 
 ## Sources read
 
@@ -98,7 +98,7 @@ Markup: the toggle and the `.menu` are siblings. The JS finds the menu next to o
 | `noWrapper`                                                | replace          | Settled by Q3                                                                                                                                                                |
 | `toggleText`                                               | keep             | Visually hidden label of the split toggle. Default `'Toggle menu'` (v6 wording)                                                                                              |
 | `ariaLabel`                                                | remove           | Use `toggleAttrs: {'aria-label': …}`                                                                                                                                         |
-| `variant`, `color`, `size`                                 | keep             | Toggle `BButton` style (`btn-solid theme-secondary` by default, matching v6 examples; `color` is the `{ theme, bg, fg }` object)                                                                                        |
+| `variant`, `color`, `size`                                 | keep             | Toggle `BButton` style (`btn-solid theme-secondary` by default, matching v6 examples; `color` is the `{ theme, bg, fg }` object)                                             |
 | `icon`                                                     | remove           | Link-variant `icon-link` styling is unrelated to menus; put icons in the `toggle` slot                                                                                       |
 | `isNav`                                                    | remove           | Replaced by `BNavItemMenu` (below), which renders `li.nav-item` + `button.nav-link`                                                                                          |
 | `role`                                                     | remove           | v6 sets no menu roles. Use `menuAttrs: {role: 'menu'}` (Q5)                                                                                                                  |
@@ -116,64 +116,64 @@ Exposed: `show`, `hide`, `toggle` (keep); add `update()` (v6: recompute the posi
 
 ### Disposition: subcomponents
 
-| Current               | v6                                          | Disposition                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| --------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Current               | v6                                          | Disposition                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `BDropdownItem`       | `a.menu-item` / `button.menu-item`          | **Merge** with `BDropdownItemButton` into one item. It renders `BLink` / `<a>` when `href` / `to` is set, otherwise `<button type="button">`. Keep: BLink props, `active` (adds `aria-current="true"`), `disabled`, `color` narrowed to `Pick<ColorExtendables, 'theme'>` (v6 `theme-*` on `.menu-item`). Remove: the `<li>` wrapper and `wrapperAttrs`, `linkClass` (attrs fall through to the item), `role="menuitem"`, the `bg` / `fg` keys (v6 items only take `theme-*`). Add: `selected` (`.selected` + `.menu-item-check`), `description` prop/slot (`.menu-item-content` + `.menu-item-description`), an `icon` slot (`.menu-item-icon`). Emits `click`, then closes the menu (as now) |
-| `BDropdownItemButton` | —                                           | **Remove** (merged)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `BDropdownHeader`     | `.menu-header`                              | Keep as a header: `tag` (default `h6`), `text`. Remove `<li>`, `wrapperAttrs`, `headerClass` and `color` (`theme` / `bg` / `fg`; v6 styles headers with `--menu-header-color`)                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `BDropdownDivider`    | `hr.menu-divider`                           | Keep: `<hr class="menu-divider">`. Remove `<li>`, `wrapperAttrs`, `dividerClass`, `tag`, `role` / `aria-orientation` (`<hr>` already has separator semantics), and the inherited `ColorExtendables` (unused today)                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `BDropdownText`       | `.menu-text`                                | Keep: `tag` (default `span`), `text`. Remove `<li>`, `wrapperAttrs`, `textClass`, colors                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `BDropdownGroup`      | — (headers + dividers)                      | **Remove.** v6 groups are a `.menu-header` followed by items. A `role="group"` wrapper breaks the `.menu` flex gap and v6's `:scope > .menu-item` navigation                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `BDropdownForm`       | `<form>` inside `.menu`                     | **Remove.** Put a `BForm` (with `validate`, #165) in the menu. Auto-close already exempts forms                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `BNavItemDropdown`    | `li.nav-item` > `button.nav-link` + `.menu` | **Redesign as `BNavItemMenu`** (Q1): the `li` is the v6 wrapper and gets `.show` (needed by `.nav-tabs .nav-item.show .nav-link`). Same props as the menu except `split*`, `variant`, `size`, the button colors and `wrapperAttrs` (the `li` takes fallthrough `class`)                                                                                                                                                                                                                                                                                                                                                                 |
-| _new_                 | `.submenu`                                  | **Add `BSubmenu`**: `div.submenu` > `button.menu-item` (`text` prop / `toggle` slot) + nested `.menu` (default slot). Registers with the parent menu for hover, click and keyboard handling. No v-model in the first pass                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `BDropdownItemButton` | —                                           | **Remove** (merged)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `BDropdownHeader`     | `.menu-header`                              | Keep as a header: `tag` (default `h6`), `text`. Remove `<li>`, `wrapperAttrs`, `headerClass` and `color` (`theme` / `bg` / `fg`; v6 styles headers with `--menu-header-color`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `BDropdownDivider`    | `hr.menu-divider`                           | Keep: `<hr class="menu-divider">`. Remove `<li>`, `wrapperAttrs`, `dividerClass`, `tag`, `role` / `aria-orientation` (`<hr>` already has separator semantics), and the inherited `ColorExtendables` (unused today)                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `BDropdownText`       | `.menu-text`                                | Keep: `tag` (default `span`), `text`. Remove `<li>`, `wrapperAttrs`, `textClass`, colors                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `BDropdownGroup`      | — (headers + dividers)                      | **Remove.** v6 groups are a `.menu-header` followed by items. A `role="group"` wrapper breaks the `.menu` flex gap and v6's `:scope > .menu-item` navigation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `BDropdownForm`       | `<form>` inside `.menu`                     | **Remove.** Put a `BForm` (with `validate`, #165) in the menu. Auto-close already exempts forms                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `BNavItemDropdown`    | `li.nav-item` > `button.nav-link` + `.menu` | **Redesign as `BNavItemMenu`** (Q1): the `li` is the v6 wrapper and gets `.show` (needed by `.nav-tabs .nav-item.show .nav-link`). Same props as the menu except `split*`, `variant`, `size`, the button colors and `wrapperAttrs` (the `li` takes fallthrough `class`)                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| _new_                 | `.submenu`                                  | **Add `BSubmenu`**: `div.submenu` > `button.menu-item` (`text` prop / `toggle` slot) + nested `.menu` (default slot). Registers with the parent menu for hover, click and keyboard handling. No v-model in the first pass                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 ### Proposed API
 
 Component names follow Q1 (recommended: `BMenu`, `BMenuItem`, `BMenuHeader`, `BMenuText`, `BMenuDivider`, `BSubmenu`, `BNavItemMenu`).
 
 ```ts
-type MenuSide = "top" | "bottom" | "left" | "right" | "start" | "end";
-type MenuPlacement = MenuSide | `${MenuSide}-${"start" | "end"}`;
+type MenuSide = 'top' | 'bottom' | 'left' | 'right' | 'start' | 'end'
+type MenuPlacement = MenuSide | `${MenuSide}-${'start' | 'end'}`
 
 interface BMenuProps extends ShowHideProps {
-  color?: ColorExtendables | null;
-  id?: string;
-  text?: string;
-  disabled?: boolean;
-  placement?: MenuPlacement;
-  responsivePlacement?: Responsive<MenuPlacement>; // per-breakpoint override (Q2 = B)
+  color?: ColorExtendables | null
+  id?: string
+  text?: string
+  disabled?: boolean
+  placement?: MenuPlacement
+  responsivePlacement?: Responsive<MenuPlacement> // per-breakpoint override (Q2 = B)
   offset?:
     | readonly [number, number]
-    | ((s: { placement: Placement; reference: Rect; floating: Rect }) => [number, number]);
-  boundary?: "clippingParents" | HTMLElement;
-  strategy?: "absolute" | "fixed";
-  reference?: "toggle" | "parent" | HTMLElement | VirtualElement;
-  display?: "dynamic" | "static";
+    | ((s: {placement: Placement; reference: Rect; floating: Rect}) => [number, number])
+  boundary?: 'clippingParents' | HTMLElement
+  strategy?: 'absolute' | 'fixed'
+  reference?: 'toggle' | 'parent' | HTMLElement | VirtualElement
+  display?: 'dynamic' | 'static'
   floatingConfig?:
-    Partial<ComputePositionConfig> | ((d: ComputePositionConfig) => ComputePositionConfig);
-  autoClose?: boolean | "inside" | "outside";
-  teleportTo?: string | HTMLElement;
-  submenuTrigger?: "click" | "hover" | "both";
-  submenuDelay?: number;
-  translucent?: boolean;
-  scrollable?: boolean;
-  split?: boolean;
+    Partial<ComputePositionConfig> | ((d: ComputePositionConfig) => ComputePositionConfig)
+  autoClose?: boolean | 'inside' | 'outside'
+  teleportTo?: string | HTMLElement
+  submenuTrigger?: 'click' | 'hover' | 'both'
+  submenuDelay?: number
+  translucent?: boolean
+  scrollable?: boolean
+  split?: boolean
   // The split-button family stays flat: `split` is the on-switch and is commonly used alone
   // (prop-family rule in BOOTSTRAP_V6_MIGRATION.md)
-  splitHref?: string;
-  splitTo?: RouteLocationRaw;
-  splitButtonType?: ButtonType;
-  splitDisabled?: boolean;
-  splitVariant?: ButtonVariant | null;
-  splitColor?: ColorExtendables;
-  toggleText?: string;
-  variant?: ButtonVariant | null;
-  size?: Size;
-  toggleAttrs?: AttrsValue;
-  splitAttrs?: AttrsValue;
-  menuAttrs?: AttrsValue;
-  wrapperAttrs?: AttrsValue;
+  splitHref?: string
+  splitTo?: RouteLocationRaw
+  splitButtonType?: ButtonType
+  splitDisabled?: boolean
+  splitVariant?: ButtonVariant | null
+  splitColor?: ColorExtendables
+  toggleText?: string
+  variant?: ButtonVariant | null
+  size?: Size
+  toggleAttrs?: AttrsValue
+  splitAttrs?: AttrsValue
+  menuAttrs?: AttrsValue
+  wrapperAttrs?: AttrsValue
 }
 ```
 
@@ -313,6 +313,8 @@ None public. Internals: a `useMenuKeyboard` and a `useMenuPosition` (Floating UI
 
 ### Proposed API (`BCombobox`)
 
+> Revised 2026-11-20: built on reka-ui's `Combobox*` primitives underneath (rendering the v6 markup through `as-child`). The API, markup and a11y below still apply; where reka's behavior differs from v6 (keyboard model, focus vs `aria-activedescendant`, filtering), decide at implementation and note it in the PR.
+
 ```ts
 interface BComboboxProps<Option, Value> {
   id?: string
@@ -419,7 +421,7 @@ The server renders `div.nav-overflow` **without** `.nav-overflow-initialized`. v
 | ----------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | G3 Navbar                     | G2 → G3   | Navbar uses `BNavItemMenu`, `display: 'static'` for menus inside an expanded `[class*="drawer"]`, and `BNav overflow`. The naming (Q1) and wrapper (Q3) answers apply to the navbar menus                                                                                                                                                                                                                                                         |
 | G1 Overlays (Dialog / Drawer) | G1 ↔ G2   | Native `<dialog>` is in the top layer. A menu teleported to `body` from inside a dialog or drawer renders **behind** it. Default must stay in place (v6 `container: false`); docs must warn. v6 `dialog-base._hideChildComponents` hides tooltips and popovers but not menus: closing a dialog should close open `BMenu`s inside it (`useShowHide` unmount handles it if the dialog content unmounts; otherwise G1 should call into the registry) |
-| G4 Form inputs                | G2 ↔ G4   | `BCombobox` sits in Field (`.form-field`, `BFormGroup` label `for`). Datepicker in v6 positions with `--z-menu` and Floating UI: it could reuse `useMenuPosition`. Dropping reka-ui needs G4's OTP and Datepicker replacements too                                                                                                                                                                                                                |
+| G4 Form inputs                | G2 ↔ G4   | `BCombobox` sits in Field (`.form-field`, `BFormGroup` label `for`). Datepicker in v6 positions with `--z-menu` and Floating UI: it could reuse `useMenuPosition`. reka-ui stays for `BCombobox` and `BDatepicker` (2026-11-20)                                                                                                                                                                                                                   |
 | G6 Scrollspy                  | G2 → G6   | `useScrollspy` marks `.dropdown-toggle` active inside `.dropdown`; it must look for the menu wrapper's toggle (`[aria-controls]` of a `.menu`) instead                                                                                                                                                                                                                                                                                            |
 | `BTableLite` (`filterEvent`)  | G2        | `.dropdown-menu` → `.menu`                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `BPopover` (part one)         | G2        | Keeps its own Floating UI config; the shared parts are only the `floatingConfig` naming. Consider aligning `BPopover.floatingMiddleware` → `floatingConfig` in a later pass for consistency (not required by rule 1)                                                                                                                                                                                                                              |
@@ -534,12 +536,13 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 - **Q9 — A.** `BCombobox` accepts `BFormSelect`-style `{label, options}` groups and renders a `.menu-header` per group.
 - **Q11 — A.** No nav overflow in `BTabs` in the first pass; revisit after `BNavOverflow` lands.
 - **Q12 — A.** `useNavOverflow` stays internal for now.
+- **Revised 2026-11-20 — Combobox on reka-ui.** `BCombobox` uses reka-ui's `Combobox*` primitives underneath; its public API, markup and model types follow v6 as decided above (Q3, Q7, Q8, Q9). reka-ui stays a dependency.
 
 ## Implementation split
 
 1. **Menu core** (`BMenu`, `BMenuItem`, `BMenuHeader`, `BMenuText`, `BMenuDivider`): native transition path on the show/hide machine (S1 in [`BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`](./BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md)) with its `disabled` guard, so a disabled menu can't be opened by `show()`, `v-model` or an injected `show`, and closes when it becomes disabled (bootstrap-vue-next#3373, D8), Floating UI port (`transform: false`, `data-bs-placement`, flip map), keyboard and auto-close ports, split, groups injection, part attrs, specs; remove `BDropdown*`, the `.dropdown-toggle-no-caret` CSS and `resolveBootstrapCaret`; `filterEvent` selector; exports, `BootstrapVueOptions`, docs data, page and demos, playground, docs site UI.
 2. **Submenus** (`BSubmenu`): hover intent, safe triangle, nested positioning, ←/→ keys.
 3. **`BNavItemMenu`** replacing `BNavItemDropdown` (+ nav docs). Unblocks G3.
-4. **`BCombobox`** + removal of `BAutocomplete` (types, SCSS, docs, demos). Separate PR because it touches forms docs.
+4. **`BCombobox`** on reka-ui + removal of `BAutocomplete` (types, SCSS, docs, demos). Separate PR because it touches forms docs.
 5. **Nav overflow** on `BNav` (registration, `useNavOverflow`, overflow menu) + docs. Depends on 1–3.
-6. **Dependency cleanup** after G4 lands: remove `reka-ui` (dependency + optional peer) and `@internationalized/date` if unused; recheck `@floating-ui/core`.
+6. **Dependency cleanup** after G4 lands: recheck `@floating-ui/core`. `reka-ui` and `@internationalized/date` stay (2026-11-20).
