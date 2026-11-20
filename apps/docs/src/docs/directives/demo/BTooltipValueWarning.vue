@@ -2,6 +2,7 @@
   <!-- #region warning -->
   <!-- ❌ Wrong: missing inner quotes -->
   <!-- eslint-disable-next-line vue/no-parsing-error -->
+  <!-- @vue-ignore -->
   <BButton v-b-tooltip="My tooltip">Button</BButton>
 
   <!-- ✅ Correct: string literal with quotes -->

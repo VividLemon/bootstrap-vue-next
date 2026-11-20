@@ -61,7 +61,7 @@
           v-for="(item, itemIndex) in props.items"
           :key="
             props.primaryKey && isTableItem(item) && getWithGetter(item, props.primaryKey)
-              ? getWithGetter(item, props.primaryKey)
+              ? (getWithGetter(item, props.primaryKey) as PropertyKey)
               : itemIndex
           "
         >

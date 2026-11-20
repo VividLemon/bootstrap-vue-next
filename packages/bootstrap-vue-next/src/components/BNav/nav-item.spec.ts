@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import BNavItem from './BNavItem.vue'
 import BLink from '../BLink/BLink.vue'
 

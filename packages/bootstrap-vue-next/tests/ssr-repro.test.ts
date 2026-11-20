@@ -1,5 +1,5 @@
 // @vitest-environment node
-import {describe, it, expect} from 'vitest'
+import {describe, it, expect} from 'vite-plus/test'
 import {createSSRApp, h} from 'vue'
 import {renderToString} from 'vue/server-renderer'
 import BFormInput from '../src/components/BFormInput/BFormInput.vue'

@@ -1,7 +1,7 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import BInputGroup from './BInputGroup.vue'
 import BFormInput from '../BFormInput/BFormInput.vue'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import {defineComponent, inject} from 'vue'
 import {inputGroupKey} from '../../utils/keys'
 

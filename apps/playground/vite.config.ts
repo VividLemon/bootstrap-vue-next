@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig } from 'vite'
+import { defineConfig, lazyPlugins } from 'vite-plus'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
@@ -9,13 +9,13 @@ import {BootstrapVueNextResolver} from 'bootstrap-vue-next/resolvers'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
+  plugins: lazyPlugins(() => [
     vue(),
     vueDevTools(),
     Components({
       resolvers: [BootstrapVueNextResolver()],
     }),
-  ],
+  ]),
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

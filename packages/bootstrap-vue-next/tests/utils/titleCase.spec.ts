@@ -1,5 +1,5 @@
 import {titleCase} from '../../src/utils/stringUtils'
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vite-plus/test'
 
 describe('titleCase', () => {
   it('uppercases first letters of words', () => {

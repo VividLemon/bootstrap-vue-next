@@ -1,7 +1,9 @@
 import type { MarkdownEnv, MarkdownRenderer } from 'vitepress'
-import type { RuleBlock } from 'markdown-it/lib/parser_block.mjs'
 import path from 'path'
 import fs from 'fs'
+
+// markdown-it 15 no longer exposes `markdown-it/lib/*`; take the block-rule type from VitePress' renderer
+type RuleBlock = Parameters<MarkdownRenderer['block']['ruler']['before']>[2]
 
 // This plugin is inspired by vitepress' snippet plugin and must run before it to work
 //  https://vitepress.dev/guide/markdown.html#import-code-snippets
@@ -58,7 +60,9 @@ export const demoContainer = (md: MarkdownRenderer, srcDir: string) => {
       .toLowerCase()
 
     // Resolve path early so it can be used in the prefix token
-    const { realPath, path: _path } = state.env as MarkdownEnv
+    // VitePress passes its MarkdownEnv here; with a flat node_modules its renderer types come from
+    // markdown-it 15 (our own dependency), whose generic `env` type doesn't overlap MarkdownEnv
+    const { realPath, path: _path } = state.env as unknown as MarkdownEnv
     const resolvedPath = path.resolve(path.dirname(realPath ?? _path), filepath)
 
     // Read the source code file during build time

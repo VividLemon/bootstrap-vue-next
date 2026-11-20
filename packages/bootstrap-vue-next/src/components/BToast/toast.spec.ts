@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import {nextTick} from 'vue'
 import BToast from './BToast.vue'
 import BCloseButton from '../BButton/BCloseButton.vue'

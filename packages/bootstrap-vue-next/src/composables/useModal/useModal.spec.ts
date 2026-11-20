@@ -1,4 +1,4 @@
-import {describe, expect, it, vi} from 'vitest'
+import {describe, expect, it, vi} from 'vite-plus/test'
 import {computed, defineComponent, h, nextTick, ref, watchEffect} from 'vue'
 import {mount} from '@vue/test-utils'
 import BApp from '../../components/BApp/BApp.vue'

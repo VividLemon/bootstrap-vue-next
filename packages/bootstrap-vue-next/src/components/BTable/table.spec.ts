@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import BTable from './BTable.vue'
 import type {BTableProviderContext, BTableSortBy, TableField, TableItem} from '../../types'
 import {nextTick} from 'vue'

@@ -25,12 +25,12 @@
       </BRow>
       <BRow>
         <BCol>
-          <BLink :color="{ theme: 'danger' }" href="https://www.google.com">Google</BLink>
+          <BLink :color="{ theme: 'danger' }" :href="googleUrl">Google</BLink>
         </BCol>
       </BRow>
       <BRow>
         <BCol>
-          <BLink :color="{ theme: 'info' }" href="https://www.google.com" target="_blank"
+          <BLink :color="{ theme: 'info' }" :href="googleUrl" target="_blank"
             >Google (new tab)</BLink
           >
         </BCol>
@@ -65,6 +65,10 @@ const home = {
   name: 'index',
   path: '/' /* path is used when vue-router is not present */,
 }
+
+// Kept out of the template: vue-tsc >=3.3.12 mis-types later bindings after an inline URL
+// in a template attribute (https://github.com/vuejs/language-tools/issues/6240)
+const googleUrl = 'https://www.google.com'
 
 const about = {
   name: 'about',

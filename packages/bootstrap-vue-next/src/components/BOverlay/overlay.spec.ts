@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import BOverlay from './BOverlay.vue'
 import {Transition as BTransition, nextTick} from 'vue'
 import BSpinner from '../BSpinner/BSpinner.vue'

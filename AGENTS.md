@@ -106,15 +106,16 @@ Before marking work complete, run relevant checks for touched areas.
 
 Required for core library changes:
 
-- `pnpm --filter bootstrap-vue-next run test:lint`
-- `pnpm --filter bootstrap-vue-next run test:unit:ci`
-- `pnpm --filter bootstrap-vue-next run build`
+- `bun run --filter bootstrap-vue-next test:lint`
+- `bun run --filter bootstrap-vue-next test:unit:ci`
+- `bun run --filter bootstrap-vue-next build`
 
 For type safety verification in Vue/Nuxt contexts, run workspace/package type checks (including `vue-tsc`) when applicable.
 
 ## 7) Package Manager and Tooling Constraints
 
-- Use `pnpm` only.
+- Use Bun as the package manager only (the `packageManager` field pins its version). Tools still run on Node: never set Bun's `[run] bun = true` or use `bunx --bun`.
+- Tasks run through Vite+ (`vp run`); lint and format settings live in the root `vite.config.ts`.
 - Follow workspace filters (`--filter`) for targeted tasks.
 - Avoid docs production build assumptions when network-dependent tasks are known to fail.
 

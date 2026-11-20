@@ -18,6 +18,7 @@ dist-ssr
 .netlify
 .nitro
 coverage
+.vitest
 /coverage/
 reports
 .nyc_output

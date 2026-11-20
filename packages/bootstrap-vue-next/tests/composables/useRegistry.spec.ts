@@ -1,4 +1,4 @@
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vite-plus/test'
 import {type ComponentInternalInstance, ref} from 'vue'
 import {_newShowHideRegistry} from '../../src/composables/useRegistry'
 import type {RegisterShowHideFnInput} from '../../src/utils/keys'

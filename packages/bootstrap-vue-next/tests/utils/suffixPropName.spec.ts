@@ -1,5 +1,5 @@
 import {suffixPropName} from '../../src/utils/props'
-import {describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vite-plus/test'
 
 describe('suffixPropName', () => {
   it('adds suffix to name', () => {

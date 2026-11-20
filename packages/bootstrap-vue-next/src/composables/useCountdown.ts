@@ -1,4 +1,4 @@
-import {useDocumentVisibility, useTimestamp, type UseTimestampOptions} from '@vueuse/core'
+import {useDocumentVisibility, useIntervalFn, useRafFn, useTimestamp} from '@vueuse/core'
 import {computed, type MaybeRefOrGetter, readonly, ref, toRef, watch} from 'vue'
 
 /**
@@ -6,12 +6,12 @@ import {computed, type MaybeRefOrGetter, readonly, ref, toRef, watch} from 'vue'
  *
  * @param {MaybeRefOrGetter<number>} length the total amount of time to loop through in ms
  * @param {MaybeRefOrGetter<number>} interval how often the interval should refresh. Default 1000
- * @param {Readonly<UseIntervalFnOptions>} intervalOpts opts to pass to the interval fn. Default {}
+ * @param {Readonly<{immediate?: boolean}>} opts `immediate` starts the countdown right away. Default true
  */
 export const useCountdown = (
   length: MaybeRefOrGetter<number>,
   interval: number | 'requestAnimationFrame',
-  timestampOpts: UseTimestampOptions<true> = {}
+  {immediate = true}: Readonly<{immediate?: boolean}> = {}
 ) => {
   const resolvedLength = readonly(toRef(length))
 
@@ -20,7 +20,11 @@ export const useCountdown = (
   const target = ref(Date.now() + resolvedLength.value)
 
   const {isActive, pause, resume, timestamp} = useTimestamp({
-    interval,
+    // VueUse 15 replaced the `interval`/`immediate` options with a scheduler
+    scheduler: (cb) =>
+      interval === 'requestAnimationFrame'
+        ? useRafFn(cb, {immediate})
+        : useIntervalFn(cb, interval, {immediate}),
     controls: true,
     callback: (v) => {
       if (v >= target.value) {
@@ -28,7 +32,6 @@ export const useCountdown = (
         pause()
       }
     },
-    ...timestampOpts,
   })
 
   // Watch for document visibility changes to handle tab switching

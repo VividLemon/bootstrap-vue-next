@@ -1,4 +1,4 @@
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import BListGroup from './BListGroup.vue'
 import BListGroupItem from './BListGroupItem.vue'
@@ -340,7 +340,7 @@ describe('list-group-item', () => {
 
     it('theme and active can coexist', () => {
       const wrapper = mount(BListGroupItem, {
-        props: { active: true, color: {theme: 'primary'}},
+        props: {active: true, color: {theme: 'primary'}},
       })
       expect(wrapper.classes()).toContain('theme-primary')
       expect(wrapper.classes()).toContain('active')

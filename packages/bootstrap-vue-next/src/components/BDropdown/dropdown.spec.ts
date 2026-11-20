@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import BDropdown from './BDropdown.vue'
 import BButton from '../BButton/BButton.vue'
 import BButtonGroup from '../BButton/BButtonGroup.vue'

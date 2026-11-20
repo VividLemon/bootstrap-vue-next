@@ -8,9 +8,53 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  # Build and deploy are separate jobs on purpose: when upload-pages-artifact and
+  # deploy-pages run in the same job, deploy-pages can list the run's artifacts
+  # before the just-finalized upload is visible and fail with
+  # 'No artifacts named "github-pages"' (actions/deploy-pages#451).
+  build:
     permissions:
       contents: read
+      pages: read # configure-pages reads the Pages site config
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Early Exit If Not BVN release
+        if: startsWith(github.event.release.tag_name, 'bootstrapvuenext') == false
+        run: exit 0
+
+      - name: Clone Repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Vite+ (Node 24, Bun from packageManager)
+        # Pin an exact release: the floating v1 tag is frozen at v1.15.0
+        uses: voidzero-dev/setup-vp@v1.22.0
+        with:
+          node-version: '24'
+          cache: true # caches Bun's package data (detects bun.lock)
+          run-install: false
+
+      - name: Install Dependencies
+        run: vp install --frozen-lockfile --ignore-scripts
+
+      - name: Build Library
+        # `docs...` also builds the workspace packages the docs depend on (bootstrap-vue-next), first
+        run: vp run --filter 'docs...' build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./apps/docs/.vitepress/dist
+
+  deploy:
+    needs: build
+    permissions:
       pages: write
       id-token: write
 
@@ -23,52 +67,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Early Exit If Not BVN release
-        if: startsWith(github.event.release.tag_name, 'bootstrapvuenext') == false
-        run: exit 0
-
-      - name: Clone Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24.x.x
-
-      - name: Install PNPM
-        uses: pnpm/action-setup@v4
-        id: pnpm-install
-
-      - name: Get PNPM Store Directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup PNPM Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install Dependencies
-        run: pnpm install --ignore-scripts --frozen-lockfile
-
-      - name: Build Library
-        run: pnpm run build --filter docs
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./apps/docs/.vitepress/dist
-
       - name: Deploy Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

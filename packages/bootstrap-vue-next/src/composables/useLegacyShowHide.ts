@@ -402,8 +402,9 @@ export const useLegacyShowHide = (
     )
     return _Promise as Promise<string>
   }
-  const throttleHide = useThrottleFn((a) => hide(a), 500)
-  const throttleShow = useThrottleFn(() => show(), 500)
+  // `trailing: false` keeps the pre-VueUse-15 behavior (v15 changed the default to true)
+  const throttleHide = useThrottleFn((a) => hide(a), 500, false)
+  const throttleShow = useThrottleFn(() => show(), 500, false)
 
   const toggle = (resolveOnHide: boolean = false): Promise<boolean | string> => {
     const e = buildTriggerableEvent('toggle', {cancelable: true})

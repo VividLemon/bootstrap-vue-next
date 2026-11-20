@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vite-plus/test'
 import {
   getMaterializedSourceMarkdown,
   normalizeLLMOutputPath,
@@ -21,7 +21,7 @@ describe('LLMS snippet resolution', () => {
     const content = '<<< FRAGMENT ../../demo/AlertBefore.vue#template{vue-html}'
 
     expect(resolveLLMSnippetDirectives(content, sourceMarkdownPath)).toBe(
-      '```vue-html\n<BAlert show dismissible>I am an alert!</BAlert>\n```'
+      '```vue-html\n<BAlert show dismissible>I am an alert!</BAlert>\n```',
     )
   })
 
@@ -30,35 +30,49 @@ describe('LLMS snippet resolution', () => {
     const content = '<<< DEMO ../../demo/AlertAfter.vue#template{vue-html}'
 
     expect(resolveLLMSnippetDirectives(content, sourceMarkdownPath)).toBe(
-      '```vue-html\n<BAlert model-value dismissible>I am an alert!</BAlert>\n```'
+      '```vue-html\n<BAlert model-value dismissible>I am an alert!</BAlert>\n```',
     )
   })
 
   it('maps nested index pages to LLM markdown output paths', () => {
-    expect(toLLMOutputPath(path.join(docsRoot, 'components/index.md'), docsRoot)).toBe('components.md')
-    expect(toLLMOutputPath(path.join(docsRoot, 'migration-data/index.md'), docsRoot)).toBe('migration-data.md')
+    expect(toLLMOutputPath(path.join(docsRoot, 'components/index.md'), docsRoot)).toBe(
+      'components.md',
+    )
+    expect(toLLMOutputPath(path.join(docsRoot, 'migration-data/index.md'), docsRoot)).toBe(
+      'migration-data.md',
+    )
   })
 
   it('normalizes base-prefixed request paths for LLM markdown routes', () => {
-    expect(normalizeLLMOutputPath('/bootstrap-vue-next/docs/migration-data/components/balert.md', '/bootstrap-vue-next/')).toBe(
-      'docs/migration-data/components/balert.md'
-    )
+    expect(
+      normalizeLLMOutputPath(
+        '/bootstrap-vue-next/docs/migration-data/components/balert.md',
+        '/bootstrap-vue-next/',
+      ),
+    ).toBe('docs/migration-data/components/balert.md')
   })
 
   it('maps generated LLM paths back to source markdown files', () => {
     expect(toSourceMarkdownPath('docs/migration-data/components/balert.md', srcRoot)).toBe(
-      path.join(srcRoot, 'docs/migration-data/components/balert.md')
+      path.join(srcRoot, 'docs/migration-data/components/balert.md'),
     )
     expect(toSourceMarkdownPath('docs/migration-data.md', srcRoot)).toBe(
-      path.join(srcRoot, 'docs/migration-data/index.md')
+      path.join(srcRoot, 'docs/migration-data/index.md'),
     )
   })
 
   it('materializes source markdown for dev LLM route fallbacks', () => {
-    const materialized = getMaterializedSourceMarkdown('docs/migration-data/components/balert.md', srcRoot)
+    const materialized = getMaterializedSourceMarkdown(
+      'docs/migration-data/components/balert.md',
+      srcRoot,
+    )
 
-    expect(materialized?.content).toContain('```vue-html\n<BAlert show dismissible>I am an alert!</BAlert>\n```')
-    expect(materialized?.content).not.toContain('<<< FRAGMENT ../../demo/AlertBefore.vue#template{vue-html}')
+    expect(materialized?.content).toContain(
+      '```vue-html\n<BAlert show dismissible>I am an alert!</BAlert>\n```',
+    )
+    expect(materialized?.content).not.toContain(
+      '<<< FRAGMENT ../../demo/AlertBefore.vue#template{vue-html}',
+    )
   })
 
   it('rebuilds llms-full content from llms.txt links', () => {
@@ -67,13 +81,14 @@ describe('LLMS snippet resolution', () => {
       (outputPath) =>
         ({
           'components.md': '---\nurl: /bootstrap-vue-next/components.md\n---\n\n# Components',
-          'docs/migration-data.md': '---\nurl: /bootstrap-vue-next/docs/migration-data.md\n---\n\n# Migration Knowledge Base',
+          'docs/migration-data.md':
+            '---\nurl: /bootstrap-vue-next/docs/migration-data.md\n---\n\n# Migration Knowledge Base',
         })[outputPath],
-      '/bootstrap-vue-next/'
+      '/bootstrap-vue-next/',
     )
 
     expect(rebuilt).toBe(
-      '---\nurl: /bootstrap-vue-next/docs/migration-data.md\n---\n\n# Migration Knowledge Base\n---\n\n---\nurl: /bootstrap-vue-next/components.md\n---\n\n# Components'
+      '---\nurl: /bootstrap-vue-next/docs/migration-data.md\n---\n\n# Migration Knowledge Base\n---\n\n---\nurl: /bootstrap-vue-next/components.md\n---\n\n# Components',
     )
   })
 })

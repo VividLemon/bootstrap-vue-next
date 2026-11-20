@@ -1,7 +1,7 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import BListGroup from './BListGroup.vue'
 import BListGroupItem from './BListGroupItem.vue'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 
 describe('list-group', () => {
   enableAutoUnmount(afterEach)

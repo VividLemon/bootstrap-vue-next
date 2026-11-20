@@ -24,22 +24,22 @@ The migration corpus is sourced from the docs build's LLM markdown output, inclu
 ## Development
 
 ```bash
-pnpm --filter @bootstrap-vue-next/mcp run dev
+bun run --filter @bootstrap-vue-next/mcp dev
 ```
 
 ## Build
 
 ```bash
-pnpm --filter @bootstrap-vue-next/mcp run build
-pnpm --filter @bootstrap-vue-next/mcp run typecheck
-pnpm --filter @bootstrap-vue-next/mcp run test:unit:ci
+bun run --filter @bootstrap-vue-next/mcp build
+bun run --filter @bootstrap-vue-next/mcp typecheck
+bun run --filter @bootstrap-vue-next/mcp test:unit:ci
 ```
 
 ## Run
 
 ```bash
-pnpm --filter @bootstrap-vue-next/mcp run build
-pnpm --filter @bootstrap-vue-next/mcp run start
+bun run --filter @bootstrap-vue-next/mcp build
+bun run --filter @bootstrap-vue-next/mcp start
 ```
 
 ## Notes

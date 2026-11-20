@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import BAccordionItem from './BAccordionItem.vue'
 import BCollapse from '../BCollapse/BCollapse.vue'
 import {nextTick, ref} from 'vue'

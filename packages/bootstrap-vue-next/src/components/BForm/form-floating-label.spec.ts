@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it} from 'vite-plus/test'
 import {h, nextTick, ref} from 'vue'
 import BFormFloatingLabel from './BFormFloatingLabel.vue'
 import BFormInput from '../BFormInput/BFormInput.vue'

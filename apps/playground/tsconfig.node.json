@@ -5,7 +5,6 @@
     "vite.config.*",
     "vitest.config.*",
     "cypress.config.*",
-    "nightwatch.conf.*",
     "playwright.config.*",
     "eslint.config.*"
   ],
@@ -14,6 +13,8 @@
     // Bundler mode provides a smoother developer experience.
     "module": "preserve",
     "moduleResolution": "bundler",
+
+    "allowImportingTsExtensions": true,
 
     // Include Node.js types and avoid accidentally including other `@types/*` packages.
     "types": ["node"],

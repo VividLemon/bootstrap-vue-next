@@ -6,6 +6,7 @@ export default defineNuxtConfig({
       exclude: [/bootstrap-vue.*/],
     },
   },
+  devtools: { enabled: true },
   css: ['bootstrap/dist/css/bootstrap.min.css'],
   compatibilityDate: 'latest',
   bootstrapVueNext: {

@@ -1,5 +1,5 @@
 import {DOMWrapper, enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, beforeEach, describe, expect, it} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it} from 'vite-plus/test'
 import {nextTick} from 'vue'
 import {BvTriggerableEvent} from '../../utils'
 import BButton from '../BButton/BButton.vue'

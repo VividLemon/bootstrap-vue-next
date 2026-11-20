@@ -105,16 +105,16 @@ Forms batch follow-ups (from its report):
 
 ### Required checks
 
-- `pnpm --filter bootstrap-vue-next run test:lint`, `test:unit:ci`, `build`
-- `pnpm --filter docs run type-check` — not a plain `vue-tsc --noEmit` in `apps/docs`, whose root tsconfig contains no files and checks nothing
+- `bun run --filter bootstrap-vue-next test:lint`, `test:unit:ci`, `build`
+- `bun run --filter docs type-check` — not a plain `vue-tsc --noEmit` in `apps/docs`, whose root tsconfig contains no files and checks nothing
 - `cd apps/playground && npx vue-tsc --build --force`
-- `npx turbo run build --force` (docs site and Nuxt) before each phase is marked done
+- `bunx vp run -r --no-cache build` (docs site and Nuxt) before each phase is marked done
 
 ### Batch agent instructions
 
 Every batch agent receives these instructions plus its batch's components and plan section.
 
-1. **Base check first.** Worktrees for this project have been created from `main` by mistake. Run `git merge-base --is-ancestor origin/bootstrap-v6 HEAD`; if it fails and there are no commits yet, `git reset --hard origin/bootstrap-v6`. Then `pnpm install --frozen-lockfile --ignore-scripts`.
+1. **Base check first.** Worktrees for this project have been created from `main` by mistake. Run `git merge-base --is-ancestor origin/bootstrap-v6 HEAD`; if it fails and there are no commits yet, `git reset --hard origin/bootstrap-v6`. Then `bun install --frozen-lockfile --ignore-scripts`.
 2. **Read** `AGENTS.md`, this plan (implement exactly what it says for the batch, including the cross-cutting rules), and `architecture/ARIA_VISIBILITY.md` plus the JSDoc in `useShowHide.ts` / `useCssTransition.ts` when moving a component to the native transition path. Bootstrap v6 references: `packages/bootstrap-vue-next/node_modules/bootstrap/dist/css/bootstrap.css`, `scss/`, `js/src/`, and https://getbootstrap.com/docs/6.0/. The original research reports are lost, so re-derive details from the code and v6 sources; when something wasn't anticipated, follow v6 native behavior, make the smallest correct change, and report it.
 3. **Rules.** No compatibility shims. Apply the part attrs rule to every in-scope component (specs for the class merge). Update specs, docs `*.data.ts`, `apps/docs/src/utils/*.ts`, docs pages and demos, and playground usages. Do not write `migration-data` pages or edit this plan. Keep `ComponentProps.ts` edits inside the batch's interfaces, line-local. No `git commit --no-verify`.
 4. **Verify** with the required checks above, plus a headless Chromium check (installed `playwright-core`) where behavior or layout changed — via the package dev server on port 5174 with a temporary `src/App.vue` (reverted before committing) or a static SSR render with v6 `bootstrap.css` and the built library CSS. Report what could not be verified.
@@ -403,7 +403,7 @@ The in-repo layer covers:
 - A thin override file for what source can't carry: `styleSpec` notes, per-component wording of shared props, pass-through defaults.
 - Deprecations: if `vue-component-meta` passes through the JSDoc `@deprecated` tag, the `ComponentReference` table appends ` (deprecated)` to the prop name and renders that name cell in the Bootstrap `warning` color. Cover it with a unit test. Optional: skip it if getting the deprecated flag needs a lot of custom code.
 
-Integration: keep the per-component `*.data.ts` loaders, so each page only ships the data it shows (VitePress inlines a loader's data into every page that imports it). Each loader becomes a thin call into one shared utility that pulls the generated data for its components in a consistent way: the extracted props / slots / emits, the override file, type links and grouping. If extraction is slow, generate at compile time instead (a pre-build step that writes JSON, cached by turbo, with a watch mode for the docs dev server) and have the shared utility read that output. Pin TypeScript to 6.x for this work.
+Integration: keep the per-component `*.data.ts` loaders, so each page only ships the data it shows (VitePress inlines a loader's data into every page that imports it). Each loader becomes a thin call into one shared utility that pulls the generated data for its components in a consistent way: the extracted props / slots / emits, the override file, type links and grouping. If extraction is slow, generate at compile time instead (a pre-build step that writes JSON, cached by `vp run`, with a watch mode for the docs dev server) and have the shared utility read that output. Pin TypeScript to 6.x for this work.
 
 Phases (about 2–3 weeks part-time):
 

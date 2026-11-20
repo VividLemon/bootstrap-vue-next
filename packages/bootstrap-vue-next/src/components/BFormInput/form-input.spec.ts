@@ -1,4 +1,4 @@
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {nextTick, ref} from 'vue'
 import BFormInput from './BFormInput.vue'

@@ -1,5 +1,5 @@
 import {enableAutoUnmount, flushPromises, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vite-plus/test'
 import {nextTick} from 'vue'
 import {vBToggle as VBToggle} from './BToggle'
 import {asyncTimeout} from '../../tests/utils'

@@ -1,10 +1,19 @@
 {
   "name": "bootstrap-vue-next-monorepo",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
+  "type": "module",
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "apps/*"
+    ],
+    "catalog": {
+      "vite": "npm:@voidzero-dev/vite-plus-core@8.3.8000",
+      "vitest": "5.1.0",
+      "vite-plus": "1.7.0",
+      "@vitest/coverage-v8": "5.1.0"
+    }
+  },
   "contributors": [
     {
       "name": "aceofwings",
@@ -32,28 +41,42 @@
     }
   ],
   "scripts": {
-    "prepare": "husky && turbo run build",
-    "dev": "turbo run dev --parallel",
-    "build": "turbo run build",
-    "build-only": "turbo run build-only",
-    "lint": "turbo run lint",
-    "type-check": "turbo run type-check",
-    "test:lint": "turbo run test:lint",
-    "test:unit": "turbo run test:unit",
-    "test:coverage": "turbo run test:coverage",
-    "test": "turbo run test",
-    "test:lint:ci": "turbo run test:lint:ci",
-    "test:unit:ci": "turbo run test:unit:ci",
-    "test:ci": "turbo run test:ci"
+    "prepare": "husky && vp run -r build",
+    "dev": "vp run -r --parallel dev",
+    "build": "vp run -r --cache build",
+    "build-only": "vp run -r --cache build-only",
+    "lint": "vp run -r lint",
+    "type-check": "vp run -r --cache type-check",
+    "test:lint": "vp run -r test:lint",
+    "test:unit": "vp run -r test:unit",
+    "test:coverage": "vp run -r test:coverage",
+    "test": "vp run -r test",
+    "test:lint:ci": "vp run -r test:lint:ci",
+    "test:unit:ci": "vp run -r test:unit:ci",
+    "test:ci": "vp run -r test:ci"
   },
   "devDependencies": {
+    "@types/node": "^24.13.4",
     "husky": "^9.1.7",
-    "lint-staged": "^17.3.0",
-    "turbo": "^2.10.9"
+    "lint-staged": "^17.6.1",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
   },
   "engines": {
-    "npm": ">=11.0.0",
+    "bun": ">=1.4.0",
     "node": ">=24.0.0"
   },
-  "packageManager": "pnpm@12.14.0"
+  "packageManager": "bun@1.4.5",
+  "overrides": {
+    "vite": "catalog:",
+    "vitest": "catalog:",
+    "vite@*": "catalog:",
+    "vitest@*": "catalog:"
+  },
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "esbuild",
+    "unrs-resolver",
+    "vue-demi"
+  ]
 }

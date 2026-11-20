@@ -4,7 +4,6 @@
     "vite.config.*",
     "vitest.config.*",
     "cypress.config.*",
-    "nightwatch.conf.*",
     "playwright.config.*",
     "eslint.config.*",
     "./.vitepress/theme/keys.ts"
@@ -12,6 +11,7 @@
   "compilerOptions": {
     "module": "preserve",
     "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "types": ["node"],
 
     "noEmit": true,
