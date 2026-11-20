@@ -1,8 +1,8 @@
-import type {BPopoverEmits, BPopoverProps} from 'bootstrap-vue-next'
-import {type EmitRecord, type EmitReference, type PropRecord, type PropReference} from '../types'
-import {buildCommonProps} from './commonProps'
-import {pick} from './objectUtils'
-import {bvTriggerableEventArg, showHideEmits, showHideProps} from './showHideData'
+import type { BPopoverEmits, BPopoverProps } from 'bootstrap-vue-next'
+import { type EmitRecord, type EmitReference, type PropRecord, type PropReference } from '../types'
+import { buildCommonProps } from './commonProps'
+import { pick } from './objectUtils'
+import { bvTriggerableEventArg, showHideEmits, showHideProps } from './showHideData'
 
 export const popoverSharedProps = (type: string): PropRecord<keyof BPopoverProps> => {
   const clone = structuredClone(sharedProps) as Record<string, PropReference>
@@ -165,12 +165,18 @@ const sharedProps = {
         default: 'top',
       },
     }),
-    ['bodyClass', 'id', 'placement', 'title', 'titleClass']
+    ['bodyAttrs', 'id', 'placement', 'title'],
   ),
+  titleAttrs: {
+    type: 'Readonly<AttrsValue>',
+    default: undefined,
+    description:
+      'Attributes to be applied to the title of the {component}. `class` and `style` are merged',
+  },
 } satisfies PropRecord<keyof BPopoverProps>
 
 export const popoverSharedEmits = (
-  type: string
+  type: string,
 ): EmitRecord<keyof BPopoverEmits | 'update:model-value'> => {
   const clone = structuredClone(sharedEmits) as Record<string, EmitReference>
   for (const key in clone) {
@@ -185,7 +191,7 @@ export const popoverSharedEmits = (
         ) {
           clone[key].args[argKey].description = clone[key].args[argKey].description.replace(
             /\{component\}/g,
-            type
+            type,
           )
         }
       }
@@ -196,13 +202,13 @@ export const popoverSharedEmits = (
 
 const sharedEmits = {
   ...showHideEmits,
-  'blur': {
+  blur: {
     description: 'Emitted when the target element loses focus.',
     args: {
       value: bvTriggerableEventArg,
     },
   },
-  'click': {
+  click: {
     description: 'Emitted when the {component} is hidden by a click on the trigger element.',
     args: {
       value: bvTriggerableEventArg,
@@ -220,7 +226,7 @@ const sharedEmits = {
       value: bvTriggerableEventArg,
     },
   },
-  'pointerleave': {
+  pointerleave: {
     description:
       'Emitted when the pointer leaves the target element, but not when leaving the popover element.',
     args: {

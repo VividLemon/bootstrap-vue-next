@@ -41,7 +41,7 @@ const _props = withDefaults(defineProps<Omit<BTooltipProps, 'modelValue'>>(), {
   hover: undefined,
   teleportDisabled: undefined,
   teleportTo: undefined,
-  bodyClass: undefined,
+  bodyAttrs: undefined,
   delay: 0,
   floatingMiddleware: undefined,
   hideMargin: 0,
@@ -66,7 +66,7 @@ const _props = withDefaults(defineProps<Omit<BTooltipProps, 'modelValue'>>(), {
   target: undefined,
   unmountLazy: undefined,
   title: undefined,
-  titleClass: undefined,
+  titleAttrs: undefined,
   visible: undefined,
 })
 const props = useDefaults(_props, 'BTooltip')
@@ -84,9 +84,11 @@ const computedProps = computed<BPopoverProps>(() => {
 
 const popover = useTemplateRef('_popover')
 
+// Every argument is forwarded: a wrapper that drops them loses the trigger or `resolveOnHide`
+type PopoverExposed = NonNullable<typeof popover.value>
 defineExpose({
-  hide: (trigger?: string, noTriggerEmit?: boolean) => popover.value?.hide(trigger, noTriggerEmit),
-  show: () => popover.value?.show(),
-  toggle: () => popover.value?.toggle(),
+  hide: (...args: Parameters<PopoverExposed['hide']>) => popover.value?.hide(...args),
+  show: (...args: Parameters<PopoverExposed['show']>) => popover.value?.show(...args),
+  toggle: (...args: Parameters<PopoverExposed['toggle']>) => popover.value?.toggle(...args),
 })
 </script>
