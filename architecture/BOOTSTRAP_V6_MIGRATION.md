@@ -102,7 +102,7 @@ Forms batch follow-ups (from its report):
 1. Start each batch from the current `origin/bootstrap-v6` in its own worktree, with the batch agent instructions below.
 2. When a batch's checks pass, push its branch and open a PR into `bootstrap-v6`.
 3. After the PR merges, update this section and the Status table, and check that its breaking changes are in [`BOOTSTRAP_V6_BREAKING_CHANGES.md`](./BOOTSTRAP_V6_BREAKING_CHANGES.md) (move its entry out of "Pending").
-4. Order: wave 2, then the show/hide machine (S1) and the new components (see `BOOTSTRAP_V6_NEW_COMPONENTS.md`), then Phase 3 (migration docs), then the cleanup section, then [Post-migration](#post-migration-api-docs-generated-from-source).
+4. Order: wave 2, then the show/hide machine (S1) and the new components (see `BOOTSTRAP_V6_NEW_COMPONENTS.md`), then Phase 3 (migration docs), then the cleanup section, then [Post-migration](#post-migration-api-docs-generated-from-source), then the [final step](#final-step-consolidate-the-library-rules-for-agents) (always last).
 
 ### Required checks
 
@@ -236,6 +236,16 @@ Bootstrap v6 lets CSS own all motion: JavaScript toggles a state class (`.show`,
 - `shown` / `hidden` now fire when the CSS transition ends; an interrupted transition never fires its `shown` / `hidden`. Migration notes must say so.
 - In-scope components: `BCollapse` (+ `vBToggle`), `BAlert`, `BToast`, `BPopover` / `BTooltip`, `BTabs`. `BAccordionItem` renders `BCollapse` and changes with it.
 
+### Slot props for elements the component controls
+
+Decided 2026-11-21, first applied to `BPopover` / `BTooltip` ([#184](https://github.com/VividLemon/bootstrap-vue-next/pull/184)).
+
+- When a slot renders an element that the component must wire up (listeners, a ref, ARIA attributes), its scope has a `props` object meant to be bound with `v-bind="props"` on that one element. This is the Vuetify 3 pattern (`#activator="{ props }"`).
+- The key is always `props`, never `attrs` / `handlers` / `on`, and it is typed. Other scope values (state, functions) sit next to it.
+- Content-only slots (titles, bodies, button content, icons) don't get one.
+- A component that needs an element the user may not render in a slot (directives, orchestrators, foreign DOM) also takes it as a prop, named after the same role as the slot (`activator`).
+- Known candidates: `BPopover` / `BTooltip` `#activator` (#184); `BCollapse` `#header` / `#footer` (a toggle with `aria-expanded` / `aria-controls`); `BMenu` `#activator` for a custom opener (G2); optionally `BDialog` / `BDrawer` `#activator` and BTable row details.
+
 ## Component decisions (in scope)
 
 ### Grid (`BContainer`, `BRow`, `BCol`)
@@ -293,6 +303,7 @@ Bootstrap v6 lets CSS own all motion: JavaScript toggles a state class (`.show`,
 ### Floating UI
 
 - `BPopover` / `BTooltip`: `noTransition` → `popover-instant` / `tooltip-instant`; remove the dead `[data-popper-placement]` SCSS line; keep the bottom header-arrow rule. Add Escape-to-dismiss and `aria-describedby` on the trigger. Fix demo `PopoverStyles.vue` (`--bs-danger`, `--bs-emphasis-color`). `titleClass` / `bodyClass` → `*Attrs`.
+- Trigger naming (decided 2026-11-21, #184): the `target` prop and `#target` slot become `activator`, matching Vuetify (Bootstrap's own `target` means the opposite: the element being opened). The `#activator` slot passes `props` (see [Slot props](#slot-props-for-elements-the-component-controls)), so the hidden placeholder `<span>` and the `nextElementSibling` lookup go away. The `activator` prop stays for `v-b-tooltip` / `v-b-popover`, `usePopover().create()` and elements the user doesn't render. `reference` is unchanged: it only positions, and defaults to the activator.
 
 ### Links
 
@@ -413,3 +424,12 @@ Phases (about 2–3 weeks part-time):
 3. Move the ~1,600 descriptions into JSDoc by script, then review the shared-prop wording; delete the `.data.ts` content that is now generated (4–6 days). From this phase on, every public prop must have a JSDoc comment, even an empty one.
 4. Lint rules (required, not optional): add `eslint-plugin-jsdoc` with `jsdoc({config: 'flat/recommended'})` (or its TypeScript variant, `flat/recommended-typescript`) enabled for the whole library, and require the docs-specific values (a JSDoc block on every public prop, slot and emit) only in the files that define them (`ComponentProps.ts`, `ComponentSlots.ts`, `ComponentEmits.ts` and the types they use).
 5. Update `.github/copilot-instructions.md` (and `AGENTS.md` where it mentions the `*.data.ts` files) so contributors and agents document components in JSDoc on the types, not in the docs data files.
+
+## Final step: consolidate the library rules for agents
+
+The very last step of the v6 migration, after everything above (including Post-migration). Its goal is to consolidate the library-wide rules decided during the migration so they outlive this plan.
+
+1. Create `packages/bootstrap-vue-next/AGENTS.md` (a nested `AGENTS.md`, read by agents working in the library) with short, imperative rules taken from [Cross-cutting decisions](#cross-cutting-decisions) and any later rules: the CSS layer, breakpoints and `Responsive<T>` / `HoverState<T>` objects, color objects, prop families as objects, `*Attrs` instead of `*Class`, native transitions with `noTransition`, slot `props`, no compatibility shims for breaking changes. Rules only; the reasoning stays in git history and the architecture docs.
+2. Link it from the root `AGENTS.md` (section 4.1). Point `.github/copilot-instructions.md` at `AGENTS.md` instead of repeating rules.
+3. If the guidance needs worked examples (adding a prop, a slot, a color part), add a project skill under `.agents/skills/` and list it in the root `AGENTS.md`.
+4. Sort `architecture/`: keep the durable design records (for example `ARIA_VISIBILITY.md`, `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`); delete or move to `architecture/archive/` the finished working plans (this file and the `BOOTSTRAP_V6_*` group plans); keep `BOOTSTRAP_V6_BREAKING_CHANGES.md` until the migration-data pages and the v1 → next skills are built from it; leave undecided documents (`USE_TABLE_COMPOSABLE.md` and similar) in place.
