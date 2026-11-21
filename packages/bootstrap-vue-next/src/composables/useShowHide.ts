@@ -144,6 +144,11 @@ export interface UseShowHideOptions {
    * showing or shown hides it with trigger `'disabled'`.
    */
   disabled?: MaybeRefOrGetter<boolean | undefined>
+  /**
+   * The event `hide(trigger)` emits for its trigger before `hide`, by trigger. Return `undefined`
+   * for a trigger without an event of its own. Defaults to an event named like the trigger.
+   */
+  triggerEvent?: (trigger: string) => string | undefined
 }
 
 export interface UseShowHideReturn {
@@ -207,6 +212,13 @@ export interface UseShowHideReturn {
    * `show`).
    */
   toggle: (resolveOnHide?: boolean) => Promise<boolean | string>
+  /**
+   * The component was already hidden from outside (the browser closed a native `<dialog>`): a
+   * hide that cannot be refused and skips the delay and the transition. It still emits `hide`
+   * (with `cancelable: false`), updates `modelValue` and emits `hidden`. Does nothing unless the
+   * component is `showing` or `shown`.
+   */
+  syncHidden: (trigger?: string) => Promise<boolean | string>
   buildTriggerableEvent: (
     type: string,
     opts?: Readonly<Partial<BvTriggerableEvent>>
@@ -339,11 +351,22 @@ export const useShowHide = (
     // Ignore event objects from `@click="show"`
     machine.show({resolveOnHide: resolveOnHide === true})
 
-  const hide = (trigger?: string, noTriggerEmit = false): Promise<boolean | string> =>
+  const hide = (trigger?: string, noTriggerEmit = false): Promise<boolean | string> => {
     // Ignore event objects from `@click="hide"`
-    machine.hide(typeof trigger === 'string' ? trigger : undefined, {
-      noTriggerEmit: noTriggerEmit === true,
-    })
+    if (typeof trigger !== 'string') trigger = undefined
+    const triggerEvent =
+      trigger === undefined || noTriggerEmit === true
+        ? undefined
+        : options.triggerEvent
+          ? options.triggerEvent(trigger)
+          : trigger
+    return machine.hide(trigger, {noTriggerEmit: triggerEvent === undefined, triggerEvent})
+  }
+
+  const syncHidden = (trigger?: string): Promise<boolean | string> =>
+    machine.targetVisible()
+      ? machine.hide(trigger, {noTriggerEmit: true, cancelable: false, instant: true})
+      : Promise.resolve(false)
 
   const runToggle = (hideTrigger: string, resolveOnHide = false): Promise<boolean | string> =>
     machine.guarded(
@@ -442,6 +465,7 @@ export const useShowHide = (
     show,
     hide,
     toggle,
+    syncHidden,
     buildTriggerableEvent,
     registerTrigger,
     unregisterTrigger,

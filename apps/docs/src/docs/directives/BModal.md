@@ -1,9 +1,9 @@
 ---
-title: BModal
+title: BDialog
 description: 'A light-weight directive for showing modals by ID. It provides a semantically clear way to trigger modals and automatically handles accessibility attributes and trigger registration'
 ---
 
-> The `v-b-modal` directive provides a simple, declarative way to show `BModal` components. The directive automatically handles accessibility and provides a semantic alternative to the more general `v-b-toggle` directive.
+> The `v-b-modal` directive provides a simple, declarative way to show `BDialog` components. The directive automatically handles accessibility and provides a semantic alternative to the more general `v-b-toggle` directive.
 
 <<< DEMO ./demo/BModalOverview.vue#template{vue-html}
 
@@ -11,7 +11,7 @@ description: 'A light-weight directive for showing modals by ID. It provides a s
 
 Things to know when using the modal directive:
 
-- The directive works exclusively with `BModal` components
+- The directive works exclusively with `BDialog` components
 - Target modals are specified by their `id` attribute
 - Multiple modals can be shown simultaneously
 - The directive automatically manages ARIA accessibility attributes
@@ -153,6 +153,6 @@ This separation of responsibilities ensures consistent accessibility across all 
 
 ## Related Components
 
-- [BModal Component](/docs/components/modal) - Full modal component documentation
+- [BDialog Component](/docs/components/dialog) - Full modal component documentation
 - [v-b-toggle Directive](/docs/directives/BToggle) - The underlying directive (v-b-modal is an alias)
 - [useModal Composable](/docs/composables/useModal) - For creating modals dynamically

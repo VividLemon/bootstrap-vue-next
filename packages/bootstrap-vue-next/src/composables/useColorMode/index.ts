@@ -15,10 +15,9 @@ export const useColorMode = (opts: Readonly<ColorModeOptions> = {}) => {
   return useVueuseColorMode({
     attribute,
     selector,
-    storageKey:
-      persist
-        ? `bv-color-${opts.attribute ?? attribute}-${opts.selector ?? selector}`
-        : null,
+    storageKey: persist
+      ? `bv-color-${opts.attribute ?? attribute}-${opts.selector ?? selector}`
+      : null,
     ...opts,
   })
 }

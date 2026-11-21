@@ -21,7 +21,7 @@ Because BootstrapVue's components are purposely designed to be fairly generic, a
 
 ## ARIA Trigger Registration for component visibility
 
-Several BootstrapVueNext components (`BCollapse`, `BOffcanvas`, `BModal`, `BDropdown`, `BAlert`, `BToast`, `BPopover`) support automatic ARIA attribute management for trigger elements that control their visibility. This system ensures proper accessibility by automatically updating the `aria-expanded` attribute on trigger elements as the component's visibility changes. There are no trigger state classes; style triggers with `[aria-expanded]` attribute selectors.
+Several BootstrapVueNext components (`BCollapse`, `BOffcanvas`, `BDialog`, `BDropdown`, `BAlert`, `BToast`, `BPopover`) support automatic ARIA attribute management for trigger elements that control their visibility. This system ensures proper accessibility by automatically updating the `aria-expanded` attribute on trigger elements as the component's visibility changes. There are no trigger state classes; style triggers with `[aria-expanded]` attribute selectors.
 
 ### How Trigger Registration Works
 
@@ -95,7 +95,7 @@ The following components support the trigger registration system:
 - [`BAlert`](/docs/components/alert)
 - [`BCollapse`](/docs/components/collapse#accessibility)
 - [`BDropdown`](/docs/components/dropdown)
-- [`BModal`](/docs/components/modal)
+- [`BDialog`](/docs/components/dialog)
 - [`BOffcanvas`](/docs/components/offcanvas#accessibility)
 - [`BPopover`](/docs/components/popover)
 - [`BToast`](/docs/components/toast)

@@ -22,7 +22,7 @@ import type {
   ModalOrchestratorCreateParamBase,
 } from '../../types'
 import {buildController, getOrchestratorControllerId} from '../orchestratorShared'
-import {BModal} from '../../components'
+import {BDialog, BDialogActions} from '../../components'
 
 export const useModal = () => {
   const orchestratorRegistry = inject(orchestratorRegistryKey, null)
@@ -33,27 +33,29 @@ export const useModal = () => {
   const {store, _isOrchestratorInstalled} = orchestratorRegistry
 
   /**
-   * @returns {ComponentController<typeof BModal, Ref<ModalOrchestratorArrayValue>>}
+   * @returns {ComponentController<typeof BDialog, Ref<ModalOrchestratorArrayValue>>}
    */
   // Uses a `function` declaration (rather than a generic arrow function assigned to a const) so
   // that TypeScript preserves per-call generic inference when `create` is returned as part of
   // `useModal()`'s inferred return object.
   function create<
     ComponentProps extends Record<string, unknown> = Record<string, unknown>,
-    T extends ModalOrchestratorCreateParamBase<ComponentProps> = ModalOrchestratorCreateParamBase<ComponentProps>,
+    T extends ModalOrchestratorCreateParamBase<ComponentProps> =
+      ModalOrchestratorCreateParamBase<ComponentProps>,
   >(
     obj: MaybeRef<T> = {} as T
-  ): ComponentController<typeof BModal, Ref<ModalOrchestratorArrayValue>> {
+  ): ComponentController<typeof BDialog, Ref<ModalOrchestratorArrayValue>> {
     if (!_isOrchestratorInstalled.value)
       throw new Error('BApp component must be mounted to use the modal controller')
 
-    const modalComp = markRaw(BModal)
+    const modalComp = markRaw(BDialog)
+    const defaultFooter = markRaw(BDialogActions)
     const resolvedProps = ref(obj)
     const modalStore = computed(() => store.value.modal)
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
     const {resolve, controller} = buildController<
-      typeof BModal,
+      typeof BDialog,
       ComputedRef<OrchestratorStoreObject['modal']>
     >(storeId, modalStore)
 
@@ -64,7 +66,10 @@ export const useModal = () => {
         return {
           component,
           options,
-          slots,
+          // BDialog has no built-in buttons. Until `useDialog` decides how message boxes get
+          // theirs, a dialog created without a footer gets the default OK / Cancel actions
+          slots:
+            component === modalComp && !slots?.footer ? {...slots, footer: defaultFooter} : slots,
           fns: {
             resolve,
             setRef: (v: ComponentPublicInstance) => {
@@ -158,7 +163,7 @@ export const useModal = () => {
       } else {
         stack?.value.forEach((modal) => {
           if (modal.exposed?.id === id) {
-            modal.exposed?.hide(trigger, true)
+            modal.exposed?.hide(trigger)
           }
         })
       }
@@ -171,7 +176,7 @@ export const useModal = () => {
    */
   const hideAll = (trigger?: string) => {
     stack?.value.forEach((modal) => {
-      modal.exposed?.hide(trigger, true)
+      modal.exposed?.hide(trigger)
     })
   }
 
@@ -197,7 +202,7 @@ export const useModal = () => {
               modal.exposed?.show()
             },
             hide(trigger?: string) {
-              modal.exposed?.hide(trigger, true)
+              modal.exposed?.hide(trigger)
             },
           }
         }
@@ -212,7 +217,7 @@ export const useModal = () => {
       if (!component.parent) {
         return null
       }
-      if (component.parent.type === BModal) {
+      if (component.parent.type === BDialog) {
         return component.parent
       }
       return findBModal(component.parent)
@@ -227,7 +232,7 @@ export const useModal = () => {
         modalComponent.value?.exposed?.show()
       },
       hide(trigger?: string) {
-        modalComponent.value?.exposed?.hide(trigger, true)
+        modalComponent.value?.exposed?.hide(trigger)
       },
       modal,
     }

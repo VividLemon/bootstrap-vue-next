@@ -3,7 +3,7 @@ title: BToggle
 description: 'A light-weight directive for toggling visibility state for collapses, offcanvas, and modals by ID. It automatically sets the aria-controls attribute and registers the trigger with the target component, which then manages aria-expanded and visual state'
 ---
 
-> The `v-b-toggle` directive provides a simple, declarative way to toggle visibility of components like `BCollapse`, `BOffcanvas`, and `BModal`. The directive automatically handles accessibility and can target multiple components at once.
+> The `v-b-toggle` directive provides a simple, declarative way to toggle visibility of components like `BCollapse`, `BOffcanvas`, and `BDialog`. The directive automatically handles accessibility and can target multiple components at once.
 
 <<< DEMO ./demo/BToggleOverview.vue#template{vue-html}
 
@@ -11,7 +11,7 @@ description: 'A light-weight directive for toggling visibility state for collaps
 
 Things to know when using the toggle directive:
 
-- The directive works with `BCollapse`, `BOffcanvas`, and `BModal` components
+- The directive works with `BCollapse`, `BOffcanvas`, and `BDialog` components
 - Target components are specified by their `id` attribute
 - Multiple targets can be toggled simultaneously
 - The directive automatically manages ARIA accessibility attributes
@@ -112,11 +112,11 @@ Toggle off-canvas sidebars:
 
 See the [BOffcanvas documentation](/docs/components/offcanvas#v-b-toggle-directive) for more details.
 
-### BModal
+### BDialog
 
 The v-b-toggle directive also works with modals. However, for modals, the dedicated `v-b-modal` directive is recommended as it's an alias specifically designed for modal use cases.
 
-See the [BModal documentation](/docs/components/modal) for more details.
+See the [BDialog documentation](/docs/components/dialog) for more details.
 
 ## Comparison with Programmatic Control
 
@@ -166,6 +166,6 @@ For better accessibility with multiple independent targets, use separate toggle 
 
 - [BCollapse component](/docs/components/collapse) - Collapsible content with accordion support
 - [BOffcanvas component](/docs/components/offcanvas) - Off-canvas sidebars
-- [BModal component](/docs/components/modal) - Modal dialogs
+- [BDialog component](/docs/components/dialog) - Modal dialogs
 - [useToggle composable](/docs/composables/useToggle) - Programmatic visibility control
 - [ARIA Visibility Architecture](/docs/reference/accessibility#aria-trigger-registration-for-component-visibility) - Technical details on accessibility implementation

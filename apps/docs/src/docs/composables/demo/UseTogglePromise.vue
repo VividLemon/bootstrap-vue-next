@@ -1,7 +1,7 @@
 <template>
   <div>
     <BButton @click="testToggle">Click me</BButton>
-    <BModal id="toggleTest"> content </BModal>
+    <BDialog id="toggleTest"> content </BDialog>
     <span v-if="reason !== ''" class="mx-3">Close reason: {{ reason }}</span>
   </div>
 </template>

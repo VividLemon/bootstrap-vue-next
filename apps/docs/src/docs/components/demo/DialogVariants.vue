@@ -1,10 +1,10 @@
 <template>
   <div>
-    <BButton :color="{ theme: 'primary' }" @click="show = true">Show Modal</BButton>
+    <BButton :color="{ theme: 'primary' }" @click="show = true">Show Dialog</BButton>
 
-    <BModal
+    <BDialog
       v-model="show"
-      title="Modal Variants"
+      title="Dialog Variants"
       :header-color="{ bg: headerBg, fg: headerFg }"
       :body-color="{ bg: bodyBg, fg: bodyFg }"
       :footer-color="{ bg: footerBg, fg: footerFg }"
@@ -49,13 +49,13 @@
 
       <template #footer>
         <div class="w-100">
-          <p class="float-start">Modal Footer Content</p>
+          <p class="float-start">Dialog Footer Content</p>
           <BButton :color="{ theme: 'primary' }" size="sm" class="float-end" @click="show = false">
             Close
           </BButton>
         </div>
       </template>
-    </BModal>
+    </BDialog>
   </div>
 </template>
 

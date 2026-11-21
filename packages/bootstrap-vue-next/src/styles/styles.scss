@@ -77,8 +77,4 @@
     max-height: var(--bv-floating-max-height, none);
     max-width: var(--bv-floating-max-width, none);
   }
-
-  :root {
-    --bs-modal-zindex: #{map.get(bs.$zindex-levels, dialog)};
-  }
 }

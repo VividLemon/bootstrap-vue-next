@@ -52,21 +52,27 @@ export type BDropdownTextSlots = {
   default?: (props: Record<string, never>) => any
 }
 
-export interface BModalSlotsData extends ShowHideSlotsData {
+export interface BDialogSlotsData extends Omit<ShowHideSlotsData, 'hide'> {
+  /** Hides with trigger `'cancel'` */
   cancel: () => void
+  /** Hides with trigger `'close'` */
   close: () => void
-  ok: () => void
+  hide: (trigger?: string, value?: unknown) => void
+  /** Emits `ok` (cancelable), then hides with trigger `'ok'` */
+  ok: (value?: unknown) => void
 }
 
-export interface BModalSlots {
-  'backdrop'?: (props: BModalSlotsData) => any
-  'cancel'?: (props: BModalSlotsData) => any
-  'default'?: (props: BModalSlotsData) => any
-  'footer'?: (props: BModalSlotsData) => any
-  'header'?: (props: BModalSlotsData) => any
-  'header-close'?: (props: BModalSlotsData) => any
-  'ok'?: (props: BModalSlotsData) => any
-  'title'?: (props: BModalSlotsData) => any
+export interface BDialogSlots {
+  'default'?: (props: BDialogSlotsData) => any
+  'footer'?: (props: BDialogSlotsData) => any
+  'header'?: (props: BDialogSlotsData) => any
+  'header-close'?: (props: BDialogSlotsData) => any
+  'title'?: (props: BDialogSlotsData) => any
+}
+
+export interface BDialogActionsSlots {
+  cancel?: (props: Record<string, never>) => any
+  ok?: (props: Record<string, never>) => any
 }
 
 export interface BOffcanvasSlotsData extends ShowHideSlotsData {

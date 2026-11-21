@@ -4,9 +4,9 @@
     <BAlert :model-value="true">
       Hello World
     </BAlert>
-    <BModal v-model="show">
+    <BDialog v-model="show">
       Nuxt module playground!
-    </BModal>
+    </BDialog>
 
     <BButton @click="show = !show">
       Click me
@@ -24,9 +24,11 @@
     {{ f }}
     {{ toast }}
     <BButton
-      @click="async () => {
-        await using _ = await toast.create({ title: 'Hello World!' }).show()
-      }"
+      @click="
+        async () => {
+          await using _ = await toast.create({ title: 'Hello World!' }).show()
+        }
+      "
     >
       Show Global Toast
     </BButton>

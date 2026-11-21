@@ -19,7 +19,10 @@ export const omit = <
   const keysToOmit = new Set(keysToPluck.map(normalizeKey))
   return Reflect.ownKeys(objToPluck)
     .filter((key) => !keysToOmit.has(normalizeKey(key)))
-    .reduce((result, key) => ({...result, [key]: objToPluck[key as keyof A]}), {} as Omit<A, B[number]>)
+    .reduce(
+      (result, key) => ({...result, [key]: objToPluck[key as keyof A]}),
+      {} as Omit<A, B[number]>
+    )
 }
 /**
  * Picks properties from an object, base on the values in an array, and returns the new object.

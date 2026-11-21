@@ -9,10 +9,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       ...opts,
       components: {
         ...opts?.components,
-        BModal: {
-          teleportTo: '#teleports',
-          ...opts?.components?.BModal,
-        },
         BOffcanvas: {
           teleportTo: '#teleports',
           ...opts?.components?.BOffcanvas,

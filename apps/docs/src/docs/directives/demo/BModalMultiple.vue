@@ -8,12 +8,12 @@
       >
       <BButton v-b-modal="['modal-1', 'modal-2']" :color="{ theme: 'info' }">Array Value</BButton>
     </div>
-    <BModal id="modal-1" title="First Modal">
+    <BDialog id="modal-1" title="First Modal">
       <p>This is the first modal.</p>
-    </BModal>
-    <BModal id="modal-2" title="Second Modal">
+    </BDialog>
+    <BDialog id="modal-2" title="Second Modal">
       <p>This is the second modal.</p>
-    </BModal>
+    </BDialog>
   </div>
   <!-- #endregion template -->
 </template>
