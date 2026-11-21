@@ -16,7 +16,7 @@ Work here is **research and decisions first**. Implementation waits until the ma
    - `BDatePicker`, `BDateRangePicker`, `BDateField`, `BDateRangeField`, `BTimeField`, `BTimeRangeField` → Datepicker
    - Revised 2026-11-20: "replaced" applies to the public API, markup and model types. Where reka-ui does the hard behavior, it stays underneath: `BCombobox` and `BDatepicker` are built on reka-ui primitives with a v6-shaped API. `BFormOtp` is a Vue port of `otp-input.ts` ([#200](https://github.com/VividLemon/bootstrap-vue-next/pull/200)), because v6's single-input design cannot be built on reka-ui's one-input-per-character `PinInput`. `reka-ui` and `@internationalized/date` remain dependencies.
 3. **Skip v6 features that duplicate what Vue already does.** Toggler is excluded: toggling a class or attribute on an element is native Vue reactivity. Judge every other new component on its own merits; most are not like Toggler.
-4. Breaking changes are expected. No compatibility aliases or shims.
+4. Breaking changes are expected. No compatibility aliases or shims. Every breaking change gets an old → new row in [`BOOTSTRAP_V6_BREAKING_CHANGES.md`](./BOOTSTRAP_V6_BREAKING_CHANGES.md), added by the PR that makes it.
 5. The cross-cutting conventions from the first part still apply (see `BOOTSTRAP_V6_MIGRATION.md`): CSS `@layer components`, `2xl` breakpoints and prefix classes, object-only `Responsive<T>` / `HoverState<T>` props, the single `color` object and `<part>Color` objects, prop families as objects (3+ members, one concern, no on-switch), `*Attrs` replacing `*Class`, native CSS transitions with `noTransition`.
 
 ## Component map
