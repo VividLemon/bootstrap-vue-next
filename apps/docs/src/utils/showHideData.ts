@@ -113,17 +113,18 @@ export const showHideSlotsData = {
     description: 'Unique ID for the component',
   },
   show: {
-    type: '() => void',
-    description: 'Function to show the component',
+    type: '() => Promise<boolean | string>',
+    description:
+      "Shows the component. Resolves `true` once shown, `'show-prevented'` when prevented, or `false` when interrupted by a newer show/hide.",
   },
   hide: {
-    type: '(trigger?: string, noTriggerEmit?: boolean) => void',
+    type: '(trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>',
     description:
-      'Function to hide the component. `trigger` is the trigger that caused the hide. `noTriggerEmit` prevents the emit of the trigger event.',
+      "Hides the component. `trigger` is the trigger that caused the hide; `noTriggerEmit` prevents the emit of the trigger event. Resolves with the trigger (or `''`) once hidden, `'hide-prevented'` when prevented, or `false` when interrupted by a newer show/hide.",
   },
   toggle: {
-    type: '() => void',
-    description: 'Function to toggle the component visibility',
+    type: '() => Promise<boolean | string>',
+    description: 'Shows or hides the component. Resolves like `show` / `hide`.',
   },
   active: {
     type: 'boolean',

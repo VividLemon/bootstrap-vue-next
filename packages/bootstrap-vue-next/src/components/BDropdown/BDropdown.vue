@@ -69,7 +69,7 @@
             v-if="contentShowing"
             :id="computedId"
             :hide="hide"
-            :show="show"
+            :show="() => show()"
             :visible="showRef"
             :click="onClickInside"
             :toggle="onButtonClick"
@@ -387,9 +387,7 @@ const buttonClasses = computed(() => [
   },
 ])
 
-const onButtonClick = () => {
-  toggle()
-}
+const onButtonClick = () => toggle()
 
 const onSplitClick = (event: Readonly<MouseEvent>) => {
   if (props.split) {

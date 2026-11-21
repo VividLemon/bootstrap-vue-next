@@ -690,4 +690,26 @@ describe('collapse', () => {
       expect.arrayContaining(['collapse', 'show', 'navbar-collapse', 'collapse-horizontal'])
     )
   })
+
+  it('slot scope show / toggle take no arguments and return the lifecycle promise', async () => {
+    let scope: {show: (...args: unknown[]) => unknown; toggle: (...args: unknown[]) => unknown} = {
+      show: () => undefined,
+      toggle: () => undefined,
+    }
+    const wrapper = mount(BCollapse, {
+      slots: {
+        header: (s: typeof scope) => {
+          scope = s
+          return h('button', {onClick: s.toggle}, 'toggle')
+        },
+      },
+    })
+    expect(scope.show.length).toBe(0)
+    expect(scope.toggle.length).toBe(0)
+    // Bound directly as a click handler: the MouseEvent must not reach `show(resolveOnHide)`
+    const result = scope.toggle(new MouseEvent('click'))
+    expect(result).toBeInstanceOf(Promise)
+    await wrapper.find('button').trigger('click')
+    wrapper.unmount()
+  })
 })
