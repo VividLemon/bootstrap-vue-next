@@ -9,7 +9,9 @@ const useLabelTargetRegistry = () => {
   const track = (idRef: Readonly<Ref<string | null>>) => {
     labelTargetIds.value = [...labelTargetIds.value, idRef]
     onUnmounted(() => {
-      labelTargetIds.value = labelTargetIds.value.filter((r: Readonly<Ref<string | null>>) => r !== idRef)
+      labelTargetIds.value = labelTargetIds.value.filter(
+        (r: Readonly<Ref<string | null>>) => r !== idRef
+      )
     })
   }
 

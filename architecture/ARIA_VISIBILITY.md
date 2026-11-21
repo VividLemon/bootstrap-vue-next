@@ -192,7 +192,7 @@ v-b-toggle mounted/updated
 ### Visibility change flow
 
 ```
-any source (trigger click, v-model, slot function, exposed method, useToggle)
+any source (trigger click, v-model, slot function, exposed method, useComponentToggle)
   → show()/hide() → state changes
   → watch(isExpanded) → aria-expanded updated on every registered trigger
 ```
@@ -214,7 +214,7 @@ useShowHideRegistration({id, isExpanded, value, show, hide, toggle, triggerToggl
 // → {registerTrigger, unregisterTrigger}
 ```
 
-Registers the component in the app registry (`useToggle`, directives), follows `id` changes, keeps `aria-expanded` of registered triggers in sync with `isExpanded()`, and removes listeners and the registry entry before unmount.
+Registers the component in the app registry (`useComponentToggle`, directives), follows `id` changes, keeps `aria-expanded` of registered triggers in sync with `isExpanded()`, and removes listeners and the registry entry before unmount.
 
 ## Usage patterns
 

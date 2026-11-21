@@ -1,0 +1,8 @@
+---
+title: useBootstrapColorMode
+description: "`useBootstrapColorMode` provides a convenient utility to adjust the global color theme of your application. You can also use it to target specific components by using a [template ref](https://vuejs.org/guide/essentials/template-refs.html#template-refs) or a selector. Bootstrap's default behavior dictates that color modes are applied to all children in the branch. `useBootstrapColorMode` is simply a wrapper for the [vueuse](https://vueuse.org/core/useBootstrapColorMode/#usecolormode) utility."
+---
+
+## Demo
+
+<<< DEMO ./demo/UseBootstrapColorModeBasic.vue

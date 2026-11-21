@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import {onMounted, ref} from 'vue'
-import {BButton, BModal, useToggle} from 'bootstrap-vue-next'
+import {BButton, BModal, useComponentToggle} from 'bootstrap-vue-next'
 
 const someConditions = ref(false)
 const programmaticModal = ref(false)
@@ -20,5 +20,5 @@ onMounted(() => {
   someConditions.value = true
 })
 
-const {show, hide} = useToggle('my-modal')
+const {show, hide} = useComponentToggle('my-modal')
 </script>

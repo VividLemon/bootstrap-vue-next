@@ -324,6 +324,7 @@ Decided 2026-11-21, first applied to `BPopover` / `BTooltip` ([#184](https://git
 
 - `BCard`: `img-placement="end"` renders the image after the body; pass `bodyTheme` / body color to `BCardBody`. Add `subtle` and `translucent`. Fix demos `CardOverlayImage.vue` + `card.md` (`img-placement="overlay"`), `CardNavComponent.vue` (`tag`), `CardHorizontal.vue`.
 - `BBreadcrumb`: add a `divider` slot and a `BBreadcrumbDivider` component; auto dividers get `aria-hidden`.
+- `BCard`: `hoverLift` renders v6 `.hover-lift` (G6, Q8).
 
 ## Deferred components
 

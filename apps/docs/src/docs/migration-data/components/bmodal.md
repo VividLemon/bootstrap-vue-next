@@ -91,7 +91,7 @@ Migration notes for BModal from BootstrapVue to BootstrapVueNext.
 
 **Alternative approaches:**
 
-Please see [useModal](/docs/composables/useModal) and [useToggle](/docs/composables/useToggle) for alternative methods of
+Please see [useModal](/docs/composables/useModal) and [useComponentToggle](/docs/composables/useComponentToggle) for alternative methods of
 accessing modals globally.
 
 </DeprecatedFeature>

@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-const colorMode = useColorMode()
+const colorMode = useBootstrapColorMode()
 const hasPreference
   = colorMode !== null && typeof colorMode === 'object' && 'preference' in colorMode ? 'yes' : 'no'
 const modeValue

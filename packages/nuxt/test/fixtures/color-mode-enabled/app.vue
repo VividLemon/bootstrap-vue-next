@@ -2,11 +2,14 @@
   <div id="color-mode-enabled-page">
     <span id="has-preference">{{ hasPreference }}</span>
     <span id="mode-value">{{ modeValue }}</span>
+    <span id="bv-auto-imported">{{ bvAutoImported }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
 const colorMode = useColorMode()
+// Auto-imported next to @nuxtjs/color-mode's composable now that the names differ
+const bvAutoImported = typeof useBootstrapColorMode === 'function' && typeof useBvColorMode === 'function' ? 'yes' : 'no'
 const hasPreference
   = colorMode !== null && typeof colorMode === 'object' && 'preference' in colorMode ? 'yes' : 'no'
 const modeValue

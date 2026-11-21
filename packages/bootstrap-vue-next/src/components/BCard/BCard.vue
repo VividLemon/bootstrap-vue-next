@@ -77,6 +77,7 @@ const _props = withDefaults(defineProps<BCardProps>(), {
   headerClass: undefined,
   headerColor: undefined,
   headerTag: 'div',
+  hoverLift: false,
   imgAlt: undefined,
   imgAttrs: undefined,
   imgPlacement: 'top',
@@ -105,6 +106,7 @@ const computedClasses = computed(() => [
   {
     [`text-${props.align}`]: props.align !== undefined,
     'card-row': props.imgPlacement === 'start' || props.imgPlacement === 'end',
+    'hover-lift': props.hoverLift,
   },
 ])
 

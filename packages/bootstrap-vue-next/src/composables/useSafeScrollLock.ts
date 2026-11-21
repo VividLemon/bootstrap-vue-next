@@ -9,7 +9,7 @@ import {
   useId,
   watch,
 } from 'vue'
-import {useScrollLock} from './useScrollLock'
+import {useSharedScrollLock} from './useSharedScrollLock'
 import {getSafeDocument, getSafeWindow} from '../utils/dom'
 
 let prevousRightPadding = ''
@@ -27,7 +27,7 @@ export const useSafeScrollLock = (
    */
   const inverseBodyScrollingValue = computed(() => !toValue(bodyScroll))
 
-  const isLocked = useScrollLock(
+  const isLocked = useSharedScrollLock(
     getSafeDocument()?.body ?? null,
     resolvedIsOpen.value && inverseBodyScrollingValue.value
   )

@@ -10,13 +10,13 @@ import {
 import {showHideRegistryKey} from '../../utils/keys'
 import {getActiveShowHide} from '../../utils/registryAccess'
 
-export const useToggle = (id: MaybeRefOrGetter<string | undefined> = undefined) => {
+export const useComponentToggle = (id: MaybeRefOrGetter<string | undefined> = undefined) => {
   const instance = getCurrentInstance()
   const storage = inject(showHideRegistryKey, null)
 
   if (!storage) {
     throw new Error(
-      'useToggle() must be called within setup(), and BApp, useRegistry or plugin must be installed/provided.'
+      'useComponentToggle() must be called within setup(), and BApp, useRegistry or plugin must be installed/provided.'
     )
   }
   const registry = storage.values

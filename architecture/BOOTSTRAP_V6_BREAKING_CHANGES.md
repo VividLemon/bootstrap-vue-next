@@ -937,6 +937,18 @@ Applies to every component that extends `BLinkProps` / renders through `BLink`: 
 | ---------------------------------------- | -------------------------------------- | ------------------------------------------------ | --------- | ---------- |
 | Color prop becomes object; class changes | `variant="success"` (`.table-success`) | `:color="{theme: 'success'}"` (`.theme-success`) | rewrite   | #162, #166 |
 
+## Composables
+
+Renamed where they shared a name with VueUse (and, for color mode, `@nuxtjs/color-mode`), so auto-import presets don't collide. No aliases for the old names.
+
+| Change                                                               | Before (1.x)                                                                                | After                                                                                                                  | Migration                                 | PR   |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- | ---- |
+| Color mode composable renamed                                        | `useColorMode` from `bootstrap-vue-next` or `bootstrap-vue-next/composables/useColorMode`   | `useBootstrapColorMode` (short alias `useBvColorMode`), subpath `bootstrap-vue-next/composables/useBootstrapColorMode` | rename                                    | #197 |
+| Show/hide registry toggle renamed                                    | `useToggle` from `bootstrap-vue-next` or `bootstrap-vue-next/composables/useToggle`         | `useComponentToggle`, subpath `bootstrap-vue-next/composables/useComponentToggle`                                      | rename                                    | #197 |
+| Shared scroll lock renamed                                           | `useScrollLock` from `bootstrap-vue-next` or `bootstrap-vue-next/composables/useScrollLock` | `useSharedScrollLock`, subpath `bootstrap-vue-next/composables/useSharedScrollLock`                                    | rename                                    | #197 |
+| Composable option keys (`ComposableType`, Nuxt `composables` option) | `useColorMode`, `useToggle`, `useScrollLock`                                                | `useBootstrapColorMode`, `useBvColorMode`, `useComponentToggle`, `useSharedScrollLock`                                 | rename                                    | #197 |
+| Nuxt auto-import with `@nuxtjs/color-mode` installed                 | BootstrapVueNext's color mode composable was not auto-imported (name clash)                 | `useBootstrapColorMode` / `useBvColorMode` are auto-imported next to `@nuxtjs/color-mode`'s `useColorMode`             | behavior: explicit imports can be removed | #197 |
+
 ## Types
 
 ### Form types

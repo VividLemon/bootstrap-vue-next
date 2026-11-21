@@ -1159,6 +1159,7 @@ export interface BCardProps {
   headerClass?: ClassValue
   headerColor?: ColorBorderExtendables
   headerTag?: string
+  hoverLift?: boolean
   imgAlt?: string
   imgAttrs?: Readonly<AttrsValue>
   imgPlacement?: Placement | 'overlay'

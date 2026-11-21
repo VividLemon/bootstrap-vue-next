@@ -120,14 +120,14 @@ See the [BModal documentation](/docs/components/modal) for more details.
 
 ## Comparison with Programmatic Control
 
-The v-b-toggle directive is ideal for simple, declarative toggling. For programmatic control, use the `useToggle` composable or `v-model`:
+The v-b-toggle directive is ideal for simple, declarative toggling. For programmatic control, use the `useComponentToggle` composable or `v-model`:
 
 <<< DEMO ./demo/BToggleComparison.vue
 
 | Approach     | Use When                                 | Pros                      | Cons                           |
 | ------------ | ---------------------------------------- | ------------------------- | ------------------------------ |
 | `v-b-toggle` | Simple click-to-toggle                   | Declarative, minimal code | Click-only, no state access    |
-| `useToggle`  | Need programmatic control + state access | Full API, reactive state  | More code                      |
+| `useComponentToggle`  | Need programmatic control + state access | Full API, reactive state  | More code                      |
 | `v-model`    | Direct reactive binding                  | Simple, two-way binding   | Manual event handling required |
 
 ## Accessibility
@@ -167,5 +167,5 @@ For better accessibility with multiple independent targets, use separate toggle 
 - [BCollapse component](/docs/components/collapse) - Collapsible content with accordion support
 - [BOffcanvas component](/docs/components/offcanvas) - Off-canvas sidebars
 - [BModal component](/docs/components/modal) - Modal dialogs
-- [useToggle composable](/docs/composables/useToggle) - Programmatic visibility control
+- [useComponentToggle composable](/docs/composables/useComponentToggle) - Programmatic visibility control
 - [ARIA Visibility Architecture](/docs/reference/accessibility#aria-trigger-registration-for-component-visibility) - Technical details on accessibility implementation

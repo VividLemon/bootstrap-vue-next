@@ -53,7 +53,7 @@ export const showHideEmits = {
   },
   toggle: {
     description:
-      "Always emits just before the component is toggled via the exposed 'toggle()' function or useToggle composable . Cancelable (as long as component wasn't forcibly hidden)",
+      "Always emits just before the component is toggled via the exposed 'toggle()' function or useComponentToggle composable . Cancelable (as long as component wasn't forcibly hidden)",
     args: {
       value: bvTriggerableEventArg,
     },

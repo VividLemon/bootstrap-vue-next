@@ -201,7 +201,7 @@ interface BNavbarToggleProps {
 }
 ```
 
-No exposed methods on `BNavbar`; open/close goes through the Drawer's `v-model` / registry (`useToggle(id)`), as today.
+No exposed methods on `BNavbar`; open/close goes through the Drawer's `v-model` / registry (`useComponentToggle(id)`), as today.
 
 ### Usage
 
@@ -293,7 +293,7 @@ No exposed methods on `BNavbar`; open/close goes through the Drawer's `v-model` 
 
 ## Composables
 
-- None new. Container-query helpers (G6) are not needed: the navbar never reads its width in JS. `useToggle(id)` already opens/closes the drawer programmatically.
+- None new. Container-query helpers (G6) are not needed: the navbar never reads its width in JS. `useComponentToggle(id)` already opens/closes the drawer programmatically.
 
 ## JS: port vs. wrap
 
@@ -308,7 +308,7 @@ No exposed methods on `BNavbar`; open/close goes through the Drawer's `v-model` 
 | D1  | `BOffcanvas` becomes a Drawer component rendering native `<dialog class="drawer drawer-{start\|end\|top\|bottom}">` with `.drawer-header`, `.drawer-title` (id for `aria-labelledby`), `.drawer-body`.                   |
 | D2  | It is **not teleported** when inside a navbar (ideally never: native `<dialog>` uses the top layer). v6 navbar CSS only works when the dialog is a descendant of `.navbar`.                                              |
 | D3  | Inside a navbar, content renders always (no `lazy` / `unmountLazy`), and the dialog has no `v-show` / inline `display`. The expanded navbar shows the closed dialog inline via CSS.                                      |
-| D4  | It registers in the show/hide registry by `id` (toggle via `BNavbarToggle`, `v-b-toggle`, `useToggle`), on the native transition path, adding `.hiding` during the exit.                                                 |
+| D4  | It registers in the show/hide registry by `id` (toggle via `BNavbarToggle`, `v-b-toggle`, `useComponentToggle`), on the native transition path, adding `.hiding` during the exit.                                                 |
 | D5  | When inside `.navbar` (inject `navbarInjectionKey`, or `closest('.navbar')` on mount) it observes the navbar and hides itself when open and `getComputedStyle(el).position !== 'fixed'` (port of `_initResizeObserver`). |
 | D6  | Inside a navbar it uses a plain `.drawer`; its `responsive` (`md:drawer`, viewport) prop is documented as not for navbars.                                                                                               |
 | D7  | It provides a context with `hide()` for auto-close (consumed by `BLink` / menu items), honoring the navbar's `noAutoClose`.                                                                                              |

@@ -57,7 +57,7 @@ describe('registryAccess', () => {
       expect(result).toBeDefined()
     })
 
-    it('works with simplified useToggle pattern (no || null needed)', () => {
+    it('works with simplified useComponentToggle pattern (no || null needed)', () => {
       const instance = createMockInstance(1)
       const registry = ref(new Map([['test-id', createRegistryHolder([instance])]]))
 

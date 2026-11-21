@@ -101,7 +101,7 @@ breakpoint (`sm`, `md`, `lg`, `xl` or `2xl`) to make a list group horizontal sta
 breakpoint's min-width (`horizontal="md"` renders `md:list-group-horizontal`).
 Currently, horizontal list groups cannot be combined with `flush` list groups.
 
-Bootstrap v6 implements the breakpoint variants with container queries, so the breakpoint is
+Bootstrap v6 implements the breakpoint variants with [container queries](/docs/reference/container-queries), so the breakpoint is
 measured against the nearest query-container ancestor rather than the viewport. Wrap the list group
 in an element with a query container, such as the `.contains-inline` utility. Horizontal list groups
 do not wrap automatically.

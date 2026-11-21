@@ -51,7 +51,7 @@ You can control the modal programmatically using template ref methods. See the [
 
 <<< DEMO ./demo/ModalExposed.vue
 
-### Using the `useToggle` composable
+### Using the `useComponentToggle` composable
 
 <<< DEMO ./demo/ModalToggle.vue
 

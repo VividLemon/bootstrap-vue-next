@@ -40,7 +40,8 @@ export const useModal = () => {
   // `useModal()`'s inferred return object.
   function create<
     ComponentProps extends Record<string, unknown> = Record<string, unknown>,
-    T extends ModalOrchestratorCreateParamBase<ComponentProps> = ModalOrchestratorCreateParamBase<ComponentProps>,
+    T extends ModalOrchestratorCreateParamBase<ComponentProps> =
+      ModalOrchestratorCreateParamBase<ComponentProps>,
   >(
     obj: MaybeRef<T> = {} as T
   ): ComponentController<typeof BModal, Ref<ModalOrchestratorArrayValue>> {
