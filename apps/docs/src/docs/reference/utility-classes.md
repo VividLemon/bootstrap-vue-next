@@ -71,6 +71,26 @@ remove it). Both have responsive variants (`md:space-y-3`), based on the viewpor
 </div>
 ```
 
+## Prose
+
+Bootstrap 6's `.prose` class styles a block of rich content (headings, lists, links, tables, images,
+blockquotes) without classes on each element, such as Markdown rendered to HTML. There is no `BProse`
+component: put the class on your own element. Wrap library components inside the content in
+`.not-prose` so the prose styles don't change them.
+
+```vue-html
+<article class="prose">
+  <div v-html="renderedMarkdown" />
+  <div class="not-prose">
+    <BCard title="Related">…</BCard>
+  </div>
+</article>
+```
+
+Only pass trusted or sanitized HTML to `v-html`. See the
+[Bootstrap prose documentation](https://getbootstrap.com/docs/6.0/content/prose/) for the styled
+elements and the CSS variables.
+
 ## Container queries
 
 `.contains-inline` and `.contains-size` turn an element into a query container. See
