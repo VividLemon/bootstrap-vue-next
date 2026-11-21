@@ -1,5 +1,5 @@
 <template>
-  <BButton id="advanced-popover-target" @click="showAdvancedPopover">
+  <BButton id="advanced-popover-activator" @click="showAdvancedPopover">
     Toggle advanced popover
   </BButton>
 </template>
@@ -16,7 +16,7 @@ const showAdvancedPopover = async () => {
     slots: {
       default: (scope) => markRaw(h('div', null, `Custom content - Visible: ${scope.visible}`)),
     },
-    target: 'advanced-popover-target',
+    activator: 'advanced-popover-activator',
     title: 'Advanced Popover',
   }).show()
 }

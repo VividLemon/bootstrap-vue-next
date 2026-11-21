@@ -10,8 +10,8 @@ During the migration there are two paths:
 
 | Path               | Composables                              | Components                                                                  |
 | ------------------ | ---------------------------------------- | --------------------------------------------------------------------------- |
-| Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse (+ BAccordionItem, which renders it), BAlert, BToast              |
-| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BModal, BOffcanvas, BDropdown (deferred); BPopover / BTooltip (later batch) |
+| Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse (+ BAccordionItem, which renders it), BAlert, BToast, BPopover / BTooltip |
+| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BModal, BOffcanvas, BDropdown (deferred)                                             |
 
 Both paths share `useShowHideRegistration` (app registry + trigger registry + `aria-expanded`), so ARIA behavior is identical on both.
 
@@ -149,6 +149,15 @@ const classes = computed(() => ({
 ```
 
 Checklist: check the `-instant` class exists in `node_modules/bootstrap/dist/css/bootstrap.css`; remove the Vue `<Transition>`; keep the element mounted while hidden unless the v6 component removes it (then `v-if="isActive"`); emit component-specific events from `shown` / `hidden`.
+
+### BPopover / BTooltip
+
+- BTooltip renders BPopover with `tooltip`, so both share one implementation. The floating element toggles only `.show` (v6 fades it in CSS, with `@starting-style` for the entry); `noTransition` and instant changes add `popover-instant` / `tooltip-instant`. There is no `fade` class and no `<Transition>`.
+- The element is rendered while `contentShowing` and displayed (`v-show`) while `isActive`, so the fade-out finishes before it is hidden. `autoUpdate` from Floating UI runs from the start of a show until `hidden`.
+- The `delay` prop is the machine's delay phase. A trigger that fires while a show is in progress (hover, then focus) joins it and emits no second `show`.
+- Escape (document `keydown`, capture phase, key press consumed) hides with trigger `'esc'` unless `manual` or `noAutoClose` is set. It has no event of its own.
+- While `isActive`, the id is added to the trigger's `aria-describedby` (existing ids are kept) and removed after `hidden` or on unmount.
+- BTooltip's exposed `show` / `hide` / `toggle` forward every argument.
 
 ### BCollapse
 

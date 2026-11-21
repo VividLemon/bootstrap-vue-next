@@ -2,13 +2,13 @@
   <!-- #region template -->
   <div class="d-flex gap-2">
     <BPopover title="Prop Examples" body="Embedding content using properties is easy">
-      <template #target>
-        <BButton :color="{ theme: 'primary' }">Using properties</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props" :color="{ theme: 'primary' }">Using properties</BButton>
       </template>
     </BPopover>
     <BPopover>
-      <template #target>
-        <BButton :color="{ theme: 'primary' }">Using slots</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props" :color="{ theme: 'primary' }">Using slots</BButton>
       </template>
       <template #title>Content via Slots</template>
       Embedding content <span class="fg-danger">using slots</span> affords you

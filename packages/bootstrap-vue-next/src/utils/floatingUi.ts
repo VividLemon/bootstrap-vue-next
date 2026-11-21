@@ -100,7 +100,7 @@ export const resolveDirectiveProps = (
   binding: Readonly<DirectiveBinding>,
   el: Readonly<HTMLElement>
 ) => ({
-  target: el,
+  activator: el,
   modelValue: binding.modifiers.show,
   inline: binding.modifiers.inline,
   click: binding.modifiers.click,

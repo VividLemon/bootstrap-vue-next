@@ -2,48 +2,48 @@
   <div class="d-flex flex-wrap gap-2">
     <!-- Default: Hover + Focus -->
     <BPopover>
-      <template #target>
-        <BButton :color="{ theme: 'secondary' }">Default (hover/focus)</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props" :color="{ theme: 'secondary' }">Default (hover/focus)</BButton>
       </template>
       Default triggers: hover and focus
     </BPopover>
 
     <!-- Click only -->
     <BPopover click>
-      <template #target>
-        <BButton :color="{ theme: 'primary' }">Click Only</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props" :color="{ theme: 'primary' }">Click Only</BButton>
       </template>
       Click to toggle
     </BPopover>
 
     <!-- Hover only -->
     <BPopover hover>
-      <template #target>
-        <BButton :color="{ theme: 'success' }">Hover Only</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props" :color="{ theme: 'success' }">Hover Only</BButton>
       </template>
       Hover to show (no focus)
     </BPopover>
 
     <!-- Focus only -->
     <BPopover focus>
-      <template #target>
-        <BButton :color="{ theme: 'info' }">Focus Only</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props" :color="{ theme: 'info' }">Focus Only</BButton>
       </template>
       Focus to show (no hover)
     </BPopover>
 
     <!-- Multiple triggers -->
     <BPopover click hover focus>
-      <template #target>
-        <BButton :color="{ theme: 'warning' }">All Triggers</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props" :color="{ theme: 'warning' }">All Triggers</BButton>
       </template>
       Click, hover, or focus
     </BPopover>
 
     <!-- Manual control -->
     <BPopover v-model="manualShow" manual>
-      <template #target>
-        <BButton :color="{ theme: 'danger' }" @click="manualShow = !manualShow">
+      <template #activator="{ props }">
+        <BButton v-bind="props" :color="{ theme: 'danger' }" @click="manualShow = !manualShow">
           Manual ({{ manualShow ? 'hide' : 'show' }})
         </BButton>
       </template>

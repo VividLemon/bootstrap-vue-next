@@ -1,5 +1,5 @@
 <template>
-  <BButton id="popover-basic-target" @click="showPopover"> Toggle popover </BButton>
+  <BButton id="popover-basic-activator" @click="showPopover"> Toggle popover </BButton>
 </template>
 
 <script setup lang="ts">
@@ -12,7 +12,7 @@ const showPopover = async () => {
   await using _ = await popover({
     title: 'Hello World!',
     body: 'This is a popover.',
-    target: 'popover-basic-target',
+    activator: 'popover-basic-activator',
   }).show()
 }
 </script>

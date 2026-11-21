@@ -12,8 +12,8 @@
           :key="placement"
           :placement="placement"
         >
-          <template #target>
-            <BButton>{{ placement }}</BButton>
+          <template #activator="{ props }">
+            <BButton v-bind="props">{{ placement }}</BButton>
           </template>
           <template #title>Popover {{ placement }}</template>
           I am popover <b>component</b> content!
@@ -29,8 +29,8 @@
         class="d-grid gap-2"
       >
         <BPopover :placement="placement">
-          <template #target>
-            <BButton>{{ placement }}</BButton>
+          <template #activator="{ props }">
+            <BButton v-bind="props">{{ placement }}</BButton>
           </template>
           <template #title>Popover {{ placement }}</template>
           I am popover <b>component</b> content!

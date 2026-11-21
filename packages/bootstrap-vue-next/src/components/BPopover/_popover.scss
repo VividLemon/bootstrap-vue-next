@@ -1,5 +1,5 @@
-.bs-popover-auto[data-popper-placement^="bottom"]
-  .popover-arrow:has(+ div > .popover-header)::after,
+// The library wraps the header and body in a scroll container, so Bootstrap's own
+// `.popover-arrow:has(+ .popover-header)` rule for a bottom popover does not match
 .bs-popover-bottom .popover-arrow:has(+ div > .popover-header)::after {
   --bs-popover-bg: var(--bs-popover-header-bg);
 }

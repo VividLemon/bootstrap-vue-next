@@ -101,8 +101,8 @@ The directive accepts any property from `BTooltipProps` (which extends `BPopover
 - `title` - The tooltip text content
 - `body` - Alternative content (used if `title` not provided)
 - `delay` - Show/hide delay in milliseconds or `{show: number, hide: number}`
-- `bodyClass` - Custom class for the tooltip body
-- `titleClass` - Custom class for the tooltip title
+- `bodyAttrs` - Attributes (such as `class`) for the tooltip body
+- `titleAttrs` - Attributes (such as `class`) for the tooltip title
 - `placement` - Position: `'auto'` | `'auto-start'` | `'auto-end'` | `'top'` | `'top-start'` | `'top-end'` | `'bottom'` | `'bottom-start'` | `'bottom-end'` | `'left'` | `'left-start'` | `'left-end'` | `'right'` | `'right-start'` | `'right-end'`
 - `interactive` - Allow hovering over the tooltip (default: `false`)
 
@@ -120,8 +120,8 @@ import type {BTooltipProps} from 'bootstrap-vue-next'
 :::tip Rendering Behavior
 **Tooltips display either `title` OR `body`, never both:**
 
-- If `title` is provided → renders with `titleClass` applied
-- If only `body` is provided → renders with `bodyClass` applied
+- If `title` is provided → renders with `titleAttrs` applied
+- If only `body` is provided → renders with `bodyAttrs` applied
 - Both `title` and `body` → only `title` is rendered
 
 This differs from popovers, which can display both title and body content simultaneously.

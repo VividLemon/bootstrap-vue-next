@@ -1,5 +1,5 @@
 <template>
-  <BButton id="reactive-tooltip-target" @click="showTooltip"> Toggle tooltip </BButton>
+  <BButton id="reactive-tooltip-activator" @click="showTooltip"> Toggle tooltip </BButton>
 </template>
 
 <script setup lang="ts">
@@ -19,7 +19,7 @@ let intervalId: ReturnType<typeof setInterval> | undefined
 const derivedTitle = computed(() => title.value)
 const myTooltip = ref<TooltipOrchestratorCreateParam>({
   title: derivedTitle.value,
-  target: 'reactive-tooltip-target',
+  activator: 'reactive-tooltip-activator',
   modelValue: false,
 })
 watchEffect(() => {

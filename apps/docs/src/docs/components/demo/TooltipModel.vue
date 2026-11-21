@@ -9,8 +9,8 @@
         v-model="model"
         placement="right"
       >
-        <template #target>
-          <BButton
+        <template #activator="{ props }">
+          <BButton v-bind="props"
             class="mx-2"
             @click="model = !model"
             >Toggle Tooltip</BButton

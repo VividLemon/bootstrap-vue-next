@@ -1,15 +1,15 @@
 <template>
   <div class="d-flex flex-column text-md-center">
-    <div class="p-2">
-      <BButton id="popover-expose" :color="{ theme: 'primary' }">I have a popover</BButton>
-    </div>
 
     <div class="p-2">
       <BButton class="mx-2" @click="show">Show</BButton>
       <BButton class="mx-2" @click="hide">Hide</BButton>
       <BButton class="mx-2" @click="toggle">Toggle</BButton>
 
-      <BPopover ref="myPopover" v-model="model" target="popover-expose" title="Popover">
+      <BPopover ref="myPopover" v-model="model" title="Popover">
+        <template #activator="{ props }">
+          <BButton v-bind="props" :color="{ theme: 'primary' }">I have a popover</BButton>
+        </template>
         Hello <strong>World!</strong>
       </BPopover>
     </div>

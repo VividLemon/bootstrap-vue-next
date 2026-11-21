@@ -1,6 +1,21 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vitest'
+import {h, nextTick} from 'vue'
 import BPopover from './BPopover.vue'
+import BButton from '../BButton/BButton.vue'
+
+// The activator slot binds its `props` (ref, listeners, aria-describedby) on the trigger
+const activatorButton =
+  '<template #activator="{props}"><button v-bind="props">Test</button></template>'
+
+/** Let Vue patch and a few animation frames pass */
+const flush = async (frames = 3) => {
+  for (let i = 0; i < frames; i++) {
+    await nextTick()
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)))
+  }
+  await nextTick()
+}
 
 describe('popover', () => {
   enableAutoUnmount(afterEach)
@@ -109,7 +124,7 @@ describe('popover', () => {
   it('defaults to hover and focus triggers', async () => {
     const wrapper = mount(BPopover, {
       props: {body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -121,8 +136,9 @@ describe('popover', () => {
     expect(wrapper.emitted('show')).toBeTruthy()
 
     // Test focus trigger
+    // Already showing: a second trigger joins the show in progress
     await button.trigger('focus')
-    expect((wrapper.emitted('show')?.length || 0) >= 2).toBeTruthy()
+    expect(wrapper.emitted('show')).toHaveLength(1)
 
     wrapper.unmount()
   })
@@ -130,7 +146,7 @@ describe('popover', () => {
   it('respects click prop for backward compatibility', async () => {
     const wrapper = mount(BPopover, {
       props: {click: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -151,7 +167,7 @@ describe('popover', () => {
   it('respects hover=false to disable hover trigger', async () => {
     const wrapper = mount(BPopover, {
       props: {hover: false, focus: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -171,7 +187,7 @@ describe('popover', () => {
   it('respects focus=false to disable focus trigger', async () => {
     const wrapper = mount(BPopover, {
       props: {focus: false, hover: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -191,7 +207,7 @@ describe('popover', () => {
   it('allows combining click with hover/focus', async () => {
     const wrapper = mount(BPopover, {
       props: {click: true, hover: true, focus: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -201,11 +217,10 @@ describe('popover', () => {
     await button.trigger('click')
     expect(wrapper.emitted('show')).toBeTruthy()
 
+    // Already showing: further triggers join the show in progress
     await button.trigger('pointerenter')
-    expect((wrapper.emitted('show')?.length || 0) >= 2).toBeTruthy()
-
     await button.trigger('focus')
-    expect((wrapper.emitted('show')?.length || 0) >= 3).toBeTruthy()
+    expect(wrapper.emitted('show')).toHaveLength(1)
 
     wrapper.unmount()
   })
@@ -213,7 +228,7 @@ describe('popover', () => {
   it('respects manual prop to disable all automatic triggers', async () => {
     const wrapper = mount(BPopover, {
       props: {manual: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -314,60 +329,68 @@ describe('popover', () => {
   })
 
   describe('classes and styling', () => {
-    it('does not have fade class when noTransition is true', () => {
+    it('has the popover-instant class when noTransition is true', () => {
       const wrapper = mount(BPopover, {props: {modelValue: true, noTransition: true}})
       const $div = wrapper.get('div.popover')
-      expect($div.classes()).not.toContain('fade')
+      expect($div.classes()).toContain('popover-instant')
     })
 
-    it('does not have fade class on initial mount with modelValue true', () => {
+    it('is instant on initial mount with modelValue true, then animates', async () => {
       // When modelValue is true on mount and initialAnimation is false (default),
-      // animation is skipped for the initial render
-      const wrapper = mount(BPopover, {props: {modelValue: true}})
+      // the transition is skipped for the initial render
+      // happy-dom has no layout, so the reference always counts as hidden: skip that check
+      const wrapper = mount(BPopover, {props: {modelValue: true, noHide: true}})
       const $div = wrapper.get('div.popover')
-      expect($div.classes()).not.toContain('fade')
+      expect($div.classes()).toEqual(expect.arrayContaining(['show', 'popover-instant']))
+      await flush()
+      expect($div.classes()).toContain('show')
+      expect($div.classes()).not.toContain('popover-instant')
     })
 
-    it('has fade class when initialAnimation is true', () => {
+    it('shows with a transition on mount when initialAnimation is true', async () => {
       const wrapper = mount(BPopover, {
-        props: {modelValue: true, initialAnimation: true},
+        props: {modelValue: true, initialAnimation: true, delay: 0},
       })
       const $div = wrapper.get('div.popover')
-      expect($div.classes()).toContain('fade')
+      expect($div.classes()).not.toContain('popover-instant')
+      await nextTick()
+      expect($div.classes()).toContain('show')
+      expect($div.classes()).not.toContain('popover-instant')
     })
 
-    it('applies bodyClass to popover-body div', () => {
+    it('never has the v5 fade class', () => {
+      const wrapper = mount(BPopover, {props: {modelValue: true, initialAnimation: true}})
+      expect(wrapper.get('div.popover').classes()).not.toContain('fade')
+    })
+
+    it('merges bodyAttrs with the popover-body div', () => {
       const wrapper = mount(BPopover, {
-        props: {modelValue: true, body: 'test', bodyClass: 'custom-body'},
+        props: {modelValue: true, body: 'test', bodyAttrs: {'class': 'custom-body', 'data-x': '1'}},
       })
       const $body = wrapper.get('div.popover-body')
-      expect($body.classes()).toContain('custom-body')
+      expect($body.classes()).toEqual(expect.arrayContaining(['popover-body', 'custom-body']))
+      expect($body.attributes('data-x')).toBe('1')
     })
 
-    it('applies titleClass to popover-header div', () => {
+    it('merges titleAttrs with the popover-header div', () => {
       const wrapper = mount(BPopover, {
-        props: {modelValue: true, title: 'test', titleClass: 'custom-title'},
+        props: {modelValue: true, title: 'test', titleAttrs: {class: ['class-a', 'class-b']}},
       })
       const $header = wrapper.get('div.popover-header')
-      expect($header.classes()).toContain('custom-title')
+      expect($header.classes()).toEqual(
+        expect.arrayContaining(['popover-header', 'position-sticky', 'class-a', 'class-b'])
+      )
     })
 
-    it('applies bodyClass array to popover-body div', () => {
-      const wrapper = mount(BPopover, {
-        props: {modelValue: true, body: 'test', bodyClass: ['class-a', 'class-b']},
+    it('merges titleAttrs and bodyAttrs with tooltip-inner in tooltip mode', () => {
+      const withTitle = mount(BPopover, {
+        props: {modelValue: true, tooltip: true, title: 'test', titleAttrs: {class: 'custom'}},
       })
-      const $body = wrapper.get('div.popover-body')
-      expect($body.classes()).toContain('class-a')
-      expect($body.classes()).toContain('class-b')
-    })
-
-    it('applies titleClass array to popover-header div', () => {
-      const wrapper = mount(BPopover, {
-        props: {modelValue: true, title: 'test', titleClass: ['class-a', 'class-b']},
+      expect(withTitle.get('div.tooltip-inner').classes()).toContain('custom')
+      const withBody = mount(BPopover, {
+        props: {modelValue: true, tooltip: true, body: 'test', bodyAttrs: {class: 'custom'}},
       })
-      const $header = wrapper.get('div.popover-header')
-      expect($header.classes()).toContain('class-a')
-      expect($header.classes()).toContain('class-b')
+      expect(withBody.get('div.tooltip-inner').classes()).toContain('custom')
     })
   })
 
@@ -379,41 +402,95 @@ describe('popover', () => {
     })
   })
 
-  describe('placeholder', () => {
-    it('renders a hidden placeholder span', () => {
+  describe('activator', () => {
+    it('renders no placeholder element', () => {
       const wrapper = mount(BPopover, {props: {modelValue: true, id: 'test-id'}})
-      const $placeholder = wrapper.find('span[style="display: none;"]')
-      expect($placeholder.exists()).toBe(true)
+      expect(wrapper.find('span[style="display: none;"]').exists()).toBe(false)
+      expect(document.getElementById('test-id_placeholder')).toBeNull()
     })
 
-    it('placeholder id is computedId + _placeholder', () => {
-      const wrapper = mount(BPopover, {props: {modelValue: true, id: 'test-id'}})
-      const $placeholder = wrapper.find('span[style="display: none;"]')
-      expect($placeholder.attributes('id')).toBe('test-id_placeholder')
-    })
-  })
-
-  describe('target slot', () => {
-    it('renders target slot content', () => {
+    it('renders activator slot content', () => {
       const wrapper = mount(BPopover, {
         props: {modelValue: true},
-        slots: {target: '<button class="target-btn">Click me</button>'},
+        slots: {activator: '<button class="activator-btn">Click me</button>'},
       })
-      const $btn = wrapper.find('.target-btn')
+      const $btn = wrapper.find('.activator-btn')
       expect($btn.exists()).toBe(true)
       expect($btn.text()).toBe('Click me')
     })
 
-    it('target slot receives scoped props', () => {
+    it('activator slot receives the show/hide scope and props', () => {
       const wrapper = mount(BPopover, {
         props: {modelValue: true, id: 'test-popover'},
         slots: {
-          target: `<template #target="scope"><span class="target-scope">{{ scope.id }}</span></template>`,
+          activator: `<template #activator="scope"><span class="activator-scope">{{ scope.id }} {{ typeof scope.props.ref }}</span></template>`,
         },
       })
-      const $scope = wrapper.find('.target-scope')
-      expect($scope.exists()).toBe(true)
-      expect($scope.text()).toBe('test-popover')
+      expect(wrapper.get('.activator-scope').text()).toBe('test-popover function')
+    })
+
+    it('slot props carry only the listeners of the active triggers', () => {
+      let captured: Record<string, unknown> = {}
+      const wrapper = mount(BPopover, {
+        props: {click: true},
+        slots: {
+          activator: (scope: {props: Record<string, unknown>}) => {
+            captured = scope.props
+            return h('button', scope.props, 'Test')
+          },
+        },
+      })
+      expect(Object.keys(captured).sort()).toEqual(['aria-describedby', 'onClick', 'ref'])
+      wrapper.unmount()
+    })
+
+    it('slot props set aria-describedby on the slot element while active', async () => {
+      const wrapper = mount(BPopover, {
+        props: {id: 'pop', delay: 0, noHide: true},
+        slots: {activator: activatorButton},
+        attachTo: document.body,
+      })
+      const $btn = wrapper.get('button')
+      expect($btn.attributes('aria-describedby')).toBeUndefined()
+      await wrapper.setProps({modelValue: true})
+      await flush()
+      expect($btn.attributes('aria-describedby')).toBe('pop')
+      await wrapper.setProps({modelValue: false})
+      await flush()
+      expect($btn.attributes('aria-describedby')).toBeUndefined()
+      wrapper.unmount()
+    })
+
+    it('resolves a component rendered in the activator slot to its root element', async () => {
+      const wrapper = mount(BPopover, {
+        props: {id: 'pop-btn', delay: 0, noHide: true, click: true},
+        slots: {
+          activator: (scope: {props: Record<string, unknown>}) =>
+            h(BButton, scope.props, () => 'Go'),
+        },
+        attachTo: document.body,
+      })
+      const $btn = wrapper.get('button')
+      await $btn.trigger('click')
+      await flush()
+      expect(wrapper.emitted('show')).toHaveLength(1)
+      expect($btn.attributes('aria-describedby')).toBe('pop-btn')
+      wrapper.unmount()
+    })
+
+    it('binds the listeners on an element given through the activator prop', async () => {
+      const button = document.createElement('button')
+      button.id = 'outside-activator'
+      document.body.appendChild(button)
+      const wrapper = mount(BPopover, {
+        props: {activator: 'outside-activator', click: true},
+        attachTo: document.body,
+      })
+      button.click()
+      await flush()
+      expect(wrapper.emitted('show')).toHaveLength(1)
+      wrapper.unmount()
+      button.remove()
     })
   })
 
@@ -538,6 +615,133 @@ describe('popover', () => {
       expect($div.attributes('id')).toBe('first-id')
       await wrapper.setProps({id: 'second-id'})
       expect($div.attributes('id')).toBe('second-id')
+    })
+  })
+
+  describe('native transition path', () => {
+    const mountWithActivator = (props: Record<string, unknown> = {}) =>
+      mount(BPopover, {
+        // happy-dom has no layout, so the reference always counts as hidden: skip that check
+        props: {body: 'test', delay: 0, id: 'tip', noHide: true, ...props},
+        slots: {activator: activatorButton},
+        attachTo: document.body,
+      })
+
+    it('renders no Vue transition and toggles only the show class', async () => {
+      const wrapper = mountWithActivator()
+      const $div = wrapper.get('div.popover')
+      expect($div.classes()).not.toContain('show')
+      expect(($div.element as HTMLElement).style.display).toBe('none')
+
+      await wrapper.setProps({modelValue: true})
+      expect($div.classes()).toContain('show')
+      expect(($div.element as HTMLElement).style.display).not.toBe('none')
+      await flush()
+      expect(wrapper.emitted('shown')).toHaveLength(1)
+
+      await wrapper.setProps({modelValue: false})
+      expect($div.classes()).not.toContain('show')
+      // Still displayed until the fade ended
+      expect(($div.element as HTMLElement).style.display).not.toBe('none')
+      await flush()
+      expect(wrapper.emitted('hidden')).toHaveLength(1)
+      expect(($div.element as HTMLElement).style.display).toBe('none')
+    })
+
+    it('waits for the element transition before shown', async () => {
+      let finish!: () => void
+      const proto = HTMLElement.prototype as unknown as {getAnimations?: () => Animation[]}
+      const original = proto.getAnimations
+      proto.getAnimations = function (this: HTMLElement) {
+        if (!this.classList.contains('popover') || this.classList.contains('popover-instant'))
+          return []
+        const finished = new Promise<void>((resolve) => {
+          finish = resolve
+        })
+        return [
+          {finished, effect: {getComputedTiming: () => ({endTime: 150})}} as unknown as Animation,
+        ]
+      }
+      try {
+        const wrapper = mountWithActivator()
+        await wrapper.setProps({modelValue: true})
+        await flush()
+        expect(wrapper.emitted('show')).toHaveLength(1)
+        expect(wrapper.emitted('shown')).toBeUndefined()
+        finish()
+        await flush()
+        expect(wrapper.emitted('shown')).toHaveLength(1)
+      } finally {
+        if (original) proto.getAnimations = original
+        else delete proto.getAnimations
+      }
+    })
+
+    it('Escape hides it with trigger esc and consumes the key press', async () => {
+      const wrapper = mountWithActivator({modelValue: true})
+      await flush()
+      const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
+      const stop = vi.spyOn(event, 'stopPropagation')
+      document.body.dispatchEvent(event)
+      await flush()
+      expect(event.defaultPrevented).toBe(true)
+      expect(stop).toHaveBeenCalled()
+      const hidden = wrapper.emitted('hidden') as [{trigger: string | null}][]
+      expect(hidden).toHaveLength(1)
+      expect(hidden[0]?.[0].trigger).toBe('esc')
+      expect(wrapper.emitted('esc')).toBeUndefined()
+    })
+
+    it('Escape is left alone while hidden', async () => {
+      const wrapper = mountWithActivator()
+      const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
+      document.body.dispatchEvent(event)
+      await flush()
+      expect(event.defaultPrevented).toBe(false)
+      expect(wrapper.emitted('hide')).toBeUndefined()
+    })
+
+    it.each(['manual', 'noAutoClose'])('Escape does not hide with %s', async (prop) => {
+      const wrapper = mountWithActivator({modelValue: true, [prop]: true})
+      await flush()
+      const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
+      document.body.dispatchEvent(event)
+      await flush()
+      expect(event.defaultPrevented).toBe(false)
+      expect(wrapper.emitted('hide')).toBeUndefined()
+    })
+
+    it('sets aria-describedby on the slot activator while shown', async () => {
+      const wrapper = mountWithActivator()
+      const button = wrapper.get('button')
+      await wrapper.setProps({modelValue: true})
+      await flush()
+      expect(button.attributes('aria-describedby')).toBe('tip')
+      await wrapper.setProps({modelValue: false})
+      await flush()
+      expect(button.attributes('aria-describedby')).toBeUndefined()
+    })
+
+    it("adds to an activator prop element's own aria-describedby and removes only its id", async () => {
+      const button = document.createElement('button')
+      button.id = 'pop-activator'
+      button.setAttribute('aria-describedby', 'help')
+      document.body.appendChild(button)
+      const wrapper = mount(BPopover, {
+        props: {body: 'test', delay: 0, id: 'tip', noHide: true, activator: 'pop-activator'},
+        attachTo: document.body,
+      })
+      await wrapper.setProps({modelValue: true})
+      await flush()
+      expect(button.getAttribute('aria-describedby')).toBe('help tip')
+      await wrapper.setProps({modelValue: false})
+      await flush()
+      expect(button.getAttribute('aria-describedby')).toBe('help')
+      await wrapper.setProps({modelValue: true})
+      await flush()
+      wrapper.unmount()
+      expect(button.getAttribute('aria-describedby')).toBe('help')
+      button.remove()
     })
   })
 })

@@ -63,7 +63,7 @@ Each batch runs as an agent in its own git worktree under `.claude/worktrees/`, 
 | 1    | Feedback (alert, toast, spinner, badge, placeholder) | Feedback            | `bootstrap-v6-feedback`   | Merged as [#167](https://github.com/VividLemon/bootstrap-vue-next/pull/167) (`561b981f`) |
 | 1    | Navigation (nav, tabs, list group, pagination)       | Navigation          | `bootstrap-v6-navigation` | Merged as [#168](https://github.com/VividLemon/bootstrap-vue-next/pull/168) (`14641f1e`) |
 | 2    | Buttons                                              | Buttons             | —                         | Not started                                                                              |
-| 2    | Floating UI (popover, tooltip)                       | Floating UI         | —                         | Not started                                                                              |
+| 2    | Floating UI (popover, tooltip)                       | Floating UI         | `floating-ui-native`      | PR open                                                                                  |
 | 2    | Breadcrumb and card                                  | Breadcrumb and Card | —                         | Not started                                                                              |
 
 Both known merge overlaps (BNavForm between forms and navigation; `useTableHelpers.ts` between #179 and tables) were resolved in the merges.
@@ -87,6 +87,14 @@ Feedback batch follow-ups (from its report):
 - v6 `.alert` has no bottom margin, so consecutive alerts sit flush. Native behavior; mention it in the migration notes.
 - `showOnPause` is removed from `BAlert` / `BToast`: it never had an effect, because a paused countdown never hides the component.
 - Expect a merge conflict in `architecture/ARIA_VISIBILITY.md` (native/legacy table) with the floating UI batch.
+
+Floating UI batch follow-ups (from its report):
+
+- `BPopover` / `BTooltip` are on the native path. Migration notes: `shown` / `hidden` timing, no `fade` class, `titleClass` / `bodyClass` → `titleAttrs` / `bodyAttrs` (also as `v-b-popover` / `v-b-tooltip` object keys), Escape hides (trigger `'esc'`), `aria-describedby` on the trigger, and a trigger firing during a show in progress no longer emits a second `show`.
+- Escape is skipped for `manual` and `noAutoClose` popovers (the plan did not say; v6 has neither prop). Confirm or change.
+- The migration pages and their "After" fragments (`bpopover.md`, `btooltip.md`, `v-b-popover.md`, `v-b-tooltip.md`, `*DirectiveCustomClassAfter.html`, `PopoverVariantBSVN.vue`) still show `bodyClass` / `titleClass`; they are Phase 3.
+- `usePopover` / the orchestrator were not changed. For G1.2: popovers and tooltips rendered in `BOrchestrator` still sit in a `<TransitionGroup>` and get `teleport-disabled`.
+- `useLegacyShowHide` is now used by BModal (until #183), BOffcanvas and BDropdown only.
 
 Forms batch follow-ups (from its report):
 

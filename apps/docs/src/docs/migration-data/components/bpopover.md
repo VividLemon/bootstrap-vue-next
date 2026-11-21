@@ -22,6 +22,7 @@ match:
   - v-model
   - "{show: 100, hide: 300}"
   - fallback-placement
+  - target
 tags:
   - migration
   - components
@@ -153,9 +154,9 @@ The `delay` prop now defaults to `{show: 100, hide: 300}` instead of `50` for bo
 
 `fallback-placement` has been deprecated. Use the `noFlip` prop or configure custom middleware via the `floatingMiddleware` prop. See the [floating-ui documentation](https://floating-ui.com/docs/flip) for advanced placement control.
 
-### Target as Function
+### Target → Activator
 
-The ability for the `target` prop to accept a function has been deprecated. Use a template ref, element ID string, or querySelector string instead.
+The `target` prop is named `activator`, and the trigger element is preferably rendered in the `activator` slot, binding the slot's `props` on it: `<template #activator="{ props }"><BButton v-bind="props">…</BButton></template>`. The `activator` prop (a template ref, element ID string or querySelector string) remains for elements the slot can't render. It no longer accepts a function.
 
 ### \$root Events
 

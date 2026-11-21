@@ -7,8 +7,8 @@
         :boundary-padding="10"
         title="Constrained Popover"
       >
-        <template #target>
-          <BButton :color="{ theme: 'primary' }">Scroll to see boundary</BButton>
+        <template #activator="{ props }">
+          <BButton v-bind="props" :color="{ theme: 'primary' }">Scroll to see boundary</BButton>
         </template>
         This popover is constrained within its scrollable container
       </BPopover>

@@ -1,7 +1,21 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, describe, expect, it} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vitest'
+import {nextTick} from 'vue'
 import BTooltip from './BTooltip.vue'
+
+/** Let Vue patch and a few animation frames pass */
+const flush = async (frames = 3) => {
+  for (let i = 0; i < frames; i++) {
+    await nextTick()
+    await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)))
+  }
+  await nextTick()
+}
 import BPopover from '../BPopover/BPopover.vue'
+
+// The activator slot binds its `props` (ref, listeners, aria-describedby) on the trigger
+const activatorButton =
+  '<template #activator="{props}"><button v-bind="props">Test</button></template>'
 
 describe('tooltip', () => {
   enableAutoUnmount(afterEach)
@@ -118,13 +132,13 @@ describe('tooltip', () => {
     })
   })
 
-  describe('target slot', () => {
-    it('renders target slot content', () => {
+  describe('activator slot', () => {
+    it('renders activator slot content', () => {
       const wrapper = mount(BTooltip, {
         props: {modelValue: true},
-        slots: {target: '<button class="target-btn">Hover me</button>'},
+        slots: {activator: '<button class="activator-btn">Hover me</button>'},
       })
-      const $btn = wrapper.find('.target-btn')
+      const $btn = wrapper.find('.activator-btn')
       expect($btn.exists()).toBe(true)
       expect($btn.text()).toBe('Hover me')
     })
@@ -217,7 +231,7 @@ describe('tooltip', () => {
     it('forwards show event', async () => {
       const wrapper = mount(BTooltip, {
         props: {body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -231,7 +245,7 @@ describe('tooltip', () => {
     it('forwards show event on focus trigger', async () => {
       const wrapper = mount(BTooltip, {
         props: {body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -247,7 +261,7 @@ describe('tooltip', () => {
     it('defaults to hover and focus triggers', async () => {
       const wrapper = mount(BTooltip, {
         props: {body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -256,8 +270,9 @@ describe('tooltip', () => {
       await button.trigger('pointerenter')
       expect(wrapper.emitted('show')).toBeTruthy()
 
+      // Already showing: a second trigger joins the show in progress
       await button.trigger('focus')
-      expect((wrapper.emitted('show')?.length || 0) >= 2).toBeTruthy()
+      expect(wrapper.emitted('show')).toHaveLength(1)
 
       wrapper.unmount()
     })
@@ -265,7 +280,7 @@ describe('tooltip', () => {
     it('respects click prop', async () => {
       const wrapper = mount(BTooltip, {
         props: {click: true, body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -279,7 +294,7 @@ describe('tooltip', () => {
     it('respects manual prop to disable all triggers', async () => {
       const wrapper = mount(BTooltip, {
         props: {manual: true, body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -294,26 +309,38 @@ describe('tooltip', () => {
   })
 
   describe('classes', () => {
-    it('does not have fade class when noTransition is true', () => {
+    it('has the tooltip-instant class when noTransition is true', () => {
       const wrapper = mount(BTooltip, {props: {modelValue: true, noTransition: true}})
       const $div = wrapper.get('div.tooltip')
-      expect($div.classes()).not.toContain('fade')
+      expect($div.classes()).toContain('tooltip-instant')
     })
 
-    it('does not have fade class on initial mount with modelValue true', () => {
+    it('is instant on initial mount with modelValue true, then animates', async () => {
       // When modelValue is true on mount and initialAnimation is false (default),
-      // animation is skipped for the initial render
-      const wrapper = mount(BTooltip, {props: {modelValue: true}})
+      // the transition is skipped for the initial render
+      // happy-dom has no layout, so the reference always counts as hidden: skip that check
+      const wrapper = mount(BTooltip, {props: {modelValue: true, noHide: true}})
       const $div = wrapper.get('div.tooltip')
-      expect($div.classes()).not.toContain('fade')
+      expect($div.classes()).toEqual(expect.arrayContaining(['show', 'tooltip-instant']))
+      await flush()
+      expect($div.classes()).toContain('show')
+      expect($div.classes()).not.toContain('tooltip-instant')
     })
 
-    it('has fade class when initialAnimation is true', () => {
+    it('shows with a transition on mount when initialAnimation is true', async () => {
       const wrapper = mount(BTooltip, {
-        props: {modelValue: true, initialAnimation: true},
+        props: {modelValue: true, initialAnimation: true, delay: 0},
       })
       const $div = wrapper.get('div.tooltip')
-      expect($div.classes()).toContain('fade')
+      expect($div.classes()).not.toContain('tooltip-instant')
+      await nextTick()
+      expect($div.classes()).toContain('show')
+      expect($div.classes()).not.toContain('tooltip-instant')
+    })
+
+    it('never has the v5 fade class', () => {
+      const wrapper = mount(BTooltip, {props: {modelValue: true, initialAnimation: true}})
+      expect(wrapper.get('div.tooltip').classes()).not.toContain('fade')
     })
   })
 
@@ -362,6 +389,170 @@ describe('tooltip', () => {
       })
       const popover = wrapper.findComponent(BPopover)
       expect(popover.props('title')).toBe('test title')
+    })
+  })
+
+  describe('native transition path', () => {
+    const mountWithActivator = (props: Record<string, unknown> = {}) =>
+      mount(BTooltip, {
+        // happy-dom has no layout, so the reference always counts as hidden: skip that check
+        props: {body: 'test', delay: 0, id: 'tip', noHide: true, ...props},
+        slots: {activator: activatorButton},
+        attachTo: document.body,
+      })
+
+    it('renders no Vue transition and toggles only the show class', async () => {
+      const wrapper = mountWithActivator()
+      const $div = wrapper.get('div.tooltip')
+      expect($div.classes()).not.toContain('show')
+      expect(($div.element as HTMLElement).style.display).toBe('none')
+
+      await wrapper.setProps({modelValue: true})
+      expect($div.classes()).toContain('show')
+      expect(($div.element as HTMLElement).style.display).not.toBe('none')
+      await flush()
+      expect(wrapper.emitted('shown')).toHaveLength(1)
+
+      await wrapper.setProps({modelValue: false})
+      expect($div.classes()).not.toContain('show')
+      // Still displayed until the fade ended
+      expect(($div.element as HTMLElement).style.display).not.toBe('none')
+      await flush()
+      expect(wrapper.emitted('hidden')).toHaveLength(1)
+      expect(($div.element as HTMLElement).style.display).toBe('none')
+    })
+
+    it('waits for the element transition before shown', async () => {
+      let finish!: () => void
+      const proto = HTMLElement.prototype as unknown as {getAnimations?: () => Animation[]}
+      const original = proto.getAnimations
+      proto.getAnimations = function (this: HTMLElement) {
+        if (!this.classList.contains('tooltip') || this.classList.contains('tooltip-instant'))
+          return []
+        const finished = new Promise<void>((resolve) => {
+          finish = resolve
+        })
+        return [
+          {finished, effect: {getComputedTiming: () => ({endTime: 150})}} as unknown as Animation,
+        ]
+      }
+      try {
+        const wrapper = mountWithActivator()
+        await wrapper.setProps({modelValue: true})
+        await flush()
+        expect(wrapper.emitted('show')).toHaveLength(1)
+        expect(wrapper.emitted('shown')).toBeUndefined()
+        finish()
+        await flush()
+        expect(wrapper.emitted('shown')).toHaveLength(1)
+      } finally {
+        if (original) proto.getAnimations = original
+        else delete proto.getAnimations
+      }
+    })
+
+    it('Escape hides it with trigger esc and consumes the key press', async () => {
+      const wrapper = mountWithActivator({modelValue: true})
+      await flush()
+      const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
+      const stop = vi.spyOn(event, 'stopPropagation')
+      document.body.dispatchEvent(event)
+      await flush()
+      expect(event.defaultPrevented).toBe(true)
+      expect(stop).toHaveBeenCalled()
+      const hidden = wrapper.emitted('hidden') as [{trigger: string | null}][]
+      expect(hidden).toHaveLength(1)
+      expect(hidden[0]?.[0].trigger).toBe('esc')
+      expect(wrapper.emitted('esc')).toBeUndefined()
+    })
+
+    it('Escape is left alone while hidden', async () => {
+      const wrapper = mountWithActivator()
+      const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
+      document.body.dispatchEvent(event)
+      await flush()
+      expect(event.defaultPrevented).toBe(false)
+      expect(wrapper.emitted('hide')).toBeUndefined()
+    })
+
+    it.each(['manual', 'noAutoClose'])('Escape does not hide with %s', async (prop) => {
+      const wrapper = mountWithActivator({modelValue: true, [prop]: true})
+      await flush()
+      const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
+      document.body.dispatchEvent(event)
+      await flush()
+      expect(event.defaultPrevented).toBe(false)
+      expect(wrapper.emitted('hide')).toBeUndefined()
+    })
+
+    it('sets aria-describedby on the slot activator while shown', async () => {
+      const wrapper = mountWithActivator()
+      const button = wrapper.get('button')
+      await wrapper.setProps({modelValue: true})
+      await flush()
+      expect(button.attributes('aria-describedby')).toBe('tip')
+      await wrapper.setProps({modelValue: false})
+      await flush()
+      expect(button.attributes('aria-describedby')).toBeUndefined()
+    })
+
+    // An element given through the `activator` prop isn't rendered by us: our id is added to
+    // its own list and only our id is removed again
+    const mountWithActivatorProp = (props: Record<string, unknown> = {}) => {
+      const button = document.createElement('button')
+      button.id = 'tip-activator'
+      document.body.appendChild(button)
+      const wrapper = mount(BTooltip, {
+        props: {
+          body: 'test',
+          delay: 0,
+          id: 'tip',
+          noHide: true,
+          activator: 'tip-activator',
+          ...props,
+        },
+        attachTo: document.body,
+      })
+      return {wrapper, button}
+    }
+
+    it('sets aria-describedby on an activator prop element and keeps other ids', async () => {
+      const {wrapper, button} = mountWithActivatorProp()
+      button.setAttribute('aria-describedby', 'help')
+      await wrapper.setProps({modelValue: true})
+      await flush()
+      expect(button.getAttribute('aria-describedby')).toBe('help tip')
+      await wrapper.setProps({modelValue: false})
+      await flush()
+      expect(button.getAttribute('aria-describedby')).toBe('help')
+      wrapper.unmount()
+      button.remove()
+    })
+
+    it('removes aria-describedby from an activator prop element on unmount', async () => {
+      const {wrapper, button} = mountWithActivatorProp({modelValue: true})
+      await flush()
+      expect(button.getAttribute('aria-describedby')).toBe('tip')
+      wrapper.unmount()
+      expect(button.hasAttribute('aria-describedby')).toBe(false)
+      button.remove()
+    })
+
+    it('forwards every argument of the exposed methods', async () => {
+      const wrapper = mountWithActivator({modelValue: true})
+      await flush()
+      const vm = wrapper.vm as unknown as {
+        hide: (trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>
+        show: (resolveOnHide?: boolean) => Promise<boolean | string>
+      }
+      await expect(vm.hide('custom', true)).resolves.toBe('custom')
+      const hidden = wrapper.emitted('hidden') as [{trigger: string | null}][]
+      expect(hidden[0]?.[0].trigger).toBe('custom')
+      // show(true) resolves with the trigger of the hide that follows
+      const cycle = vm.show(true)
+      await flush()
+      void vm.hide('again', true)
+      await expect(cycle).resolves.toBe('again')
     })
   })
 })

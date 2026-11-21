@@ -2,13 +2,10 @@
   <!-- #region template -->
   <div class="d-flex gap-2">
     <BTooltip>
-      <template #target> <BButton> Hover Me </BButton></template>
-      I am tooltip <b>component</b> content using the <b>#target</b> slot!
-    </BTooltip>
-
-    <BButton id="overview-tooltip"> Hover Me </BButton>
-    <BTooltip target="overview-tooltip">
-      I am tooltip <b>component</b> content using the <b>target</b> prop!
+      <template #activator="{ props }">
+        <BButton v-bind="props">Hover Me</BButton>
+      </template>
+      I am tooltip <b>component</b> content!
     </BTooltip>
 
     <BButton v-b-tooltip.focus.top="'I am tooltip directive content!'"> Hover Me </BButton>

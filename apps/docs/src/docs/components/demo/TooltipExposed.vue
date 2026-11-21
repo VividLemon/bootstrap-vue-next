@@ -1,15 +1,15 @@
 <template>
   <div class="d-flex flex-column text-md-center">
-    <div class="p-2">
-      <BButton id="tooltip-expose" :color="{ theme: 'primary' }">I have a tooltip</BButton>
-    </div>
 
     <div class="p-2">
       <BButton class="mx-2" @click="show">Show</BButton>
       <BButton class="mx-2" @click="hide">Hide</BButton>
       <BButton class="mx-2" @click="toggle">Toggle</BButton>
 
-      <BTooltip ref="myTooltip" v-model="model" target="tooltip-expose" title="Tooltip">
+      <BTooltip ref="myTooltip" v-model="model" title="Tooltip">
+        <template #activator="{ props }">
+          <BButton v-bind="props" :color="{ theme: 'primary' }">I have a tooltip</BButton>
+        </template>
         Hello <strong>World!</strong>
       </BTooltip>
     </div>

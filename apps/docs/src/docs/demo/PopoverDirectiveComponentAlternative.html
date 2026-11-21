@@ -5,12 +5,13 @@
 
 <!-- #region bsvn -->
 <!-- BSVN component (recommended for complex cases) -->
-<BButton id="btn">Button</BButton>
 <BPopover
-  target="btn"
   placement="top-start"
   hover
 >
+  <template #activator="{ props }">
+    <BButton v-bind="props">Button</BButton>
+  </template>
   <template #title>Custom Title</template>
   <div>
     <p>Rich content with <strong>HTML</strong></p>

@@ -35,9 +35,17 @@ export default {
           description: 'Content for the tooltip body.',
           scope: showHideSlotsData,
         },
-        target: {
-          description: 'Content for the target or trigger element.',
-          scope: showHideSlotsData,
+        activator: {
+          description:
+            'The element that opens the tooltip. Bind `props` on it with `v-bind="props"`.',
+          scope: {
+            ...showHideSlotsData,
+            props: {
+              type: 'ActivatorProps',
+              description:
+                'Bind on the activator element with `v-bind="props"`: its ref, the listeners for the active triggers and `aria-describedby` while the tooltip is on screen',
+            },
+          },
         },
       } satisfies SlotRecord<keyof BTooltipSlots>,
       exposed: {

@@ -1,50 +1,45 @@
 <template>
-  <span :id="computedId + '_placeholder'" ref="_placeholder" style="display: none" />
-  <slot name="target" v-bind="sharedSlots" />
+  <slot name="activator" v-bind="activatorSlotData" />
   <ConditionalTeleport
     :to="props.teleportTo"
     :disabled="!props.teleportTo || props.teleportDisabled"
   >
-    <Transition
-      v-if="renderRef || contentShowing"
-      v-bind="transitionProps"
-      :appear="modelValue || props.visible"
+    <div
+      v-if="contentShowing"
+      v-show="isActive && !hidden"
+      :id="computedId"
+      v-bind="attrs"
+      ref="_element"
+      :class="computedClasses"
+      role="tooltip"
+      tabindex="-1"
+      :style="floatingStyles"
     >
       <div
-        v-show="showRef && !hidden"
-        :id="computedId"
-        v-bind="attrs"
-        ref="_element"
-        :class="computedClasses"
-        role="tooltip"
-        tabindex="-1"
-        :style="floatingStyles"
-      >
-        <div
-          ref="_arrow"
-          :class="`${props.tooltip ? 'tooltip' : 'popover'}-arrow`"
-          :style="arrowStyle"
-          data-popper-arrow
-        />
-        <div ref="_content" class="overflow-auto b-floating-size" :style="sizeStyles">
-          <template v-if="props.title || slots.title">
-            <div
-              class="position-sticky top-0"
-              :class="[props.tooltip ? 'tooltip-inner' : 'popover-header', props.titleClass]"
-            >
-              <slot name="title" v-bind="sharedSlots">
-                {{ props.title }}
-              </slot>
-            </div>
-          </template>
-          <template v-if="(props.tooltip && !slots.title && !props.title) || !props.tooltip">
-            <div :class="[props.tooltip ? 'tooltip-inner' : 'popover-body', props.bodyClass]">
-              <slot v-bind="sharedSlots">{{ props.body }}{{ attrs.content }}</slot>
-            </div>
-          </template>
-        </div>
+        ref="_arrow"
+        :class="`${props.tooltip ? 'tooltip' : 'popover'}-arrow`"
+        :style="arrowStyle"
+        data-popper-arrow
+      />
+      <div ref="_content" class="overflow-auto b-floating-size" :style="sizeStyles">
+        <template v-if="props.title || slots.title">
+          <div
+            class="position-sticky top-0"
+            :class="props.tooltip ? 'tooltip-inner' : 'popover-header'"
+            v-bind="props.titleAttrs"
+          >
+            <slot name="title" v-bind="sharedSlots">
+              {{ props.title }}
+            </slot>
+          </div>
+        </template>
+        <template v-if="(props.tooltip && !slots.title && !props.title) || !props.tooltip">
+          <div :class="props.tooltip ? 'tooltip-inner' : 'popover-body'" v-bind="props.bodyAttrs">
+            <slot v-bind="sharedSlots">{{ props.body }}{{ attrs.content }}</slot>
+          </div>
+        </template>
       </div>
-    </Transition>
+    </div>
   </ConditionalTeleport>
 </template>
 
@@ -67,8 +62,9 @@ import {
   size as sizeMiddleware,
   useFloating,
 } from '@floating-ui/vue'
-import {onClickOutside, useToNumber} from '@vueuse/core'
+import {onClickOutside, useEventListener, useThrottleFn, useToNumber} from '@vueuse/core'
 import {
+  type ComponentPublicInstance,
   computed,
   type ComputedRef,
   type CSSProperties,
@@ -77,6 +73,7 @@ import {
   onBeforeUnmount,
   onMounted,
   ref,
+  shallowRef,
   toValue,
   useAttrs,
   useTemplateRef,
@@ -85,12 +82,20 @@ import {
 import {useDefaults} from '../../composables/useDefaults'
 import {useMouse} from '../../composables/useMouse'
 import {useId} from '../../composables/useId'
-import type {BPopoverEmits, BPopoverProps, BPopoverSlots, ShowHideSlotsData} from '../../types'
+import type {
+  ActivatorProps,
+  ActivatorSlotsData,
+  BPopoverEmits,
+  BPopoverProps,
+  BPopoverSlots,
+  ShowHideSlotsData,
+} from '../../types'
 import {isBoundary, isRootBoundary, resolveBootstrapPlacement} from '../../utils/floatingUi'
 import {getElement} from '../../utils/getElement'
 import {warn} from '../../utils/console'
 import ConditionalTeleport from '../ConditionalTeleport.vue'
-import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
+import {useCssTransition} from '../../composables/useCssTransition'
+import {useShowHide} from '../../composables/useShowHide'
 import {getSafeDocument, getSafeWindow} from '../../utils/dom'
 
 defineOptions({
@@ -100,7 +105,7 @@ defineOptions({
 const _props = withDefaults(defineProps<Omit<BPopoverProps, 'modelValue'>>(), {
   boundary: 'clippingAncestors',
   boundaryPadding: undefined,
-  bodyClass: undefined,
+  bodyAttrs: undefined,
   click: undefined,
   closeOnHide: false,
   focus: undefined,
@@ -129,9 +134,9 @@ const _props = withDefaults(defineProps<Omit<BPopoverProps, 'modelValue'>>(), {
   realtime: false,
   reference: null,
   strategy: 'absolute',
-  target: null,
+  activator: null,
   title: undefined,
-  titleClass: undefined,
+  titleAttrs: undefined,
   show: false,
   tooltip: false,
   visible: false,
@@ -152,10 +157,22 @@ const hidden = ref(false)
 const floatingElement = useTemplateRef('_element')
 const content = useTemplateRef('_content')
 const arrow = useTemplateRef('_arrow')
-const placeholder = useTemplateRef('_placeholder')
-
-const referenceElement = ref<HTMLElement | null>(null)
-const triggerElement = ref<HTMLElement | null>(null)
+// The activator is the element that opens the popover: the one the `activator` slot renders
+// (it binds `props`, so we get it through a function ref) or the `activator` prop's element
+const slotActivatorElement = shallowRef<HTMLElement | null>(null)
+const propActivatorElement = shallowRef<HTMLElement | null>(null)
+const triggerElement = computed(() =>
+  props.activator ? propActivatorElement.value : slotActivatorElement.value
+)
+const propReferenceElement = shallowRef<HTMLElement | null>(null)
+/** Positioning anchor: the `reference` prop, else the activator */
+const referenceElement = computed(() =>
+  props.reference ? propReferenceElement.value : triggerElement.value
+)
+const setSlotActivator = (el: Element | ComponentPublicInstance | null) => {
+  const node = el === null || el instanceof Element ? el : (el.$el as Node | null)
+  slotActivatorElement.value = node instanceof HTMLElement ? node : null
+}
 
 const isAutoPlacement = computed(() => props.placement.startsWith('auto'))
 const offsetNumber = useToNumber(() => props.offset ?? Number.NaN)
@@ -257,55 +274,55 @@ const {floatingStyles, middlewareData, placement, update} = useFloating(
 
 const arrowStyle = ref<CSSProperties>({position: 'absolute'})
 
+// Keeps the position in sync with the reference while anything is on screen
 let cleanup: ReturnType<typeof autoUpdate> | undefined
-const {
-  showRef,
-  hide,
-  show,
-  toggle,
-  throttleHide,
-  computedNoAnimation,
-  transitionProps,
-  contentShowing,
-  isVisible,
-  isActive,
-  renderRef,
-  localTemporaryHide,
-  setLocalTemporaryHide,
-} = useLegacyShowHide(
+const stopAutoUpdate = () => {
+  cleanup?.()
+  cleanup = undefined
+}
+const startAutoUpdate = () => {
+  update()
+  void nextTick(() => {
+    if (cleanup || !isActive.value || !referenceElement.value || !floatingElement.value) return
+    cleanup = autoUpdate(
+      referenceElement.value as ReferenceElement,
+      floatingElement.value as HTMLElement,
+      update,
+      {animationFrame: props.realtime}
+    )
+  })
+}
+
+// Bootstrap v6 fades tooltips and popovers in CSS: `.show` is toggled and `shown` / `hidden`
+// fire once the element's own transition ended. `.popover-instant` / `.tooltip-instant` skip it.
+const {run} = useCssTransition(floatingElement)
+const {state, visible, isActive, instant, contentShowing, show, hide, toggle} = useShowHide(
   {modelValue, props, emit: emit as EmitFn, element: floatingElement, id: computedId},
   {
-    showFn: () => {
-      update()
-      nextTick(() => {
-        cleanup = autoUpdate(
-          referenceElement.value as ReferenceElement,
-          floatingElement.value as HTMLElement,
-          update,
-          {animationFrame: props.realtime}
-        )
-      })
-    },
-    hideFn: () => {
-      if (cleanup) {
-        cleanup()
-        cleanup = undefined
-      }
+    transition: (value) => {
+      if (value) startAutoUpdate()
+      return run()
     },
   }
 )
+watch(isActive, (value) => {
+  if (!value) stopAutoUpdate()
+})
+
+/** Shown, or on its way to being shown (also during the show delay) */
+const isShowing = () => state.value === 'showing' || state.value === 'shown'
+
+const throttleHide = useThrottleFn((trigger?: string) => hide(trigger), 500)
 
 watch(middlewareData, (newValue) => {
   if (!props.noHide) {
-    if (newValue.hide?.referenceHidden && !hidden.value && showRef.value) {
+    if (newValue.hide?.referenceHidden && !hidden.value && visible.value) {
       if (props.closeOnHide && !props.noAutoClose && !props.manual) {
-        throttleHide('close-on-hide')
+        void throttleHide('close-on-hide')
       } else {
-        setLocalTemporaryHide(true)
         hidden.value = true
       }
-    } else if (localTemporaryHide.value && !newValue.hide?.referenceHidden) {
-      setLocalTemporaryHide(false)
+    } else if (hidden.value && !newValue.hide?.referenceHidden) {
       hidden.value = false
     }
   }
@@ -325,8 +342,8 @@ const computedClasses = computed(() => {
     type,
     `b-${type}`,
     {
-      show: isVisible.value && !hidden.value,
-      fade: !computedNoAnimation.value,
+      show: visible.value && !hidden.value,
+      [`${type}-instant`]: props.noTransition || instant.value,
       [`bs-${type}-${resolveBootstrapPlacement(placement.value)}`]: placement.value !== undefined,
     },
   ]
@@ -370,7 +387,7 @@ const tryHide = (e?: Readonly<Event>) => {
       (!computedTriggers.value.focus || !triggerElement.value?.contains(doc.activeElement))) ||
     (props.noninteractive && triggerIsOutside)
   ) {
-    hide(e?.type)
+    void hide(e?.type)
   } else {
     if (looptimeout) clearTimeout(looptimeout)
     looptimeout = setTimeout(() => {
@@ -379,7 +396,7 @@ const tryHide = (e?: Readonly<Event>) => {
   }
 }
 
-watch(isVisible, () => {
+watch(visible, () => {
   update()
 })
 
@@ -390,15 +407,15 @@ defineExpose({
 })
 
 const localToggle = (e: Event) => {
-  if (showRef.value) {
-    hide(e.type === 'click' ? 'click' : 'toggle')
+  if (isShowing()) {
+    void hide(e.type === 'click' ? 'click' : 'toggle')
   } else {
-    show()
+    void show()
   }
 }
 
 const localShow = () => {
-  show()
+  void show()
 }
 
 // Compute final trigger configuration
@@ -421,65 +438,60 @@ const computedTriggers = computed(() => {
   return {hover: true, focus: true, click: false}
 })
 
+// Listeners for the `activator` prop's element. The slot's element gets the same handlers
+// declaratively through `props` (see `activatorProps`)
+let boundElement: HTMLElement | null = null
 const bind = () => {
-  // TODO: is this the best way to bind the events?
-  // we place a span and get the next element sibling for the listeners
-  if (props.target) {
-    const elem = getElement(toValue(props.target))
+  if (props.activator) {
+    const elem = getElement(toValue(props.activator))
     if (elem) {
-      triggerElement.value = elem
+      propActivatorElement.value = elem
     } else {
-      warn('BPopover', 'Target element not found', props.target)
+      warn('BPopover', 'Activator element not found', props.activator)
     }
-  } else {
-    triggerElement.value = placeholder.value?.nextElementSibling as HTMLElement
   }
   if (props.reference) {
     const elem = getElement(toValue(props.reference))
     if (elem) {
-      referenceElement.value = elem
+      propReferenceElement.value = elem
     } else {
       warn('BPopover', 'Reference element not found', props.reference)
     }
-  } else {
-    referenceElement.value = triggerElement.value
   }
-  if (!triggerElement.value || props.manual) {
-    return
-  }
+  const el = propActivatorElement.value
+  if (!props.activator || !el || props.manual) return
 
   const triggers = computedTriggers.value
-
   if (triggers.click) {
-    triggerElement.value.addEventListener('click', localToggle)
+    el.addEventListener('click', localToggle)
   }
-
   if (triggers.hover) {
-    triggerElement.value.addEventListener('pointerenter', localShow)
-    triggerElement.value.addEventListener('pointerleave', tryHide)
+    el.addEventListener('pointerenter', localShow)
+    el.addEventListener('pointerleave', tryHide)
   }
-
   if (triggers.focus) {
-    triggerElement.value.addEventListener('focus', localShow)
-    triggerElement.value.addEventListener('blur', tryHide)
+    el.addEventListener('focus', localShow)
+    el.addEventListener('blur', tryHide)
   }
+  boundElement = el
 }
 
 const unbind = () => {
-  if (triggerElement.value) {
-    triggerElement.value.removeEventListener('click', localToggle)
-    triggerElement.value.removeEventListener('pointerenter', localShow)
-    triggerElement.value.removeEventListener('pointerleave', tryHide)
-    triggerElement.value.removeEventListener('focus', localShow)
-    triggerElement.value.removeEventListener('blur', tryHide)
-  }
+  const el = boundElement
+  boundElement = null
+  if (!el) return
+  el.removeEventListener('click', localToggle)
+  el.removeEventListener('pointerenter', localShow)
+  el.removeEventListener('pointerleave', tryHide)
+  el.removeEventListener('focus', localShow)
+  el.removeEventListener('blur', tryHide)
 }
 
 onClickOutside(
   floatingElement,
   () => {
-    if (showRef.value && computedTriggers.value.click && !props.noAutoClose && !props.manual)
-      hide('click-outside')
+    if (isShowing() && computedTriggers.value.click && !props.noAutoClose && !props.manual)
+      void hide('click-outside')
   },
   {ignore: [triggerElement]}
 )
@@ -490,13 +502,14 @@ watch(
     () => props.hover,
     () => props.focus,
     () => props.manual,
-    () => props.target,
+    () => props.activator,
     () => props.reference,
   ],
   () => {
     unbind()
+    if (!props.activator) propActivatorElement.value = null
+    if (!props.reference) propReferenceElement.value = null
     bind()
-    // update()
   }
 )
 
@@ -505,9 +518,74 @@ const sharedSlots = computed<ShowHideSlotsData>(() => ({
   show,
   hide,
   id: computedId.value,
-  visible: isVisible.value,
+  visible: visible.value,
   active: isActive.value,
 }))
+
+// What the `activator` slot binds on its element: the ref, the trigger listeners and
+// `aria-describedby` while the popover is on screen. With an `activator` prop, that element is
+// the activator, so the slot's element gets nothing to act on
+const activatorProps = computed<ActivatorProps>(() => {
+  if (props.activator) return {ref: setSlotActivator}
+  const triggers = computedTriggers.value
+  return {
+    'ref': setSlotActivator,
+    'aria-describedby': isActive.value ? computedId.value : undefined,
+    ...(triggers.click ? {onClick: localToggle} : {}),
+    ...(triggers.hover ? {onPointerenter: localShow, onPointerleave: tryHide} : {}),
+    ...(triggers.focus ? {onFocus: localShow, onBlur: tryHide} : {}),
+  }
+})
+const activatorSlotData = computed<ActivatorSlotsData>(() => ({
+  ...sharedSlots.value,
+  props: activatorProps.value,
+}))
+
+// Escape dismisses the tooltip or popover (WCAG 1.4.13), wherever focus is. The key press is
+// consumed, so inside a dialog the first Escape closes this and the next one the dialog.
+// Listening in the capture phase runs this before the dialog's own handler
+useEventListener(
+  () => getSafeDocument(),
+  'keydown',
+  (event: KeyboardEvent) => {
+    if (event.key !== 'Escape' || !isShowing() || props.manual || props.noAutoClose) return
+    event.preventDefault()
+    event.stopPropagation()
+    void hide('esc', true)
+  },
+  {capture: true}
+)
+
+// The `activator` prop's element is described by the tooltip / popover while it is on screen.
+// It isn't rendered by us, so the id is added to (and later removed from) its own
+// `aria-describedby` list. The slot's element gets it through `activatorProps` instead
+const describedBy = 'aria-describedby'
+const removeDescribedBy = (el: HTMLElement) => {
+  const rest = (el.getAttribute(describedBy) ?? '')
+    .split(/\s+/)
+    .filter((token) => token && token !== computedId.value)
+  if (rest.length > 0) {
+    el.setAttribute(describedBy, rest.join(' '))
+  } else {
+    el.removeAttribute(describedBy)
+  }
+}
+const addDescribedBy = (el: HTMLElement) => {
+  const tokens = (el.getAttribute(describedBy) ?? '').split(/\s+/).filter(Boolean)
+  if (!tokens.includes(computedId.value)) tokens.push(computedId.value)
+  el.setAttribute(describedBy, tokens.join(' '))
+}
+const describedElement = computed(() =>
+  isActive.value && props.activator ? propActivatorElement.value : null
+)
+watch(
+  describedElement,
+  (el, oldEl) => {
+    if (oldEl) removeDescribedBy(oldEl)
+    if (el) addDescribedBy(el)
+  },
+  {flush: 'post'}
+)
 
 onMounted(() => {
   bind()
@@ -516,5 +594,9 @@ onMounted(() => {
   })
 })
 
-onBeforeUnmount(unbind)
+onBeforeUnmount(() => {
+  unbind()
+  stopAutoUpdate()
+  if (describedElement.value) removeDescribedBy(describedElement.value)
+})
 </script>

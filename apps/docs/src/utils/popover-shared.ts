@@ -1,8 +1,8 @@
-import type {BPopoverEmits, BPopoverProps} from 'bootstrap-vue-next'
-import {type EmitRecord, type EmitReference, type PropRecord, type PropReference} from '../types'
-import {buildCommonProps} from './commonProps'
-import {pick} from './objectUtils'
-import {bvTriggerableEventArg, showHideEmits, showHideProps} from './showHideData'
+import type { BPopoverEmits, BPopoverProps } from 'bootstrap-vue-next'
+import { type EmitRecord, type EmitReference, type PropRecord, type PropReference } from '../types'
+import { buildCommonProps } from './commonProps'
+import { pick } from './objectUtils'
+import { bvTriggerableEventArg, showHideEmits, showHideProps } from './showHideData'
 
 export const popoverSharedProps = (type: string): PropRecord<keyof BPopoverProps> => {
   const clone = structuredClone(sharedProps) as Record<string, PropReference>
@@ -15,6 +15,12 @@ export const popoverSharedProps = (type: string): PropRecord<keyof BPopoverProps
 }
 
 const sharedProps = {
+  activator: {
+    type: 'string | ComponentPublicInstance | HTMLElement | null',
+    default: null,
+    description:
+      'The element that opens the {component}, for elements you do not render in the `activator` slot (prefer the slot). Also the element the {component} is anchored to, unless `reference` is defined.',
+  },
   boundary: {
     type: 'Boundary | RootBoundary',
     default: 'clippingAncestors',
@@ -124,17 +130,11 @@ const sharedProps = {
     type: 'string | ComponentPublicInstance | HTMLElement | null',
     default: null,
     description:
-      'The reference element to which the {component} is anchored. If not specified, the {component} will be positioned relative to the target element.',
+      'The reference element to which the {component} is anchored. If not specified, the {component} is positioned relative to the activator.',
   },
   strategy: {
     type: 'Strategy',
     default: 'absolute',
-  },
-  target: {
-    type: 'string | ComponentPublicInstance | HTMLElement | null ',
-    default: null,
-    description:
-      'The trigger element to invoke the {component} as well as the reference element to which the {component} is anchored, unless `reference` is defined.',
   },
   teleportDisabled: {
     type: 'boolean',
@@ -165,12 +165,18 @@ const sharedProps = {
         default: 'top',
       },
     }),
-    ['bodyClass', 'id', 'placement', 'title', 'titleClass']
+    ['bodyAttrs', 'id', 'placement', 'title'],
   ),
+  titleAttrs: {
+    type: 'Readonly<AttrsValue>',
+    default: undefined,
+    description:
+      'Attributes to be applied to the title of the {component}. `class` and `style` are merged',
+  },
 } satisfies PropRecord<keyof BPopoverProps>
 
 export const popoverSharedEmits = (
-  type: string
+  type: string,
 ): EmitRecord<keyof BPopoverEmits | 'update:model-value'> => {
   const clone = structuredClone(sharedEmits) as Record<string, EmitReference>
   for (const key in clone) {
@@ -185,7 +191,7 @@ export const popoverSharedEmits = (
         ) {
           clone[key].args[argKey].description = clone[key].args[argKey].description.replace(
             /\{component\}/g,
-            type
+            type,
           )
         }
       }
@@ -196,13 +202,13 @@ export const popoverSharedEmits = (
 
 const sharedEmits = {
   ...showHideEmits,
-  'blur': {
+  blur: {
     description: 'Emitted when the target element loses focus.',
     args: {
       value: bvTriggerableEventArg,
     },
   },
-  'click': {
+  click: {
     description: 'Emitted when the {component} is hidden by a click on the trigger element.',
     args: {
       value: bvTriggerableEventArg,
@@ -220,7 +226,7 @@ const sharedEmits = {
       value: bvTriggerableEventArg,
     },
   },
-  'pointerleave': {
+  pointerleave: {
     description:
       'Emitted when the pointer leaves the target element, but not when leaving the popover element.',
     args: {

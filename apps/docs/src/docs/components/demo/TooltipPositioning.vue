@@ -12,8 +12,8 @@
           :key="placement"
           :placement="placement"
         >
-          <template #target>
-            <BButton>{{ placement }}</BButton>
+          <template #activator="{ props }">
+            <BButton v-bind="props">{{ placement }}</BButton>
           </template>
           I am tooltip <b>component</b> content!
         </BTooltip>
@@ -28,8 +28,8 @@
         class="d-grid gap-2"
       >
         <BTooltip :placement="placement">
-          <template #target>
-            <BButton>{{ placement }}</BButton>
+          <template #activator="{ props }">
+            <BButton v-bind="props">{{ placement }}</BButton>
           </template>
           I am tooltip <b>component</b> content!
         </BTooltip>
