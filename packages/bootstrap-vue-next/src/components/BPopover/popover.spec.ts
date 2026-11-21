@@ -2,6 +2,7 @@ import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it, vi} from 'vitest'
 import {h, nextTick} from 'vue'
 import BPopover from './BPopover.vue'
+import BButton from '../BButton/BButton.vue'
 
 // The activator slot binds its `props` (ref, listeners, aria-describedby) on the trigger
 const activatorButton =
@@ -457,6 +458,23 @@ describe('popover', () => {
       await wrapper.setProps({modelValue: false})
       await flush()
       expect($btn.attributes('aria-describedby')).toBeUndefined()
+      wrapper.unmount()
+    })
+
+    it('resolves a component rendered in the activator slot to its root element', async () => {
+      const wrapper = mount(BPopover, {
+        props: {id: 'pop-btn', delay: 0, noHide: true, click: true},
+        slots: {
+          activator: (scope: {props: Record<string, unknown>}) =>
+            h(BButton, scope.props, () => 'Go'),
+        },
+        attachTo: document.body,
+      })
+      const $btn = wrapper.get('button')
+      await $btn.trigger('click')
+      await flush()
+      expect(wrapper.emitted('show')).toHaveLength(1)
+      expect($btn.attributes('aria-describedby')).toBe('pop-btn')
       wrapper.unmount()
     })
 
