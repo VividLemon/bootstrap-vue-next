@@ -31,9 +31,9 @@ const sharedSlots: SlotScopeReference = {
     description: "Hides the dialog with `trigger = 'close'`",
   },
   hide: {
-    type: '(trigger?: string, value?: unknown) => void',
+    type: '(trigger?: string, value?: unknown) => Promise<boolean | string>',
     description:
-      'Hides the dialog. `trigger` is passed to the `hide` and `hidden` events, `value` becomes the exposed `returnValue`',
+      "Hides the dialog. `trigger` is passed to the `hide` and `hidden` events, `value` becomes the exposed `returnValue`. Resolves with the trigger (or `''`) once hidden, `'hide-prevented'` when prevented, or `false` when interrupted by a newer show/hide",
   },
   id: {
     type: 'string',
@@ -45,12 +45,13 @@ const sharedSlots: SlotScopeReference = {
       "Emits the cancelable `ok` event, then hides the dialog with `trigger = 'ok'`. `value` becomes the exposed `returnValue`",
   },
   show: {
-    type: '() => void',
-    description: 'Shows the dialog',
+    type: '() => Promise<boolean | string>',
+    description:
+      "Shows the dialog. Resolves `true` once shown, `'show-prevented'` when prevented, or `false` when interrupted by a newer show/hide. Takes no arguments",
   },
   toggle: {
-    type: '() => void',
-    description: 'Toggles the dialog',
+    type: '() => Promise<boolean | string>',
+    description: 'Shows or hides the dialog. Resolves like `show` / `hide`. Takes no arguments',
   },
   visible: {
     type: 'boolean',
