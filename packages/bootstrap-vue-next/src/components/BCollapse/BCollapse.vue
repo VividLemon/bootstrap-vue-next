@@ -80,8 +80,8 @@ const computedStyle = computed(() =>
 )
 
 const sharedSlots = computed<ShowHideSlotsData>(() => ({
-  toggle,
-  show,
+  toggle: () => toggle(),
+  show: () => show(),
   hide,
   id: computedId.value,
   visible: visible.value,

@@ -18,9 +18,19 @@ type TimeRange = {start: TimeValue | undefined; end: TimeValue | undefined}
 
 export interface ShowHideSlotsData {
   id: string
-  show: () => void
-  hide: (trigger?: string, noTriggerEmit?: boolean) => void
-  toggle: () => void
+  /**
+   * Shows the component. Resolves `true` once shown, `'show-prevented'` when prevented, or `false`
+   * when interrupted by a newer show / hide. Takes no arguments, so `@click="show"` is safe; use
+   * the exposed `show(true)` through a template ref to wait for the next hide
+   */
+  show: () => Promise<boolean | string>
+  /**
+   * Hides the component. Resolves with the trigger (or `''`) once hidden, `'hide-prevented'` when
+   * prevented, or `false` when interrupted by a newer show / hide
+   */
+  hide: (trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>
+  /** Shows or hides the component; resolves like `show` / `hide`. Takes no arguments */
+  toggle: () => Promise<boolean | string>
   active: boolean
   visible: boolean
 }

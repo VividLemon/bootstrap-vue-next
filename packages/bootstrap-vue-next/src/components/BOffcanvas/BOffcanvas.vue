@@ -305,8 +305,8 @@ const sharedSlots = computed<BOffcanvasSlotsData>(() => ({
   visible: isVisible.value,
   placement: props.placement,
   hide,
-  show,
-  toggle,
+  show: () => show(),
+  toggle: () => toggle(),
   id: computedId.value,
   active: trapActive.value,
 }))

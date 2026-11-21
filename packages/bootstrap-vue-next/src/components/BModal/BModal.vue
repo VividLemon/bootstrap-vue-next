@@ -438,8 +438,8 @@ const sharedSlots = computed<BModalSlotsData>(() => ({
     hide('close')
   },
   hide,
-  show,
-  toggle,
+  show: () => show(),
+  toggle: () => toggle(),
   ok: () => {
     hide('ok')
   },

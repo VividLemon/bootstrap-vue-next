@@ -44,7 +44,7 @@
             type="button"
             :aria-expanded="toggleVisible ? 'true' : 'false'"
             :aria-controls="computedId"
-            @click="slotToggle"
+            @click="slotToggle()"
           >
             <slot name="title"> {{ props.title }} </slot>
           </button>
