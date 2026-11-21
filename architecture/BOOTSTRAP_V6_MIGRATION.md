@@ -8,6 +8,7 @@ It is the single source of truth for the migration: implementation work follows 
 - Branch: `bootstrap-v6`
 - Breaking changes are allowed and expected. Do not add backwards-compatible aliases, mappings or deprecated shims unless a section below says so.
 - Verify every class and CSS variable against `packages/bootstrap-vue-next/node_modules/bootstrap/dist/css/bootstrap.css` before using it.
+- **Every breaking change is recorded in [`BOOTSTRAP_V6_BREAKING_CHANGES.md`](./BOOTSTRAP_V6_BREAKING_CHANGES.md)**, one old → new row per change, by the PR that makes it. That ledger is the source for the user-facing migration notes and for the bootstrap-vue-next v1 → next migration skills, so a change missing from it will be missing for users.
 - Breaking-change notes for users are written into `apps/docs/src/docs/migration-data/components/*.md` (v5→v6 notes are deliberately kept together with the BootstrapVue→BootstrapVueNext notes for now; they will be split out later by comparing the git history).
 
 ## Status
@@ -100,7 +101,7 @@ Forms batch follow-ups (from its report):
 
 1. Start each batch from the current `origin/bootstrap-v6` in its own worktree, with the batch agent instructions below.
 2. When a batch's checks pass, push its branch and open a PR into `bootstrap-v6`.
-3. After the PR merges, update this section and the Status table.
+3. After the PR merges, update this section and the Status table, and check that its breaking changes are in [`BOOTSTRAP_V6_BREAKING_CHANGES.md`](./BOOTSTRAP_V6_BREAKING_CHANGES.md) (move its entry out of "Pending").
 4. Order: wave 2, then the show/hide machine (S1) and the new components (see `BOOTSTRAP_V6_NEW_COMPONENTS.md`), then Phase 3 (migration docs), then the cleanup section, then [Post-migration](#post-migration-api-docs-generated-from-source).
 
 ### Required checks
@@ -116,9 +117,9 @@ Every batch agent receives these instructions plus its batch's components and pl
 
 1. **Base check first.** Worktrees for this project have been created from `main` by mistake. Run `git merge-base --is-ancestor origin/bootstrap-v6 HEAD`; if it fails and there are no commits yet, `git reset --hard origin/bootstrap-v6`. Then `pnpm install --frozen-lockfile --ignore-scripts`.
 2. **Read** `AGENTS.md`, this plan (implement exactly what it says for the batch, including the cross-cutting rules), and `architecture/ARIA_VISIBILITY.md` plus the JSDoc in `useShowHide.ts` / `useCssTransition.ts` when moving a component to the native transition path. Bootstrap v6 references: `packages/bootstrap-vue-next/node_modules/bootstrap/dist/css/bootstrap.css`, `scss/`, `js/src/`, and https://getbootstrap.com/docs/6.0/. The original research reports are lost, so re-derive details from the code and v6 sources; when something wasn't anticipated, follow v6 native behavior, make the smallest correct change, and report it.
-3. **Rules.** No compatibility shims. Apply the part attrs rule to every in-scope component (specs for the class merge). Update specs, docs `*.data.ts`, `apps/docs/src/utils/*.ts`, docs pages and demos, and playground usages. Do not write `migration-data` pages or edit this plan. Keep `ComponentProps.ts` edits inside the batch's interfaces, line-local. No `git commit --no-verify`.
+3. **Rules.** No compatibility shims. Apply the part attrs rule to every in-scope component (specs for the class merge). Update specs, docs `*.data.ts`, `apps/docs/src/utils/*.ts`, docs pages and demos, and playground usages. Do not write `migration-data` pages or edit this plan, except: add a row to [`BOOTSTRAP_V6_BREAKING_CHANGES.md`](./BOOTSTRAP_V6_BREAKING_CHANGES.md) for every breaking change (format and rules at the top of that file). Keep `ComponentProps.ts` edits inside the batch's interfaces, line-local. No `git commit --no-verify`.
 4. **Verify** with the required checks above, plus a headless Chromium check (installed `playwright-core`) where behavior or layout changed — via the package dev server on port 5174 with a temporary `src/App.vue` (reverted before committing) or a static SSR render with v6 `bootstrap.css` and the built library CSS. Report what could not be verified.
-5. **Commit** focused Conventional Commits (`!` and a `BREAKING CHANGE:` footer for API or markup changes), each ending with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, on the worktree branch; do not push. Final report: branch, commit SHAs, check results, every breaking change (old → new), unanticipated findings, files touched outside the batch, and what wasn't verified.
+5. **Commit** focused Conventional Commits (`!` and a `BREAKING CHANGE:` footer for API or markup changes), each ending with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`, on the worktree branch; do not push. Final report: branch, commit SHAs, check results, every breaking change (old → new, matching the ledger rows), unanticipated findings, files touched outside the batch, and what wasn't verified.
 
 ## Cross-cutting decisions
 
