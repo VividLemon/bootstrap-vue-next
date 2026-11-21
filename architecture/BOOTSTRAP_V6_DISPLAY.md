@@ -42,7 +42,7 @@ No new third-party dependency. `useCarousel` is not worth a public API (Q7). One
 ### Current library
 
 - `BAccordion`: `div.accordion`, provides state to items; two linked models (`v-model` of item ids, `v-model:index` of positions) synced through DOM-position sorting of registered items; `free` switches single/multi.
-- `BAccordionItem`: `div.accordion-item` → `BCollapse` (`.accordion-collapse`) with a `header` slot rendering `<h2 class="accordion-header"><button class="accordion-button" :class="{collapsed}">`. Inherits all show/hide behavior, events and the show/hide registry (so `v-b-toggle` / `useToggle(id)` can drive an item).
+- `BAccordionItem`: `div.accordion-item` → `BCollapse` (`.accordion-collapse`) with a `header` slot rendering `<h2 class="accordion-header"><button class="accordion-button" :class="{collapsed}">`. Inherits all show/hide behavior, events and the show/hide registry (so `v-b-toggle` / `useComponentToggle(id)` can drive an item).
 - Already done in #164: native transitions through `BCollapse`; `BAccordionItem.noTransition`. Pending per migration plan: v5 `collapsed` class on the button, part attrs, `initialAnimation` naming, `BAccordion.noTransition`.
 
 ### Disposition: `BAccordion` props / models
@@ -141,7 +141,7 @@ Native: `<summary>` focusable, Enter/Space, expanded state announced, no `aria-e
 
 ### Composables
 
-None. The show/hide registry (`useToggle`, `v-b-toggle`) no longer reaches accordion items under Q1 = A; document `v-model` instead.
+None. The show/hide registry (`useComponentToggle`, `v-b-toggle`) no longer reaches accordion items under Q1 = A; document `v-model` instead.
 
 ---
 
@@ -441,7 +441,7 @@ Recommendation (Q10): docs only. A `BProse` would only add a class and a `tag` (
 | Item                                      | Direction  | Detail                                                                                                                                                                                |
 | ----------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `useCssTransition` pseudo-element support | G5 → #164  | Needed only if Accordion keeps `shown`/`hidden` or `unmountLazy` (Q1 = B or Q3 = B). Add `{pseudoElement}` option                                                                     |
-| Show/hide registry                        | G5 → all   | Under Q1 = A accordion items leave the registry (`v-b-toggle` / `useToggle` stop working on them). Note for whoever owns `useToggle` docs                                             |
+| Show/hide registry                        | G5 → all   | Under Q1 = A accordion items leave the registry (`v-b-toggle` / `useComponentToggle` stop working on them). Note for whoever owns `useComponentToggle` docs                                             |
 | `BCollapse` usage                         | G5         | `BAccordionItem` stops rendering `BCollapse`; nothing else in G5 depends on Collapse. The `collapsed` class issue disappears with it                                                  |
 | Badge (#167)                              | G5 ← #167  | `BAvatar.variant: 'subtle'` mirrors `BBadge.variant`. If Q4 keeps a badge, it uses #167's `BBadge`                                                                                    |
 | `.btn-icon` on `BButton`                  | G5 ↔ G1–G4 | Carousel controls render plain `<button class="btn-icon btn-sm">`. When `BButton` gets a `.btn-icon` prop (migration plan "Deferred features"), the carousel can switch; not required |
@@ -455,7 +455,7 @@ Recommendation (Q10): docs only. A `BProse` would only add a class and a `tag` (
 
 Context: v6 accordion is a native `<details>`; its only event is the native, non-cancelable `toggle`, and the browser also opens/closes items itself (find-in-page, fragment links, `name` exclusivity). Today items emit the full show/hide set through `BCollapse` and sit in the show/hide registry.
 
-- **A. Native only.** `v-model` (open) + `toggle` (native `ToggleEvent`). Remove `show/shown/hide/hidden/*-prevented`. Pro: exactly v6, simplest, always consistent with browser-driven changes. Con: no cancelable hide, no `shown` after animation; items leave the registry (`v-b-toggle`, `useToggle`).
+- **A. Native only.** `v-model` (open) + `toggle` (native `ToggleEvent`). Remove `show/shown/hide/hidden/*-prevented`. Pro: exactly v6, simplest, always consistent with browser-driven changes. Con: no cancelable hide, no `shown` after animation; items leave the registry (`v-b-toggle`, `useComponentToggle`).
 - **B. Keep `useShowHide`.** Intercept `<summary>` clicks (`preventDefault`), run the cancelable flow, drive `open`; sync browser-driven changes from `toggle` without the cancelable events. Pro: keeps events and registry. Con: two event paths (browser-driven changes can't be prevented), needs pseudo-element support in `useCssTransition`, more code contrary to rule 1.
 - **C. Native + non-cancelable `shown`/`hidden` only.** Pro: lets users react after the animation. Con: still needs the pseudo-element transition wait; half an API.
 
@@ -545,7 +545,7 @@ Recommendation: **A**.
 
 Answered by the maintainer on 2026-11-03. Where an answer differs from the proposal above, the answer wins.
 
-- **Q1 — A. Native only.** `BAccordionItem` state syncs from the native `toggle` event into `v-model`; `show` / `shown` / `hide` / `hidden` / `*-prevented` are removed and items leave the show/hide registry (`v-b-toggle` / `useToggle` no longer target them). No `pseudoElement` option is needed in `useCssTransition` unless Q3 = C.
+- **Q1 — A. Native only.** `BAccordionItem` state syncs from the native `toggle` event into `v-model`; `show` / `shown` / `hide` / `hidden` / `*-prevented` are removed and items leave the show/hide registry (`v-b-toggle` / `useComponentToggle` no longer target them). No `pseudoElement` option is needed in `useCssTransition` unless Q3 = C.
 - **Q4 — C. Pure v6 avatar.** No `href` / `to` / `button` and no badge props or slot; `BAvatar` renders v6 `.avatar` / `.avatar-img` / `.avatar-status` only (plus the v6 status additions). Users compose links, buttons and badges themselves; docs must note that wrapping an avatar in a link breaks `.avatar-stack`.
 - **Q2 — A.** `BAccordion` v-model holds open item ids only; `v-model:index` is removed; `free` keeps its name.
 - **Q3 — B.** Keep `lazy` (body renders on first open); remove `unmountLazy`.

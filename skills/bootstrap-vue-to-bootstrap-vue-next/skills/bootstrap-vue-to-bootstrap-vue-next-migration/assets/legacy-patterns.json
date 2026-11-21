@@ -89,7 +89,7 @@
    "category": "api",
    "pattern": "\\$root\\.\\$(?:emit|on|once|off)\\(\\s*['\"]bv::",
    "flags": "g",
-   "message": "`$root` `bv::` events are not supported in Vue 3 / BootstrapVueNext. Use composables (`useModal`, `useToggle`, `useToast`), template refs or v-model.",
+   "message": "`$root` `bv::` events are not supported in Vue 3 / BootstrapVueNext. Use composables (`useModal`, `useComponentToggle`, `useToast`), template refs or v-model.",
    "ref": "references/upstream-guide/components/bmodal.md"
   },
   {

@@ -10,7 +10,7 @@ export default createContentLoader('docs/composables/*.md', {
   transform(rawData): ComposableData[] {
     return transformDocData(rawData, 'composables', {
       filterByDescription: true,
-      useTitleCase: false, // Keep original casing for composables (e.g., useColorMode)
+      useTitleCase: false, // Keep original casing for composables (e.g., useBootstrapColorMode)
     })
   },
 })

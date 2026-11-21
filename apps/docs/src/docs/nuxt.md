@@ -85,7 +85,7 @@ Override via `bootstrapVueNext.plugin.components.BLink.routerComponentName` if n
 
 When `@nuxtjs/color-mode` is detected:
 
-- BootstrapVueNext avoids auto-importing its own `useColorMode` composable to prevent naming conflicts.
+- Both composables are auto-imported: `@nuxtjs/color-mode`'s `useColorMode` and BootstrapVueNext's `useBootstrapColorMode` / `useBvColorMode` have different names.
 - By default, BootstrapVueNext provides module defaults for `@nuxtjs/color-mode` with `dataValue: 'bs-theme'`.
 
 Disable defaults injection with:

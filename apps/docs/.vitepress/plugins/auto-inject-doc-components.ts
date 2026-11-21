@@ -6,7 +6,7 @@ import { kebabToTitleCase } from '../../src/utils/dataLoaderUtils'
  * Convert kebab-case filename to Title Case.
  * Examples:
  *   button-group → Button Group
- *   useColorMode → useColorMode (composables keep camelCase)
+ *   useBootstrapColorMode → useBootstrapColorMode (composables keep camelCase)
  *   BTooltip → BTooltip (directives keep PascalCase)
  */
 function filenameToTitle(filename: string, directory: string): string {

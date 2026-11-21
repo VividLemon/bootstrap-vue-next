@@ -8,12 +8,12 @@
 
 <script setup lang="ts">
 import {useTemplateRef} from 'vue'
-import {useColorMode} from 'bootstrap-vue-next'
+import {useBootstrapColorMode} from 'bootstrap-vue-next'
 import {type BCard} from 'bootstrap-vue-next/components/BCard'
 
 const target = useTemplateRef('target')
 
-const mode = useColorMode({
+const mode = useBootstrapColorMode({
   selector: target,
 })
 

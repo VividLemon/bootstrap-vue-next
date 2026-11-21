@@ -169,7 +169,7 @@ The Nuxt page states you **still need `<BApp>` (in `app.vue`) or the plugin appr
 | `$b-custom-control-*`, `$b-toaster-*`, `$b-icon-*` Sass vars | No equivalents; BootstrapVueNext mostly relies on Bootstrap 5 variables / CSS custom properties |
 
 BootstrapVueNext does not import Bootstrap's CSS for you. For the smallest bundle, use Bootstrap's "lean Sass imports".
-Colour mode (`data-bs-theme`) is native in Bootstrap 5.3; see `useColorMode()` / `v-b-color-mode`.
+Colour mode (`data-bs-theme`) is native in Bootstrap 5.3; see `useBootstrapColorMode()` / `v-b-color-mode`.
 
 ## 7. TypeScript
 

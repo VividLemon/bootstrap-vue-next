@@ -10,7 +10,7 @@
       </BCard>
     </BCollapse>
 
-    <h5>Using useToggle Composable</h5>
+    <h5>Using useComponentToggle Composable</h5>
     <BButton :color="{ theme: 'success' }" class="mb-3" @click="() => toggleComposable()">
       Toggle with Composable
     </BButton>
@@ -36,10 +36,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useToggle } from 'bootstrap-vue-next/composables/useToggle'
+import { useComponentToggle } from 'bootstrap-vue-next/composables/useComponentToggle'
 
-// Using useToggle composable
-const { toggle: toggleComposable, value: composableValue } = useToggle('collapse-composable')
+// Using useComponentToggle composable
+const { toggle: toggleComposable, value: composableValue } = useComponentToggle('collapse-composable')
 
 // Using v-model
 const isManual = ref(false)

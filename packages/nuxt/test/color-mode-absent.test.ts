@@ -7,7 +7,7 @@ describe('color-mode module absent', async () => {
     rootDir: fileURLToPath(new URL('./fixtures/color-mode-absent', import.meta.url)),
   })
 
-  it('keeps bootstrap-vue-next useColorMode auto-import behavior', async () => {
+  it('keeps bootstrap-vue-next useBootstrapColorMode auto-import behavior', async () => {
     const html = await $fetch('/')
     expect(html).toContain('color-mode-absent-page')
     expect(html).toContain('<span id="has-preference">no</span>')

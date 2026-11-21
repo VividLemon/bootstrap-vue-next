@@ -83,13 +83,13 @@ BTabs/BTab, BToast, BTooltip) **still exists under the same name** — but most 
 | BootstrapVue | BootstrapVueNext | Notes |
 |---|---|---|
 | `v-b-modal` (`VBModal`) | `v-b-modal` (`vBModal`) | Still exists. `$root` `bv::show::modal` events are gone. |
-| `v-b-toggle` (`VBToggle`) | `v-b-toggle` (`vBToggle`) | Still exists; `useToggle()` composable is the programmatic alternative. |
+| `v-b-toggle` (`VBToggle`) | `v-b-toggle` (`vBToggle`) | Still exists; `useComponentToggle()` composable is the programmatic alternative. |
 | `v-b-tooltip` (`VBTooltip`) | `v-b-tooltip` (`vBTooltip`) | Modifiers / value object changed. `directives/v-b-tooltip.md` |
 | `v-b-popover` (`VBPopover`) | `v-b-popover` (`vBPopover`) | Value object, triggers, `custom-class` → `body-class`. `directives/v-b-popover.md` |
 | `v-b-scrollspy` (`VBScrollspy`) | `v-b-scrollspy` (`vBScrollspy`) | Also `useScrollspy()`. Not covered in the upstream guide — test it. |
 | `v-b-hover` (`VBHover`) | — | VueUse `useElementHover()`. |
 | `v-b-visible` (`VBVisible`) | — | VueUse `useElementVisibility()`. |
-| — | `v-b-color-mode` (`vBColorMode`) | New. Also `useColorMode()`. |
+| — | `v-b-color-mode` (`vBColorMode`) | New. Also `useBootstrapColorMode()`. |
 
 ## Programmatic APIs
 
@@ -100,11 +100,11 @@ BTabs/BTab, BToast, BTooltip) **still exists under the same name** — but most 
 | `this.$bvModal.msgBoxConfirm(msg, opts)` | `const r = await useModal().create({ body: msg, ...opts }).show(); r.ok` |
 | `this.$bvToast.toast(msg, opts)` | `useToast().create({ body: msg, title, variant, position, modelValue: 5000 }).show()` |
 | `this.$bvToast.hide(id)` | `useToast().hide(undefined, id)` (`hide(trigger?, id?)`; without an id it hides every toast) |
-| `this.$root.$emit('bv::toggle::collapse', id)` | `useToggle(id).toggle()` or `v-model` on `BCollapse` |
+| `this.$root.$emit('bv::toggle::collapse', id)` | `useComponentToggle(id).toggle()` or `v-model` on `BCollapse` |
 | `this.$root.$on('bv::modal::shown', …)` | Listen on the component (`@shown`) or use composables; no global bus |
 
-Composables exported: `useModal`, `useToast`, `usePopover`, `useToggle`, `useBreadcrumb`, `useColorMode`, `useScrollspy`,
-`useScrollLock`, `useRegistry`, `useProvideDefaults`, `useOrchestratorRegistry`.
+Composables exported: `useModal`, `useToast`, `usePopover`, `useComponentToggle`, `useBreadcrumb`, `useBootstrapColorMode`, `useScrollspy`,
+`useSharedScrollLock`, `useRegistry`, `useProvideDefaults`, `useOrchestratorRegistry`.
 **`useModal`/`useToast`/`usePopover` need `<BApp>` (or `createBootstrap` + a rendered `<BOrchestrator />`) in an ancestor
 component — not in the component that calls them.** Controllers returned by `create()` stay in the orchestrator store
 until destroyed: `await ctrl.destroy()`, or `await using ctrl = create({...})`.

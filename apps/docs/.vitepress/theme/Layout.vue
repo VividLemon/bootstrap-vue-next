@@ -182,7 +182,7 @@
 </template>
 
 <script setup lang="ts">
-import { useColorMode } from 'bootstrap-vue-next/composables/useColorMode'
+import { useBootstrapColorMode } from 'bootstrap-vue-next/composables/useBootstrapColorMode'
 import { useScrollspy } from 'bootstrap-vue-next/composables/useScrollspy'
 import { vBColorMode } from 'bootstrap-vue-next/directives/BColorMode'
 import { vBToggle } from 'bootstrap-vue-next/directives/BToggle'
@@ -307,7 +307,7 @@ const headerExternalLinks = [
   },
 ]
 
-const { store: colorMode } = useColorMode({
+const { store: colorMode } = useBootstrapColorMode({
   persist: true,
 })
 

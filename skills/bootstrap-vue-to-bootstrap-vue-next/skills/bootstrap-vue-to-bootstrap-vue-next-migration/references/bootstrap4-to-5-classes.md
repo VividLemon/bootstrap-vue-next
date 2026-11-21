@@ -39,4 +39,4 @@ Sass: Bootstrap 5 dropped some variables/mixins (e.g. `$enable-prefers-reduced-m
 renamed `$custom-select-*` → `$form-select-*`, `$custom-control-*` → `$form-check-*`. If you have a custom `_variables.scss`,
 diff it against Bootstrap 5's.
 
-Color modes: Bootstrap 5.3 supports `data-bs-theme="dark"`; BootstrapVueNext exposes `useColorMode()` and `v-b-color-mode`.
+Color modes: Bootstrap 5.3 supports `data-bs-theme="dark"`; BootstrapVueNext exposes `useBootstrapColorMode()` and `v-b-color-mode`.

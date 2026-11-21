@@ -27,7 +27,7 @@ import {BvTriggerableEvent} from '../utils'
 export type {ShowHideState}
 
 /**
- * Registers a show/hide component in the app-wide show/hide registry (used by `useToggle`,
+ * Registers a show/hide component in the app-wide show/hide registry (used by `useComponentToggle`,
  * `v-b-toggle`, `v-b-modal`, ...) and manages the triggers registered through it.
  *
  * Registered triggers get a listener for their event and an `aria-expanded` attribute that
@@ -49,7 +49,7 @@ export const useShowHideRegistration = ({
   id: Readonly<Ref<string>>
   /** Drives `aria-expanded` on registered triggers */
   isExpanded: () => boolean
-  /** Exposed as `value` in the registry (`useToggle().value`) */
+  /** Exposed as `value` in the registry (`useComponentToggle().value`) */
   value: Readonly<Ref<boolean>>
   show: (resolveOnHide?: boolean) => Promise<boolean | string>
   hide: (trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>
@@ -423,7 +423,7 @@ export const useShowHide = (
     isExpanded: () => visible.value,
     value: visible,
     show,
-    // `useToggle().hide(trigger)` passes `noTriggerEmit`
+    // `useComponentToggle().hide(trigger)` passes `noTriggerEmit`
     hide,
     toggle,
     triggerToggle,

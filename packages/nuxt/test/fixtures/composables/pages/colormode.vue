@@ -6,6 +6,6 @@
 
 <script setup lang="ts">
 defineOptions({ name: 'ColorModePage' })
-const colorMode = useColorMode()
+const colorMode = useBootstrapColorMode()
 const mode = colorMode.value
 </script>

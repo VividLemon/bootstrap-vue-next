@@ -42,7 +42,6 @@ export default defineNuxtModule<ModuleOptions>({
   },
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
-    const hasNuxtColorMode = hasNuxtModule('@nuxtjs/color-mode')
 
     nuxt.options.build.transpile.push(resolve('./runtime'))
     nuxt.hook('components:extend', (components) => {
@@ -134,9 +133,9 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Add composables
     if (Object.values(normalizedComposableOptions).includes(true)) {
-      const activeComposables = parseActiveImports(normalizedComposableOptions, composableNames).filter(
-        name => !(hasNuxtColorMode && name === 'useColorMode'),
-      )
+      // No exception is needed for `@nuxtjs/color-mode`: its `useColorMode` and ours
+      // (`useBootstrapColorMode` / `useBvColorMode`) no longer share a name
+      const activeComposables = parseActiveImports(normalizedComposableOptions, composableNames)
 
       activeComposables.forEach((name) => {
         const from = `bootstrap-vue-next${composablesWithExternalPath[name]}`

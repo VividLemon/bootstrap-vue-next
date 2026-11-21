@@ -43,7 +43,7 @@ tokens of a subtree. Components already expose them through the `color` prop (`c
 
 `.color-scheme-light`, `.color-scheme-dark` and `.color-scheme-auto` set the CSS `color-scheme`
 property, which changes how the browser draws its own controls and scrollbars. This is different from
-`data-bs-theme` (set with [`useColorMode`](/docs/composables/useColorMode) or
+`data-bs-theme` (set with [`useBootstrapColorMode`](/docs/composables/useBootstrapColorMode) or
 [`v-b-color-mode`](/docs/directives/BColorMode)), which switches Bootstrap's own color tokens. Use both
 when a region should look dark, including native form controls.
 

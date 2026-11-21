@@ -3,7 +3,7 @@ import {afterEach, beforeEach, describe, expect, it} from 'vitest'
 import {defineComponent, h, nextTick, Transition} from 'vue'
 import BCollapse from './BCollapse.vue'
 import type {BvTriggerableEvent} from '../../utils'
-import {useToggle} from '../../composables/useToggle'
+import {useComponentToggle} from '../../composables/useComponentToggle'
 import {createBootstrap} from '../../plugins'
 
 /** Let Vue patch and a few animation frames pass */
@@ -479,11 +479,11 @@ describe('collapse', () => {
     await expect(wrapper.vm.hide()).resolves.toBe('')
   })
 
-  it('useToggle().hide(trigger) does not emit the trigger event', async () => {
-    let toggle!: ReturnType<typeof useToggle>
+  it('useComponentToggle().hide(trigger) does not emit the trigger event', async () => {
+    let toggle!: ReturnType<typeof useComponentToggle>
     const App = defineComponent({
       setup() {
-        toggle = useToggle('toggle-collapse')
+        toggle = useComponentToggle('toggle-collapse')
         return () => h(BCollapse, {id: 'toggle-collapse', modelValue: true})
       },
     })
@@ -495,11 +495,11 @@ describe('collapse', () => {
     expect($collapse.emitted('hidden')).toHaveLength(1)
   })
 
-  it('useToggle().show(true) resolves with the trigger once hidden', async () => {
-    let toggle!: ReturnType<typeof useToggle>
+  it('useComponentToggle().show(true) resolves with the trigger once hidden', async () => {
+    let toggle!: ReturnType<typeof useComponentToggle>
     const App = defineComponent({
       setup() {
-        toggle = useToggle('resolve-collapse')
+        toggle = useComponentToggle('resolve-collapse')
         return () => h(BCollapse, {id: 'resolve-collapse'})
       },
     })

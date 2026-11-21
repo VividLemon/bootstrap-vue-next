@@ -11,6 +11,7 @@ describe('color-mode integration enabled', async () => {
     const html = await $fetch('/')
     expect(html).toContain('color-mode-enabled-page')
     expect(html).toContain('<span id="has-preference">yes</span>')
+    expect(html).toContain('<span id="bv-auto-imported">yes</span>')
 
     const page = await createPage('/')
     const theme = await page.locator('html').getAttribute('data-bs-theme')

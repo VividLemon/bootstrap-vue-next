@@ -8,9 +8,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useToggle } from 'bootstrap-vue-next'
+import { useComponentToggle } from 'bootstrap-vue-next'
 
-const toggle = useToggle('toggleTest')
+const toggle = useComponentToggle('toggleTest')
 const reason = ref('')
 
 async function testToggle() {

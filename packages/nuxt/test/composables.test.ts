@@ -14,14 +14,14 @@ describe('composables auto-imports', async () => {
     expect(html).toContain('About')
   })
 
-  it('useToggle SSR: page renders without error when composable is auto-imported', async () => {
+  it('useComponentToggle SSR: page renders without error when composable is auto-imported', async () => {
     const html = await $fetch('/toggle')
     expect(html).toContain('toggle-page')
     expect(html).toContain('toggle-value')
     expect(html).toContain('shown')
   })
 
-  it('useColorMode SSR: renders without error and does not throw on server', async () => {
+  it('useBootstrapColorMode SSR: renders without error and does not throw on server', async () => {
     const html = await $fetch('/colormode')
     expect(html).toContain('colormode-page')
     expect(html).toContain('theme-mode')

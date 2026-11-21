@@ -113,7 +113,7 @@ on `click` events, set the `click` prop to `true`.
 
 <<< DEMO ./demo/TooltipTriggers.vue#template{vue-html}
 
-To take finer control of tooltip visibility, you can use the [useToggle](/docs/composables/useToggle) or
+To take finer control of tooltip visibility, you can use the [useComponentToggle](/docs/composables/useComponentToggle) or
 [usePopover](/docs/composables/usePopover). Alternately, you can set the `manual` prop
 and use the [`v-model`](#programmatic-control-via-v-model) or
 [exposed functions](#exposed-functions) to control visibility.
