@@ -2,8 +2,8 @@
   <!-- #region template -->
   <div class="d-flex gap-2">
     <BPopover focus title="Focus Trigger">
-      <template #target>
-        <BButton href="#" tabindex="0" :color="{ theme: 'primary' }">
+      <template #activator="{ props }">
+        <BButton v-bind="props" href="#" tabindex="0" :color="{ theme: 'primary' }">
           Link button with focus trigger
         </BButton>
       </template>

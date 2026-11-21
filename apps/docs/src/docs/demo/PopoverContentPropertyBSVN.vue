@@ -1,3 +1,3 @@
 <!-- #region template -->
-<BPopover target="btn" body="Body text" />
+<BPopover activator="btn" body="Body text" />
 <!-- #endregion template -->

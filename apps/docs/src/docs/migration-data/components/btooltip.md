@@ -55,7 +55,7 @@ see [custom classes documentation](/docs/components/tooltip#custom-classes-and-c
 `fallback-placement` has been deprecated. Use the various options provided by [Floating UI](https://floating-ui.com/)
 to handle placement.
 
-The ability for the `target` prop to take a function has been deprecated.
+The `target` prop is named `activator`, and the trigger is preferably rendered in the `activator` slot with `v-bind="props"` (see [BPopover](/docs/migration-data/components/bpopover)). The `activator` prop no longer accepts a function.
 
 Trigger behavior differs because the underlying library used to manage tooltips and popovers has changed. See
 [our documentation](/docs/components/tooltip#triggers) and [Floating UI](https://floating-ui.com/)

@@ -7,8 +7,8 @@
       title="Danger!"
       body="Danger variant popover"
     >
-      <template #target>
-        <BButton>Button</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props">Button</BButton>
       </template>
     </BPopover>
   </div>

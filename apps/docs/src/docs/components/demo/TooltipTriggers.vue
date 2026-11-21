@@ -5,8 +5,8 @@
       placement="top"
       body="Default Trigger"
     >
-      <template #target>
-        <BButton> Default Trigger </BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props"> Default Trigger </BButton>
       </template>
     </BTooltip>
     <BTooltip
@@ -14,8 +14,8 @@
       placement="top"
       body="Click Trigger"
     >
-      <template #target>
-        <BButton> Click Trigger </BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props"> Click Trigger </BButton>
       </template>
     </BTooltip>
   </div>

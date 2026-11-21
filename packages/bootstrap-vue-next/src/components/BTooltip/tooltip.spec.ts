@@ -13,6 +13,10 @@ const flush = async (frames = 3) => {
 }
 import BPopover from '../BPopover/BPopover.vue'
 
+// The activator slot binds its `props` (ref, listeners, aria-describedby) on the trigger
+const activatorButton =
+  '<template #activator="{props}"><button v-bind="props">Test</button></template>'
+
 describe('tooltip', () => {
   enableAutoUnmount(afterEach)
 
@@ -128,13 +132,13 @@ describe('tooltip', () => {
     })
   })
 
-  describe('target slot', () => {
-    it('renders target slot content', () => {
+  describe('activator slot', () => {
+    it('renders activator slot content', () => {
       const wrapper = mount(BTooltip, {
         props: {modelValue: true},
-        slots: {target: '<button class="target-btn">Hover me</button>'},
+        slots: {activator: '<button class="activator-btn">Hover me</button>'},
       })
-      const $btn = wrapper.find('.target-btn')
+      const $btn = wrapper.find('.activator-btn')
       expect($btn.exists()).toBe(true)
       expect($btn.text()).toBe('Hover me')
     })
@@ -227,7 +231,7 @@ describe('tooltip', () => {
     it('forwards show event', async () => {
       const wrapper = mount(BTooltip, {
         props: {body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -241,7 +245,7 @@ describe('tooltip', () => {
     it('forwards show event on focus trigger', async () => {
       const wrapper = mount(BTooltip, {
         props: {body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -257,7 +261,7 @@ describe('tooltip', () => {
     it('defaults to hover and focus triggers', async () => {
       const wrapper = mount(BTooltip, {
         props: {body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -276,7 +280,7 @@ describe('tooltip', () => {
     it('respects click prop', async () => {
       const wrapper = mount(BTooltip, {
         props: {click: true, body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -290,7 +294,7 @@ describe('tooltip', () => {
     it('respects manual prop to disable all triggers', async () => {
       const wrapper = mount(BTooltip, {
         props: {manual: true, body: 'test'},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
@@ -389,16 +393,16 @@ describe('tooltip', () => {
   })
 
   describe('native transition path', () => {
-    const mountWithTarget = (props: Record<string, unknown> = {}) =>
+    const mountWithActivator = (props: Record<string, unknown> = {}) =>
       mount(BTooltip, {
         // happy-dom has no layout, so the reference always counts as hidden: skip that check
         props: {body: 'test', delay: 0, id: 'tip', noHide: true, ...props},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
     it('renders no Vue transition and toggles only the show class', async () => {
-      const wrapper = mountWithTarget()
+      const wrapper = mountWithActivator()
       const $div = wrapper.get('div.tooltip')
       expect($div.classes()).not.toContain('show')
       expect(($div.element as HTMLElement).style.display).toBe('none')
@@ -433,7 +437,7 @@ describe('tooltip', () => {
         ]
       }
       try {
-        const wrapper = mountWithTarget()
+        const wrapper = mountWithActivator()
         await wrapper.setProps({modelValue: true})
         await flush()
         expect(wrapper.emitted('show')).toHaveLength(1)
@@ -448,7 +452,7 @@ describe('tooltip', () => {
     })
 
     it('Escape hides it with trigger esc and consumes the key press', async () => {
-      const wrapper = mountWithTarget({modelValue: true})
+      const wrapper = mountWithActivator({modelValue: true})
       await flush()
       const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
       const stop = vi.spyOn(event, 'stopPropagation')
@@ -463,7 +467,7 @@ describe('tooltip', () => {
     })
 
     it('Escape is left alone while hidden', async () => {
-      const wrapper = mountWithTarget()
+      const wrapper = mountWithActivator()
       const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
       document.body.dispatchEvent(event)
       await flush()
@@ -472,7 +476,7 @@ describe('tooltip', () => {
     })
 
     it.each(['manual', 'noAutoClose'])('Escape does not hide with %s', async (prop) => {
-      const wrapper = mountWithTarget({modelValue: true, [prop]: true})
+      const wrapper = mountWithActivator({modelValue: true, [prop]: true})
       await flush()
       const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
       document.body.dispatchEvent(event)
@@ -481,9 +485,39 @@ describe('tooltip', () => {
       expect(wrapper.emitted('hide')).toBeUndefined()
     })
 
-    it('sets aria-describedby on the trigger while shown and keeps other ids', async () => {
-      const wrapper = mountWithTarget()
-      const button = wrapper.get('button').element
+    it('sets aria-describedby on the slot activator while shown', async () => {
+      const wrapper = mountWithActivator()
+      const button = wrapper.get('button')
+      await wrapper.setProps({modelValue: true})
+      await flush()
+      expect(button.attributes('aria-describedby')).toBe('tip')
+      await wrapper.setProps({modelValue: false})
+      await flush()
+      expect(button.attributes('aria-describedby')).toBeUndefined()
+    })
+
+    // An element given through the `activator` prop isn't rendered by us: our id is added to
+    // its own list and only our id is removed again
+    const mountWithActivatorProp = (props: Record<string, unknown> = {}) => {
+      const button = document.createElement('button')
+      button.id = 'tip-activator'
+      document.body.appendChild(button)
+      const wrapper = mount(BTooltip, {
+        props: {
+          body: 'test',
+          delay: 0,
+          id: 'tip',
+          noHide: true,
+          activator: 'tip-activator',
+          ...props,
+        },
+        attachTo: document.body,
+      })
+      return {wrapper, button}
+    }
+
+    it('sets aria-describedby on an activator prop element and keeps other ids', async () => {
+      const {wrapper, button} = mountWithActivatorProp()
       button.setAttribute('aria-describedby', 'help')
       await wrapper.setProps({modelValue: true})
       await flush()
@@ -491,19 +525,21 @@ describe('tooltip', () => {
       await wrapper.setProps({modelValue: false})
       await flush()
       expect(button.getAttribute('aria-describedby')).toBe('help')
+      wrapper.unmount()
+      button.remove()
     })
 
-    it('removes aria-describedby again when it added the attribute', async () => {
-      const wrapper = mountWithTarget({modelValue: true})
-      const button = wrapper.get('button').element
+    it('removes aria-describedby from an activator prop element on unmount', async () => {
+      const {wrapper, button} = mountWithActivatorProp({modelValue: true})
       await flush()
       expect(button.getAttribute('aria-describedby')).toBe('tip')
       wrapper.unmount()
       expect(button.hasAttribute('aria-describedby')).toBe(false)
+      button.remove()
     })
 
     it('forwards every argument of the exposed methods', async () => {
-      const wrapper = mountWithTarget({modelValue: true})
+      const wrapper = mountWithActivator({modelValue: true})
       await flush()
       const vm = wrapper.vm as unknown as {
         hide: (trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>

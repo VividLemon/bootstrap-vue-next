@@ -5,8 +5,8 @@
       :close-on-hide="true"
       :delay="{show: 0, hide: 0}"
     >
-      <template #target>
-        <BButton>Click me. Tooltip closes when clipped</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props">Click me. Tooltip closes when clipped</BButton>
       </template>
       Scroll me out of view
     </BTooltip>
@@ -17,8 +17,8 @@
       :boundary-padding="{top: navHeight}"
     >
       <template #title>Scroll me out of view</template>
-      <template #target>
-        <BButton>This tooltip gets hidden by the top nav</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props">This tooltip gets hidden by the top nav</BButton>
       </template>
     </BTooltip>
   </div>

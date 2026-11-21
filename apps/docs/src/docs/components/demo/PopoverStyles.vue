@@ -10,8 +10,8 @@
         --bs-popover-border-color: var(--bs-danger-border);
       "
     >
-      <template #target>
-        <BButton>Button</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props">Button</BButton>
       </template>
       This is <strong>important</strong>
     </BPopover>

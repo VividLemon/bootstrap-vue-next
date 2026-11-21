@@ -22,18 +22,46 @@ Things to know when using the tooltip component:
 - Tooltips for `disabled` elements must be triggered on a wrapper element.
 - When triggered from hyperlinks that span multiple lines, tooltips will be centered. Set the `inline` prop to improve the positioning. See the [Floating UI docs](https://floating-ui.com/docs/inline) for details.
 
-## Target
+## Activator
 
-The target is the _trigger_ element (or component) that will trigger the tooltip. The target is
-specified via the `target` slot or prop, and can be any of the following:
+The activator is the element (or component) that opens the tooltip. Render it in the `activator`
+slot and bind the slot's `props` on it with `v-bind="props"`:
 
-The `target` prop may be any of the following:
+```vue-html
+<BTooltip>
+  <template #activator="{ props }">
+    <BButton v-bind="props">Hover Me</BButton>
+  </template>
+  Tooltip content
+</BTooltip>
+```
 
-- A string identifying the ID of the trigger element (or ID of the root element of a component)
-- A string with querySelector. (i.e. '#toolbar > div:first-child')
+`props` carries everything the tooltip needs on that element: a ref to find it, the listeners for
+the active triggers, and `aria-describedby` while the tooltip is on screen. Bind it on exactly one
+element (or on a component that passes its attributes to its root element). The slot also receives
+`id`, `visible`, `active`, `show`, `hide` and `toggle`.
+
+To keep your own `aria-describedby` ids on the element, merge them with `mergeProps` from `vue`
+instead of setting the attribute next to `v-bind="props"`, which would override one or the other.
+
+### With the `activator` prop
+
+You can also give the activator with the `activator` prop. Prefer the slot; use the prop when the
+element isn't one you render inside the tooltip's slot: an element owned by another component or by
+third-party code, an element elsewhere in the page, or when you'd rather keep the trigger's markup
+separate. The `activator` prop may be any of the following:
+
+- A string identifying the ID of the element (or ID of the root element of a component)
+- A querySelector string (i.e. `'#toolbar > div:first-child'`)
 - A reference (ref) to an `HTMLElement` or an `SVGElement` via a [Template Ref](https://vuejs.org/guide/essentials/template-refs.html)
 - A reference (ref) to a component that has either an `HTMLElement` or `SVGElement` as its root
   element via [Template Ref](https://vuejs.org/guide/essentials/template-refs.html)
+
+<<< DEMO ./demo/TooltipActivatorProp.vue
+
+The element **must** exist in the document before `<BTooltip>` is mounted, otherwise the tooltip
+never opens: place `<BTooltip>` after the element. The tooltip adds its id to the element's own
+`aria-describedby` while it is on screen, and removes only that id again.
 
 :::info NOTE
 
@@ -80,7 +108,7 @@ Positioning is relative to the trigger element.
 ## Triggers
 
 By default, tooltips are shown by `pointerenter` and `focus` events and closed by `pointerleave` and `blur` events
-on the `target` element. To override this behavior and make the tooltip show and hide based
+on the activator element. To override this behavior and make the tooltip show and hide based
 on `click` events, set the `click` prop to `true`.
 
 <<< DEMO ./demo/TooltipTriggers.vue#template{vue-html}
@@ -141,7 +169,7 @@ Tooltips can also be controlled via [Exposed functions](#exposed-functions).
 ## Close on Hide
 
 The `close-on-hide` prop can be used to have the tooltip automatically close
-when the target is scrolled out of view. The `boundary` and `boundary-padding`
+when the activator is scrolled out of view. The `boundary` and `boundary-padding`
 props can be used to control what's considered clipping.
 
 <<< DEMO ./demo/TooltipCloseOnHide.vue

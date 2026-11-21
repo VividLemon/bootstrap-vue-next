@@ -8,8 +8,8 @@
       @shown="onShown"
       @hidden="onHidden"
     >
-      <template #target>
-        <BButton ref="targetButton" :color="{ theme: 'primary' }"> Interactive Popover </BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props" ref="targetButton" :color="{ theme: 'primary' }"> Interactive Popover </BButton>
       </template>
 
       <template #title>

@@ -126,7 +126,7 @@ export type TooltipOrchestratorCreateParamBase<
 > = OrchestratorCreateBase<
   BTooltipProps,
   ComponentProps,
-  Omit<BTooltipSlots, 'target'>,
+  Omit<BTooltipSlots, 'activator'>,
   BTooltipEmits
 >
 export type TooltipOrchestratorCreateParam<
@@ -134,7 +134,7 @@ export type TooltipOrchestratorCreateParam<
 > = MaybeRef<TooltipOrchestratorCreateParamBase<ComponentProps>>
 export type TooltipOrchestratorArrayValue = ArrayValue<
   BTooltipProps,
-  Omit<BTooltipSlots, 'target'>,
+  Omit<BTooltipSlots, 'activator'>,
   BTooltipEmits
 >
 
@@ -144,7 +144,7 @@ export type PopoverOrchestratorCreateParamBase<
 > = OrchestratorCreateBase<
   BPopoverProps,
   ComponentProps,
-  Omit<BPopoverSlots, 'target'>,
+  Omit<BPopoverSlots, 'activator'>,
   BPopoverEmits
 >
 export type PopoverOrchestratorCreateParam<
@@ -152,7 +152,7 @@ export type PopoverOrchestratorCreateParam<
 > = MaybeRef<PopoverOrchestratorCreateParamBase<ComponentProps>>
 export type PopoverOrchestratorArrayValue = ArrayValue<
   BPopoverProps,
-  Omit<BPopoverSlots, 'target'>,
+  Omit<BPopoverSlots, 'activator'>,
   BPopoverEmits
 >
 

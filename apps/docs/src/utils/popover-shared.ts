@@ -15,6 +15,12 @@ export const popoverSharedProps = (type: string): PropRecord<keyof BPopoverProps
 }
 
 const sharedProps = {
+  activator: {
+    type: 'string | ComponentPublicInstance | HTMLElement | null',
+    default: null,
+    description:
+      'The element that opens the {component}, for elements you do not render in the `activator` slot (prefer the slot). Also the element the {component} is anchored to, unless `reference` is defined.',
+  },
   boundary: {
     type: 'Boundary | RootBoundary',
     default: 'clippingAncestors',
@@ -124,17 +130,11 @@ const sharedProps = {
     type: 'string | ComponentPublicInstance | HTMLElement | null',
     default: null,
     description:
-      'The reference element to which the {component} is anchored. If not specified, the {component} will be positioned relative to the target element.',
+      'The reference element to which the {component} is anchored. If not specified, the {component} is positioned relative to the activator.',
   },
   strategy: {
     type: 'Strategy',
     default: 'absolute',
-  },
-  target: {
-    type: 'string | ComponentPublicInstance | HTMLElement | null ',
-    default: null,
-    description:
-      'The trigger element to invoke the {component} as well as the reference element to which the {component} is anchored, unless `reference` is defined.',
   },
   teleportDisabled: {
     type: 'boolean',

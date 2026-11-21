@@ -12,6 +12,7 @@ import type {InputType} from './InputType'
 import type {TableField} from './TableTypes'
 import type {DateRange, DateValue, SegmentPart, TimeValue} from 'reka-ui'
 import type {StringAriaInvalid} from './AriaInvalid'
+import type {ComponentPublicInstance} from 'vue'
 
 type TimeRange = {start: TimeValue | undefined; end: TimeValue | undefined}
 
@@ -82,9 +83,28 @@ export interface BOffcanvasSlots {
   'title'?: (props: BOffcanvasSlotsData) => any
 }
 
+/**
+ * Props for the element an `activator` slot renders. Bind them with `v-bind="props"` on that one
+ * element: they carry its ref, the trigger listeners and the ARIA attributes.
+ */
+export interface ActivatorProps {
+  'ref': (el: Element | ComponentPublicInstance | null) => void
+  'aria-describedby'?: string
+  'onClick'?: (event: MouseEvent) => void
+  'onPointerenter'?: (event: PointerEvent) => void
+  'onPointerleave'?: (event: PointerEvent) => void
+  'onFocus'?: (event: FocusEvent) => void
+  'onBlur'?: (event: FocusEvent) => void
+}
+
+export interface ActivatorSlotsData extends ShowHideSlotsData {
+  /** Bind with `v-bind="props"` on the element that opens the popover / tooltip */
+  props: ActivatorProps
+}
+
 export interface BPopoverSlots {
   default?: (props: ShowHideSlotsData) => any
-  target?: (props: ShowHideSlotsData) => any
+  activator?: (props: ActivatorSlotsData) => any
   title?: (props: ShowHideSlotsData) => any
 }
 

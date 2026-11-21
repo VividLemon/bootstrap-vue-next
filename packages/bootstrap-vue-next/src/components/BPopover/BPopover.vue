@@ -1,6 +1,5 @@
 <template>
-  <span :id="computedId + '_placeholder'" ref="_placeholder" style="display: none" />
-  <slot name="target" v-bind="sharedSlots" />
+  <slot name="activator" v-bind="activatorSlotData" />
   <ConditionalTeleport
     :to="props.teleportTo"
     :disabled="!props.teleportTo || props.teleportDisabled"
@@ -65,6 +64,7 @@ import {
 } from '@floating-ui/vue'
 import {onClickOutside, useEventListener, useThrottleFn, useToNumber} from '@vueuse/core'
 import {
+  type ComponentPublicInstance,
   computed,
   type ComputedRef,
   type CSSProperties,
@@ -73,6 +73,7 @@ import {
   onBeforeUnmount,
   onMounted,
   ref,
+  shallowRef,
   toValue,
   useAttrs,
   useTemplateRef,
@@ -81,7 +82,14 @@ import {
 import {useDefaults} from '../../composables/useDefaults'
 import {useMouse} from '../../composables/useMouse'
 import {useId} from '../../composables/useId'
-import type {BPopoverEmits, BPopoverProps, BPopoverSlots, ShowHideSlotsData} from '../../types'
+import type {
+  ActivatorProps,
+  ActivatorSlotsData,
+  BPopoverEmits,
+  BPopoverProps,
+  BPopoverSlots,
+  ShowHideSlotsData,
+} from '../../types'
 import {isBoundary, isRootBoundary, resolveBootstrapPlacement} from '../../utils/floatingUi'
 import {getElement} from '../../utils/getElement'
 import {warn} from '../../utils/console'
@@ -126,7 +134,7 @@ const _props = withDefaults(defineProps<Omit<BPopoverProps, 'modelValue'>>(), {
   realtime: false,
   reference: null,
   strategy: 'absolute',
-  target: null,
+  activator: null,
   title: undefined,
   titleAttrs: undefined,
   show: false,
@@ -149,10 +157,22 @@ const hidden = ref(false)
 const floatingElement = useTemplateRef('_element')
 const content = useTemplateRef('_content')
 const arrow = useTemplateRef('_arrow')
-const placeholder = useTemplateRef('_placeholder')
-
-const referenceElement = ref<HTMLElement | null>(null)
-const triggerElement = ref<HTMLElement | null>(null)
+// The activator is the element that opens the popover: the one the `activator` slot renders
+// (it binds `props`, so we get it through a function ref) or the `activator` prop's element
+const slotActivatorElement = shallowRef<HTMLElement | null>(null)
+const propActivatorElement = shallowRef<HTMLElement | null>(null)
+const triggerElement = computed(() =>
+  props.activator ? propActivatorElement.value : slotActivatorElement.value
+)
+const propReferenceElement = shallowRef<HTMLElement | null>(null)
+/** Positioning anchor: the `reference` prop, else the activator */
+const referenceElement = computed(() =>
+  props.reference ? propReferenceElement.value : triggerElement.value
+)
+const setSlotActivator = (el: Element | ComponentPublicInstance | null) => {
+  const node = el === null || el instanceof Element ? el : (el.$el as Node | null)
+  slotActivatorElement.value = node instanceof HTMLElement ? node : null
+}
 
 const isAutoPlacement = computed(() => props.placement.startsWith('auto'))
 const offsetNumber = useToNumber(() => props.offset ?? Number.NaN)
@@ -418,58 +438,53 @@ const computedTriggers = computed(() => {
   return {hover: true, focus: true, click: false}
 })
 
+// Listeners for the `activator` prop's element. The slot's element gets the same handlers
+// declaratively through `props` (see `activatorProps`)
+let boundElement: HTMLElement | null = null
 const bind = () => {
-  // TODO: is this the best way to bind the events?
-  // we place a span and get the next element sibling for the listeners
-  if (props.target) {
-    const elem = getElement(toValue(props.target))
+  if (props.activator) {
+    const elem = getElement(toValue(props.activator))
     if (elem) {
-      triggerElement.value = elem
+      propActivatorElement.value = elem
     } else {
-      warn('BPopover', 'Target element not found', props.target)
+      warn('BPopover', 'Activator element not found', props.activator)
     }
-  } else {
-    triggerElement.value = placeholder.value?.nextElementSibling as HTMLElement
   }
   if (props.reference) {
     const elem = getElement(toValue(props.reference))
     if (elem) {
-      referenceElement.value = elem
+      propReferenceElement.value = elem
     } else {
       warn('BPopover', 'Reference element not found', props.reference)
     }
-  } else {
-    referenceElement.value = triggerElement.value
   }
-  if (!triggerElement.value || props.manual) {
-    return
-  }
+  const el = propActivatorElement.value
+  if (!props.activator || !el || props.manual) return
 
   const triggers = computedTriggers.value
-
   if (triggers.click) {
-    triggerElement.value.addEventListener('click', localToggle)
+    el.addEventListener('click', localToggle)
   }
-
   if (triggers.hover) {
-    triggerElement.value.addEventListener('pointerenter', localShow)
-    triggerElement.value.addEventListener('pointerleave', tryHide)
+    el.addEventListener('pointerenter', localShow)
+    el.addEventListener('pointerleave', tryHide)
   }
-
   if (triggers.focus) {
-    triggerElement.value.addEventListener('focus', localShow)
-    triggerElement.value.addEventListener('blur', tryHide)
+    el.addEventListener('focus', localShow)
+    el.addEventListener('blur', tryHide)
   }
+  boundElement = el
 }
 
 const unbind = () => {
-  if (triggerElement.value) {
-    triggerElement.value.removeEventListener('click', localToggle)
-    triggerElement.value.removeEventListener('pointerenter', localShow)
-    triggerElement.value.removeEventListener('pointerleave', tryHide)
-    triggerElement.value.removeEventListener('focus', localShow)
-    triggerElement.value.removeEventListener('blur', tryHide)
-  }
+  const el = boundElement
+  boundElement = null
+  if (!el) return
+  el.removeEventListener('click', localToggle)
+  el.removeEventListener('pointerenter', localShow)
+  el.removeEventListener('pointerleave', tryHide)
+  el.removeEventListener('focus', localShow)
+  el.removeEventListener('blur', tryHide)
 }
 
 onClickOutside(
@@ -487,13 +502,14 @@ watch(
     () => props.hover,
     () => props.focus,
     () => props.manual,
-    () => props.target,
+    () => props.activator,
     () => props.reference,
   ],
   () => {
     unbind()
+    if (!props.activator) propActivatorElement.value = null
+    if (!props.reference) propReferenceElement.value = null
     bind()
-    // update()
   }
 )
 
@@ -504,6 +520,25 @@ const sharedSlots = computed<ShowHideSlotsData>(() => ({
   id: computedId.value,
   visible: visible.value,
   active: isActive.value,
+}))
+
+// What the `activator` slot binds on its element: the ref, the trigger listeners and
+// `aria-describedby` while the popover is on screen. With an `activator` prop, that element is
+// the activator, so the slot's element gets nothing to act on
+const activatorProps = computed<ActivatorProps>(() => {
+  if (props.activator) return {ref: setSlotActivator}
+  const triggers = computedTriggers.value
+  return {
+    'ref': setSlotActivator,
+    'aria-describedby': isActive.value ? computedId.value : undefined,
+    ...(triggers.click ? {onClick: localToggle} : {}),
+    ...(triggers.hover ? {onPointerenter: localShow, onPointerleave: tryHide} : {}),
+    ...(triggers.focus ? {onFocus: localShow, onBlur: tryHide} : {}),
+  }
+})
+const activatorSlotData = computed<ActivatorSlotsData>(() => ({
+  ...sharedSlots.value,
+  props: activatorProps.value,
 }))
 
 // Escape dismisses the tooltip or popover (WCAG 1.4.13), wherever focus is. The key press is
@@ -521,13 +556,11 @@ useEventListener(
   {capture: true}
 )
 
-// The trigger is described by the tooltip / popover while it is on screen
+// The `activator` prop's element is described by the tooltip / popover while it is on screen.
+// It isn't rendered by us, so the id is added to (and later removed from) its own
+// `aria-describedby` list. The slot's element gets it through `activatorProps` instead
 const describedBy = 'aria-describedby'
-let describedElement: HTMLElement | null = null
-const removeDescribedBy = () => {
-  const el = describedElement
-  describedElement = null
-  if (!el) return
+const removeDescribedBy = (el: HTMLElement) => {
   const rest = (el.getAttribute(describedBy) ?? '')
     .split(/\s+/)
     .filter((token) => token && token !== computedId.value)
@@ -537,23 +570,19 @@ const removeDescribedBy = () => {
     el.removeAttribute(describedBy)
   }
 }
-const addDescribedBy = () => {
-  removeDescribedBy()
-  const el = triggerElement.value
-  if (!el) return
+const addDescribedBy = (el: HTMLElement) => {
   const tokens = (el.getAttribute(describedBy) ?? '').split(/\s+/).filter(Boolean)
   if (!tokens.includes(computedId.value)) tokens.push(computedId.value)
   el.setAttribute(describedBy, tokens.join(' '))
-  describedElement = el
 }
+const describedElement = computed(() =>
+  isActive.value && props.activator ? propActivatorElement.value : null
+)
 watch(
-  [isActive, triggerElement],
-  ([active]) => {
-    if (active) {
-      addDescribedBy()
-    } else {
-      removeDescribedBy()
-    }
+  describedElement,
+  (el, oldEl) => {
+    if (oldEl) removeDescribedBy(oldEl)
+    if (el) addDescribedBy(el)
   },
   {flush: 'post'}
 )
@@ -568,6 +597,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   unbind()
   stopAutoUpdate()
-  removeDescribedBy()
+  if (describedElement.value) removeDescribedBy(describedElement.value)
 })
 </script>

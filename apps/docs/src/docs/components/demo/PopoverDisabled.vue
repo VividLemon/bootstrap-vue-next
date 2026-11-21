@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex flex-column gap-3 align-items-start">
     <BPopover v-model:show="showPopover" :manual="isDisabled" title="Controlled Popover">
-      <template #target>
-        <BButton :color="{ theme: 'primary' }"
+      <template #activator="{ props }">
+        <BButton v-bind="props" :color="{ theme: 'primary' }"
           >{{ isDisabled ? 'Disabled' : 'Enabled' }} Popover</BButton
         >
       </template>

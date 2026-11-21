@@ -1,18 +1,11 @@
 <template>
   <!-- #region template -->
-  <div class="d-flex gap-2">
-    <BPopover>
-      <template #target> <BButton> Hover Me </BButton></template>
-      <template #title>Popover Title</template>
-      I am popover <b>component</b> content using the <b>#target</b> slot!
-    </BPopover>
-
-    <BButton id="overview-popover"> Hover Me </BButton>
-    <BPopover target="overview-popover">
-      <template #title>Popover Title</template>
-      I am popover <b>component</b> content using the <b>target</b> prop!
-    </BPopover>
-  </div>
-
+  <BPopover>
+    <template #activator="{ props }">
+      <BButton v-bind="props">Hover Me</BButton>
+    </template>
+    <template #title>Popover Title</template>
+    I am popover <b>component</b> content!
+  </BPopover>
   <!-- #endregion template -->
 </template>

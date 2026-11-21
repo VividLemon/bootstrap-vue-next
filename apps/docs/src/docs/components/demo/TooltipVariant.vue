@@ -1,8 +1,8 @@
 <template>
   <!-- #region template -->
   <BTooltip :title-attrs="{ class: 'bg-danger fg-contrast-danger' }" title="Danger variant tooltip">
-    <template #target>
-      <BButton>Button</BButton>
+    <template #activator="{ props }">
+      <BButton v-bind="props">Button</BButton>
     </template>
   </BTooltip>
   <!-- #endregion template -->

@@ -35,8 +35,8 @@
     <BRow>
       <BCol>
         <BPopover>
-          <template #target>
-            <h3 id="inactive-financial-backers" class="text-center m-0">
+          <template #activator="{ props }">
+            <h3 v-bind="props" id="inactive-financial-backers" class="text-center m-0">
               <BButton
                 variant="link"
                 class="p-0 text-reset"

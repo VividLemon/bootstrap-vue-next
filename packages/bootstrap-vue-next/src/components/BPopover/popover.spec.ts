@@ -1,7 +1,11 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it, vi} from 'vitest'
-import {nextTick} from 'vue'
+import {h, nextTick} from 'vue'
 import BPopover from './BPopover.vue'
+
+// The activator slot binds its `props` (ref, listeners, aria-describedby) on the trigger
+const activatorButton =
+  '<template #activator="{props}"><button v-bind="props">Test</button></template>'
 
 /** Let Vue patch and a few animation frames pass */
 const flush = async (frames = 3) => {
@@ -119,7 +123,7 @@ describe('popover', () => {
   it('defaults to hover and focus triggers', async () => {
     const wrapper = mount(BPopover, {
       props: {body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -141,7 +145,7 @@ describe('popover', () => {
   it('respects click prop for backward compatibility', async () => {
     const wrapper = mount(BPopover, {
       props: {click: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -162,7 +166,7 @@ describe('popover', () => {
   it('respects hover=false to disable hover trigger', async () => {
     const wrapper = mount(BPopover, {
       props: {hover: false, focus: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -182,7 +186,7 @@ describe('popover', () => {
   it('respects focus=false to disable focus trigger', async () => {
     const wrapper = mount(BPopover, {
       props: {focus: false, hover: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -202,7 +206,7 @@ describe('popover', () => {
   it('allows combining click with hover/focus', async () => {
     const wrapper = mount(BPopover, {
       props: {click: true, hover: true, focus: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -223,7 +227,7 @@ describe('popover', () => {
   it('respects manual prop to disable all automatic triggers', async () => {
     const wrapper = mount(BPopover, {
       props: {manual: true, body: 'test'},
-      slots: {target: '<button>Test</button>'},
+      slots: {activator: activatorButton},
       attachTo: document.body,
     })
 
@@ -397,41 +401,78 @@ describe('popover', () => {
     })
   })
 
-  describe('placeholder', () => {
-    it('renders a hidden placeholder span', () => {
+  describe('activator', () => {
+    it('renders no placeholder element', () => {
       const wrapper = mount(BPopover, {props: {modelValue: true, id: 'test-id'}})
-      const $placeholder = wrapper.find('span[style="display: none;"]')
-      expect($placeholder.exists()).toBe(true)
+      expect(wrapper.find('span[style="display: none;"]').exists()).toBe(false)
+      expect(document.getElementById('test-id_placeholder')).toBeNull()
     })
 
-    it('placeholder id is computedId + _placeholder', () => {
-      const wrapper = mount(BPopover, {props: {modelValue: true, id: 'test-id'}})
-      const $placeholder = wrapper.find('span[style="display: none;"]')
-      expect($placeholder.attributes('id')).toBe('test-id_placeholder')
-    })
-  })
-
-  describe('target slot', () => {
-    it('renders target slot content', () => {
+    it('renders activator slot content', () => {
       const wrapper = mount(BPopover, {
         props: {modelValue: true},
-        slots: {target: '<button class="target-btn">Click me</button>'},
+        slots: {activator: '<button class="activator-btn">Click me</button>'},
       })
-      const $btn = wrapper.find('.target-btn')
+      const $btn = wrapper.find('.activator-btn')
       expect($btn.exists()).toBe(true)
       expect($btn.text()).toBe('Click me')
     })
 
-    it('target slot receives scoped props', () => {
+    it('activator slot receives the show/hide scope and props', () => {
       const wrapper = mount(BPopover, {
         props: {modelValue: true, id: 'test-popover'},
         slots: {
-          target: `<template #target="scope"><span class="target-scope">{{ scope.id }}</span></template>`,
+          activator: `<template #activator="scope"><span class="activator-scope">{{ scope.id }} {{ typeof scope.props.ref }}</span></template>`,
         },
       })
-      const $scope = wrapper.find('.target-scope')
-      expect($scope.exists()).toBe(true)
-      expect($scope.text()).toBe('test-popover')
+      expect(wrapper.get('.activator-scope').text()).toBe('test-popover function')
+    })
+
+    it('slot props carry only the listeners of the active triggers', () => {
+      let captured: Record<string, unknown> = {}
+      const wrapper = mount(BPopover, {
+        props: {click: true},
+        slots: {
+          activator: (scope: {props: Record<string, unknown>}) => {
+            captured = scope.props
+            return h('button', scope.props, 'Test')
+          },
+        },
+      })
+      expect(Object.keys(captured).sort()).toEqual(['aria-describedby', 'onClick', 'ref'])
+      wrapper.unmount()
+    })
+
+    it('slot props set aria-describedby on the slot element while active', async () => {
+      const wrapper = mount(BPopover, {
+        props: {id: 'pop', delay: 0, noHide: true},
+        slots: {activator: activatorButton},
+        attachTo: document.body,
+      })
+      const $btn = wrapper.get('button')
+      expect($btn.attributes('aria-describedby')).toBeUndefined()
+      await wrapper.setProps({modelValue: true})
+      await flush()
+      expect($btn.attributes('aria-describedby')).toBe('pop')
+      await wrapper.setProps({modelValue: false})
+      await flush()
+      expect($btn.attributes('aria-describedby')).toBeUndefined()
+      wrapper.unmount()
+    })
+
+    it('binds the listeners on an element given through the activator prop', async () => {
+      const button = document.createElement('button')
+      button.id = 'outside-activator'
+      document.body.appendChild(button)
+      const wrapper = mount(BPopover, {
+        props: {activator: 'outside-activator', click: true},
+        attachTo: document.body,
+      })
+      button.click()
+      await flush()
+      expect(wrapper.emitted('show')).toHaveLength(1)
+      wrapper.unmount()
+      button.remove()
     })
   })
 
@@ -560,16 +601,16 @@ describe('popover', () => {
   })
 
   describe('native transition path', () => {
-    const mountWithTarget = (props: Record<string, unknown> = {}) =>
+    const mountWithActivator = (props: Record<string, unknown> = {}) =>
       mount(BPopover, {
         // happy-dom has no layout, so the reference always counts as hidden: skip that check
         props: {body: 'test', delay: 0, id: 'tip', noHide: true, ...props},
-        slots: {target: '<button>Test</button>'},
+        slots: {activator: activatorButton},
         attachTo: document.body,
       })
 
     it('renders no Vue transition and toggles only the show class', async () => {
-      const wrapper = mountWithTarget()
+      const wrapper = mountWithActivator()
       const $div = wrapper.get('div.popover')
       expect($div.classes()).not.toContain('show')
       expect(($div.element as HTMLElement).style.display).toBe('none')
@@ -604,7 +645,7 @@ describe('popover', () => {
         ]
       }
       try {
-        const wrapper = mountWithTarget()
+        const wrapper = mountWithActivator()
         await wrapper.setProps({modelValue: true})
         await flush()
         expect(wrapper.emitted('show')).toHaveLength(1)
@@ -619,7 +660,7 @@ describe('popover', () => {
     })
 
     it('Escape hides it with trigger esc and consumes the key press', async () => {
-      const wrapper = mountWithTarget({modelValue: true})
+      const wrapper = mountWithActivator({modelValue: true})
       await flush()
       const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
       const stop = vi.spyOn(event, 'stopPropagation')
@@ -634,7 +675,7 @@ describe('popover', () => {
     })
 
     it('Escape is left alone while hidden', async () => {
-      const wrapper = mountWithTarget()
+      const wrapper = mountWithActivator()
       const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
       document.body.dispatchEvent(event)
       await flush()
@@ -643,7 +684,7 @@ describe('popover', () => {
     })
 
     it.each(['manual', 'noAutoClose'])('Escape does not hide with %s', async (prop) => {
-      const wrapper = mountWithTarget({modelValue: true, [prop]: true})
+      const wrapper = mountWithActivator({modelValue: true, [prop]: true})
       await flush()
       const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true})
       document.body.dispatchEvent(event)
@@ -652,25 +693,37 @@ describe('popover', () => {
       expect(wrapper.emitted('hide')).toBeUndefined()
     })
 
-    it('sets aria-describedby on the trigger while shown and keeps other ids', async () => {
-      const wrapper = mountWithTarget()
-      const button = wrapper.get('button').element
+    it('sets aria-describedby on the slot activator while shown', async () => {
+      const wrapper = mountWithActivator()
+      const button = wrapper.get('button')
+      await wrapper.setProps({modelValue: true})
+      await flush()
+      expect(button.attributes('aria-describedby')).toBe('tip')
+      await wrapper.setProps({modelValue: false})
+      await flush()
+      expect(button.attributes('aria-describedby')).toBeUndefined()
+    })
+
+    it("adds to an activator prop element's own aria-describedby and removes only its id", async () => {
+      const button = document.createElement('button')
+      button.id = 'pop-activator'
       button.setAttribute('aria-describedby', 'help')
+      document.body.appendChild(button)
+      const wrapper = mount(BPopover, {
+        props: {body: 'test', delay: 0, id: 'tip', noHide: true, activator: 'pop-activator'},
+        attachTo: document.body,
+      })
       await wrapper.setProps({modelValue: true})
       await flush()
       expect(button.getAttribute('aria-describedby')).toBe('help tip')
       await wrapper.setProps({modelValue: false})
       await flush()
       expect(button.getAttribute('aria-describedby')).toBe('help')
-    })
-
-    it('removes aria-describedby again when it added the attribute', async () => {
-      const wrapper = mountWithTarget({modelValue: true})
-      const button = wrapper.get('button').element
+      await wrapper.setProps({modelValue: true})
       await flush()
-      expect(button.getAttribute('aria-describedby')).toBe('tip')
       wrapper.unmount()
-      expect(button.hasAttribute('aria-describedby')).toBe(false)
+      expect(button.getAttribute('aria-describedby')).toBe('help')
+      button.remove()
     })
   })
 })

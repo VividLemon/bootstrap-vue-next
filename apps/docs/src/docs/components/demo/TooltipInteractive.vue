@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex gap-2">
     <BTooltip interactive>
-      <template #target>
-        <BButton>Hover me</BButton>
+      <template #activator="{ props }">
+        <BButton v-bind="props">Hover me</BButton>
       </template>
       <span class="me-2">{{ count }}</span>
       <BButton @click="count++">+</BButton>

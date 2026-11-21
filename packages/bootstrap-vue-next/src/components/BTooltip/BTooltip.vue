@@ -20,8 +20,8 @@
     <template v-if="slots.default" #default="scope">
       <slot v-bind="scope" />
     </template>
-    <template v-if="slots.target" #target="scope">
-      <slot name="target" v-bind="scope" />
+    <template v-if="slots.activator" #activator="scope">
+      <slot name="activator" v-bind="scope" />
     </template>
     <template v-if="slots.title" #title="scope">
       <slot name="title" v-bind="scope" />
@@ -63,7 +63,7 @@ const _props = withDefaults(defineProps<Omit<BTooltipProps, 'modelValue'>>(), {
   reference: undefined,
   show: undefined,
   strategy: undefined,
-  target: undefined,
+  activator: undefined,
   unmountLazy: undefined,
   title: undefined,
   titleAttrs: undefined,
