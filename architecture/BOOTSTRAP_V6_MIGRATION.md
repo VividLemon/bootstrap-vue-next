@@ -427,9 +427,24 @@ Phases (about 2–3 weeks part-time):
 
 ## Final step: consolidate the library rules for agents
 
-The very last step of the v6 migration, after everything above (including Post-migration). Its goal is to consolidate the library-wide rules decided during the migration so they outlive this plan.
+The very last step of the v6 migration, after everything above (including Post-migration). Its goal is to consolidate the library-wide rules decided during the migration so they outlive this plan. Write rules, not reasoning: the reasoning stays in git history and the architecture docs.
 
-1. Create `packages/bootstrap-vue-next/AGENTS.md` (a nested `AGENTS.md`, read by agents working in the library) with short, imperative rules taken from [Cross-cutting decisions](#cross-cutting-decisions) and any later rules: the CSS layer, breakpoints and `Responsive<T>` / `HoverState<T>` objects, color objects, prop families as objects, `*Attrs` instead of `*Class`, native transitions with `noTransition`, slot `props`, no compatibility shims for breaking changes. Rules only; the reasoning stays in git history and the architecture docs.
-2. Link it from the root `AGENTS.md` (section 4.1). Point `.github/copilot-instructions.md` at `AGENTS.md` instead of repeating rules.
-3. If the guidance needs worked examples (adding a prop, a slot, a color part), add a project skill under `.agents/skills/` and list it in the root `AGENTS.md`.
-4. Sort `architecture/`: keep the durable design records (for example `ARIA_VISIBILITY.md`, `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`); delete or move to `architecture/archive/` the finished working plans (this file and the `BOOTSTRAP_V6_*` group plans); keep `BOOTSTRAP_V6_BREAKING_CHANGES.md` until the migration-data pages and the v1 → next skills are built from it; leave undecided documents (`USE_TABLE_COMPOSABLE.md` and similar) in place.
+1. **Project skills** under `.agents/skills/`, prefixed `bvn-` to keep them apart from the vendored skills. Each has a `SKILL.md` whose description says when to load it, the rules, and a few worked examples:
+
+   | Skill                  | Covers                                                                                                                                                                                          |
+   | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+   | `bvn-component-props`  | color objects and `<part>Color`, prop families as objects, `Responsive<T>` / `HoverState<T>`, `2xl` breakpoints and prefix classes, `*Attrs` instead of `*Class`, updating the docs `*.data.ts` |
+   | `bvn-show-hide`        | the `useShowHide` state machine, native CSS transitions with `noTransition`, `useCssTransition`, promise results, the `ShowHideSlotsData` scope                                                 |
+   | `bvn-slots`            | typed `defineSlots`, the [slot `props`](#slot-props-for-elements-the-component-controls) convention, when a component also takes an element prop                                                |
+   | `bvn-styles`           | `@layer components`, v6 tokens, checking every class and CSS variable against `bootstrap.css`                                                                                                   |
+   | `bvn-breaking-changes` | no compatibility shims, a ledger row per change, `!` / `BREAKING CHANGE:` commits, migration-data pages                                                                                         |
+
+   Merge or split them if the content suggests it; the table is a starting point. Sources: [Cross-cutting decisions](#cross-cutting-decisions), the component decisions above, the group plans, and any rules added later.
+
+2. **`packages/bootstrap-vue-next/AGENTS.md`** (a nested `AGENTS.md`, always read by agents working in the library) as the index. One line per rule that must never be missed (for example "never add a `*Class` prop; use `*Attrs`"), each pointing at the skill to load ("load `bvn-component-props` when you add or change a prop"). Skills load only when an agent judges them relevant, so the must-follow rules stay visible here. Keep it short: it costs context on every task.
+3. **Root `AGENTS.md`:** list the `bvn-*` skills next to the vendored ones and link the nested file from section 4.1. Point `.github/copilot-instructions.md` at `AGENTS.md` instead of repeating rules.
+4. **Sort `architecture/`:**
+   - Keep the durable design records (for example `ARIA_VISIBILITY.md`, `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`).
+   - Delete or move to `architecture/archive/` the finished working plans (this file and the `BOOTSTRAP_V6_*` group plans).
+   - Keep `BOOTSTRAP_V6_BREAKING_CHANGES.md` until the migration-data pages and the v1 → next migration skills are built from it. `bvn-breaking-changes` describes the same changes from the maintainer's side and can seed those skills.
+   - Leave undecided documents (`USE_TABLE_COMPOSABLE.md` and similar) in place.
