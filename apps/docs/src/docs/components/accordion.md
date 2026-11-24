@@ -73,8 +73,8 @@ receive `open`.
   (clicks, keyboard, find-in-page, fragment links, and siblings closed through the shared `name`).
 - The `toggle` event is the native `ToggleEvent` of the `<details>`. It fires after the change and
   cannot be canceled. There are no `show`, `shown`, `hide` or `hidden` events.
-- Accordion items are not part of the show/hide registry: `v-b-toggle` and `useToggle` do not
-  target them. Use `v-model` instead.
+- Accordion items are not part of the show/hide registry: `v-b-toggle` and `useComponentToggle`
+  do not target them. Use `v-model` instead.
 - Set `name` on `BAccordion` to override the shared name, for example to make items of two
   accordions close each other.
 
