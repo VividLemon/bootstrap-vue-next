@@ -55,7 +55,7 @@ You can control the dialog through a template ref. See the
 
 <<< DEMO ./demo/DialogExposed.vue
 
-### Using the `useToggle` composable
+### Using the `useComponentToggle` composable
 
 <<< DEMO ./demo/DialogToggle.vue
 
