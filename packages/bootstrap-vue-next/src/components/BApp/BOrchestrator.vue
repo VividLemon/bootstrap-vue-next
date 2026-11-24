@@ -21,7 +21,10 @@
           >
             <component
               :is="component"
-              v-bind="{...componentProps, ...(key === 'modal' ? {} : {teleportDisabled: true})}"
+              v-bind="{
+                ...componentProps,
+                ...(key === 'modal' ? undefined : {teleportDisabled: true}),
+              }"
               :ref="setRef"
               initial-animation
               @update:model-value="(value: boolean | number) => syncModelValue(key, id, value)"

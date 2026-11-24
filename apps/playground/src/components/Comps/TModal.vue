@@ -69,7 +69,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, h, markRaw, onMounted, onUnmounted, ref, watchEffect} from 'vue'
+import {computed, h, onMounted, onUnmounted, ref, watchEffect} from 'vue'
 import type {ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {BDialog, BDialogActions} from 'bootstrap-vue-next/components/BDialog'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
@@ -132,7 +132,7 @@ const showFns = {
   basicCustomComponent: async () => {
     await using _ = await create({
       slots: {
-        default: () => markRaw(h('div', null, {default: () => 'foobar!'})),
+        default: () => h('div', null, {default: () => 'foobar!'}),
         footer: () => h(BDialogActions, {okOnly: true, okTitle: 'Got it'}),
       },
     }).show()

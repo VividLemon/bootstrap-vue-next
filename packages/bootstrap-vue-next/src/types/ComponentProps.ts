@@ -56,6 +56,7 @@ import type {RadiusElementExtendables} from './RadiusElement'
 import type {SpinnerType} from './SpinnerType'
 import type {BadgeVariant} from './BadgeTypes'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
+import type {DialogSize, DialogSlide} from './DialogTypes'
 import type {ButtonType} from './ButtonType'
 import type {LinkOpacity, LinkUnderline} from './LinkDecorators'
 import type {GroupedOptionFields, OptionFields} from './OptionsTypes'
@@ -1579,8 +1580,8 @@ export interface BDialogProps extends ShowHideProps {
   noHeader?: boolean
   noHeaderClose?: boolean
   scrollable?: boolean
-  size?: 'sm' | 'lg' | 'xl'
-  slide?: 'down' | 'up'
+  size?: DialogSize
+  slide?: DialogSlide
   title?: string
   titleAttrs?: Readonly<AttrsValue>
   titleTag?: string

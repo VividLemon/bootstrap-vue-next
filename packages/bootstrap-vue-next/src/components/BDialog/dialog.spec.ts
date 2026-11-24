@@ -144,6 +144,25 @@ describe('dialog', () => {
       expect(wrapper.get('dialog').attributes('data-x')).toBe('1')
     })
 
+    it('renders the size, fullscreen, scrollable and slide classes', () => {
+      const wrapper = mount(BDialog, {
+        props: {size: 'xl', fullscreen: 'md', scrollable: true, slide: 'up'},
+      })
+      const classes = wrapper.get('dialog').classes()
+      expect(classes).toEqual(
+        expect.arrayContaining([
+          'dialog-xl',
+          'md-down:dialog-fullscreen',
+          'dialog-scrollable',
+          'dialog-slide-up',
+        ])
+      )
+      const plain = mount(BDialog).get('dialog').classes()
+      expect(plain.some((c) => c.startsWith('dialog-sm') || c.startsWith('dialog-slide'))).toBe(
+        false
+      )
+    })
+
     it('merges part attrs with the part classes', () => {
       const wrapper = mountDialog(
         {
@@ -735,10 +754,10 @@ describe('dialog actions', () => {
     }
   )
 
-  it('warns outside a dialog', () => {
+  it('outside a dialog, Vue warns about the missing injection', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     mount(BDialogActions)
-    expect(warn).toHaveBeenCalled()
+    expect(warn.mock.calls.some((args) => String(args[0]).includes('injection'))).toBe(true)
     warn.mockRestore()
   })
 })

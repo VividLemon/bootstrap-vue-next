@@ -29,7 +29,6 @@ import {inject} from 'vue'
 import type {BDialogActionsProps, BDialogActionsSlots} from '../../types'
 import BButton from '../BButton/BButton.vue'
 import {useDefaults} from '../../composables/useDefaults'
-import {warn} from '../../utils/console'
 import {dialogInjectionKey} from '../../utils/keys'
 
 defineOptions({
@@ -50,8 +49,6 @@ defineSlots<BDialogActionsSlots>()
 
 // OK calls the enclosing dialog's `ok()` (cancelable `ok` event, then a hide with trigger
 // `'ok'`), Cancel hides it with trigger `'cancel'`
-const dialog = inject(dialogInjectionKey, null)
-if (!dialog) {
-  warn('BDialogActions', 'BDialogActions must be used inside a BDialog.')
-}
+// Outside a BDialog Vue warns that the injection is missing, and the buttons do nothing
+const dialog = inject(dialogInjectionKey)
 </script>

@@ -152,12 +152,12 @@ export default {
           description: 'Makes the dialog body scroll when the content is taller than the viewport',
         },
         size: {
-          type: "'sm' | 'lg' | 'xl'",
+          type: 'DialogSize',
           default: undefined,
           description: "Sets the dialog's width (`.dialog-sm`, `.dialog-lg`, `.dialog-xl`)",
         },
         slide: {
-          type: "'down' | 'up'",
+          type: 'DialogSlide',
           default: undefined,
           description:
             'Slides the dialog in from above (`down`) or below (`up`) on top of the default fade',
