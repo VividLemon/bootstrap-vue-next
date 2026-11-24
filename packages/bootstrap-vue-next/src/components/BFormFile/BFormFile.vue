@@ -143,7 +143,7 @@ import {computed, nextTick, onMounted, ref, type Ref, useAttrs, useTemplateRef, 
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {useStateClass} from '../../composables/useStateClass'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import type {BFormFileProps, BFormFileSlots} from '../../types'
 import {useAriaLiveMessage} from './useAriaLiveMessage'
 
@@ -258,8 +258,8 @@ const {isOverDropZone} = useDropZone(dropZoneRef, {
 })
 
 // Computed properties
-const hasLabelSlot = computed(() => !isEmptySlot(slots.label))
-const hasPlaceholderSlot = computed(() => !isEmptySlot(slots.placeholder))
+const hasLabelSlot = useHasSlot(slots, 'label')
+const hasPlaceholderSlot = useHasSlot(slots, 'placeholder')
 
 const computedClasses = computed(() => [
   stateClass.value,

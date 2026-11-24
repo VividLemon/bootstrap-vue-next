@@ -106,7 +106,7 @@ import BButton from '../BButton/BButton.vue'
 import BCloseButton from '../BButton/BCloseButton.vue'
 import ConditionalTeleport from '../ConditionalTeleport.vue'
 import {useSafeScrollLock} from '../../composables/useSafeScrollLock'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import {useLegacyShowHide} from '../../composables/useLegacyShowHide'
 import {getElement} from '../../utils/getElement'
 
@@ -266,7 +266,7 @@ const showBackdrop = computed(
       (isLeaving.value && props.backdropFirst && !computedNoAnimation.value))
 )
 
-const hasHeaderCloseSlot = computed(() => !isEmptySlot(slots['header-close']))
+const hasHeaderCloseSlot = useHasSlot(slots, 'header-close')
 const headerCloseClasses = computed(() => [
   {'fg-reset': !hasHeaderCloseSlot.value},
   props.headerClose?.attrs?.class,
@@ -285,7 +285,7 @@ const headerCloseAttrs = computed(() => ({
   class: headerCloseClasses.value,
 }))
 
-const hasFooterSlot = computed(() => !isEmptySlot(slots.footer))
+const hasFooterSlot = useHasSlot(slots, 'footer')
 const computedClasses = computed(() => [
   props.responsive === undefined ? 'offcanvas' : `offcanvas-${props.responsive}`,
   `offcanvas-${props.placement}`,

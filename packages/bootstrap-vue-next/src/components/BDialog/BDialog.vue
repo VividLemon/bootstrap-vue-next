@@ -63,7 +63,7 @@ import {useDialogBase} from '../../composables/useDialogBase'
 import {useId} from '../../composables/useId'
 import {useModalManager} from '../../composables/useModalManager'
 import {useThemeClasses} from '../../composables/useThemeClasses'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import {dialogInjectionKey} from '../../utils/keys'
 
 const _props = withDefaults(defineProps<Omit<BDialogProps, 'modelValue'>>(), {
@@ -156,8 +156,8 @@ const {classes: headerColorClasses} = useThemeClasses(computed(() => props.heade
 const {classes: bodyColorClasses} = useThemeClasses(computed(() => props.bodyColor ?? {}))
 const {classes: footerColorClasses} = useThemeClasses(computed(() => props.footerColor ?? {}))
 
-// The footer is scoped: check it with its scope, as it is rendered
-const hasFooterSlot = computed(() => !isEmptySlot(slots.footer, sharedSlots.value))
+// The footer element is only rendered when a footer slot is passed
+const hasFooterSlot = useHasSlot(slots, 'footer')
 
 const ok = (value?: unknown) => {
   void hide('ok', value)

@@ -26,7 +26,7 @@
 import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed} from 'vue'
 import BCardTitle from './BCardTitle.vue'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import BCardSubtitle from './BCardSubtitle.vue'
 import {useDefaults} from '../../composables/useDefaults'
 import type {BCardBodyProps, BCardBodySlots} from '../../types'
@@ -46,8 +46,8 @@ const props = useDefaults(_props, 'BCardBody')
 const computedColor = computed(() => resolvePartColor(props.color, {}))
 const slots = defineSlots<BCardBodySlots>()
 
-const hasTitleSlot = computed(() => !isEmptySlot(slots.title))
-const hasSubtitleSlot = computed(() => !isEmptySlot(slots.subtitle))
+const hasTitleSlot = useHasSlot(slots, 'title')
+const hasSubtitleSlot = useHasSlot(slots, 'subtitle')
 
 const {classes: colorClasses} = useThemeClasses(computedColor)
 const computedClasses = computed(() => [

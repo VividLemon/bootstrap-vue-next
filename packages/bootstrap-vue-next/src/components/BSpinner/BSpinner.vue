@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import {getThemeColor, resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed} from 'vue'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import {useDefaults} from '../../composables/useDefaults'
 import type {BSpinnerProps, BSpinnerSlots} from '../../types'
 
@@ -45,5 +45,5 @@ const computedClasses = computed(() => [
   },
 ])
 
-const hasLabelSlot = computed(() => !isEmptySlot(slots.label))
+const hasLabelSlot = useHasSlot(slots, 'label')
 </script>

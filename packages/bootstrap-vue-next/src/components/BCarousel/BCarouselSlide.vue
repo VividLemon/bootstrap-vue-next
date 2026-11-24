@@ -38,7 +38,7 @@ import {computed, type CSSProperties, inject, toRef} from 'vue'
 import {carouselInjectionKey} from '../../utils/keys'
 import BImg from '../BImg/BImg.vue'
 import {useDefaults} from '../../composables/useDefaults'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import {useId} from '../../composables/useId'
 import type {BCarouselSlideProps, BCarouselSlideSlots} from '../../types'
 
@@ -66,9 +66,12 @@ const slots = defineSlots<BCarouselSlideSlots>()
 const computedId = useId(() => props.id, 'carousel-slide')
 const parentData = inject(carouselInjectionKey, null)
 
-const hasText = computed(() => props.text || !isEmptySlot(slots.text))
-const hasCaption = computed(() => props.caption || !isEmptySlot(slots.caption))
-const hasContent = computed(() => hasText.value || hasCaption.value || !isEmptySlot(slots.default))
+const hasTextSlot = useHasSlot(slots, 'text')
+const hasText = computed(() => props.text || hasTextSlot.value)
+const hasCaptionSlot = useHasSlot(slots, 'caption')
+const hasCaption = computed(() => props.caption || hasCaptionSlot.value)
+const hasDefaultSlot = useHasSlot(slots, 'default')
+const hasContent = computed(() => hasText.value || hasCaption.value || hasDefaultSlot.value)
 
 const computedStyle = computed<CSSProperties>(() => ({
   background: `${

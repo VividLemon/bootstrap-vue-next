@@ -1,4 +1,3 @@
-import type {Slot} from 'vue'
 import {error} from './console'
 
 export const getSafeDocument = () => (typeof document !== 'undefined' ? document : null)
@@ -28,13 +27,6 @@ export const attemptFocus = (
   }
   return isActiveElement(el)
 }
-
-/**
- * Whether a slot renders nothing. Pass the slot's props for a scoped slot: a slot that
- * destructures its scope throws when it is called without one
- */
-export const isEmptySlot = (el: Slot | undefined, props?: object): boolean =>
-  (el?.(props) ?? []).length === 0
 
 /**
  * @deprecated only used in BFormGroup, which is not an SFC... Function could probably be replaced with pure Vue

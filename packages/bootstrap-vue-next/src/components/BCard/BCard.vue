@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import {computed} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import BCardImg from './BCardImg.vue'
@@ -97,8 +97,8 @@ const props = useDefaults(_props, 'BCard')
 const computedColor = computed(() => resolvePartColor(props.color, {}))
 const slots = defineSlots<BCardSlots>()
 
-const hasHeaderSlot = computed(() => !isEmptySlot(slots.header))
-const hasFooterSlot = computed(() => !isEmptySlot(slots.footer))
+const hasHeaderSlot = useHasSlot(slots, 'header')
+const hasFooterSlot = useHasSlot(slots, 'footer')
 
 const {classes: colorClasses} = useThemeClasses(computedColor)
 const computedClasses = computed(() => [

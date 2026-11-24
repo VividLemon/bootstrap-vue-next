@@ -32,7 +32,7 @@ import {
   useFormCheckInputClasses,
   useFormCheckLabelClasses,
 } from '../../composables/useFormCheck'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {formGroupKey, radioGroupKey} from '../../utils/keys'
@@ -76,7 +76,7 @@ const {focused} = useFocus(input, {
   initialValue: props.autofocus,
 })
 
-const hasDefaultSlot = computed(() => !isEmptySlot(slots.default))
+const hasDefaultSlot = useHasSlot(slots, 'default')
 
 // True default values for props that are undefined to support inheritance
 const propDefaults = {
