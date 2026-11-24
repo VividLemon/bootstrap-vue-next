@@ -72,10 +72,11 @@ export interface UseDialogBaseOptions {
 
 export interface UseDialogBaseReturn extends Omit<UseShowHideReturn, 'hide'> {
   /**
-   * Hides the dialog. `value` is kept as `returnValue` when the hide is carried out. Resolves
-   * like `useShowHide().hide`.
+   * Hides the dialog. `value` is kept as `returnValue` when this hide is the one carried out.
+   * `noTriggerEmit` skips the trigger's own event (`ok` / `cancel`), as `useShowHide().hide`.
+   * Resolves like `useShowHide().hide`.
    */
-  hide: (trigger?: string, value?: unknown) => Promise<boolean | string>
+  hide: (trigger?: string, value?: unknown, noTriggerEmit?: boolean) => Promise<boolean | string>
   /** The `value` of the hide that closed the dialog last, reset when it is shown again */
   returnValue: Readonly<Ref<unknown>>
   /** The component's `-instant` class applies: `noTransition`, or an instant change */
@@ -194,11 +195,24 @@ export const useDialogBase = (
   })
 
   const isShowingState = () => state.value === 'showing' || state.value === 'shown'
-  const hide = (trigger?: string, value?: unknown): Promise<boolean | string> => {
+  // A trigger listener can call `hide()` again while an outer `hide()` is still running (an `ok`
+  // listener calling `hide('saved', payload)`): the value belongs to the request that carried the
+  // hide out, so an outer request that returns afterwards must not overwrite it
+  let requestCount = 0
+  let committedRequest = 0
+  const hide = (
+    trigger?: string,
+    value?: unknown,
+    noTriggerEmit = false
+  ): Promise<boolean | string> => {
     const wasShowing = isShowingState()
-    const promise = showHide.hide(trigger)
-    // Carried out (not refused, and not already hiding)
-    if (wasShowing && !isShowingState()) returnValue.value = value
+    const request = ++requestCount
+    const promise = showHide.hide(trigger, noTriggerEmit === true)
+    // Carried out (not refused, not already hiding, and not by a nested request)
+    if (wasShowing && !isShowingState() && committedRequest < request) {
+      committedRequest = request
+      returnValue.value = value
+    }
     return promise
   }
 
@@ -225,10 +239,13 @@ export const useDialogBase = (
   /** Set while an Escape `keydown` was handled, so the `cancel` it may cause is not handled too */
   let escapeHandled = false
   useEventListener(element, 'keydown', (event: KeyboardEvent) => {
-    if (event.key !== 'Escape' || event.defaultPrevented || !isShowingState()) return
+    if (event.key !== 'Escape' || event.defaultPrevented || !element.value?.open) return
     // Also keeps the browser from closing the dialog itself. A second Escape without user
-    // activation in between cannot be cancelled through the `cancel` event alone
+    // activation in between cannot be cancelled through the `cancel` event alone. This runs while
+    // the element is still open in its exit transition too, so the key press never reaches a
+    // parent dialog that is still shown
     event.preventDefault()
+    if (!isShowingState()) return
     escapeHandled = true
     setTimeout(() => {
       escapeHandled = false

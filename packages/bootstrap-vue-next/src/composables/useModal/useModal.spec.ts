@@ -283,6 +283,30 @@ describe('useModal', () => {
     await vi.waitFor(() => expect(stored()).toBe(true))
   })
 
+  it('controller.hide() skips the trigger event and leaves the dialog returnValue unset', async () => {
+    let modal: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    const onOk = vi.fn<() => void>()
+    const TestComponent = defineComponent({
+      setup() {
+        modal = useModal().create({id: 'controller-hide-modal', title: 'Hide', onOk})
+        return () => h('div')
+      },
+    })
+    mount(BApp, {attachTo: document.body, slots: {default: () => h(TestComponent)}})
+    await nextTick()
+    const stored = () => modal?.get()?.value.props.modelValue
+
+    modal?.show()
+    await vi.waitFor(() => expect(stored()).toBe(true))
+    modal?.hide('ok')
+    await vi.waitFor(() => expect(stored()).toBe(false))
+
+    // BDialog's hide takes (trigger, value, noTriggerEmit): no `ok` event, no `true` return value
+    expect(onOk).not.toHaveBeenCalled()
+    const component = modal?.ref as unknown as {returnValue: unknown} | null
+    expect(component?.returnValue).toBeUndefined()
+  })
+
   it('destroy closes an open modal and settles its show()', async () => {
     let modal: ReturnType<ReturnType<typeof useModal>['create']> | undefined
     const TestComponent = defineComponent({

@@ -1,5 +1,5 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it, onTestFinished, vi} from 'vitest'
 import {h, nextTick} from 'vue'
 import BDialog from './BDialog.vue'
 import BDialogActions from './BDialogActions.vue'
@@ -114,6 +114,17 @@ describe('dialog', () => {
     it('renders the footer only when the footer slot has content', () => {
       const wrapper = mountDialog({}, {footer: 'Actions'})
       expect(wrapper.get('.dialog-footer').text()).toBe('Actions')
+    })
+
+    it('renders a scoped footer slot that destructures its scope', () => {
+      // A compiled `#footer="{ close }"` destructures its argument: the content check must pass it
+      const wrapper = mount(BDialog, {
+        slots: {
+          footer: ({close}: {close: () => void}) =>
+            h('button', {class: 'close-footer', onClick: close}, 'Close'),
+        },
+      })
+      expect(wrapper.find('.dialog-footer .close-footer').exists()).toBe(true)
     })
 
     it('renders the body prop', () => {
@@ -439,6 +450,24 @@ describe('dialog', () => {
       expect((wrapper.vm as unknown as {returnValue: unknown}).returnValue).toBe('saved')
     })
 
+    it('keeps the value of a hide an ok listener starts, not the outer hide', async () => {
+      type DialogVm = {
+        hide: (trigger?: string, value?: unknown) => Promise<unknown>
+        returnValue: unknown
+      }
+      const dialog: {vm?: DialogVm} = {}
+      const wrapper = await mountOpen({
+        onOk: () => {
+          void dialog.vm?.hide('saved', 'payload')
+        },
+      })
+      dialog.vm = wrapper.vm as unknown as DialogVm
+      void dialog.vm.hide('ok')
+      await flush()
+      expect(events(wrapper, 'hidden')[0]?.trigger).toBe('saved')
+      expect(dialog.vm.returnValue).toBe('payload')
+    })
+
     it('a prevented ok keeps the dialog open', async () => {
       let scope!: {ok: () => void}
       const wrapper = mount(BDialog, {
@@ -574,6 +603,27 @@ describe('dialog', () => {
       pressEscape(dialogOf(wrapper))
       await nextTick()
       expect(dialogOf(wrapper).classList.contains('dialog-static')).toBe(false)
+    })
+
+    it('keeps Escape from a parent dialog while its exit transition runs', async () => {
+      // Hold the child's exit transition, so it is still open while it hides
+      const animations = installFakeAnimations()
+      onTestFinished(() => animations.restore())
+      const parent = mountDialog(
+        {modelValue: true, id: 'parent'},
+        {default: () => h(BDialog, {modelValue: true, id: 'child'}, () => 'child')}
+      )
+      await flush()
+      const child = parent.get('#child').element as HTMLDialogElement
+      pressEscape(child)
+      await flush(1)
+      // the child is hiding, still open: a second Escape is consumed by it
+      const second = pressEscape(child)
+      await flush()
+      expect(child.open).toBe(true)
+      expect(child.classList.contains('hiding')).toBe(true)
+      expect(second.defaultPrevented).toBe(true)
+      expect(events(parent, 'hide')).toHaveLength(0)
     })
 
     it('ignores Escape while closed', async () => {

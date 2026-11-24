@@ -257,7 +257,14 @@ export const buildController = <
       ) {
         // Before the call: a hide that finishes at once is recorded by the store, which clears it
         hideRequested = true
-        refWithMethods.hide(trigger, true)
+        // Skip the trigger's own event. `BDialog`'s `hide(trigger, value, noTriggerEmit)` takes
+        // a return value second (it exposes `returnValue`); the other components take
+        // `hide(trigger, noTriggerEmit)`
+        if ('returnValue' in refWithMethods) {
+          refWithMethods.hide(trigger, undefined, true)
+        } else {
+          refWithMethods.hide(trigger, true)
+        }
       } else {
         if (refWithMethods === null) unmountedHideTrigger = trigger
         controller.set({modelValue: false})

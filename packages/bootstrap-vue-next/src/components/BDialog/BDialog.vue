@@ -156,7 +156,8 @@ const {classes: headerColorClasses} = useThemeClasses(computed(() => props.heade
 const {classes: bodyColorClasses} = useThemeClasses(computed(() => props.bodyColor ?? {}))
 const {classes: footerColorClasses} = useThemeClasses(computed(() => props.footerColor ?? {}))
 
-const hasFooterSlot = computed(() => !isEmptySlot(slots.footer))
+// The footer is scoped: check it with its scope, as it is rendered
+const hasFooterSlot = computed(() => !isEmptySlot(slots.footer, sharedSlots.value))
 
 const ok = (value?: unknown) => {
   void hide('ok', value)
