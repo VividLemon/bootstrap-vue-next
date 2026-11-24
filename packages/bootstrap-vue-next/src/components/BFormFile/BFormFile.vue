@@ -2,7 +2,7 @@
   <div ref="rootRef" v-bind="processedAttrs.rootAttrs" class="b-form-file-root">
     <!-- Optional label -->
     <label
-      v-if="hasLabelSlot || props.label"
+      v-if="slots.label || props.label"
       v-bind="props.labelAttrs"
       class="form-label"
       :for="computedId"
@@ -49,7 +49,7 @@
         <div class="b-form-file-text">
           <slot name="file-name" :files="selectedFiles" :names="fileNames">
             <span v-if="hasFiles">{{ formattedFileNames }}</span>
-            <span v-else-if="hasPlaceholderSlot || props.placeholder" class="fg-secondary">
+            <span v-else-if="slots.placeholder || props.placeholder" class="fg-secondary">
               <slot name="placeholder">{{ props.placeholder }}</slot>
             </span>
           </slot>
@@ -122,7 +122,7 @@
         <div v-if="hasFiles" class="small fg-secondary">
           {{ formattedFileNames }}
         </div>
-        <div v-else-if="hasPlaceholderSlot || props.placeholder" class="small fg-secondary">
+        <div v-else-if="slots.placeholder || props.placeholder" class="small fg-secondary">
           <slot name="placeholder">
             {{ props.placeholder }}
           </slot>
@@ -143,7 +143,6 @@ import {computed, nextTick, onMounted, ref, type Ref, useAttrs, useTemplateRef, 
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {useStateClass} from '../../composables/useStateClass'
-import {useHasSlot} from '../../composables/useHasSlot'
 import type {BFormFileProps, BFormFileSlots} from '../../types'
 import {useAriaLiveMessage} from './useAriaLiveMessage'
 
@@ -258,8 +257,6 @@ const {isOverDropZone} = useDropZone(dropZoneRef, {
 })
 
 // Computed properties
-const hasLabelSlot = useHasSlot(slots, 'label')
-const hasPlaceholderSlot = useHasSlot(slots, 'placeholder')
 
 const computedClasses = computed(() => [
   stateClass.value,

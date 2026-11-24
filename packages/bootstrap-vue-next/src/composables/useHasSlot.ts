@@ -1,14 +1,14 @@
 import {onBeforeUpdate, readonly, type Ref, ref} from 'vue'
 
 /**
- * Whether the parent passed the slot `name`. Use it to skip a slot's wrapper element when the
- * slot is not given.
+ * Whether the parent passed the slot `name`, as a ref, for script code that depends on it (a
+ * `computed` such as a class list). In a template, check `slots.name` directly instead: the
+ * template runs on every render, so it is always current and needs no helper.
  *
- * It checks presence only and never calls the slot, so it renders nothing extra, needs no slot
- * scope, and is not fooled by a slot whose content is all `v-if`'d away (that is the parent's
- * call: `<template v-if="…" #name>` leaves the slot out). Slots are not reactive, so the value is
- * kept in a ref, refreshed before every update: a parent that adds or removes a slot re-renders
- * this component, and computeds reading the ref follow.
+ * Slots are not reactive, so a `computed(() => !!slots.name)` would never update when the parent
+ * adds or removes the slot. This keeps the answer in a ref refreshed before every update (the
+ * parent's change re-renders this component), so computeds reading it follow. It checks presence
+ * only and never calls the slot: leave a slot out with `<template v-if="…" #name>`.
  */
 export const useHasSlot = <S extends object>(
   slots: Readonly<S>,

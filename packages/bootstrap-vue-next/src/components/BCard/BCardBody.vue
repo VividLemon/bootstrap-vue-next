@@ -1,13 +1,13 @@
 <template>
   <component :is="props.tag" :class="computedClasses">
-    <BCardTitle v-if="!!props.title || hasTitleSlot" :tag="props.titleTag">
+    <BCardTitle v-if="!!props.title || !!slots.title" :tag="props.titleTag">
       <slot name="title">
         {{ props.title }}
       </slot>
     </BCardTitle>
 
     <BCardSubtitle
-      v-if="!!props.subtitle || hasSubtitleSlot"
+      v-if="!!props.subtitle || !!slots.subtitle"
       :tag="props.subtitleTag"
       :color="props.subtitleColor"
     >
@@ -26,7 +26,6 @@
 import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed} from 'vue'
 import BCardTitle from './BCardTitle.vue'
-import {useHasSlot} from '../../composables/useHasSlot'
 import BCardSubtitle from './BCardSubtitle.vue'
 import {useDefaults} from '../../composables/useDefaults'
 import type {BCardBodyProps, BCardBodySlots} from '../../types'
@@ -45,9 +44,6 @@ const _props = withDefaults(defineProps<BCardBodyProps>(), {
 const props = useDefaults(_props, 'BCardBody')
 const computedColor = computed(() => resolvePartColor(props.color, {}))
 const slots = defineSlots<BCardBodySlots>()
-
-const hasTitleSlot = useHasSlot(slots, 'title')
-const hasSubtitleSlot = useHasSlot(slots, 'subtitle')
 
 const {classes: colorClasses} = useThemeClasses(computedColor)
 const computedClasses = computed(() => [

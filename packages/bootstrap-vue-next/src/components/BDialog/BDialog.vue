@@ -43,7 +43,7 @@
         </slot>
       </div>
       <div
-        v-if="hasFooterSlot"
+        v-if="slots.footer"
         class="dialog-footer"
         :class="footerColorClasses"
         v-bind="props.footerAttrs"
@@ -63,7 +63,6 @@ import {useDialogBase} from '../../composables/useDialogBase'
 import {useId} from '../../composables/useId'
 import {useModalManager} from '../../composables/useModalManager'
 import {useThemeClasses} from '../../composables/useThemeClasses'
-import {useHasSlot} from '../../composables/useHasSlot'
 import {dialogInjectionKey} from '../../utils/keys'
 
 const _props = withDefaults(defineProps<Omit<BDialogProps, 'modelValue'>>(), {
@@ -155,9 +154,6 @@ const nativeAttrs = computed(() => ({closedby: closedby.value}))
 const {classes: headerColorClasses} = useThemeClasses(computed(() => props.headerColor ?? {}))
 const {classes: bodyColorClasses} = useThemeClasses(computed(() => props.bodyColor ?? {}))
 const {classes: footerColorClasses} = useThemeClasses(computed(() => props.footerColor ?? {}))
-
-// The footer element is only rendered when a footer slot is passed
-const hasFooterSlot = useHasSlot(slots, 'footer')
 
 const ok = (value?: unknown) => {
   void hide('ok', value)
