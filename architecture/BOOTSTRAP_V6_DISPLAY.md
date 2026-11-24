@@ -218,6 +218,7 @@ Pure render; image fallback state starts from `src` on both sides. No browser AP
 - Delete `src/components/BAvatar/_avatar.scss` and its `meta.load-css` line in `styles.scss`. This also removes `$b-avatar-*` Sass variables (migration note).
 - Why keeping links matters: wrapping `<BAvatar>` in `<BLink>` breaks stacks, because each avatar becomes its `<a>`'s `:last-child` (margin reset) and the flex children are the links, not `.avatar`.
 - `avatarGroupInjectionKey` shrinks to `{size, overlap}`.
+- Drop `useHasSlot` (added in #183, removed before v100): keep the reactive parts of `showBadge`, `badgeImplicitlyDot` and the `badge` class as computeds, and combine them with `slots.default` / `slots.badge` in the template. See `BOOTSTRAP_V6_MIGRATION.md`, "Slot presence checks".
 
 ---
 
@@ -441,7 +442,7 @@ Recommendation (Q10): docs only. A `BProse` would only add a class and a `tag` (
 | Item                                      | Direction  | Detail                                                                                                                                                                                |
 | ----------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `useCssTransition` pseudo-element support | G5 → #164  | Needed only if Accordion keeps `shown`/`hidden` or `unmountLazy` (Q1 = B or Q3 = B). Add `{pseudoElement}` option                                                                     |
-| Show/hide registry                        | G5 → all   | Under Q1 = A accordion items leave the registry (`v-b-toggle` / `useComponentToggle` stop working on them). Note for whoever owns `useComponentToggle` docs                                             |
+| Show/hide registry                        | G5 → all   | Under Q1 = A accordion items leave the registry (`v-b-toggle` / `useComponentToggle` stop working on them). Note for whoever owns `useComponentToggle` docs                           |
 | `BCollapse` usage                         | G5         | `BAccordionItem` stops rendering `BCollapse`; nothing else in G5 depends on Collapse. The `collapsed` class issue disappears with it                                                  |
 | Badge (#167)                              | G5 ← #167  | `BAvatar.variant: 'subtle'` mirrors `BBadge.variant`. If Q4 keeps a badge, it uses #167's `BBadge`                                                                                    |
 | `.btn-icon` on `BButton`                  | G5 ↔ G1–G4 | Carousel controls render plain `<button class="btn-icon btn-sm">`. When `BButton` gets a `.btn-icon` prop (migration plan "Deferred features"), the carousel can switch; not required |
@@ -560,7 +561,7 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 
 Each PR follows the batch agent instructions and required checks in `BOOTSTRAP_V6_MIGRATION.md` (lint, unit tests, build; docs type-check), updates specs, `*.data.ts`, docs pages/demos and playground, and touches `ComponentProps.ts` line-locally.
 
-1. **Avatar** (needs #167 merged for `BBadge`). `BAvatar` / `BAvatarGroup` rewrite, delete `_avatar.scss` + its `styles.scss` line, new `AvatarStatus` type, `avatarGroupInjectionKey` shrink, `avatar.data.ts`, `avatar.md` (19 demos → about 10), `TAvatar.vue`. Smallest; good warm-up.
+1. **Avatar** (needs #167 merged for `BBadge`). `BAvatar` / `BAvatarGroup` rewrite, delete `_avatar.scss` + its `styles.scss` line, new `AvatarStatus` type, `avatarGroupInjectionKey` shrink, no `useHasSlot` (slot checks in the template), `avatar.data.ts`, `avatar.md` (19 demos → about 10), `TAvatar.vue`. Smallest; good warm-up.
 2. **Accordion** (needs #164). `<details>` rewrite of both components, `accordionInjectionKey` reshape, delete `index` model code; `accordion.data.ts`, `accordion.md` (+ `gap`, `size`, `color`, `icon` slot demos), `TAccordion.vue`, `ARIA_VISIBILITY.md` (drop BAccordionItem from the native-path table and the `collapsed` note). Includes the `useCssTransition` pseudo-element option only if Q1 = B or Q3 = C.
 3. **Stepper** (independent; after G6 for the container note). New `BStepper` / `BStepperItem`, keys, types, `BootstrapVueOptions`, `stepper.data.ts`, docs page, playground page.
 4. **Carousel** (largest; independent of 1–3). Internal engine composable (observer, JS scroll animation, loop clone, autoplay/pause/visibility, ends, keyboard, RTL), `BCarousel` / `BCarouselSlide` rewrite, cancelable `BvCarouselEvent`, remove `TransitionGroup` path; `carousel.data.ts`, `carousel.md` (17 demos rewritten: ride/touch demos go; ends, overlay, multi-item, peek, center, auto, play/pause demos added), `TCarousel.vue`. Update `ARIA_VISIBILITY.md` (BCarousel no longer uses Vue `<Transition>`). Specs need IntersectionObserver / `scrollTo` / `matchMedia` stubs in happy-dom.
