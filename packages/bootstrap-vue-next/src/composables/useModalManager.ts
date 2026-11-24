@@ -24,7 +24,7 @@ export const useSharedModalStack = () => {
  * The stack is only bookkeeping for `useModal()` (`show` / `hide` / `hideAll` / `get`): the
  * browser's top layer orders open dialogs, so there is no z-index or position math.
  */
-export const useModalManager = (modalOpen: Readonly<Ref<boolean>>, initialValue: boolean) => {
+export const useModalManager = (modalOpen: Readonly<Ref<boolean>>) => {
   const {pushRegistry, pushStack, removeStack, dispose} = useSharedModalStack()
 
   const currentModal = getCurrentInstance()
@@ -39,16 +39,17 @@ export const useModalManager = (modalOpen: Readonly<Ref<boolean>>, initialValue:
     dispose(currentModal)
   })
 
-  const setInStack = (newValue: boolean, oldValue: boolean) => {
-    if (newValue) {
-      pushStack?.(currentModal)
-    } else if (oldValue && !newValue) {
-      removeStack?.(currentModal)
-    }
-  }
-
-  // (initialValue, initialValue) is meant to always only ever trigger the first `if (newValue) {` block. The other block is skipped _always_
-  setInStack(initialValue, initialValue)
-
-  watch(modalOpen, setInStack)
+  // The stack follows `modalOpen` alone, from the start: a dialog is in it exactly while it is
+  // open, including one shown on mount and one whose initial show is prevented
+  watch(
+    modalOpen,
+    (open) => {
+      if (open) {
+        pushStack?.(currentModal)
+      } else {
+        removeStack?.(currentModal)
+      }
+    },
+    {immediate: true}
+  )
 }

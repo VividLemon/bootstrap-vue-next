@@ -10,7 +10,6 @@ import {
   shallowRef,
   watch,
 } from 'vue'
-import {getSafeDocument} from '../utils/dom'
 import {warn} from '../utils/console'
 import {useCssTransition} from './useCssTransition'
 import {useShowHide, type UseShowHideProps, type UseShowHideReturn} from './useShowHide'
@@ -18,13 +17,23 @@ import {useShowHide, type UseShowHideProps, type UseShowHideReturn} from './useS
 /** Bootstrap v6 locks page scroll with this class on `<html>` (`:root.dialog-open`) */
 const scrollLockClass = 'dialog-open'
 
+/** Marks an open dialog that locks page scroll */
+const scrollLockAttribute = 'data-bv-scroll-lock'
+
 /**
- * The open dialogs that lock page scroll. The class is removed when the last one closes, so
- * stacked dialogs keep the page locked.
+ * Page scroll stays locked while any open dialog holds the lock, so stacked dialogs keep it
+ * locked until the last one closes. The document itself is the record (the marker attribute on
+ * each locking dialog): no module state, so nothing is shared between SSR requests or between
+ * apps, and the `<html>` class it drives is page-wide anyway.
  */
-const scrollLocks = new Set<HTMLDialogElement>()
-const updateScrollLock = () => {
-  getSafeDocument()?.documentElement.classList.toggle(scrollLockClass, scrollLocks.size > 0)
+const setScrollLock = (el: HTMLDialogElement, locked: boolean) => {
+  if (locked) el.setAttribute(scrollLockAttribute, '')
+  else el.removeAttribute(scrollLockAttribute)
+  const doc = el.ownerDocument
+  doc.documentElement.classList.toggle(
+    scrollLockClass,
+    doc.querySelector(`[${scrollLockAttribute}]`) !== null
+  )
 }
 
 /**
@@ -133,8 +142,7 @@ export const useDialogBase = (
     if (!el) return
     if (el.open) el.close()
     openedAsModal = false
-    scrollLocks.delete(el)
-    updateScrollLock()
+    setScrollLock(el, false)
   }
 
   const openElement = () => {
@@ -156,10 +164,7 @@ export const useDialogBase = (
       restore()
     }
     openedAsModal = modal
-    if (options.lockScroll()) {
-      scrollLocks.add(el)
-      updateScrollLock()
-    }
+    if (options.lockScroll()) setScrollLock(el, true)
   }
 
   /** Invalidates the callback of an older change that is still waiting */
@@ -294,8 +299,7 @@ export const useDialogBase = (
   useEventListener(element, 'close', (event: Event) => {
     const el = element.value
     if (!el || event.target !== el || el.open) return
-    scrollLocks.delete(el)
-    updateScrollLock()
+    setScrollLock(el, false)
     openedAsModal = false
     if (!isShowingState()) return
     returnValue.value = el.returnValue || undefined

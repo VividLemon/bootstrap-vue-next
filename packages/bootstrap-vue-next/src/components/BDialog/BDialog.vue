@@ -134,7 +134,7 @@ const {
   }
 )
 
-useModalManager(visible, modelValue.value)
+useModalManager(visible)
 
 const computedClasses = computed(() => ({
   [`dialog-${props.size}`]: props.size !== undefined,
