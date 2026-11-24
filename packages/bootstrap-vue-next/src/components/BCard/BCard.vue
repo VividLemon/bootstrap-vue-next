@@ -6,7 +6,7 @@
       </slot>
     </template>
     <BCardHeader
-      v-if="props.header || hasHeaderSlot"
+      v-if="props.header || slots.header"
       :color="props.headerColor"
       :tag="props.headerTag"
       :class="props.headerClass"
@@ -35,7 +35,7 @@
       {{ props.bodyText }}
     </slot>
     <BCardFooter
-      v-if="props.footer || hasFooterSlot"
+      v-if="props.footer || slots.footer"
       :color="props.footerColor"
       :tag="props.footerTag"
       :class="props.footerClass"
@@ -54,7 +54,6 @@
 
 <script setup lang="ts">
 import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
-import {isEmptySlot} from '../../utils/dom'
 import {computed} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import BCardImg from './BCardImg.vue'
@@ -96,9 +95,6 @@ const _props = withDefaults(defineProps<BCardProps>(), {
 const props = useDefaults(_props, 'BCard')
 const computedColor = computed(() => resolvePartColor(props.color, {}))
 const slots = defineSlots<BCardSlots>()
-
-const hasHeaderSlot = computed(() => !isEmptySlot(slots.header))
-const hasFooterSlot = computed(() => !isEmptySlot(slots.footer))
 
 const {classes: colorClasses} = useThemeClasses(computedColor)
 const computedClasses = computed(() => [

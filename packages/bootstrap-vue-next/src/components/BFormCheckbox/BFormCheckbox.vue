@@ -46,7 +46,7 @@ import {
 } from '../../composables/useFormCheck'
 import {checkboxGroupKey, formGroupKey} from '../../utils/keys'
 import ConditionalWrapper from '../ConditionalWrapper.vue'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import type {BFormCheckboxProps, BFormCheckboxSlots, CheckboxValue} from '../../types'
@@ -109,7 +109,7 @@ const {focused} = useFocus(input, {
   initialValue: props.autofocus,
 })
 
-const hasDefaultSlot = computed(() => !isEmptySlot(slots.default))
+const hasDefaultSlot = useHasSlot(slots, 'default')
 
 // True default values for props that are undefined to support inheritance
 const propDefaults = {

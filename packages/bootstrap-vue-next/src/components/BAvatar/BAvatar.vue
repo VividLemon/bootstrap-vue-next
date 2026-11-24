@@ -52,7 +52,7 @@ import {computed, type CSSProperties, inject, ref, type StyleValue, watch} from 
 import BLink from '../BLink/BLink.vue'
 import BBadge from '../BBadge/BBadge.vue'
 import {useBLinkHelper} from '../../composables/useBLinkHelper'
-import {isEmptySlot} from '../../utils/dom'
+import {useHasSlot} from '../../composables/useHasSlot'
 import {useNumberishToStyle} from '../../composables/useNumberishToStyle'
 import {useRadiusElementClasses} from '../../composables/useRadiusElementClasses'
 import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
@@ -124,8 +124,8 @@ const SIZES: ReadonlySet<string | null> = new Set(
 const FONT_SIZE_SCALE = 0.4
 const BADGE_FONT_SIZE_SCALE = FONT_SIZE_SCALE * 0.7
 
-const hasDefaultSlot = computed(() => !isEmptySlot(slots.default))
-const hasBadgeSlot = computed(() => !isEmptySlot(slots.badge))
+const hasDefaultSlot = useHasSlot(slots, 'default')
+const hasBadgeSlot = useHasSlot(slots, 'badge')
 
 const showBadge = computed(() => !!props.badge || props.badge === '' || hasBadgeSlot.value)
 const computedSquare = computed(() => parentData?.square.value || props.square)

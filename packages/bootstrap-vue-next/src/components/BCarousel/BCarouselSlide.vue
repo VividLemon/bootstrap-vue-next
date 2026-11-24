@@ -14,16 +14,16 @@
     </slot>
     <component
       :is="props.contentTag"
-      v-if="hasContent"
+      v-if="props.text || props.caption || slots.text || slots.caption || slots.default"
       class="carousel-caption"
       :class="computedContentClasses"
     >
-      <component :is="props.captionTag" v-if="hasCaption">
+      <component :is="props.captionTag" v-if="props.caption || slots.caption">
         <slot name="caption">
           <span>{{ props.caption }}</span>
         </slot>
       </component>
-      <component :is="props.textTag" v-if="hasText">
+      <component :is="props.textTag" v-if="props.text || slots.text">
         <slot name="text">
           <span>{{ props.text }}</span>
         </slot>
@@ -38,7 +38,6 @@ import {computed, type CSSProperties, inject, toRef} from 'vue'
 import {carouselInjectionKey} from '../../utils/keys'
 import BImg from '../BImg/BImg.vue'
 import {useDefaults} from '../../composables/useDefaults'
-import {isEmptySlot} from '../../utils/dom'
 import {useId} from '../../composables/useId'
 import type {BCarouselSlideProps, BCarouselSlideSlots} from '../../types'
 
@@ -65,10 +64,6 @@ const slots = defineSlots<BCarouselSlideSlots>()
 
 const computedId = useId(() => props.id, 'carousel-slide')
 const parentData = inject(carouselInjectionKey, null)
-
-const hasText = computed(() => props.text || !isEmptySlot(slots.text))
-const hasCaption = computed(() => props.caption || !isEmptySlot(slots.caption))
-const hasContent = computed(() => hasText.value || hasCaption.value || !isEmptySlot(slots.default))
 
 const computedStyle = computed<CSSProperties>(() => ({
   background: `${

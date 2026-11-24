@@ -11,18 +11,18 @@
         Show toast
       </BButton>
       <BButton
-        id="configured-modal-trigger"
-        @click="isConfiguredModalVisible = true"
+        id="configured-dialog-trigger"
+        @click="isConfiguredDialogVisible = true"
       >
-        Open configured modal
+        Open configured dialog
       </BButton>
-      <BModal
-        id="configured-modal"
-        v-model="isConfiguredModalVisible"
-        title="Configured modal"
+      <BDialog
+        id="configured-dialog"
+        v-model="isConfiguredDialogVisible"
+        title="Configured dialog"
       >
-        Configured modal body
-      </BModal>
+        Configured dialog body
+      </BDialog>
       <BLink
         id="configured-link"
         to="/module-options-target"
@@ -32,7 +32,6 @@
       <div id="toast-status">
         {{ toastStatus }}
       </div>
-      <div id="custom-teleport" />
       <div
         id="tooltip-target"
         v-b-tooltip.hover
@@ -46,7 +45,7 @@
 
 <script setup lang="ts">
 const toast = useToast()
-const isConfiguredModalVisible = ref(false)
+const isConfiguredDialogVisible = ref(false)
 
 const toastStatus = computed(() =>
   toast._isOrchestratorInstalled.value && typeof toast.create === 'function'

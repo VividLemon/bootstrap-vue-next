@@ -1,4 +1,3 @@
-import type {Slot} from 'vue'
 import {error} from './console'
 
 export const getSafeDocument = () => (typeof document !== 'undefined' ? document : null)
@@ -28,8 +27,6 @@ export const attemptFocus = (
   }
   return isActiveElement(el)
 }
-
-export const isEmptySlot = (el: Slot | undefined): boolean => (el?.() ?? []).length === 0
 
 /**
  * @deprecated only used in BFormGroup, which is not an SFC... Function could probably be replaced with pure Vue
@@ -70,15 +67,4 @@ export const sortSlotElementsByPosition = (
   if (position & Node.DOCUMENT_POSITION_FOLLOWING) return -1
   if (position & Node.DOCUMENT_POSITION_PRECEDING) return 1
   return 0
-}
-
-const defaultZModelIndex = 1055
-export const getModalZIndex = (element?: Readonly<HTMLElement | null>): number => {
-  const win = getSafeWindow()
-  const doc = getSafeDocument()
-  if (win === null || doc === null) return defaultZModelIndex
-  const target = element ?? doc.body
-  const raw = win.getComputedStyle(target).getPropertyValue('--bs-modal-zindex').trim()
-  const parsed = Number.parseInt(raw, 10)
-  return Number.isFinite(parsed) ? parsed : defaultZModelIndex
 }

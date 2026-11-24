@@ -13,9 +13,9 @@ const appDefaults: BAppProps['defaults'] = {
     color: { theme: 'info' },
     size: 'lg',
   },
-  BModal: {
-    centered: true,
-    noCloseOnBackdrop: true,
+  BDialog: {
+    backdrop: 'static',
+    slide: 'down',
   },
   BToast: {
     color: { theme: 'success' },

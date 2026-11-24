@@ -340,7 +340,7 @@ describe('list-group-item', () => {
 
     it('theme and active can coexist', () => {
       const wrapper = mount(BListGroupItem, {
-        props: { active: true, color: {theme: 'primary'}},
+        props: {active: true, color: {theme: 'primary'}},
       })
       expect(wrapper.classes()).toContain('theme-primary')
       expect(wrapper.classes()).toContain('active')

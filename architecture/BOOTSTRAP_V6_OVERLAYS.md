@@ -1,5 +1,19 @@
 # Bootstrap v6 Overlays (G1): Dialog, Drawer, `useModal`
 
+**Status 2026-11-15: step 1 (Dialog core) implemented.** `BDialog`, `BDialogActions` and the shared `useDialogBase` are in; steps 2–4 are open. What step 1 did differently from the text below, or left for a later step:
+
+- **`BDialogActions`** is in step 1: `okTitle`, `cancelTitle`, `okOnly`, `okDisabled`, `cancelDisabled`, `okAttrs`, `cancelAttrs` (attrs take `BButton` props) and `ok` / `cancel` content slots. It reaches the dialog through `dialogInjectionKey`.
+- **`useModal` keeps its name and result (`BvTriggerableEvent`) until step 2.** Provisional bridge: a dialog created without `slots.footer` gets `BDialogActions` as its footer, so message boxes keep their buttons. Step 2 decides the final shape. `vBModal` also stays until step 2.
+- **`hide(trigger, value)` / `ok(value)`** store `value` in an exposed `returnValue` (also set from a `<form method="dialog">` submitter and a native `returnValue`). Step 2 builds `DialogResult.value` from it or replaces it.
+- **`cancel` is cancelable** (v6's is not): it is the trigger event of `hide('esc')`, like `ok` is for `hide('ok')`. A browser-initiated close has trigger `'native'`.
+- **Escape is handled on `keydown`** (prevented, so the browser never closes the dialog itself and the second-Escape rule does not apply), with the native `cancel` as the path for close requests without a key press. `closedby="none"` is rendered when `keyboard` is `false`.
+- **Initial focus needed a fix v6 does not have:** v6 transitions `visibility`, so inside `showModal()` the content still computes to hidden and Chromium drops focus on `<body>`. `useDialogBase` makes the element visible without a transition just before opening.
+- **Swap (Q5) is not in step 1.** It needs `v-b-toggle` and the open-dialog stack, which are step 2. Native top-layer stacking works.
+- **`useActivatedFocusTrap`, `useSafeScrollLock` and the `focus-trap` / `@vueuse/integrations` peers are still there:** BOffcanvas uses them until step 3. `useModalManager` is reduced to the registry and stack `useModal` needs; `getModalZIndex`, `--bs-modal-zindex`, the `stack-*` classes, the `--b-*` variables and the `modal-open` body class are gone.
+- **`BOrchestrator`** still wraps modal items in `<TransitionGroup>` / `<span>` (step 2); it no longer passes `teleport-disabled` to them.
+- **No root `color` prop** on `BDialog`: the plan's prop list has none. `--bs-dialog-bg` / `--bs-dialog-color` or a class on the dialog cover it.
+- **Migration notes** (`migration-data/components/bmodal.md`, the migration skill) are untouched; they are Phase 3 / step 4.
+
 ## Summary
 
 - **Dialog** supersedes `BModal`, **Drawer** supersedes `BOffcanvas` (rule 1: redesign). Both become a native `<dialog>` with v6 markup (`.dialog` / `.drawer`, no `.modal-dialog` / `.modal-content` wrappers, no backdrop element), opened with `showModal()` / `show()` and animated by the v6 CSS through `useShowHide` + `useCssTransition`.
@@ -459,5 +473,5 @@ Reconciled on 2026-11-14 with the prop-family rule in `BOOTSTRAP_V6_MIGRATION.md
 0. **Prerequisite: show/hide machine (S1)**, its own PR after #164 and before step 1 (implemented; the non-cancelable hide for a native `close` exists in the machine but `useShowHide` does not expose it yet, step 1 adds that entry point). See [`BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`](./BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md). Steps 1, 2 and 4 below build on it: the native `close` handling in step 1 is a `sync` request to the machine, the step 2 controller reads the machine's state instead of the store's `modelValue` and gets `show({signal})` and per-cycle results, and `dispose` settles silently (D3).
 1. **Dialog core** (`BDialog`): native `<dialog>`, shared behavior (scroll lock, Escape / backdrop / bounce, native `close` / `submit` handling) in an internal `useDialogBase` composable used by both components, the transition callback, props and slots per the decisions, specs (happy-dom has no `showModal()` / `getAnimations()`: stub them, as `collapse.spec.ts` does for animations), docs data and page, demos, playground. Remove `useActivatedFocusTrap`, `useModalManager` z-index code, `getModalZIndex`, `--bs-modal-zindex`, the focus-trap peers.
 2. **Orchestrator and `useDialog`**: result object, `BOrchestrator` modal group without `<TransitionGroup>`, `useDialog` = `{create, hideAll}`, slim stack, swap in `v-b-toggle` (Q5), remove `vBModal`, `BvTriggerableEvent.ok`, `useSharedScrollLock`. Docs `useModal.md` → `useDialog.md`.
-3. **Drawer** (`BDrawer`) on the same base: placement, responsive CSS, scroll / backdrop matrix, resize guard, swipe, docs, `Layout.vue`. G3 Navbar builds on it.
+3. **Drawer** (`BDrawer`) on the same base: placement, responsive CSS, scroll / backdrop matrix, resize guard, swipe, docs, `Layout.vue`. G3 Navbar builds on it. Check slots in the template (no `useHasSlot`, which is removed before v100); removing `BOffcanvas` removes its use of it.
 4. **Cleanup**: `useLegacyShowHide` once BDropdown (G2) is migrated as well; Nuxt defaults; migration notes. Verify in a real browser (headless Chromium): top layer, `::backdrop` fade, deferred `close()` exit, Escape twice, `<form method="dialog">`, responsive drawer resize, scroll lock with stacked dialogs.

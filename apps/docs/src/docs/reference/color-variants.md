@@ -124,7 +124,7 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
   :header-color="{ theme: 'primary', bg: 'subtle-primary', border: 'primary' }"
   :body-color="{ fg: '2' }"
 />
-<BModal :ok-color="{ theme: 'success' }" :cancel-color="{ theme: 'danger', fg: 'white' }" />
+<BDialog :header-color="{ theme: 'success' }" :footer-color="{ bg: '2', border: 'success' }" />
 <BTable :thead="{ color: { theme: 'inverse' } }" :selection-color="{ bg: 'subtle-primary' }" />
 ```
 
@@ -138,23 +138,23 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 | `BDropdownGroup`                              | `header-color`                                                                 |
 | `BFormCheckbox`, `BFormRadio` and their groups | `button-color`                                                                |
 | `BFormTags`                                   | `tag-color`, `add-button-color`                                                |
-| `BModal`                                      | `header-color`, `footer-color` (with `border`), `body-color`, `header-close-color`, `ok-color`, `cancel-color` |
+| `BDialog`                                     | `header-color`, `footer-color` (with `border`), `body-color`                   |
 | `BOffcanvas`                                  | `header-close.color`                                                           |
 | `BOverlay`                                    | `spinner.color`                                                                |
 | `BPlaceholderCard`, `BPlaceholderTable`       | `header-color`, `footer-color`                                                 |
 | `BTable`, `BTableLite`                        | `thead.color`, `thead.rowColor`, `tfoot.color`, `tfoot.rowColor`, `selection-color` (`BTable` only) |
 
-`*-variant` props such as `ok-variant` or `button-variant` select a button style, not a color, so they stay separate.
+`*-variant` props such as `button-variant` select a button style, not a color, so they stay separate.
 
 ### Defaults are merged per key
 
 Some components and parts have a built-in default. For example `BButton`, `BBadge` and `BAvatar` default to
-`:color="{ theme: 'secondary' }"`, `BAlert` to `{ theme: 'info' }`, `ok-color` to `{ theme: 'primary' }`, and BAlert / BToast `close.color`,
-`cancel-color`, `button-color`, `tag-color`, `add-button-color`, and the BModal `header-close-color` and BOffcanvas `header-close.color`, default to `{ theme: 'secondary' }`.
+`:color="{ theme: 'secondary' }"`, `BAlert` to `{ theme: 'info' }`, and BAlert / BToast `close.color`,
+`button-color`, `tag-color`, `add-button-color` and the BOffcanvas `header-close.color` default to `{ theme: 'secondary' }`.
 The object you pass is merged with that default key by key:
 
-- A key you leave out, or set to `undefined`, keeps the default: `:ok-color="{ fg: 'white' }"` renders `theme-primary fg-white`.
-- A key set to `null` removes the default: `:ok-color="{ theme: null }"` renders no theme class.
+- A key you leave out, or set to `undefined`, keeps the default: `:tag-color="{ fg: 'white' }"` renders `theme-secondary fg-white`.
+- A key set to `null` removes the default: `:tag-color="{ theme: null }"` renders no theme class.
 
 Where a part falls back to another one (the table `tfoot` keys fall back to the `thead` keys,
 and the dropdown `split-color` to the dropdown's `color`), the fallback is also applied key by key.
@@ -170,17 +170,17 @@ a default object with the object passed on the component:
   default are not kept.
 
 ```vue-html
-<BApp :defaults="{ BModal: { okColor: { bg: 'subtle-primary' } } }">
-  <!-- theme-primary bg-subtle-primary: BApp default + built-in theme -->
-  <BModal />
-  <!-- theme-primary fg-white: the prop replaces the BApp default, the built-in theme still applies -->
-  <BModal :ok-color="{ fg: 'white' }" />
+<BApp :defaults="{ BFormTags: { tagColor: { bg: 'subtle-primary' } } }">
+  <!-- theme-secondary bg-subtle-primary: BApp default + built-in theme -->
+  <BFormTags />
+  <!-- theme-secondary fg-white: the prop replaces the BApp default, the built-in theme still applies -->
+  <BFormTags :tag-color="{ fg: 'white' }" />
 </BApp>
 ```
 
 Nested `BApp` components replace the outer defaults unless `merge-defaults` is set. With `merge-defaults` set to `true` the
-inner and outer default objects are deep-merged, so `{ BModal: { okColor: { theme: 'success' } } }` inside
-`{ BModal: { okColor: { fg: 'white' } } }` results in `{ theme: 'success', fg: 'white' }`.
+inner and outer default objects are deep-merged, so `{ BFormTags: { tagColor: { theme: 'success' } } }` inside
+`{ BFormTags: { tagColor: { fg: 'white' } } }` results in `{ theme: 'success', fg: 'white' }`.
 
 ## Key interactions
 

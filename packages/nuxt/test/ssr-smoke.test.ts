@@ -7,7 +7,7 @@ describe('ssr-smoke', async () => {
     rootDir: fileURLToPath(new URL('./fixtures/ssr-smoke', import.meta.url)),
   })
 
-  it('BModal renders without SSR error', async () => {
+  it('BDialog renders without SSR error', async () => {
     const html = await $fetch('/modal')
     expect(html).toContain('modal-page')
   })

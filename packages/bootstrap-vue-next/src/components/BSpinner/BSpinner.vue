@@ -2,10 +2,10 @@
   <component
     :is="props.tag"
     :class="computedClasses"
-    :role="props.label || hasLabelSlot ? props.role : null"
-    :aria-hidden="props.label || hasLabelSlot ? null : true"
+    :role="props.label || slots.label ? props.role : null"
+    :aria-hidden="props.label || slots.label ? null : true"
   >
-    <span v-if="props.label || hasLabelSlot" class="visually-hidden">
+    <span v-if="props.label || slots.label" class="visually-hidden">
       <slot name="label">{{ props.label }}</slot>
     </span>
   </component>
@@ -14,7 +14,6 @@
 <script setup lang="ts">
 import {getThemeColor, resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {computed} from 'vue'
-import {isEmptySlot} from '../../utils/dom'
 import {useDefaults} from '../../composables/useDefaults'
 import type {BSpinnerProps, BSpinnerSlots} from '../../types'
 
@@ -44,6 +43,4 @@ const computedClasses = computed(() => [
     'spinner-sm': props.small,
   },
 ])
-
-const hasLabelSlot = computed(() => !isEmptySlot(slots.label))
 </script>

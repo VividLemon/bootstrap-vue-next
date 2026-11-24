@@ -197,7 +197,7 @@ You can create popovers with interactive content such as forms and buttons. When
 - Use the `click` trigger (avoid `hover` or `focus` triggers)
 - Keep interactive content minimal for better mobile experience
 - Manage focus properly - move focus into the popover when shown and return it when hidden
-- Consider using `<BModal>` for complex interactive content with extensive form controls
+- Consider using `<BDialog>` for complex interactive content with extensive form controls
 
 <<< DEMO ./demo/PopoverInteractive.vue
 
@@ -242,7 +242,7 @@ When including interactive controls (such as form elements or links) in popovers
 - Moving forward with <kbd>Tab</kbd> may not move a keyboard user into the popover
 - Interactive controls may be unreachable for keyboard users
 
-**For complex interactive content, use `<BModal>` instead of popovers** to ensure proper keyboard navigation and focus management.
+**For complex interactive content, use `<BDialog>` instead of popovers** to ensure proper keyboard navigation and focus management.
 
 :::info Note
 The animation effect of popovers is dependent on the `prefers-reduced-motion` media

@@ -212,6 +212,15 @@ export const modalManagerKey: InjectionKey<{
   removeRegistry: (modal: Readonly<ComponentInternalInstance>) => void
 }> = createBvnRegistryInjectionKey('modalManager')
 
+// Dialog
+export const dialogInjectionKey: InjectionKey<{
+  ok: (value?: unknown) => void
+  cancel: () => void
+  hide: (trigger?: string, value?: unknown) => void
+  /** The built-in button that gets `autofocus` */
+  focus: Readonly<Ref<'ok' | 'cancel' | 'close' | undefined>>
+}> = createBvnInjectionKey('dialog')
+
 export const defaultsKey: InjectionKey<Ref<Partial<BvnComponentProps>>> =
   createBvnRegistryInjectionKey('defaults')
 

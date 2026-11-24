@@ -21,7 +21,8 @@ It is the single source of truth for the migration: implementation work follows 
 | Phase 2b: component batches                                                                                        | Wave 1 merged (#165–#168); wave 2 not started — see [Implementation progress](#implementation-progress)                                                                                                     |
 | Phase 3: migration docs                                                                                            | Not started                                                                                                                                                                                                 |
 | Deferred components                                                                                                | Plans decided and merged ([#169](https://github.com/VividLemon/bootstrap-vue-next/pull/169), `BOOTSTRAP_V6_NEW_COMPONENTS.md`); implementation not started. See [Deferred components](#deferred-components) |
-| Show/hide state machine (S1)                                                                                       | Implemented (PR open) — `showHideMachine.ts` behind `useShowHide`, read-only `state`; see `BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`                                                                         |
+| Show/hide state machine (S1)                                                                                       | Done, merged as [#182](https://github.com/VividLemon/bootstrap-vue-next/pull/182) — `showHideMachine.ts` behind `useShowHide`, read-only `state`                                                            |
+| G1 Overlays                                                                                                        | Step 1 (Dialog core: `BDialog`, `BDialogActions`, `useDialogBase`) implemented; steps 2–4 (orchestrator / `useDialog`, Drawer, cleanup) open — see `BOOTSTRAP_V6_OVERLAYS.md`                               |
 | Post-migration: API docs generated from source                                                                     | Not started — see [Post-migration](#post-migration-api-docs-generated-from-source)                                                                                                                          |
 | Post-migration (maybe): public `useTable` composable                                                               | Undecided — see `USE_TABLE_COMPOSABLE.md`                                                                                                                                                                   |
 
@@ -254,6 +255,14 @@ Decided 2026-11-21, first applied to `BPopover` / `BTooltip` ([#184](https://git
 - A component that needs an element the user may not render in a slot (directives, orchestrators, foreign DOM) also takes it as a prop, named after the same role as the slot (`activator`).
 - Known candidates: `BPopover` / `BTooltip` `#activator` (#184); `BCollapse` `#header` / `#footer` (a toggle with `aria-expanded` / `aria-controls`); `BMenu` `#activator` for a custom opener (G2); optionally `BDialog` / `BDrawer` `#activator` and BTable row details.
 
+### Slot presence checks
+
+Decided 2026-11-24 ([#183](https://github.com/VividLemon/bootstrap-vue-next/pull/183)).
+
+- Check whether a slot was passed in the **template**: `v-if="slots.footer"`. The template runs on every render, so it is always current. Never call a slot just to see whether it renders something (the removed `isEmptySlot`): that renders it twice, needs the slot's scope, and counts a `v-if` comment as content. A user drops an optional wrapper by leaving the slot out (`<template v-if="…" #footer>`).
+- Slots are not reactive, so never read them in a `computed` (`computed(() => !!slots.badge)` never updates). Split such a computed: the reactive part stays a `computed`, and the template combines it with `slots.x` (or use a plain function called from the template).
+- `useHasSlot` (internal, from #183) is a stopgap for script code that still depends on a slot. **It is removed before v100** (see [Cleanup](#cleanup-and-verification-end-of-the-current-migration)).
+
 ## Component decisions (in scope)
 
 ### Grid (`BContainer`, `BRow`, `BCol`)
@@ -332,6 +341,8 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### BModal → Dialog
 
+**Dialog core is implemented** (`BDialog` on a native `<dialog>`, G1 step 1; see the status note at the top of `BOOTSTRAP_V6_OVERLAYS.md`). Of the pending list below, only the `useModal` result redesign is left (G1 step 2).
+
 - **Now:** `noFade` / `noAnimation` → `noTransition`; `transProps` removed from its props; color families → `headerColor`, `bodyColor`, `footerColor`, `headerCloseColor`, `okColor`, `cancelColor`; `--bs-modal-zindex` now comes from v6 `$zindex-levels` (`dialog`, 1040).
 - **Pending:**
   - Native `<dialog>` + v6 Dialog markup and lifecycle (`.hiding`, `.dialog-instant`, `.dialog-static`), native transition path instead of `<Transition>`.
@@ -394,6 +405,12 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ## Cleanup and verification (end of the current migration)
 
+- **Remove `useHasSlot` before v100** ([Slot presence checks](#slot-presence-checks)). Its remaining users after #183:
+  - `BAvatar` (badge visibility, implicit dot, `badge` class): split the computeds and check `slots.default` / `slots.badge` in the template, in the G5 avatar rewrite ([#190](https://github.com/VividLemon/bootstrap-vue-next/pull/190), `BOOTSTRAP_V6_DISPLAY.md`).
+  - `BOffcanvas` (header-close attrs): goes away with it when G1 step 3 replaces it with `BDrawer`, which checks slots in its template (`BOOTSTRAP_V6_OVERLAYS.md`).
+  - `BFormCheckbox` / `BFormRadio` (`hasOwnLabel`, the label target and the form-check class objects): have `useFormCheckClasses` / `useFormCheckLabelClasses` take the slot flag from the template (or return functions), then drop `useHasSlot`.
+  - Then delete `src/composables/useHasSlot.ts` and its spec.
+
 - Sweep library SCSS for CSS variables missing from v6 (e.g. `--bs-border-radius*`, `--bs-transition-duration`) and replace them with v6 tokens.
 - Check the `RadiusElement` scale against v6: `rounded-lg` now matches the default `rounded` radius.
 - Replace v5 classes left in the docs and playground (`bg-body-tertiary`, `text-body-secondary`, `text-muted`, `bg-light`, `bg-dark`, `text-bg-*`; about 72 uses across 10 files).
@@ -440,13 +457,13 @@ The very last step of the v6 migration, after everything above (including Post-m
 
 1. **Project skills** under `.agents/skills/`, prefixed `bvn-` to keep them apart from the vendored skills. Each has a `SKILL.md` whose description says when to load it, the rules, and a few worked examples:
 
-   | Skill                  | Covers                                                                                                                                                                                          |
-   | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | `bvn-component-props`  | color objects and `<part>Color`, prop families as objects, `Responsive<T>` / `HoverState<T>`, `2xl` breakpoints and prefix classes, `*Attrs` instead of `*Class`, updating the docs `*.data.ts` |
-   | `bvn-show-hide`        | the `useShowHide` state machine, native CSS transitions with `noTransition`, `useCssTransition`, promise results, the `ShowHideSlotsData` scope                                                 |
-   | `bvn-slots`            | typed `defineSlots`, the [slot `props`](#slot-props-for-elements-the-component-controls) convention, when a component also takes an element prop                                                |
-   | `bvn-styles`           | `@layer components`, v6 tokens, checking every class and CSS variable against `bootstrap.css`                                                                                                   |
-   | `bvn-breaking-changes` | no compatibility shims, a ledger row per change, `!` / `BREAKING CHANGE:` commits, migration-data pages                                                                                         |
+   | Skill                  | Covers                                                                                                                                                                                                       |
+   | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+   | `bvn-component-props`  | color objects and `<part>Color`, prop families as objects, `Responsive<T>` / `HoverState<T>`, `2xl` breakpoints and prefix classes, `*Attrs` instead of `*Class`, updating the docs `*.data.ts`              |
+   | `bvn-show-hide`        | the `useShowHide` state machine, native CSS transitions with `noTransition`, `useCssTransition`, promise results, the `ShowHideSlotsData` scope                                                              |
+   | `bvn-slots`            | typed `defineSlots`, the [slot `props`](#slot-props-for-elements-the-component-controls) convention, when a component also takes an element prop, [slot presence checks](#slot-presence-checks) in templates |
+   | `bvn-styles`           | `@layer components`, v6 tokens, checking every class and CSS variable against `bootstrap.css`                                                                                                                |
+   | `bvn-breaking-changes` | no compatibility shims, a ledger row per change, `!` / `BREAKING CHANGE:` commits, migration-data pages                                                                                                      |
 
    Merge or split them if the content suggests it; the table is a starting point. Sources: [Cross-cutting decisions](#cross-cutting-decisions), the component decisions above, the group plans, and any rules added later.
 

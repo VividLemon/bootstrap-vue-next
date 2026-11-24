@@ -209,9 +209,9 @@ This example also demonstrates additional accessibility markup.
 
 <<< DEMO ./demo/OverlayFormConfirmation.vue
 
-### Using in `BModal`
+### Using in `BDialog`
 
-The modal body has `position: relative;` set, so when using `<BOverlay no-wrap ...>` in the modal
-body only the modal body will be obscured. If you wish to obscure the entire modal (including the
-header and footer), you will need to set the `BModal` prop `body-class` to `position-static`, and
+The dialog body has `position: relative;` set, so when using `<BOverlay no-wrap ...>` in the dialog
+body only the dialog body will be obscured. If you wish to obscure the entire dialog (including the
+header and footer), set the `BDialog` prop `body-attrs` to `{ class: 'position-static' }`, and
 also set the `rounded` prop on `BOverlay`.

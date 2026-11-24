@@ -3,43 +3,49 @@
     <BOrchestrator />
     <BRow>
       <BCol>
-        <BButton @click="showModal = !showModal">Toggle modal v-model</BButton>
+        <BButton @click="showModal = !showModal">Toggle dialog v-model</BButton>
         <BButton v-b-toggle.exampleModal>Toggle with v-b-toggle directive</BButton>
         <BButton v-b-modal.exampleModal>Toggle with v-b-modal directive</BButton>
         {{ showModal }}
-        <!-- <BButton v-b-modal:exampleModal>Launch demo modal</BButton> -->
-        <BModal
+        <BDialog
           id="exampleModal"
           v-model="showModal"
-          :no-close-on-backdrop="noClose"
+          :backdrop="noClose ? 'static' : true"
           size="xl"
-          title="Modal title"
-          fade
-          >...</BModal
+          title="Dialog title"
         >
+          ...
+          <template #footer>
+            <BDialogActions />
+          </template>
+        </BDialog>
       </BCol>
     </BRow>
     <BRow>
       <BCol>
-        <BModal
+        <BDialog
           v-model="isModalVisible"
-          :no-close-on-esc="noClose"
-          :no-close-on-backdrop="noClose"
-          title="My Modal"
+          :keyboard="!noClose"
+          :backdrop="noClose ? 'static' : true"
+          title="My Dialog"
         >
           abc
-        </BModal>
+        </BDialog>
 
-        <BButton @click="isModalVisible = true">Show Modal</BButton>
+        <BButton @click="isModalVisible = true">Show Dialog</BButton>
       </BCol>
     </BRow>
     <BRow>
       <BCol>
-        <BModal v-model="showModal2">
+        <BDialog v-model="showModal2" title="First">
           <BButton @click="showModal3 = true">Click me</BButton>
-          <BModal v-model="showModal3" />
-        </BModal>
-        <BButton @click="showModal2 = true">Show Modal</BButton>
+          <BDialog v-model="showModal3" title="Stacked" />
+        </BDialog>
+        <BButton @click="showModal2 = true">Show stacked dialogs</BButton>
+        <BButton @click="showNonModal = !showNonModal">Toggle non-modal dialog</BButton>
+        <BDialog v-model="showNonModal" :modal="false" slide="up" title="Non-modal">
+          The page stays usable.
+        </BDialog>
       </BCol>
     </BRow>
     <BRow>
@@ -63,9 +69,9 @@
 </template>
 
 <script setup lang="ts">
-import {computed, h, markRaw, onMounted, onUnmounted, ref, watchEffect} from 'vue'
-import type {ThemeColor, ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
-import {BModal} from 'bootstrap-vue-next/components/BModal'
+import {computed, h, onMounted, onUnmounted, ref, watchEffect} from 'vue'
+import type {ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
+import {BDialog, BDialogActions} from 'bootstrap-vue-next/components/BDialog'
 import {useModal} from 'bootstrap-vue-next/composables/useModal'
 
 const {create, store} = useModal()
@@ -74,6 +80,7 @@ const modalCount = computed(() => store.value.modal.size)
 const showModal = ref(false)
 const showModal2 = ref(false)
 const showModal3 = ref(false)
+const showNonModal = ref(false)
 
 const noClose = ref(true)
 const isModalVisible = ref(false)
@@ -107,7 +114,7 @@ const dynamicModal = computed<ModalOrchestratorCreateParamBase>({
 
     body: 'my body',
     title: 'my title',
-    okColor: {theme: (firstRef.value.body === 'foo' ? 'danger' : 'info') as ThemeColor},
+    size: firstRef.value.body === 'foo' ? ('sm' as const) : ('lg' as const),
   }),
   set: (value) => {
     dynamicModalModelValue.value = value.modelValue ?? dynamicModalModelValue.value
@@ -118,14 +125,16 @@ const showFns = {
   basicNoReactive: async () => {
     await using _ = await create({
       title: 'foobar',
-      okColor: {theme: 'danger'},
+      body: 'OK and Cancel come from the default BDialogActions footer',
     }).show()
     return _
   },
   basicCustomComponent: async () => {
     await using _ = await create({
-      slots: {default: () => markRaw(h('div', null, {default: () => 'foobar!'}))},
-      okColor: {theme: 'info'},
+      slots: {
+        default: () => h('div', null, {default: () => 'foobar!'}),
+        footer: () => h(BDialogActions, {okOnly: true, okTitle: 'Got it'}),
+      },
     }).show()
     return _
   },

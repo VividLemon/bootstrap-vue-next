@@ -17,9 +17,14 @@ export const omit = <
 ): Omit<A, B[number]> => {
   const normalizeKey = (key: PropertyKey) => (typeof key === 'number' ? `${key}` : key)
   const keysToOmit = new Set(keysToPluck.map(normalizeKey))
-  return Reflect.ownKeys(objToPluck)
-    .filter((key) => !keysToOmit.has(normalizeKey(key)))
-    .reduce((result, key) => ({...result, [key]: objToPluck[key as keyof A]}), {} as Omit<A, B[number]>)
+  // One pass, writing into a single result object (no copy per key)
+  return Reflect.ownKeys(objToPluck).reduce(
+    (result, key) => {
+      if (!keysToOmit.has(normalizeKey(key))) result[key] = objToPluck[key as keyof A]
+      return result
+    },
+    {} as Record<PropertyKey, unknown>
+  ) as Omit<A, B[number]>
 }
 /**
  * Picks properties from an object, base on the values in an array, and returns the new object.
