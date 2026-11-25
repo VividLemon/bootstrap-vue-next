@@ -6,6 +6,7 @@ import type {
   TableRowEvent,
 } from './TableTypes'
 import type {AcceptableValue, DateValue, TimeValue} from 'reka-ui'
+import type {PasswordStrengthChange} from './PasswordStrength'
 
 export interface showHideEmits {
   'hide': [value: BvTriggerableEvent]
@@ -112,6 +113,10 @@ export type BDropdownItemEmits = {
 
 export type BDropdownItemButtonEmits = {
   click: [value: MouseEvent]
+}
+
+export type BFormStrengthEmits = {
+  change: [value: PasswordStrengthChange]
 }
 
 export type BFormSpinbuttonEmits = {

@@ -28,6 +28,7 @@ import type {
 } from './CommonTypes'
 import type {CommonInputProps, FormDebounceOptions} from './FormCommonInputProps'
 import type {RadioOption, RadioValue} from './RadioTypes'
+import type {PasswordStrength, PasswordStrengthOptions} from './PasswordStrength'
 import type {
   ComplexSelectOptionRaw,
   SelectOption,
@@ -562,6 +563,19 @@ export interface BFormRadioGroupProps<
   state?: ValidationState
   fields?: OptionFields
 }
+export interface BFormStrengthProps {
+  bar?: boolean
+  messages?: Partial<Record<PasswordStrength, string>>
+  minLength?: number
+  scorer?: PasswordStrengthOptions['scorer']
+  segmentAttrs?: Readonly<AttrsValue>
+  showText?: boolean
+  textAttrs?: Readonly<AttrsValue>
+  thresholds?: PasswordStrengthOptions['thresholds']
+  value?: string
+  weights?: PasswordStrengthOptions['weights']
+}
+
 export interface BFormRatingProps {
   clearLabel?: string
   color?: ColorExtendables | null
