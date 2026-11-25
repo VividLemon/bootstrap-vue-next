@@ -54,7 +54,7 @@
         v-bind="props.menuAttrs"
         class="menu"
         :class="menuClasses"
-        :style="floatingStyles"
+        :style="finalPlacement ? floatingStyles : undefined"
         :data-bs-placement="finalPlacement"
         :data-bs-display="isStatic ? 'static' : undefined"
         @keydown="onKeydown"
