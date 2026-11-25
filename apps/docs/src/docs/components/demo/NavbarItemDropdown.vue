@@ -3,15 +3,15 @@
   <BNavbar v-b-color-mode="'dark'" :color="{ theme: 'inverse' }">
     <BNavbarNav>
       <BNavItem href="#navbar-item-dropdown">Home</BNavItem>
-      <BNavItemDropdown text="Lang" right>
-        <BDropdownItem>EN</BDropdownItem>
-        <BDropdownItem>ES</BDropdownItem>
-        <BDropdownItem>RU</BDropdownItem>
-        <BDropdownItem>FA</BDropdownItem>
+      <BNavItemDropdown text="Lang" placement="bottom-end">
+        <BMenuItem>EN</BMenuItem>
+        <BMenuItem>ES</BMenuItem>
+        <BMenuItem>RU</BMenuItem>
+        <BMenuItem>FA</BMenuItem>
       </BNavItemDropdown>
-      <BNavItemDropdown text="User" right>
-        <BDropdownItem>Account</BDropdownItem>
-        <BDropdownItem>Settings</BDropdownItem>
+      <BNavItemDropdown text="User" placement="bottom-end">
+        <BMenuItem>Account</BMenuItem>
+        <BMenuItem>Settings</BMenuItem>
       </BNavItemDropdown>
     </BNavbarNav>
   </BNavbar>

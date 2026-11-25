@@ -30,16 +30,17 @@ Set the `divider` prop to draw a line between the buttons of a group. It is most
 ## Vertical variation
 
 Make a set of buttons appear vertically stacked rather than horizontally by setting the `vertical`
-prop. Split button dropdowns are not supported here.
+prop. Split menus are not supported here.
 
 <<< DEMO ./demo/ButtonGroupVertical.vue#template{vue-html}
 
-## Dropdown menu support
+## Menu support
 
-Add [`BDropdown`](/docs/components/dropdown) menus directly inside your `BButtonGroup`. Note
-that split dropdown menus are not supported when prop `vertical` is set.
+Add [`BMenu`](/docs/components/menu) menus directly inside your `BButtonGroup`: the toggle and the
+menu become children of the group, so the toggle joins the other buttons. Note that split menus are
+not supported when prop `vertical` is set.
 
-<<< DEMO ./demo/ButtonGroupDropdown.vue#template{vue-html}
+<<< DEMO ./demo/ButtonGroupMenu.vue#template{vue-html}
 
 ## See also
 

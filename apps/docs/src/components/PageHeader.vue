@@ -14,7 +14,7 @@
           <ViewSourceButton v-if="editHref" :href="editHref" target="_blank" class="me-2">
             Edit this page on GitHub
           </ViewSourceButton>
-          <MarkdownActionsDropdown v-if="markdownActionsAvailable" />
+          <MarkdownActionsMenu v-if="markdownActionsAvailable" />
           <ViewSourceButton v-if="migrationHref" :href="migrationHref">
             Migration Notes
           </ViewSourceButton>
@@ -32,7 +32,7 @@ import { useMarkdownRenderer } from '../composables/useMarkdownRenderer'
 import { data as migrationData } from '../data/migration.data'
 import { appInfoKey } from '../../.vitepress/theme/keys'
 import { kebabToTitleCase } from '../utils/dataLoaderUtils'
-import MarkdownActionsDropdown from './MarkdownActionsDropdown.vue'
+import MarkdownActionsMenu from './MarkdownActionsMenu.vue'
 
 interface AppInfo {
   githubComponentsDirectory: string

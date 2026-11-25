@@ -80,15 +80,18 @@ Multiple add-ons are supported and can be mixed with checkbox and radio input ve
 
 <<< DEMO ./demo/InputGroupMultipleAddons.vue#template{vue-html}
 
-## Dropdown addons
+## Menu addons
 
-<<< DEMO ./demo/InputGroupDropdown.vue#template{vue-html}
+A [`BMenu`](/docs/components/menu) inside an input group renders its toggle and menu as direct
+children of the group, as Bootstrap's `.input-group > .menu` rules expect.
+
+<<< DEMO ./demo/InputGroupMenu.vue#template{vue-html}
 
 ## Control sizing
 
 Set height using the `size` prop to `sm` or `lg` for small or large respectively. There is no need
 to set size on the individual inputs or buttons. Note however, you _will be required_ to also set
-the size on dropdowns.
+the size on menus.
 
 <<< DEMO ./demo/InputGroupSizing.vue
 

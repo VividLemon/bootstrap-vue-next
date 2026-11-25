@@ -15,19 +15,19 @@
       </BNavbarNav>
       <!-- Right aligned nav items -->
       <BNavbarNav class="ms-auto mb-2 mb-lg-0">
-        <BNavItemDropdown text="Lang" right>
-          <BDropdownItem>EN</BDropdownItem>
-          <BDropdownItem>ES</BDropdownItem>
-          <BDropdownItem>RU</BDropdownItem>
-          <BDropdownItem>FA</BDropdownItem>
+        <BNavItemDropdown text="Lang" placement="bottom-end">
+          <BMenuItem>EN</BMenuItem>
+          <BMenuItem>ES</BMenuItem>
+          <BMenuItem>RU</BMenuItem>
+          <BMenuItem>FA</BMenuItem>
         </BNavItemDropdown>
-        <BNavItemDropdown right>
-          <!-- Using 'button-content' slot -->
-          <template #button-content>
+        <BNavItemDropdown placement="bottom-end">
+          <!-- Using the 'toggle' slot -->
+          <template #toggle>
             <em>User</em>
           </template>
-          <BDropdownItem>Profile</BDropdownItem>
-          <BDropdownItem>Sign Out</BDropdownItem>
+          <BMenuItem>Profile</BMenuItem>
+          <BMenuItem>Sign Out</BMenuItem>
         </BNavItemDropdown>
       </BNavbarNav>
       <BNavForm class="d-flex">

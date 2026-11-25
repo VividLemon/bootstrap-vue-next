@@ -60,24 +60,21 @@
                 </BNavItem>
                 <div class="border border-secondary ms-2 me-3" />
                 <ClientOnly>
-                  <BNavItemDropdown toggle-class="px-0">
-                    <!-- TODO there is no way to adjust these options, say if you wanted to remove the padding -->
-                    <template #button-content>
-                      <component
-                        :is="currentIcon"
-                        height="1.1em"
-                        :aria-label="`Toggle theme (${colorMode})`"
-                        class="d-inline-block"
-                      />
+                  <BNavItemDropdown
+                    placement="bottom-end"
+                    :toggle-attrs="{ class: 'px-0', 'aria-label': `Toggle theme (${colorMode})` }"
+                  >
+                    <template #toggle>
+                      <component :is="currentIcon" height="1.1em" class="d-inline-block" />
                     </template>
-                    <BDropdownItem
+                    <BMenuItem
                       v-for="el in options"
                       :key="el"
                       :active="colorMode === el"
                       @click="set(el)"
                     >
                       <component :is="map[el]" /> {{ el }}
-                    </BDropdownItem>
+                    </BMenuItem>
                   </BNavItemDropdown>
                 </ClientOnly>
               </BNav>

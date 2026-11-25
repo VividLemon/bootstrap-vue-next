@@ -2,7 +2,7 @@
   <BContainer fluid>
     <BRow>
       <BCol>
-        <h4 class="my-3">Nav with a dropdown</h4>
+        <h4 class="my-3">Nav with a menu</h4>
       </BCol>
     </BRow>
     <BRow>
@@ -11,25 +11,23 @@
           <BNavItem active>Active</BNavItem>
           <BNavItem>Link</BNavItem>
           <BNavItemDropdown
-            id="my-nav-dropdown"
-            split
-            text="Dropdown"
-            toggle-class="nav-link-custom"
-            right
-            @split-click="consoleLog('split button clicked')"
-            @click.stop.prevent="consoleLog('button clicked')"
+            id="my-nav-menu"
+            text="Menu"
+            :toggle-attrs="{class: 'nav-link-custom'}"
+            placement="bottom-end"
+            @shown="consoleLog('shown')"
           >
-            <BDropdownItem>One</BDropdownItem>
-            <BDropdownItem>Two</BDropdownItem>
-            <BDropdownDivider />
-            <BDropdownItem>Three</BDropdownItem>
+            <BMenuItem>One</BMenuItem>
+            <BMenuItem>Two</BMenuItem>
+            <BMenuDivider />
+            <BMenuItem>Three</BMenuItem>
           </BNavItemDropdown>
         </BNav>
       </BCol>
     </BRow>
     <BRow>
       <BCol>
-        <h4 class="m-2">Nav with a dropdown and a custom Button Icon</h4>
+        <h4 class="m-2">Nav with a menu and a custom Button Icon</h4>
       </BCol>
     </BRow>
     <BRow>
@@ -37,11 +35,11 @@
         <BNav pills>
           <BNavItem active>Active</BNavItem>
           <BNavItem>Link</BNavItem>
-          <BNavItemDropdown text="Custom Button Icon" no-caret variant="link">
-            <template #button-content>
+          <BNavItemDropdown text="Custom Button Icon">
+            <template #toggle>
               <img src="../../assets/logo.png" style="height: 1em" />
             </template>
-            <BDropdownItem href="#">Action</BDropdownItem>
+            <BMenuItem href="#">Action</BMenuItem>
           </BNavItemDropdown>
         </BNav>
       </BCol>

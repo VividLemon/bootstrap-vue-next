@@ -15,13 +15,13 @@ Most component documentation pages include an accessibility section (or sections
 
 ## Interactive components
 
-BootstrapVue's interactive components — such as modal dialogs, dropdown menus and custom tooltips — are designed to work for touch, mouse and keyboard users. Through the use of relevant [WAI-ARIA](https://www.w3.org/WAI/standards-guidelines/aria/) roles and attributes, these components should also be understandable and operable using assistive technologies (such as screen readers).
+BootstrapVue's interactive components — such as modal dialogs, menus and custom tooltips — are designed to work for touch, mouse and keyboard users. Through the use of relevant [WAI-ARIA](https://www.w3.org/WAI/standards-guidelines/aria/) roles and attributes, these components should also be understandable and operable using assistive technologies (such as screen readers).
 
 Because BootstrapVue's components are purposely designed to be fairly generic, authors may need to include further ARIA roles and attributes, as well as JavaScript behavior, to more accurately convey the precise nature and functionality of their component. This is usually noted in the documentation.
 
 ## ARIA Trigger Registration for component visibility
 
-Several BootstrapVueNext components (`BCollapse`, `BOffcanvas`, `BDialog`, `BDropdown`, `BAlert`, `BToast`, `BPopover`) support automatic ARIA attribute management for trigger elements that control their visibility. This system ensures proper accessibility by automatically updating the `aria-expanded` attribute on trigger elements as the component's visibility changes. There are no trigger state classes; style triggers with `[aria-expanded]` attribute selectors.
+Several BootstrapVueNext components (`BCollapse`, `BOffcanvas`, `BDialog`, `BMenu`, `BAlert`, `BToast`, `BPopover`) support automatic ARIA attribute management for trigger elements that control their visibility. This system ensures proper accessibility by automatically updating the `aria-expanded` attribute on trigger elements as the component's visibility changes. There are no trigger state classes; style triggers with `[aria-expanded]` attribute selectors.
 
 ### How Trigger Registration Works
 
@@ -94,8 +94,8 @@ The following components support the trigger registration system:
 
 - [`BAlert`](/docs/components/alert)
 - [`BCollapse`](/docs/components/collapse#accessibility)
-- [`BDropdown`](/docs/components/dropdown)
 - [`BDialog`](/docs/components/dialog)
+- [`BMenu`](/docs/components/menu)
 - [`BOffcanvas`](/docs/components/offcanvas#accessibility)
 - [`BPopover`](/docs/components/popover)
 - [`BToast`](/docs/components/toast)

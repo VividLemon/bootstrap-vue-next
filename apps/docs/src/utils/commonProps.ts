@@ -483,7 +483,7 @@ const commonProps = () =>
       type: 'ColorExtendables',
       default: undefined,
       description:
-        'Color object for the split dropdown button: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. Each key falls back to the root `theme`, `bg` or `fg` prop. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
+        'Color object for the main button of a split menu: `theme`, `bg`, `fg` keys render `theme-*`, `bg-*`, `fg-*` classes. Each key falls back to the root `theme`, `bg` or `fg` prop. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
     },
     tagColor: {
       type: 'ColorExtendables',
