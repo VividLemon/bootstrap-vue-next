@@ -4,7 +4,7 @@ import {defineComponent, h, markRaw, ref} from 'vue'
 import BOrchestrator from './BOrchestrator.vue'
 import {orchestratorRegistryKey} from '../../utils/keys'
 import type {
-  ModalOrchestratorArrayValue,
+  DialogOrchestratorArrayValue,
   ToastOrchestratorArrayValue,
 } from '../../types/ComponentOrchestratorTypes'
 import type {ContainerPosition} from '../../types/Alignment'
@@ -16,7 +16,7 @@ const DummyComponent = markRaw(
   })
 )
 
-const buildItem = <T extends ModalOrchestratorArrayValue | ToastOrchestratorArrayValue>(
+const buildItem = <T extends DialogOrchestratorArrayValue | ToastOrchestratorArrayValue>(
   id: string,
   props: T['props']
 ) =>
@@ -32,15 +32,15 @@ const buildItem = <T extends ModalOrchestratorArrayValue | ToastOrchestratorArra
   }) as T
 
 const buildRegistry = (overrides: {
-  modal?: ModalOrchestratorArrayValue[]
+  dialog?: DialogOrchestratorArrayValue[]
   toast?: ToastOrchestratorArrayValue[]
 }) => {
-  const modalMap = new Map((overrides.modal ?? []).map((item) => [item.id, ref(item)]))
+  const dialogMap = new Map((overrides.dialog ?? []).map((item) => [item.id, ref(item)]))
   const toastMap = new Map((overrides.toast ?? []).map((item) => [item.id, ref(item)]))
 
   return {
     store: ref({
-      modal: modalMap,
+      dialog: dialogMap,
       tooltip: new Map(),
       popover: new Map(),
       toast: toastMap,
@@ -55,9 +55,9 @@ const buildRegistry = (overrides: {
 enableAutoUnmount(afterEach)
 
 describe('BOrchestrator TransitionGroup name conditional behavior', () => {
-  it('applies b-list transition name only when toast items are present', () => {
+  it('renders dialog items without a TransitionGroup or wrapper span', () => {
     const registry = buildRegistry({
-      modal: [buildItem<ModalOrchestratorArrayValue>('modal1', {modelValue: false})],
+      dialog: [buildItem<DialogOrchestratorArrayValue>('dialog1', {modelValue: false})],
     })
 
     const wrapper = mount(BOrchestrator, {
@@ -68,11 +68,9 @@ describe('BOrchestrator TransitionGroup name conditional behavior', () => {
       },
     })
 
-    const transitionGroup = wrapper.findComponent({name: 'TransitionGroup'})
-    expect(transitionGroup.exists()).toBe(true)
-
-    // Should NOT have the b-list name for modal items
-    expect(transitionGroup.props('name')).toBeUndefined()
+    expect(wrapper.findComponent({name: 'TransitionGroup'}).exists()).toBe(false)
+    expect(wrapper.findComponent({name: 'DummyComponent'}).exists()).toBe(true)
+    expect(wrapper.find('span').exists()).toBe(false)
   })
 
   it('applies b-list transition name when toast items are present', () => {
@@ -102,7 +100,7 @@ describe('BOrchestrator TransitionGroup name conditional behavior', () => {
 
   it('applies b-list transition name when mixed items contain toasts', () => {
     const registry = buildRegistry({
-      modal: [buildItem<ModalOrchestratorArrayValue>('modal1', {modelValue: false})],
+      dialog: [buildItem<DialogOrchestratorArrayValue>('dialog1', {modelValue: false})],
       toast: [
         buildItem<ToastOrchestratorArrayValue>('toast1', {
           modelValue: false,
@@ -119,17 +117,11 @@ describe('BOrchestrator TransitionGroup name conditional behavior', () => {
       },
     })
 
-    // Find the TransitionGroup components for both positions
+    // Only the toast container has a TransitionGroup, with the b-list transition
     const transitionGroups = wrapper.findAllComponents({name: 'TransitionGroup'})
-    expect(transitionGroups).toHaveLength(2) // One for modal, one for toast
-
-    // The toast position should have b-list transition
-    const toastTransition = transitionGroups.find((tg) => tg.props('name') === 'b-list')
-    expect(toastTransition).toBeDefined()
-
-    // The modal position should not have b-list transition
-    const modalTransition = transitionGroups.find((tg) => tg.props('name') === undefined)
-    expect(modalTransition).toBeDefined()
+    expect(transitionGroups).toHaveLength(1)
+    expect(transitionGroups[0]?.props('name')).toBe('b-list')
+    expect(wrapper.findAllComponents({name: 'DummyComponent'})).toHaveLength(2)
   })
 })
 

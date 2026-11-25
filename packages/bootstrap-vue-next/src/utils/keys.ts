@@ -17,7 +17,7 @@ import type {CheckboxValue} from '../types/CheckboxTypes'
 import type {RadioValue} from '../types/RadioTypes'
 import type {BreadcrumbItemRaw} from '../types/BreadcrumbTypes'
 import type {
-  ModalOrchestratorArrayValue,
+  DialogOrchestratorArrayValue,
   PopoverOrchestratorArrayValue,
   ToastOrchestratorArrayValue,
   TooltipOrchestratorArrayValue,
@@ -201,19 +201,37 @@ export const breadcrumbRegistryKey: InjectionKey<{
   reset: (key?: string) => void
 }> = createBvnRegistryInjectionKey('breadcrumb')
 
-export const modalManagerKey: InjectionKey<{
-  stack: ComputedRef<readonly ComponentInternalInstance[]>
-  countStack: ComputedRef<number>
-  lastStack: ComputedRef<ComponentInternalInstance | undefined>
-  pushStack: (modal: Readonly<ComponentInternalInstance>) => void
-  removeStack: (modal: Readonly<ComponentInternalInstance>) => void
-  registry: Readonly<Ref<Map<number, ComponentInternalInstance>>>
-  pushRegistry: (modal: Readonly<ComponentInternalInstance>) => void
-  removeRegistry: (modal: Readonly<ComponentInternalInstance>) => void
-}> = createBvnRegistryInjectionKey('modalManager')
+/** A mounted `BDialog`, as the dialog stack knows it */
+export interface DialogStackEntry {
+  readonly id: Readonly<Ref<string>>
+  readonly element: Readonly<Ref<HTMLDialogElement | null>>
+  readonly show: () => Promise<boolean | string>
+  readonly hide: (trigger?: string, value?: unknown) => Promise<boolean | string>
+  /**
+   * Hides the dialog at once (`.dialog-instant`, trigger `'swap'`) for the v6 swap. Returns
+   * `false` when the dialog refused (its `hide` was prevented) or is not open
+   */
+  readonly hideForSwap: () => boolean
+}
+
+export interface DialogStackValue {
+  /** Every mounted dialog */
+  registry: Readonly<ShallowRef<readonly DialogStackEntry[]>>
+  /** The open dialogs, in the order they opened (last is topmost) */
+  stack: Readonly<ShallowRef<readonly DialogStackEntry[]>>
+  register: (entry: DialogStackEntry) => {
+    setOpen: (open: boolean) => void
+    unregister: () => void
+  }
+}
+
+export const dialogStackKey: InjectionKey<DialogStackValue> =
+  createBvnRegistryInjectionKey('dialogStack')
 
 // Dialog
 export const dialogInjectionKey: InjectionKey<{
+  id: Readonly<Ref<string>>
+  show: () => void
   ok: (value?: unknown) => void
   cancel: () => void
   hide: (trigger?: string, value?: unknown) => void
@@ -229,7 +247,7 @@ export const buttonGroupKey: InjectionKey<boolean> = createBvnInjectionKey('butt
 
 export type OrchestratorStoreObject = {
   toast: Map<string | symbol, Ref<ToastOrchestratorArrayValue>>
-  modal: Map<string | symbol, Ref<ModalOrchestratorArrayValue>>
+  dialog: Map<string | symbol, Ref<DialogOrchestratorArrayValue>>
   popover: Map<string | symbol, Ref<PopoverOrchestratorArrayValue>>
   tooltip: Map<string | symbol, Ref<TooltipOrchestratorArrayValue>>
 }

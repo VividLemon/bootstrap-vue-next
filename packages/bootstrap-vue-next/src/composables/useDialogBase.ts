@@ -77,6 +77,10 @@ export interface UseDialogBaseOptions {
   deferClose: boolean
   /** See `UseShowHideOptions.triggerEvent` */
   triggerEvent: (trigger: string) => string | undefined
+  /** See `UseShowHideOptions.beforeShowCommit` */
+  beforeShowCommit?: () => boolean
+  /** See `UseShowHideOptions.onTrigger` */
+  onTrigger?: (trigger: Element) => boolean
 }
 
 export interface UseDialogBaseReturn extends Omit<UseShowHideReturn, 'hide'> {
@@ -96,6 +100,12 @@ export interface UseDialogBaseReturn extends Omit<UseShowHideReturn, 'hide'> {
   bouncing: Readonly<Ref<boolean>>
   /** `'none'` while Escape must not close the dialog, for the native `closedby` attribute */
   closedby: ComputedRef<'none' | undefined>
+  /**
+   * Hides the dialog at once with trigger `'swap'` (no trigger event, `-instant` class), for the
+   * v6 swap. Returns whether the hide was carried out: `false` when `hide` was prevented or the
+   * dialog is not showing
+   */
+  hideForSwap: () => boolean
 }
 
 /**
@@ -187,7 +197,12 @@ export const useDialogBase = (
 
   const showHide = useShowHide(
     {modelValue, props, emit, element, id},
-    {transition, triggerEvent: options.triggerEvent}
+    {
+      transition,
+      triggerEvent: options.triggerEvent,
+      beforeShowCommit: options.beforeShowCommit,
+      onTrigger: options.onTrigger,
+    }
   )
   const {state, visible, isActive, instant, syncHidden, buildTriggerableEvent} = showHide
 
@@ -219,6 +234,12 @@ export const useDialogBase = (
       returnValue.value = value
     }
     return promise
+  }
+
+  const hideForSwap = (): boolean => {
+    if (!isShowingState()) return false
+    void showHide.hide('swap', true, true)
+    return !isShowingState()
   }
 
   const bouncing = ref(false)
@@ -321,5 +342,6 @@ export const useDialogBase = (
     isHiding,
     bouncing,
     closedby,
+    hideForSwap,
   }
 }

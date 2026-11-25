@@ -28,7 +28,7 @@ export type {ShowHideState}
 
 /**
  * Registers a show/hide component in the app-wide show/hide registry (used by `useComponentToggle`,
- * `v-b-toggle`, `v-b-modal`, ...) and manages the triggers registered through it.
+ * `v-b-toggle`, ...) and manages the triggers registered through it.
  *
  * Registered triggers get a listener for their event and an `aria-expanded` attribute that
  * follows `isExpanded`. `aria-controls` is owned by the directive that registers the trigger.
@@ -54,8 +54,8 @@ export const useShowHideRegistration = ({
   show: (resolveOnHide?: boolean) => Promise<boolean | string>
   hide: (trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>
   toggle: (resolveOnHide?: boolean) => Promise<boolean | string>
-  /** Listener added to registered triggers */
-  triggerToggle: () => void
+  /** Listener added to registered triggers. Receives the trigger's event */
+  triggerToggle: (event: Event) => void
 }) => {
   const triggerRegistry: {trigger: string; el: Element}[] = []
 
@@ -149,6 +149,16 @@ export interface UseShowHideOptions {
    * for a trigger without an event of its own. Defaults to an event named like the trigger.
    */
   triggerEvent?: (trigger: string) => string | undefined
+  /**
+   * Called for every show request once its `show` event passed, right before it commits.
+   * Returning `false` refuses the show (`show-prevented`). Defaults to accepting every show.
+   */
+  beforeShowCommit?: () => boolean
+  /**
+   * Called when a registered trigger (`v-b-toggle`) fires, with the trigger element. Return
+   * `true` when the component handled it; otherwise it toggles. Dialog uses it for the v6 swap.
+   */
+  onTrigger?: (trigger: Element) => boolean
 }
 
 export interface UseShowHideReturn {
@@ -203,9 +213,9 @@ export interface UseShowHideReturn {
    * Resolves `trigger ?? ''` after `hidden` (`''` at once when already hidden),
    * `'hide-prevented'`, or `false` when superseded by a show or when the component unmounts
    * first. While `hiding`, it returns the promise of the hide in progress, which keeps its
-   * trigger.
+   * trigger. `instant` skips the delay and the transition (the component's `-instant` class).
    */
-  hide: (trigger?: string, noTriggerEmit?: boolean) => Promise<boolean | string>
+  hide: (trigger?: string, noTriggerEmit?: boolean, instant?: boolean) => Promise<boolean | string>
   /**
    * Emits `toggle` (cancelable → `toggle-prevented`), then hides with trigger
    * `'toggle-function'` (while `showing` / `shown`) or shows (passing `resolveOnHide` on to
@@ -347,11 +357,17 @@ export const useShowHide = (
   const isActive = computed(() => snapshot.value.active)
   const instant = computed(() => snapshot.value.instant)
 
+  const beforeCommit = options.beforeShowCommit
+
   const show = (resolveOnHide: boolean = false): Promise<boolean | string> =>
     // Ignore event objects from `@click="show"`
-    machine.show({resolveOnHide: resolveOnHide === true})
+    machine.show({resolveOnHide: resolveOnHide === true, beforeCommit})
 
-  const hide = (trigger?: string, noTriggerEmit = false): Promise<boolean | string> => {
+  const hide = (
+    trigger?: string,
+    noTriggerEmit = false,
+    instant = false
+  ): Promise<boolean | string> => {
     // Ignore event objects from `@click="hide"`
     if (typeof trigger !== 'string') trigger = undefined
     const triggerEvent =
@@ -360,7 +376,11 @@ export const useShowHide = (
         : options.triggerEvent
           ? options.triggerEvent(trigger)
           : trigger
-    return machine.hide(trigger, {noTriggerEmit: triggerEvent === undefined, triggerEvent})
+    return machine.hide(trigger, {
+      noTriggerEmit: triggerEvent === undefined,
+      triggerEvent,
+      instant: instant === true,
+    })
   }
 
   const syncHidden = (trigger?: string): Promise<boolean | string> =>
@@ -378,10 +398,12 @@ export const useShowHide = (
       () =>
         machine.targetVisible()
           ? machine.hide(hideTrigger, {noTriggerEmit: true})
-          : machine.show({resolveOnHide: resolveOnHide === true})
+          : machine.show({resolveOnHide: resolveOnHide === true, beforeCommit})
     )
   const toggle = (resolveOnHide: boolean = false) => runToggle('toggle-function', resolveOnHide)
-  const triggerToggle = () => {
+  const triggerToggle = (event: Event) => {
+    const trigger = event?.currentTarget
+    if (options.onTrigger && trigger instanceof Element && options.onTrigger(trigger)) return
     void runToggle('toggle-trigger')
   }
 
@@ -391,7 +413,7 @@ export const useShowHide = (
    */
   const sync = (value: boolean, trigger: string, instant = false) => {
     if (value) {
-      void machine.show({instant})
+      void machine.show({instant, beforeCommit})
     } else {
       void machine.hide(trigger, {noTriggerEmit: true, instant})
     }

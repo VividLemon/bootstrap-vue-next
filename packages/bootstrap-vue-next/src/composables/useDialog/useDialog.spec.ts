@@ -2,10 +2,12 @@ import {describe, expect, it, vi} from 'vitest'
 import {computed, defineComponent, h, nextTick, ref, watchEffect} from 'vue'
 import {mount} from '@vue/test-utils'
 import BApp from '../../components/BApp/BApp.vue'
-import {useModal} from './index'
+import BDialog from '../../components/BDialog/BDialog.vue'
+import {useDialog} from './index'
+import {useOrchestratorRegistry} from '../orchestratorShared'
 import {useToast} from '../useToast'
 
-describe('useModal', () => {
+describe('useDialog', () => {
   it('create method accepts custom component props without TypeScript errors', async () => {
     // Define a custom modal component with custom props
     const CustomModal = defineComponent({
@@ -31,7 +33,7 @@ describe('useModal', () => {
 
     const TestComponent = defineComponent({
       setup() {
-        const {create} = useModal()
+        const {create} = useDialog()
 
         // This should not cause TypeScript errors
         const modal = create({
@@ -62,10 +64,10 @@ describe('useModal', () => {
     expect(wrapper.exists()).toBe(true)
   })
 
-  it('create method accepts BModal props', async () => {
+  it('create method accepts BDialog props', async () => {
     const TestComponent = defineComponent({
       setup() {
-        const {create} = useModal()
+        const {create} = useDialog()
 
         // Standard BModal props should still work
         const modal = create({
@@ -112,7 +114,7 @@ describe('useModal', () => {
 
     const TestComponent = defineComponent({
       setup() {
-        const {create} = useModal()
+        const {create} = useDialog()
 
         // Mix of standard and custom props
         const modal = create({
@@ -145,10 +147,10 @@ describe('useModal', () => {
   })
 
   it('create accepts a plain object and reads back the initial props', async () => {
-    let modalRef: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modalRef: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     const TestComponent = defineComponent({
       setup() {
-        const {create} = useModal()
+        const {create} = useDialog()
         modalRef = create({title: 'Plain Object Title'})
         return () => h('div')
       },
@@ -161,11 +163,11 @@ describe('useModal', () => {
   })
 
   it('create accepts a ref and stays reactive both ways (external ref -> internal state)', async () => {
-    let modalRef: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modalRef: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     const myModal = ref({title: 'Initial Title', modelValue: false})
     const TestComponent = defineComponent({
       setup() {
-        const {create} = useModal()
+        const {create} = useDialog()
         modalRef = create(myModal)
         return () => h('div')
       },
@@ -184,11 +186,11 @@ describe('useModal', () => {
   })
 
   it('create accepts a ref and stays reactive both ways (controller.set -> external ref)', async () => {
-    let modalRef: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modalRef: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     const myModal = ref({title: 'Initial Title', modelValue: false})
     const TestComponent = defineComponent({
       setup() {
-        const {create} = useModal()
+        const {create} = useDialog()
         modalRef = create(myModal)
         return () => h('div')
       },
@@ -206,11 +208,11 @@ describe('useModal', () => {
   })
 
   it('supports the computed + watchEffect + ref pattern for derived reactive values', async () => {
-    let modalRef: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modalRef: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     const title = ref('Hello')
     const TestComponent = defineComponent({
       setup() {
-        const {create} = useModal()
+        const {create} = useDialog()
         const derivedTitle = computed(() => title.value)
         const myModal = ref({title: derivedTitle.value, modelValue: false})
         watchEffect(() => {
@@ -233,13 +235,13 @@ describe('useModal', () => {
   })
 
   it('keeps instances in the store after hide and removes them only on destroy', async () => {
-    let modalRef: ReturnType<ReturnType<typeof useModal>['create']> | undefined
-    let modalStore: ReturnType<typeof useModal>['store'] | undefined
+    let modalRef: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
+    let modalStore: ReturnType<typeof useOrchestratorRegistry>['store'] | undefined
     const modalId = 'lifecycle-modal'
     const TestComponent = defineComponent({
       setup() {
-        const {create, store} = useModal()
-        modalStore = store
+        const {create} = useDialog()
+        modalStore = useOrchestratorRegistry().store
         modalRef = create({id: modalId, title: 'Lifecycle Modal'})
         return () => h('div')
       },
@@ -248,21 +250,21 @@ describe('useModal', () => {
     mount(BApp, {slots: {default: () => h(TestComponent)}})
     await nextTick()
 
-    expect(modalStore?.value.modal.has(modalId)).toBe(true)
+    expect(modalStore?.value.dialog.has(modalId)).toBe(true)
 
     modalRef?.hide()
     await nextTick()
-    expect(modalStore?.value.modal.has(modalId)).toBe(true)
+    expect(modalStore?.value.dialog.has(modalId)).toBe(true)
 
     await modalRef?.destroy()
-    expect(modalStore?.value.modal.has(modalId)).toBe(false)
+    expect(modalStore?.value.dialog.has(modalId)).toBe(false)
   })
 
   it('keeps the stored modelValue in step when the modal hides itself, so show() opens it again', async () => {
-    let modal: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modal: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     const TestComponent = defineComponent({
       setup() {
-        modal = useModal().create({id: 'sync-modal', title: 'Sync'})
+        modal = useDialog().create({id: 'sync-modal', title: 'Sync'})
         return () => h('div')
       },
     })
@@ -284,11 +286,11 @@ describe('useModal', () => {
   })
 
   it('controller.hide() skips the trigger event and leaves the dialog returnValue unset', async () => {
-    let modal: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modal: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     const onOk = vi.fn<() => void>()
     const TestComponent = defineComponent({
       setup() {
-        modal = useModal().create({id: 'controller-hide-modal', title: 'Hide', onOk})
+        modal = useDialog().create({id: 'controller-hide-modal', title: 'Hide', onOk})
         return () => h('div')
       },
     })
@@ -308,10 +310,10 @@ describe('useModal', () => {
   })
 
   it('destroy closes an open modal and settles its show()', async () => {
-    let modal: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modal: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     const TestComponent = defineComponent({
       setup() {
-        modal = useModal().create({id: 'destroy-open-modal', title: 'Destroy'})
+        modal = useDialog().create({id: 'destroy-open-modal', title: 'Destroy'})
         return () => h('div')
       },
     })
@@ -346,25 +348,25 @@ describe('useModal', () => {
   }
 
   it('settles show() and destroy() when onShow prevents a modal that was not mounted yet', async () => {
-    let modal: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modal: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     let shown: Promise<unknown> | undefined
     mountApp(() => {
-      modal = useModal().create({
+      modal = useDialog().create({
         id: 'prevented-before-mount',
         onShow: (e: {preventDefault: () => void}) => e.preventDefault(),
       })
       shown = modal.show() // before the orchestrator mounts it
     })
 
-    expect(((await shown) as {eventType: string}).eventType).toBe('show-prevented')
+    expect(await shown).toMatchObject({trigger: null, ok: null})
     await modal?.destroy()
     expect(modal?.get()).toBeUndefined()
   })
 
   it('destroy() finishes right after a resolveOnHide show() resolved', async () => {
-    let modal: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modal: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     mountApp(() => {
-      modal = useModal().create({id: 'resolve-on-hide-destroy', options: {resolveOnHide: true}})
+      modal = useDialog().create({id: 'resolve-on-hide-destroy'}, {resolveOnHide: true})
     }, true)
     await nextTick()
 
@@ -378,10 +380,10 @@ describe('useModal', () => {
   })
 
   it('syncs the stored modelValue of the emitting item when a modal and a toast share an id', async () => {
-    let modal: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modal: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     let toast: ReturnType<ReturnType<typeof useToast>['create']> | undefined
     mountApp(() => {
-      modal = useModal().create({id: 'shared-id'})
+      modal = useDialog().create({id: 'shared-id'})
       toast = useToast().create({id: 'shared-id', modelValue: false})
     })
     await nextTick()
@@ -392,11 +394,11 @@ describe('useModal', () => {
   })
 
   it('hides a modal whose mount-time onShow aborts the show signal', async () => {
-    let modal: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modal: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     let shown: Promise<{trigger: string | null}> | undefined
     const scope = new AbortController()
     mountApp(() => {
-      modal = useModal().create({id: 'abort-in-mount-show', onShow: () => scope.abort()})
+      modal = useDialog().create({id: 'abort-in-mount-show', onShow: () => scope.abort()})
       shown = modal.show({signal: scope.signal}) // before the orchestrator mounts it
     })
 
@@ -405,19 +407,21 @@ describe('useModal', () => {
   })
 
   it('shows again when show() is called right after a resolveOnHide show resolved', async () => {
-    let modalRef: ReturnType<ReturnType<typeof useModal>['create']> | undefined
+    let modalRef: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     const hidden: unknown[] = []
     const TestComponent = defineComponent({
       setup() {
-        const {create} = useModal()
-        modalRef = create({
-          title: 'Again',
-          noAnimation: true,
-          options: {resolveOnHide: true},
-          onHidden: (e: unknown) => {
-            hidden.push(e)
+        const {create} = useDialog()
+        modalRef = create(
+          {
+            title: 'Again',
+            noTransition: true,
+            onHidden: (e: unknown) => {
+              hidden.push(e)
+            },
           },
-        })
+          {resolveOnHide: true}
+        )
         return () => h('div')
       },
     })
@@ -446,5 +450,170 @@ describe('useModal', () => {
     await new Promise((resolve) => setTimeout(resolve, 100))
     expect(secondSettled).toBe(true)
     expect(modalRef?.get()?.value.props.modelValue).toBe(false)
+  })
+
+  describe('result', () => {
+    const flush = () => new Promise((resolve) => setTimeout(resolve, 20))
+
+    it('resolves with a plain {trigger, ok, value} object', async () => {
+      let dialog: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
+      mountApp(() => {
+        dialog = useDialog().create({id: 'result-ok', title: 'Result', noTransition: true})
+      })
+      await nextTick()
+
+      const shown = dialog?.show()
+      await vi.waitFor(() => expect(dialog?.get()?.value.props.modelValue).toBe(true))
+      const exposed = dialog?.ref as unknown as {hide: (trigger: string, value: unknown) => void}
+      exposed.hide('ok', {saved: 1})
+
+      const result = await shown
+      expect(result).toMatchObject({trigger: 'ok', ok: true, value: {saved: 1}})
+      expect(result).not.toHaveProperty('eventType')
+      expect(typeof result?.[Symbol.asyncDispose]).toBe('function')
+    })
+
+    it('resolves ok: false for the default Cancel button and ok: null for other triggers', async () => {
+      let dialog: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
+      const wrapper = mountApp(() => {
+        dialog = useDialog().create({id: 'result-cancel', title: 'Result', noTransition: true})
+      })
+      await nextTick()
+
+      const first = dialog?.show()
+      await flush()
+      const cancel = wrapper.findAll('#result-cancel .dialog-footer button').at(0)
+      expect(cancel?.text()).toBe('Cancel')
+      await cancel?.trigger('click')
+      expect(await first).toMatchObject({trigger: 'cancel', ok: false})
+
+      const second = dialog?.show()
+      await flush()
+      dialog?.hide('custom')
+      const result = await second
+      expect(result).toMatchObject({trigger: 'custom', ok: null})
+      expect(result).not.toHaveProperty('value')
+    })
+
+    it('leaves the default footer out for slots: {footer: undefined}', async () => {
+      const wrapper = mountApp(() => {
+        void useDialog()
+          .create({id: 'no-footer', title: 'None', noTransition: true, slots: {footer: undefined}})
+          .show()
+        void useDialog().create({id: 'with-footer', title: 'Default', noTransition: true}).show()
+      })
+      await flush()
+      expect(wrapper.find('#no-footer .dialog-footer').exists()).toBe(false)
+      expect(wrapper.find('#with-footer .dialog-footer').exists()).toBe(true)
+    })
+  })
+
+  describe('helpers', () => {
+    const flush = () => new Promise((resolve) => setTimeout(resolve, 20))
+
+    const mountDeclared = (onReady: (api: ReturnType<typeof useDialog>) => void) => {
+      const a = ref(false)
+      const b = ref(false)
+      const model = (state: typeof a) => ({
+        'modelValue': state.value,
+        'onUpdate:modelValue': (v: boolean) => {
+          state.value = v
+        },
+      })
+      const Root = defineComponent({
+        setup() {
+          onReady(useDialog())
+          return () => [
+            h(BDialog, {id: 'a', noTransition: true, ...model(a)}, () => 'A'),
+            h(BDialog, {id: 'b', noTransition: true, ...model(b)}, () => 'B'),
+          ]
+        },
+      })
+      const wrapper = mount(BApp, {attachTo: document.body, slots: {default: () => h(Root)}})
+      return {wrapper, a, b}
+    }
+
+    it('show(id), hide(trigger, id) and get(id) reach a declared dialog', async () => {
+      let api: ReturnType<typeof useDialog> | undefined
+      const {a} = mountDeclared((value) => {
+        api = value
+      })
+      await flush()
+
+      api?.show('a')
+      await flush()
+      expect(a.value).toBe(true)
+      api?.hide('done', 'a')
+      await flush()
+      expect(a.value).toBe(false)
+
+      const handle = api?.get('a')
+      expect(handle?.id).toBe('a')
+      handle?.show()
+      await flush()
+      expect(a.value).toBe(true)
+      expect(api?.get('missing')).toBeNull()
+    })
+
+    it('hide() without an id hides the topmost open dialog, hideAll() hides every one', async () => {
+      let api: ReturnType<typeof useDialog> | undefined
+      const {a, b} = mountDeclared((value) => {
+        api = value
+      })
+      await flush()
+      api?.show('a')
+      await flush()
+      api?.show('b')
+      await flush()
+      expect([a.value, b.value]).toEqual([true, true])
+
+      api?.hide()
+      await flush()
+      expect([a.value, b.value]).toEqual([true, false])
+
+      api?.show('b')
+      await flush()
+      api?.hideAll('all')
+      await flush()
+      expect([a.value, b.value]).toEqual([false, false])
+    })
+
+    it('current() is the dialog the calling component is rendered in', async () => {
+      let inside: ReturnType<ReturnType<typeof useDialog>['current']> | undefined
+      let outside: ReturnType<ReturnType<typeof useDialog>['current']> | undefined
+      const open = ref(true)
+      const Child = defineComponent({
+        setup() {
+          inside = useDialog().current()
+          return () => h('span', 'child')
+        },
+      })
+      const Root = defineComponent({
+        setup() {
+          outside = useDialog().current()
+          return () =>
+            h(
+              BDialog,
+              {
+                'id': 'host',
+                'noTransition': true,
+                'modelValue': open.value,
+                'onUpdate:modelValue': (v: boolean) => {
+                  open.value = v
+                },
+              },
+              () => h(Child)
+            )
+        },
+      })
+      mount(BApp, {attachTo: document.body, slots: {default: () => h(Root)}})
+      await flush()
+
+      expect(outside).toBeNull()
+      expect(inside?.id).toBe('host')
+      inside?.hide('inner')
+      await flush()
+      expect(open.value).toBe(false)
+    })
   })
 })

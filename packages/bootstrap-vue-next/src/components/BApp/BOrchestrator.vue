@@ -7,15 +7,19 @@
         :class="value.class"
         :style="value.style"
       >
-        <TransitionGroup :name="value.transitionGroupName">
-          <span
+        <!-- Toasts keep their list transition. Dialogs, popovers and tooltips animate themselves -->
+        <component
+          :is="value.transitionGroupName ? TransitionGroup : PassThrough"
+          :name="value.transitionGroupName"
+        >
+          <component
+            :is="value.transitionGroupName ? 'span' : PassThrough"
             v-for="{
               component,
               fns: {setRef, resolve: resolvePromise},
               props: componentProps,
               id,
               slots,
-              options,
             } in value.items"
             :key="id"
           >
@@ -23,7 +27,7 @@
               :is="component"
               v-bind="{
                 ...componentProps,
-                ...(key === 'modal' ? undefined : {teleportDisabled: true}),
+                ...(key === 'dialog' ? undefined : {teleportDisabled: true}),
               }"
               :ref="setRef"
               initial-animation
@@ -31,19 +35,13 @@
               @show-prevented="resolvePromise"
               @hide="
                 (e: BvTriggerableEvent) => {
-                  setEventOk(e)
                   componentProps.onHide?.(e)
-                  if (e.defaultPrevented) {
-                    return
-                  }
-                  if (options?.resolveOnHide) {
-                    resolvePromise(e)
-                  }
+                  // The controller settles on hide only for a show with resolveOnHide
+                  if (!e.defaultPrevented) resolvePromise(e)
                 }
               "
               @hidden="
                 (e: BvTriggerableEvent) => {
-                  setEventOk(e)
                   componentProps.onHidden?.(e)
                   if (e.defaultPrevented) {
                     return
@@ -58,15 +56,15 @@
                 <component :is="comp" v-bind="scope" />
               </template>
             </component>
-          </span>
-        </TransitionGroup>
+          </component>
+        </component>
       </div>
     </div>
   </ConditionalTeleport>
 </template>
 
 <script setup lang="ts">
-import {computed, inject, watch} from 'vue'
+import {computed, type FunctionalComponent, inject, TransitionGroup, watch} from 'vue'
 import {warn} from '../../utils/console'
 import {orchestratorRegistryKey, type OrchestratorStoreObject} from '../../utils/keys'
 import {positionClasses} from '../../utils/positionClasses'
@@ -86,21 +84,20 @@ const syncModelValue = (group: string, id: ControllerKey, value: boolean | numbe
   // Ids are only unique per store, so use the emitting item's own one. Toast groups are keyed by
   // position
   const items =
-    group === 'modal' || group === 'popover' || group === 'tooltip' ? store[group] : store.toast
+    group === 'dialog' || group === 'popover' || group === 'tooltip' ? store[group] : store.toast
   const item = items.get(id)
   if (item && item.value.props.modelValue !== value) {
     item.value = {...item.value, props: {...item.value.props, modelValue: value}} as never
   }
 }
 
-const setEventOk = (event: BvTriggerableEvent): void => {
-  event.ok = event.trigger === 'ok' ? true : event.trigger === 'cancel' ? false : null
-}
+/** Renders its default slot without an element, for groups that need no wrapper */
+const PassThrough: FunctionalComponent = (_, {slots}) => slots.default?.()
 
 const props = withDefaults(defineProps<BOrchestratorProps>(), {
   noPopovers: false,
   noToasts: false,
-  noModals: false,
+  noDialogs: false,
   appendToast: false,
   filter: undefined,
 })
@@ -131,7 +128,7 @@ const items = computed(() => {
   let filteredStore = {
     tooltip:
       !props.noPopovers && store?.tooltip ? [...store.tooltip.values()].map((e) => e.value) : [],
-    modal: !props.noModals && store?.modal ? [...store.modal.values()].map((e) => e.value) : [],
+    dialog: !props.noDialogs && store?.dialog ? [...store.dialog.values()].map((e) => e.value) : [],
     popover:
       !props.noPopovers && store?.popover ? [...store.popover.values()].map((e) => e.value) : [],
     toast: !props.noToasts && store?.toast ? [...store.toast.values()].map((e) => e.value) : [],
@@ -140,7 +137,7 @@ const items = computed(() => {
   if (props.filter) {
     filteredStore = {
       tooltip: filteredStore.tooltip.filter(props.filter),
-      modal: filteredStore.modal.filter(props.filter),
+      dialog: filteredStore.dialog.filter(props.filter),
       popover: filteredStore.popover.filter(props.filter),
       toast: filteredStore.toast.filter(props.filter),
     }
@@ -180,12 +177,12 @@ const positionedItems = computed<
 
   const allGroups = {
     ...groupedToastItems,
-    modal: {items: items.value.modal},
+    dialog: {items: items.value.dialog},
     popover: {items: items.value.popover},
     tooltip: {items: items.value.tooltip},
   }
 
-  // Skip rendering empty containers (e.g. popover/tooltip/modal groups with no active items)
+  // Skip rendering empty containers (e.g. popover/tooltip/dialog groups with no active items)
   return Object.fromEntries(
     Object.entries(allGroups).filter(([, value]) => value.items.length > 0)
   ) as Record<ContainerPosition | keyof Omit<OrchestratorStoreObject, 'toast'>, ItemObject>

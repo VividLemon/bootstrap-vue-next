@@ -55,13 +55,13 @@
 </template>
 
 <script setup lang="ts">
-import {computed, type EmitFn, provide, toRef, useTemplateRef} from 'vue'
+import {computed, type EmitFn, provide, toRef, useTemplateRef, watch} from 'vue'
 import type {BDialogEmits, BDialogProps, BDialogSlots, BDialogSlotsData} from '../../types'
 import BCloseButton from '../BButton/BCloseButton.vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {useDialogBase} from '../../composables/useDialogBase'
 import {useId} from '../../composables/useId'
-import {useModalManager} from '../../composables/useModalManager'
+import {useDialogStack, useDialogSwap} from '../../composables/useDialogStack'
 import {useThemeClasses} from '../../composables/useThemeClasses'
 import {dialogInjectionKey} from '../../utils/keys'
 
@@ -104,10 +104,14 @@ const modelValue = defineModel<Exclude<BDialogProps['modelValue'], undefined>>({
 
 const element = useTemplateRef<HTMLDialogElement | null>('_element')
 
+// A `v-b-toggle` trigger inside another open dialog swaps that dialog for this one
+const swap = useDialogSwap(element, () => state.value === 'hidden')
+
 // Bootstrap v6 Dialog is a native `<dialog>`: the top layer, the `::backdrop`, focus containment
 // and the inert page are the browser's. The CSS animates `[open]` / `.hiding`; the element is
 // closed once its exit transition ended.
 const {
+  state,
   visible,
   isActive,
   isInstant,
@@ -119,6 +123,7 @@ const {
   show,
   hide,
   toggle,
+  hideForSwap,
 } = useDialogBase(
   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
   {
@@ -131,10 +136,25 @@ const {
     // `ok()` and Escape announce themselves before `hide`; every other trigger is read from
     // the `hide` event
     triggerEvent: (trigger) => (trigger === 'ok' ? 'ok' : trigger === 'esc' ? 'cancel' : undefined),
+    onTrigger: swap.onTrigger,
+    beforeShowCommit: swap.beforeShowCommit,
   }
 )
 
-useModalManager(visible)
+watch(state, (next) => {
+  if (next !== 'showing') swap.settle()
+})
+
+useDialogStack(
+  {
+    id: computedId,
+    element,
+    show: () => show(),
+    hide: (trigger, value) => hide(trigger, value),
+    hideForSwap,
+  },
+  visible
+)
 
 const computedClasses = computed(() => ({
   [`dialog-${props.size}`]: props.size !== undefined,
@@ -146,6 +166,7 @@ const computedClasses = computed(() => ({
   'dialog-instant': isInstant.value,
   'hiding': isHiding.value,
   'dialog-static': bouncing.value,
+  'dialog-swap-in': swap.swappingIn.value,
 }))
 
 // `closedby` is not in Vue's `<dialog>` attribute types yet
@@ -166,6 +187,10 @@ const close = () => {
 }
 
 provide(dialogInjectionKey, {
+  id: computedId,
+  show: () => {
+    void show()
+  },
   ok,
   cancel,
   hide: (trigger, value) => {

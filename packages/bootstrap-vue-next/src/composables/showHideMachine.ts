@@ -131,6 +131,12 @@ export interface ShowRequestOptions {
   resolveOnHide?: boolean
   /** Skip the delay and the transition (`visible` prop) */
   instant?: boolean
+  /**
+   * Called once the `show` event passed, right before the show commits. Returning `false`
+   * refuses the show like a prevented `show` (`show-prevented`). A Dialog swap uses it to hide
+   * the dialog it replaces first, which may refuse
+   */
+  beforeCommit?: () => boolean
 }
 
 export interface HideRequestOptions {
@@ -311,9 +317,11 @@ export const createShowHideMachine = (host: ShowHideMachineHost): ShowHideMachin
     return op.deferred.promise
   }
 
-  const show = ({resolveOnHide = false, instant = false}: ShowRequestOptions = {}): Promise<
-    boolean | string
-  > => {
+  const show = ({
+    resolveOnHide = false,
+    instant = false,
+    beforeCommit,
+  }: ShowRequestOptions = {}): Promise<boolean | string> => {
     if (disposed) return Promise.resolve(false)
     const cell = transition('show')
     if (cell.action === 'settled') {
@@ -333,7 +341,7 @@ export const createShowHideMachine = (host: ShowHideMachineHost): ShowHideMachin
     const prevented = host.emit('show', {cancelable: true, signal})
     // A `show` listener made a request itself (for example `@show="hide()"`): that one wins
     if (revision !== before || disposed) return listenerResult()
-    if (prevented) {
+    if (prevented || (beforeCommit !== undefined && !beforeCommit())) {
       host.emit('show-prevented', {signal})
       host.onRefused()
       return Promise.resolve('show-prevented')

@@ -14,7 +14,14 @@ type Prefix<P extends string, S extends string> = `${P}${S}`
 export type CamelCase<S extends string> = S extends `${infer P1}-${infer P2}${infer P3}`
   ? `${Lowercase<P1>}${Uppercase<P2>}${CamelCase<P3>}`
   : Lowercase<S>
+/**
+ * The second argument of `create()`: library options, read once
+ */
 export type OrchestratorCreateOptions = {
+  /**
+   * `show()` resolves as soon as the component starts hiding (`hide`), not after `hidden`.
+   * `show({resolveOnHide})` overrides it for one show
+   */
   resolveOnHide?: boolean
 }
 export type OrchestratorShowOptions = {
@@ -23,6 +30,28 @@ export type OrchestratorShowOptions = {
    * component is not shown and the promise resolves right away
    */
   signal?: AbortSignal
+  /** Overrides the `create()` option `resolveOnHide` for this show */
+  resolveOnHide?: boolean
+}
+
+/**
+ * What a dialog controller's `show()` resolves with, once the dialog is hidden (or starts hiding,
+ * with `resolveOnHide`)
+ */
+export interface DialogResult<T = unknown> {
+  /**
+   * What hid the dialog: `'ok'`, `'cancel'`, `'close'`, `'esc'`, `'backdrop'`, `'submit'`,
+   * `'native'`, `'swap'`, `'abort'`, `'destroy'`, a custom trigger from `hide(trigger)`, or `null`
+   * (no trigger, or the show was prevented)
+   */
+  trigger: string | null
+  /** `true` for the trigger `'ok'`, `false` for `'cancel'`, otherwise `null` */
+  ok: boolean | null
+  /**
+   * The value of the hide that closed the dialog: `hide(trigger, value)`, `ok(value)`, or the
+   * submitter's `value` of a `<form method="dialog">`
+   */
+  value?: T
 }
 
 // Promises
@@ -30,10 +59,11 @@ export type OrchestratorShowOptions = {
 export interface ComponentController<
   Component,
   Props extends Ref<OrchestratorArrayValue>,
+  Result extends object = BvTriggerableEvent,
 > extends AsyncDisposable {
   id: ControllerKey
   ref: ComponentPublicInstance<Component> | null
-  show: (options?: OrchestratorShowOptions) => Promise<BvTriggerableEvent & AsyncDisposable>
+  show: (options?: OrchestratorShowOptions) => Promise<Result & AsyncDisposable>
   hide: (trigger?: string) => void
   toggle: () => void
   set: (val: Partial<Props['value']['props']>) => void
@@ -41,9 +71,13 @@ export interface ComponentController<
   destroy: () => Promise<void>
 }
 
-export type PromiseWithController<Component, Props extends Ref<OrchestratorArrayValue>> = {
+export type PromiseWithController<
+  Component,
+  Props extends Ref<OrchestratorArrayValue>,
+  Result extends object = BvTriggerableEvent,
+> = {
   resolve: (value: BvTriggerableEvent) => void
-  controller: ComponentController<Component, Props>
+  controller: ComponentController<Component, Props, Result>
 }
 
 type OrchestratorCreateBase<
@@ -52,7 +86,6 @@ type OrchestratorCreateBase<
   BaseComponentSlots extends Record<string, any>,
   BaseComponentEmits extends Record<string, any>,
 > = BaseComponentProps & {
-  options?: OrchestratorCreateOptions
   component?: Readonly<Component>
   slots?: {
     [K in keyof BaseComponentSlots]?: BaseComponentSlots[K] | Readonly<Component>
@@ -68,7 +101,6 @@ type ArrayValue<
   BaseComponentEmits extends Record<string, any>,
 > = {
   component?: Readonly<Component>
-  options?: OrchestratorCreateOptions
   slots?: {
     [K in keyof BaseComponentSlots]?: BaseComponentSlots[K] | Readonly<Component>
   }
@@ -156,17 +188,17 @@ export type PopoverOrchestratorArrayValue = ArrayValue<
   BPopoverEmits
 >
 
-// Modals
-export type ModalOrchestratorCreateParamBase<
+// Dialogs
+export type DialogOrchestratorCreateParamBase<
   ComponentProps extends Record<string, any> = Record<string, any>,
 > = OrchestratorCreateBase<BDialogProps, ComponentProps, BDialogSlots, BDialogEmits>
-export type ModalOrchestratorCreateParam<
+export type DialogOrchestratorCreateParam<
   ComponentProps extends Record<string, any> = Record<string, any>,
-> = MaybeRef<ModalOrchestratorCreateParamBase<ComponentProps>>
-export type ModalOrchestratorArrayValue = ArrayValue<BDialogProps, BDialogSlots, BDialogEmits>
+> = MaybeRef<DialogOrchestratorCreateParamBase<ComponentProps>>
+export type DialogOrchestratorArrayValue = ArrayValue<BDialogProps, BDialogSlots, BDialogEmits>
 
 export type OrchestratorArrayValue =
   | ToastOrchestratorArrayValue
-  | ModalOrchestratorArrayValue
+  | DialogOrchestratorArrayValue
   | PopoverOrchestratorArrayValue
   | TooltipOrchestratorArrayValue

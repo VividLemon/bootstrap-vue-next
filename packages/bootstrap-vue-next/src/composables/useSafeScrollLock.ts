@@ -9,8 +9,11 @@ import {
   useId,
   watch,
 } from 'vue'
-import {useSharedScrollLock} from './useSharedScrollLock'
+import {useScrollLock, createSharedComposable} from '@vueuse/core'
 import {getSafeDocument, getSafeWindow} from '../utils/dom'
+
+// BOffcanvas only, until the Drawer replaces it (G1 step 3); Dialog locks scroll with `dialog-open`
+const useSharedScrollLock = createSharedComposable(useScrollLock)
 
 let prevousRightPadding = ''
 const lockRegistry = new Map()

@@ -18,6 +18,7 @@ import type {ContainerPosition} from '../../types/Alignment'
 import type {
   ComponentController,
   ControllerKey,
+  OrchestratorCreateOptions,
   ToastOrchestratorArrayValue,
   ToastOrchestratorCreateParamBase,
 } from '../../types'
@@ -49,7 +50,8 @@ export const useToast = () => {
     T extends ToastOrchestratorCreateParamBase<ComponentProps> =
       ToastOrchestratorCreateParamBase<ComponentProps>,
   >(
-    obj: MaybeRef<T> = {} as T
+    obj: MaybeRef<T> = {} as T,
+    options: Readonly<OrchestratorCreateOptions> = {}
   ): ComponentController<typeof BToast, Ref<ToastOrchestratorArrayValue>> {
     // The store is reactive, so a toast created before any BOrchestrator mounts renders once one
     // does. That is legitimate (a router guard can run before the first render), so only warn, and
@@ -70,15 +72,14 @@ export const useToast = () => {
     const {resolve, controller} = buildController<
       typeof BToast,
       ComputedRef<OrchestratorStoreObject['toast']>
-    >(storeId, toastStore)
+    >(storeId, toastStore, {createOptions: {...options}})
 
     const value = computed<ToastOrchestratorArrayValue>({
       get: () => {
-        const {component = toastComp, options, slots, ...props} = resolvedProps.value
+        const {component = toastComp, slots, ...props} = resolvedProps.value
 
         return {
           component,
-          options,
           slots,
           id: storeId,
           fns: {
@@ -124,7 +125,7 @@ export const useToast = () => {
     const instances = showHideRegistry?.values.value.get(id)?.instances
     if (!instances) return false
     // Every show/hide component shares this registry, so an id may resolve to a BCollapse or a
-    // BModal. Only toasts are ours to hide. Newest first, the way the registry's getActive does
+    // BDialog. Only toasts are ours to hide. Newest first, the way the registry's getActive does
     for (let i = instances.length - 1; i >= 0; i--) {
       const instance = instances[i]
       if (instance?.component.type !== BToast) continue
