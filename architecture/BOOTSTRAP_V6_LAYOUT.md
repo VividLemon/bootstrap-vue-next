@@ -199,7 +199,7 @@ The algorithm is about 200 lines with no third-party dependency. Port it faithfu
 | Nesting                          | Nested `.grid` inherits `--bs-columns` / `--bs-rows` / `--bs-gap` unless overridden                                                                                                                                                       |
 | Grid utilities                   | `grid-cols-{1,2,3,4,6,subgrid}` (sets `grid-template-columns` directly), `grid-cols-fill` (`grid-column: 1 / -1`), `grid-auto-flow-{row,column,dense}`; all responsive through **viewport** `@media`                                      |
 | Gap utilities                    | `gap-*`, `row-gap-*`, `column-gap-*`, responsive through viewport `@media`; the utilities layer beats `.grid`'s `gap`                                                                                                                     |
-| Sass                             | `$enable-cssgrid` is `true` in alpha.1 `_config.scss` and the dist CSS includes `.grid`. The v6 docs page still says it is opt-in; treat the installed CSS as authoritative and note that users who disable it get an unstyled `BGrid`    |
+| Sass                             | `$enable-cssgrid` is `true` in alpha.1 `_config.scss` and the dist CSS includes `.grid`. The alpha.1 docs page said it is opt-in (corrected in alpha.2, [twbs/bootstrap#43240](https://github.com/twbs/bootstrap/pull/43240)); treat the installed CSS as authoritative and note that users who disable it get an unstyled `BGrid`    |
 
 The `.row` grid (`BRow` / `BCol`) is unchanged and uses viewport media queries (`make-grid-columns` → `media-breakpoint-up`).
 
