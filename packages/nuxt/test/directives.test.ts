@@ -23,13 +23,13 @@ describe('directives', async () => {
     await page.close()
   })
 
-  it('vBModal renders without SSR error', async () => {
+  it('vBToggle on a dialog trigger renders without SSR error', async () => {
     const html = await $fetch('/')
     expect(html).toContain('modal-trigger')
-    expect(html).toContain('Open modal')
+    expect(html).toContain('Open dialog')
   })
 
-  it('vBModal opens the matching modal target after hydration', async () => {
+  it('vBToggle opens the matching dialog target after hydration', async () => {
     const page = await createPage('/')
 
     await page.click('#modal-trigger')

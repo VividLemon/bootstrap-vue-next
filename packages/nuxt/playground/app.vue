@@ -178,13 +178,13 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useBreadcrumb, useBootstrapColorMode, useModal, useToast } from 'bootstrap-vue-next'
+import { useBreadcrumb, useBootstrapColorMode, useDialog, useToast } from 'bootstrap-vue-next'
 
 const show = ref(false)
 
 const f = useBreadcrumb()
 useBootstrapColorMode()
-useModal()
+useDialog()
 const toast = useToast()
 const formSelectMultipleSelected = ref([])
 </script>

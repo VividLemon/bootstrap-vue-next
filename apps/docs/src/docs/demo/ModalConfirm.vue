@@ -7,11 +7,11 @@
 
 <script setup lang="ts">
 import { BDialogActions } from 'bootstrap-vue-next/components/BDialog'
-import { useModal } from 'bootstrap-vue-next/composables/useModal'
+import { useDialog } from 'bootstrap-vue-next/composables/useDialog'
 
 import { h, ref } from 'vue'
 
-const { create } = useModal()
+const { create } = useDialog()
 const confirmResult = ref<boolean | null | undefined>(null)
 
 const confirmBox = async () => {
@@ -20,7 +20,6 @@ const confirmBox = async () => {
     title: 'Confirm',
     slots: { footer: () => h(BDialogActions, { okTitle: 'Yes', cancelTitle: 'No' }) },
   }).show()
-  confirmResult.value =
-    typeof value === 'object' && value !== null && 'ok' in value ? value.ok : null
+  confirmResult.value = value.ok
 }
 </script>

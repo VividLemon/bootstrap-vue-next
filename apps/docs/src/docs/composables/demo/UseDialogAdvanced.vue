@@ -5,9 +5,9 @@
 <script setup lang="ts">
 import { h, markRaw, onMounted, onUnmounted, ref } from 'vue'
 import { BButton } from 'bootstrap-vue-next/components/BButton'
-import { useModal } from 'bootstrap-vue-next/composables/useModal'
+import { useDialog } from 'bootstrap-vue-next/composables/useDialog'
 
-const { create } = useModal()
+const { create } = useDialog()
 
 const firstRef = ref({
   body: 'foo',

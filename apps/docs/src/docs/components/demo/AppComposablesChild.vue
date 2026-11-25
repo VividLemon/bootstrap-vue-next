@@ -1,15 +1,15 @@
 <template>
   <BButton @click="showToast">Show Toast</BButton>
-  <BButton @click="showModal">Show Modal</BButton>
+  <BButton @click="showDialog">Show Dialog</BButton>
 </template>
 
 <script setup lang="ts">
 import { BButton } from 'bootstrap-vue-next/components/BButton'
-import { useModal } from 'bootstrap-vue-next/composables/useModal'
+import { useDialog } from 'bootstrap-vue-next/composables/useDialog'
 import { useToast } from 'bootstrap-vue-next/composables/useToast'
 
 const { create: createToast } = useToast()
-const { create: createModal } = useModal()
+const { create: createDialog } = useDialog()
 
 const showToast = async () => {
   await using _ = await createToast({
@@ -18,8 +18,8 @@ const showToast = async () => {
   }).show()
 }
 
-const showModal = async () => {
-  await using _ = await createModal({
+const showDialog = async () => {
+  await using _ = await createDialog({
     title: 'Confirm Action',
     body: 'Are you sure you want to continue?',
   }).show()

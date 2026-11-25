@@ -12,35 +12,37 @@ import { useToast } from 'bootstrap-vue-next/composables/useToast'
 const { create } = useToast()
 
 const promiseToast = async () => {
-  await using r = await create({
-    color: { theme: 'primary' },
-    position: 'middle-center',
-    bodyAttrs: { class: 'w-100' },
-    modelValue: true,
-    slots: {
-      default: ({ hide }: { hide: (trigger?: string) => void }) => {
-        const yesButton = markRaw(
-          h(BButton, { onClick: () => hide('ok'), size: 'lg' }, () => 'Yes'),
-        )
-        const noButton = markRaw(
-          h(BButton, { onClick: () => hide('cancel'), size: 'lg' }, () => 'No'),
-        )
+  await using r = await create(
+    {
+      color: { theme: 'primary' },
+      position: 'middle-center',
+      bodyAttrs: { class: 'w-100' },
+      modelValue: true,
+      slots: {
+        default: ({ hide }: { hide: (trigger?: string) => void }) => {
+          const yesButton = markRaw(
+            h(BButton, { onClick: () => hide('ok'), size: 'lg' }, () => 'Yes'),
+          )
+          const noButton = markRaw(
+            h(BButton, { onClick: () => hide('cancel'), size: 'lg' }, () => 'No'),
+          )
 
-        return [
-          markRaw(h('h2', { class: 'text-center mb-3' }, 'Ready?')),
-          markRaw(
-            h('div', { class: 'd-flex justify-content-center gap-2' }, [yesButton, noButton]),
-          ),
-        ]
+          return [
+            markRaw(h('h2', { class: 'text-center mb-3' }, 'Ready?')),
+            markRaw(
+              h('div', { class: 'd-flex justify-content-center gap-2' }, [yesButton, noButton]),
+            ),
+          ]
+        },
       },
     },
-    options: {
-      resolveOnHide: true,
-    },
-  }).show()
+    { resolveOnHide: true },
+  ).show()
 
-  if (r && typeof r === 'object' && 'ok' in r) {
-    await using _ = await create({ title: `you pressed: ${r.ok ? 'yes' : 'no'}` }).show()
+  if (r.trigger === 'ok' || r.trigger === 'cancel') {
+    await using _ = await create({
+      title: `you pressed: ${r.trigger === 'ok' ? 'yes' : 'no'}`,
+    }).show()
   }
 }
 </script>

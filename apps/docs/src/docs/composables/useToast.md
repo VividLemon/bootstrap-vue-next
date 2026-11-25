@@ -35,7 +35,7 @@ The `create` method accepts an object with `BToast`’s props, `position`, `appe
 
 The `position` value affects placement; its type is [ContainerPosition](/docs/types#containerposition).
 
-Lifecycle options are passed in `options` on the create payload. `resolveOnHide` resolves the promise when hide starts instead of after the full hide lifecycle.
+Library options go in a second argument, read once: `create(props, { resolveOnHide: true })`. `resolveOnHide` resolves the promise when hide starts instead of after the full hide lifecycle; `show({ resolveOnHide })` overrides it for one show.
 
 ### Reactivity Within create
 

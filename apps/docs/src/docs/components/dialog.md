@@ -249,6 +249,16 @@ own backdrop, and <kbd>Esc</kbd> closes the topmost one. There is no z-index to 
 
 <<< DEMO ./demo/DialogStacking.vue
 
+### Swapping dialogs
+
+A `v-b-toggle` trigger inside an open dialog **swaps** that dialog for its target instead of
+stacking: the target opens (its backdrop starts opaque, `.dialog-swap-in`) and the current dialog
+closes at once (`.dialog-instant`) with the trigger `'swap'`. Both cancelable events are checked
+first: if the target's `show` or the current dialog's `hide` is prevented, neither dialog changes.
+Open a dialog through `v-model`, its exposed methods or `useDialog()` to stack it instead.
+
+<<< DEMO ./demo/DialogSwap.vue
+
 ### Tooltips, popovers and toasts
 
 Everything outside an open modal dialog is inert and painted below it. Content that is teleported
@@ -257,7 +267,7 @@ out of the dialog, such as a popover with `teleport-to="body"` or a toast shown 
 
 ## Programmatic dialogs
 
-To create dialogs from code and await their result, see [useModal](/docs/composables/useModal).
+To create dialogs from code and await their result, see [useDialog](/docs/composables/useDialog).
 A dialog created without a `footer` slot gets `<BDialogActions>` as its footer.
 
 If you are looking for replacements for `$bvModal.msgBoxOk` and `$bvModal.msgBoxConfirm`, see the
