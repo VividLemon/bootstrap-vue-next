@@ -151,4 +151,24 @@ describe('button-group', () => {
     })
     expect(injectedValue).toBe(true)
   })
+
+  it.each(['xs', 'sm', 'lg'] as const)('has class btn-group-%s when prop size is %s', (size) => {
+    const wrapper = mount(BButtonGroup, {props: {size}})
+    expect(wrapper.classes()).toContain(`btn-group-${size}`)
+  })
+
+  it('has class btn-group-divider when prop divider', () => {
+    const wrapper = mount(BButtonGroup, {props: {divider: true}})
+    expect(wrapper.classes()).toEqual(['btn-group', 'btn-group-divider'])
+  })
+
+  it('combines divider with vertical', () => {
+    const wrapper = mount(BButtonGroup, {props: {divider: true, vertical: true}})
+    expect(wrapper.classes()).toEqual(['btn-group-vertical', 'btn-group-divider'])
+  })
+
+  it('does not have class btn-group-divider by default', () => {
+    const wrapper = mount(BButtonGroup)
+    expect(wrapper.classes()).not.toContain('btn-group-divider')
+  })
 })

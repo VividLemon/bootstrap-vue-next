@@ -1,15 +1,28 @@
-import type {BButtonGroupProps, BButtonGroupSlots} from 'bootstrap-vue-next'
-import {type ComponentReference, type PropRecord, type SlotRecord, StyleKind} from '../../types'
-import {pick} from '../../utils/objectUtils'
-import {buildCommonProps} from '../../utils/commonProps'
+import type { BButtonGroupProps, BButtonGroupSlots } from 'bootstrap-vue-next'
+import { type ComponentReference, type PropRecord, type SlotRecord, StyleKind } from '../../types'
+import { pick } from '../../utils/objectUtils'
+import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BButtonGroup: {
       sourcePath: '/BButton/BButtonGroup.vue',
-      styleSpec: {kind: StyleKind.OverrideClass, value: '.btn-group'},
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.btn-group' },
       props: {
-        ...pick(buildCommonProps(), ['ariaLabel', 'size', 'tag']),
+        ...pick(
+          buildCommonProps({
+            size: {
+              type: 'ButtonSize',
+              description: "Set the size of the buttons in the group: 'xs', 'sm' or 'lg'",
+            },
+          }),
+          ['ariaLabel', 'size', 'tag'],
+        ),
+        divider: {
+          type: 'boolean',
+          default: false,
+          description: 'When set, draws a divider line between the buttons of the group',
+        },
         vertical: {
           type: 'boolean',
           default: false, // TODO item not in string format

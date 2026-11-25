@@ -18,7 +18,7 @@ description: 'Group a series of button-groups and/or input-groups together on a 
 ## Usage
 
 Feel free to mix input groups and dropdowns with button groups in your toolbars. Similar to the
-example above, you'll likely need some utility classes though to space things properly.
+example above, Bootstrap's `.btn-toolbar` already puts a gap between the groups, so no spacing utilities are needed.
 
 ## Sizing
 
