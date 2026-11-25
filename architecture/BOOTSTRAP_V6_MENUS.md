@@ -1,5 +1,18 @@
 # Bootstrap v6 Menus (G2): Menu, Combobox, Nav overflow
 
+**Status 2026-11-25: step 1 (Menu core) implemented, PR open (#PRNUM).** `BMenu`, `BMenuItem`, `BMenuHeader`, `BMenuText`, `BMenuDivider` replace the `BDropdown*` family; steps 2–6 are open. What step 1 decided where this plan was silent, or did differently:
+
+- **Split mode** renders `div.btn-group` around the main button, the split toggle and the `.menu`, except inside `BButtonGroup` / `BInputGroup` (group injection), where all three are direct children of the group. The group takes no attrs (`wrapperAttrs` is gone per Q3); wrap the menu in a `BButtonGroup` to style it.
+- **Fallthrough attrs and `id`** go to the toggle; in split mode that is the split toggle (the element with `aria-expanded` / `aria-controls`). The main split button gets `splitAttrs` only.
+- **`#activator="{ props }"`** (Slot props rule) replaces the toggle (the split toggle in split mode); `props` holds `ref`, `id`, `class` (`show`), `aria-expanded`, `aria-controls`, `onClick`, `onKeydown`.
+- **Toggle click** hides with trigger `'toggle'` (as listed under Emits) and shows through `show()`, so it does not emit the cancelable `toggle` event; the exposed `toggle()` still does. The trigger is reported on `hide` / `hidden` only (no separate trigger event).
+- **Keyboard:** Home / End only act inside the menu (v6 alpha.2 guard; alpha.1 throws on the toggle). Hidden items are detected with `getComputedStyle` (`display` / `visibility`) instead of v6 `isVisible`'s `getClientRects`.
+- **`BMenuItem`:** `text` prop added; the `.menu-item-check` mark renders whenever `selected` is a boolean (unset = never selectable); the `icon` slot renders the user's element as-is (give it `.menu-item-icon`).
+- **`BNavItemDropdown`** keeps its name until step 3, but renders on `BMenu`: `li.nav-item` (+ `.show`) > `button.nav-link` (through the `#activator` slot) + `.menu`, with `BMenuProps`.
+- **`useScrollspy`** marks the element whose `aria-controls` is the link's `.menu` (G6 may rework it with the scrollspy rewrite, #195).
+- **SSR:** Vue renders the unset style binding as `style=""` on the menu; harmless.
+- Not done in step 1: submenus (`submenuTrigger`, `submenuDelay`, `registerSubmenu`, ← / →), the `b-floating-size` cleanup and the `@floating-ui/core` check (step 6).
+
 ## Summary
 
 - **Menu** (`menu.ts`) replaces v5 Dropdown. It is a generic floating panel (`.menu`, `.menu-item`, `.menu-header`, `.menu-text`, `hr.menu-divider`, `.submenu`) positioned with Floating UI. It does **not** use the Popover API or the top layer, and it adds **no ARIA menu roles** and **no typeahead**. `BDropdown` and its eight subcomponents are redesigned to it. Most of the current props go: `noCaret`, `noFlip`, `noShift`, `noSize`, `boundaryPadding`, `role`, `isNav`, `icon`, `*Class`. Two things are new: submenus and the v6 keyboard model.
