@@ -23,7 +23,7 @@ describe('nuxt-link integration', async () => {
       /<a(?=[^>]*id="nav-item-link")(?=[^>]*class="[^"]*\brouter-link-active\b)[^>]+>/,
     )
     expect(html).toMatch(
-      /<a(?=[^>]*id="dropdown-item-link")(?=[^>]*class="[^"]*\brouter-link-active\b)[^>]+>/,
+      /<a(?=[^>]*id="menu-item-link")(?=[^>]*class="[^"]*\brouter-link-active\b)[^>]+>/,
     )
   })
 })

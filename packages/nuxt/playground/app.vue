@@ -156,15 +156,15 @@
       </BRow>
       <BRow>
         <BCol>
-          dropdown
-          <BDropdown>
-            <BDropdownItem to="/">
+          menu
+          <BMenu text="Menu">
+            <BMenuItem to="/">
               Home
-            </BDropdownItem>
-            <BDropdownItem to="/about">
+            </BMenuItem>
+            <BMenuItem to="/about">
               About
-            </BDropdownItem>
-          </BDropdown>
+            </BMenuItem>
+          </BMenu>
         </BCol>
       </BRow>
       <BRow class="mt-3 border">
