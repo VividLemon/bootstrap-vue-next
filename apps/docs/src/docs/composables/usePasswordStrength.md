@@ -11,16 +11,16 @@ DOM access), so it also works during server-side rendering.
 
 ## Parameters
 
-Both parameters accept a plain value, a ref or a getter.
+`password` accepts a plain value, a ref or a getter. `options` accepts a plain value or a ref: to derive the options from other state, pass a `computed`, so the object is only rebuilt when its inputs change.
 
 - `password: MaybeRefOrGetter<string>`
-- `options?: MaybeRefOrGetter<PasswordStrengthOptions | undefined>`
+- `options?: MaybeRef<PasswordStrengthOptions | undefined>`
   - `minLength` (default `8`): the length that earns the length point; `minLength + 4` earns another
   - `weights`: points per criterion, merged with the defaults (each `1`): `minLength`,
     `extraLength`, `lowercase`, `uppercase`, `numbers`, `special`, `multipleSpecial`, `longPassword`
     (16 characters or more)
-  - `thresholds` (default `[2, 4, 6]`): the highest score for `weak`, `fair` and `good`; anything
-    above is `strong`
+  - `thresholds` (default `{weak: 2, fair: 4, good: 6}`): the highest score for each level, merged
+    with the defaults key by key; anything above `good` is `strong`
   - `scorer`: `(password: string) => number`, replaces the built-in scoring. An empty password
     always scores `0`
 

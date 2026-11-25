@@ -5,7 +5,7 @@
     aria-label="Password"
     autocomplete="new-password"
   />
-  <BFormStrength :value="password" :scorer="scoreByLength" :thresholds="[6, 10, 14]" show-text />
+  <BFormStrength :value="password" :scorer="scoreByLength" :thresholds="{ weak: 6, fair: 10, good: 14 }" show-text />
 </template>
 
 <script setup lang="ts">

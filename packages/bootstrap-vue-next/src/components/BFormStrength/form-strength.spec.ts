@@ -72,7 +72,7 @@ describe('form-strength', () => {
     })
     expect(wrapper.find('.strength').attributes('data-bs-strength')).toBe('strong')
     expect(wrapper.find('.strength-text').text()).toBe('Great')
-    await wrapper.setProps({scorer: undefined, thresholds: [0, 0, 0]})
+    await wrapper.setProps({scorer: undefined, thresholds: {weak: 0, fair: 0, good: 0}})
     expect(wrapper.find('.strength').attributes('data-bs-strength')).toBe('strong')
     await wrapper.setProps({thresholds: undefined, minLength: 3})
     expect(wrapper.find('.strength').attributes('data-bs-strength')).toBe('weak')

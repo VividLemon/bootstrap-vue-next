@@ -46,9 +46,10 @@ export default {
           description: 'Attributes for the `.strength-text` element',
         },
         thresholds: {
-          type: 'readonly [number, number, number]',
-          default: '[2, 4, 6]',
-          description: 'Highest score for `weak`, `fair` and `good`; anything above is `strong`',
+          type: 'Partial<PasswordStrengthThresholds>',
+          default: '{weak: 2, fair: 4, good: 6}',
+          description:
+            'Highest score per level (`weak`, `fair`, `good`), merged with the defaults key by key; anything above `good` is `strong`',
         },
         value: {
           type: 'string',

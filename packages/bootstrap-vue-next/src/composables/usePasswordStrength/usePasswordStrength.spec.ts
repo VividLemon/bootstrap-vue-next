@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import {usePasswordStrength} from './index'
 import type {PasswordStrengthOptions} from '../../types/PasswordStrength'
 
@@ -54,8 +54,22 @@ describe('usePasswordStrength', () => {
     expect(score.value).toBe(5)
   })
 
+  it('merges partial thresholds with the defaults key by key', () => {
+    // 'abc' scores 1 (lowercase): weak by default; with weak: 0 it falls to fair (default 4)
+    expect(usePasswordStrength('abc', {thresholds: {weak: 0}}).strength.value).toBe('fair')
+  })
+
+  it('follows options given as a computed', async () => {
+    const minLength = ref(8)
+    const options = computed(() => ({minLength: minLength.value}))
+    const {score} = usePasswordStrength('abcd', options)
+    expect(score.value).toBe(1)
+    minLength.value = 4
+    expect(score.value).toBe(2)
+  })
+
   it('uses thresholds', () => {
-    const {strength} = usePasswordStrength('abc', {thresholds: [0, 1, 2]})
+    const {strength} = usePasswordStrength('abc', {thresholds: {weak: 0, fair: 1, good: 2}})
     expect(strength.value).toBe('fair')
   })
 

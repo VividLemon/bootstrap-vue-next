@@ -1,7 +1,8 @@
-import {computed, type ComputedRef, type MaybeRefOrGetter, toValue} from 'vue'
+import {computed, type ComputedRef, type MaybeRef, type MaybeRefOrGetter, toValue, unref} from 'vue'
 import type {
   PasswordStrength,
   PasswordStrengthOptions,
+  PasswordStrengthThresholds,
   PasswordStrengthWeights,
 } from '../../types/PasswordStrength'
 
@@ -16,7 +17,7 @@ const defaultWeights: Readonly<PasswordStrengthWeights> = {
   longPassword: 1,
 }
 
-const defaultThresholds = [2, 4, 6] as const
+const defaultThresholds: Readonly<PasswordStrengthThresholds> = {weak: 2, fair: 4, good: 6}
 
 const specialChar = /[!@#$%^&*(),.?":{}|<>]/
 const multipleSpecialChars = /[!@#$%^&*(),.?":{}|<>].*[!@#$%^&*(),.?":{}|<>]/
@@ -49,10 +50,10 @@ const calculateScore = (password: string, options: Readonly<PasswordStrengthOpti
  */
 const scoreToStrength = (
   score: number,
-  thresholds: readonly [number, number, number] = defaultThresholds
+  thresholds: Readonly<Partial<PasswordStrengthThresholds>> = {}
 ): PasswordStrength | null => {
   if (score === 0) return null
-  const [weak, fair, good] = thresholds
+  const {weak, fair, good} = {...defaultThresholds, ...thresholds}
   if (score <= weak) return 'weak'
   if (score <= fair) return 'fair'
   if (score <= good) return 'good'
@@ -64,17 +65,18 @@ const scoreToStrength = (
  * Pure computation: no DOM access, so it works during SSR.
  *
  * @param password The password, as a plain value, ref or getter
- * @param options Scoring options (`minLength`, `weights`, `thresholds`, `scorer`), as a plain value, ref or getter
+ * @param options Scoring options (`minLength`, `weights`, `thresholds`, `scorer`), as a plain value or a ref.
+ *   Pass a `computed` to derive them from other state
  * @returns `score` (`0` for an empty password) and `strength` (`null` when the score is `0`)
  */
 export const usePasswordStrength = (
   password: MaybeRefOrGetter<string>,
-  options: MaybeRefOrGetter<Readonly<PasswordStrengthOptions> | undefined> = {}
+  options: MaybeRef<Readonly<PasswordStrengthOptions> | undefined> = {}
 ): {
   score: ComputedRef<number>
   strength: ComputedRef<PasswordStrength | null>
 } => {
-  const score = computed(() => calculateScore(toValue(password) ?? '', toValue(options) ?? {}))
-  const strength = computed(() => scoreToStrength(score.value, toValue(options)?.thresholds))
+  const score = computed(() => calculateScore(toValue(password) ?? '', unref(options) ?? {}))
+  const strength = computed(() => scoreToStrength(score.value, unref(options)?.thresholds))
   return {score, strength}
 }

@@ -80,6 +80,7 @@ export type {
   PasswordStrength,
   PasswordStrengthChange,
   PasswordStrengthOptions,
+  PasswordStrengthThresholds,
   PasswordStrengthWeights,
 } from './PasswordStrength'
 export type {LinkTarget} from './LinkTarget'

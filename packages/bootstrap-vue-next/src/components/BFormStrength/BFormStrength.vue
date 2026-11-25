@@ -71,15 +71,13 @@ const textColors: Readonly<Record<PasswordStrength, string>> = {
   strong: 'success',
 }
 
-const {score, strength} = usePasswordStrength(
-  () => props.value ?? '',
-  () => ({
-    minLength: props.minLength,
-    weights: props.weights,
-    thresholds: props.thresholds,
-    scorer: props.scorer,
-  })
-)
+const strengthOptions = computed(() => ({
+  minLength: props.minLength,
+  weights: props.weights,
+  thresholds: props.thresholds,
+  scorer: props.scorer,
+}))
+const {score, strength} = usePasswordStrength(() => props.value ?? '', strengthOptions)
 
 const strengthIndex = computed(() => (strength.value ? levels.indexOf(strength.value) : -1))
 

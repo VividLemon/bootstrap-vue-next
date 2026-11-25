@@ -23,13 +23,26 @@ export interface PasswordStrengthWeights {
   longPassword: number
 }
 
+/**
+ * The highest score for each level; a score above `good` is `strong`
+ * (Bootstrap v6 `strength.ts` thresholds)
+ */
+export interface PasswordStrengthThresholds {
+  /** Highest score that is `weak`. Default `2` */
+  weak: number
+  /** Highest score that is `fair`. Default `4` */
+  fair: number
+  /** Highest score that is `good`. Default `6` */
+  good: number
+}
+
 export interface PasswordStrengthOptions {
   /** Minimum length that earns the `minLength` point. Default `8` */
   minLength?: number
   /** Points per criterion, merged with the defaults key by key */
   weights?: Partial<PasswordStrengthWeights>
-  /** Highest score for `weak`, `fair` and `good`; anything above is `strong`. Default `[2, 4, 6]` */
-  thresholds?: readonly [number, number, number]
+  /** Highest score per level, merged with the defaults key by key. Default `{weak: 2, fair: 4, good: 6}` */
+  thresholds?: Partial<PasswordStrengthThresholds>
   /** Replaces the built-in scoring. Not called for an empty password, which always scores `0` */
   scorer?: (password: string) => number
 }
