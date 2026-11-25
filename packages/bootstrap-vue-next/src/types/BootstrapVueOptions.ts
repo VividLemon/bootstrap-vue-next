@@ -50,14 +50,6 @@ export const componentsWithExternalPath = {
   BDateRangePicker: '/components/BDatePicker',
   BDialog: '/components/BDialog',
   BDialogActions: '/components/BDialog',
-  BDropdown: '/components/BDropdown',
-  BDropdownDivider: '/components/BDropdown',
-  BDropdownForm: '/components/BDropdown',
-  BDropdownGroup: '/components/BDropdown',
-  BDropdownHeader: '/components/BDropdown',
-  BDropdownItem: '/components/BDropdown',
-  BDropdownItemButton: '/components/BDropdown',
-  BDropdownText: '/components/BDropdown',
   BForm: '/components/BForm',
   BFormCheckbox: '/components/BFormCheckbox',
   BFormCheckboxGroup: '/components/BFormCheckbox',
@@ -88,6 +80,11 @@ export const componentsWithExternalPath = {
   BInputGroupText: '/components/BInputGroup',
   BListGroup: '/components/BListGroup',
   BListGroupItem: '/components/BListGroup',
+  BMenu: '/components/BMenu',
+  BMenuDivider: '/components/BMenu',
+  BMenuHeader: '/components/BMenu',
+  BMenuItem: '/components/BMenu',
+  BMenuText: '/components/BMenu',
   BNav: '/components/BNav',
   BNavForm: '/components/BNav',
   BNavItem: '/components/BNav',
@@ -208,11 +205,10 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BLink: ComponentProps.BLinkProps
   BAccordion: ComponentProps.BAccordionProps
   BApp: ComponentProps.BAppProps
-  BDropdownDivider: ComponentProps.BDropdownDividerProps
-  BDropdownGroup: ComponentProps.BDropdownGroupProps
-  BDropdownItem: ComponentProps.BDropdownItemProps
-  BDropdownItemButton: ComponentProps.BDropdownItemButtonProps
-  BDropdownText: ComponentProps.BDropdownTextProps
+  BMenuDivider: ComponentProps.BMenuDividerProps
+  BMenuHeader: ComponentProps.BMenuHeaderProps
+  BMenuItem: ComponentProps.BMenuItemProps
+  BMenuText: ComponentProps.BMenuTextProps
   BFormFloatingLabel: ComponentProps.BFormFloatingLabelProps
   BFormRow: ComponentProps.BFormRowProps
   BFormText: ComponentProps.BFormTextProps
@@ -294,7 +290,7 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BInputGroupAddon: ComponentProps.BInputGroupAddonProps
   BDialog: ComponentProps.BDialogProps
   BDialogActions: ComponentProps.BDialogActionsProps
-  BDropdown: ComponentProps.BDropdownProps
+  BMenu: ComponentProps.BMenuProps
   BToast: ComponentProps.BToastProps
   BPopover: ComponentProps.BPopoverProps
   BTooltip: ComponentProps.BTooltipProps
@@ -302,13 +298,11 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BCardHeader: ComponentProps.BCardHeaderProps
   BCardImg: ComponentProps.BCardImgProps
   BCol: ComponentProps.BColProps
-  BDropdownForm: never
-  BDropdownHeader: never
   BBreadcrumbDivider: never
   BFormInvalidFeedback: ComponentProps.BFormInvalidFeedbackProps
   BFormValidFeedback: ComponentProps.BFormValidFeedbackProps
   BFormGroup: ComponentProps.BFormGroupProps
-  BNavItemDropdown: ComponentProps.BDropdownProps
+  BNavItemDropdown: ComponentProps.BMenuProps
   BRow: ComponentProps.BRowProps
   BInput: ComponentProps.BFormInputProps
   BTimeField: ComponentProps.BTimeFieldProps

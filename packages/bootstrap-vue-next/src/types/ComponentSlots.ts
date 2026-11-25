@@ -42,21 +42,26 @@ export interface BCollapseSlots {
   header?: (props: ShowHideSlotsData) => any
 }
 
-export interface BDropdownSlotsData extends ShowHideSlotsData {
-  click: (evt: MouseEvent) => void
+export type BMenuToggleProps = {
+  'ref': (el: Element | ComponentPublicInstance | null) => void
+  'id': string
+  'class': {show: boolean}
+  'aria-expanded': 'true' | 'false'
+  'aria-controls': string
+  'onClick': (event: MouseEvent) => void
+  'onKeydown': (event: KeyboardEvent) => void
 }
-export type BDropdownFormSlots = {
+export interface BMenuActivatorSlotsData extends ShowHideSlotsData {
+  /**
+   * Bind with `v-bind="props"` on the element that opens the menu. It wires the click and
+   * keyboard handlers, `aria-expanded`, `aria-controls` and `.show`
+   */
+  props: BMenuToggleProps
+}
+export type BMenuHeaderSlots = {
   default?: (props: Record<string, never>) => any
 }
-export type BDropdownGroupSlots = {
-  default?: (props: Record<string, never>) => any
-
-  header?: (props: Record<string, never>) => any
-}
-export type BDropdownHeaderSlots = {
-  default?: (props: Record<string, never>) => any
-}
-export type BDropdownTextSlots = {
+export type BMenuTextSlots = {
   default?: (props: Record<string, never>) => any
 }
 
@@ -267,20 +272,22 @@ export type BCarouselSlideSlots = {
   text?: (props: Record<string, never>) => any
 }
 
-export type BDropdownSlots = {
-  'button-content'?: (props: Record<string, never>) => any
-
-  'default'?: (props: BDropdownSlotsData) => any
-
-  'toggle-text'?: (props: Record<string, never>) => any
+export type BMenuSlots = {
+  /** Replaces the toggle (the split toggle in split mode) with your own element */
+  'activator'?: (props: BMenuActivatorSlotsData) => any
+  'default'?: (props: ShowHideSlotsData) => any
+  /** Content of the split toggle. Default: a chevron and the visually hidden `toggleText` */
+  'split-toggle'?: (props: Record<string, never>) => any
+  /** Content of the toggle (of the main button in split mode). Default: `text` */
+  'toggle'?: (props: Record<string, never>) => any
 }
 
-export type BDropdownItemSlots = {
+export type BMenuItemSlots = {
   default?: (props: Record<string, never>) => any
-}
-
-export type BDropdownItemButtonSlots = {
-  default?: (props: Record<string, never>) => any
+  /** Secondary text below the content (`.menu-item-description`) */
+  description?: (props: Record<string, never>) => any
+  /** An icon before the content. Give the element the `menu-item-icon` class */
+  icon?: (props: Record<string, never>) => any
 }
 
 export type BFormSlots = {
@@ -550,11 +557,8 @@ export type BNavItemSlots = {
 }
 
 export type BNavItemDropdownSlots = {
-  'button-content'?: (props: Record<string, never>) => any
-
-  'default'?: (props: {hide: () => void; show: () => void}) => any
-
-  'toggle-text'?: (props: Record<string, never>) => any
+  default?: (props: ShowHideSlotsData) => any
+  toggle?: (props: Record<string, never>) => any
 }
 
 export type BNavbarToggleSlots = {

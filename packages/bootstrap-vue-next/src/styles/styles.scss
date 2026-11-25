@@ -34,11 +34,6 @@
     display: block;
   }
 
-  .dropdown-toggle.dropdown-toggle-no-caret:before,
-  .dropdown-toggle.dropdown-toggle-no-caret:after {
-    display: none;
-  }
-
   // No focus outline helper (use sparingly)
   .bv-no-focus-ring:focus {
     outline: none;

@@ -28,7 +28,7 @@ export interface BAutocompleteEmits {
   focus: [event: FocusEvent]
 }
 
-export interface BDropdownEmits extends showHideEmits {
+export interface BMenuEmits extends showHideEmits {
   'split-click': [value: MouseEvent]
 }
 export interface BDialogEmits extends showHideEmits {
@@ -107,11 +107,7 @@ export type BCarouselEmits = {
   'next-click': [value: MouseEvent]
 }
 
-export type BDropdownItemEmits = {
-  click: [value: MouseEvent]
-}
-
-export type BDropdownItemButtonEmits = {
+export type BMenuItemEmits = {
   click: [value: MouseEvent]
 }
 

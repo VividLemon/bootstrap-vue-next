@@ -91,6 +91,14 @@ export type {LiteralUnion} from './LiteralUnion'
 export type {PaginationPage} from './PaginationPage'
 export type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 export type {DialogSize, DialogSlide} from './DialogTypes'
+export type {
+  MenuAutoClose,
+  MenuFloatingConfig,
+  MenuOffset,
+  MenuPlacement,
+  MenuReference,
+  MenuSide,
+} from './MenuTypes'
 export type {PopoverPlacement} from './PopoverPlacement'
 export type {Position} from './Position'
 export type {RadioOption, RadioOptionRaw, RadioValue} from './RadioTypes'

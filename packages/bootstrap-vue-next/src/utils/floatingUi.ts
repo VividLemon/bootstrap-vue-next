@@ -18,22 +18,6 @@ export const resolveBootstrapPlacement = (placement: Placement): string => {
       return _placement || 'start'
   }
 }
-export const resolveBootstrapCaret = (placement: Placement): string => {
-  const [_placement] = placement.split('-')
-  switch (_placement) {
-    case 'left':
-      return 'start'
-    case 'right':
-      return 'end'
-    case 'top':
-      return 'up'
-    case 'bottom':
-      return 'down'
-    default:
-      return _placement || 'start'
-  }
-}
-
 export const resolveActiveStatus = (values: DirectiveBinding['value']): boolean =>
   typeof values !== 'object' || values.active !== false
 
