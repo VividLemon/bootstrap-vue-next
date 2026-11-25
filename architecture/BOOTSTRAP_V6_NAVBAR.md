@@ -95,7 +95,7 @@
   - `container-type: inline-size` means the navbar's width cannot come from its content. A navbar in a shrink-to-fit parent (inline-flex, a `float`, an absolutely positioned box without `inset`/`width`) collapses to zero width. `fixed-top`/`fixed-bottom` set `inset: 0 0 auto` / `auto 0 0`, so they are fine. Docs note.
   - Breakpoint width is the navbar's content box; `--bs-navbar-padding-x` defaults to `0`.
   - Since the switch is CSS-only, nothing in Vue needs to know the breakpoint. SSR renders the correct layout from the first paint.
-- Upstream gap: the expanded rule targets only `> .container` / `> .container-fluid`, not `> .md:container` (the `%navbar-expand-container` placeholder is never extended). With `container="md"` the inner container keeps `flex-wrap: wrap` when expanded. Note it; no workaround.
+- Upstream gap: the expanded rule targets only `> .container` / `> .container-fluid`, not `> .md:container` (the `%navbar-expand-container` placeholder is never extended). With `container="md"` the inner container keeps `flex-wrap: wrap` when expanded. Note it; no workaround. Still present in alpha.2.
 
 ### Drawer behavior inside a navbar (from `drawer.ts` / `dialog-base.ts`)
 

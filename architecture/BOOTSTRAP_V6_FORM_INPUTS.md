@@ -11,7 +11,7 @@ Findings:
 - **New components:** `BFormRange` (removes the range handling from `BFormInput`), `BFormStrength` plus a public `usePasswordStrength`, `BFormAdorn` (wrapper that turns inner controls into `.form-ghost`), `BChip` plus a chip input that replaces `BFormTags` / `BFormTag`, a new `BFormOtp` (single input + decorative slots), and one `BDatepicker` that replaces six reka-ui components.
 - **reka-ui:** stays (revised 2026-11-20). OTP drops it; `BDatepicker` and G2's `BCombobox` use it underneath, so `reka-ui` and `@internationalized/date` remain dependencies.
 - **v6 has no time picker.** The recommendation is to drop `BTimeField` / `BTimeRangeField` and document `<BFormInput type="time">` (Q4).
-- **Upstream issues found:** `strength.ts` writes `--strength-color: var(--danger-text)`, which is unprefixed and not a v6 token, so the strength text is never colored. The v6 docs mention a `.chip-input-label` class, but it is missing from `bootstrap.css`. The Datepicker popup sits at `--bs-datepicker-zindex: var(--bs-z-menu)` (1000), below `dialog` (1040) and `drawer` (1030), and VCP appends it to `document.body`.
+- **Upstream issues found (status in 6.0.0-alpha.2):** `strength.ts` wrote `--strength-color: var(--danger-text)`, unprefixed and not a v6 token, so the strength text was never colored (**fixed in alpha.2**, [twbs/bootstrap#43122](https://github.com/twbs/bootstrap/pull/43122): the CSS colors `.strength-text[data-bs-strength=…]` with `--bs-*-fg-emphasis`). The v6 docs mentioned a `.chip-input-label` class missing from `bootstrap.css` (**moot in alpha.2**: the chip input is removed and merged into an editable Combobox, [twbs/bootstrap#43300](https://github.com/twbs/bootstrap/pull/43300)). The Datepicker popup sat at `--bs-datepicker-zindex: var(--bs-z-menu)` (1000), below `dialog` (1040) and `drawer` (1030), appended to `document.body` (**fixed in alpha.2**, [twbs/bootstrap#43313](https://github.com/twbs/bootstrap/pull/43313): the popup uses the Popover API, so it is in the top layer, and handles a surrounding dialog).
 
 ## Sources read
 
@@ -127,7 +127,8 @@ Standalone `.chip` (`.chip-icon`, `.chip-img`, `.chip-dismiss`, `.active`, `.dis
 - **Paste:** splits on the separator.
 - **Chip markup:** each chip gets `tabindex="0"`; the dismiss button gets `tabindex="-1"` and `aria-label="Remove"`.
 - **Validation:** `.chip-input:has(.form-ghost.is-*)` and `[data-bs-validate] .chip-input:has(.form-ghost:user-invalid)`.
-- **Classes:** no size classes. `.chip-input-label` appears in the docs but **not in `bootstrap.css`**.
+- **Classes:** no size classes. `.chip-input-label` appeared in the alpha.1 docs but **not in `bootstrap.css`**.
+- **Alpha.2 (breaking upstream):** the chip input is gone. [twbs/bootstrap#43300](https://github.com/twbs/bootstrap/pull/43300) merges it into an editable Combobox (`.combobox-control` with `.chip` children and a `.combobox-input`); `bootstrap.css` alpha.2 has no `.chip-input` rules. `BFormChips` (built on alpha.1's chip input) and G2's `BCombobox` must be re-planned against the alpha.2 markup when the library moves to alpha.2.
 
 ### Current library
 
@@ -360,7 +361,7 @@ Not worth a public API now. VCP owns calendar state, and the only helpers (ISO p
 
 - **Markup:** `.strength[data-bs-strength]` > 4 × `.strength-segment` (`.active` up to the level), or `.strength-bar` (width 25 % per level), plus an optional `.strength-text`. Level via the `data-bs-strength="weak|fair|good|strong"` attribute (CSS reads the attribute).
 - **`strength.ts`:** finds the password input (`input` option, or a sibling `input[type=password]`), scores on `input` / `change`, sets the attribute and `.active`, writes the message, fires `strengthChange` (`strength`, `score`). Options: `minLength` (8), `messages`, `weights` (8 criteria, 1 point each), `thresholds` (`[2,4,6]`), `scorer`.
-- **Upstream bug:** the text color is written as unprefixed `--strength-color: var(--danger-text)`. Neither name matches the shipped CSS (`--bs-strength-color`, `--bs-danger-fg`), so the text stays `--bs-fg-3`.
+- **Upstream bug (fixed in alpha.2, [twbs/bootstrap#43122](https://github.com/twbs/bootstrap/pull/43122)):** alpha.1 wrote the text color as unprefixed `--strength-color: var(--danger-text)`. Neither name matched the shipped CSS (`--bs-strength-color`, `--bs-danger-fg`), so the text stayed `--bs-fg-3`. Alpha.2 colors `.strength-text[data-bs-strength=weak|fair|good|strong]` in CSS (`--bs-danger-fg-emphasis` and so on). Alpha.2 also counts any symbol or space as a special character ([twbs/bootstrap#43324](https://github.com/twbs/bootstrap/pull/43324)); `usePasswordStrength`'s `specialChar` must follow when the library moves to alpha.2.
 - The docs call the meter decorative and say the text "announces" changes, but nothing sets a live region.
 
 ### Proposed API: `BFormStrength` + `usePasswordStrength`
@@ -373,7 +374,7 @@ Not worth a public API now. VCP owns calendar state, and the only helpers (ISO p
   - `showText` (renders `.strength-text`)
   - `segmentAttrs`, `textAttrs`
 - Emits `change` (`{strength, score}`) when the level changes.
-- Markup: `data-bs-strength` bound from the computed level, `.active` on segments, text `<span class="strength-text" aria-live="polite">`. The text color is set correctly (`--bs-strength-color: var(--bs-{danger|warning|info|success}-fg)`), fixing the upstream bug.
+- Markup: `data-bs-strength` bound from the computed level, `.active` on segments, text `<span class="strength-text" aria-live="polite">`. The text color is set correctly (`--bs-strength-color: var(--bs-{danger|warning|info|success}-fg)`), working around the alpha.1 bug. With alpha.2, drop that inline color and put `data-bs-strength` on the text element instead, so Bootstrap's own rule colors it.
 - Docs: tell users to link requirements text with `aria-describedby` on the input; the meter is `aria-hidden`.
 - SSR: pure computation.
 

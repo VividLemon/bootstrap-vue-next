@@ -148,7 +148,7 @@ Every batch agent receives these instructions plus its batch's components and pl
 - Migration notes must mention:
   - Rules that tie on specificity still rely on the library CSS loading after Bootstrap's CSS.
   - Partials are now loaded with `meta.load-css`, so consumers compiling `src/styles/styles.scss` can no longer override the library's `!default` Sass variables (e.g. `$b-table-sort-icon-*`, `$b-avatar-size`) by declaring them before the import.
-  - Bootstrap 6.0.0-alpha.1 leaves some rules unlayered (`:root` tokens, `.fade`, `.collapse`, `.drawer`); they beat layered library rules.
+  - Bootstrap 6.0.0-alpha.1 leaves some rules unlayered (`:root` tokens, `.fade`, `.collapse`, `.drawer`); they beat layered library rules. Alpha.2 layers `.drawer` and the `.collapse` transition (now inside `@layer components`); `:root`, `.fade` and the `.collapse` base rules (`display: none` when not shown) are still unlayered.
 
 ### Breakpoints
 
@@ -247,7 +247,7 @@ Bootstrap v6 lets CSS own all motion: JavaScript toggles a state class (`.show`,
 - Done: `useCssTransition` and the split `useShowHide` (native core + `useLegacyShowHide` for components not yet migrated); `noTransition` rename; `transProps` removed; trigger classes removed; `BCollapse` migrated; `ARIA_VISIBILITY.md` rewritten.
 - To adopt the native path, a component passes `{transition: () => run()}` to `useShowHide` and binds `{show: visible, '<comp>-instant': props.noTransition || instant}`. See the composable's JSDoc and `ARIA_VISIBILITY.md`.
 - `BAlert`, `BToast`, `BPopover` / `BTooltip` are still on `useLegacyShowHide` and move to the native path in their batches. Delete `useLegacyShowHide` once only deferred components remain on it, or once they are migrated.
-- v6 has no `collapse-instant` class: `BCollapse` `noTransition` uses the `transition-none` utility. Because 6.0.0-alpha.1 emits `.fade` and `.collapse` transitions outside any layer, `BCollapse` also sets `--bs-transition-collapse-duration: 0s` inline while instant. Remove that workaround once upstream layers those rules.
+- v6 alpha.1 has no `collapse-instant` class: `BCollapse` `noTransition` uses the `transition-none` utility. Because 6.0.0-alpha.1 emits `.fade` and `.collapse` transitions outside any layer, `BCollapse` also sets `--bs-transition-collapse-duration: 0s` inline while instant. **Alpha.2 fixes both** ([twbs/bootstrap#43403](https://github.com/twbs/bootstrap/pull/43403)): it adds `.collapse-instant` and moves the collapse transition into `@layer components`. When the library moves to alpha.2, render `collapse-instant` for `noTransition` and drop the inline workaround.
 - `shown` / `hidden` now fire when the CSS transition ends; an interrupted transition never fires its `shown` / `hidden`. Migration notes must say so.
 - In-scope components: `BCollapse` (+ `vBToggle`), `BAlert`, `BToast`, `BPopover` / `BTooltip`, `BTabs`. `BAccordionItem` renders `BCollapse` and changes with it.
 
@@ -310,7 +310,7 @@ Decided 2026-11-24 ([#183](https://github.com/VividLemon/bootstrap-vue-next/pull
 
 - `BAlert`: stack vertically, drop `alert-dismissible`, `ms-auto` on close buttons; dismiss uses `.hiding` then unmounts. `close*` colors → `closeColor`; `closeClass` / `alertClass` / `headerClass` / `bodyClass` → `*Attrs`.
 - `BToast`: `toast-instant` when `noTransition`; `display: flex`; remove old opacity hacks in `_toast.scss`. Add `translucent` (`.toast-translucent`), remove `solid`. Same color/attrs changes as `BAlert`.
-- `BSpinner`: `spinner-sm` instead of `spinner-<type>-sm`. No workaround for the upstream grow + sm bug.
+- `BSpinner`: `spinner-sm` instead of `spinner-<type>-sm`. No workaround for the upstream grow + sm bug (`.spinner-grow` comes after `.spinner-sm` and resets its size). **Still present in alpha.2** (same rule order).
 - `BBadge`: fix dot indicator (`min-h-0`). Add `variant` (`subtle` | `outline`) and a `lg` size (`.badge-lg`).
 - `BPlaceholder*`: add `pulse` animation. `header*` / `footer*` colors → `headerColor` / `footerColor`.
 - `BProgress`: no changes.
@@ -319,7 +319,7 @@ Decided 2026-11-24 ([#183](https://github.com/VividLemon/bootstrap-vue-next/pull
 
 - Remove `card-header-pills` from `BNav` and `BTabs` (no v6 rule; 11 spec assertions).
 - `BTabs`: `noTransition` → `tab-pane-instant`. Class props become `*Attrs`.
-- Vertical pills use `nav-pills-vertical`. No workaround for fill/justified pills: fixed upstream in [twbs/bootstrap#43047](https://github.com/twbs/bootstrap/pull/43047), released after alpha.1.
+- Vertical pills use `nav-pills-vertical`. No workaround for fill/justified pills: fixed upstream in [twbs/bootstrap#43047](https://github.com/twbs/bootstrap/pull/43047), **released in alpha.2**.
 - `BListGroup horizontal`: `true` → `list-group-horizontal`; breakpoint → `{bp}:list-group-horizontal`. Document that breakpoint values need a query-container ancestor (e.g. `.contains-inline`). No auto-wrap.
 - `BCollapse`: native transition mechanism. `BPagination`: add `theme`; class props become `*Attrs`.
 
@@ -407,8 +407,37 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 ### Deferred features
 
 - CSS Grid mode (`BGrid`, `.grid` / `g-col-*`).
-- Bump to the next Bootstrap prerelease to pick up upstream fixes (nav fill/justified pills; spinner grow + sm).
+- Bump to Bootstrap 6.0.0-alpha.2 to pick up upstream fixes; see [Bootstrap 6.0.0-alpha.2](#bootstrap-600-alpha2) for what it fixes and what the library has to change with it.
 - A future v6 `.btn-icon` feature on `BButton` needs a new prop name: `icon` is already taken by `BLink`'s `icon-link`.
+
+## Bootstrap 6.0.0-alpha.2
+
+Released 2026-11-23. The library is still on alpha.1 (`bootstrap` peer `^6.0.0-alpha.1`). Checked against the alpha.2 package (`dist/css/bootstrap.css`, `js/src`) on 2026-11-25.
+
+**Upstream bugs we had flagged:**
+
+| Flagged in alpha.1                                                                          | Alpha.2                                                                                                                                                                                       | Where it was recorded                                |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Strength text never colored (unprefixed `--strength-color: var(--danger-text)`)             | **Fixed** ([#43122](https://github.com/twbs/bootstrap/pull/43122)): CSS colors `.strength-text[data-bs-strength=…]`                                                                           | `BOOTSTRAP_V6_FORM_INPUTS.md`                        |
+| Nav `fill` / `justified` pills not stretching                                               | **Fixed** ([#43047](https://github.com/twbs/bootstrap/pull/43047))                                                                                                                            | Navigation, above                                    |
+| `.fade` / `.collapse` transitions unlayered (beat `transition-none`); no `collapse-instant` | **Mostly fixed** ([#43403](https://github.com/twbs/bootstrap/pull/43403)): `.collapse-instant` added, collapse transition layered. `.fade` and the `.collapse` base rules are still unlayered | CSS cascade layer, Transitions, `ARIA_VISIBILITY.md` |
+| `.drawer` unlayered                                                                         | **Fixed**: `.drawer` is inside a layer                                                                                                                                                        | CSS cascade layer                                    |
+| Datepicker popup below dialogs / drawers, appended to `body`                                | **Fixed** ([#43313](https://github.com/twbs/bootstrap/pull/43313)): Popover API (top layer), dialog-aware                                                                                     | `BOOTSTRAP_V6_FORM_INPUTS.md`                        |
+| `.chip-input-label` in the docs but not in the CSS                                          | **Moot**: chip input removed, merged into editable Combobox ([#43300](https://github.com/twbs/bootstrap/pull/43300))                                                                          | `BOOTSTRAP_V6_FORM_INPUTS.md`                        |
+| CSS Grid docs said opt-in while `$enable-cssgrid` is `true`                                 | **Fixed** in the docs ([#43240](https://github.com/twbs/bootstrap/pull/43240))                                                                                                                | `BOOTSTRAP_V6_LAYOUT.md`                             |
+| Spinner `grow` + `sm`: `.spinner-grow` resets the small size                                | **Not fixed** (same rule order)                                                                                                                                                               | Feedback, above                                      |
+| Navbar expand rules skip `> .{bp}:container` (`flex-wrap` stays)                            | **Not fixed**                                                                                                                                                                                 | `BOOTSTRAP_V6_NAVBAR.md`                             |
+| No print utilities (`print:` / `d-print`)                                                   | Unchanged (none shipped)                                                                                                                                                                      | `BOOTSTRAP_V6_NAVBAR.md`                             |
+
+**What the library must change when it moves to alpha.2** (one PR, after the open component PRs settle):
+
+- Peer / dev dependency `bootstrap` → `^6.0.0-alpha.2`.
+- `BCollapse`: render `collapse-instant` for `noTransition`; drop the inline `--bs-transition-collapse-duration` workaround.
+- `BFormStrength`: put `data-bs-strength` on the text element and drop the inline text color; `usePasswordStrength` counts any symbol or space as special ([#43324](https://github.com/twbs/bootstrap/pull/43324)).
+- `BDialog`: a closed `.dialog` is now `display: none` (`[open]` sets `display: flex`, [#43188](https://github.com/twbs/bootstrap/pull/43188)); re-verify opening, `revealForFocus` and the exit transition. New `.dialog-2xl` ([#43292](https://github.com/twbs/bootstrap/pull/43292)) for `DialogSize`. Check [#43418](https://github.com/twbs/bootstrap/pull/43418) (Dialog and Drawer regressions) against `useDialogBase`, and [#43028](https://github.com/twbs/bootstrap/pull/43028) (drawer backdrop exit) for G1 step 3.
+- Ported behavior to re-sync with alpha.2's JavaScript: OTP input ([#43252](https://github.com/twbs/bootstrap/pull/43252), [#43255](https://github.com/twbs/bootstrap/pull/43255), [#43417](https://github.com/twbs/bootstrap/pull/43417): readonly / disabled, Delete like Backspace, no events when nothing is removed), Range ([#43305](https://github.com/twbs/bootstrap/pull/43305), [#43434](https://github.com/twbs/bootstrap/pull/43434)), Carousel ([#43020](https://github.com/twbs/bootstrap/pull/43020), [#43264](https://github.com/twbs/bootstrap/pull/43264): focus off a disabled control, RTL arrows), Menu regressions ([#43419](https://github.com/twbs/bootstrap/pull/43419), for G2), and hover / focus popovers keeping the default click action ([#43200](https://github.com/twbs/bootstrap/pull/43200); check `BPopover`'s trigger listeners).
+- Breaking upstream: chip input → editable Combobox ([#43300](https://github.com/twbs/bootstrap/pull/43300)) affects `BFormChips` and G2's `BCombobox`. Not yet checked against our code: native gap gutters for the flexbox grid ([#43282](https://github.com/twbs/bootstrap/pull/43282), likely `BRow` / `BCol` gutters) and the opacity utility renames ([#43317](https://github.com/twbs/bootstrap/pull/43317), likely the classes `BLink`'s `opacity` emits).
+- Re-check every class and CSS variable the library emits against the alpha.2 `bootstrap.css`.
 
 ## Cleanup and verification (end of the current migration)
 

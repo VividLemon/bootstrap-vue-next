@@ -180,7 +180,7 @@ Checklist: check the `-instant` class exists in `node_modules/bootstrap/dist/css
 - The element always has `.collapse`; only `.show` is toggled. `navbar-collapse` / `collapse-horizontal` follow `isNav` / `horizontal`.
 - v6 CSS animates `block-size` (or `inline-size` for `.collapse-horizontal`) with `interpolate-size: allow-keywords`, `@starting-style` and a discrete `display` transition. No `.collapsing`, no JS height measuring, no inline sizes, no `<Transition>`.
 - Bootstrap v6 has **no `collapse-instant` class**. `noTransition` (and `instant`) add the `transition-none` utility, which v6's own collapse JS also treats as "no transition".
-- Workaround: in 6.0.0-alpha.1 `.fade` / `.collapse` (from `_transitions.scss`) are emitted **outside any cascade layer**, so they beat the layered `transition-none` utility. While instant, BCollapse therefore also sets `--bs-transition-collapse-duration: 0s` inline. Remove that once upstream layers the transition rules.
+- Workaround: in 6.0.0-alpha.1 `.fade` / `.collapse` (from `_transitions.scss`) are emitted **outside any cascade layer**, so they beat the layered `transition-none` utility. While instant, BCollapse therefore also sets `--bs-transition-collapse-duration: 0s` inline. Remove that once upstream layers the transition rules: alpha.2 does, and adds `.collapse-instant` ([twbs/bootstrap#43403](https://github.com/twbs/bootstrap/pull/43403)), so the workaround goes with the move to alpha.2.
 
 ## Trigger registration and ARIA (both paths)
 
