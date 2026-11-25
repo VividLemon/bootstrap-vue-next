@@ -41,8 +41,9 @@ export type OrchestratorShowOptions = {
 export interface DialogResult<T = unknown> {
   /**
    * What hid the dialog: `'ok'`, `'cancel'`, `'close'`, `'esc'`, `'backdrop'`, `'submit'`,
-   * `'native'`, `'swap'`, `'abort'`, `'destroy'`, a custom trigger from `hide(trigger)`, or `null`
-   * (no trigger, or the show was prevented)
+   * `'native'`, `'swap'`, `'abort'`, `'destroy'`, a custom trigger from `hide(trigger)`,
+   * `'show-prevented'` (a `show` listener prevented the show; nothing was shown), or `null` (no
+   * trigger)
    */
   trigger: string | null
   /** `true` for the trigger `'ok'`, `false` for `'cancel'`, otherwise `null` */

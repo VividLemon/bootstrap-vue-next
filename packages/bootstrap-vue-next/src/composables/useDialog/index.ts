@@ -26,6 +26,7 @@ import type {
 } from '../../types'
 import type {BvTriggerableEvent} from '../../utils'
 import {buildController, getOrchestratorControllerId} from '../orchestratorShared'
+import {warn} from '../../utils/console'
 import {BDialog, BDialogActions} from '../../components'
 
 /** A controller for a dialog made with `useDialog().create()` */
@@ -45,11 +46,18 @@ export interface DialogHandle {
   hide: (trigger?: string, value?: unknown) => void
 }
 
+let hasWarnedPreMount = false
+
 const toDialogResult = (event: BvTriggerableEvent, instance: unknown): DialogResult => {
-  const {trigger} = event
+  // A prevented show is told apart from a hide without trigger, as the show/hide promises do
+  const trigger = event.eventType === 'show-prevented' ? 'show-prevented' : event.trigger
   // BDialog exposes the value of the hide that closed it. A custom `component` may not
+  // A prevented show closed nothing, so it has no value (`returnValue` is the previous cycle's)
   const value =
-    instance !== null && typeof instance === 'object' && 'returnValue' in instance
+    trigger !== 'show-prevented' &&
+    instance !== null &&
+    typeof instance === 'object' &&
+    'returnValue' in instance
       ? instance.returnValue
       : undefined
   return {
@@ -76,7 +84,8 @@ export const useDialog = () => {
   const parentDialog = inject(dialogInjectionKey, null)
 
   /**
-   * Creates a dialog rendered by `BOrchestrator`. A `BDialog` created without a `footer` slot
+   * Creates a dialog rendered by `BOrchestrator`. A dialog created before an orchestrator mounts
+   * renders once one does (a dev warning is logged once). A `BDialog` created without a `footer` slot
    * gets `BDialogActions` (OK / Cancel) as its footer; pass `slots: {footer: undefined}` for
    * none.
    *
@@ -94,8 +103,16 @@ export const useDialog = () => {
     obj: MaybeRef<T> = {} as T,
     options: Readonly<OrchestratorCreateOptions> = {}
   ): DialogController {
-    if (!_isOrchestratorInstalled.value)
-      throw new Error('BApp component must be mounted to use the dialog controller')
+    // The store is reactive, so a dialog created before any BOrchestrator mounts renders once one
+    // does (a router guard can run before the first render), so only warn, and only once: an SSR
+    // server builds a new registry per request, so anything finer would repeat
+    if (!_isOrchestratorInstalled.value && !hasWarnedPreMount) {
+      hasWarnedPreMount = true
+      warn(
+        'useDialog',
+        'A dialog was created before any BOrchestrator mounted. It will render once one does. Make sure BApp, or a BOrchestrator, is mounted.'
+      )
+    }
 
     const dialogComp = markRaw(BDialog)
     const defaultFooter = markRaw(BDialogActions)

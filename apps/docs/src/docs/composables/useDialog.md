@@ -69,7 +69,8 @@ const result = await create({ title: 'Hello World!' }, { resolveOnHide: true }).
   What hid the dialog: `'ok'`, `'cancel'` (the Cancel button), `'close'` (the header close
   button), `'esc'`, `'backdrop'`, `'submit'` (a `<form method="dialog">`), `'swap'`, `'abort'`
   (see [Cancelling with a signal](#cancelling-with-a-signal)), `'destroy'`, a trigger you passed
-  to `hide(trigger)`, or `null` (no trigger, or a show that was prevented).
+  to `hide(trigger)`, `'show-prevented'` (an `onShow` listener prevented the show, so nothing was
+  shown), or `null` (no trigger).
 
 - `ok: boolean | null`
 
@@ -84,7 +85,7 @@ const result = await create({ title: 'Hello World!' }, { resolveOnHide: true }).
 <<< DEMO ./demo/UseDialogValue.vue
 
 If the dialog prevents the show (an `onShow` listener calls `preventDefault()`), `show()` resolves
-right away with `{trigger: null, ok: null}`.
+right away with `{trigger: 'show-prevented', ok: null}`.
 
 ## The controller
 
@@ -155,7 +156,7 @@ Built-in signals work too: `AbortSignal.timeout(30_000)` closes an unanswered di
 | `get(id)`                | `{id, show(), hide(trigger?, value?)}` for that dialog, or `null`                                 |
 | `current()`              | The same for the dialog the calling component is rendered in, or `null`                           |
 
-Only `create` needs a mounted orchestrator (`BApp`, or `BOrchestrator`). For any other show/hide component,
+A dialog made with `create` renders through a mounted orchestrator (`BApp`, or `BOrchestrator`); one created before an orchestrator mounts renders once it does (a warning is logged once in development). For any other show/hide component,
 use [`useComponentToggle`](/docs/composables/useComponentToggle).
 
 <<< DEMO ./demo/UseDialogNested.vue

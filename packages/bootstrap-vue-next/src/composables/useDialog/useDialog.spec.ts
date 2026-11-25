@@ -1,7 +1,10 @@
-import {describe, expect, it, vi} from 'vitest'
+import {afterEach, describe, expect, it, vi} from 'vitest'
 import {computed, defineComponent, h, nextTick, ref, watchEffect} from 'vue'
 import {mount} from '@vue/test-utils'
 import BApp from '../../components/BApp/BApp.vue'
+import BOrchestrator from '../../components/BApp/BOrchestrator.vue'
+import {orchestratorPlugin} from '../../plugins/orchestrator'
+import {registryPlugin} from '../../plugins/registry'
 import BDialog from '../../components/BDialog/BDialog.vue'
 import {useDialog} from './index'
 import {useOrchestratorRegistry} from '../orchestratorShared'
@@ -358,7 +361,9 @@ describe('useDialog', () => {
       shown = modal.show() // before the orchestrator mounts it
     })
 
-    expect(await shown).toMatchObject({trigger: null, ok: null})
+    const result = await shown
+    expect(result).toMatchObject({trigger: 'show-prevented', ok: null})
+    expect(result).not.toHaveProperty('value')
     await modal?.destroy()
     expect(modal?.get()).toBeUndefined()
   })
@@ -614,6 +619,135 @@ describe('useDialog', () => {
       inside?.hide('inner')
       await flush()
       expect(open.value).toBe(false)
+    })
+  })
+
+  describe('create before any orchestrator mounts', () => {
+    // Restore even when a test fails partway, so its console spy can't leak into the next test
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    // The plugin provides the registry without rendering an orchestrator, so the host decides when
+    // one mounts. That is the window a router guard running before the app's first render hits
+    const mountWithoutOrchestrator = (setup: () => void) => {
+      const showOrchestrator = ref(false)
+      const Host = defineComponent({
+        setup() {
+          setup()
+          return () => h('div', [showOrchestrator.value ? h(BOrchestrator) : null])
+        },
+      })
+      const wrapper = mount(Host, {
+        global: {plugins: [orchestratorPlugin, registryPlugin]},
+        attachTo: document.body,
+      })
+      return {wrapper, showOrchestrator}
+    }
+    const isPreMountWarning = (args: unknown[]) =>
+      String(args[1]).includes('before any BOrchestrator')
+    // The warning fires once per module instance, so tests that count it need their own copy of
+    // useDialog. The plugin and BApp are imported alongside it so they share its injection keys
+    const importFresh = async () => {
+      vi.resetModules()
+      const [{useDialog}, {orchestratorPlugin}, {default: BApp}] = await Promise.all([
+        import('./index'),
+        import('../../plugins/orchestrator'),
+        import('../../components/BApp/BApp.vue'),
+      ])
+      return {useDialog, orchestratorPlugin, BApp}
+    }
+
+    it('does not throw, and renders the dialog once an orchestrator mounts', async () => {
+      vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const {wrapper, showOrchestrator} = mountWithoutOrchestrator(() => {
+        const {create} = useDialog()
+        expect(() =>
+          create({id: 'early', body: 'early body', modelValue: true, noTransition: true})
+        ).not.toThrow()
+      })
+      await nextTick()
+      expect(document.getElementById('early')).toBeNull()
+
+      showOrchestrator.value = true
+      await new Promise((resolve) => setTimeout(resolve, 20))
+
+      const dialog = document.getElementById('early') as HTMLDialogElement | null
+      expect(dialog?.textContent).toContain('early body')
+      expect(dialog?.open).toBe(true)
+      wrapper.unmount()
+    })
+
+    it('warns only once, even across apps', async () => {
+      const fresh = await importFresh()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      // Each mount is its own app with its own registry, as each request is on an SSR server
+      const mountApp = () =>
+        mount(
+          defineComponent({
+            setup() {
+              const {create} = fresh.useDialog()
+              create({title: 'first'})
+              create({title: 'second'})
+              return () => h('div')
+            },
+          }),
+          {global: {plugins: [fresh.orchestratorPlugin]}}
+        )
+      const first = mountApp()
+      const second = mountApp()
+
+      const preMountWarnings = warnSpy.mock.calls.filter(isPreMountWarning)
+      expect(preMountWarnings).toHaveLength(1)
+      expect(preMountWarnings[0]?.[0]).toBe('[BootstrapVueNext:useDialog]')
+      first.unmount()
+      second.unmount()
+    })
+
+    it('does not warn once an orchestrator has mounted', async () => {
+      const fresh = await importFresh()
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const TestComponent = defineComponent({
+        setup() {
+          fresh.useDialog().create({title: 'after mount'})
+          return () => h('div')
+        },
+      })
+      mount(fresh.BApp, {slots: {default: () => h(TestComponent)}})
+
+      expect(warnSpy.mock.calls.some(isPreMountWarning)).toBe(false)
+    })
+
+    it('settles show() and destroy() for a dialog hidden before an orchestrator mounts', async () => {
+      vi.spyOn(console, 'warn').mockImplementation(() => {})
+      let dialogs: ReturnType<typeof useDialog> | undefined
+      let dismissed: Promise<unknown> | undefined
+      const {wrapper, showOrchestrator} = mountWithoutOrchestrator(() => {
+        dialogs = useDialog()
+        dismissed = dialogs
+          .create({id: 'never-shown', body: 'never shown', modelValue: true})
+          .show()
+      })
+
+      dialogs?.hide('route-change', 'never-shown')
+
+      let disposed = false
+      let result: unknown
+      void dismissed?.then(async (value) => {
+        result = value
+        await (value as {[Symbol.asyncDispose]: () => Promise<void>})[Symbol.asyncDispose]()
+        disposed = true
+      })
+      await new Promise((resolve) => setTimeout(resolve, 20))
+      // The helper hides an unmounted item through its store entry, which carries no trigger
+      expect(result).toMatchObject({trigger: null, ok: null})
+      expect(disposed).toBe(true)
+      expect(dialogs?.get('never-shown')).toBeNull()
+
+      showOrchestrator.value = true
+      await nextTick()
+      expect(document.getElementById('never-shown')).toBeNull()
+      wrapper.unmount()
     })
   })
 })
