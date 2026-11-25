@@ -4,7 +4,7 @@ Handoff for the orchestrating agent of the Bootstrap v6 work. It describes a pro
 
 Written 2026-11-09 from a session that fixed show/hide bugs on `main`. Breaking changes are allowed: the maintainer said "as many or as few as required".
 
-**Status: S1 implemented** (2026-11-15; decided 2026-11-09). The orchestrator verified the v6 findings with tests, placed the work in the plan and routed the questions; see [Orchestration](#orchestration) and [Decisions](#decisions). The machine (S1) is implemented, see the 2026-11-15 update below; the orchestrator part (G1.2) has not started.
+**Status: S1 implemented** (2026-11-15; decided 2026-11-09). The orchestrator verified the v6 findings with tests, placed the work in the plan and routed the questions; see [Orchestration](#orchestration) and [Decisions](#decisions). The machine (S1) is implemented, see the 2026-11-15 update below; the orchestrator part (G1.2) is in progress: G1 step 2 applies D9 (`create(props, options)`, `show({resolveOnHide})`) and per-cycle `DialogResult`s, but the controller still reads the store's `modelValue` (no direct machine handle, no `controller.state`); see the step 2 notes in `BOOTSTRAP_V6_OVERLAYS.md`.
 
 **Update 2026-11-14: re-scoped.** Since this plan was written, most of the bugs that motivated it were fixed directly on `bootstrap-v6`, so S1 is now a cleanup that makes the lifecycle explicit, not a bug fix:
 
