@@ -1,5 +1,5 @@
 import {describe, expect, it, vi} from 'vitest'
-import {type ComponentPublicInstance, ref, type Ref} from 'vue'
+import {type ComponentPublicInstance, ref, type Ref, shallowReactive} from 'vue'
 import {buildController} from '.'
 import type {
   ControllerKey,
@@ -7,16 +7,17 @@ import type {
 } from '../../types/ComponentOrchestratorTypes'
 import {BvTriggerableEvent} from '../../utils'
 
-type DialogStore = Ref<Map<ControllerKey, Ref<DialogOrchestratorArrayValue>>>
+type DialogStore = Map<ControllerKey, Ref<DialogOrchestratorArrayValue>>
 
-const newStore = (): DialogStore => ref(new Map())
+// Like the registry's maps
+const newStore = (): DialogStore => shallowReactive(new Map())
 
 const pushItem = (
   store: DialogStore,
   id: ControllerKey,
   props: DialogOrchestratorArrayValue['props']
 ) => {
-  store.value.set(
+  store.set(
     id,
     ref({
       component: {} as never,
@@ -41,7 +42,7 @@ describe('buildController', () => {
 
     controller.set({modelValue: true} as never)
 
-    const item = store.value.get(_self)
+    const item = store.get(_self)
     expect(item).toBeDefined()
     expect('title' in (item?.value.props ?? {})).toBe(false)
     expect('body' in (item?.value.props ?? {})).toBe(false)
@@ -56,7 +57,7 @@ describe('buildController', () => {
 
     controller.set({title: 'Updated Title'} as never)
 
-    const item = store.value.get(_self)
+    const item = store.get(_self)
     expect(item).toBeDefined()
     expect(item?.value.props.title).toBe('Updated Title')
   })
@@ -70,7 +71,7 @@ describe('buildController', () => {
 
     controller.set({modelValue: true} as never)
 
-    const item = store.value.get(_self)
+    const item = store.get(_self)
     expect(item).toBeDefined()
     expect(item?.value.props.title).toBe('Initial Title')
   })
@@ -92,11 +93,11 @@ describe('buildController', () => {
     const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+    expect(store.get(_self)?.value.props.modelValue).toBe(false)
 
     controller.show()
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+    expect(store.get(_self)?.value.props.modelValue).toBe(true)
   })
 
   it('show resolves to BvTriggerableEvent when the promise is resolved', async () => {
@@ -179,7 +180,7 @@ describe('buildController', () => {
     resolve(new BvTriggerableEvent('hidden'))
     await showPromise
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(5000)
+    expect(store.get(_self)?.value.props.modelValue).toBe(5000)
   })
 
   it('show does not call component show when modelValue is already truthy', async () => {
@@ -215,12 +216,12 @@ describe('buildController', () => {
     const resolved = await showPromise
     expect(typeof resolved[Symbol.asyncDispose]).toBe('function')
 
-    expect(store.value.size).toBe(1)
+    expect(store.size).toBe(1)
     // modelValue is still true here, so set it back to false so destroy doesn't wait on hide
     controller.set({modelValue: false} as never)
 
     await resolved[Symbol.asyncDispose]()
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
   })
 
   describe('show({signal})', () => {
@@ -238,7 +239,7 @@ describe('buildController', () => {
 
       const result = await controller.show({signal: AbortSignal.abort()})
 
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+      expect(store.get(_self)?.value.props.modelValue).toBe(false)
       expect(result).toBeInstanceOf(BvTriggerableEvent)
       expect(result.trigger).toBe('abort')
       expect(typeof result[Symbol.asyncDispose]).toBe('function')
@@ -269,7 +270,7 @@ describe('buildController', () => {
 
       const showPromise = controller.show({signal: AbortSignal.abort()})
 
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+      expect(store.get(_self)?.value.props.modelValue).toBe(false)
       resolve(new BvTriggerableEvent('hidden', {trigger: 'abort'}))
       expect((await showPromise).trigger).toBe('abort')
     })
@@ -325,10 +326,10 @@ describe('buildController', () => {
 
       const scope = new AbortController()
       const showPromise = controller.show({signal: scope.signal})
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+      expect(store.get(_self)?.value.props.modelValue).toBe(true)
       scope.abort()
 
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+      expect(store.get(_self)?.value.props.modelValue).toBe(false)
       const result = await showPromise
       expect(result.trigger).toBe('abort')
     })
@@ -387,10 +388,10 @@ describe('buildController', () => {
     const destroyPromise = controller.destroy()
 
     expect(hideMock).toHaveBeenCalledExactlyOnceWith('destroy', true)
-    expect(store.value.size).toBe(1)
+    expect(store.size).toBe(1)
     resolve(new BvTriggerableEvent('hidden', {trigger: 'destroy'}))
     await destroyPromise
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
     expect((await showPromise).trigger).toBe('destroy')
   })
 
@@ -403,7 +404,7 @@ describe('buildController', () => {
     const showPromise = controller.show() // never mounts
     await controller.destroy()
 
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
     expect((await showPromise).trigger).toBe('destroy')
   })
 
@@ -438,7 +439,7 @@ describe('buildController', () => {
     const showPromise = controller.show()
     controller.hide('cancel')
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+    expect(store.get(_self)?.value.props.modelValue).toBe(false)
     const result = await showPromise
     expect(result.trigger).toBe('cancel')
   })
@@ -458,7 +459,7 @@ describe('buildController', () => {
     expect(result.eventType).toBe('show-prevented')
 
     await controller.destroy()
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
   })
 
   it('does not settle an accepted pending show on another show-prevented event', async () => {
@@ -501,7 +502,7 @@ describe('buildController', () => {
     expect((await first).trigger).toBe('cancel')
     await new Promise((r) => setTimeout(r, 0))
     expect(secondSettled).toBe(false)
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+    expect(store.get(_self)?.value.props.modelValue).toBe(true)
   })
 
   describe('showing again', () => {
@@ -591,7 +592,7 @@ describe('buildController', () => {
       controller.set({modelValue: 0} as never) // as the orchestrator does when the countdown ends
       void controller.show()
 
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(5000)
+      expect(store.get(_self)?.value.props.modelValue).toBe(5000)
       // The component's show() would set its modelValue to true, which has no countdown
       expect(methods.show).not.toHaveBeenCalled()
     })
@@ -604,7 +605,7 @@ describe('buildController', () => {
 
       controller.set({modelValue: 0} as never)
       controller.toggle()
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(5000)
+      expect(store.get(_self)?.value.props.modelValue).toBe(5000)
     })
 
     it('forgets the countdown once the item is shown without one', () => {
@@ -616,7 +617,7 @@ describe('buildController', () => {
       controller.set({modelValue: true} as never)
       controller.set({modelValue: false} as never)
       void controller.show()
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+      expect(store.get(_self)?.value.props.modelValue).toBe(true)
     })
 
     it('settles when a mounted component prevents the show of a restored countdown', async () => {
@@ -636,12 +637,17 @@ describe('buildController', () => {
   it('destroy stops watching the store', async () => {
     const inner = newStore()
     let reads = 0
-    const store = {
-      get value() {
-        reads++
-        return inner.value
+    // Counts lookups of the item, which is what the controller's watcher does
+    const store = new Proxy(inner, {
+      get(target, key) {
+        const member = Reflect.get(target, key, target)
+        if (typeof member !== 'function') return member
+        return (...args: unknown[]) => {
+          if (key === 'get') reads++
+          return member.apply(target, args)
+        }
       },
-    } as DialogStore
+    })
     const _self = Symbol('test-modal')
     // Not inside a component's setup, as when a toast is created from an event handler
     const {controller} = buildController<unknown, DialogStore>(_self, store)
@@ -660,11 +666,11 @@ describe('buildController', () => {
     const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: true})
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+    expect(store.get(_self)?.value.props.modelValue).toBe(true)
 
     controller.hide()
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+    expect(store.get(_self)?.value.props.modelValue).toBe(false)
   })
 
   it('toggle flips modelValue in the store', () => {
@@ -675,10 +681,10 @@ describe('buildController', () => {
     pushItem(store, _self, {modelValue: false})
 
     controller.toggle()
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+    expect(store.get(_self)?.value.props.modelValue).toBe(true)
 
     controller.toggle()
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+    expect(store.get(_self)?.value.props.modelValue).toBe(false)
   })
 
   it('get returns the current store item', () => {
@@ -700,11 +706,11 @@ describe('buildController', () => {
     const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
-    expect(store.value.size).toBe(1)
+    expect(store.size).toBe(1)
 
     await controller.destroy()
 
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
   })
 
   it('destroy hides visible items before awaiting resolution and then removes them', async () => {
@@ -726,7 +732,7 @@ describe('buildController', () => {
     expect(hideMock).toHaveBeenCalledWith('destroy', true)
     await destroyPromise
 
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
   })
 
   describe('dismissal before the item mounts', () => {
@@ -757,7 +763,7 @@ describe('buildController', () => {
       pushItem(store, _self, {modelValue: true})
 
       expect(await settleOrPending(controller.destroy())).not.toBe(pending)
-      expect(store.value.size).toBe(0)
+      expect(store.size).toBe(0)
     })
 
     it('show keeps waiting for the component event once the item is mounted', async () => {
