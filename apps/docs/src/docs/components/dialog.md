@@ -257,6 +257,11 @@ closes at once (`.dialog-instant`) with the trigger `'swap'`. Both cancelable ev
 first: if the target's `show` or the current dialog's `hide` is prevented, neither dialog changes.
 Open a dialog through `v-model`, its exposed methods or `useDialog()` to stack it instead.
 
+This is Bootstrap v6's own behavior for a `data-bs-toggle="dialog"` trigger inside an open dialog.
+Swap suits "next step" flows (wizards, one dialog leading to the next), where the previous
+dialog is done and stacking would only darken the page with a second backdrop. Stack when the
+first dialog must stay open underneath, for example a confirmation on top of a form.
+
 <<< DEMO ./demo/DialogSwap.vue
 
 ### Tooltips, popovers and toasts

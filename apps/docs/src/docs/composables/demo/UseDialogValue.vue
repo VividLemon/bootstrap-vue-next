@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, markRaw, ref } from 'vue'
+import { h, ref } from 'vue'
 import { BButton } from 'bootstrap-vue-next/components/BButton'
 import { useDialog } from 'bootstrap-vue-next/composables/useDialog'
 
@@ -21,13 +21,11 @@ const pickColor = async () => {
     slots: {
       // `ok(value)` hides the dialog with trigger 'ok' and `value` as the result value
       default: ({ ok }) =>
-        markRaw(
-          h(
-            'div',
-            { class: 'd-flex gap-2' },
-            colors.map((theme) =>
-              h(BButton, { color: { theme }, onClick: () => ok(theme) }, () => theme),
-            ),
+        h(
+          'div',
+          { class: 'd-flex gap-2' },
+          colors.map((theme) =>
+            h(BButton, { color: { theme }, onClick: () => ok(theme) }, () => theme),
           ),
         ),
       // No OK / Cancel buttons for this one

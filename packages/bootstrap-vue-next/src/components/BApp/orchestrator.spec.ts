@@ -125,6 +125,44 @@ describe('BOrchestrator TransitionGroup name conditional behavior', () => {
   })
 })
 
+describe('BOrchestrator group containers', () => {
+  const mountWith = (registry: ReturnType<typeof buildRegistry>, filter?: () => boolean) =>
+    mount(BOrchestrator, {
+      props: filter ? {filter} : {},
+      global: {provide: {[orchestratorRegistryKey]: registry}},
+    })
+
+  it('renders no group container while every group is empty', () => {
+    const wrapper = mountWith(buildRegistry({}))
+    expect(wrapper.find('.orchestrator-container').element.children).toHaveLength(0)
+  })
+
+  it('renders one container per group with items, and none for a group the filter empties', () => {
+    const registry = buildRegistry({
+      dialog: [buildItem<DialogOrchestratorArrayValue>('dialog1', {modelValue: false})],
+      toast: [
+        buildItem<ToastOrchestratorArrayValue>('toast1', {modelValue: false, position: 'top-end'}),
+      ],
+    })
+    expect(mountWith(registry).find('.orchestrator-container').element.children).toHaveLength(2)
+
+    const filtered = mountWith(registry, () => false)
+    expect(filtered.find('.orchestrator-container').element.children).toHaveLength(0)
+  })
+
+  it('wraps toast items in a span and renders dialog items bare', () => {
+    const registry = buildRegistry({
+      dialog: [buildItem<DialogOrchestratorArrayValue>('dialog1', {modelValue: false})],
+      toast: [
+        buildItem<ToastOrchestratorArrayValue>('toast1', {modelValue: false, position: 'top-end'}),
+      ],
+    })
+    const wrapper = mountWith(registry)
+    expect(wrapper.findAll('span')).toHaveLength(1)
+    expect(wrapper.findAllComponents({name: 'DummyComponent'})).toHaveLength(2)
+  })
+})
+
 describe('BOrchestrator toast container position classes', () => {
   const mountWithToast = (position?: ContainerPosition) => {
     const registry = buildRegistry({

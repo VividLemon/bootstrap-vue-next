@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from 'vitest'
-import {computed, defineComponent, h, nextTick, ref, watchEffect} from 'vue'
+import {computed, defineComponent, h, markRaw, nextTick, ref, watchEffect} from 'vue'
 import {mount} from '@vue/test-utils'
 import BApp from '../../components/BApp/BApp.vue'
 import BOrchestrator from '../../components/BApp/BOrchestrator.vue'
@@ -620,6 +620,53 @@ describe('useDialog', () => {
       await flush()
       expect(open.value).toBe(false)
     })
+  })
+
+  it('keeps the content and its state between shows until destroy()', async () => {
+    let dialog: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
+    let setups = 0
+    // markRaw: a component kept in the store must not be made reactive. inheritAttrs: false, the
+    // slot scope is bound on the slot component
+    const Draft = markRaw(
+      defineComponent({
+        inheritAttrs: false,
+        setup() {
+          setups++
+          const text = ref('')
+          return () =>
+            h('input', {
+              id: 'draft',
+              value: text.value,
+              onInput: (e: Event) => {
+                text.value = (e.target as HTMLInputElement).value
+              },
+            })
+        },
+      })
+    )
+    mountApp(() => {
+      dialog = useDialog().create({id: 'draft-dialog', noTransition: true, slots: {default: Draft}})
+    })
+    await nextTick()
+    const flush = () => new Promise((resolve) => setTimeout(resolve, 20))
+    const input = () => document.getElementById('draft') as HTMLInputElement | null
+
+    void dialog?.show()
+    await flush()
+    input()!.value = 'half written'
+    input()!.dispatchEvent(new Event('input'))
+    dialog?.hide('later')
+    await flush()
+    expect(dialog?.get()?.value.props.modelValue).toBe(false)
+
+    void dialog?.show()
+    await flush()
+    expect(input()?.value).toBe('half written')
+    expect(setups).toBe(1)
+
+    await dialog?.destroy()
+    await flush()
+    expect(input()).toBeNull()
   })
 
   describe('create before any orchestrator mounts', () => {

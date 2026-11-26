@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, markRaw, onMounted, onUnmounted, ref } from 'vue'
+import { h, onMounted, onUnmounted, ref } from 'vue'
 import { BButton } from 'bootstrap-vue-next/components/BButton'
 import { useDialog } from 'bootstrap-vue-next/composables/useDialog'
 
@@ -29,8 +29,7 @@ onUnmounted(() => {
 const showMeAdvancedExample = async () => {
   await using _ = await create({
     slots: {
-      default: (scope) =>
-        markRaw(h('div', null, `custom ${firstRef.value.body} - ${scope.visible}`)),
+      default: (scope) => h('div', null, `custom ${firstRef.value.body} - ${scope.visible}`),
     },
   }).show()
 

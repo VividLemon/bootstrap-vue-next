@@ -7,69 +7,61 @@
         :class="value.class"
         :style="value.style"
       >
-        <!-- Toasts keep their list transition. Dialogs, popovers and tooltips animate themselves -->
-        <component
-          :is="value.transitionGroupName ? TransitionGroup : PassThrough"
-          :name="value.transitionGroupName"
-        >
-          <component
-            :is="value.transitionGroupName ? 'span' : PassThrough"
-            v-for="{
-              component,
-              fns: {setRef, resolve: resolvePromise},
-              props: componentProps,
-              id,
-              slots,
-            } in value.items"
-            :key="id"
-          >
+        <!-- Toasts keep their list transition and its span wrappers. Dialogs, popovers and
+          tooltips animate themselves, so they render bare. The two branches render the same item -->
+        <TransitionGroup v-if="value.transitionGroupName" :name="value.transitionGroupName">
+          <span v-for="item in value.items" :key="item.id">
             <component
-              :is="component"
-              v-bind="{
-                ...componentProps,
-                ...(key === 'dialog' ? undefined : {teleportDisabled: true}),
-              }"
-              :ref="setRef"
+              :is="item.component"
+              v-bind="itemProps(key, item)"
+              :ref="item.fns.setRef"
               initial-animation
-              @update:model-value="(value: boolean | number) => syncModelValue(key, id, value)"
-              @show-prevented="resolvePromise"
-              @hide="
-                (e: BvTriggerableEvent) => {
-                  componentProps.onHide?.(e)
-                  // The controller settles on hide only for a show with resolveOnHide
-                  if (!e.defaultPrevented) resolvePromise(e)
-                }
-              "
-              @hidden="
-                (e: BvTriggerableEvent) => {
-                  componentProps.onHidden?.(e)
-                  if (e.defaultPrevented) {
-                    return
-                  }
-                  // With resolveOnHide the show() already settled on hide. This settles a later
-                  // wait, such as destroy() called right after that show() resolved
-                  resolvePromise(e)
-                }
-              "
+              @update:model-value="(v: boolean | number) => syncModelValue(key, item.id, v)"
+              @show-prevented="item.fns.resolve"
+              @hide="(e: BvTriggerableEvent) => onHide(item, e)"
+              @hidden="(e: BvTriggerableEvent) => onHidden(item, e)"
             >
-              <template v-for="(comp, slot) in slots" #[slot]="scope" :key="slot">
+              <template v-for="(comp, slot) in item.slots" #[slot]="scope" :key="slot">
                 <component :is="comp" v-bind="scope" />
               </template>
             </component>
-          </component>
-        </component>
+          </span>
+        </TransitionGroup>
+        <template v-else>
+          <template v-for="item in value.items" :key="item.id">
+            <component
+              :is="item.component"
+              v-bind="itemProps(key, item)"
+              :ref="item.fns.setRef"
+              initial-animation
+              @update:model-value="(v: boolean | number) => syncModelValue(key, item.id, v)"
+              @show-prevented="item.fns.resolve"
+              @hide="(e: BvTriggerableEvent) => onHide(item, e)"
+              @hidden="(e: BvTriggerableEvent) => onHidden(item, e)"
+            >
+              <template v-for="(comp, slot) in item.slots" #[slot]="scope" :key="slot">
+                <component :is="comp" v-bind="scope" />
+              </template>
+            </component>
+          </template>
+        </template>
       </div>
     </div>
   </ConditionalTeleport>
 </template>
 
 <script setup lang="ts">
-import {computed, type FunctionalComponent, inject, TransitionGroup, watch} from 'vue'
+import {computed, inject, type Ref, watch} from 'vue'
 import {warn} from '../../utils/console'
 import {orchestratorRegistryKey, type OrchestratorStoreObject} from '../../utils/keys'
 import {positionClasses} from '../../utils/positionClasses'
 import type {BvTriggerableEvent} from '../../utils'
-import type {BOrchestratorProps, ContainerPosition, ControllerKey} from '../../types'
+import type {
+  BOrchestratorProps,
+  ContainerPosition,
+  ControllerKey,
+  OrchestratorArrayValue,
+} from '../../types'
 import ConditionalTeleport from '../ConditionalTeleport.vue'
 import type {ValueInMapRecord} from '../../composables/orchestratorShared'
 
@@ -90,9 +82,6 @@ const syncModelValue = (group: string, id: ControllerKey, value: boolean | numbe
     item.value = {...item.value, props: {...item.value.props, modelValue: value}} as never
   }
 }
-
-/** Renders its default slot without an element, for groups that need no wrapper */
-const PassThrough: FunctionalComponent = (_, {slots}) => slots.default?.()
 
 const props = withDefaults(defineProps<BOrchestratorProps>(), {
   noPopovers: false,
@@ -123,34 +112,51 @@ watch(
   {immediate: true}
 )
 
+/** The items of one store group, filtered, without an intermediate array per step */
+const listItems = <T extends OrchestratorArrayValue>(
+  enabled: boolean,
+  group: Map<ControllerKey, Ref<T>> | undefined
+): T[] => {
+  if (!enabled || !group) return []
+  const list = Array.from(group.values(), (item) => item.value)
+  return props.filter ? list.filter(props.filter) : list
+}
+
 const items = computed(() => {
   const store = orchestratorRegistry?.store.value
-  let filteredStore = {
-    tooltip:
-      !props.noPopovers && store?.tooltip ? [...store.tooltip.values()].map((e) => e.value) : [],
-    dialog: !props.noDialogs && store?.dialog ? [...store.dialog.values()].map((e) => e.value) : [],
-    popover:
-      !props.noPopovers && store?.popover ? [...store.popover.values()].map((e) => e.value) : [],
-    toast: !props.noToasts && store?.toast ? [...store.toast.values()].map((e) => e.value) : [],
+  return {
+    tooltip: listItems(!props.noPopovers, store?.tooltip),
+    dialog: listItems(!props.noDialogs, store?.dialog),
+    popover: listItems(!props.noPopovers, store?.popover),
+    toast: listItems(!props.noToasts, store?.toast),
   } satisfies Record<keyof OrchestratorStoreObject, unknown>
-
-  if (props.filter) {
-    filteredStore = {
-      tooltip: filteredStore.tooltip.filter(props.filter),
-      dialog: filteredStore.dialog.filter(props.filter),
-      popover: filteredStore.popover.filter(props.filter),
-      toast: filteredStore.toast.filter(props.filter),
-    }
-  }
-
-  return filteredStore
 })
+
+type Item = ValueInMapRecord<OrchestratorStoreObject[keyof OrchestratorStoreObject]>['value']
+
+const itemProps = (group: string, item: Item) =>
+  // Dialogs live in the top layer; the others render inside the orchestrator container
+  group === 'dialog' ? item.props : {...item.props, teleportDisabled: true}
+
+const onHide = (item: Item, e: BvTriggerableEvent) => {
+  item.props.onHide?.(e)
+  // The controller settles on hide only for a show with resolveOnHide
+  if (!e.defaultPrevented) item.fns.resolve(e)
+}
+
+const onHidden = (item: Item, e: BvTriggerableEvent) => {
+  item.props.onHidden?.(e)
+  if (e.defaultPrevented) return
+  // With resolveOnHide the show() already settled on hide. This settles a later wait, such as
+  // destroy() called right after that show() resolved
+  item.fns.resolve(e)
+}
 
 type ItemObject = {
   class?: string
   style?: string
   transitionGroupName?: string
-  items: ValueInMapRecord<OrchestratorStoreObject[keyof OrchestratorStoreObject]>['value'][]
+  items: Item[]
 }
 const positionedItems = computed<
   Record<ContainerPosition | keyof Omit<OrchestratorStoreObject, 'toast'>, ItemObject>
@@ -175,16 +181,14 @@ const positionedItems = computed<
     {} as Record<ContainerPosition, ItemObject>
   )
 
-  const allGroups = {
-    ...groupedToastItems,
-    dialog: {items: items.value.dialog},
-    popover: {items: items.value.popover},
-    tooltip: {items: items.value.tooltip},
-  }
-
-  // Skip rendering empty containers (e.g. popover/tooltip/dialog groups with no active items)
-  return Object.fromEntries(
-    Object.entries(allGroups).filter(([, value]) => value.items.length > 0)
-  ) as Record<ContainerPosition | keyof Omit<OrchestratorStoreObject, 'toast'>, ItemObject>
+  // Only groups with items get a container, so no empty element is rendered for them
+  const groups: Record<string, ItemObject> = groupedToastItems
+  if (items.value.dialog.length > 0) groups.dialog = {items: items.value.dialog}
+  if (items.value.popover.length > 0) groups.popover = {items: items.value.popover}
+  if (items.value.tooltip.length > 0) groups.tooltip = {items: items.value.tooltip}
+  return groups as Record<
+    ContainerPosition | keyof Omit<OrchestratorStoreObject, 'toast'>,
+    ItemObject
+  >
 })
 </script>

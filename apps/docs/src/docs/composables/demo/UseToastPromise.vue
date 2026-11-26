@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, markRaw } from 'vue'
+import { h } from 'vue'
 import { BButton, BButtonGroup } from 'bootstrap-vue-next/components/BButton'
 import { useToast } from 'bootstrap-vue-next/composables/useToast'
 
@@ -20,18 +20,12 @@ const promiseToast = async () => {
       modelValue: true,
       slots: {
         default: ({ hide }: { hide: (trigger?: string) => void }) => {
-          const yesButton = markRaw(
-            h(BButton, { onClick: () => hide('ok'), size: 'lg' }, () => 'Yes'),
-          )
-          const noButton = markRaw(
-            h(BButton, { onClick: () => hide('cancel'), size: 'lg' }, () => 'No'),
-          )
+          const yesButton = h(BButton, { onClick: () => hide('ok'), size: 'lg' }, () => 'Yes')
+          const noButton = h(BButton, { onClick: () => hide('cancel'), size: 'lg' }, () => 'No')
 
           return [
-            markRaw(h('h2', { class: 'text-center mb-3' }, 'Ready?')),
-            markRaw(
-              h('div', { class: 'd-flex justify-content-center gap-2' }, [yesButton, noButton]),
-            ),
+            h('h2', { class: 'text-center mb-3' }, 'Ready?'),
+            h('div', { class: 'd-flex justify-content-center gap-2' }, [yesButton, noButton]),
           ]
         },
       },

@@ -133,6 +133,18 @@ await using dialog = create({ title: 'Hello World!' })
 await dialog.show()
 ```
 
+Managing the lifecycle yourself is useful when the dialog should keep what the user entered. Its
+content stays mounted while it is hidden, so a half-filled form is still there when you call
+`show()` again; call `destroy()` when you no longer need it. Content rendered with `lazy` and
+`unmountLazy` is unmounted after each hide instead.
+
+```js
+const draft = create({ title: 'New message', slots: { default: MessageForm } })
+
+const openDraft = () => draft.show() // the form keeps its input between shows
+const discardDraft = () => draft.destroy()
+```
+
 ### Cancelling with a signal
 
 Pass an `AbortSignal` to `.show()` to close the dialog when something else ends first, such as the
