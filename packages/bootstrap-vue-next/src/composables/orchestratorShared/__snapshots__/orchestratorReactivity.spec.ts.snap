@@ -1,0 +1,2428 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`orchestrator input reactivity > modal > plain input: outside and inside changes 1`] = `
+[
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "initial",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate title",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: replace title",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.set title",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue true",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: close from component",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.show()",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.hide()",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (open)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (close)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.set modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: useModal().show(id)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: useModal().hide(id)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+]
+`;
+
+exports[`orchestrator input reactivity > modal > reactive input: outside and inside changes 1`] = `
+[
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "initial",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate title",
+    "store": {
+      "modelValue": false,
+      "title": "T1",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: replace title",
+    "store": {
+      "modelValue": false,
+      "title": "T2",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.set title",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue true",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: close from component",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.show()",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.hide()",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (open)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (close)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.set modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: useModal().show(id)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: useModal().hide(id)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+]
+`;
+
+exports[`orchestrator input reactivity > modal > ref input: outside and inside changes 1`] = `
+[
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "initial",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate title",
+    "store": {
+      "modelValue": false,
+      "title": "T1",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: replace title",
+    "store": {
+      "modelValue": false,
+      "title": "T2",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.set title",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: close from component",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.show()",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue false",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.hide()",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (open)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (close)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.set modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: replace modelValue false",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: useModal().show(id)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: useModal().hide(id)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+]
+`;
+
+exports[`orchestrator input reactivity > popover > plain input: outside and inside changes 1`] = `
+[
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": null,
+    "step": "initial",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": null,
+    "step": "outside: mutate title",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": null,
+    "step": "outside: replace title",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.set title",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: mutate modelValue true",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: close from component",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.show()",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: mutate modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: replace modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.hide()",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.toggle() (open)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.toggle() (close)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.set modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: replace modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+]
+`;
+
+exports[`orchestrator input reactivity > popover > reactive input: outside and inside changes 1`] = `
+[
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": null,
+    "step": "initial",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "dom": null,
+    "step": "outside: mutate title",
+    "store": {
+      "modelValue": false,
+      "title": "T1",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "dom": null,
+    "step": "outside: replace title",
+    "store": {
+      "modelValue": false,
+      "title": "T2",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.set title",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: mutate modelValue true",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: close from component",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.show()",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: mutate modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: replace modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.hide()",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.toggle() (open)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.toggle() (close)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.set modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: replace modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+]
+`;
+
+exports[`orchestrator input reactivity > popover > ref input: outside and inside changes 1`] = `
+[
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": null,
+    "step": "initial",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "dom": null,
+    "step": "outside: mutate title",
+    "store": {
+      "modelValue": false,
+      "title": "T1",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "dom": null,
+    "step": "outside: replace title",
+    "store": {
+      "modelValue": false,
+      "title": "T2",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.set title",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: mutate modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: close from component",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.show()",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: mutate modelValue false",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: replace modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.hide()",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.toggle() (open)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.toggle() (close)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "inside: controller.set modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": null,
+    "step": "outside: replace modelValue false",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+]
+`;
+
+exports[`orchestrator input reactivity > toast > plain input: outside and inside changes 1`] = `
+[
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "initial",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate title",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: replace title",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.set title",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue true",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: close from component",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.show()",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.hide()",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (open)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (close)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.set modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+]
+`;
+
+exports[`orchestrator input reactivity > toast > reactive input: outside and inside changes 1`] = `
+[
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "initial",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate title",
+    "store": {
+      "modelValue": false,
+      "title": "T1",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: replace title",
+    "store": {
+      "modelValue": false,
+      "title": "T2",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.set title",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue true",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: close from component",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.show()",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.hide()",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (open)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (close)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.set modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue false",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+]
+`;
+
+exports[`orchestrator input reactivity > toast > ref input: outside and inside changes 1`] = `
+[
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T0",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "initial",
+    "store": {
+      "modelValue": false,
+      "title": "T0",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T1",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate title",
+    "store": {
+      "modelValue": false,
+      "title": "T1",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T2",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: replace title",
+    "store": {
+      "modelValue": false,
+      "title": "T2",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.set title",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: close from component",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.show()",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: mutate modelValue false",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "outside: replace modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.hide()",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (open)",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "inside: controller.toggle() (close)",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": true,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": true,
+      "title": true,
+    },
+    "step": "inside: controller.set modelValue true",
+    "store": {
+      "modelValue": true,
+      "title": "T3",
+    },
+  },
+  {
+    "caller": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "component": {
+      "modelValue": false,
+      "title": "T3",
+    },
+    "dom": {
+      "shown": false,
+      "title": true,
+    },
+    "step": "outside: replace modelValue false",
+    "store": {
+      "modelValue": false,
+      "title": "T3",
+    },
+  },
+]
+`;
