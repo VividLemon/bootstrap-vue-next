@@ -104,7 +104,7 @@ export const useToast = () => {
       },
     })
 
-    toastStore.value.set(storeId, markRaw(value))
+    toastStore.value.set(storeId, value)
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()

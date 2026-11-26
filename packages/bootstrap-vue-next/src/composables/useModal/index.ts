@@ -89,7 +89,7 @@ export const useModal = () => {
       },
     })
 
-    modalStore.value.set(storeId, markRaw(value))
+    modalStore.value.set(storeId, value)
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()

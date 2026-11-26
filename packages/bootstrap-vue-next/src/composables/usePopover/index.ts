@@ -98,7 +98,7 @@ export const usePopover = () => {
       },
     })
 
-    pickedStore.value.set(storeId, markRaw(value))
+    pickedStore.value.set(storeId, value)
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()
