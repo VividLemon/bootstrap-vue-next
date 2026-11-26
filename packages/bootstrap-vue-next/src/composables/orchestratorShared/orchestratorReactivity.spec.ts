@@ -4,10 +4,10 @@
  * object) and from the inside (controller, composable methods, the component itself) and records
  * the store, the caller's object and the DOM after every step.
  *
- * The snapshot was recorded with `resolvedProps = ref(obj)`. Any change to how the composables
- * normalize their input (for example `shallowRef(obj)`) must keep it identical.
+ * The snapshot was recorded with `resolvedProps = ref(obj)`, before the composables switched to
+ * `shallowRef(obj)`, and the switch kept it identical. Any later change to how they normalize their
+ * input must keep it identical too.
  */
-import {appendFileSync} from 'node:fs'
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {defineComponent, h, isProxy, isRef, nextTick, reactive, ref, type Ref, toRaw} from 'vue'
 import {enableAutoUnmount, mount} from '@vue/test-utils'
@@ -180,11 +180,12 @@ describe('orchestrator input reactivity', () => {
   })
 
   /**
-   * Not part of the snapshot: this is what a different normalization is expected to change
+   * Caller components reach the store unmarked: from a plain object, the caller's own `ref`, or
+   * a `reactive` object. None of them may be rendered as a reactive proxy
    */
   describe('component proxying', () => {
     it.each(composables.flatMap((c) => kinds.map((k) => [c, k] as const)))(
-      '%s / %s',
+      '%s / %s input: renders caller components unproxied',
       async (composable, kind) => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
         // A slot component the caller did not markRaw, as users write it
@@ -194,16 +195,14 @@ describe('orchestrator input reactivity', () => {
         await flush()
         const reactiveWarnings = warn.mock.calls.filter((c) =>
           String(c[0]).includes('made a reactive object')
-        ).length
+        )
         warn.mockRestore()
-        // Test output does not show console output, so set ORCHESTRATOR_PROXY_LOG to a file path to
-        // collect these
-        const out = process.env.ORCHESTRATOR_PROXY_LOG
-        if (out)
-          appendFileSync(
-            out,
-            `${composable}/${kind}: componentIsProxy=${isProxy(controller.get()?.value.component)} slotIsProxy=${isProxy((controller.get()?.value as unknown as {slots?: {default?: unknown}}).slots?.default)} warnings=${reactiveWarnings}\n`
-          )
+        const item = controller.get()?.value as
+          {component: unknown; slots?: {default?: unknown}} | undefined
+
+        expect(isProxy(item?.component)).toBe(false)
+        expect(isProxy(item?.slots?.default)).toBe(false)
+        expect(reactiveWarnings).toHaveLength(0)
       }
     )
   })

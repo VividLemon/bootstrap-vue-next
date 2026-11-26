@@ -6,7 +6,8 @@ import {
   markRaw,
   type MaybeRef,
   onScopeDispose,
-  ref,
+  shallowRef,
+  toRaw,
   type Ref,
 } from 'vue'
 import {
@@ -21,7 +22,7 @@ import type {
   ToastOrchestratorArrayValue,
   ToastOrchestratorCreateParamBase,
 } from '../../types'
-import {buildController, getOrchestratorControllerId} from '../orchestratorShared'
+import {buildController, getOrchestratorControllerId, toRawSlots} from '../orchestratorShared'
 import {BToast} from '../../components'
 import {warn} from '../../utils/console'
 
@@ -63,7 +64,7 @@ export const useToast = () => {
     }
 
     const toastComp = markRaw(BToast)
-    const resolvedProps = ref(obj)
+    const resolvedProps = shallowRef(obj)
     const toastStore = computed(() => store.value.toast)
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
@@ -77,9 +78,9 @@ export const useToast = () => {
         const {component = toastComp, options, slots, ...props} = resolvedProps.value
 
         return {
-          component,
+          component: toRaw(component),
           options,
-          slots,
+          slots: toRawSlots(slots),
           id: storeId,
           fns: {
             resolve,
@@ -103,7 +104,7 @@ export const useToast = () => {
       },
     })
 
-    toastStore.value.set(storeId, value)
+    toastStore.value.set(storeId, markRaw(value))
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()

@@ -9,7 +9,8 @@ import {
   type MaybeRef,
   onScopeDispose,
   type Ref,
-  ref,
+  shallowRef,
+  toRaw,
   toValue,
 } from 'vue'
 import {useSharedModalStack} from '../useModalManager'
@@ -21,7 +22,7 @@ import type {
   ModalOrchestratorArrayValue,
   ModalOrchestratorCreateParamBase,
 } from '../../types'
-import {buildController, getOrchestratorControllerId} from '../orchestratorShared'
+import {buildController, getOrchestratorControllerId, toRawSlots} from '../orchestratorShared'
 import {BModal} from '../../components'
 
 export const useModal = () => {
@@ -40,7 +41,8 @@ export const useModal = () => {
   // `useModal()`'s inferred return object.
   function create<
     ComponentProps extends Record<string, unknown> = Record<string, unknown>,
-    T extends ModalOrchestratorCreateParamBase<ComponentProps> = ModalOrchestratorCreateParamBase<ComponentProps>,
+    T extends ModalOrchestratorCreateParamBase<ComponentProps> =
+      ModalOrchestratorCreateParamBase<ComponentProps>,
   >(
     obj: MaybeRef<T> = {} as T
   ): ComponentController<typeof BModal, Ref<ModalOrchestratorArrayValue>> {
@@ -48,7 +50,7 @@ export const useModal = () => {
       throw new Error('BApp component must be mounted to use the modal controller')
 
     const modalComp = markRaw(BModal)
-    const resolvedProps = ref(obj)
+    const resolvedProps = shallowRef(obj)
     const modalStore = computed(() => store.value.modal)
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
@@ -62,9 +64,9 @@ export const useModal = () => {
         const {component = modalComp, options, slots, ...props} = resolvedProps.value
 
         return {
-          component,
+          component: toRaw(component),
           options,
-          slots,
+          slots: toRawSlots(slots),
           fns: {
             resolve,
             setRef: (v: ComponentPublicInstance) => {
@@ -87,7 +89,7 @@ export const useModal = () => {
       },
     })
 
-    modalStore.value.set(storeId, value)
+    modalStore.value.set(storeId, markRaw(value))
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()

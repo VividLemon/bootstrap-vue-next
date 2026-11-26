@@ -8,6 +8,7 @@ import {
   type Ref,
   ref,
   shallowRef,
+  toRaw,
   watch,
 } from 'vue'
 import type {
@@ -22,6 +23,17 @@ import {orchestratorRegistryKey, type OrchestratorStoreObject} from '../../utils
 /* oxlint-disable-next-line no-explicit-any */
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export type ValueInMapRecord<MapRecord> = MapRecord extends Map<any, infer I> ? I : never
+
+/**
+ * The slots of a created item with each slot value unwrapped. A caller that passes its own `ref` or
+ * `reactive` object hands back reactive proxies, and Vue warns when it renders a component proxy
+ */
+export const toRawSlots = <T>(slots: T): T =>
+  slots && typeof slots === 'object'
+    ? (Object.fromEntries(
+        Object.entries(toRaw(slots)).map(([name, slot]) => [name, toRaw(slot)])
+      ) as T)
+    : slots
 
 export const buildController = <
   TComponent,

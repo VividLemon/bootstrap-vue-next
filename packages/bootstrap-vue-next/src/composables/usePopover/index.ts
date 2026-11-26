@@ -6,7 +6,8 @@ import {
   markRaw,
   type MaybeRef,
   onScopeDispose,
-  ref,
+  shallowRef,
+  toRaw,
   type Ref,
 } from 'vue'
 import {orchestratorRegistryKey, type OrchestratorStoreObject} from '../../utils/keys'
@@ -18,7 +19,7 @@ import type {
   TooltipOrchestratorCreateParamBase,
 } from '../../types'
 import {BPopover, BTooltip} from '../../components'
-import {buildController, getOrchestratorControllerId} from '../orchestratorShared'
+import {buildController, getOrchestratorControllerId, toRawSlots} from '../orchestratorShared'
 
 export const usePopover = () => {
   const orchestratorRegistry = inject(orchestratorRegistryKey, null)
@@ -57,7 +58,7 @@ export const usePopover = () => {
       throw new Error('The BApp component must be mounted to use the popover controller')
 
     const comp = markRaw(tooltip ? BTooltip : BPopover)
-    const resolvedProps = ref(obj)
+    const resolvedProps = shallowRef(obj)
     const type = tooltip ? 'tooltip' : 'popover'
     const pickedStore = computed(() => store.value[type])
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
@@ -72,9 +73,9 @@ export const usePopover = () => {
         const {component = comp, options, slots, ...props} = resolvedProps.value
 
         return {
-          component,
+          component: toRaw(component),
           options,
-          slots,
+          slots: toRawSlots(slots),
           id: storeId,
           fns: {
             resolve,
@@ -97,7 +98,7 @@ export const usePopover = () => {
       },
     })
 
-    pickedStore.value.set(storeId, value)
+    pickedStore.value.set(storeId, markRaw(value))
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()
