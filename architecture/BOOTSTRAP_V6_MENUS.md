@@ -1,6 +1,6 @@
 # Bootstrap v6 Menus (G2): Menu, Combobox, Nav overflow
 
-**Status 2026-11-25: step 1 (Menu core) implemented, PR open (#PRNUM).** `BMenu`, `BMenuItem`, `BMenuHeader`, `BMenuText`, `BMenuDivider` replace the `BDropdown*` family; steps 2–6 are open. What step 1 decided where this plan was silent, or did differently:
+**Status 2026-11-25: step 1 (Menu core) implemented, PR open (#212).** `BMenu`, `BMenuItem`, `BMenuHeader`, `BMenuText`, `BMenuDivider` replace the `BDropdown*` family; steps 2–6 are open. What step 1 decided where this plan was silent, or did differently:
 
 - **Split mode** renders `div.btn-group` around the main button, the split toggle and the `.menu`, except inside `BButtonGroup` / `BInputGroup` (group injection), where all three are direct children of the group. The group takes no attrs (`wrapperAttrs` is gone per Q3); wrap the menu in a `BButtonGroup` to style it.
 - **Fallthrough attrs and `id`** go to the toggle; in split mode that is the split toggle (the element with `aria-expanded` / `aria-controls`). The main split button gets `splitAttrs` only.
