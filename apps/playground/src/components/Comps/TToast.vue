@@ -17,7 +17,7 @@
 <script setup lang="ts">
 // You can use this file as a development spot to test your changes
 // Please do not commit this file
-import {computed, h, markRaw, onMounted, onUnmounted, ref, watchEffect} from 'vue'
+import {computed, h, onMounted, onUnmounted, ref, watchEffect} from 'vue'
 import type {ThemeColor, ToastOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {useToast} from 'bootstrap-vue-next/composables/useToast'
 
@@ -66,7 +66,7 @@ const showFns = {
   },
   basicCustomComponent: async () => {
     await using _ = await create({
-      slots: {default: () => markRaw(h('div', null, 'foobar!'))},
+      slots: {default: () => h('div', null, 'foobar!')},
       modelValue: true,
       active: true,
       color: {theme: 'primary'},

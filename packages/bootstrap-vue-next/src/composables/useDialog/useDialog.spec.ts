@@ -13,26 +13,28 @@ import {useToast} from '../useToast'
 describe('useDialog', () => {
   it('create method accepts custom component props without TypeScript errors', async () => {
     // Define a custom modal component with custom props
-    const CustomModal = defineComponent({
-      name: 'CustomModal',
-      props: {
-        customProp: {
-          type: String,
-          required: true,
+    const CustomModal = markRaw(
+      defineComponent({
+        name: 'CustomModal',
+        props: {
+          customProp: {
+            type: String,
+            required: true,
+          },
+          anotherProp: {
+            type: Number,
+            default: 42,
+          },
         },
-        anotherProp: {
-          type: Number,
-          default: 42,
+        setup(props) {
+          return () =>
+            h('div', {class: 'custom-modal'}, [
+              h('p', `Custom Prop: ${props.customProp}`),
+              h('p', `Another Prop: ${props.anotherProp}`),
+            ])
         },
-      },
-      setup(props) {
-        return () =>
-          h('div', {class: 'custom-modal'}, [
-            h('p', `Custom Prop: ${props.customProp}`),
-            h('p', `Another Prop: ${props.anotherProp}`),
-          ])
-      },
-    })
+      })
+    )
 
     const TestComponent = defineComponent({
       setup() {
@@ -102,18 +104,20 @@ describe('useDialog', () => {
   })
 
   it('create method accepts both BModal props and custom props together', async () => {
-    const CustomModal = defineComponent({
-      name: 'CustomModalWithDefaults',
-      props: {
-        myCustomField: {
-          type: String,
-          default: 'default',
+    const CustomModal = markRaw(
+      defineComponent({
+        name: 'CustomModalWithDefaults',
+        props: {
+          myCustomField: {
+            type: String,
+            default: 'default',
+          },
         },
-      },
-      setup(props) {
-        return () => h('div', {class: 'custom'}, props.myCustomField)
-      },
-    })
+        setup(props) {
+          return () => h('div', {class: 'custom'}, props.myCustomField)
+        },
+      })
+    )
 
     const TestComponent = defineComponent({
       setup() {
