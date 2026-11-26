@@ -1,7 +1,6 @@
 import {
   type ComponentPublicInstance,
   computed,
-  type ComputedRef,
   inject,
   markRaw,
   type MaybeRef,
@@ -66,13 +65,14 @@ export const useToast = () => {
 
     const toastComp = markRaw(BToast)
     const resolvedProps = ref(obj)
-    const toastStore = computed(() => store.value.toast)
+    const toastItems = store.value.toast
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
-    const {resolve, controller} = buildController<
-      typeof BToast,
-      ComputedRef<OrchestratorStoreObject['toast']>
-    >(storeId, toastStore, {createOptions: {...options}})
+    const {resolve, controller} = buildController<typeof BToast, OrchestratorStoreObject['toast']>(
+      storeId,
+      toastItems,
+      {createOptions: {...options}}
+    )
 
     const value = computed<ToastOrchestratorArrayValue>({
       get: () => {
@@ -104,7 +104,7 @@ export const useToast = () => {
       },
     })
 
-    toastStore.value.set(storeId, value)
+    toastItems.set(storeId, value)
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()

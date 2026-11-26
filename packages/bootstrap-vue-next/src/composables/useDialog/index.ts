@@ -1,7 +1,6 @@
 import {
   type ComponentPublicInstance,
   computed,
-  type ComputedRef,
   inject,
   markRaw,
   type MaybeRef,
@@ -117,12 +116,12 @@ export const useDialog = () => {
     const dialogComp = markRaw(BDialog)
     const defaultFooter = markRaw(BDialogActions)
     const resolvedProps = ref(obj)
-    const dialogItems = computed(() => store.value.dialog)
+    const dialogItems = store.value.dialog
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
     const {resolve, controller} = buildController<
       typeof BDialog,
-      ComputedRef<OrchestratorStoreObject['dialog']>,
+      OrchestratorStoreObject['dialog'],
       DialogResult
     >(storeId, dialogItems, {createOptions: {...options}, toResult: toDialogResult})
 
@@ -162,7 +161,7 @@ export const useDialog = () => {
       },
     })
 
-    dialogItems.value.set(storeId, value)
+    dialogItems.set(storeId, value)
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()

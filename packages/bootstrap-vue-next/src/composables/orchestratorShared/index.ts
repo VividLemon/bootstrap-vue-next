@@ -37,13 +37,14 @@ export interface BuildControllerOptions<TResult> {
 
 export const buildController = <
   TComponent,
-  TStore extends Readonly<Ref<OrchestratorStoreObject[keyof OrchestratorStoreObject]>>,
+  TItems extends OrchestratorStoreObject[keyof OrchestratorStoreObject],
   TResult extends object = BvTriggerableEvent,
 >(
   id: ControllerKey,
-  store: TStore,
+  /** The store's reactive map for this kind of item. The registry never replaces it */
+  items: TItems,
   {createOptions = {}, toResult}: BuildControllerOptions<TResult> = {}
-): PromiseWithController<TComponent, ValueInMapRecord<TStore['value']>, TResult> => {
+): PromiseWithController<TComponent, ValueInMapRecord<TItems>, TResult> => {
   /** Whether the current cycle settles on `hide` rather than `hidden` */
   let cycleResolvesOnHide = createOptions.resolveOnHide === true
   /**
@@ -92,7 +93,7 @@ export const buildController = <
     toggle?: () => void
     visible?: boolean
   }
-  const findItem = () => store.value.get(id)
+  const findItem = () => items.get(id)
   // Detached, so the watcher lives exactly as long as the controller whether or not it was created
   // inside a component's setup. destroy() stops it
   const scope = effectScope(true)
@@ -308,7 +309,7 @@ export const buildController = <
       }
     },
     get: findItem,
-    set(val: Partial<ValueInMapRecord<TStore['value']>['value']['props']>) {
+    set(val: Partial<ValueInMapRecord<TItems>['value']['props']>) {
       const current = findItem()
       if (current?.value) {
         current.value = {
@@ -332,14 +333,14 @@ export const buildController = <
           await nextTick()
         }
       } finally {
-        if (item) store.value.delete(id)
+        if (item) items.delete(id)
         scope.stop()
       }
     },
     [Symbol.asyncDispose]() {
       return controller.destroy()
     },
-  } as ComponentController<TComponent, ValueInMapRecord<TStore['value']>, TResult>
+  } as ComponentController<TComponent, ValueInMapRecord<TItems>, TResult>
 
   return {
     controller,

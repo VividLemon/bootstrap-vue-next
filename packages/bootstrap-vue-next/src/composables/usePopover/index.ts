@@ -1,7 +1,6 @@
 import {
   type ComponentPublicInstance,
   computed,
-  type ComputedRef,
   inject,
   markRaw,
   type MaybeRef,
@@ -64,13 +63,13 @@ export const usePopover = () => {
     const comp = markRaw(tooltip ? BTooltip : BPopover)
     const resolvedProps = ref(obj)
     const type = tooltip ? 'tooltip' : 'popover'
-    const pickedStore = computed(() => store.value[type])
+    const pickedItems = store.value[type]
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
     const {controller, resolve} = buildController<
       typeof BPopover | typeof BTooltip,
-      ComputedRef<OrchestratorStoreObject['popover'] | OrchestratorStoreObject['tooltip']>
-    >(storeId, pickedStore, {createOptions: {...options}})
+      OrchestratorStoreObject['popover'] | OrchestratorStoreObject['tooltip']
+    >(storeId, pickedItems, {createOptions: {...options}})
 
     const value = computed<PopoverOrchestratorArrayValue>({
       get: () => {
@@ -101,7 +100,7 @@ export const usePopover = () => {
       },
     })
 
-    pickedStore.value.set(storeId, value)
+    pickedItems.set(storeId, value)
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()
