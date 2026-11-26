@@ -1,5 +1,5 @@
 import {describe, expect, it, vi} from 'vitest'
-import {type ComponentPublicInstance, reactive, ref, type Ref} from 'vue'
+import {type ComponentPublicInstance, ref, type Ref, shallowReactive} from 'vue'
 import {buildController} from '.'
 import type {
   ControllerKey,
@@ -9,8 +9,8 @@ import {BvTriggerableEvent} from '../../utils'
 
 type DialogStore = Map<ControllerKey, Ref<DialogOrchestratorArrayValue>>
 
-// The registry's maps are reactive (they live in a deep ref), so the spec's map is too
-const newStore = (): DialogStore => reactive(new Map()) as DialogStore
+// Like the registry's maps
+const newStore = (): DialogStore => shallowReactive(new Map())
 
 const pushItem = (
   store: DialogStore,

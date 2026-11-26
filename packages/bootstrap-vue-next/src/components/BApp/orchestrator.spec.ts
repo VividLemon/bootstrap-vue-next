@@ -1,6 +1,6 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it} from 'vitest'
-import {defineComponent, h, markRaw, ref} from 'vue'
+import {defineComponent, h, markRaw, ref, shallowReactive} from 'vue'
 import BOrchestrator from './BOrchestrator.vue'
 import {orchestratorRegistryKey} from '../../utils/keys'
 import type {
@@ -35,14 +35,19 @@ const buildRegistry = (overrides: {
   dialog?: DialogOrchestratorArrayValue[]
   toast?: ToastOrchestratorArrayValue[]
 }) => {
-  const dialogMap = new Map((overrides.dialog ?? []).map((item) => [item.id, ref(item)]))
-  const toastMap = new Map((overrides.toast ?? []).map((item) => [item.id, ref(item)]))
+  // Shallow maps, like the registry's
+  const dialogMap = shallowReactive(
+    new Map((overrides.dialog ?? []).map((item) => [item.id, ref(item)]))
+  )
+  const toastMap = shallowReactive(
+    new Map((overrides.toast ?? []).map((item) => [item.id, ref(item)]))
+  )
 
   return {
     store: ref({
       dialog: dialogMap,
-      tooltip: new Map(),
-      popover: new Map(),
+      tooltip: shallowReactive(new Map()),
+      popover: shallowReactive(new Map()),
       toast: toastMap,
     }),
     _isOrchestratorInstalled: ref(true),

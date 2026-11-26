@@ -7,6 +7,7 @@ import {
   readonly,
   type Ref,
   ref,
+  shallowReactive,
   shallowRef,
   watch,
 } from 'vue'
@@ -359,11 +360,14 @@ export const _newOrchestratorRegistry = (): {
   const _isToastAppend = ref(false)
 
   return {
+    // Shallow maps: adding and removing items is tracked, and each item is a computed that tracks
+    // its own value. A deep map would hand out reactive proxies of the items, so callers'
+    // components would render as proxies (Vue warns about that)
     store: ref({
-      dialog: new Map(),
-      tooltip: new Map(),
-      popover: new Map(),
-      toast: new Map(),
+      dialog: shallowReactive(new Map()),
+      tooltip: shallowReactive(new Map()),
+      popover: shallowReactive(new Map()),
+      toast: shallowReactive(new Map()),
     }),
     _isOrchestratorInstalled: readonly(_isOrchestratorInstalled),
     _setOrchestratorInstalled: (v) => {
