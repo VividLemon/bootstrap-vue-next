@@ -1,6 +1,6 @@
 <template>
   <component :is="props.tag" class="card" :class="computedClasses">
-    <template v-if="props.imgPlacement !== 'bottom'">
+    <template v-if="!imgAfterContent">
       <slot name="img">
         <BCardImg v-if="props.imgSrc" v-bind="imgAttr" />
       </slot>
@@ -9,7 +9,7 @@
       v-if="props.header || slots.header"
       :color="props.headerColor"
       :tag="props.headerTag"
-      :class="props.headerClass"
+      v-bind="props.headerAttrs"
     >
       <slot name="header">
         {{ props.header }}
@@ -25,7 +25,7 @@
       :subtitle-color="props.subtitleColor"
       :title="props.title"
       :title-tag="props.titleTag"
-      :class="props.bodyClass"
+      v-bind="props.bodyAttrs"
     >
       <slot>
         {{ props.bodyText }}
@@ -38,13 +38,13 @@
       v-if="props.footer || slots.footer"
       :color="props.footerColor"
       :tag="props.footerTag"
-      :class="props.footerClass"
+      v-bind="props.footerAttrs"
     >
       <slot name="footer">
         {{ props.footer }}
       </slot>
     </BCardFooter>
-    <template v-if="props.imgPlacement === 'bottom'">
+    <template v-if="imgAfterContent">
       <slot name="img">
         <BCardImg v-if="props.imgSrc" v-bind="imgAttr" />
       </slot>
@@ -64,16 +64,16 @@ import type {BCardProps, BCardSlots} from '../../types'
 
 const _props = withDefaults(defineProps<BCardProps>(), {
   align: undefined,
-  bodyClass: undefined,
+  bodyAttrs: undefined,
   bodyColor: undefined,
   bodyTag: 'div',
   bodyText: '',
   footer: undefined,
-  footerClass: undefined,
+  footerAttrs: undefined,
   footerColor: undefined,
   footerTag: 'div',
   header: undefined,
-  headerClass: undefined,
+  headerAttrs: undefined,
   headerColor: undefined,
   headerTag: 'div',
   hoverLift: false,
@@ -84,17 +84,24 @@ const _props = withDefaults(defineProps<BCardProps>(), {
   imgSrc: undefined,
   imgWidth: undefined,
   noBody: false,
+  subtle: false,
   subtitle: undefined,
   subtitleColor: undefined,
   subtitleTag: 'h6',
   tag: 'div',
   title: undefined,
   titleTag: 'h4',
+  translucent: false,
   color: undefined,
 })
 const props = useDefaults(_props, 'BCard')
 const computedColor = computed(() => resolvePartColor(props.color, {}))
 const slots = defineSlots<BCardSlots>()
+
+// Bootstrap v6 puts a bottom or end image after the content (`.card-body + .card-img-end`)
+const imgAfterContent = computed(
+  () => props.imgPlacement === 'bottom' || props.imgPlacement === 'end'
+)
 
 const {classes: colorClasses} = useThemeClasses(computedColor)
 const computedClasses = computed(() => [
@@ -103,6 +110,8 @@ const computedClasses = computed(() => [
     [`text-${props.align}`]: props.align !== undefined,
     'card-row': props.imgPlacement === 'start' || props.imgPlacement === 'end',
     'hover-lift': props.hoverLift,
+    'card-subtle': props.subtle,
+    'card-translucent': props.translucent,
   },
 ])
 

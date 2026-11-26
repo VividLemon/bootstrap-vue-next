@@ -1117,7 +1117,6 @@ export interface BBreadcrumbProps {
   items?: readonly BreadcrumbItemRaw[]
   id?: string
   olAttrs?: Readonly<AttrsValue>
-  olClass?: ClassValue
 }
 
 export interface BBreadcrumbItemProps extends BLinkProps {
@@ -1163,17 +1162,17 @@ export interface BCloseButtonProps {
 
 export interface BCardProps {
   align?: AlignmentTextHorizontal
-  bodyClass?: ClassValue
+  bodyAttrs?: Readonly<AttrsValue>
   bodyColor?: ColorBorderExtendables
   bodyTag?: string
   bodyText?: string
   color?: ColorBorderExtendables | null
   footer?: string
-  footerClass?: ClassValue
+  footerAttrs?: Readonly<AttrsValue>
   footerColor?: ColorBorderExtendables
   footerTag?: string
   header?: string
-  headerClass?: ClassValue
+  headerAttrs?: Readonly<AttrsValue>
   headerColor?: ColorBorderExtendables
   headerTag?: string
   hoverLift?: boolean
@@ -1184,12 +1183,16 @@ export interface BCardProps {
   imgSrc?: string
   imgWidth?: Numberish
   noBody?: boolean
+  /** Tints the borders, header and footer with the card's theme (`.card-subtle`) */
+  subtle?: boolean
   subtitle?: string
   subtitleColor?: Pick<ColorExtendables, 'fg'>
   subtitleTag?: string
   tag?: string
   title?: string
   titleTag?: string
+  /** Semi-transparent background with a backdrop blur (`.card-translucent`) */
+  translucent?: boolean
 }
 
 export interface BCardBodyProps {

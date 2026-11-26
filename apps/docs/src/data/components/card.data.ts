@@ -54,15 +54,13 @@ export default {
           [
             'color',
             'bodyColor',
-            'bodyClass',
+            'bodyAttrs',
             'bodyTag',
             'footer',
             'footerColor',
-            'footerClass',
             'footerTag',
             'header',
             'headerColor',
-            'headerClass',
             'headerTag',
             'subtitle',
             'subtitleColor',
@@ -107,7 +105,7 @@ export default {
           type: 'Placement | "overlay"',
           default: 'top',
           description:
-            "Placement for the optional image ('top', 'bottom', 'start', 'end', or 'overlay')", // TODO similar content to BCardImg/placement (similar description and type)
+            "Placement for the optional image ('top', 'bottom', 'start', 'end', or 'overlay'). 'top' and 'start' render it before the body, 'bottom' and 'end' after it", // TODO similar content to BCardImg/placement (similar description and type)
         },
         imgSrc: {
           type: 'string',
@@ -123,6 +121,28 @@ export default {
           type: 'boolean',
           default: false, // TODO item not in string format
           description: 'Disable rendering of the default inner card-body element',
+        },
+        footerAttrs: {
+          type: 'Readonly<AttrsValue>',
+          default: undefined,
+          description: 'Attributes to be applied to the footer. `class` and `style` are merged',
+        },
+        headerAttrs: {
+          type: 'Readonly<AttrsValue>',
+          default: undefined,
+          description: 'Attributes to be applied to the header. `class` and `style` are merged',
+        },
+        subtle: {
+          type: 'boolean',
+          default: false,
+          description:
+            "Tints the borders, the header and the footer with the card's theme (`.card-subtle`) instead of filling the card",
+        },
+        translucent: {
+          type: 'boolean',
+          default: false,
+          description:
+            'Gives the card a semi-transparent background with a backdrop blur (`.card-translucent`)',
         },
       } satisfies PropRecord<keyof BCardProps>,
       emits: {},

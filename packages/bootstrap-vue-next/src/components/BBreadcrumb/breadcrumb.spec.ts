@@ -1,9 +1,21 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it} from 'vitest'
 import BBreadcrumb from './BBreadcrumb.vue'
+import BBreadcrumbDivider from './BBreadcrumbDivider.vue'
 import BBreadcrumbItem from './BBreadcrumbItem.vue'
 import type {BreadcrumbItemRaw} from '../../types'
 import {createBootstrap} from '../../plugins'
+
+/**
+ * What CSS `:empty` matches: no elements and no text. Comments and zero-length text nodes (Vue's
+ * fragment anchors for an empty slot) do not count
+ */
+const isCssEmpty = (el: Element) =>
+  Array.from(el.childNodes).every(
+    (node) =>
+      node.nodeType === Node.COMMENT_NODE ||
+      (node.nodeType === Node.TEXT_NODE && node.textContent === '')
+  )
 
 describe('breadcrumb', () => {
   enableAutoUnmount(afterEach)
@@ -50,9 +62,9 @@ describe('breadcrumb', () => {
     expect($ol.classes()).toContain('breadcrumb')
   })
 
-  it('ol child has olClass when prop is provided', () => {
+  it('ol child merges the class of olAttrs', () => {
     const wrapper = mount(BBreadcrumb, {
-      props: {olClass: 'foobar'},
+      props: {olAttrs: {class: 'foobar'}},
       global: {
         plugins: [createBootstrap()],
       },
@@ -378,7 +390,7 @@ describe('breadcrumb', () => {
     expect($bbreadcrumbitem.props('to')).toBe('/home')
   })
 
-  it('ol only has breadcrumb class when olClass is not provided', () => {
+  it('ol only has breadcrumb class when olAttrs is not provided', () => {
     const wrapper = mount(BBreadcrumb, {
       global: {
         plugins: [createBootstrap()],
@@ -529,5 +541,62 @@ describe('breadcrumb', () => {
       },
     })
     expect(wrapper.findAll('.breadcrumb-divider')).toHaveLength(1)
+  })
+
+  it('renders a divider between items, hidden from assistive technology', () => {
+    const wrapper = mount(BBreadcrumb, {
+      props: {items: ['Home', 'Library', 'Data']},
+      global: {plugins: [createBootstrap()]},
+    })
+    const dividers = wrapper.findAll('li.breadcrumb-divider')
+    expect(dividers).toHaveLength(2)
+    for (const divider of dividers) {
+      expect(divider.attributes('aria-hidden')).toBe('true')
+      // Empty, so Bootstrap draws its default chevron
+      expect(isCssEmpty(divider.element)).toBe(true)
+    }
+    expect(Array.from(wrapper.get('ol').element.children).map((el) => el.className)).toEqual([
+      'breadcrumb-item',
+      'breadcrumb-divider',
+      'breadcrumb-item',
+      'breadcrumb-divider',
+      'breadcrumb-item',
+    ])
+  })
+
+  it('renders the divider slot inside every automatic divider', () => {
+    const wrapper = mount(BBreadcrumb, {
+      props: {items: ['Home', 'Library', 'Data']},
+      slots: {divider: '/'},
+      global: {plugins: [createBootstrap()]},
+    })
+    expect(wrapper.findAll('li.breadcrumb-divider').map((divider) => divider.text())).toEqual([
+      '/',
+      '/',
+    ])
+  })
+
+  it('renders no divider for a single item', () => {
+    const wrapper = mount(BBreadcrumb, {
+      props: {items: ['Home']},
+      slots: {divider: '/'},
+      global: {plugins: [createBootstrap()]},
+    })
+    expect(wrapper.find('li.breadcrumb-divider').exists()).toBe(false)
+  })
+})
+
+describe('breadcrumb-divider', () => {
+  it('is an li.breadcrumb-divider with aria-hidden', () => {
+    const wrapper = mount(BBreadcrumbDivider)
+    expect(wrapper.element.tagName).toBe('LI')
+    expect(wrapper.classes()).toEqual(['breadcrumb-divider'])
+    expect(wrapper.attributes('aria-hidden')).toBe('true')
+    expect(isCssEmpty(wrapper.element)).toBe(true)
+  })
+
+  it('renders its default slot as the divider content', () => {
+    const wrapper = mount(BBreadcrumbDivider, {slots: {default: '>'}})
+    expect(wrapper.text()).toBe('>')
   })
 })
