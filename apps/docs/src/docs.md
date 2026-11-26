@@ -92,7 +92,7 @@ app.mount('#app')
 </HighlightCard>
 
 ::: warning Vue Provide/Inject Limitation
-Composables like `useToast()`, `useModal()`, and `usePopover()` **cannot** be called in the same component that declares `<BApp>`. They rely on values provided by `BApp`, and Vue's `inject` only works in child components — not in the component that calls `provide` itself.
+Composables like `useToast()`, `useDialog()`, and `usePopover()` **cannot** be called in the same component that declares `<BApp>`. They rely on values provided by `BApp`, and Vue's `inject` only works in child components — not in the component that calls `provide` itself.
 
 To use these composables, place `<BApp>` at least one component level above where the composables are called. See the [BApp documentation](/docs/components/app#working-with-composables) for more details.
 :::

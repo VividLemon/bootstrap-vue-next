@@ -7,12 +7,14 @@ import {
   readonly,
   type Ref,
   ref,
+  shallowReactive,
   shallowRef,
   watch,
 } from 'vue'
 import type {
   ComponentController,
   ControllerKey,
+  OrchestratorCreateOptions,
   OrchestratorShowOptions,
   PromiseWithController,
 } from '../../types'
@@ -23,13 +25,29 @@ import {orchestratorRegistryKey, type OrchestratorStoreObject} from '../../utils
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export type ValueInMapRecord<MapRecord> = MapRecord extends Map<any, infer I> ? I : never
 
+export interface BuildControllerOptions<TResult> {
+  /** The `create()` options: defaults for every show */
+  createOptions?: Readonly<OrchestratorCreateOptions>
+  /**
+   * Turns the event that settled a cycle into what `show()` resolves with. Runs once the
+   * component's hide call has returned, so state it sets while hiding (BDialog's
+   * `returnValue`) can be read from `instance`
+   */
+  toResult?: (event: BvTriggerableEvent, instance: unknown) => TResult
+}
+
 export const buildController = <
   TComponent,
-  TStore extends Readonly<Ref<OrchestratorStoreObject[keyof OrchestratorStoreObject]>>,
+  TItems extends OrchestratorStoreObject[keyof OrchestratorStoreObject],
+  TResult extends object = BvTriggerableEvent,
 >(
   id: ControllerKey,
-  store: TStore
-): PromiseWithController<TComponent, ValueInMapRecord<TStore['value']>> => {
+  /** The store's reactive map for this kind of item. The registry never replaces it */
+  items: TItems,
+  {createOptions = {}, toResult}: BuildControllerOptions<TResult> = {}
+): PromiseWithController<TComponent, ValueInMapRecord<TItems>, TResult> => {
+  /** Whether the current cycle settles on `hide` rather than `hidden` */
+  let cycleResolvesOnHide = createOptions.resolveOnHide === true
   /**
    * True from a show() request on a mounted component until the store records it as open (the
    * component reveals it) or the cycle settles. A show can still be waiting for its frame or delay
@@ -76,7 +94,7 @@ export const buildController = <
     toggle?: () => void
     visible?: boolean
   }
-  const findItem = () => store.value.get(id)
+  const findItem = () => items.get(id)
   // Detached, so the watcher lives exactly as long as the controller whether or not it was created
   // inside a component's setup. destroy() stops it
   const scope = effectScope(true)
@@ -113,6 +131,8 @@ export const buildController = <
     // A component reports show-prevented for any show. It only ends the cycle waiting for a show
     // requested through the store; a prevented show() call is read from that call's own result
     if (event.eventType === 'show-prevented' && (!dismissal || storeShowCycle !== dismissal)) return
+    // The orchestrator reports every hide; only a cycle with resolveOnHide settles on it
+    if (event.eventType === 'hide' && !cycleResolvesOnHide) return
     finishCycle(event)
     // A hide event only gets here with resolveOnHide. The component is still open at this point
     hideRequested = event.eventType === 'hide'
@@ -150,7 +170,6 @@ export const buildController = <
           if (!modelValue && mounted === null) {
             const event = new BvTriggerableEvent('hidden', {
               trigger: unmountedHideTrigger ?? null,
-              ok: null,
             })
             // Settle now, so a show() right after this can't join the finished cycle
             if (dismissal === cycle) finishCycle(event)
@@ -186,11 +205,14 @@ export const buildController = <
         })
       }
     },
-    async show({signal}: OrchestratorShowOptions = {}) {
-      const withDispose = (event: BvTriggerableEvent) =>
-        Object.assign(Object.create(event), {
-          [Symbol.asyncDispose]: controller.destroy,
-        })
+    async show({signal, resolveOnHide}: OrchestratorShowOptions = {}) {
+      const withDispose = (event: BvTriggerableEvent) => {
+        const dispose = {[Symbol.asyncDispose]: controller.destroy}
+        // A plain result is copied; an event keeps its prototype (getters such as `defaultPrevented`)
+        return toResult
+          ? Object.assign({...toResult(event, instance.value)}, dispose)
+          : Object.assign(Object.create(event), dispose)
+      }
       const currentModelValue = controller.get()?.value.props.modelValue
       // The store learns the component is open only once its show is revealed, so also count a show
       // this controller requested and the component's own visible flag
@@ -199,9 +221,11 @@ export const buildController = <
         showRequested ||
         (controller.ref as RefWithMethods | null)?.visible === true
       if (signal?.aborted && !isShown) {
-        return withDispose(new BvTriggerableEvent('hidden', {trigger: 'abort', ok: null}))
+        return withDispose(new BvTriggerableEvent('hidden', {trigger: 'abort'}))
       }
       const cycle = currentDismissal()
+      // Joining a cycle that is already open overrides its setting too
+      cycleResolvesOnHide = resolveOnHide ?? createOptions.resolveOnHide === true
       const abort = () => {
         controller.hide('abort')
         // A show listener can abort before its show is committed, when there is nothing to hide
@@ -233,7 +257,7 @@ export const buildController = <
             hideRequested = false
             void Promise.resolve(refWithMethods.show()).then((result) => {
               if (result === 'show-prevented' && dismissal === cycle) {
-                finishCycle(new BvTriggerableEvent('show-prevented', {ok: null}))
+                finishCycle(new BvTriggerableEvent('show-prevented'))
               }
             })
           } else if (!cancelsHide) {
@@ -286,7 +310,7 @@ export const buildController = <
       }
     },
     get: findItem,
-    set(val: Partial<ValueInMapRecord<TStore['value']>['value']['props']>) {
+    set(val: Partial<ValueInMapRecord<TItems>['value']['props']>) {
       const current = findItem()
       if (current?.value) {
         current.value = {
@@ -310,14 +334,14 @@ export const buildController = <
           await nextTick()
         }
       } finally {
-        if (item) store.value.delete(id)
+        if (item) items.delete(id)
         scope.stop()
       }
     },
     [Symbol.asyncDispose]() {
       return controller.destroy()
     },
-  } as ComponentController<TComponent, ValueInMapRecord<TStore['value']>>
+  } as ComponentController<TComponent, ValueInMapRecord<TItems>, TResult>
 
   return {
     controller,
@@ -336,11 +360,14 @@ export const _newOrchestratorRegistry = (): {
   const _isToastAppend = ref(false)
 
   return {
+    // Shallow maps: adding and removing items is tracked, and each item is a computed that tracks
+    // its own value. A deep map would hand out reactive proxies of the items, so callers'
+    // components would render as proxies (Vue warns about that)
     store: ref({
-      modal: new Map(),
-      tooltip: new Map(),
-      popover: new Map(),
-      toast: new Map(),
+      dialog: shallowReactive(new Map()),
+      tooltip: shallowReactive(new Map()),
+      popover: shallowReactive(new Map()),
+      toast: shallowReactive(new Map()),
     }),
     _isOrchestratorInstalled: readonly(_isOrchestratorInstalled),
     _setOrchestratorInstalled: (v) => {

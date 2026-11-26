@@ -93,7 +93,7 @@ describe('usePopover', () => {
     expect(tooltipRef?.get()?.value.props.title).toBe('World')
   })
 
-  it('does not inject deprecated keep option and persists until destroy', async () => {
+  it('takes options as a second argument, keeps them out of the store item, and persists until destroy', async () => {
     let popoverRef: ReturnType<ReturnType<typeof usePopover>['popover']> | undefined
     let popoverStore: ReturnType<typeof usePopover>['store'] | undefined
     const popoverId = 'lifecycle-popover'
@@ -101,11 +101,13 @@ describe('usePopover', () => {
       setup() {
         const {popover, store} = usePopover()
         popoverStore = store
-        popoverRef = popover({
-          id: popoverId,
-          title: 'Lifecycle Popover',
-          options: {resolveOnHide: true},
-        })
+        popoverRef = popover(
+          {
+            id: popoverId,
+            title: 'Lifecycle Popover',
+          },
+          {resolveOnHide: true}
+        )
         return () => h('div')
       },
     })
@@ -113,8 +115,8 @@ describe('usePopover', () => {
     mount(BApp, {slots: {default: () => h(TestComponent)}})
     await nextTick()
 
-    expect(popoverRef?.get()?.value.options).toEqual({resolveOnHide: true})
-    expect(popoverRef?.get()?.value.options).not.toHaveProperty('keep')
+    expect(popoverRef?.get()?.value).not.toHaveProperty('options')
+    expect(popoverRef?.get()?.value.props).not.toHaveProperty('options')
 
     popoverRef?.hide()
     await nextTick()

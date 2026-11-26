@@ -111,9 +111,9 @@ Each group runs as one read-only research subagent. Components sharing a v6 base
 | G5 Display             | Accordion, Avatar, Carousel, Stepper, Prose                               | #164 (Collapse), #167 (Badge)                                                | `architecture/BOOTSTRAP_V6_DISPLAY.md`     | Decided                                                                        |
 | G6 Layout and behavior | Scrollspy, CSS Grid, container-query helpers                              | #164 (breakpoints, responsive)                                               | `architecture/BOOTSTRAP_V6_LAYOUT.md`      | Decided                                                                        |
 
-G6 implementation: container-query and CSS-only helper docs + `BCard` `hoverLift` PR open.
+G6 implementation: container-query and CSS-only helper docs + `BCard` `hoverLift` merged as [#197](https://github.com/VividLemon/bootstrap-vue-next/pull/197) (`163a6b8f2`).
 
-G5 implementation (one PR per component into `bootstrap-v6`): Prose — PR open (`bootstrap-v6-g5-prose`, docs only: a short section in `reference/utility-classes.md`, stacked on the G6 helpers PR).
+G5 implementation (one PR per component into `bootstrap-v6`): Prose — merged as [#199](https://github.com/VividLemon/bootstrap-vue-next/pull/199) (`4ac8a6463`; docs only: a short section in `reference/utility-classes.md`).
 
 Cross-cutting: [`BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md`](./BOOTSTRAP_V6_SHOW_HIDE_STATE_MACHINE.md) (S1 implemented) replaces the show/hide lifecycle with an explicit state machine. It is its own PR (S1) after #164 and before G1's Dialog core, and is implemented (`showHideMachine.ts` behind `useShowHide`); G1 (Dialog, Drawer, orchestrator) and G2 (Menu `disabled`) build on it. Implementation order across groups starts with S1.
 

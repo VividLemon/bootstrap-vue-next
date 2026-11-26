@@ -6,7 +6,7 @@ import BAlert from '../BAlert/BAlert.vue'
 import {
   breadcrumbRegistryKey,
   defaultsKey,
-  modalManagerKey,
+  dialogStackKey,
   orchestratorRegistryKey,
   rtlRegistryKey,
   showHideRegistryKey,
@@ -22,7 +22,7 @@ const createInjectionCapture = () => {
     setup() {
       captured.defaults = inject(defaultsKey, null)
       captured.rtl = inject(rtlRegistryKey, null)
-      captured.modalManager = inject(modalManagerKey, null)
+      captured.dialogStack = inject(dialogStackKey, null)
       captured.showHide = inject(showHideRegistryKey, null)
       captured.breadcrumb = inject(breadcrumbRegistryKey, null)
       captured.orchestrator = inject(orchestratorRegistryKey, null)
@@ -311,23 +311,18 @@ describe('BApp', () => {
       expect(typeof showHide!.register).toBe('function')
     })
 
-    it('provides modalManagerKey to children', () => {
+    it('provides dialogStackKey to children', () => {
       const {captured, ChildComponent} = createInjectionCapture()
 
       mount(BApp, {
         slots: {default: () => h(ChildComponent)},
       })
 
-      const modalManager = captured.modalManager as Record<string, unknown> | null
-      expect(modalManager).not.toBeNull()
-      expect(modalManager).toHaveProperty('stack')
-      expect(modalManager).toHaveProperty('countStack')
-      expect(modalManager).toHaveProperty('lastStack')
-      expect(modalManager).toHaveProperty('pushStack')
-      expect(modalManager).toHaveProperty('removeStack')
-      expect(modalManager).toHaveProperty('registry')
-      expect(modalManager).toHaveProperty('pushRegistry')
-      expect(modalManager).toHaveProperty('removeRegistry')
+      const dialogStack = captured.dialogStack as Record<string, unknown> | null
+      expect(dialogStack).not.toBeNull()
+      expect(dialogStack).toHaveProperty('stack')
+      expect(dialogStack).toHaveProperty('registry')
+      expect(dialogStack).toHaveProperty('register')
     })
 
     it('provides breadcrumbRegistryKey to children', () => {
@@ -410,21 +405,19 @@ describe('BApp', () => {
       expect(rtl.locale.value).toBe('ar')
     })
 
-    it('modal manager starts with empty stack', () => {
+    it('dialog stack starts empty', () => {
       const {captured, ChildComponent} = createInjectionCapture()
 
       mount(BApp, {
         slots: {default: () => h(ChildComponent)},
       })
 
-      const modalManager = captured.modalManager as {
-        countStack: {value: number}
+      const dialogStack = captured.dialogStack as {
         stack: {value: readonly unknown[]}
-        lastStack: {value: unknown}
+        registry: {value: readonly unknown[]}
       }
-      expect(modalManager.countStack.value).toBe(0)
-      expect(modalManager.stack.value).toHaveLength(0)
-      expect(modalManager.lastStack.value).toBeUndefined()
+      expect(dialogStack.stack.value).toHaveLength(0)
+      expect(dialogStack.registry.value).toHaveLength(0)
     })
 
     it('does not re-provide registries when nested BApp already has them', () => {
@@ -442,7 +435,7 @@ describe('BApp', () => {
 
       // Both inner and outer should have the same registry instances
       expect(outerCaptured.captured.showHide).toBe(innerCaptured.captured.showHide)
-      expect(outerCaptured.captured.modalManager).toBe(innerCaptured.captured.modalManager)
+      expect(outerCaptured.captured.dialogStack).toBe(innerCaptured.captured.dialogStack)
       expect(outerCaptured.captured.breadcrumb).toBe(innerCaptured.captured.breadcrumb)
       expect(outerCaptured.captured.rtl).toBe(innerCaptured.captured.rtl)
     })
@@ -472,13 +465,13 @@ describe('BApp', () => {
 
       const orchestrator = captured.orchestrator as {
         store: Ref<{
-          modal: Map<unknown, unknown>
+          dialog: Map<unknown, unknown>
           toast: Map<unknown, unknown>
           popover: Map<unknown, unknown>
           tooltip: Map<unknown, unknown>
         }>
       }
-      expect(orchestrator.store.value.modal.size).toBe(0)
+      expect(orchestrator.store.value.dialog.size).toBe(0)
       expect(orchestrator.store.value.toast.size).toBe(0)
       expect(orchestrator.store.value.popover.size).toBe(0)
       expect(orchestrator.store.value.tooltip.size).toBe(0)

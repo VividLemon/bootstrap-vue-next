@@ -7,9 +7,9 @@
     >Tooltip target</span>
     <BButton
       id="modal-trigger"
-      v-b-modal.my-modal
+      v-b-toggle.my-modal
     >
-      Open modal
+      Open dialog
     </BButton>
     <BDialog
       id="my-modal"

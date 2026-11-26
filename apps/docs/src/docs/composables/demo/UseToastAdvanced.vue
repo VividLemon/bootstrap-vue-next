@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, markRaw, onMounted, onUnmounted, ref } from 'vue'
+import { h, onMounted, onUnmounted, ref } from 'vue'
 import type { OrchestratedToast } from 'bootstrap-vue-next'
 import { BButton } from 'bootstrap-vue-next/components/BButton'
 import { useToast } from 'bootstrap-vue-next/composables/useToast'
@@ -29,15 +29,13 @@ onUnmounted(() => {
 })
 
 const showMe = async () => {
-  await using _ = await create({
-    body: firstRef.value.body,
-    slots: { default: () => markRaw(h('div', null, `custom! ${firstRef.value.body}`)) },
-  }).show()
+  await using _ = await create(
+    { body: firstRef.value.body },
+    { slots: { default: () => h('div', null, `custom! ${firstRef.value.body}`) } },
+  ).show()
   // Demonstration pseudocode, you can also import a component and use it
   // const importedComponent = () => {
-  //   create({
-  //     component: markRaw((await import('./MyToastComponent.vue')).default),
-  //   })
+  //   create({}, { component: (await import('./MyToastComponent.vue')).default })
   // }
 }
 </script>

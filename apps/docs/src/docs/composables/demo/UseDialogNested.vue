@@ -28,11 +28,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { BButton, BButtonGroup, BDialog, useModal } from 'bootstrap-vue-next'
+import { BButton, BButtonGroup, BDialog, useDialog } from 'bootstrap-vue-next'
 
 const nestedModal1 = ref(false)
 const nestedModal2 = ref(false)
 const nestedModal3 = ref(false)
 
-const { hide, hideAll } = useModal()
+const { hide, hideAll } = useDialog()
 </script>

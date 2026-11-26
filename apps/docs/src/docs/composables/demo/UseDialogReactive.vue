@@ -5,9 +5,9 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watchEffect } from 'vue'
 import { BButton } from 'bootstrap-vue-next/components/BButton'
-import { useModal } from 'bootstrap-vue-next/composables/useModal'
+import { useDialog } from 'bootstrap-vue-next/composables/useDialog'
 
-const { create } = useModal()
+const { create } = useDialog()
 
 const title = ref('Hello')
 let intervalId: ReturnType<typeof setInterval> | undefined

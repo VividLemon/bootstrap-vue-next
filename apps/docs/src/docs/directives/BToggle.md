@@ -1,6 +1,6 @@
 ---
 title: BToggle
-description: 'A light-weight directive for toggling visibility state for collapses, offcanvas, and modals by ID. It automatically sets the aria-controls attribute and registers the trigger with the target component, which then manages aria-expanded and visual state'
+description: 'A light-weight directive for toggling visibility state for collapses, offcanvas, and dialogs by ID. It automatically sets the aria-controls attribute and registers the trigger with the target component, which then manages aria-expanded and visual state'
 ---
 
 > The `v-b-toggle` directive provides a simple, declarative way to toggle visibility of components like `BCollapse`, `BOffcanvas`, and `BDialog`. The directive automatically handles accessibility and can target multiple components at once.
@@ -114,9 +114,12 @@ See the [BOffcanvas documentation](/docs/components/offcanvas#v-b-toggle-directi
 
 ### BDialog
 
-The v-b-toggle directive also works with modals. However, for modals, the dedicated `v-b-modal` directive is recommended as it's an alias specifically designed for modal use cases.
+Open dialogs by id. A trigger inside an open dialog swaps that dialog for its target instead of
+stacking it on top (the Bootstrap v6 swap):
 
-See the [BDialog documentation](/docs/components/dialog) for more details.
+<<< DEMO ../components/demo/DialogSwap.vue
+
+See the [BDialog documentation](/docs/components/dialog#swapping-dialogs) for more details.
 
 ## Comparison with Programmatic Control
 

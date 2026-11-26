@@ -130,7 +130,7 @@ export interface BAspectProps {
 export interface BOrchestratorProps {
   noPopovers?: boolean
   noToasts?: boolean
-  noModals?: boolean
+  noDialogs?: boolean
   appendToast?: boolean
   teleportTo?: TeleportProps['to']
   filter?: (item: OrchestratorArrayValue) => boolean

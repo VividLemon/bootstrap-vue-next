@@ -85,7 +85,7 @@ Templates for steps 3–4 are in `templates/`.
   the result object has `ok`.
 - `this.$bvToast.toast(msg, opts)` → `useToast().create({body: msg, title, variant, position, modelValue: ms}).show()`
   (`modelValue` number = auto-hide delay in ms). `this.$bvToast.hide(id)` → `useToast().hide(undefined, id)`.
-- `$root.$emit/$on('bv::…')` → composables (`useModal`, `useToggle`, `useToast`), component events, or `v-model`.
+- `$root.$emit/$on('bv::…')` → composables (`useModal`, `useComponentToggle`, `useToast`), component events, or `v-model`.
 - **Composables must be called in a descendant of `<BApp>`, never in the component that renders `<BApp>`.** Call
   `useModal()` / `useToast()` during `setup` and keep the returned functions; do not call them inside event handlers.
 - Options-API components: call the composable in `setup()` and expose it, or convert to `<script setup>`.

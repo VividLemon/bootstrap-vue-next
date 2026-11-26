@@ -5,7 +5,6 @@
       <BCol>
         <BButton @click="showModal = !showModal">Toggle dialog v-model</BButton>
         <BButton v-b-toggle.exampleModal>Toggle with v-b-toggle directive</BButton>
-        <BButton v-b-modal.exampleModal>Toggle with v-b-modal directive</BButton>
         {{ showModal }}
         <BDialog
           id="exampleModal"
@@ -70,12 +69,14 @@
 
 <script setup lang="ts">
 import {computed, h, onMounted, onUnmounted, ref, watchEffect} from 'vue'
-import type {ModalOrchestratorCreateParamBase} from 'bootstrap-vue-next'
+import type {DialogOrchestratorCreateParamBase} from 'bootstrap-vue-next'
+import {useOrchestratorRegistry} from 'bootstrap-vue-next/composables/orchestratorShared'
 import {BDialog, BDialogActions} from 'bootstrap-vue-next/components/BDialog'
-import {useModal} from 'bootstrap-vue-next/composables/useModal'
+import {useDialog} from 'bootstrap-vue-next/composables/useDialog'
 
-const {create, store} = useModal()
-const modalCount = computed(() => store.value.modal.size)
+const {create} = useDialog()
+const {store} = useOrchestratorRegistry()
+const modalCount = computed(() => store.value.dialog.size)
 
 const showModal = ref(false)
 const showModal2 = ref(false)
@@ -85,8 +86,8 @@ const showNonModal = ref(false)
 const noClose = ref(true)
 const isModalVisible = ref(false)
 
-const body = ref<ModalOrchestratorCreateParamBase['body']>('foo')
-const firstRef = ref<ModalOrchestratorCreateParamBase>({
+const body = ref<DialogOrchestratorCreateParamBase['body']>('foo')
+const firstRef = ref<DialogOrchestratorCreateParamBase>({
   // If we want to sync this, we will need a watcher
   body: body.value,
   title: 'foobar',
@@ -106,8 +107,8 @@ watchEffect(() => {
   firstRef.value.body = body.value
 })
 
-const dynamicModalModelValue = ref<ModalOrchestratorCreateParamBase['modelValue']>(false)
-const dynamicModal = computed<ModalOrchestratorCreateParamBase>({
+const dynamicModalModelValue = ref<DialogOrchestratorCreateParamBase['modelValue']>(false)
+const dynamicModal = computed<DialogOrchestratorCreateParamBase>({
   get: () => ({
     // We use a computed to make derivations down below, but we NEED to make sure we have a syncable modelValue. So we use a writable computed
     modelValue: dynamicModalModelValue.value,
@@ -130,12 +131,15 @@ const showFns = {
     return _
   },
   basicCustomComponent: async () => {
-    await using _ = await create({
-      slots: {
-        default: () => h('div', null, {default: () => 'foobar!'}),
-        footer: () => h(BDialogActions, {okOnly: true, okTitle: 'Got it'}),
-      },
-    }).show()
+    await using _ = await create(
+      {},
+      {
+        slots: {
+          default: () => h('div', null, {default: () => 'foobar!'}),
+          footer: () => h(BDialogActions, {okOnly: true, okTitle: 'Got it'}),
+        },
+      }
+    ).show()
     return _
   },
   simpleRefProps: async () => {
@@ -148,9 +152,7 @@ const showFns = {
   },
   // Demonstration pseudocode, you can import a component and use it
   // importedComponent: () => {
-  //   show?.({
-  //     component: markRaw((await import('./MyModalComponent.vue')).default),
-  //   })
+  //   create({}, {component: (await import('./MyModalComponent.vue')).default})
   // },
 }
 </script>

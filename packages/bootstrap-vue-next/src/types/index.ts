@@ -105,7 +105,7 @@ export type {
   TooltipOrchestratorCreateParam as OrchestratedTooltip,
   ToastOrchestratorCreateParam as OrchestratedToast,
   PopoverOrchestratorCreateParam as OrchestratedPopover,
-  ModalOrchestratorCreateParam as OrchestratedModal,
+  DialogOrchestratorCreateParam as OrchestratedDialog,
 } from './ComponentOrchestratorTypes'
 export type * from './ComponentOrchestratorTypes'
 

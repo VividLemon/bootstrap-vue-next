@@ -9,7 +9,7 @@ description: 'The `BApp` component is the new recommended way to configure boots
 `BApp` serves as the root component for your bootstrap-vue-next application, providing:
 
 - **Global defaults management** - Set and merge component defaults throughout your application
-- **Automatic orchestrator integration** - Built-in Modal, Toast, and Popover orchestrators
+- **Automatic orchestrator integration** - Built-in Dialog, Toast, and Popover orchestrators
 - **Plugin compatibility** - Works alongside existing plugins for backward compatibility (see the [Backward Compatibility](#backward-compatibility) section for details)
 - **Type safety** - Full TypeScript support with proper type inference
 - **RTL support** - Built-in right-to-left language support
@@ -82,7 +82,7 @@ Control how toasts are added to the list:
 When using `BApp`, the following composables work without requiring plugin installation:
 
 - [`useToast()`](/docs/composables/useToast) - Create and manage toasts programmatically
-- [`useModal()`](/docs/composables/useModal) - Create and manage modals programmatically
+- [`useDialog()`](/docs/composables/useDialog) - Create and manage dialogs programmatically
 - [`usePopover()`](/docs/composables/usePopover) - Create and manage popovers programmatically
 
 <UseBAppProvideInjectWarning />
@@ -115,7 +115,7 @@ Please replace references to these with a reference to `orchestratorPlugin`.
 
 ## Testing Components
 
-When testing components that use composables like `useToast()`, `useModal()`, or `usePopover()`, you need to install the `createBootstrap` plugin so that the required context is provided. Without it, these composables will throw an error because they rely on Vue's provide/inject system.
+When testing components that use composables like `useToast()`, `useDialog()`, or `usePopover()`, you need to install the `createBootstrap` plugin so that the required context is provided. Without it, these composables will throw an error because they rely on Vue's provide/inject system.
 
 ### Per-Test Plugin Setup
 
@@ -207,7 +207,7 @@ vi.mock('bootstrap-vue-next', async () => {
 The `BApp` component automatically provides several internal services:
 
 - **Show/Hide Registry** - Global registry for show/hide components
-- **Modal Manager** - Stack management for multiple modals
+- **Dialog stack** - The mounted and open dialogs, for `useDialog()` and the `v-b-toggle` swap
 - **Breadcrumb Service** - Global breadcrumb item management
 - **RTL Service** - Right-to-left text direction support
 

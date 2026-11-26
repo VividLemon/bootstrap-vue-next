@@ -1,22 +1,15 @@
-import {
-  type ComponentInternalInstance,
-  computed,
-  inject,
-  provide,
-  readonly,
-  type Ref,
-  ref,
-} from 'vue'
+import {inject, provide, readonly, type Ref, ref} from 'vue'
 import {
   breadcrumbGlobalIndexKey,
   breadcrumbRegistryKey,
-  modalManagerKey,
+  dialogStackKey,
   type RegisterShowHideFnInput,
   type RegisterShowHideInstances,
   type RegisterShowHideMapValue,
   rtlRegistryKey,
   showHideRegistryKey,
 } from '../../utils/keys'
+import {_newDialogStack} from '../useDialogStack'
 import type {BAppProps} from '../../types/ComponentProps'
 import type {BreadcrumbItemRaw} from '../../types/BreadcrumbTypes'
 
@@ -27,45 +20,9 @@ export const useRegistry = (rtl: BAppProps['rtl'] = false) => {
     provide(showHideRegistryKey, {register, values})
   }
 
-  const modalManager = inject(modalManagerKey, null)
-  if (!modalManager) {
-    const stack: Ref<Map<number, ComponentInternalInstance>> = ref(new Map())
-
-    const countStack = computed(() => stack.value.size)
-    const valuesStack = computed(() => [...stack.value.values()])
-    const lastStack = computed(() => valuesStack.value[valuesStack.value.length - 1])
-
-    const pushStack = (modal: Readonly<ComponentInternalInstance>) => {
-      stack.value.set(modal.uid, modal)
-    }
-    const removeStack = (modal: Readonly<ComponentInternalInstance>) => {
-      stack.value.delete(modal.uid)
-    }
-
-    /**
-     * A collection of all registered modals
-     */
-    const registry: Ref<Map<number, ComponentInternalInstance>> = ref(new Map())
-
-    // Utility getters not made, would not be used (count, last)
-
-    const pushRegistry = (modal: Readonly<ComponentInternalInstance>) => {
-      registry.value.set(modal.uid, modal)
-    }
-    const removeRegistry = (modal: Readonly<ComponentInternalInstance>) => {
-      registry.value.delete(modal.uid)
-    }
-
-    provide(modalManagerKey, {
-      countStack,
-      lastStack,
-      registry: computed(() => registry.value),
-      stack: valuesStack,
-      pushStack,
-      removeStack,
-      pushRegistry,
-      removeRegistry,
-    })
+  const dialogStack = inject(dialogStackKey, null)
+  if (!dialogStack) {
+    provide(dialogStackKey, _newDialogStack())
   }
 
   const breadcrumb = inject(breadcrumbRegistryKey, null)

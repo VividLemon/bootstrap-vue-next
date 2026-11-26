@@ -1,22 +1,23 @@
 import {describe, expect, it, vi} from 'vitest'
-import {type ComponentPublicInstance, ref, type Ref} from 'vue'
+import {type ComponentPublicInstance, ref, type Ref, shallowReactive} from 'vue'
 import {buildController} from '.'
 import type {
   ControllerKey,
-  ModalOrchestratorArrayValue,
+  DialogOrchestratorArrayValue,
 } from '../../types/ComponentOrchestratorTypes'
 import {BvTriggerableEvent} from '../../utils'
 
-type ModalStore = Ref<Map<ControllerKey, Ref<ModalOrchestratorArrayValue>>>
+type DialogStore = Map<ControllerKey, Ref<DialogOrchestratorArrayValue>>
 
-const newStore = (): ModalStore => ref(new Map())
+// Like the registry's maps
+const newStore = (): DialogStore => shallowReactive(new Map())
 
 const pushItem = (
-  store: ModalStore,
+  store: DialogStore,
   id: ControllerKey,
-  props: ModalOrchestratorArrayValue['props']
+  props: DialogOrchestratorArrayValue['props']
 ) => {
-  store.value.set(
+  store.set(
     id,
     ref({
       component: {} as never,
@@ -27,7 +28,7 @@ const pushItem = (
         destroy: async () => {},
       },
       props,
-    } as ModalOrchestratorArrayValue)
+    } as DialogOrchestratorArrayValue)
   )
 }
 
@@ -36,12 +37,12 @@ describe('buildController', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
     controller.set({modelValue: true} as never)
 
-    const item = store.value.get(_self)
+    const item = store.get(_self)
     expect(item).toBeDefined()
     expect('title' in (item?.value.props ?? {})).toBe(false)
     expect('body' in (item?.value.props ?? {})).toBe(false)
@@ -51,12 +52,12 @@ describe('buildController', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false, title: 'Initial Title'})
 
     controller.set({title: 'Updated Title'} as never)
 
-    const item = store.value.get(_self)
+    const item = store.get(_self)
     expect(item).toBeDefined()
     expect(item?.value.props.title).toBe('Updated Title')
   })
@@ -65,12 +66,12 @@ describe('buildController', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false, title: 'Initial Title'})
 
     controller.set({modelValue: true} as never)
 
-    const item = store.value.get(_self)
+    const item = store.get(_self)
     expect(item).toBeDefined()
     expect(item?.value.props.title).toBe('Initial Title')
   })
@@ -79,7 +80,7 @@ describe('buildController', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
     expect(typeof controller[Symbol.asyncDispose]).toBe('function')
@@ -89,47 +90,97 @@ describe('buildController', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+    expect(store.get(_self)?.value.props.modelValue).toBe(false)
 
     controller.show()
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+    expect(store.get(_self)?.value.props.modelValue).toBe(true)
   })
 
   it('show resolves to BvTriggerableEvent when the promise is resolved', async () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
     const showPromise = controller.show()
 
-    const event = new BvTriggerableEvent('hidden', {trigger: 'ok'})
-    event.ok = true
-    resolve(event)
+    resolve(new BvTriggerableEvent('hidden', {trigger: 'ok'}))
 
     const result = await showPromise
     expect(result).toBeInstanceOf(BvTriggerableEvent)
     expect(result.trigger).toBe('ok')
-    expect(result.ok).toBe(true)
+    expect(result).not.toHaveProperty('ok')
+  })
+
+  it('maps the settling event through toResult, reading the component after its hide returned', async () => {
+    const store = newStore()
+    const _self = Symbol('test-dialog')
+    const component = {returnValue: undefined as unknown}
+    const {controller, resolve} = buildController<
+      unknown,
+      DialogStore,
+      {trigger: string | null; value: unknown}
+    >(_self, store, {
+      toResult: (event, instance) => ({
+        trigger: event.trigger,
+        value: (instance as typeof component | null)?.returnValue,
+      }),
+    })
+    pushItem(store, _self, {modelValue: false})
+    controller.ref = component as never
+
+    const showPromise = controller.show()
+    resolve(new BvTriggerableEvent('hidden', {trigger: 'ok'}))
+    // Set after the event, as BDialog's hide does
+    component.returnValue = 42
+
+    const result = await showPromise
+    expect(result).toMatchObject({trigger: 'ok', value: 42})
+    expect(result).not.toBeInstanceOf(BvTriggerableEvent)
+    expect(typeof result[Symbol.asyncDispose]).toBe('function')
+  })
+
+  it('settles on hide only with resolveOnHide, from create() or overridden per show()', async () => {
+    const store = newStore()
+    const _self = Symbol('test-dialog')
+    const {controller, resolve} = buildController<unknown, DialogStore>(_self, store, {
+      createOptions: {resolveOnHide: true},
+    })
+    pushItem(store, _self, {modelValue: false})
+
+    let settled = false
+    const first = controller.show({resolveOnHide: false}).then((r) => {
+      settled = true
+      return r
+    })
+    resolve(new BvTriggerableEvent('hide', {trigger: 'ok'}))
+    await new Promise((r) => setTimeout(r, 0))
+    expect(settled).toBe(false)
+    resolve(new BvTriggerableEvent('hidden', {trigger: 'ok'}))
+    expect((await first).eventType).toBe('hidden')
+
+    const second = controller.show()
+    resolve(new BvTriggerableEvent('hide', {trigger: 'cancel'}))
+    expect((await second).eventType).toBe('hide')
   })
 
   it('show does not overwrite numeric truthy modelValue when already showing', async () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: 5000})
 
     const showPromise = controller.show()
     resolve(new BvTriggerableEvent('hidden'))
     await showPromise
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(5000)
+    expect(store.get(_self)?.value.props.modelValue).toBe(5000)
   })
 
   it('show does not call component show when modelValue is already truthy', async () => {
@@ -137,7 +188,7 @@ describe('buildController', () => {
     const _self = Symbol('test-modal')
     const showMock = vi.fn<() => void>()
 
-    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: true})
     controller.ref = {show: showMock} as unknown as ComponentPublicInstance<unknown> & {
       show?: () => void
@@ -156,7 +207,7 @@ describe('buildController', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
     const showPromise = controller.show()
@@ -165,12 +216,12 @@ describe('buildController', () => {
     const resolved = await showPromise
     expect(typeof resolved[Symbol.asyncDispose]).toBe('function')
 
-    expect(store.value.size).toBe(1)
+    expect(store.size).toBe(1)
     // modelValue is still true here, so set it back to false so destroy doesn't wait on hide
     controller.set({modelValue: false} as never)
 
     await resolved[Symbol.asyncDispose]()
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
   })
 
   describe('show({signal})', () => {
@@ -183,15 +234,14 @@ describe('buildController', () => {
     it('does not show and resolves with trigger abort when the signal is already aborted', async () => {
       const store = newStore()
       const _self = Symbol('test-modal')
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: false})
 
       const result = await controller.show({signal: AbortSignal.abort()})
 
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+      expect(store.get(_self)?.value.props.modelValue).toBe(false)
       expect(result).toBeInstanceOf(BvTriggerableEvent)
       expect(result.trigger).toBe('abort')
-      expect(result.ok).toBeNull()
       expect(typeof result[Symbol.asyncDispose]).toBe('function')
     })
 
@@ -199,7 +249,7 @@ describe('buildController', () => {
       const store = newStore()
       const _self = Symbol('test-modal')
       const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>()
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: false})
       controller.ref = {show: vi.fn<() => void>(), hide: hideMock} as unknown as RefWithMethods
 
@@ -215,12 +265,12 @@ describe('buildController', () => {
     it('hides an already visible component when the signal is already aborted', async () => {
       const store = newStore()
       const _self = Symbol('test-modal')
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: true})
 
       const showPromise = controller.show({signal: AbortSignal.abort()})
 
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+      expect(store.get(_self)?.value.props.modelValue).toBe(false)
       resolve(new BvTriggerableEvent('hidden', {trigger: 'abort'}))
       expect((await showPromise).trigger).toBe('abort')
     })
@@ -229,7 +279,7 @@ describe('buildController', () => {
       const store = newStore()
       const _self = Symbol('test-modal')
       const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>()
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
       // mounted and visible, but the stored modelValue was never updated
       pushItem(store, _self, {modelValue: false})
       controller.ref = {visible: true, hide: hideMock} as unknown as RefWithMethods
@@ -249,7 +299,7 @@ describe('buildController', () => {
       const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>(() => {
         calls.push('hide')
       })
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: false})
       controller.ref = {
         show: () => {
@@ -271,25 +321,24 @@ describe('buildController', () => {
     it('settles when the signal aborts before the component mounts', async () => {
       const store = newStore()
       const _self = Symbol('test-modal')
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: false})
 
       const scope = new AbortController()
       const showPromise = controller.show({signal: scope.signal})
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+      expect(store.get(_self)?.value.props.modelValue).toBe(true)
       scope.abort()
 
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+      expect(store.get(_self)?.value.props.modelValue).toBe(false)
       const result = await showPromise
       expect(result.trigger).toBe('abort')
-      expect(result.ok).toBeNull()
     })
 
     it('hides a component without a visible flag that this controller showed', async () => {
       const store = newStore()
       const _self = Symbol('test-toast')
       const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>()
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: false})
       controller.ref = {show: vi.fn<() => void>(), hide: hideMock} as unknown as RefWithMethods
 
@@ -306,7 +355,7 @@ describe('buildController', () => {
       const store = newStore()
       const _self = Symbol('test-modal')
       const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>()
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: false})
       controller.ref = {show: vi.fn<() => void>(), hide: hideMock} as unknown as RefWithMethods
 
@@ -324,7 +373,7 @@ describe('buildController', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
     const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>()
-    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
     // mounted: show() goes through the ref, so the stored modelValue stays false
     pushItem(store, _self, {modelValue: false})
     controller.ref = {
@@ -339,30 +388,30 @@ describe('buildController', () => {
     const destroyPromise = controller.destroy()
 
     expect(hideMock).toHaveBeenCalledExactlyOnceWith('destroy', true)
-    expect(store.value.size).toBe(1)
+    expect(store.size).toBe(1)
     resolve(new BvTriggerableEvent('hidden', {trigger: 'destroy'}))
     await destroyPromise
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
     expect((await showPromise).trigger).toBe('destroy')
   })
 
   it('destroy settles a pending show when nothing can emit for it', async () => {
     const store = newStore()
     const _self = Symbol('test-modal')
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
     const showPromise = controller.show() // never mounts
     await controller.destroy()
 
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
     expect((await showPromise).trigger).toBe('destroy')
   })
 
   it('show waits for a new dismissal each time the component is shown again', async () => {
     const store = newStore()
     const _self = Symbol('test-modal')
-    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
     const first = controller.show()
@@ -384,23 +433,22 @@ describe('buildController', () => {
   it('hide settles a show whose component has not mounted', async () => {
     const store = newStore()
     const _self = Symbol('test-modal')
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
     const showPromise = controller.show()
     controller.hide('cancel')
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+    expect(store.get(_self)?.value.props.modelValue).toBe(false)
     const result = await showPromise
     expect(result.trigger).toBe('cancel')
-    expect(result.ok).toBeNull()
   })
 
   it('settles show() and lets destroy() finish when the component prevents the show', async () => {
     const store = newStore()
     const _self = Symbol('test-modal')
     const showMock = vi.fn<() => Promise<string>>(() => Promise.resolve('show-prevented'))
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
     controller.ref = {
       show: showMock,
@@ -411,14 +459,14 @@ describe('buildController', () => {
     expect(result.eventType).toBe('show-prevented')
 
     await controller.destroy()
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
   })
 
   it('does not settle an accepted pending show on another show-prevented event', async () => {
     const store = newStore()
     const _self = Symbol('test-modal')
     const showMock = vi.fn<() => Promise<boolean>>(() => new Promise<boolean>(() => {}))
-    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
     controller.ref = {
       show: showMock,
@@ -441,7 +489,7 @@ describe('buildController', () => {
   it('gives a show() after an unmounted dismissal its own cycle', async () => {
     const store = newStore()
     const _self = Symbol('test-modal')
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
     const first = controller.show()
@@ -454,7 +502,7 @@ describe('buildController', () => {
     expect((await first).trigger).toBe('cancel')
     await new Promise((r) => setTimeout(r, 0))
     expect(secondSettled).toBe(false)
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+    expect(store.get(_self)?.value.props.modelValue).toBe(true)
   })
 
   describe('showing again', () => {
@@ -474,7 +522,9 @@ describe('buildController', () => {
     it('cancels the pending hide of a component that settled on hide', async () => {
       const store = newStore()
       const _self = Symbol('test-modal')
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store, {
+        createOptions: {resolveOnHide: true},
+      })
       pushItem(store, _self, {modelValue: true})
       const {methods, ref: componentRef} = mountedRef()
       controller.ref = componentRef
@@ -494,7 +544,7 @@ describe('buildController', () => {
     it('cancels a hide this controller just requested', () => {
       const store = newStore()
       const _self = Symbol('test-modal')
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: true})
       const {methods, ref: componentRef} = mountedRef()
       controller.ref = componentRef
@@ -507,7 +557,7 @@ describe('buildController', () => {
     it('settles when the show that would cancel the hide is prevented', async () => {
       const store = newStore()
       const _self = Symbol('test-modal')
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: true})
       controller.ref = mountedRef(() => Promise.resolve('show-prevented')).ref
 
@@ -518,7 +568,7 @@ describe('buildController', () => {
     it('does not ask an open component to show once its hide is over', () => {
       const store = newStore()
       const _self = Symbol('test-modal')
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: true})
       const {methods, ref: componentRef} = mountedRef()
       controller.ref = componentRef
@@ -534,7 +584,7 @@ describe('buildController', () => {
     it('restores a countdown the component ran down to 0', () => {
       const store = newStore()
       const _self = Symbol('test-toast')
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: 5000} as never)
       const {methods, ref: componentRef} = mountedRef()
       controller.ref = componentRef
@@ -542,7 +592,7 @@ describe('buildController', () => {
       controller.set({modelValue: 0} as never) // as the orchestrator does when the countdown ends
       void controller.show()
 
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(5000)
+      expect(store.get(_self)?.value.props.modelValue).toBe(5000)
       // The component's show() would set its modelValue to true, which has no countdown
       expect(methods.show).not.toHaveBeenCalled()
     })
@@ -550,30 +600,30 @@ describe('buildController', () => {
     it('restores the countdown on toggle', () => {
       const store = newStore()
       const _self = Symbol('test-toast')
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: 5000} as never)
 
       controller.set({modelValue: 0} as never)
       controller.toggle()
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(5000)
+      expect(store.get(_self)?.value.props.modelValue).toBe(5000)
     })
 
     it('forgets the countdown once the item is shown without one', () => {
       const store = newStore()
       const _self = Symbol('test-toast')
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: 5000} as never)
 
       controller.set({modelValue: true} as never)
       controller.set({modelValue: false} as never)
       void controller.show()
-      expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+      expect(store.get(_self)?.value.props.modelValue).toBe(true)
     })
 
     it('settles when a mounted component prevents the show of a restored countdown', async () => {
       const store = newStore()
       const _self = Symbol('test-toast')
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: 5000} as never)
       controller.ref = mountedRef().ref
       controller.set({modelValue: 0} as never)
@@ -587,15 +637,20 @@ describe('buildController', () => {
   it('destroy stops watching the store', async () => {
     const inner = newStore()
     let reads = 0
-    const store = {
-      get value() {
-        reads++
-        return inner.value
+    // Counts lookups of the item, which is what the controller's watcher does
+    const store = new Proxy(inner, {
+      get(target, key) {
+        const member = Reflect.get(target, key, target)
+        if (typeof member !== 'function') return member
+        return (...args: unknown[]) => {
+          if (key === 'get') reads++
+          return member.apply(target, args)
+        }
       },
-    } as ModalStore
+    })
     const _self = Symbol('test-modal')
     // Not inside a component's setup, as when a toast is created from an event handler
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(inner, _self, {modelValue: false})
 
     await controller.destroy()
@@ -608,35 +663,35 @@ describe('buildController', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: true})
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+    expect(store.get(_self)?.value.props.modelValue).toBe(true)
 
     controller.hide()
 
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+    expect(store.get(_self)?.value.props.modelValue).toBe(false)
   })
 
   it('toggle flips modelValue in the store', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
     controller.toggle()
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(true)
+    expect(store.get(_self)?.value.props.modelValue).toBe(true)
 
     controller.toggle()
-    expect(store.value.get(_self)?.value.props.modelValue).toBe(false)
+    expect(store.get(_self)?.value.props.modelValue).toBe(false)
   })
 
   it('get returns the current store item', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false, title: 'Test Title'})
 
     const item = controller.get()
@@ -648,14 +703,14 @@ describe('buildController', () => {
     const store = newStore()
     const _self = Symbol('test-modal')
 
-    const {controller} = buildController<unknown, ModalStore>(_self, store)
+    const {controller} = buildController<unknown, DialogStore>(_self, store)
     pushItem(store, _self, {modelValue: false})
 
-    expect(store.value.size).toBe(1)
+    expect(store.size).toBe(1)
 
     await controller.destroy()
 
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
   })
 
   it('destroy hides visible items before awaiting resolution and then removes them', async () => {
@@ -663,7 +718,7 @@ describe('buildController', () => {
     const _self = Symbol('test-modal')
     const hiddenEvent = new BvTriggerableEvent('hidden')
 
-    const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+    const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
     const hideMock = vi.fn<(trigger?: string, noEmit?: boolean) => void>(() => resolve(hiddenEvent))
     pushItem(store, _self, {modelValue: true})
     controller.ref = {hide: hideMock} as ComponentPublicInstance<unknown> & {
@@ -677,7 +732,7 @@ describe('buildController', () => {
     expect(hideMock).toHaveBeenCalledWith('destroy', true)
     await destroyPromise
 
-    expect(store.value.size).toBe(0)
+    expect(store.size).toBe(0)
   })
 
   describe('dismissal before the item mounts', () => {
@@ -690,7 +745,7 @@ describe('buildController', () => {
       const store = newStore()
       const _self = Symbol('test-modal')
 
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: true})
 
       const showPromise = controller.show()
@@ -704,18 +759,18 @@ describe('buildController', () => {
       const store = newStore()
       const _self = Symbol('test-modal')
 
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: true})
 
       expect(await settleOrPending(controller.destroy())).not.toBe(pending)
-      expect(store.value.size).toBe(0)
+      expect(store.size).toBe(0)
     })
 
     it('show keeps waiting for the component event once the item is mounted', async () => {
       const store = newStore()
       const _self = Symbol('test-modal')
 
-      const {controller, resolve} = buildController<unknown, ModalStore>(_self, store)
+      const {controller, resolve} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: true})
       controller.ref = {} as ComponentPublicInstance<unknown>
 
@@ -733,7 +788,7 @@ describe('buildController', () => {
       const store = newStore()
       const _self = Symbol('test-modal')
 
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: true})
       controller.ref = {} as ComponentPublicInstance<unknown>
 
@@ -753,7 +808,7 @@ describe('buildController', () => {
       const store = newStore()
       const _self = Symbol('test-modal')
 
-      const {controller} = buildController<unknown, ModalStore>(_self, store)
+      const {controller} = buildController<unknown, DialogStore>(_self, store)
       pushItem(store, _self, {modelValue: true})
       controller.ref = {} as ComponentPublicInstance<unknown>
 

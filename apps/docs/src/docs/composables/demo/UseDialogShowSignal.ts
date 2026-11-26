@@ -1,10 +1,10 @@
-import { useModal } from 'bootstrap-vue-next/composables/useModal'
+import { useDialog } from 'bootstrap-vue-next/composables/useDialog'
 import { onBeforeUnmount } from 'vue'
 
 const discard = () => {}
 
 export const confirmDiscard = async () => {
-  const { create } = useModal()
+  const { create } = useDialog()
 
   // #region snippet
   const scope = new AbortController()

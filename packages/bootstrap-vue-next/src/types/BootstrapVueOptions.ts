@@ -133,7 +133,6 @@ export const componentNames = Object.freeze(
 
 export const directivesWithExternalPath = {
   vBColorMode: '/directives/BColorMode',
-  vBModal: '/directives/BModal',
   vBPopover: '/directives/BPopover',
   vBScrollspy: '/directives/BScrollspy',
   vBToggle: '/directives/BToggle',
@@ -147,9 +146,8 @@ export const composablesWithExternalPath = {
   useBreadcrumb: '/composables/useBreadcrumb',
   useBootstrapColorMode: '/composables/useBootstrapColorMode',
   useBvColorMode: '/composables/useBootstrapColorMode',
-  useModal: '/composables/useModal',
+  useDialog: '/composables/useDialog',
   usePasswordStrength: '/composables/usePasswordStrength',
-  useSharedScrollLock: '/composables/useSharedScrollLock',
   useScrollspy: '/composables/useScrollspy',
   useToast: '/composables/useToast',
   useComponentToggle: '/composables/useComponentToggle',

@@ -1,13 +1,12 @@
 import {
   type ComponentPublicInstance,
   computed,
-  type ComputedRef,
   inject,
-  markRaw,
   type MaybeRef,
   onScopeDispose,
   ref,
   type Ref,
+  toRaw,
 } from 'vue'
 import {
   orchestratorRegistryKey,
@@ -19,6 +18,7 @@ import type {
   ComponentController,
   ControllerKey,
   ToastOrchestratorArrayValue,
+  ToastOrchestratorCreateOptions,
   ToastOrchestratorCreateParamBase,
 } from '../../types'
 import {buildController, getOrchestratorControllerId} from '../orchestratorShared'
@@ -49,7 +49,8 @@ export const useToast = () => {
     T extends ToastOrchestratorCreateParamBase<ComponentProps> =
       ToastOrchestratorCreateParamBase<ComponentProps>,
   >(
-    obj: MaybeRef<T> = {} as T
+    obj: MaybeRef<T> = {} as T,
+    options: Readonly<ToastOrchestratorCreateOptions> = {}
   ): ComponentController<typeof BToast, Ref<ToastOrchestratorArrayValue>> {
     // The store is reactive, so a toast created before any BOrchestrator mounts renders once one
     // does. That is legitimate (a router guard can run before the first render), so only warn, and
@@ -62,23 +63,23 @@ export const useToast = () => {
       )
     }
 
-    const toastComp = markRaw(BToast)
+    const {component = BToast, slots, ...createOptions} = options
     const resolvedProps = ref(obj)
-    const toastStore = computed(() => store.value.toast)
+    const toastItems = store.value.toast
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
-    const {resolve, controller} = buildController<
-      typeof BToast,
-      ComputedRef<OrchestratorStoreObject['toast']>
-    >(storeId, toastStore)
+    const {resolve, controller} = buildController<typeof BToast, OrchestratorStoreObject['toast']>(
+      storeId,
+      toastItems,
+      {createOptions}
+    )
 
     const value = computed<ToastOrchestratorArrayValue>({
       get: () => {
-        const {component = toastComp, options, slots, ...props} = resolvedProps.value
+        const props = resolvedProps.value
 
         return {
           component,
-          options,
           slots,
           id: storeId,
           fns: {
@@ -103,7 +104,7 @@ export const useToast = () => {
       },
     })
 
-    toastStore.value.set(storeId, value)
+    toastItems.set(storeId, value)
 
     onScopeDispose(async () => {
       await controller[Symbol.asyncDispose]()
@@ -124,10 +125,11 @@ export const useToast = () => {
     const instances = showHideRegistry?.values.value.get(id)?.instances
     if (!instances) return false
     // Every show/hide component shares this registry, so an id may resolve to a BCollapse or a
-    // BModal. Only toasts are ours to hide. Newest first, the way the registry's getActive does
+    // BDialog. Only toasts are ours to hide. Newest first, the way the registry's getActive does
     for (let i = instances.length - 1; i >= 0; i--) {
       const instance = instances[i]
-      if (instance?.component.type !== BToast) continue
+      // The registry is deeply reactive, so the type reads back as a proxy
+      if (!instance || toRaw(instance.component.type) !== BToast) continue
       instance.hide(trigger, true)
       return true
     }

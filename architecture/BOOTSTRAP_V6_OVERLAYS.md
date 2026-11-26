@@ -1,6 +1,21 @@
 # Bootstrap v6 Overlays (G1): Dialog, Drawer, `useModal`
 
-**Status 2026-11-15: step 1 (Dialog core) implemented.** `BDialog`, `BDialogActions` and the shared `useDialogBase` are in; steps 2–4 are open. What step 1 did differently from the text below, or left for a later step:
+**Status 2026-11-24: step 1 (Dialog core) merged as [#183](https://github.com/VividLemon/bootstrap-vue-next/pull/183) (`bf4ce06a6`); step 2 (orchestrator and `useDialog`) done in [#209](https://github.com/VividLemon/bootstrap-vue-next/pull/209); a follow-up (the machine-reading controller, below) comes before step 3; steps 3–4 are open.**
+
+What step 2 decided where the text below is silent, or left for later:
+
+- **`useDialog`** returns `{create, show, hide, hideAll, get, current}` (Q9 = B). `store` and `_isOrchestratorInstalled` are no longer returned (`useOrchestratorRegistry()` has them). `get(id)` / `current()` return `{id, show(), hide(trigger?, value?)}`; `current()` reads the nearest `BDialog` through `dialogInjectionKey` at `useDialog()` call time.
+- **`DialogResult`** is `{trigger, ok, value?}` with `value: unknown` (not `T = string`: `ok(value)` takes anything). `buildController` stays generic and maps the settling event through a `toResult` callback that reads `returnValue` from the component after its hide returned. A prevented show resolves `{trigger: 'show-prevented', ok: null}` (maintainer decision on #209; matches the `show-prevented` event and the show/hide promises). Toast / popover results stay `BvTriggerableEvent` (without `ok`).
+- **D9** (state machine plan) is applied to all three helpers: `create(props, options)`, `usePopover().create(props, tooltip, options)` (the existing `tooltip` flag keeps the second place), `popover(props, options)` / `tooltip(props, options)`, and `show({resolveOnHide})` overrides per show. Store items no longer carry `options`.
+- **Default footer** for `create()`: kept (Q2's message boxes); `slots: {footer: undefined}` opts out.
+- **Orchestrator:** dialogs, popovers and tooltips render without `<TransitionGroup>` / `<span>`; toasts keep `b-list` (toast owner). The store group is `dialog`, the `BOrchestrator` prop `noDialogs`.
+- **Stack:** `useModalManager` / `modalManagerKey` became the internal `useDialogStack` / `dialogStackKey` (a shallow registry of mounted dialogs and stack of open ones, one per app).
+- **Swap (Q5):** `useDialogSwap`. The target's `show` is emitted first; the current dialog's `hide` (trigger `'swap'`, instant) runs from a new `beforeShowCommit` hook in the machine, between the target's `show` and its commit, so a prevented hide refuses the target's show (it emits `show-prevented`). Only `v-b-toggle` triggers swap; the registered trigger's element reaches the dialog through a new `onTrigger` hook in `useShowHide`. v6's focus restoration to the trigger on `hidden` is not ported.
+- **`useSafeScrollLock`** stays internal for BOffcanvas (step 3 removes it); the public `useSharedScrollLock` is gone.
+- **`create()` before an orchestrator mounts** warns once in total instead of throwing (maintainer decision on #209), as #210 did for `useToast`: a module-level boolean gates a dev-only warning, because every SSR request builds a new registry. The dialog renders once an orchestrator mounts. `usePopover` still throws.
+- **Follow-up before step 3 (maintainer decision on #209):** the controller of `useDialog`, `useToast` and `usePopover` reads the item's state machine directly (the state machine plan's remaining G1.2 items) instead of the store's `modelValue`. `controller.state` stays **internal**, not public.
+
+What step 1 did differently from the text below, or left for a later step:
 
 - **`BDialogActions`** is in step 1: `okTitle`, `cancelTitle`, `okOnly`, `okDisabled`, `cancelDisabled`, `okAttrs`, `cancelAttrs` (attrs take `BButton` props) and `ok` / `cancel` content slots. It reaches the dialog through `dialogInjectionKey`.
 - **`useModal` keeps its name and result (`BvTriggerableEvent`) until step 2.** Provisional bridge: a dialog created without `slots.footer` gets `BDialogActions` as its footer, so message boxes keep their buttons. Step 2 decides the final shape. `vBModal` also stays until step 2.

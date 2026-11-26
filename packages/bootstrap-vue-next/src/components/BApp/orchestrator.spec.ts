@@ -1,10 +1,10 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it} from 'vitest'
-import {defineComponent, h, markRaw, ref} from 'vue'
+import {defineComponent, h, markRaw, ref, shallowReactive} from 'vue'
 import BOrchestrator from './BOrchestrator.vue'
 import {orchestratorRegistryKey} from '../../utils/keys'
 import type {
-  ModalOrchestratorArrayValue,
+  DialogOrchestratorArrayValue,
   ToastOrchestratorArrayValue,
 } from '../../types/ComponentOrchestratorTypes'
 import type {ContainerPosition} from '../../types/Alignment'
@@ -16,7 +16,7 @@ const DummyComponent = markRaw(
   })
 )
 
-const buildItem = <T extends ModalOrchestratorArrayValue | ToastOrchestratorArrayValue>(
+const buildItem = <T extends DialogOrchestratorArrayValue | ToastOrchestratorArrayValue>(
   id: string,
   props: T['props']
 ) =>
@@ -32,17 +32,22 @@ const buildItem = <T extends ModalOrchestratorArrayValue | ToastOrchestratorArra
   }) as T
 
 const buildRegistry = (overrides: {
-  modal?: ModalOrchestratorArrayValue[]
+  dialog?: DialogOrchestratorArrayValue[]
   toast?: ToastOrchestratorArrayValue[]
 }) => {
-  const modalMap = new Map((overrides.modal ?? []).map((item) => [item.id, ref(item)]))
-  const toastMap = new Map((overrides.toast ?? []).map((item) => [item.id, ref(item)]))
+  // Shallow maps, like the registry's
+  const dialogMap = shallowReactive(
+    new Map((overrides.dialog ?? []).map((item) => [item.id, ref(item)]))
+  )
+  const toastMap = shallowReactive(
+    new Map((overrides.toast ?? []).map((item) => [item.id, ref(item)]))
+  )
 
   return {
     store: ref({
-      modal: modalMap,
-      tooltip: new Map(),
-      popover: new Map(),
+      dialog: dialogMap,
+      tooltip: shallowReactive(new Map()),
+      popover: shallowReactive(new Map()),
       toast: toastMap,
     }),
     _isOrchestratorInstalled: ref(true),
@@ -55,9 +60,9 @@ const buildRegistry = (overrides: {
 enableAutoUnmount(afterEach)
 
 describe('BOrchestrator TransitionGroup name conditional behavior', () => {
-  it('applies b-list transition name only when toast items are present', () => {
+  it('renders dialog items without a TransitionGroup or wrapper span', () => {
     const registry = buildRegistry({
-      modal: [buildItem<ModalOrchestratorArrayValue>('modal1', {modelValue: false})],
+      dialog: [buildItem<DialogOrchestratorArrayValue>('dialog1', {modelValue: false})],
     })
 
     const wrapper = mount(BOrchestrator, {
@@ -68,11 +73,9 @@ describe('BOrchestrator TransitionGroup name conditional behavior', () => {
       },
     })
 
-    const transitionGroup = wrapper.findComponent({name: 'TransitionGroup'})
-    expect(transitionGroup.exists()).toBe(true)
-
-    // Should NOT have the b-list name for modal items
-    expect(transitionGroup.props('name')).toBeUndefined()
+    expect(wrapper.findComponent({name: 'TransitionGroup'}).exists()).toBe(false)
+    expect(wrapper.findComponent({name: 'DummyComponent'}).exists()).toBe(true)
+    expect(wrapper.find('span').exists()).toBe(false)
   })
 
   it('applies b-list transition name when toast items are present', () => {
@@ -102,7 +105,7 @@ describe('BOrchestrator TransitionGroup name conditional behavior', () => {
 
   it('applies b-list transition name when mixed items contain toasts', () => {
     const registry = buildRegistry({
-      modal: [buildItem<ModalOrchestratorArrayValue>('modal1', {modelValue: false})],
+      dialog: [buildItem<DialogOrchestratorArrayValue>('dialog1', {modelValue: false})],
       toast: [
         buildItem<ToastOrchestratorArrayValue>('toast1', {
           modelValue: false,
@@ -119,17 +122,49 @@ describe('BOrchestrator TransitionGroup name conditional behavior', () => {
       },
     })
 
-    // Find the TransitionGroup components for both positions
+    // Only the toast container has a TransitionGroup, with the b-list transition
     const transitionGroups = wrapper.findAllComponents({name: 'TransitionGroup'})
-    expect(transitionGroups).toHaveLength(2) // One for modal, one for toast
+    expect(transitionGroups).toHaveLength(1)
+    expect(transitionGroups[0]?.props('name')).toBe('b-list')
+    expect(wrapper.findAllComponents({name: 'DummyComponent'})).toHaveLength(2)
+  })
+})
 
-    // The toast position should have b-list transition
-    const toastTransition = transitionGroups.find((tg) => tg.props('name') === 'b-list')
-    expect(toastTransition).toBeDefined()
+describe('BOrchestrator group containers', () => {
+  const mountWith = (registry: ReturnType<typeof buildRegistry>, filter?: () => boolean) =>
+    mount(BOrchestrator, {
+      props: filter ? {filter} : {},
+      global: {provide: {[orchestratorRegistryKey]: registry}},
+    })
 
-    // The modal position should not have b-list transition
-    const modalTransition = transitionGroups.find((tg) => tg.props('name') === undefined)
-    expect(modalTransition).toBeDefined()
+  it('renders no group container while every group is empty', () => {
+    const wrapper = mountWith(buildRegistry({}))
+    expect(wrapper.find('.orchestrator-container').element.children).toHaveLength(0)
+  })
+
+  it('renders one container per group with items, and none for a group the filter empties', () => {
+    const registry = buildRegistry({
+      dialog: [buildItem<DialogOrchestratorArrayValue>('dialog1', {modelValue: false})],
+      toast: [
+        buildItem<ToastOrchestratorArrayValue>('toast1', {modelValue: false, position: 'top-end'}),
+      ],
+    })
+    expect(mountWith(registry).find('.orchestrator-container').element.children).toHaveLength(2)
+
+    const filtered = mountWith(registry, () => false)
+    expect(filtered.find('.orchestrator-container').element.children).toHaveLength(0)
+  })
+
+  it('wraps toast items in a span and renders dialog items bare', () => {
+    const registry = buildRegistry({
+      dialog: [buildItem<DialogOrchestratorArrayValue>('dialog1', {modelValue: false})],
+      toast: [
+        buildItem<ToastOrchestratorArrayValue>('toast1', {modelValue: false, position: 'top-end'}),
+      ],
+    })
+    const wrapper = mountWith(registry)
+    expect(wrapper.findAll('span')).toHaveLength(1)
+    expect(wrapper.findAllComponents({name: 'DummyComponent'})).toHaveLength(2)
   })
 })
 
