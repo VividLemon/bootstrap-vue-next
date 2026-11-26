@@ -27,17 +27,18 @@ onUnmounted(() => {
 })
 
 const showMeAdvancedExample = async () => {
-  await using _ = await create({
-    slots: {
-      default: (scope) => h('div', null, `custom ${firstRef.value.body} - ${scope.visible}`),
+  await using _ = await create(
+    {},
+    {
+      slots: {
+        default: (scope) => h('div', null, `custom ${firstRef.value.body} - ${scope.visible}`),
+      },
     },
-  }).show()
+  ).show()
 
   // Demonstration pseudocode, you can import a component and use it
   // const importedComponent = () => {
-  //   create({
-  //     component: markRaw((await import('./TestModal.vue')).default),
-  //   })
+  //   create({}, { component: (await import('./TestModal.vue')).default })
   // }
 }
 </script>

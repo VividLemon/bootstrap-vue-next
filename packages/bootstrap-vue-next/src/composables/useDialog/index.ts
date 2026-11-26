@@ -2,7 +2,6 @@ import {
   type ComponentPublicInstance,
   computed,
   inject,
-  markRaw,
   type MaybeRef,
   onScopeDispose,
   type Ref,
@@ -19,9 +18,9 @@ import type {
   ComponentController,
   ControllerKey,
   DialogOrchestratorArrayValue,
+  DialogOrchestratorCreateOptions,
   DialogOrchestratorCreateParamBase,
   DialogResult,
-  OrchestratorCreateOptions,
 } from '../../types'
 import type {BvTriggerableEvent} from '../../utils'
 import {buildController, getOrchestratorControllerId} from '../orchestratorShared'
@@ -88,8 +87,9 @@ export const useDialog = () => {
    * gets `BDialogActions` (OK / Cancel) as its footer; pass `slots: {footer: undefined}` for
    * none.
    *
-   * @param obj The dialog's props, `on*` listeners, `component` and `slots`
-   * @param options Library options (`resolveOnHide`), read once
+   * @param obj The dialog's props and `on*` listeners
+   * @param options What renders the dialog (`component`, `slots`) and library options
+   * (`resolveOnHide`), read once
    */
   // Uses a `function` declaration (rather than a generic arrow function assigned to a const) so
   // that TypeScript preserves per-call generic inference when `create` is returned as part of
@@ -100,7 +100,7 @@ export const useDialog = () => {
       DialogOrchestratorCreateParamBase<ComponentProps>,
   >(
     obj: MaybeRef<T> = {} as T,
-    options: Readonly<OrchestratorCreateOptions> = {}
+    options: Readonly<DialogOrchestratorCreateOptions> = {}
   ): DialogController {
     // The store is reactive, so a dialog created before any BOrchestrator mounts renders once one
     // does (a router guard can run before the first render), so only warn, and only once: an SSR
@@ -113,8 +113,14 @@ export const useDialog = () => {
       )
     }
 
-    const dialogComp = markRaw(BDialog)
-    const defaultFooter = markRaw(BDialogActions)
+    const {component = BDialog, slots = {}, ...createOptions} = options
+    // A BDialog without a footer slot gets BDialogActions. A slot set to `undefined` is left out
+    // (`footer: undefined` opts out of the default)
+    const withFooter =
+      component === BDialog && !('footer' in slots) ? {...slots, footer: BDialogActions} : slots
+    const itemSlots = Object.fromEntries(
+      Object.entries(withFooter).filter(([, slot]) => slot !== undefined)
+    )
     const resolvedProps = ref(obj)
     const dialogItems = store.value.dialog
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
@@ -123,22 +129,15 @@ export const useDialog = () => {
       typeof BDialog,
       OrchestratorStoreObject['dialog'],
       DialogResult
-    >(storeId, dialogItems, {createOptions: {...options}, toResult: toDialogResult})
+    >(storeId, dialogItems, {createOptions, toResult: toDialogResult})
 
     const value = computed<DialogOrchestratorArrayValue>({
       get: () => {
-        const {component = dialogComp, slots = {}, ...props} = resolvedProps.value
-        const withFooter =
-          component === dialogComp && !('footer' in slots)
-            ? {...slots, footer: defaultFooter}
-            : slots
+        const props = resolvedProps.value
 
         return {
           component,
-          // A slot set to `undefined` is left out (`footer: undefined` opts out of the default)
-          slots: Object.fromEntries(
-            Object.entries(withFooter).filter(([, slot]) => slot !== undefined)
-          ),
+          slots: itemSlots,
           fns: {
             resolve,
             setRef: (v: ComponentPublicInstance) => {

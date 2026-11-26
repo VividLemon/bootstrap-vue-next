@@ -37,7 +37,7 @@ The methods accept reactive properties using `MaybeRef`, allowing dynamic update
 
 ### Advanced Creation
 
-For more control, you can use the `component` property to render a custom component or the `slots` property to define slot content dynamically.
+For more control, pass a second argument (read once): `component` renders a custom component, and `slots` defines slot content. It also takes `resolveOnHide`.
 
 <<< DEMO ./demo/UsePopoverAdvanced.vue
 

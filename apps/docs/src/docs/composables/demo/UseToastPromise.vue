@@ -18,6 +18,8 @@ const promiseToast = async () => {
       position: 'middle-center',
       bodyAttrs: { class: 'w-100' },
       modelValue: true,
+    },
+    {
       slots: {
         default: ({ hide }: { hide: (trigger?: string) => void }) => {
           const yesButton = h(BButton, { onClick: () => hide('ok'), size: 'lg' }, () => 'Yes')
@@ -29,8 +31,8 @@ const promiseToast = async () => {
           ]
         },
       },
+      resolveOnHide: true,
     },
-    { resolveOnHide: true },
   ).show()
 
   if (r.trigger === 'ok' || r.trigger === 'cancel') {

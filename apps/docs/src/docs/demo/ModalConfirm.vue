@@ -15,11 +15,10 @@ const { create } = useDialog()
 const confirmResult = ref<boolean | null | undefined>(null)
 
 const confirmBox = async () => {
-  await using value = await create({
-    body: 'Are you sure you want to do this?',
-    title: 'Confirm',
-    slots: { footer: () => h(BDialogActions, { okTitle: 'Yes', cancelTitle: 'No' }) },
-  }).show()
+  await using value = await create(
+    { body: 'Are you sure you want to do this?', title: 'Confirm' },
+    { slots: { footer: () => h(BDialogActions, { okTitle: 'Yes', cancelTitle: 'No' }) } },
+  ).show()
   confirmResult.value = value.ok
 }
 </script>

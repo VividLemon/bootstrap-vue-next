@@ -8,7 +8,8 @@
         :style="value.style"
       >
         <!-- Toasts keep their list transition and its span wrappers. Dialogs, popovers and
-          tooltips animate themselves, so they render bare. The two branches render the same item -->
+          tooltips animate themselves, so they render bare. The two branches render the same item:
+          keep their <component> tags in sync. A change to one branch only is a bug -->
         <TransitionGroup v-if="value.transitionGroupName" :name="value.transitionGroupName">
           <span v-for="item in value.items" :key="item.id">
             <component

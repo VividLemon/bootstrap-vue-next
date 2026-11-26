@@ -131,12 +131,15 @@ const showFns = {
     return _
   },
   basicCustomComponent: async () => {
-    await using _ = await create({
-      slots: {
-        default: () => h('div', null, {default: () => 'foobar!'}),
-        footer: () => h(BDialogActions, {okOnly: true, okTitle: 'Got it'}),
-      },
-    }).show()
+    await using _ = await create(
+      {},
+      {
+        slots: {
+          default: () => h('div', null, {default: () => 'foobar!'}),
+          footer: () => h(BDialogActions, {okOnly: true, okTitle: 'Got it'}),
+        },
+      }
+    ).show()
     return _
   },
   simpleRefProps: async () => {
@@ -149,9 +152,7 @@ const showFns = {
   },
   // Demonstration pseudocode, you can import a component and use it
   // importedComponent: () => {
-  //   show?.({
-  //     component: markRaw((await import('./MyModalComponent.vue')).default),
-  //   })
+  //   create({}, {component: (await import('./MyModalComponent.vue')).default})
   // },
 }
 </script>

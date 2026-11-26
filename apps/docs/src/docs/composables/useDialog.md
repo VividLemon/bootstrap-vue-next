@@ -30,9 +30,9 @@ Alternatively, you can use the traditional plugin approach.
 
 `BDialog` has no built-in buttons. A dialog created without a `footer` slot gets
 [`BDialogActions`](/docs/components/dialog#ok-and-cancel-buttons) (OK and Cancel) as its footer.
-Pass your own through `slots.footer`, for example
-`slots: { footer: () => h(BDialogActions, { okOnly: true }) }`, or `slots: { footer: undefined }`
-for no footer.
+Pass your own through the `slots` option, for example
+`create(props, { slots: { footer: () => h(BDialogActions, { okOnly: true }) } })`, or
+`{ slots: { footer: undefined } }` for no footer.
 
 ### Reactivity Within `create`
 
@@ -42,21 +42,28 @@ The first argument of `create` can be a `MaybeRef`, so its properties can be rea
 
 ### Advanced Creation
 
-Props cover most situations, but you cannot put markup into a slot through props alone. Use the
-`component` property to render another component (an imported SFC or an inline render function),
-and the `slots` property to fill slots. `slots` maps a slot name to a render function or component;
-render functions receive the slot's scope (`ok`, `cancel`, `close`, `hide`, `visible`, ...).
+Props cover most situations, but you cannot put markup into a slot through props alone. The second
+argument of `create` takes `component`, to render another component (an imported SFC or an inline
+render function), and `slots`, to fill slots. `slots` maps a slot name to a render function or
+component; render functions receive the slot's scope (`ok`, `cancel`, `close`, `hide`, `visible`,
+...). Both are read once, when the dialog is created.
 
 <<< DEMO ./demo/UseDialogAdvanced.vue
 
 ### Options
 
-Library options go in a second argument, read once:
+The second argument of `create` is read once:
 
 ```js
-const result = await create({ title: 'Hello World!' }, { resolveOnHide: true }).show()
+const result = await create(
+  { title: 'Hello World!' },
+  { slots: { default: () => h('p', 'Body') }, resolveOnHide: true },
+).show()
 ```
 
+- `component: Component`: renders this component instead of `BDialog`.
+- `slots: Record<string, Function | Component>`: slot content, by slot name. A `BDialog` without a
+  `footer` slot gets `BDialogActions` (OK / Cancel); pass `footer: undefined` for none.
 - `resolveOnHide: boolean`: `show()` resolves as soon as the dialog starts hiding (`hide`), not
   after `hidden`. `show({ resolveOnHide })` overrides it for one show.
 
@@ -134,16 +141,13 @@ await dialog.show()
 ```
 
 Managing the lifecycle yourself is useful when the dialog should keep what the user entered. Its
-content stays mounted while it is hidden, so a half-filled form is still there when you call
-`show()` again; call `destroy()` when you no longer need it. Content rendered with `lazy` and
+content stays mounted while it is hidden, so a form that keeps its own state still has it when you
+call `show()` again; call `destroy()` when you no longer need it. Content rendered with `lazy` and
 `unmountLazy` is unmounted after each hide instead.
 
-```js
-const draft = create({ title: 'New message', slots: { default: MessageForm } })
+Type something, press **Later**, then **Continue message**:
 
-const openDraft = () => draft.show() // the form keeps its input between shows
-const discardDraft = () => draft.destroy()
-```
+<<< DEMO ./demo/UseDialogDraft.vue
 
 ### Cancelling with a signal
 

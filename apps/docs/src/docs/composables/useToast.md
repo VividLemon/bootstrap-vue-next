@@ -31,11 +31,15 @@ The `create` method returns a controller object. Use `.show()` to display the to
 
 ### Create Options
 
-The `create` method accepts an object with `BToast`’s props, `position`, `appendToast`, `component`, and `slots`.
+The `create` method accepts an object with `BToast`’s props, `position` and `appendToast`.
 
 The `position` value affects placement; its type is [ContainerPosition](/docs/types#containerposition).
 
-Library options go in a second argument, read once: `create(props, { resolveOnHide: true })`. `resolveOnHide` resolves the promise when hide starts instead of after the full hide lifecycle; `show({ resolveOnHide })` overrides it for one show.
+The second argument is read once: `create(props, { component, slots, resolveOnHide })`.
+
+- `component` renders this component instead of `BToast`.
+- `slots` maps a slot name to a render function or component.
+- `resolveOnHide` resolves the promise when hide starts instead of after the full hide lifecycle; `show({ resolveOnHide })` overrides it for one show.
 
 ### Reactivity Within create
 

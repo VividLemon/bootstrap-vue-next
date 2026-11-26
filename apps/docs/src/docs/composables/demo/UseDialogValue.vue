@@ -16,22 +16,24 @@ const result = ref('')
 const colors = ['primary', 'success', 'danger'] as const
 
 const pickColor = async () => {
-  await using answer = await create({
-    title: 'Pick a color',
-    slots: {
-      // `ok(value)` hides the dialog with trigger 'ok' and `value` as the result value
-      default: ({ ok }) =>
-        h(
-          'div',
-          { class: 'd-flex gap-2' },
-          colors.map((theme) =>
-            h(BButton, { color: { theme }, onClick: () => ok(theme) }, () => theme),
+  await using answer = await create(
+    { title: 'Pick a color' },
+    {
+      slots: {
+        // `ok(value)` hides the dialog with trigger 'ok' and `value` as the result value
+        default: ({ ok }) =>
+          h(
+            'div',
+            { class: 'd-flex gap-2' },
+            colors.map((theme) =>
+              h(BButton, { color: { theme }, onClick: () => ok(theme) }, () => theme),
+            ),
           ),
-        ),
-      // No OK / Cancel buttons for this one
-      footer: undefined,
+        // No OK / Cancel buttons for this one
+        footer: undefined,
+      },
     },
-  }).show()
+  ).show()
   result.value = JSON.stringify({ trigger: answer.trigger, ok: answer.ok, value: answer.value })
 }
 </script>

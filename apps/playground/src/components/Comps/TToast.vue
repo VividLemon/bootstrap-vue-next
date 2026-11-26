@@ -65,12 +65,14 @@ const showFns = {
     return _
   },
   basicCustomComponent: async () => {
-    await using _ = await create({
-      slots: {default: () => h('div', null, 'foobar!')},
-      modelValue: true,
-      active: true,
-      color: {theme: 'primary'},
-    }).show()
+    await using _ = await create(
+      {
+        modelValue: true,
+        active: true,
+        color: {theme: 'primary'},
+      },
+      {slots: {default: () => h('div', null, 'foobar!')}}
+    ).show()
     return _
   },
   simpleRefProps: async () => {
@@ -83,9 +85,7 @@ const showFns = {
   },
   // Demonstration psuedocode, you can import a component and use it
   // importedComponent: () => {
-  //   show({
-  //     component: markRaw((await import('./MyToastComponent.vue')).default),
-  //   })
+  //   create({}, {component: (await import('./MyToastComponent.vue')).default})
   // },
 }
 </script>

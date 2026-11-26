@@ -15,11 +15,10 @@ const { create } = useDialog()
 const okResult = ref<boolean | null | undefined>(null)
 
 const okBox = async () => {
-  await using value = await create({
-    body: 'This is an informational message',
-    title: 'Message',
-    slots: { footer: () => h(BDialogActions, { okOnly: true }) },
-  }).show()
+  await using value = await create(
+    { body: 'This is an informational message', title: 'Message' },
+    { slots: { footer: () => h(BDialogActions, { okOnly: true }) } },
+  ).show()
   okResult.value = value.ok
 }
 </script>

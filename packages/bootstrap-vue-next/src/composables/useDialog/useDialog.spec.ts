@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from 'vitest'
-import {computed, defineComponent, h, markRaw, nextTick, ref, watchEffect} from 'vue'
+import {computed, defineComponent, h, nextTick, ref, watchEffect} from 'vue'
 import {mount} from '@vue/test-utils'
 import BApp from '../../components/BApp/BApp.vue'
 import BOrchestrator from '../../components/BApp/BOrchestrator.vue'
@@ -13,39 +13,39 @@ import {useToast} from '../useToast'
 describe('useDialog', () => {
   it('create method accepts custom component props without TypeScript errors', async () => {
     // Define a custom modal component with custom props
-    const CustomModal = markRaw(
-      defineComponent({
-        name: 'CustomModal',
-        props: {
-          customProp: {
-            type: String,
-            required: true,
-          },
-          anotherProp: {
-            type: Number,
-            default: 42,
-          },
+    const CustomModal = defineComponent({
+      name: 'CustomModal',
+      props: {
+        customProp: {
+          type: String,
+          required: true,
         },
-        setup(props) {
-          return () =>
-            h('div', {class: 'custom-modal'}, [
-              h('p', `Custom Prop: ${props.customProp}`),
-              h('p', `Another Prop: ${props.anotherProp}`),
-            ])
+        anotherProp: {
+          type: Number,
+          default: 42,
         },
-      })
-    )
+      },
+      setup(props) {
+        return () =>
+          h('div', {class: 'custom-modal'}, [
+            h('p', `Custom Prop: ${props.customProp}`),
+            h('p', `Another Prop: ${props.anotherProp}`),
+          ])
+      },
+    })
 
     const TestComponent = defineComponent({
       setup() {
         const {create} = useDialog()
 
         // This should not cause TypeScript errors
-        const modal = create({
-          component: CustomModal,
-          customProp: 'test value',
-          anotherProp: 100,
-        })
+        const modal = create(
+          {
+            customProp: 'test value',
+            anotherProp: 100,
+          },
+          {component: CustomModal}
+        )
 
         return () =>
           h('div', [
@@ -104,32 +104,32 @@ describe('useDialog', () => {
   })
 
   it('create method accepts both BModal props and custom props together', async () => {
-    const CustomModal = markRaw(
-      defineComponent({
-        name: 'CustomModalWithDefaults',
-        props: {
-          myCustomField: {
-            type: String,
-            default: 'default',
-          },
+    const CustomModal = defineComponent({
+      name: 'CustomModalWithDefaults',
+      props: {
+        myCustomField: {
+          type: String,
+          default: 'default',
         },
-        setup(props) {
-          return () => h('div', {class: 'custom'}, props.myCustomField)
-        },
-      })
-    )
+      },
+      setup(props) {
+        return () => h('div', {class: 'custom'}, props.myCustomField)
+      },
+    })
 
     const TestComponent = defineComponent({
       setup() {
         const {create} = useDialog()
 
         // Mix of standard and custom props
-        const modal = create({
-          component: CustomModal,
-          title: 'Standard Title',
-          myCustomField: 'custom value',
-          size: undefined,
-        })
+        const modal = create(
+          {
+            title: 'Standard Title',
+            myCustomField: 'custom value',
+            size: undefined,
+          },
+          {component: CustomModal}
+        )
 
         return () =>
           h('div', [
@@ -504,10 +504,13 @@ describe('useDialog', () => {
       expect(result).not.toHaveProperty('value')
     })
 
-    it('leaves the default footer out for slots: {footer: undefined}', async () => {
+    it('leaves the default footer out for {slots: {footer: undefined}}', async () => {
       const wrapper = mountApp(() => {
         void useDialog()
-          .create({id: 'no-footer', title: 'None', noTransition: true, slots: {footer: undefined}})
+          .create(
+            {id: 'no-footer', title: 'None', noTransition: true},
+            {slots: {footer: undefined}}
+          )
           .show()
         void useDialog().create({id: 'with-footer', title: 'Default', noTransition: true}).show()
       })
@@ -629,27 +632,27 @@ describe('useDialog', () => {
   it('keeps the content and its state between shows until destroy()', async () => {
     let dialog: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     let setups = 0
-    // markRaw: a component kept in the store must not be made reactive. inheritAttrs: false, the
-    // slot scope is bound on the slot component
-    const Draft = markRaw(
-      defineComponent({
-        inheritAttrs: false,
-        setup() {
-          setups++
-          const text = ref('')
-          return () =>
-            h('input', {
-              id: 'draft',
-              value: text.value,
-              onInput: (e: Event) => {
-                text.value = (e.target as HTMLInputElement).value
-              },
-            })
-        },
-      })
-    )
+    // inheritAttrs: false, the slot scope is bound on the slot component
+    const Draft = defineComponent({
+      inheritAttrs: false,
+      setup() {
+        setups++
+        const text = ref('')
+        return () =>
+          h('input', {
+            id: 'draft',
+            value: text.value,
+            onInput: (e: Event) => {
+              text.value = (e.target as HTMLInputElement).value
+            },
+          })
+      },
+    })
     mountApp(() => {
-      dialog = useDialog().create({id: 'draft-dialog', noTransition: true, slots: {default: Draft}})
+      dialog = useDialog().create(
+        {id: 'draft-dialog', noTransition: true},
+        {slots: {default: Draft}}
+      )
     })
     await nextTick()
     const flush = () => new Promise((resolve) => setTimeout(resolve, 20))

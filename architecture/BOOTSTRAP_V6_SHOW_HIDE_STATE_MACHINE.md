@@ -245,6 +245,20 @@ toast.create({ body: "Saved", position: "bottom-end", appendToast: true });
 
 Lands in G1.2 (orchestrator and `useDialog`) and applies to `useToast` / `usePopover` in the same PR, so the three helpers keep one signature.
 
+**Revised by the maintainer on 2026-11-26 (#209 review):** `component` and `slots` move to the second argument too.
+
+```ts
+const value = await create(
+  { title: "Hello World!", onOk: (e) => {} },
+  { component: MyDialog, slots: { default: Body }, resolveOnHide: true },
+).show();
+```
+
+- The first argument holds only props, `on*` listeners and, for toasts, `position` / `appendToast`. A component prop named `component` or `slots` now reaches the component.
+- The second argument's type is `OrchestratorCreateOptions<Slots>` (per kind: `DialogOrchestratorCreateOptions`, `ToastOrchestratorCreateOptions`, `PopoverOrchestratorCreateOptions`, `TooltipOrchestratorCreateOptions`). It stays flat: `{component, slots, resolveOnHide}`.
+- `component` and `slots` are read once with the rest of the second argument. Swapping them through a ref first argument or `set()` is no longer possible. A slot function still re-renders with the reactive state it reads.
+- They never pass through the reactive first argument, so callers no longer need `markRaw` for them.
+
 ### Suggested implementation patterns
 
 **Suggestions only, not decisions.** The implementing agent may use, adapt or drop any of them, as long as the Goals, the transition table and Decisions D1–D8 hold. Each one names the part of the plan it serves.
@@ -287,7 +301,7 @@ For the maintainer and orchestrator to accept or trim:
 - Event order guarantees documented ("state is committed before `shown`/`hidden`"; "a nested request replaces the outer one").
 - `BvTriggerableEvent` gains `signal` (or the result/event split from Q4 decides).
 - Controller `show({signal})`; possibly `controller.state` instead of `ref.visible`.
-- `create(props, options)`: `options` (`resolveOnHide`) moves out of the props object into a second, plain-object argument; `controller.show({resolveOnHide})` overrides it per call (D9, see [`create()` options move to a second argument](#create-options-move-to-a-second-argument)).
+- `create(props, options)`: `options` (`resolveOnHide`), and since the 2026-11-26 revision `component` and `slots`, move out of the props object into a second, plain-object argument; `controller.show({resolveOnHide})` overrides it per call (D9, see [`create()` options move to a second argument](#create-options-move-to-a-second-argument)).
 - `useLegacyShowHide` deleted once Dialog, Drawer and Menu move (already planned). None of #173's legacy-only fixes need porting if that happens first.
 
 ## Test strategy
@@ -349,4 +363,4 @@ Answered by the maintainer on 2026-11-09 (D9 added the same day).
 | D6  | Where `signal` lives (Q4)                    | **On the cancelable request events** (`event.signal` on `show` / `hide` / `ok`; `BvTriggerableEvent` stays the event type). `DialogResult` has no signal. `controller.show({signal})` is separate                                                                                           |
 | D7  | Public state (Q5)                            | **Public and read-only:** `state` (`'hidden' \| 'showing' \| 'shown' \| 'hiding'`) returned by `useShowHide`, next to `visible`. *Revised 2026-11-25 on #209: `controller.state` on the orchestrator controller stays internal, not public*                                                                                                                          |
 | D8  | `disabled` (#19)                             | **Guard in the machine.** While disabled, `show()` resolves `'show-prevented'` without events; turning `disabled` on while open hides with trigger `'disabled'`. Menu (G2) uses it                                                                                                          |
-| D9  | `create()` signature                         | **`create(props, options)`.** Only `options` moves to the second argument (a plain object, read once); `component`, `slots` and toast `position` / `appendToast` stay in the first. `resolveOnHide` is a create option overridable per call with `controller.show({resolveOnHide, signal})` |
+| D9  | `create()` signature                         | **`create(props, options)`.** `options` moves to the second argument (a plain object, read once); toast `position` / `appendToast` stay in the first. Revised on 2026-11-26: `component` and `slots` move to the second argument too, `create(props, {component, slots, resolveOnHide})`. `resolveOnHide` is a create option overridable per call with `controller.show({resolveOnHide, signal})` |

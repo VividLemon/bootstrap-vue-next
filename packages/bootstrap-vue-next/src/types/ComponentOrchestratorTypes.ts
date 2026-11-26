@@ -15,14 +15,24 @@ export type CamelCase<S extends string> = S extends `${infer P1}-${infer P2}${in
   ? `${Lowercase<P1>}${Uppercase<P2>}${CamelCase<P3>}`
   : Lowercase<S>
 /**
- * The second argument of `create()`: library options, read once
+ * Slot content for a created item: a slot function or a component, by slot name
  */
-export type OrchestratorCreateOptions = {
+export type OrchestratorSlots<Slots extends Record<string, any> = Record<string, any>> = {
+  [K in keyof Slots]?: Slots[K] | Readonly<Component>
+}
+/**
+ * The second argument of `create()`: what renders the item, and library options. Read once
+ */
+export type OrchestratorCreateOptions<Slots extends Record<string, any> = Record<string, any>> = {
   /**
    * `show()` resolves as soon as the component starts hiding (`hide`), not after `hidden`.
    * `show({resolveOnHide})` overrides it for one show
    */
   resolveOnHide?: boolean
+  /** The component to render instead of the default one (`BDialog`, `BToast`, ...) */
+  component?: Readonly<Component>
+  /** Slot content, by slot name: a slot function or a component */
+  slots?: OrchestratorSlots<Slots>
 }
 export type OrchestratorShowOptions = {
   /**
@@ -84,14 +94,8 @@ export type PromiseWithController<
 type OrchestratorCreateBase<
   BaseComponentProps extends Record<string, any>,
   SuppliedComponentProps extends Record<string, any>,
-  BaseComponentSlots extends Record<string, any>,
   BaseComponentEmits extends Record<string, any>,
 > = BaseComponentProps & {
-  component?: Readonly<Component>
-  slots?: {
-    [K in keyof BaseComponentSlots]?: BaseComponentSlots[K] | Readonly<Component>
-  }
-} & {
   [K in Extract<keyof BaseComponentEmits, string> as CamelCase<Prefix<'on-', K>>]?: (
     e: BaseComponentEmits[K][0]
   ) => void
@@ -102,9 +106,7 @@ type ArrayValue<
   BaseComponentEmits extends Record<string, any>,
 > = {
   component?: Readonly<Component>
-  slots?: {
-    [K in keyof BaseComponentSlots]?: BaseComponentSlots[K] | Readonly<Component>
-  }
+  slots?: OrchestratorSlots<BaseComponentSlots>
   /**
    * If this is the prop that is passed in, it will be that
    * If the input is undefined, it will be a symbol stored in the Map<>
@@ -141,9 +143,9 @@ export type ToastOrchestratorCreateParamBase<
     appendToast?: boolean
   },
   ComponentProps,
-  BToastSlots,
   BToastEmits
 >
+export type ToastOrchestratorCreateOptions = OrchestratorCreateOptions<BToastSlots>
 export type ToastOrchestratorCreateParam<
   ComponentProps extends Record<string, any> = Record<string, any>,
 > = MaybeRef<ToastOrchestratorCreateParamBase<ComponentProps>>
@@ -156,11 +158,9 @@ export type ToastOrchestratorArrayValue = ArrayValue<ToastArrayProps, BToastSlot
 // Tooltip
 export type TooltipOrchestratorCreateParamBase<
   ComponentProps extends Record<string, any> = Record<string, any>,
-> = OrchestratorCreateBase<
-  BTooltipProps,
-  ComponentProps,
-  Omit<BTooltipSlots, 'activator'>,
-  BTooltipEmits
+> = OrchestratorCreateBase<BTooltipProps, ComponentProps, BTooltipEmits>
+export type TooltipOrchestratorCreateOptions = OrchestratorCreateOptions<
+  Omit<BTooltipSlots, 'activator'>
 >
 export type TooltipOrchestratorCreateParam<
   ComponentProps extends Record<string, any> = Record<string, any>,
@@ -174,11 +174,9 @@ export type TooltipOrchestratorArrayValue = ArrayValue<
 // Popovers
 export type PopoverOrchestratorCreateParamBase<
   ComponentProps extends Record<string, any> = Record<string, any>,
-> = OrchestratorCreateBase<
-  BPopoverProps,
-  ComponentProps,
-  Omit<BPopoverSlots, 'activator'>,
-  BPopoverEmits
+> = OrchestratorCreateBase<BPopoverProps, ComponentProps, BPopoverEmits>
+export type PopoverOrchestratorCreateOptions = OrchestratorCreateOptions<
+  Omit<BPopoverSlots, 'activator'>
 >
 export type PopoverOrchestratorCreateParam<
   ComponentProps extends Record<string, any> = Record<string, any>,
@@ -192,7 +190,8 @@ export type PopoverOrchestratorArrayValue = ArrayValue<
 // Dialogs
 export type DialogOrchestratorCreateParamBase<
   ComponentProps extends Record<string, any> = Record<string, any>,
-> = OrchestratorCreateBase<BDialogProps, ComponentProps, BDialogSlots, BDialogEmits>
+> = OrchestratorCreateBase<BDialogProps, ComponentProps, BDialogEmits>
+export type DialogOrchestratorCreateOptions = OrchestratorCreateOptions<BDialogSlots>
 export type DialogOrchestratorCreateParam<
   ComponentProps extends Record<string, any> = Record<string, any>,
 > = MaybeRef<DialogOrchestratorCreateParamBase<ComponentProps>>

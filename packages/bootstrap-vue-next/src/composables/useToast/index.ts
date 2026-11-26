@@ -2,11 +2,11 @@ import {
   type ComponentPublicInstance,
   computed,
   inject,
-  markRaw,
   type MaybeRef,
   onScopeDispose,
   ref,
   type Ref,
+  toRaw,
 } from 'vue'
 import {
   orchestratorRegistryKey,
@@ -17,8 +17,8 @@ import type {ContainerPosition} from '../../types/Alignment'
 import type {
   ComponentController,
   ControllerKey,
-  OrchestratorCreateOptions,
   ToastOrchestratorArrayValue,
+  ToastOrchestratorCreateOptions,
   ToastOrchestratorCreateParamBase,
 } from '../../types'
 import {buildController, getOrchestratorControllerId} from '../orchestratorShared'
@@ -50,7 +50,7 @@ export const useToast = () => {
       ToastOrchestratorCreateParamBase<ComponentProps>,
   >(
     obj: MaybeRef<T> = {} as T,
-    options: Readonly<OrchestratorCreateOptions> = {}
+    options: Readonly<ToastOrchestratorCreateOptions> = {}
   ): ComponentController<typeof BToast, Ref<ToastOrchestratorArrayValue>> {
     // The store is reactive, so a toast created before any BOrchestrator mounts renders once one
     // does. That is legitimate (a router guard can run before the first render), so only warn, and
@@ -63,7 +63,7 @@ export const useToast = () => {
       )
     }
 
-    const toastComp = markRaw(BToast)
+    const {component = BToast, slots, ...createOptions} = options
     const resolvedProps = ref(obj)
     const toastItems = store.value.toast
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
@@ -71,12 +71,12 @@ export const useToast = () => {
     const {resolve, controller} = buildController<typeof BToast, OrchestratorStoreObject['toast']>(
       storeId,
       toastItems,
-      {createOptions: {...options}}
+      {createOptions}
     )
 
     const value = computed<ToastOrchestratorArrayValue>({
       get: () => {
-        const {component = toastComp, slots, ...props} = resolvedProps.value
+        const props = resolvedProps.value
 
         return {
           component,
@@ -128,7 +128,8 @@ export const useToast = () => {
     // BDialog. Only toasts are ours to hide. Newest first, the way the registry's getActive does
     for (let i = instances.length - 1; i >= 0; i--) {
       const instance = instances[i]
-      if (instance?.component.type !== BToast) continue
+      // The registry is deeply reactive, so the type reads back as a proxy
+      if (!instance || toRaw(instance.component.type) !== BToast) continue
       instance.hide(trigger, true)
       return true
     }

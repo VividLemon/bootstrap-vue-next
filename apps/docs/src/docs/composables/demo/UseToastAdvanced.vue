@@ -29,15 +29,13 @@ onUnmounted(() => {
 })
 
 const showMe = async () => {
-  await using _ = await create({
-    body: firstRef.value.body,
-    slots: { default: () => h('div', null, `custom! ${firstRef.value.body}`) },
-  }).show()
+  await using _ = await create(
+    { body: firstRef.value.body },
+    { slots: { default: () => h('div', null, `custom! ${firstRef.value.body}`) } },
+  ).show()
   // Demonstration pseudocode, you can also import a component and use it
   // const importedComponent = () => {
-  //   create({
-  //     component: markRaw((await import('./MyToastComponent.vue')).default),
-  //   })
+  //   create({}, { component: (await import('./MyToastComponent.vue')).default })
   // }
 }
 </script>

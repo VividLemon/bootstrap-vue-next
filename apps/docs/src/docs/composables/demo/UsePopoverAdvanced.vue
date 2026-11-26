@@ -12,12 +12,16 @@ import { usePopover } from 'bootstrap-vue-next/composables/usePopover'
 const { popover } = usePopover()
 
 const showAdvancedPopover = async () => {
-  await using _ = await popover({
-    slots: {
-      default: (scope) => h('div', null, `Custom content - Visible: ${scope.visible}`),
+  await using _ = await popover(
+    {
+      activator: 'advanced-popover-activator',
+      title: 'Advanced Popover',
     },
-    activator: 'advanced-popover-activator',
-    title: 'Advanced Popover',
-  }).show()
+    {
+      slots: {
+        default: (scope) => h('div', null, `Custom content - Visible: ${scope.visible}`),
+      },
+    },
+  ).show()
 }
 </script>
