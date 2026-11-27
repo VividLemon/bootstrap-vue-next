@@ -1,7 +1,7 @@
 <template>
   <select
     :id="computedId"
-    ref="_input"
+    ref="input"
     v-model="localValue"
     :class="computedClasses"
     :name="props.name"
@@ -81,7 +81,7 @@ const selectSizeNumber = useToNumber(() => props.selectSize)
 
 const {stateClass} = useStateClass(() => props.state)
 
-const input = useTemplateRef('_input')
+const input = useTemplateRef('input')
 
 const {focused} = useFocus(input, {
   initialValue: props.autofocus,

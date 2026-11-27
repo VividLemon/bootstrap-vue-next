@@ -122,7 +122,7 @@ export interface UseCssTransitionReturn {
  * Typical use together with `useShowHide`:
  *
  * ```ts
- * const element = useTemplateRef<HTMLElement>('_element')
+ * const element = useTemplateRef<HTMLElement>('element')
  * const {run} = useCssTransition(element)
  * const {visible, instant} = useShowHide(
  *   {modelValue, props, emit, element, id},

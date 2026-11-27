@@ -1,7 +1,7 @@
 <template>
   <component
     :is="computedTag"
-    ref="_element"
+    ref="element"
     class="btn"
     v-bind="linkProps"
     :class="computedClasses"
@@ -79,7 +79,7 @@ const computedColor = computed(() => resolvePartColor(props.color, {theme: 'seco
 const emit = defineEmits<BButtonEmits>()
 defineSlots<BButtonSlots>()
 
-const element = useTemplateRef<HTMLButtonElement | null>('_element')
+const element = useTemplateRef<HTMLButtonElement | null>('element')
 
 const pressedValue = defineModel<BButtonProps['pressed']>('pressed', {default: undefined})
 

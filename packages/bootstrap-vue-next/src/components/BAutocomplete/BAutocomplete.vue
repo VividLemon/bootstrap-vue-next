@@ -32,11 +32,13 @@
             :selected="selectedOptions"
             :remove="removeSelected"
           >
-            <BFormTag
+            <BChip
               v-for="(opt, i) in selectedOptions"
               :key="optionKey(opt, i)"
-              :title="String(opt.text)"
+              :value="String(opt.text)"
               :disabled="props.disabled"
+              :dismissible="!props.disabled"
+              :dismiss-label="`Remove ${opt.text}`"
               :color="{theme: 'secondary'}"
               :class="{
                 'b-autocomplete-tag-muted': pendingDelete && !isLastSelectedOption(opt, i),
@@ -45,7 +47,7 @@
               @remove="removeSelected(opt)"
             >
               {{ opt.text }}
-            </BFormTag>
+            </BChip>
           </slot>
           <template v-else>
             <span
@@ -64,7 +66,7 @@
           <ComboboxInput v-model="searchTerm" as-child :display-value="displayValueFn">
             <slot name="input" v-bind="comboboxInputProps" :search-term>
               <BFormInput
-                ref="_input"
+                ref="input"
                 :model-value="searchTerm"
                 v-bind="comboboxInputProps"
                 :class="{'b-autocomplete-input-clearable': showClearButton}"
@@ -179,7 +181,7 @@ import {useId} from '../../composables/useId'
 import BInputGroup from '../BInputGroup/BInputGroup.vue'
 import BButton from '../BButton/BButton.vue'
 import BFormInput from '../BFormInput/BFormInput.vue'
-import BFormTag from '../BFormTags/BFormTag.vue'
+import BChip from '../BFormChips/BChip.vue'
 import BCloseButton from '../BButton/BCloseButton.vue'
 import {useFormSelect} from '../../composables/useFormSelect'
 import {useAriaInvalid} from '../../composables/useAriaInvalid'
@@ -220,7 +222,7 @@ const props = useDefaults(_props, 'BAutocomplete')
 const emit = defineEmits<BAutocompleteEmits>()
 defineSlots<BAutocompleteSlots>()
 
-const _input = useTemplateRef('_input')
+const input = useTemplateRef('input')
 
 const modelValue = defineModel<BAutocompleteProps['modelValue']>({
   default: undefined,
@@ -381,7 +383,7 @@ const clearSelection = () => {
   singleSelectedLabelCache.value = null
   emit('clear')
   emit('change', modelValue.value)
-  _input.value?.focus()
+  input.value?.focus()
 }
 
 const onOptionSelect = (option: SelectOption) => {
@@ -392,7 +394,7 @@ const onOptionSelect = (option: SelectOption) => {
   nextTick(() => {
     emit('change', modelValue.value)
   })
-  _input.value?.focus()
+  input.value?.focus()
 }
 
 const resetPendingDelete = () => {
@@ -446,8 +448,8 @@ const comboboxInputProps = computed<
 }))
 
 defineExpose({
-  blur: () => _input.value?.blur(),
-  element: computed(() => _input.value?.element?.value ?? null),
-  focus: () => _input.value?.focus(),
+  blur: () => input.value?.blur(),
+  element: computed(() => input.value?.element?.value ?? null),
+  focus: () => input.value?.focus(),
 })
 </script>

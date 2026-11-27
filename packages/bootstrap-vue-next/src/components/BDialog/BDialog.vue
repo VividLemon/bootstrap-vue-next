@@ -1,7 +1,7 @@
 <template>
   <dialog
     :id="computedId"
-    ref="_element"
+    ref="element"
     class="dialog"
     :class="computedClasses"
     :aria-labelledby="!props.noHeader ? `${computedId}-label` : undefined"
@@ -102,7 +102,7 @@ const slots = defineSlots<BDialogSlots>()
 const computedId = useId(() => props.id, 'dialog')
 const modelValue = defineModel<Exclude<BDialogProps['modelValue'], undefined>>({default: false})
 
-const element = useTemplateRef<HTMLDialogElement | null>('_element')
+const element = useTemplateRef<HTMLDialogElement | null>('element')
 
 // A `v-b-toggle` trigger inside another open dialog swaps that dialog for this one instead of
 // stacking on it. Bootstrap v6's data API does the same (`dialog.ts`, `_handleDataApiClick`),

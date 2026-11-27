@@ -2,7 +2,7 @@
   <component
     :is="props.tag"
     :id="computedId"
-    ref="_el"
+    ref="el"
     class="tab-pane"
     :class="computedClasses"
     role="tabpanel"
@@ -54,7 +54,7 @@ const computedId = computed(() => props.id ?? localId.value ?? internalId.value)
 const computedButtonId = useId(() => props.buttonId, 'tab')
 
 const lazyRenderCompleted = ref(false)
-const el = useTemplateRef('_el')
+const el = useTemplateRef('el')
 
 const processedAttrs = computed(() => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

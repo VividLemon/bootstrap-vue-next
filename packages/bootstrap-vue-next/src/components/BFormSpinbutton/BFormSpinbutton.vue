@@ -1,6 +1,6 @@
 <template>
   <div
-    ref="_element"
+    ref="element"
     class="b-form-spinbutton form-control"
     :class="computedClasses"
     role="group"
@@ -125,7 +125,7 @@ const modelValue = defineModel<Exclude<BFormSpinbuttonProps['modelValue'], undef
   default: null,
 })
 
-const element = useTemplateRef('_element')
+const element = useTemplateRef('element')
 
 const {focused} = useFocus(element)
 

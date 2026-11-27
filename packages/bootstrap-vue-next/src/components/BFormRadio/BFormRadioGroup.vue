@@ -1,6 +1,6 @@
 <template>
   <BFormRadioGroupBase
-    ref="_base"
+    ref="base"
     v-bind="forwardedProps"
     v-model="modelValue as any"
     :options="normalizedOptions"
@@ -119,7 +119,7 @@ const forwardedProps = computed(() => ({
   plain: props.plain,
 }))
 
-const base = useTemplateRef('_base')
+const base = useTemplateRef('base')
 defineExpose({
   blur: () => {
     base?.value?.blur()

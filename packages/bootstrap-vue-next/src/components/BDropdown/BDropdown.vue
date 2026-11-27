@@ -6,7 +6,7 @@
   >
     <BButton
       :id="computedId"
-      ref="_splitButton"
+      ref="splitButton"
       :variant="props.splitVariant || props.variant"
       :color="computedSplitColor"
       :size="props.size"
@@ -27,7 +27,7 @@
     <BButton
       v-if="props.split"
       :id="computedId + '-split'"
-      ref="_button"
+      ref="button"
       :variant="props.variant"
       :color="computedColor"
       :size="props.size"
@@ -57,7 +57,7 @@
         <ul
           v-show="showRef"
           :id="computedId + '-menu'"
-          ref="_floating"
+          ref="floating"
           :style="[floatingStyles, sizeStyles, {display: showRef || isActive ? 'block' : 'none'}]"
           class="dropdown-menu overflow-auto b-floating-size"
           :class="[props.menuClass, computedMenuClasses]"
@@ -184,9 +184,9 @@ const computedOffset = computed(() =>
 )
 const offsetToNumber = useToNumber(computedOffset)
 
-const floatingElement = useTemplateRef<HTMLUListElement | null>('_floating')
-const button = useTemplateRef<HTMLElement | null>('_button')
-const splitButton = useTemplateRef<HTMLElement | null>('_splitButton')
+const floatingElement = useTemplateRef<HTMLUListElement | null>('floating')
+const button = useTemplateRef<HTMLElement | null>('button')
+const splitButton = useTemplateRef<HTMLElement | null>('splitButton')
 
 const boundary = computed<Boundary | undefined>(() =>
   isBoundary(props.boundary) ? props.boundary : undefined

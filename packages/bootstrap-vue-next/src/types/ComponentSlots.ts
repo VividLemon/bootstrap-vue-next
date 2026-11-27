@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {Placement} from './Alignment'
-import type {ClassValue} from './AnyValuedAttributes'
-import type {ButtonVariant, ColorExtendables} from './ColorTypes'
 import type {ValidationState} from './CommonTypes'
 import type {LiteralUnion} from './LiteralUnion'
 import type {SelectOption} from './SelectTypes'
 import type {Size} from './Size'
 import type {SpinnerType} from './SpinnerType'
 import type {BSpinnerProps} from './ComponentProps'
-import type {InputType} from './InputType'
 import type {TableField} from './TableTypes'
 import type {DateRange, DateValue, SegmentPart, TimeValue} from 'reka-ui'
 import type {StringAriaInvalid} from './AriaInvalid'
@@ -507,59 +504,35 @@ export type BFormSpinbuttonSlots = {
   increment?: (props: {hasFocus: boolean}) => any
 }
 
-export type BFormTagSlots = {
-  default?: (props: Record<string, never>) => any
+/**
+ * Props for the element a `BFormChips` `chip` slot renders. Bind them with `v-bind="props"` on
+ * that one element: `data-bs-chip-value` (keyboard navigation and clicks find the chip by it),
+ * `tabindex` and `aria-pressed`.
+ */
+export interface ChipProps {
+  'data-bs-chip-value': string
+  'tabindex': number
+  'aria-pressed'?: 'true'
 }
 
-export type BFormTagsSlots = {
-  'add-button-text'?: (props: Record<string, never>) => any
+export type BChipSlots = {
+  'default'?: (props: Record<string, never>) => any
+  'dismiss-icon'?: (props: Record<string, never>) => any
+  'icon'?: (props: Record<string, never>) => any
+  /** Bind `props` on the image: `<img v-bind="props" src="...">` */
+  'img'?: (props: {props: {class: string}}) => any
+}
 
-  'default'?: (props: {
-    addButtonText: string
-    addButtonVariant: ButtonVariant | null
-    addButtonColor: ColorExtendables
-    addTag: (tag?: string) => void
-    disableAddButton: boolean
-    disabled: boolean
-    duplicateTagText: string
-    duplicateTags: string[]
-    form: string | undefined
-    inputAttrs: Record<string, unknown>
-    inputClass: ClassValue
-    inputHandlers: {
-      input: (e: Event | string) => void
-      keydown: (e: KeyboardEvent) => void
-      change: (e: Event) => void
-    }
-    inputId: string
-    inputType: InputType
-    invalidTagText: string
-    invalidTags: string[]
-    isDuplicate: boolean
-    isInvalid: boolean
-    isLimitReached: boolean
-    limitTagsText: string
-    limit: number
-    noTagRemove: boolean
-    placeholder: string
-    removeTag: (tag?: string) => void
-    required: boolean
-    separator: string | readonly string[] | undefined
-    size: Size | undefined
-    state: ValidationState
-    tagClass: ClassValue
-    tagPills: boolean
-    tagRemoveLabel: string | undefined
-    tagColor: ColorExtendables
-    tags: string[]
+export type BFormChipsSlots = {
+  /** Bind `props` on the chip element: `<BChip v-bind="props">` */
+  'chip'?: (props: {
+    value: string
+    index: number
+    selected: boolean
+    remove: () => boolean
+    props: ChipProps
   }) => any
-  'tag'?: (props: {
-    tag: string
-    tagClass: ClassValue
-    tagColor: ColorExtendables
-    tagPills: boolean
-    removeTag: (tag?: string) => void
-  }) => any
+  'dismiss-icon'?: (props: {value: string; index: number}) => any
 }
 
 export type BLinkSlots = {

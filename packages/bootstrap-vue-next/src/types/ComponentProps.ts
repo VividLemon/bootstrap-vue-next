@@ -6,7 +6,7 @@ import type {
   RootBoundary,
   Strategy,
 } from '@floating-ui/vue'
-import type {AriaAttributes, Component, ComponentPublicInstance, TeleportProps} from 'vue'
+import type {Component, ComponentPublicInstance, TeleportProps} from 'vue'
 import type {RouteLocationRaw} from 'vue-router'
 import type {LinkTarget} from './LinkTarget'
 import type {
@@ -711,52 +711,37 @@ export interface BFormSpinbuttonProps {
   wrap?: boolean
 }
 
-export interface BFormTagProps {
+export interface BChipProps {
+  active?: boolean
   color?: ColorExtendables | null
   disabled?: boolean
+  dismissLabel?: string
+  dismissible?: boolean
   id?: string
-  noRemove?: boolean
-  pill?: boolean
-  removeLabel?: string
   tag?: string
-  title?: string
+  value?: string
 }
 
-export interface BFormTagsProps {
-  addButtonColor?: ColorExtendables
-  addButtonText?: string
-  addButtonVariant?: ButtonVariant | null
-  addOnChange?: boolean
+export interface BFormChipsProps {
+  allowDuplicates?: boolean
+  ariaInvalid?: AriaInvalid
   autofocus?: boolean
+  chipAttrs?: (value: string, index: number) => Readonly<AttrsValue> | undefined
+  color?: Pick<ColorExtendables, 'theme'> | null
+  createOnBlur?: boolean
   disabled?: boolean
-  duplicateTagText?: string
-  feedbackAriaLive?: AriaAttributes['aria-live']
+  dismissLabel?: string
+  dismissible?: boolean
   form?: string
-  ignoreInputFocusSelector?: string | readonly string[]
+  id?: string
   inputAttrs?: Readonly<AttrsValue>
-  inputClass?: ClassValue
-  inputId?: string
-  inputType?: InputType
-  invalidTagText?: string
-  limit?: Numberish
-  limitTagsText?: string
-  modelValue?: readonly string[]
+  maxChips?: number | null
+  modelValue?: string[]
   name?: string
-  noAddOnEnter?: boolean
-  noOuterFocus?: boolean
-  noTagRemove?: boolean
   placeholder?: string
-  removeOnDelete?: boolean
   required?: boolean
-  separator?: string | readonly string[]
-  size?: Size
+  separator?: string | null
   state?: ValidationState
-  tagClass?: ClassValue
-  tagColor?: ColorExtendables
-  tagPills?: boolean
-  tagRemoveLabel?: string
-  tagRemovedLabel?: string
-  tagValidator?: (t: string) => boolean
 }
 
 export interface BFormTextareaProps extends CommonInputProps {

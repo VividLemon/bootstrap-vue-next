@@ -1,6 +1,6 @@
 <template>
   <BFormSelectBase
-    ref="_base"
+    ref="base"
     v-bind="forwardedProps"
     v-model="modelValue as any"
     :options="normalizedOptions as any"
@@ -162,7 +162,7 @@ const forwardedProps = computed(() => ({
   state: props.state,
 }))
 
-const base = useTemplateRef('_base')
+const base = useTemplateRef('base')
 defineExpose({
   blur: () => {
     base?.value?.blur()

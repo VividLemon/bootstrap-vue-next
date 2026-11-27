@@ -243,6 +243,8 @@ export const defaultsKey: InjectionKey<Ref<Partial<BvnComponentProps>>> =
   createBvnRegistryInjectionKey('defaults')
 
 export const inputGroupKey: InjectionKey<boolean> = createBvnInjectionKey('inputGroup')
+/** Provided by BFormChips: chips inside it take their dismiss buttons out of the tab order */
+export const chipInputKey: InjectionKey<boolean> = createBvnInjectionKey('chipInput')
 export const buttonGroupKey: InjectionKey<boolean> = createBvnInjectionKey('buttonGroup')
 
 export type OrchestratorStoreObject = {

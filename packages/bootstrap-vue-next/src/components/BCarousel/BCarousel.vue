@@ -1,7 +1,7 @@
 <template>
   <div
     :id="computedId"
-    ref="_element"
+    ref="element"
     class="carousel slide pointer-event"
     :class="computedClasses"
   >
@@ -26,14 +26,14 @@
       />
     </div>
 
-    <div ref="_relatedTarget" class="carousel-inner">
+    <div ref="relatedTarget" class="carousel-inner">
       <TransitionGroup v-bind="transitionGroupProps">
         <component
           :is="slide"
           v-for="(slide, i) in slides"
           v-show="i === modelValue"
           :key="i"
-          ref="_slideValues"
+          ref="slideValues"
           :class="{active: i === modelValue && isTransitioning === false}"
           :style="props.noTransition && {transition: 'none'}"
         />
@@ -96,7 +96,7 @@ const buttonOwnership = useId(undefined, 'carousel-button-ownership')
 
 const modelValue = defineModel<Exclude<BCarouselProps['modelValue'], undefined>>({default: 0})
 
-const slideValues = useTemplateRef<InstanceType<typeof BCarouselSlide>[]>('_slideValues')
+const slideValues = useTemplateRef<InstanceType<typeof BCarouselSlide>[]>('slideValues')
 
 const touchThresholdNumber = useToNumber(() => props.touchThreshold)
 const slideInterval = ref<Numberish | null>(null)
@@ -109,8 +109,8 @@ const intervalNumber = useToNumber(() => slideInterval.value ?? props.interval)
 const isTransitioning = ref(false)
 const rideStarted = ref(false)
 const direction = ref<'start' | 'end'>('start')
-const relatedTarget = useTemplateRef('_relatedTarget')
-const element = useTemplateRef('_element')
+const relatedTarget = useTemplateRef('relatedTarget')
+const element = useTemplateRef('element')
 
 let previousModelValue = modelValue.value
 let isInternalChange = false
