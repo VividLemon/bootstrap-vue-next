@@ -389,6 +389,27 @@ export const useTableSelectedItems = <Item>({
       })
   })
 
+  /**
+   * `range` mode: the row a Shift range starts from, by its key (`utils.get`), so it survives
+   * sorting. Set by a click without Shift (and a Ctrl / Cmd click that selects a row); Shift
+   * clicks keep it, so a range can be adjusted from the same start. Dropped when the selection
+   * empties or the primary key changes
+   */
+  const noAnchor = Symbol('no anchor')
+  let anchor: unknown = noAnchor
+  watch(
+    () => selectedItems.value.length === 0,
+    (empty) => {
+      if (empty) anchor = noAnchor
+    }
+  )
+  watch(
+    () => toValue(primaryKey),
+    () => {
+      anchor = noAnchor
+    }
+  )
+
   const handleRowSelection = ({
     item,
     index,
@@ -418,31 +439,37 @@ export const useTableSelectedItems = <Item>({
         }
       }
     } else {
-      if (ctrlClicked || metaClicked) {
-        // Delete if in the object
+      const anchorIndex =
+        anchor === noAnchor ? -1 : allItemsResolved.value.findIndex((i) => utils.get(i) === anchor)
+      if (shiftClicked && anchorIndex !== -1) {
+        // Range from the anchor to the clicked row. The anchor stays where it is
+        const range = allItemsResolved.value.slice(
+          Math.min(anchorIndex, index),
+          Math.max(anchorIndex, index) + 1
+        )
+        if (ctrlClicked || metaClicked) {
+          // Ctrl / Cmd + Shift adds the range to the selection
+          const selected = new Set(selectedItems.value)
+          selectedItems.value = [
+            ...selectedItems.value,
+            ...range.map(utils.get).filter((value) => !selected.has(value)),
+          ]
+        } else {
+          utils.set(range)
+        }
+      } else if (ctrlClicked || metaClicked) {
+        // Toggle the row; a row that gets selected becomes the anchor
         if (utils.has(item)) {
           utils.remove(item)
-          // Otherwise add. Functions similarly to 'multi' at this point
         } else {
           utils.add(item)
+          anchor = utils.get(item)
         }
-        // This is where range is different, due to the difference in shift
-      } else if (shiftClicked) {
-        const lastSelectedItem = selectedItems.value[selectedItems.value.length - 1]
-        const lastSelectedIndex = allItemsResolved.value.findIndex(
-          (i) => utils.get(i) === lastSelectedItem
-        )
-        if (lastSelectedIndex === -1) {
-          utils.set([item])
-          return
-        }
-        const selectStartIndex = Math.min(lastSelectedIndex, index)
-        const selectEndIndex = Math.max(lastSelectedIndex, index)
-        const items = allItemsResolved.value.slice(selectStartIndex, selectEndIndex + 1)
-        utils.set(items)
-        // If nothing is being held, then we just behave like it's single mode
       } else {
+        // A plain click, or Shift with no anchor on the page (none yet, or its row is filtered or
+        // paged out): select just this row and anchor there
         utils.set([item])
+        anchor = utils.get(item)
       }
     }
   }

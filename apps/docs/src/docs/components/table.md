@@ -673,8 +673,13 @@ Users can easily change the selecting mode by setting the `select-mode` prop.
 
 - `'multi'`: Each click will select/deselect the row (default mode)
 - `'single'`: Only a single row can be selected at one time
-- `'range'`: Any row clicked is selected, any other deselected. <kbd>Shift</kbd> + click selects a
-  range of rows, and <kbd>Ctrl</kbd> (or <kbd>Cmd</kbd>) + click will toggle the selected row.
+- `'range'`: Any row clicked is selected, any other deselected.
+  <kbd>Ctrl</kbd> (or <kbd>Cmd</kbd>) + click toggles the row. <kbd>Shift</kbd> + click selects the rows from the _anchor_ to the
+  clicked row: the anchor is the last row clicked without <kbd>Shift</kbd> (or added with
+  <kbd>Ctrl</kbd> / <kbd>Cmd</kbd>), so further <kbd>Shift</kbd> clicks adjust the same range, as
+  in file managers. <kbd>Ctrl</kbd> / <kbd>Cmd</kbd> + <kbd>Shift</kbd> + click adds that range
+  to the selection. With no anchor on the page (none yet, or its row is filtered or paged out),
+  <kbd>Shift</kbd> + click selects only the clicked row.
 
 When a table is `selectable` and the user clicks on a row, `<BTable>` will emit the `update:selected-items`
 event, passing a single argument which is the complete list of selected items. **This argument

@@ -580,6 +580,104 @@ describe('object-persistence', () => {
       })
     })
 
+    describe('range mode anchor', () => {
+      const rows = Array.from({length: 10}, (_, i) => ({id: i + 1}))
+      const mountRange = (extra: Record<string, unknown> = {}) => {
+        const wrapper = mount(BTable, {
+          props: {
+            'selectMode': 'range' as const,
+            'selectable': true,
+            'items': rows,
+            'fields': ['id'],
+            'selectedItems': [],
+            'onUpdate:selectedItems': (value: unknown[]) =>
+              wrapper.setProps({selectedItems: value}),
+            ...extra,
+          },
+        })
+        return wrapper
+      }
+      // Row n (1-based) is tbody row n
+      const click = async (
+        wrapper: ReturnType<typeof mountRange>,
+        n: number,
+        mods: MouseEventInit = {}
+      ) => {
+        wrapper.findAll('tbody tr')[n - 1]?.element.dispatchEvent(new MouseEvent('click', mods))
+        await nextTick()
+      }
+      const selectedIds = (wrapper: ReturnType<typeof mountRange>) =>
+        wrapper
+          .findAll('tbody tr')
+          .map((tr, i) => (tr.classes().includes('selected') ? i + 1 : null))
+          .filter((n) => n !== null)
+
+      it('extends a range from where it started', async () => {
+        const w = mountRange()
+        await click(w, 3)
+        await click(w, 6, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([3, 4, 5, 6])
+        await click(w, 8, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([3, 4, 5, 6, 7, 8])
+        await click(w, 1, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([1, 2, 3])
+      })
+
+      it('does not depend on the direction of the first range', async () => {
+        const w = mountRange()
+        await click(w, 6)
+        await click(w, 3, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([3, 4, 5, 6])
+        await click(w, 8, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([6, 7, 8])
+      })
+
+      it('anchors on a row added with Ctrl / Cmd', async () => {
+        const w = mountRange()
+        await click(w, 2)
+        await click(w, 7, {ctrlKey: true})
+        await click(w, 9, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([7, 8, 9])
+      })
+
+      it('adds the range to the selection with Ctrl / Cmd + Shift', async () => {
+        const w = mountRange()
+        await click(w, 2)
+        await click(w, 7, {metaKey: true})
+        await click(w, 9, {ctrlKey: true, shiftKey: true})
+        expect(selectedIds(w)).toEqual([2, 7, 8, 9])
+      })
+
+      it('selects only the clicked row on Shift with no anchor', async () => {
+        const w = mountRange({selectedItems: [rows[1], rows[2]]})
+        await click(w, 6, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([6])
+        await click(w, 8, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([6, 7, 8])
+      })
+
+      it('drops the anchor when the selection empties', async () => {
+        const w = mountRange()
+        await click(w, 3)
+        await w.setProps({selectedItems: []})
+        await click(w, 6, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([6])
+      })
+
+      it('keeps the anchor by primary key across sorting', async () => {
+        const w = mountRange({
+          primaryKey: 'id',
+          fields: [{key: 'id', sortable: true}],
+          sortBy: [{key: 'id', order: 'asc'}] as BTableSortBy[],
+        })
+        await click(w, 3) // id 3
+        await w.setProps({sortBy: [{key: 'id', order: 'desc'}] as BTableSortBy[]})
+        // Descending: row 1 is id 10, so row 6 is id 5 and id 3 is row 8
+        await click(w, 6, {shiftKey: true})
+        expect(selectedIds(w)).toEqual([6, 7, 8])
+      })
+    })
+
     it('classes are applied correctly when using prop responsive and busy simultaneously', () => {
       const wrapper = mount(BTable, {
         props: {
