@@ -267,7 +267,15 @@ Decided 2026-11-21, first applied to `BPopover` / `BTooltip` ([#184](https://git
 - The key is always `props`, never `attrs` / `handlers` / `on`, and it is typed. Other scope values (state, functions) sit next to it.
 - Content-only slots (titles, bodies, button content, icons) don't get one.
 - A component that needs an element the user may not render in a slot (directives, orchestrators, foreign DOM) also takes it as a prop, named after the same role as the slot (`activator`).
-- Known candidates: `BPopover` / `BTooltip` `#activator` (#184); `BCollapse` `#header` / `#footer` (a toggle with `aria-expanded` / `aria-controls`); `BMenu` `#activator` for a custom opener (G2); optionally `BDialog` / `BDrawer` `#activator` and BTable row details.
+- Applied: `BPopover` / `BTooltip` `#activator` (#184); `BMenu` `#activator` (#212: `ref`, `id`, `aria-expanded`, `aria-controls`, click and keyboard handlers); `BFormChips` `#chip` (#201: `ref`, `tabindex`, `aria-pressed`; the component finds chips through the `ref` instead of `.chip` queries) and `BChip` `#img` (#201: `{class: 'chip-img'}`).
+- Candidates (scan of 2026-11-27):
+  - **`BCollapse` `#header` / `#footer`** (strong): users wire `:aria-expanded`, `:aria-controls` and `@click="toggle"` by hand (see the `CollapseContent` demo). `props: {onClick, 'aria-expanded', 'aria-controls'}`. Additive: `toggle` / `id` / `visible` stay in the scope.
+  - **`BFormGroup` / `BFormField` default slot** (strong): the scope hands out `id` and `ariaDescribedby` to bind on a custom control. `props: {id, 'aria-describedby', 'aria-invalid'}`; a `ref` in it could replace the fieldset `querySelectorAll` that focuses the first input when the legend is clicked. Best done with Field ([#198](https://github.com/VividLemon/bootstrap-vue-next/pull/198)).
+  - **`BCarousel` `controls`** (partial, [#202](https://github.com/VividLemon/bootstrap-vue-next/pull/202)): custom prev / next / play buttons get only functions (no `aria-controls`, labels or disabled state). One slot renders several elements, so one `props` doesn't fit: split it into `prev` / `next` / `play` slots with a `props` each, or leave it.
+  - **BTable row details** (weak): `toggleExpansion` / `expansionShowing` sit in a cell scope that covers the whole cell, so the toggle would need its own slot to carry `aria-expanded` / `aria-controls`.
+  - **`BDialog` / `BDrawer` `#activator`** (low): `v-b-toggle` and `show()` cover opening; mainly `aria-expanded` on the opener.
+  - **G2 `BCombobox` input**: use `props`. The `BAutocomplete` `input` slot it replaces already passes a flat attrs-and-listeners object (the pre-rule shape).
+- Not candidates: content-only slots (tab titles, pagination pages, spinbutton / rating icons, carousel captions); a single slot holding many items (`BMenu` items, `BButtonToolbar`: no per-item slot, and v6 queries them too; items would register through inject if that ever needs hardening); elements the component renders itself (`BTabs` buttons, `BPagination` pages: template refs, not slot props).
 
 ### Slot presence checks
 
