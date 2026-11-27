@@ -61,7 +61,8 @@ const result = await create(
 ).show()
 ```
 
-- `component: Component`: renders this component instead of `BDialog`.
+- `component: Component`: renders this component instead of `BDialog`. It must render a `BDialog`
+  (or another show/hide component): the controller shows and hides the first one it renders.
 - `slots: Record<string, Function | Component>`: slot content, by slot name. A `BDialog` without a
   `footer` slot gets `BDialogActions` (OK / Cancel); pass `footer: undefined` for none.
 - `resolveOnHide: boolean`: `show()` resolves as soon as the dialog starts hiding (`hide`), not
@@ -75,9 +76,10 @@ const result = await create(
 
   What hid the dialog: `'ok'`, `'cancel'` (the Cancel button), `'close'` (the header close
   button), `'esc'`, `'backdrop'`, `'submit'` (a `<form method="dialog">`), `'swap'`, `'abort'`
-  (see [Cancelling with a signal](#cancelling-with-a-signal)), `'destroy'`, a trigger you passed
-  to `hide(trigger)`, `'show-prevented'` (an `onShow` listener prevented the show, so nothing was
-  shown), or `null` (no trigger).
+  (see [Cancelling with a signal](#cancelling-with-a-signal)), `'destroy'`, `'dispose'` (the
+  dialog was unmounted while shown, for example because its orchestrator unmounted), a trigger
+  you passed to `hide(trigger)`, `'show-prevented'` (an `onShow` listener prevented the show, so
+  nothing was shown), or `null` (no trigger).
 
 - `ok: boolean | null`
 

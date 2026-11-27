@@ -18,6 +18,7 @@ import type {RadioValue} from '../types/RadioTypes'
 import type {BreadcrumbItemRaw} from '../types/BreadcrumbTypes'
 import type {
   DialogOrchestratorArrayValue,
+  OrchestratorItemLink,
   PopoverOrchestratorArrayValue,
   ToastOrchestratorArrayValue,
   TooltipOrchestratorArrayValue,
@@ -253,6 +254,15 @@ export type OrchestratorStoreObject = {
   popover: Map<string | symbol, Ref<PopoverOrchestratorArrayValue>>
   tooltip: Map<string | symbol, Ref<TooltipOrchestratorArrayValue>>
 }
+/**
+ * Provided around each item `BOrchestrator` renders. The first show/hide component inside it
+ * connects its state machine to the item's controller and provides `null` to its descendants.
+ *
+ * @internal
+ */
+export const orchestratorItemKey: InjectionKey<OrchestratorItemLink | null> =
+  createBvnInjectionKey('orchestratorItem')
+
 export const orchestratorRegistryKey: InjectionKey<{
   store: Ref<OrchestratorStoreObject>
   _isToastAppend: Readonly<Ref<boolean>>

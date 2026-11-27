@@ -12,39 +12,33 @@
           keep their <component> tags in sync. A change to one branch only is a bug -->
         <TransitionGroup v-if="value.transitionGroupName" :name="value.transitionGroupName">
           <span v-for="item in value.items" :key="item.id">
-            <component
-              :is="item.component"
-              v-bind="itemProps(key, item)"
-              :ref="item.fns.setRef"
-              initial-animation
-              @update:model-value="(v: boolean | number) => syncModelValue(key, item.id, v)"
-              @show-prevented="item.fns.resolve"
-              @hide="(e: BvTriggerableEvent) => onHide(item, e)"
-              @hidden="(e: BvTriggerableEvent) => onHidden(item, e)"
-            >
-              <template v-for="(comp, slot) in item.slots" #[slot]="scope" :key="slot">
-                <component :is="comp" v-bind="scope" />
-              </template>
-            </component>
+            <OrchestratorItem :link="item.fns.link">
+              <component
+                :is="item.component"
+                v-bind="itemProps(key, item)"
+                :ref="item.fns.setRef"
+                initial-animation
+              >
+                <template v-for="(comp, slot) in item.slots" #[slot]="scope" :key="slot">
+                  <component :is="comp" v-bind="scope" />
+                </template>
+              </component>
+            </OrchestratorItem>
           </span>
         </TransitionGroup>
         <template v-else>
-          <template v-for="item in value.items" :key="item.id">
+          <OrchestratorItem v-for="item in value.items" :key="item.id" :link="item.fns.link">
             <component
               :is="item.component"
               v-bind="itemProps(key, item)"
               :ref="item.fns.setRef"
               initial-animation
-              @update:model-value="(v: boolean | number) => syncModelValue(key, item.id, v)"
-              @show-prevented="item.fns.resolve"
-              @hide="(e: BvTriggerableEvent) => onHide(item, e)"
-              @hidden="(e: BvTriggerableEvent) => onHidden(item, e)"
             >
               <template v-for="(comp, slot) in item.slots" #[slot]="scope" :key="slot">
                 <component :is="comp" v-bind="scope" />
               </template>
             </component>
-          </template>
+          </OrchestratorItem>
         </template>
       </div>
     </div>
@@ -56,7 +50,6 @@ import {computed, inject, type Ref, watch} from 'vue'
 import {warn} from '../../utils/console'
 import {orchestratorRegistryKey, type OrchestratorStoreObject} from '../../utils/keys'
 import {positionClasses} from '../../utils/positionClasses'
-import type {BvTriggerableEvent} from '../../utils'
 import type {
   BOrchestratorProps,
   ContainerPosition,
@@ -64,25 +57,8 @@ import type {
   OrchestratorArrayValue,
 } from '../../types'
 import ConditionalTeleport from '../ConditionalTeleport.vue'
+import OrchestratorItem from './OrchestratorItem'
 import type {ValueInMapRecord} from '../../composables/orchestratorShared'
-
-/**
- * Keeps the store's modelValue in step with the component, which changes it itself when it is
- * shown or hidden through its own methods, its triggers, or a timeout. Controllers decide whether
- * a component is open from the store
- */
-const syncModelValue = (group: string, id: ControllerKey, value: boolean | number): void => {
-  const store = orchestratorRegistry?.store.value
-  if (!store) return
-  // Ids are only unique per store, so use the emitting item's own one. Toast groups are keyed by
-  // position
-  const items =
-    group === 'dialog' || group === 'popover' || group === 'tooltip' ? store[group] : store.toast
-  const item = items.get(id)
-  if (item && item.value.props.modelValue !== value) {
-    item.value = {...item.value, props: {...item.value.props, modelValue: value}} as never
-  }
-}
 
 const props = withDefaults(defineProps<BOrchestratorProps>(), {
   noPopovers: false,
@@ -138,20 +114,6 @@ type Item = ValueInMapRecord<OrchestratorStoreObject[keyof OrchestratorStoreObje
 const itemProps = (group: string, item: Item) =>
   // Dialogs live in the top layer; the others render inside the orchestrator container
   group === 'dialog' ? item.props : {...item.props, teleportDisabled: true}
-
-const onHide = (item: Item, e: BvTriggerableEvent) => {
-  item.props.onHide?.(e)
-  // The controller settles on hide only for a show with resolveOnHide
-  if (!e.defaultPrevented) item.fns.resolve(e)
-}
-
-const onHidden = (item: Item, e: BvTriggerableEvent) => {
-  item.props.onHidden?.(e)
-  if (e.defaultPrevented) return
-  // With resolveOnHide the show() already settled on hide. This settles a later wait, such as
-  // destroy() called right after that show() resolved
-  item.fns.resolve(e)
-}
 
 type ItemObject = {
   class?: string

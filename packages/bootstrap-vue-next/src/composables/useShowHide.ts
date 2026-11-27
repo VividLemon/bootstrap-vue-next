@@ -9,6 +9,7 @@ import {
   nextTick,
   onBeforeUnmount,
   onMounted,
+  provide,
   type Ref,
   ref,
   shallowRef,
@@ -21,7 +22,8 @@ import {
   type ShowHideSnapshot,
   type ShowHideState,
 } from './showHideMachine'
-import {showHideRegistryKey} from '../utils/keys'
+import {orchestratorItemKey, showHideRegistryKey} from '../utils/keys'
+import type {OrchestratorItemConnection} from '../types/ComponentOrchestratorTypes'
 import {BvTriggerableEvent} from '../utils'
 
 export type {ShowHideState}
@@ -301,10 +303,20 @@ export const useShowHide = (
       componentId: id.value,
     })
 
+  // Rendered by BOrchestrator: the item's controller reads this component's machine. Only the
+  // outermost show/hide component of an item is the one it drives (a BCollapse inside a dialog
+  // is not)
+  const orchestratorItem = inject(orchestratorItemKey, null)
+  if (orchestratorItem) provide(orchestratorItemKey, null)
+  let orchestratorConnection: OrchestratorItemConnection | undefined
+
   /** Emits a `BvTriggerableEvent` and returns whether a listener prevented it */
   const emitEvent = (name: string, init: ShowHideEventInit = {}): boolean => {
     const event = buildTriggerableEvent(name, init)
     emit(name, event)
+    // After the listeners, so the controller sees the outcome they decided (and may still
+    // prevent a show its aborted signal cancelled)
+    orchestratorConnection?.onEvent(event)
     return event.defaultPrevented
   }
 
@@ -345,6 +357,7 @@ export const useShowHide = (
     onChange: (next) => {
       snapshot.value = next
       if (next.active) lazyLoaded.value = true
+      orchestratorConnection?.onState(next.state)
     },
     onCommit: syncModelValue,
     // Revert a `v-model` change that asked for the refused show / hide
@@ -451,7 +464,21 @@ export const useShowHide = (
     }
   )
 
+  orchestratorConnection = orchestratorItem?.connect({
+    state,
+    show: () => show(),
+    hide: (trigger) => hide(trigger, true),
+    toggle: () => toggle(),
+    model: () => modelValue.value,
+    setModel: (value) => {
+      modelValue.value = value
+    },
+  })
+
   onMounted(() => {
+    // First, so a show the controller was asked for before the component existed is the request
+    // that shows it (it is joined by the component's own mount-time show)
+    orchestratorConnection?.mounted()
     if (initialShow) {
       machine.mount()
     } else if (props.show || (!!modelValue.value && props.initialAnimation)) {
@@ -460,6 +487,8 @@ export const useShowHide = (
   })
 
   onBeforeUnmount(() => {
+    orchestratorConnection?.disconnect()
+    orchestratorConnection = undefined
     machine.dispose()
   })
 

@@ -37,7 +37,7 @@ The `position` value affects placement; its type is [ContainerPosition](/docs/ty
 
 The second argument is read once: `create(props, { component, slots, resolveOnHide })`.
 
-- `component` renders this component instead of `BToast`.
+- `component` renders this component instead of `BToast`. It must render a `BToast` (or another show/hide component): the controller shows and hides the first one it renders.
 - `slots` maps a slot name to a render function or component.
 - `resolveOnHide` resolves the promise when hide starts instead of after the full hide lifecycle; `show({ resolveOnHide })` overrides it for one show.
 
@@ -79,9 +79,8 @@ Toasts can also be hidden from anywhere in the app, without holding on to the co
 `hide(trigger, id)` also hides a `BToast` that was declared in a template with a matching `id`.
 `hideAll` and `hide` without an `id` only cover the toasts that were created through the composable.
 
-A toast that the orchestrator has not rendered yet is hidden through its store entry, so it never
-becomes visible. Such a toast reports `modelValue` as its `trigger`, since there is no component to
-run the hide cycle through. The same applies to a toast rendered through a custom `component`.
+A toast that the orchestrator has not rendered yet is hidden through its controller, so it never
+becomes visible, and its `show()` promise resolves with the `trigger` you passed.
 
 Hiding a toast does not remove it from the orchestrator store, see
 [Lifecycle and disposal](#lifecycle-and-disposal).

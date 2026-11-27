@@ -6,9 +6,13 @@ import BOrchestrator from '../../components/BApp/BOrchestrator.vue'
 import {orchestratorPlugin} from '../../plugins/orchestrator'
 import {registryPlugin} from '../../plugins/registry'
 import BDialog from '../../components/BDialog/BDialog.vue'
+import BCollapse from '../../components/BCollapse/BCollapse.vue'
 import {useDialog} from './index'
 import {useOrchestratorRegistry} from '../orchestratorShared'
 import {useToast} from '../useToast'
+
+/** The controller's internal state: the dialog's own state machine, not a copy in the store */
+const stateOf = (controller: unknown) => (controller as {state?: string} | undefined)?.state
 
 describe('useDialog', () => {
   it('create method accepts custom component props without TypeScript errors', async () => {
@@ -267,7 +271,7 @@ describe('useDialog', () => {
     expect(modalStore?.value.dialog.has(modalId)).toBe(false)
   })
 
-  it('keeps the stored modelValue in step when the modal hides itself, so show() opens it again', async () => {
+  it("#12: reads the modal's own state when it hides itself, so show() opens it again", async () => {
     let modal: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     const TestComponent = defineComponent({
       setup() {
@@ -277,19 +281,19 @@ describe('useDialog', () => {
     })
     mount(BApp, {attachTo: document.body, slots: {default: () => h(TestComponent)}})
     await nextTick()
-    const stored = () => modal?.get()?.value.props.modelValue
+    const stored = () => stateOf(modal)
 
     modal?.show()
-    await vi.waitFor(() => expect(stored()).toBe(true))
+    await vi.waitFor(() => expect(stored()).toBe('shown'))
 
     // hidden through the component itself, not the controller
     const component = modal?.ref as unknown as {hide: (trigger?: string) => void} | null
     expect(component).not.toBeNull()
     component?.hide('close')
-    await vi.waitFor(() => expect(stored()).toBe(false))
+    await vi.waitFor(() => expect(stored()).toBe('hidden'))
 
     modal?.show()
-    await vi.waitFor(() => expect(stored()).toBe(true))
+    await vi.waitFor(() => expect(stored()).toBe('shown'))
   })
 
   it('controller.hide() skips the trigger event and leaves the dialog returnValue unset', async () => {
@@ -303,12 +307,12 @@ describe('useDialog', () => {
     })
     mount(BApp, {attachTo: document.body, slots: {default: () => h(TestComponent)}})
     await nextTick()
-    const stored = () => modal?.get()?.value.props.modelValue
+    const stored = () => stateOf(modal)
 
     modal?.show()
-    await vi.waitFor(() => expect(stored()).toBe(true))
+    await vi.waitFor(() => expect(stored()).toBe('shown'))
     modal?.hide('ok')
-    await vi.waitFor(() => expect(stored()).toBe(false))
+    await vi.waitFor(() => expect(stored()).toBe('hidden'))
 
     // BDialog's hide takes (trigger, value, noTriggerEmit): no `ok` event, no `true` return value
     expect(onOk).not.toHaveBeenCalled()
@@ -333,7 +337,7 @@ describe('useDialog', () => {
     await nextTick()
 
     const shown = modal?.show()
-    await vi.waitFor(() => expect(modal?.get()?.value.props.modelValue).toBe(true))
+    await vi.waitFor(() => expect(stateOf(modal)).toBe('shown'))
     await modal?.destroy()
 
     expect(modal?.get()).toBeUndefined()
@@ -380,7 +384,7 @@ describe('useDialog', () => {
     await nextTick()
 
     const shown = modal?.show()
-    await vi.waitFor(() => expect(modal?.get()?.value.props.modelValue).toBe(true))
+    await vi.waitFor(() => expect(stateOf(modal)).toBe('shown'))
     modal?.hide('ok')
     expect((await shown)?.trigger).toBe('ok')
 
@@ -388,7 +392,7 @@ describe('useDialog', () => {
     expect(modal?.get()).toBeUndefined()
   })
 
-  it('syncs the stored modelValue of the emitting item when a modal and a toast share an id', async () => {
+  it('#23: a modal and a toast that share an id each follow their own component', async () => {
     let modal: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     let toast: ReturnType<ReturnType<typeof useToast>['create']> | undefined
     mountApp(() => {
@@ -398,8 +402,8 @@ describe('useDialog', () => {
     await nextTick()
 
     toast?.show()
-    await vi.waitFor(() => expect(toast?.get()?.value.props.modelValue).toBe(true))
-    expect(modal?.get()?.value.props.modelValue).toBeFalsy()
+    await vi.waitFor(() => expect(stateOf(toast)).toBe('shown'))
+    expect(stateOf(modal)).toBe('hidden')
   })
 
   it('hides a modal whose mount-time onShow aborts the show signal', async () => {
@@ -412,7 +416,7 @@ describe('useDialog', () => {
     })
 
     expect((await shown)?.trigger).toBe('abort')
-    await vi.waitFor(() => expect(modal?.get()?.value.props.modelValue).toBeFalsy())
+    await vi.waitFor(() => expect(stateOf(modal)).toBe('hidden'))
   })
 
   it('shows again when show() is called right after a resolveOnHide show resolved', async () => {
@@ -440,7 +444,7 @@ describe('useDialog', () => {
 
     const first = modalRef?.show()
     await new Promise((resolve) => setTimeout(resolve, 50))
-    expect(modalRef?.get()?.value.props.modelValue).toBe(true)
+    expect(stateOf(modalRef)).toBe('shown')
 
     modalRef?.hide('ok')
     expect((await first)?.trigger).toBe('ok')
@@ -451,14 +455,14 @@ describe('useDialog', () => {
     })
     await new Promise((resolve) => setTimeout(resolve, 100))
 
-    expect(modalRef?.get()?.value.props.modelValue).toBe(true)
+    expect(stateOf(modalRef)).toBe('shown')
     expect(hidden).toHaveLength(0)
     expect(secondSettled).toBe(false)
 
     modalRef?.hide('cancel')
     await new Promise((resolve) => setTimeout(resolve, 100))
     expect(secondSettled).toBe(true)
-    expect(modalRef?.get()?.value.props.modelValue).toBe(false)
+    expect(stateOf(modalRef)).toBe('hidden')
   })
 
   describe('result', () => {
@@ -472,7 +476,7 @@ describe('useDialog', () => {
       await nextTick()
 
       const shown = dialog?.show()
-      await vi.waitFor(() => expect(dialog?.get()?.value.props.modelValue).toBe(true))
+      await vi.waitFor(() => expect(stateOf(dialog)).toBe('shown'))
       const exposed = dialog?.ref as unknown as {hide: (trigger: string, value: unknown) => void}
       exposed.hide('ok', {saved: 1})
 
@@ -629,6 +633,65 @@ describe('useDialog', () => {
     })
   })
 
+  describe("the controller drives the item's own state machine", () => {
+    const flush = () => new Promise((resolve) => setTimeout(resolve, 20))
+
+    it('drives the dialog, not a show/hide component rendered inside it', async () => {
+      let dialog: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
+      const Body = defineComponent({
+        inheritAttrs: false,
+        setup: () => () => h(BCollapse, {id: 'inner-collapse'}, () => 'inner'),
+      })
+      mountApp(() => {
+        dialog = useDialog().create(
+          {id: 'outer-dialog', noTransition: true},
+          {slots: {default: Body}}
+        )
+      })
+      await nextTick()
+
+      void dialog?.show()
+      await flush()
+      expect(stateOf(dialog)).toBe('shown')
+      expect(document.getElementById('outer-dialog')?.hasAttribute('open')).toBe(true)
+      expect(document.getElementById('inner-collapse')?.classList.contains('show')).toBe(false)
+    })
+
+    it('drives a BDialog rendered by a custom component', async () => {
+      let dialog: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
+      const Wrapper = defineComponent({
+        inheritAttrs: false,
+        setup: () => () => h(BDialog, {id: 'wrapped-dialog', noTransition: true}),
+      })
+      mountApp(() => {
+        dialog = useDialog().create({}, {component: Wrapper})
+      })
+      await nextTick()
+
+      const shown = dialog?.show()
+      await flush()
+      expect(stateOf(dialog)).toBe('shown')
+      expect(document.getElementById('wrapped-dialog')?.hasAttribute('open')).toBe(true)
+      dialog?.hide('done')
+      expect((await shown)?.trigger).toBe('done')
+    })
+
+    it('warns when the rendered component has no show/hide component to drive', async () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const Plain = defineComponent({inheritAttrs: false, setup: () => () => h('div')})
+      mountApp(() => {
+        useDialog().create({}, {component: Plain})
+      })
+      await flush()
+      expect(
+        warnSpy.mock.calls.some((call) =>
+          call.join(' ').includes('rendered no show/hide component')
+        )
+      ).toBe(true)
+      warnSpy.mockRestore()
+    })
+  })
+
   it('keeps the content and its state between shows until destroy()', async () => {
     let dialog: ReturnType<ReturnType<typeof useDialog>['create']> | undefined
     let setups = 0
@@ -664,7 +727,7 @@ describe('useDialog', () => {
     input()!.dispatchEvent(new Event('input'))
     dialog?.hide('later')
     await flush()
-    expect(dialog?.get()?.value.props.modelValue).toBe(false)
+    expect(stateOf(dialog)).toBe('hidden')
 
     void dialog?.show()
     await flush()
@@ -793,8 +856,8 @@ describe('useDialog', () => {
         disposed = true
       })
       await new Promise((resolve) => setTimeout(resolve, 20))
-      // The helper hides an unmounted item through its store entry, which carries no trigger
-      expect(result).toMatchObject({trigger: null, ok: null})
+      // The helper hides an unmounted item through its controller, with the trigger it was given
+      expect(result).toMatchObject({trigger: 'route-change', ok: null})
       expect(disposed).toBe(true)
       expect(dialogs?.get('never-shown')).toBeNull()
 

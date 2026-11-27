@@ -37,7 +37,7 @@ The methods accept reactive properties using `MaybeRef`, allowing dynamic update
 
 ### Advanced Creation
 
-For more control, pass a second argument (read once): `component` renders a custom component, and `slots` defines slot content. It also takes `resolveOnHide`.
+For more control, pass a second argument (read once): `component` renders a custom component, and `slots` defines slot content. It also takes `resolveOnHide`. A custom `component` must render a `BPopover` or `BTooltip`: the controller shows and hides the first show/hide component it renders.
 
 <<< DEMO ./demo/UsePopoverAdvanced.vue
 

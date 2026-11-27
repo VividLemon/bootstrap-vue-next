@@ -1,12 +1,4 @@
-import {
-  type ComponentPublicInstance,
-  computed,
-  inject,
-  type MaybeRef,
-  onScopeDispose,
-  ref,
-  type Ref,
-} from 'vue'
+import {computed, inject, type MaybeRef, onScopeDispose, ref, type Ref} from 'vue'
 import {orchestratorRegistryKey, type OrchestratorStoreObject} from '../../utils/keys'
 import type {
   ComponentController,
@@ -67,7 +59,7 @@ export const usePopover = () => {
     const pickedItems = store.value[type]
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
-    const {controller, resolve} = buildController<
+    const {controller, fns} = buildController<
       typeof BPopover | typeof BTooltip,
       OrchestratorStoreObject['popover'] | OrchestratorStoreObject['tooltip']
     >(storeId, pickedItems, {createOptions})
@@ -80,13 +72,7 @@ export const usePopover = () => {
           component,
           slots,
           id: storeId,
-          fns: {
-            resolve,
-            setRef: (v: ComponentPublicInstance) => {
-              controller.ref = v
-            },
-            destroy: controller.destroy,
-          },
+          fns,
           props: {
             ...props,
             id: htmlAttributeId,
