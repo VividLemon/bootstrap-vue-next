@@ -280,6 +280,19 @@ describe('form-chips', () => {
       expect(chips(w)[1]?.classes()).toContain('active')
     })
 
+    it('keeps each chip element at its index after a chip is removed', async () => {
+      const w = mountWith(['a', 'b', 'c'])
+      await w.findAll('.chip-dismiss')[1]?.trigger('click')
+      await nextTick()
+      expect(chips(w).map((c) => c.text())).toEqual(['a', 'c'])
+      await ghost(w).trigger('keydown', {key: 'ArrowLeft'})
+      expect(document.activeElement).toBe(chips(w)[1]?.element)
+      await chips(w)[1]?.trigger('keydown', {key: 'ArrowLeft'})
+      expect(document.activeElement).toBe(chips(w)[0]?.element)
+      await chips(w)[0]?.trigger('click')
+      expect(w.emitted('select')?.at(-1)).toEqual([['a']])
+    })
+
     it('finds custom chips through the ref in the chip slot props', async () => {
       const w = mount(BFormChips, {
         attachTo: document.body,

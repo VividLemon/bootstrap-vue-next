@@ -85,6 +85,7 @@ import {useStateClass} from '../../composables/useStateClass'
 import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {chipInputKey, formGroupKey} from '../../utils/keys'
 import {BvEvent} from '../../utils'
+import {type MaybeElement, unrefElement} from '@vueuse/core'
 import BChip from './BChip.vue'
 
 const _props = withDefaults(defineProps<Omit<BFormChipsProps, 'modelValue'>>(), {
@@ -182,24 +183,19 @@ const selectChip = (
   }
 }
 
-// Each chip registers its element through the `ref` in `chipProps`, the default BChip and a
-// `chip` slot alike, so keyboard navigation and clicks only see chips that bound it
+// The chips' elements, filled by a function ref per chip (Vue's function refs inside `v-for`). The
+// ref reaches each chip through `chipProps`, for the default BChip and a `chip` slot alike: a
+// string ref can't, since refs in slot content belong to the component that wrote the slot.
+// Kept by index, because Vue also calls the ref with `null` on unmount, and chip `i` must be
+// element `i` for keyboard navigation and clicks. Not reactive: function refs run during the
+// render, so writing reactive state there would re-render in a loop, and only handlers read it
 const chipElements: (HTMLElement | null)[] = []
-const chipRefSetters = new Map<number, (el: Element | ComponentPublicInstance | null) => void>()
-const chipRef = (index: number) => {
-  let setter = chipRefSetters.get(index)
-  if (!setter) {
-    setter = (el) => {
-      chipElements[index] =
-        el instanceof HTMLElement ? el : ((el as ComponentPublicInstance | null)?.$el ?? null)
-    }
-    chipRefSetters.set(index, setter)
-  }
-  return setter
+const setChipElement = (index: number) => (el: Element | ComponentPublicInstance | null) => {
+  chipElements[index] = (unrefElement(el as MaybeElement) as HTMLElement | null | undefined) ?? null
 }
 
 const chipProps = (index: number): ChipProps => ({
-  'ref': chipRef(index),
+  'ref': setChipElement(index),
   'tabindex': 0,
   'aria-pressed': selected.value.has(index) ? 'true' : undefined,
 })
