@@ -22,7 +22,7 @@ control) containing a chip per value and a borderless text input. `v-model` is a
 
 `BChip` is the standalone chip. Use `active` for the selected style, `color` to change the theme,
 the `icon` and `img` slots for a leading icon or image (bind the `img` slot's `props` on your
-image: `<template #img="{ props }"><img v-bind="props" src="..." alt="" /></template>`), and
+image: `<template #img="scope"><img v-bind="scope" src="..." alt="" /></template>`), and
 `dismissible` for a dismiss button that emits `remove`.
 
 <<< DEMO ./demo/FormChipsChip.vue#template{vue-html}

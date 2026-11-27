@@ -7,7 +7,7 @@
     :data-bs-chip-value="props.value"
     :aria-disabled="props.disabled || undefined"
   >
-    <slot name="img" :props="{class: 'chip-img'}" />
+    <slot name="img" class="chip-img" />
     <span v-if="slots.icon" class="chip-icon" aria-hidden="true"><slot name="icon" /></span>
     <slot>{{ props.value }}</slot>
     <button
