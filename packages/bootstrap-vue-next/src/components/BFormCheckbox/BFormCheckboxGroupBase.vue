@@ -2,7 +2,7 @@
   <div
     v-bind="attrs"
     :id="computedId"
-    ref="_element"
+    ref="element"
     role="group"
     :class="classes"
     class="bv-no-focus-ring"
@@ -59,9 +59,9 @@ const modelValue = defineModel<CheckboxValue[]>({
 
 const computedId = useId(() => props.id, 'checkbox')
 const computedName = useId(() => props.name, 'checkbox')
-const _element = useTemplateRef('_element')
+const element = useTemplateRef('element')
 
-const {focused} = useFocus(_element, {
+const {focused} = useFocus(element, {
   initialValue: props.autofocus,
 })
 

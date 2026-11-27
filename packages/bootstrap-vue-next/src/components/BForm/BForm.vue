@@ -1,7 +1,7 @@
 <template>
   <form
     :id="props.id"
-    ref="_element"
+    ref="element"
     :novalidate="props.novalidate"
     :data-bs-validate="validateAttr"
     :class="computedClasses"
@@ -25,7 +25,7 @@ const _props = withDefaults(defineProps<BFormProps>(), {
 const props = useDefaults(_props, 'BForm')
 defineSlots<BFormSlots>()
 
-const element = useTemplateRef('_element')
+const element = useTemplateRef('element')
 
 const computedClasses = computed(() => ({
   'form-floating': props.floating,

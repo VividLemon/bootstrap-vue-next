@@ -1,6 +1,6 @@
 <template>
   <div
-    ref="_el"
+    ref="el"
     class="accordion-item"
     v-bind="props.wrapperAttrs"
     :class="processedAttrs.wrapperClass"
@@ -127,7 +127,7 @@ if (modelValue.value) {
       : parentData?.openItem.value === computedId.value) && !parentData?.initialAnimation.value
 }
 
-const el = useTemplateRef('_el')
+const el = useTemplateRef('el')
 parentData?.registerAccordionItem(computedId.value, el)
 
 onUnmounted(() => {

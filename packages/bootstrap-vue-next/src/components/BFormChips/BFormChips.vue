@@ -1,6 +1,6 @@
 <template>
   <div
-    ref="_root"
+    ref="root"
     class="chip-input"
     :class="rootClasses"
     role="group"
@@ -35,7 +35,7 @@
     </template>
     <input
       :id="computedId"
-      ref="_input"
+      ref="input"
       v-model="inputValue"
       type="text"
       v-bind="props.inputAttrs"
@@ -108,8 +108,8 @@ const modelValue = defineModel<Exclude<BFormChipsProps['modelValue'], undefined>
 
 provide(chipInputKey, true)
 
-const root = useTemplateRef<HTMLElement>('_root')
-const input = useTemplateRef<HTMLInputElement>('_input')
+const root = useTemplateRef<HTMLElement>('root')
+const input = useTemplateRef<HTMLInputElement>('input')
 const inputValue = ref('')
 const announcement = ref('')
 

@@ -1,7 +1,7 @@
 <template>
   <dialog
     :id="computedId"
-    ref="_element"
+    ref="element"
     class="dialog"
     :class="computedClasses"
     :aria-labelledby="!props.noHeader ? `${computedId}-label` : undefined"
@@ -102,7 +102,7 @@ const slots = defineSlots<BDialogSlots>()
 const computedId = useId(() => props.id, 'dialog')
 const modelValue = defineModel<Exclude<BDialogProps['modelValue'], undefined>>({default: false})
 
-const element = useTemplateRef<HTMLDialogElement | null>('_element')
+const element = useTemplateRef<HTMLDialogElement | null>('element')
 
 // Bootstrap v6 Dialog is a native `<dialog>`: the top layer, the `::backdrop`, focus containment
 // and the inert page are the browser's. The CSS animates `[open]` / `.hiding`; the element is

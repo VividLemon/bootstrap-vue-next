@@ -1,7 +1,7 @@
 <template>
   <li class="nav-item dropdown">
     <BDropdown
-      ref="_dropdown"
+      ref="dropdown"
       v-bind="props"
       v-model="modelValue"
       :color="computedColor"
@@ -87,7 +87,7 @@ defineSlots<BNavItemDropdownSlots>()
 
 const modelValue = defineModel<Exclude<BDropdownProps['modelValue'], undefined>>({default: false})
 
-const dropdown = useTemplateRef('_dropdown')
+const dropdown = useTemplateRef('dropdown')
 
 const hide = () => {
   dropdown.value?.hide()

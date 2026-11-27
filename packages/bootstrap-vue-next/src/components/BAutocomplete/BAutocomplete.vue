@@ -66,7 +66,7 @@
           <ComboboxInput v-model="searchTerm" as-child :display-value="displayValueFn">
             <slot name="input" v-bind="comboboxInputProps" :search-term>
               <BFormInput
-                ref="_input"
+                ref="input"
                 :model-value="searchTerm"
                 v-bind="comboboxInputProps"
                 :class="{'b-autocomplete-input-clearable': showClearButton}"
@@ -222,7 +222,7 @@ const props = useDefaults(_props, 'BAutocomplete')
 const emit = defineEmits<BAutocompleteEmits>()
 defineSlots<BAutocompleteSlots>()
 
-const _input = useTemplateRef('_input')
+const input = useTemplateRef('input')
 
 const modelValue = defineModel<BAutocompleteProps['modelValue']>({
   default: undefined,
@@ -383,7 +383,7 @@ const clearSelection = () => {
   singleSelectedLabelCache.value = null
   emit('clear')
   emit('change', modelValue.value)
-  _input.value?.focus()
+  input.value?.focus()
 }
 
 const onOptionSelect = (option: SelectOption) => {
@@ -394,7 +394,7 @@ const onOptionSelect = (option: SelectOption) => {
   nextTick(() => {
     emit('change', modelValue.value)
   })
-  _input.value?.focus()
+  input.value?.focus()
 }
 
 const resetPendingDelete = () => {
@@ -448,8 +448,8 @@ const comboboxInputProps = computed<
 }))
 
 defineExpose({
-  blur: () => _input.value?.blur(),
-  element: computed(() => _input.value?.element?.value ?? null),
-  focus: () => _input.value?.focus(),
+  blur: () => input.value?.blur(),
+  element: computed(() => input.value?.element?.value ?? null),
+  focus: () => input.value?.focus(),
 })
 </script>

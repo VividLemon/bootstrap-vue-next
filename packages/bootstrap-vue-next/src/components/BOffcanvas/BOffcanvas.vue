@@ -14,7 +14,7 @@
           isOpenByBreakpoint
         "
         :id="computedId"
-        ref="_element"
+        ref="element"
         aria-modal="true"
         role="dialog"
         :class="computedClasses"
@@ -40,7 +40,7 @@
               <template v-if="!props.noHeaderClose">
                 <BButton
                   v-if="hasHeaderCloseSlot"
-                  ref="_close"
+                  ref="close"
                   v-bind="headerCloseAttrs"
                   @click="hide('close')"
                 >
@@ -48,7 +48,7 @@
                 </BButton>
                 <BCloseButton
                   v-else
-                  ref="_close"
+                  ref="close"
                   :aria-label="props.headerClose?.label ?? 'Close'"
                   v-bind="headerCloseAttrs"
                   @click="hide('close')"
@@ -65,7 +65,7 @@
         </template>
         <div
           v-if="needsFallback"
-          ref="_fallbackFocusElement"
+          ref="fallbackFocusElement"
           :class="fallbackClassSelector"
           tabindex="0"
           style="width: 0; height: 0; overflow: hidden"
@@ -162,9 +162,9 @@ const modelValue = defineModel<Exclude<BOffcanvasProps['modelValue'], undefined>
 
 const computedId = useId(() => props.id, 'offcanvas')
 
-const element = useTemplateRef<HTMLElement | null>('_element')
-const fallbackFocusElement = useTemplateRef<HTMLElement | null>('_fallbackFocusElement')
-const closeButton = useTemplateRef<HTMLElement | null>('_close')
+const element = useTemplateRef<HTMLElement | null>('element')
+const fallbackFocusElement = useTemplateRef<HTMLElement | null>('fallbackFocusElement')
+const closeButton = useTemplateRef<HTMLElement | null>('close')
 
 const pickFocusItem = () => {
   if (props.focus && typeof props.focus !== 'boolean') {

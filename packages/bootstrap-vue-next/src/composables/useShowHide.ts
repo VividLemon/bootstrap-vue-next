@@ -246,13 +246,13 @@ export interface UseShowHideReturn {
  * Adopting it in a component:
  *
  * ```ts
- * const element = useTemplateRef<HTMLElement>('_element')
+ * const element = useTemplateRef<HTMLElement>('element')
  * const {run} = useCssTransition(element)
  * const {visible, isActive, instant, contentShowing, show, hide, toggle} = useShowHide(
  *   {modelValue, props, emit: emit as EmitFn, element, id: computedId},
  *   {transition: () => run()}
  * )
- * // template: <div v-if="isActive" ref="_element" class="toast" :class="classes">
+ * // template: <div v-if="isActive" ref="element" class="toast" :class="classes">
  * const classes = computed(() => ({
  *   'show': visible.value,
  *   'toast-instant': props.noTransition || instant.value,

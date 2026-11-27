@@ -1,7 +1,7 @@
 <template>
   <input
     :id="computedId"
-    ref="_input"
+    ref="input"
     :value="computedValue"
     :class="computedClasses"
     :name="props.name || undefined"
@@ -69,7 +69,7 @@ const [modelValue, modelModifiers] = defineModel<
   set: (v) => normalizeInput(v, modelModifiers),
 })
 
-const input = useTemplateRef('_input')
+const input = useTemplateRef('input')
 
 const inInputGroup = inject(inputGroupKey, false)
 

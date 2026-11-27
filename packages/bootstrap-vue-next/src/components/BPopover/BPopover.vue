@@ -9,19 +9,19 @@
       v-show="isActive && !hidden"
       :id="computedId"
       v-bind="attrs"
-      ref="_element"
+      ref="element"
       :class="computedClasses"
       role="tooltip"
       tabindex="-1"
       :style="floatingStyles"
     >
       <div
-        ref="_arrow"
+        ref="arrow"
         :class="`${props.tooltip ? 'tooltip' : 'popover'}-arrow`"
         :style="arrowStyle"
         data-popper-arrow
       />
-      <div ref="_content" class="overflow-auto b-floating-size" :style="sizeStyles">
+      <div ref="content" class="overflow-auto b-floating-size" :style="sizeStyles">
         <template v-if="props.title || slots.title">
           <div
             class="position-sticky top-0"
@@ -154,9 +154,9 @@ const computedId = useId(() => props.id, 'popover')
 
 const hidden = ref(false)
 
-const floatingElement = useTemplateRef('_element')
-const content = useTemplateRef('_content')
-const arrow = useTemplateRef('_arrow')
+const floatingElement = useTemplateRef('element')
+const content = useTemplateRef('content')
+const arrow = useTemplateRef('arrow')
 // The activator is the element that opens the popover: the one the `activator` slot renders
 // (it binds `props`, so we get it through a function ref) or the `activator` prop's element
 const slotActivatorElement = shallowRef<HTMLElement | null>(null)

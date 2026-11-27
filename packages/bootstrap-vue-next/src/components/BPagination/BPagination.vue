@@ -11,7 +11,7 @@
       v-for="(page, index) in pages"
       :key="`page-${page.id}`"
       v-bind="page.li"
-      ref="_pageElements"
+      ref="pageElements"
       :[dataDisplayNameCustomAttribute]="index"
     >
       <span
@@ -104,7 +104,7 @@ const modelValue = defineModel<Exclude<BPaginationProps['modelValue'], undefined
   default: 1,
 })
 
-const pageElements = useTemplateRef('_pageElements')
+const pageElements = useTemplateRef('pageElements')
 
 const limitNumber = useToNumber(() => props.limit, {nanToZero: true, method: 'parseInt'})
 const perPageNumber = useToNumber(() => props.perPage, {nanToZero: true, method: 'parseInt'})

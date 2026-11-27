@@ -2,7 +2,7 @@
   <div
     v-if="isActive"
     :id="props.id"
-    ref="_element"
+    ref="element"
     class="alert"
     :class="computedClasses"
     tabindex="0"
@@ -141,7 +141,7 @@ const closeVariant = computed(() =>
 const emit = defineEmits<BAlertEmits>()
 const slots = defineSlots<BAlertSlots>()
 
-const element = useTemplateRef<HTMLElement | null>('_element')
+const element = useTemplateRef<HTMLElement | null>('element')
 
 const modelValue = defineModel<Exclude<BAlertProps['modelValue'], undefined>>({default: false})
 const {computedLink, computedLinkProps} = useBLinkHelper(props)

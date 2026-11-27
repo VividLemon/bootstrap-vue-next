@@ -7,7 +7,7 @@
     <ConditionalWrapper :skip="!isSwitch" :class="switchClasses">
       <input
         :id="computedId"
-        ref="_input"
+        ref="input"
         v-model="localValue"
         :class="inputClasses"
         type="checkbox"
@@ -103,7 +103,7 @@ const computedId = useId(() => props.id, 'form-check')
 
 const parentData = inject(checkboxGroupKey, null)
 
-const input = useTemplateRef('_input')
+const input = useTemplateRef('input')
 
 const {focused} = useFocus(input, {
   initialValue: props.autofocus,

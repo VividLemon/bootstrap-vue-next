@@ -1,7 +1,7 @@
 <template>
   <textarea
     :id="computedId"
-    ref="_input"
+    ref="input"
     :class="computedClasses"
     :name="props.name || undefined"
     :form="props.form || undefined"
@@ -73,7 +73,7 @@ const [modelValue, modelModifiers] = defineModel<
   set: (v) => normalizeInput(v, modelModifiers),
 })
 
-const input = useTemplateRef('_input')
+const input = useTemplateRef('input')
 
 const {
   computedId,

@@ -2,7 +2,7 @@
   <div
     v-bind="computedAttrs"
     :id="computedId"
-    ref="_element"
+    ref="element"
     role="radiogroup"
     :class="computedClasses"
     class="bv-no-focus-ring"
@@ -66,7 +66,7 @@ const modelValue = defineModel<BFormRadioGroupBaseProps['modelValue']>({
 const computedId = useId(() => props.id, 'radio')
 const computedName = useId(() => props.name, 'radio')
 
-const element = useTemplateRef('_element')
+const element = useTemplateRef('element')
 
 const {focused} = useFocus(element, {
   initialValue: props.autofocus,

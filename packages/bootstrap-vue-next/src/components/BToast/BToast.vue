@@ -2,7 +2,7 @@
   <div
     v-if="isActive"
     :id="props.id"
-    ref="_element"
+    ref="element"
     class="toast"
     :class="computedClasses"
     tabindex="0"
@@ -164,7 +164,7 @@ const closeVariant = computed(() =>
 const emit = defineEmits<BToastEmits>()
 const slots = defineSlots<BToastSlots>()
 
-const element = useTemplateRef<HTMLElement | null>('_element')
+const element = useTemplateRef<HTMLElement | null>('element')
 
 const modelValue = defineModel<Exclude<BToastProps['modelValue'], undefined>>({default: false})
 const {computedLink, computedLinkProps} = useBLinkHelper(props)

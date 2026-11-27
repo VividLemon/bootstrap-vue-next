@@ -3,7 +3,7 @@
   <component
     :is="props.tag"
     :id="computedId"
-    ref="_element"
+    ref="element"
     class="collapse"
     :class="computedClasses"
     :style="computedStyle"
@@ -50,7 +50,7 @@ const modelValue = defineModel<Exclude<BCollapseProps['modelValue'], undefined>>
 
 const computedId = useId(() => props.id, 'collapse')
 
-const element = useTemplateRef<HTMLElement | null>('_element')
+const element = useTemplateRef<HTMLElement | null>('element')
 
 // Bootstrap v6 animates the collapse purely in CSS: the element always keeps `.collapse` and
 // only `.show` is toggled. `shown` / `hidden` fire once the element's own transition ended.

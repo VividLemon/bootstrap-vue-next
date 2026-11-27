@@ -18,7 +18,7 @@
           <slot name="label" />
         </template>
       </BFormGroupLabel>
-      <BCol v-bind="contentColProps" ref="_content">
+      <BCol v-bind="contentColProps" ref="content">
         <slot
           :id="computedId"
           :aria-describedby="computedAriaDescribedby"
@@ -39,7 +39,7 @@
       </BCol>
     </BFormRow>
     <template v-else>
-      <div v-if="isFloating" ref="_content" class="form-floating">
+      <div v-if="isFloating" ref="content" class="form-floating">
         <BFormGroupLabel
           v-if="labelShowing"
           v-bind="labelComponentProps"
@@ -164,7 +164,7 @@ const getColProps = (value: Readonly<Responsive<ColsValue>> | undefined) => {
   return Object.keys(cols).length > 0 ? {cols} : {}
 }
 
-const content = useTemplateRef<HTMLDivElement | InstanceType<typeof BCol> | null>('_content')
+const content = useTemplateRef<HTMLDivElement | InstanceType<typeof BCol> | null>('content')
 
 const contentColProps = computed(() => getColProps(props.contentCols))
 const labelAlignClasses = computed(() => getResponsiveClasses(props.labelAlign, 'text'))

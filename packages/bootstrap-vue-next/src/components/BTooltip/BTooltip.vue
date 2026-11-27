@@ -1,6 +1,6 @@
 <template>
   <BPopover
-    ref="_popover"
+    ref="popover"
     v-bind="computedProps"
     v-model="modelValue"
     tooltip
@@ -82,7 +82,7 @@ const computedProps = computed<BPopoverProps>(() => {
   return {noninteractive: noninteractive !== undefined ? noninteractive : !interactive, ...rest}
 })
 
-const popover = useTemplateRef('_popover')
+const popover = useTemplateRef('popover')
 
 // Every argument is forwarded: a wrapper that drops them loses the trigger or `resolveOnHide`
 type PopoverExposed = NonNullable<typeof popover.value>

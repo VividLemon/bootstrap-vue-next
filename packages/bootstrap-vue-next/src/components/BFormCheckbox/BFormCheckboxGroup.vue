@@ -1,6 +1,6 @@
 <template>
   <BFormCheckboxGroupBase
-    ref="_base"
+    ref="base"
     v-bind="forwardedProps"
     v-model="modelValue as unknown as CheckboxValue[]"
     :options="normalizedOptions"
@@ -124,7 +124,7 @@ const forwardedProps = computed(() => ({
   switches: props.switches,
 }))
 
-const base = useTemplateRef('_base')
+const base = useTemplateRef('base')
 defineExpose({
   blur: () => {
     base?.value?.blur()
