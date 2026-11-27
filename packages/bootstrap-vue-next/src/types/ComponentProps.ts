@@ -719,7 +719,6 @@ export interface BFormChipsProps {
   modelValue?: string[]
   name?: string
   placeholder?: string
-  removedLabel?: string
   required?: boolean
   separator?: string | null
   state?: ValidationState

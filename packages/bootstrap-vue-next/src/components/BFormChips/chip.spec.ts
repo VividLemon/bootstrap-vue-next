@@ -1,5 +1,6 @@
 import {afterEach, describe, expect, it} from 'vitest'
 import {enableAutoUnmount, mount} from '@vue/test-utils'
+import {h} from 'vue'
 import BChip from './BChip.vue'
 import {chipInputKey} from '../../utils/keys'
 
@@ -34,11 +35,19 @@ describe('chip', () => {
     expect(wrapper.attributes('aria-disabled')).toBe('true')
   })
 
-  it('renders the icon and img slots in their v6 wrappers', () => {
-    const wrapper = mount(BChip, {slots: {icon: '<svg />', img: '<img src="a.png" alt="" />'}})
+  it('renders the icon slot in its v6 wrapper', () => {
+    const wrapper = mount(BChip, {slots: {icon: '<svg />'}})
     expect(wrapper.find('.chip-icon').attributes('aria-hidden')).toBe('true')
     expect(wrapper.find('.chip-icon svg').exists()).toBe(true)
-    expect(wrapper.find('.chip-img img').exists()).toBe(true)
+  })
+
+  it('passes the chip-img class to the img slot, with no wrapper', () => {
+    const wrapper = mount(BChip, {
+      slots: {
+        img: (scope: {props: {class: string}}) => h('img', {...scope.props, src: 'a.png', alt: ''}),
+      },
+    })
+    expect(wrapper.element.firstElementChild?.tagName).toBe('IMG')
     expect(wrapper.element.firstElementChild?.className).toBe('chip-img')
   })
 

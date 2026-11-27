@@ -7,23 +7,23 @@
     @click="onRootClick"
     @keydown="onChipKeydown"
   >
+    <!-- The key goes on a template: on a typed <slot> it would also land in the slot scope -->
     <template v-for="(value, index) in modelValue" :key="`${index}-${value}`">
       <slot
         name="chip"
         :value
         :index
-        :selected="selection.has(index)"
+        :selected="selected.has(index)"
         :remove="() => removeAt(index)"
+        :props="chipProps(index)"
       >
         <BChip
-          :value="value"
-          :active="selection.has(index)"
-          :aria-pressed="selection.has(index) ? 'true' : undefined"
+          :value
+          :active="selected.has(index)"
           :disabled="isDisabled"
           :dismissible="props.dismissible && !isDisabled"
           :dismiss-label="`${props.dismissLabel} ${value}`"
-          tabindex="0"
-          v-bind="props.chipAttrs?.(value, index)"
+          v-bind="{...chipProps(index), ...props.chipAttrs?.(value, index)}"
           @remove="onDismiss(index)"
         >
           {{ value }}
@@ -61,13 +61,23 @@
         :value="value"
       />
     </template>
-    <span class="visually-hidden" aria-live="polite" aria-atomic="true">{{ announcement }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, inject, nextTick, onMounted, provide, ref, shallowRef, useTemplateRef} from 'vue'
-import type {BFormChipsEmits, BFormChipsProps, BFormChipsSlots} from '../../types'
+import {
+  type ComponentPublicInstance,
+  computed,
+  inject,
+  nextTick,
+  onMounted,
+  provide,
+  readonly,
+  ref,
+  shallowRef,
+  useTemplateRef,
+} from 'vue'
+import type {BFormChipsEmits, BFormChipsProps, BFormChipsSlots, ChipProps} from '../../types'
 import {useDefaults} from '../../composables/useDefaults'
 import {useId} from '../../composables/useId'
 import {useAriaInvalid} from '../../composables/useAriaInvalid'
@@ -93,7 +103,6 @@ const _props = withDefaults(defineProps<Omit<BFormChipsProps, 'modelValue'>>(), 
   maxChips: null,
   name: undefined,
   placeholder: undefined,
-  removedLabel: 'Removed',
   required: false,
   separator: ',',
   state: undefined,
@@ -111,7 +120,6 @@ provide(chipInputKey, true)
 const root = useTemplateRef<HTMLElement>('root')
 const input = useTemplateRef<HTMLInputElement>('input')
 const inputValue = ref('')
-const announcement = ref('')
 
 const computedId = useId(() => props.id, 'chips')
 const formGroupData = inject(formGroupKey, null)?.()
@@ -128,20 +136,22 @@ const {classes: colorClasses} = useThemeClasses(() => ({theme: computedColor.val
 const rootClasses = computed(() => [colorClasses.value, {disabled: isDisabled.value}])
 
 // Selection by index, so duplicate values stay distinguishable
-const selection = shallowRef<ReadonlySet<number>>(new Set())
+const selected = shallowRef<ReadonlySet<number>>(new Set())
 let anchor: number | null = null
 
+const sortedSelection = () => [...selected.value].sort((a, b) => a - b)
+
 const setSelection = (next: ReadonlySet<number>) => {
-  selection.value = next
+  selected.value = next
   emit(
     'select',
-    [...next].sort((a, b) => a - b).map((i) => modelValue.value[i] ?? '')
+    sortedSelection().map((i) => modelValue.value[i] ?? '')
   )
 }
 
 const clearSelection = () => {
   anchor = null
-  if (selection.value.size === 0) return
+  if (selected.value.size === 0) return
   setSelection(new Set())
 }
 
@@ -154,11 +164,11 @@ const selectChip = (
 ) => {
   if (index < 0 || index >= modelValue.value.length) return
   if (rangeSelect && anchor !== null) {
-    const next = new Set(addToSelection ? selection.value : [])
+    const next = new Set(addToSelection ? selected.value : [])
     for (let i = Math.min(anchor, index); i <= Math.max(anchor, index); i++) next.add(i)
     setSelection(next)
   } else if (addToSelection) {
-    const next = new Set(selection.value)
+    const next = new Set(selected.value)
     if (next.has(index)) {
       next.delete(index)
     } else {
@@ -172,11 +182,30 @@ const selectChip = (
   }
 }
 
-const chipElements = (): HTMLElement[] =>
-  root.value ? [...root.value.querySelectorAll<HTMLElement>(':scope > .chip')] : []
+// Each chip registers its element through the `ref` in `chipProps`, the default BChip and a
+// `chip` slot alike, so keyboard navigation and clicks only see chips that bound it
+const chipElements: (HTMLElement | null)[] = []
+const chipRefSetters = new Map<number, (el: Element | ComponentPublicInstance | null) => void>()
+const chipRef = (index: number) => {
+  let setter = chipRefSetters.get(index)
+  if (!setter) {
+    setter = (el) => {
+      chipElements[index] =
+        el instanceof HTMLElement ? el : ((el as ComponentPublicInstance | null)?.$el ?? null)
+    }
+    chipRefSetters.set(index, setter)
+  }
+  return setter
+}
+
+const chipProps = (index: number): ChipProps => ({
+  'ref': chipRef(index),
+  'tabindex': 0,
+  'aria-pressed': selected.value.has(index) ? 'true' : undefined,
+})
 
 const focusChip = (index: number) => {
-  chipElements()[index]?.focus()
+  chipElements[index]?.focus()
 }
 
 const focus = () => {
@@ -222,17 +251,15 @@ const removeIndices = (indices: readonly number[]): boolean => {
     if (!event.defaultPrevented) removed.add(index)
   }
   if (removed.size === 0) return false
-  const removedValues = [...removed].sort((a, b) => a - b).map((i) => modelValue.value[i])
   modelValue.value = modelValue.value.filter((_, i) => !removed.has(i))
   // Shift the remaining selection past the removed chips
   const shift = (i: number) => i - [...removed].filter((r) => r < i).length
   const next = new Set<number>()
-  for (const i of selection.value) if (!removed.has(i)) next.add(shift(i))
+  for (const i of selected.value) if (!removed.has(i)) next.add(shift(i))
   anchor = anchor === null || removed.has(anchor) ? null : shift(anchor)
-  if (next.size !== selection.value.size || [...next].some((i) => !selection.value.has(i))) {
+  if (next.size !== selected.value.size || [...next].some((i) => !selected.value.has(i))) {
     setSelection(next)
   }
-  announcement.value = `${props.removedLabel} ${removedValues.join(', ')}`
   return true
 }
 
@@ -249,15 +276,39 @@ const remove = (value: string): boolean => {
 }
 
 const removeSelected = () => {
-  removeIndices([...selection.value])
+  removeIndices([...selected.value])
   clearSelection()
   focus()
 }
 
 const clear = () => {
   modelValue.value = []
-  selection.value = new Set()
+  selected.value = new Set()
   anchor = null
+}
+
+const selectionApi = {
+  add: (index: number) => {
+    if (index < 0 || index >= modelValue.value.length || selected.value.has(index)) return
+    setSelection(new Set([...selected.value, index]))
+  },
+  remove: (index: number) => {
+    if (!selected.value.has(index)) return
+    const next = new Set(selected.value)
+    next.delete(index)
+    if (anchor === index) anchor = null
+    setSelection(next)
+  },
+  set: (indices: readonly number[]) => {
+    anchor = null
+    setSelection(new Set(indices.filter((i) => i >= 0 && i < modelValue.value.length)))
+  },
+  setAll: () => {
+    setSelection(new Set(modelValue.value.map((_, i) => i)))
+  },
+  clear: clearSelection,
+  has: (index: number) => selected.value.has(index),
+  selectedItems: readonly(computed(() => sortedSelection().map((i) => modelValue.value[i] ?? ''))),
 }
 
 const createFromInput = () => {
@@ -287,8 +338,8 @@ const onPaste = (event: ClipboardEvent) => {
 const onInputBlur = (event: FocusEvent) => {
   if (!props.createOnBlur) return
   // Don't create a chip when focus moves to a chip
-  const related = event.relatedTarget as Element | null
-  if (related?.closest('.chip')) return
+  const related = event.relatedTarget as Node | null
+  if (related && chipElements.some((el) => el?.contains(related))) return
   createFromInput()
 }
 
@@ -324,10 +375,10 @@ const onInputKeydown = (event: KeyboardEvent) => {
   }
 }
 
-const chipIndexOf = (target: EventTarget | null): number => {
-  const chip = (target as Element | null)?.closest?.('.chip')
-  return chip ? chipElements().indexOf(chip as HTMLElement) : -1
-}
+const chipIndexOf = (target: EventTarget | null): number =>
+  target instanceof Node
+    ? chipElements.findIndex((el, i) => i < modelValue.value.length && !!el?.contains(target))
+    : -1
 
 const navigate = (index: number, direction: -1 | 1, shiftKey: boolean) => {
   const target = index + direction
@@ -348,8 +399,8 @@ const onChipKeydown = (event: KeyboardEvent) => {
     case 'Backspace':
     case 'Delete': {
       event.preventDefault()
-      if (selection.value.size === 0 || isDisabled.value) return
-      const nextIndex = Math.min(index, modelValue.value.length - selection.value.size - 1)
+      if (selected.value.size === 0 || isDisabled.value) return
+      const nextIndex = Math.min(index, modelValue.value.length - selected.value.size - 1)
       removeSelected()
       nextTick(() => {
         const remaining = modelValue.value.length
@@ -382,7 +433,7 @@ const onChipKeydown = (event: KeyboardEvent) => {
     case 'a':
       if (event.metaKey || event.ctrlKey) {
         event.preventDefault()
-        setSelection(new Set(modelValue.value.map((_, i) => i)))
+        selectionApi.setAll()
       }
       break
     case 'Escape':
@@ -417,10 +468,10 @@ defineExpose({
   add,
   blur,
   clear,
-  clearSelection,
   element: root,
   focus,
   remove,
   removeSelected,
+  selection: selectionApi,
 })
 </script>

@@ -114,6 +114,8 @@ The v6 range is a wrapper with generated children (bubble, ticks, fill variable)
 
 ## Chips (redesign of `BFormTags` / `BFormTag`)
 
+**Changed in review on #201 (2026-11-27):** the removed-chip live region and `removedLabel` are dropped (v6 has none). The `chip` slot scope gets a `props` object (`ref`, `tabindex`, `aria-pressed`) bound with `v-bind="props"`, per the slot props rule; chips are found through that `ref` instead of `.chip` queries. `BChip`'s `img` slot passes `props` (`{class: 'chip-img'}`) to bind on the image, with no wrapper and no library SCSS. The exposed selection is a `selection` object shaped like `BTable`'s (`add`, `remove`, `set`, `setAll`, `clear`, `has`, `selectedItems`), by index; `clearSelection` moves into it. The table below keeps the original decisions.
+
 ### v6 overview
 
 Standalone `.chip` (`.chip-icon`, `.chip-img`, `.chip-dismiss`, `.active`, `.disabled`, `theme-*`; subtle by default, solid when active) and `.chip-input` (wrapper styled like a control: `--control-*` tokens, `:focus-within` ring) containing chips and a borderless `<input class="form-ghost">`.

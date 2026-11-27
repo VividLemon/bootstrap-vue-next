@@ -4,7 +4,10 @@ import {h, nextTick, ref} from 'vue'
 import BFormChips from './BFormChips.vue'
 import BFormField from '../BFormGroup/BFormGroup.vue'
 import type {BvEvent} from '../../utils'
+import type {ChipProps} from '../../types'
 import {provideFormGroupStub} from '../../../tests/utils'
+
+type ChipScope = {value: string; index: number; selected: boolean; props: ChipProps}
 
 const chips = (w: ReturnType<typeof mount>) => w.findAll('.chip')
 const ghost = (w: ReturnType<typeof mount>) => w.find('input.form-ghost')
@@ -27,7 +30,7 @@ describe('form-chips', () => {
       expect(chips(w)[0]?.attributes('tabindex')).toBe('0')
       expect(chips(w)[0]?.attributes('data-bs-chip-value')).toBe('a')
       expect(ghost(w).attributes('type')).toBe('text')
-      expect(w.find('[aria-live="polite"]').classes()).toContain('visually-hidden')
+      expect(w.find('[aria-live]').exists()).toBe(false)
     })
 
     it('renders dismiss buttons labelled with the value, out of the tab order', () => {
@@ -85,15 +88,16 @@ describe('form-chips', () => {
       expect(ghost(w).attributes('required')).toBeUndefined()
     })
 
-    it('uses the chip slot', () => {
+    it('uses the chip slot, whose props carry tabindex', () => {
       const w = mount(BFormChips, {
         props: {modelValue: ['a']},
         slots: {
-          chip: (scope: {value: string; index: number; selected: boolean}) =>
-            h('span', {class: 'chip custom', tabindex: 0}, `${scope.value}-${scope.index}`),
+          chip: (scope: ChipScope) =>
+            h('span', {...scope.props, class: 'chip custom'}, `${scope.value}-${scope.index}`),
         },
       })
       expect(w.find('.custom').text()).toBe('a-0')
+      expect(w.find('.custom').attributes('tabindex')).toBe('0')
     })
 
     it("passes each chip's value and index to the dismiss-icon slot", () => {
@@ -206,7 +210,7 @@ describe('form-chips', () => {
   })
 
   describe('removing', () => {
-    it('removes a chip with its dismiss button and announces it', async () => {
+    it('removes a chip with its dismiss button', async () => {
       const w = mount(BFormChips, {
         props: {
           'modelValue': ['a', 'b'],
@@ -216,7 +220,6 @@ describe('form-chips', () => {
       await w.findAll('.chip-dismiss')[0]?.trigger('click')
       expect(w.props('modelValue')).toEqual(['b'])
       expect(w.emitted('remove')?.[0]?.[0]).toBe('a')
-      expect(w.find('[aria-live="polite"]').text()).toBe('Removed a')
     })
 
     it('emits a cancelable remove event', async () => {
@@ -275,6 +278,54 @@ describe('form-chips', () => {
       const w = mountWith(['a', 'b'])
       await ghost(w).trigger('keydown', {key: 'ArrowLeft'})
       expect(chips(w)[1]?.classes()).toContain('active')
+    })
+
+    it('finds custom chips through the ref in the chip slot props', async () => {
+      const w = mount(BFormChips, {
+        attachTo: document.body,
+        props: {modelValue: ['a', 'b']},
+        slots: {
+          chip: (scope: ChipScope) =>
+            h('span', {...scope.props, class: ['custom', {on: scope.selected}]}, scope.value),
+        },
+      })
+      await ghost(w).trigger('keydown', {key: 'ArrowLeft'})
+      const custom = w.findAll('.custom')
+      expect(document.activeElement).toBe(custom[1]?.element)
+      expect(custom[1]?.classes()).toContain('on')
+      expect(custom[1]?.attributes('aria-pressed')).toBe('true')
+      await custom[1]?.trigger('keydown', {key: 'ArrowLeft'})
+      expect(document.activeElement).toBe(custom[0]?.element)
+      await custom[1]?.trigger('click')
+      expect(w.emitted('select')?.at(-1)).toEqual([['b']])
+    })
+
+    it('exposes selection like BTable: add, remove, set, setAll, clear, has, selectedItems', async () => {
+      const w = mountWith(['a', 'b', 'c'])
+      const {selection} = w.vm as unknown as {
+        selection: {
+          add: (i: number) => void
+          remove: (i: number) => void
+          set: (i: readonly number[]) => void
+          setAll: () => void
+          clear: () => void
+          has: (i: number) => boolean
+          selectedItems: {value: readonly string[]}
+        }
+      }
+      selection.add(2)
+      selection.add(0)
+      expect(selection.selectedItems.value).toEqual(['a', 'c'])
+      expect(selection.has(2)).toBe(true)
+      selection.remove(2)
+      expect(selection.selectedItems.value).toEqual(['a'])
+      selection.set([1, 2, 9])
+      expect(selection.selectedItems.value).toEqual(['b', 'c'])
+      selection.setAll()
+      expect(selection.selectedItems.value).toEqual(['a', 'b', 'c'])
+      selection.clear()
+      expect(selection.selectedItems.value).toEqual([])
+      expect(w.emitted('select')?.at(-1)).toEqual([[]])
     })
 
     it('arrow keys move the selection; Shift extends it; ArrowRight past the end focuses the input', async () => {

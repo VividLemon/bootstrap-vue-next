@@ -12,7 +12,6 @@
 @layer components {
   @include meta.load-css("../components/BAvatar/avatar");
   @include meta.load-css("../components/BFormRating/form-rating");
-  @include meta.load-css("../components/BFormChips/chip");
   @include meta.load-css("../components/BInputGroup/input-group");
   @include meta.load-css("../components/BPagination/pagination");
   @include meta.load-css("../components/BTable/table");

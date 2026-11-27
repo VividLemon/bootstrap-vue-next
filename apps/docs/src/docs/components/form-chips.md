@@ -21,8 +21,9 @@ control) containing a chip per value and a borderless text input. `v-model` is a
 ## Chips
 
 `BChip` is the standalone chip. Use `active` for the selected style, `color` to change the theme,
-the `icon` and `img` slots for a leading icon or image, and `dismissible` for a dismiss button
-that emits `remove`.
+the `icon` and `img` slots for a leading icon or image (bind the `img` slot's `props` on your
+image: `<template #img="{ props }"><img v-bind="props" src="..." alt="" /></template>`), and
+`dismissible` for a dismiss button that emits `remove`.
 
 <<< DEMO ./demo/FormChipsChip.vue#template{vue-html}
 
@@ -54,8 +55,9 @@ the selected values.
 
 ## Custom chips
 
-Use the `chip` slot to render each chip yourself. Render an element with the `chip` class and
-`tabindex="0"` (for example `BChip`) so keyboard navigation and selection keep working.
+Use the `chip` slot to render each chip yourself. Bind the scope's `props` on the chip element
+(`<BChip v-bind="props">`): they carry its `ref`, `tabindex` and `aria-pressed`, and keyboard
+navigation and selection find the chip through that `ref`.
 
 <<< DEMO ./demo/FormChipsCustom.vue#template{vue-html}
 
@@ -67,5 +69,4 @@ set on the text input only while there are no chips. Set `state` for the validat
 ## Accessibility
 
 Each chip is focusable; its dismiss button is labelled `"{dismiss-label} {value}"` and left out of
-the tab order (the chip handles the keyboard). A visually hidden polite live region announces
-removed chips (`removed-label`).
+the tab order (the chip handles the keyboard).

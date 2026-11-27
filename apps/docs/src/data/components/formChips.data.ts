@@ -88,12 +88,6 @@ export default {
           default: undefined,
           description: 'When set, renders one hidden input with this name per value',
         },
-        removedLabel: {
-          type: 'string',
-          default: 'Removed',
-          description:
-            "Prefix of the polite live-region announcement after a chip is removed ('{removedLabel} {value}')",
-        },
         separator: {
           type: 'string | null',
           default: "','",
@@ -128,12 +122,17 @@ export default {
       slots: {
         chip: {
           description:
-            'Replaces a chip. Render an element with the `chip` class and `tabindex="0"` (e.g. `BChip`) so keyboard navigation finds it',
+            'Replaces a chip. Bind `props` on the chip element (`<BChip v-bind="props">`) so keyboard navigation and selection find it',
           scope: {
             value: { type: 'string', description: 'The value' },
             index: { type: 'number', description: 'Position in the model' },
             selected: { type: 'boolean', description: 'Whether the chip is selected' },
             remove: { type: '() => boolean', description: 'Removes the chip' },
+            props: {
+              type: 'ChipProps',
+              description:
+                'Bind with `v-bind="props"` on the chip element: its `ref`, `tabindex` and `aria-pressed`',
+            },
           },
         },
         'dismiss-icon': {
@@ -148,7 +147,6 @@ export default {
         add: { type: '(value: string) => boolean', description: 'Adds a chip' },
         blur: { type: '() => void', description: 'Blurs the text input' },
         clear: { type: '() => void', description: 'Removes every chip' },
-        clearSelection: { type: '() => void', description: 'Deselects every chip' },
         element: { type: 'HTMLDivElement', description: 'The `.chip-input` element' },
         focus: { type: '() => void', description: 'Focuses the text input' },
         remove: {
@@ -156,6 +154,26 @@ export default {
           description: 'Removes the first chip with this value',
         },
         removeSelected: { type: '() => void', description: 'Removes the selected chips' },
+        selection: {
+          type: 'object',
+          description:
+            'The chip selection, shaped like `BTable`\'s `selection`. Chips are addressed by index, so duplicate values stay distinct',
+          properties: {
+            add: { type: '(index: number) => void', description: 'Selects a chip' },
+            remove: { type: '(index: number) => void', description: 'Deselects a chip' },
+            set: {
+              type: '(indices: readonly number[]) => void',
+              description: 'Selects exactly these chips',
+            },
+            setAll: { type: '() => void', description: 'Selects every chip' },
+            clear: { type: '() => void', description: 'Deselects every chip' },
+            has: { type: '(index: number) => boolean', description: 'Whether a chip is selected' },
+            selectedItems: {
+              type: 'Readonly<Ref<readonly string[]>>',
+              description: 'The selected values, in model order',
+            },
+          },
+        },
       } satisfies ExposedRecord,
     },
     BChip: {
@@ -202,7 +220,13 @@ export default {
         default: { description: 'Chip content (defaults to `value`)' },
         'dismiss-icon': { description: 'Content of the dismiss button' },
         icon: { description: 'Leading icon, wrapped in `.chip-icon`' },
-        img: { description: 'Leading image, wrapped in `.chip-img`' },
+        img: {
+          description:
+            'Leading image. Bind `props` on it (`<img v-bind="props" src="...">`) for the `.chip-img` class',
+          scope: {
+            props: { type: '{class: string}', description: 'Bind with `v-bind="props"` on the image' },
+          },
+        },
       } satisfies SlotRecord<keyof BChipSlots>,
     },
   }),

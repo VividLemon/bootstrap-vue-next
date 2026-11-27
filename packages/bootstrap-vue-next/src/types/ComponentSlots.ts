@@ -498,15 +498,34 @@ export type BFormSpinbuttonSlots = {
   increment?: (props: {hasFocus: boolean}) => any
 }
 
+/**
+ * Props for the element a `BFormChips` `chip` slot renders. Bind them with `v-bind="props"` on
+ * that one element: they carry its ref (keyboard navigation and clicks find the chip through it),
+ * `tabindex` and `aria-pressed`.
+ */
+export interface ChipProps {
+  'ref': (el: Element | ComponentPublicInstance | null) => void
+  'tabindex': number
+  'aria-pressed'?: 'true'
+}
+
 export type BChipSlots = {
   'default'?: (props: Record<string, never>) => any
   'dismiss-icon'?: (props: Record<string, never>) => any
   'icon'?: (props: Record<string, never>) => any
-  'img'?: (props: Record<string, never>) => any
+  /** Bind `props` on the image: `<img v-bind="props" src="...">` */
+  'img'?: (props: {props: {class: string}}) => any
 }
 
 export type BFormChipsSlots = {
-  'chip'?: (props: {value: string; index: number; selected: boolean; remove: () => boolean}) => any
+  /** Bind `props` on the chip element: `<BChip v-bind="props">` */
+  'chip'?: (props: {
+    value: string
+    index: number
+    selected: boolean
+    remove: () => boolean
+    props: ChipProps
+  }) => any
   'dismiss-icon'?: (props: {value: string; index: number}) => any
 }
 
