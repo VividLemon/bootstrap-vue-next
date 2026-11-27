@@ -507,7 +507,7 @@ export type BChipSlots = {
 
 export type BFormChipsSlots = {
   'chip'?: (props: {value: string; index: number; selected: boolean; remove: () => boolean}) => any
-  'dismiss-icon'?: (props: Record<string, never>) => any
+  'dismiss-icon'?: (props: {value: string; index: number}) => any
 }
 
 export type BLinkSlots = {

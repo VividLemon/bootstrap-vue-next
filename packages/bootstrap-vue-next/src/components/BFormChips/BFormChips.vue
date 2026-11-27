@@ -10,8 +10,8 @@
     <template v-for="(value, index) in modelValue" :key="`${index}-${value}`">
       <slot
         name="chip"
-        :value="value"
-        :index="index"
+        :value
+        :index
         :selected="selection.has(index)"
         :remove="() => removeAt(index)"
       >
@@ -28,7 +28,7 @@
         >
           {{ value }}
           <template v-if="slots['dismiss-icon']" #dismiss-icon>
-            <slot name="dismiss-icon" />
+            <slot name="dismiss-icon" :value :index />
           </template>
         </BChip>
       </slot>

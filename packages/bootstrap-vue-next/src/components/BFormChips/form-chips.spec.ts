@@ -96,6 +96,17 @@ describe('form-chips', () => {
       expect(w.find('.custom').text()).toBe('a-0')
     })
 
+    it("passes each chip's value and index to the dismiss-icon slot", () => {
+      const w = mount(BFormChips, {
+        props: {modelValue: ['a', 'b']},
+        slots: {
+          'dismiss-icon': (scope: {value: string; index: number}) =>
+            h('span', {class: 'icon'}, `${scope.value}-${scope.index}`),
+        },
+      })
+      expect(w.findAll('.chip-dismiss .icon').map((el) => el.text())).toEqual(['a-0', 'b-1'])
+    })
+
     it('disables the ghost input and the chips', () => {
       const w = mount(BFormChips, {props: {modelValue: ['a'], disabled: true}})
       expect(w.classes()).toContain('disabled')

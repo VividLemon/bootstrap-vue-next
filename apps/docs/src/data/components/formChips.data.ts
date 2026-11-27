@@ -138,6 +138,10 @@ export default {
         },
         'dismiss-icon': {
           description: "Content of each chip's dismiss button",
+          scope: {
+            value: { type: 'string', description: "The chip's value" },
+            index: { type: 'number', description: "The chip's position in the model" },
+          },
         },
       } satisfies SlotRecord<keyof BFormChipsSlots>,
       exposed: {
