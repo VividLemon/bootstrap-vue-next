@@ -513,8 +513,8 @@ export type BChipSlots = {
   'default'?: (props: Record<string, never>) => any
   'dismiss-icon'?: (props: Record<string, never>) => any
   'icon'?: (props: Record<string, never>) => any
-  /** The scope is only attributes: bind it on the image, `<img v-bind="scope" src="...">` */
-  'img'?: (props: {class: string}) => any
+  /** Bind `props` on the image: `<img v-bind="props" src="...">` */
+  'img'?: (props: {props: {class: string}}) => any
 }
 
 export type BFormChipsSlots = {

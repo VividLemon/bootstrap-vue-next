@@ -222,9 +222,9 @@ export default {
         icon: { description: 'Leading icon, wrapped in `.chip-icon`' },
         img: {
           description:
-            'Leading image. The scope is only attributes (`{class: \'chip-img\'}`): bind it on the image, `<img v-bind="scope" src="...">`',
+            'Leading image. Bind `props` on it (`<img v-bind="props" src="...">`) for the `.chip-img` class',
           scope: {
-            class: { type: 'string', description: '`chip-img`' },
+            props: { type: '{class: string}', description: 'Bind with `v-bind="props"` on the image' },
           },
         },
       } satisfies SlotRecord<keyof BChipSlots>,

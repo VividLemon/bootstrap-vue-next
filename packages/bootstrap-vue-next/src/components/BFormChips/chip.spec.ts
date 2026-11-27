@@ -44,7 +44,7 @@ describe('chip', () => {
   it('passes the chip-img class to the img slot, with no wrapper', () => {
     const wrapper = mount(BChip, {
       slots: {
-        img: (scope: {class: string}) => h('img', {...scope, src: 'a.png', alt: ''}),
+        img: (scope: {props: {class: string}}) => h('img', {...scope.props, src: 'a.png', alt: ''}),
       },
     })
     expect(wrapper.element.firstElementChild?.tagName).toBe('IMG')
