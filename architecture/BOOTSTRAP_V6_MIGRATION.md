@@ -264,10 +264,19 @@ Bootstrap v6 lets CSS own all motion: JavaScript toggles a state class (`.show`,
 Decided 2026-11-21, first applied to `BPopover` / `BTooltip` ([#184](https://github.com/VividLemon/bootstrap-vue-next/pull/184)).
 
 - When a slot renders an element that the component must wire up (listeners, a ref, ARIA attributes), its scope has a `props` object meant to be bound with `v-bind="props"` on that one element. This is the Vuetify 3 pattern (`#activator="{ props }"`).
-- The key is always `props`, never `attrs` / `handlers` / `on`, and it is typed. Other scope values (state, functions) sit next to it.
+- **Always a `props` object, never flat** (decided by the maintainer 2026-11-27): even when the scope holds nothing else, the attributes go under `props` (`#img="{ props }"` → `<img v-bind="props">`). A flat scope can't grow: a value added to it later (`index`, `loaded`) would be bound onto every user's element as an attribute, silently, so going nested later would break every template. With `props`, new scope values sit next to it without touching what is bound. Other scope values (state, functions) sit next to `props`.
+- The key is always `props`, never `attrs` / `handlers` / `on`, and it is typed.
 - Content-only slots (titles, bodies, button content, icons) don't get one.
 - A component that needs an element the user may not render in a slot (directives, orchestrators, foreign DOM) also takes it as a prop, named after the same role as the slot (`activator`).
-- Known candidates: `BPopover` / `BTooltip` `#activator` (#184); `BCollapse` `#header` / `#footer` (a toggle with `aria-expanded` / `aria-controls`); `BMenu` `#activator` for a custom opener (G2); optionally `BDialog` / `BDrawer` `#activator` and BTable row details.
+- Applied: `BPopover` / `BTooltip` `#activator` (#184); `BMenu` `#activator` (#212: `ref`, `id`, `aria-expanded`, `aria-controls`, click and keyboard handlers); `BFormChips` `#chip` (#201: `data-bs-chip-value`, `tabindex`, `aria-pressed` under `props`, next to `value` / `index` / `selected` / `remove`; the component finds chips by `[data-bs-chip-value]`, which binding `props` guarantees, instead of requiring the `.chip` class on a direct child) and `BChip` `#img` (#201: `props` = `{class: 'chip-img'}`).
+- Candidates (scan of 2026-11-27):
+  - **`BCollapse` `#header` / `#footer`** (strong): users wire `:aria-expanded`, `:aria-controls` and `@click="toggle"` by hand (see the `CollapseContent` demo). `props: {onClick, 'aria-expanded', 'aria-controls'}`. Additive: `toggle` / `id` / `visible` stay in the scope.
+  - **`BFormGroup` / `BFormField` default slot** (strong): the scope hands out `id` and `ariaDescribedby` to bind on a custom control. `props: {id, 'aria-describedby', 'aria-invalid'}`; a `ref` in it could replace the fieldset `querySelectorAll` that focuses the first input when the legend is clicked. Best done with Field ([#198](https://github.com/VividLemon/bootstrap-vue-next/pull/198)).
+  - **`BCarousel` `controls`** (partial, [#202](https://github.com/VividLemon/bootstrap-vue-next/pull/202)): custom prev / next / play buttons get only functions (no `aria-controls`, labels or disabled state). One slot renders several elements, so one `props` doesn't fit: split it into `prev` / `next` / `play` slots with a `props` each, or leave it.
+  - **BTable row details** (weak): `toggleExpansion` / `expansionShowing` sit in a cell scope that covers the whole cell, so the toggle would need its own slot to carry `aria-expanded` / `aria-controls`.
+  - **`BDialog` / `BDrawer` `#activator`** (low): `v-b-toggle` and `show()` cover opening; mainly `aria-expanded` on the opener.
+  - **G2 `BCombobox` input**: use `props`. The `BAutocomplete` `input` slot it replaces already passes a flat attrs-and-listeners object (the pre-rule shape).
+- Not candidates: content-only slots (tab titles, pagination pages, spinbutton / rating icons, carousel captions); a single slot holding many items (`BMenu` items, `BButtonToolbar`: no per-item slot, and v6 queries them too; items would register through inject if that ever needs hardening); elements the component renders itself (`BTabs` buttons, `BPagination` pages: template refs, not slot props).
 
 ### Slot presence checks
 
@@ -448,6 +457,8 @@ Released 2026-11-23. The library is still on alpha.1 (`bootstrap` peer `^6.0.0-a
 - Re-check every class and CSS variable the library emits against the alpha.2 `bootstrap.css`.
 
 ## Cleanup and verification (end of the current migration)
+
+- **Audit slot scopes against the slot props rule** ([Slot props for elements the component controls](#slot-props-for-elements-the-component-controls)), once the open component PRs have merged (doing it earlier would conflict with them). For every slot: does it render an element the component controls? Then its bindable attributes go under a typed `props` object, never flat, with state and functions next to it; content-only slots get none. Work through the candidates listed in the rule, check slots added after this note, and record each scope change in the ledger.
 
 - **Remove `useHasSlot` before v100** ([Slot presence checks](#slot-presence-checks)). Its remaining users after #183:
   - `BAvatar` (badge visibility, implicit dot, `badge` class): split the computeds and check `slots.default` / `slots.badge` in the template, in the G5 avatar rewrite ([#190](https://github.com/VividLemon/bootstrap-vue-next/pull/190), `BOOTSTRAP_V6_DISPLAY.md`).
