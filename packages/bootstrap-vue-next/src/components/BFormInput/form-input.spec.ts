@@ -2,7 +2,6 @@ import {afterEach, describe, expect, it, vi} from 'vitest'
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {nextTick, ref} from 'vue'
 import BFormInput from './BFormInput.vue'
-import {inputGroupKey} from '../../utils/keys'
 import {provideFormGroupStub} from '../../../tests/utils'
 
 describe('form-input', () => {
@@ -53,7 +52,6 @@ describe('form-input', () => {
       'tel',
       'date',
       'time',
-      'range',
       'color',
       'datetime-local',
       'month',
@@ -81,25 +79,6 @@ describe('form-input', () => {
       expect(wrapper.classes()).toContain('form-control')
     })
 
-    it('has form-range class when type is range', () => {
-      const wrapper = mount(BFormInput, {props: {type: 'range'}})
-      expect(wrapper.classes()).toContain('form-range')
-    })
-
-    it('does not have form-control class when type is range (outside input group)', () => {
-      const wrapper = mount(BFormInput, {props: {type: 'range'}})
-      expect(wrapper.classes()).not.toContain('form-control')
-    })
-
-    it('has form-control class when type is range and inside input group', () => {
-      const wrapper = mount(BFormInput, {
-        props: {type: 'range'},
-        global: {provide: {[inputGroupKey as unknown as symbol]: true}},
-      })
-      expect(wrapper.classes()).toContain('form-control')
-      expect(wrapper.classes()).toContain('form-range')
-    })
-
     it('has form-control-color class when type is color', () => {
       const wrapper = mount(BFormInput, {props: {type: 'color'}})
       expect(wrapper.classes()).toContain('form-control-color')
@@ -110,11 +89,6 @@ describe('form-input', () => {
       const wrapper = mount(BFormInput, {props: {plaintext: true}})
       expect(wrapper.classes()).toContain('form-control-plaintext')
       expect(wrapper.classes()).not.toContain('form-control')
-    })
-
-    it('does not have form-control-plaintext when type is range even if plaintext is true', () => {
-      const wrapper = mount(BFormInput, {props: {plaintext: true, type: 'range'}})
-      expect(wrapper.classes()).not.toContain('form-control-plaintext')
     })
 
     it('does not have form-control-plaintext when type is color even if plaintext is true', () => {
@@ -545,25 +519,6 @@ describe('form-input', () => {
         },
       })
       expect(wrapper.attributes('disabled')).toBeDefined()
-    })
-  })
-
-  describe('inputGroupKey injection', () => {
-    it('range type gets form-control class inside input group', () => {
-      const wrapper = mount(BFormInput, {
-        props: {type: 'range'},
-        global: {provide: {[inputGroupKey as unknown as symbol]: true}},
-      })
-      expect(wrapper.classes()).toContain('form-control')
-      expect(wrapper.classes()).toContain('form-range')
-    })
-
-    it('range type does not get form-control class outside input group', () => {
-      const wrapper = mount(BFormInput, {
-        props: {type: 'range'},
-      })
-      expect(wrapper.classes()).not.toContain('form-control')
-      expect(wrapper.classes()).toContain('form-range')
     })
   })
 

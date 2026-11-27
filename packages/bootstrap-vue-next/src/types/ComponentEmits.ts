@@ -115,6 +115,10 @@ export type BDropdownItemButtonEmits = {
   click: [value: MouseEvent]
 }
 
+export type BFormRangeEmits = {
+  change: [value: number]
+}
+
 export type BFormStrengthEmits = {
   change: [value: PasswordStrengthChange]
 }

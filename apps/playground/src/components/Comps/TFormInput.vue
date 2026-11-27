@@ -32,8 +32,8 @@
         <BFormInput type="month" />
         <div>type week</div>
         <BFormInput type="week" />
-        <div>type range</div>
-        <BFormInput v-model="formInputRangeValue" type="range" min="0" max="5" step="0.5" />
+        <div>range (BFormRange)</div>
+        <BFormRange v-model="formInputRangeValue" :min="0" :max="5" :step="0.5" bubble />
         <div>value : {{ formInputRangeValue }}</div>
         <div>type color</div>
         <BFormInput type="color" />
