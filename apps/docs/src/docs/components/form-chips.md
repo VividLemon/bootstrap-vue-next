@@ -56,8 +56,9 @@ the selected values.
 ## Custom chips
 
 Use the `chip` slot to render each chip yourself. Bind the scope's `props` on the chip element
-(`<BChip v-bind="props">`): they carry its `ref`, `tabindex` and `aria-pressed`, and keyboard
-navigation and selection find the chip through that `ref`.
+(`<BChip v-bind="props">`): they carry `data-bs-chip-value`, `tabindex` and `aria-pressed`, and
+keyboard navigation and selection find the chip by `data-bs-chip-value`. The chip may sit inside a
+wrapper.
 
 <<< DEMO ./demo/FormChipsCustom.vue#template{vue-html}
 

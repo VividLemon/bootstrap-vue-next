@@ -280,6 +280,23 @@ describe('form-chips', () => {
       expect(chips(w)[1]?.classes()).toContain('active')
     })
 
+    it('finds a custom chip inside a wrapper', async () => {
+      const w = mount(BFormChips, {
+        attachTo: document.body,
+        props: {modelValue: ['a', 'b']},
+        slots: {
+          chip: (scope: ChipScope) =>
+            h('div', {class: 'wrap'}, [h('span', {...scope.props, class: 'custom'}, scope.value)]),
+        },
+      })
+      await ghost(w).trigger('keydown', {key: 'ArrowLeft'})
+      const custom = w.findAll('.custom')
+      expect(document.activeElement).toBe(custom[1]?.element)
+      expect(custom[1]?.attributes('aria-pressed')).toBe('true')
+      await custom[1]?.trigger('keydown', {key: 'ArrowLeft'})
+      expect(document.activeElement).toBe(custom[0]?.element)
+    })
+
     it('keeps each chip element at its index after a chip is removed', async () => {
       const w = mountWith(['a', 'b', 'c'])
       await w.findAll('.chip-dismiss')[1]?.trigger('click')
@@ -293,7 +310,7 @@ describe('form-chips', () => {
       expect(w.emitted('select')?.at(-1)).toEqual([['a']])
     })
 
-    it('finds custom chips through the ref in the chip slot props', async () => {
+    it('finds custom chips by the data-bs-chip-value in the chip slot props', async () => {
       const w = mount(BFormChips, {
         attachTo: document.body,
         props: {modelValue: ['a', 'b']},

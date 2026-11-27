@@ -131,7 +131,7 @@ export default {
             props: {
               type: 'ChipProps',
               description:
-                'Bind with `v-bind="props"` on the chip element: its `ref`, `tabindex` and `aria-pressed`',
+                'Bind with `v-bind="props"` on the chip element: `data-bs-chip-value` (how keyboard navigation finds it), `tabindex` and `aria-pressed`',
             },
           },
         },

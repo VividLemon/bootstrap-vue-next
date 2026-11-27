@@ -66,7 +66,6 @@
 
 <script setup lang="ts">
 import {
-  type ComponentPublicInstance,
   computed,
   inject,
   nextTick,
@@ -85,7 +84,6 @@ import {useStateClass} from '../../composables/useStateClass'
 import {resolvePartColor, useThemeClasses} from '../../composables/useThemeClasses'
 import {chipInputKey, formGroupKey} from '../../utils/keys'
 import {BvEvent} from '../../utils'
-import {type MaybeElement, unrefElement} from '@vueuse/core'
 import BChip from './BChip.vue'
 
 const _props = withDefaults(defineProps<Omit<BFormChipsProps, 'modelValue'>>(), {
@@ -183,25 +181,20 @@ const selectChip = (
   }
 }
 
-// The chips' elements, filled by a function ref per chip (Vue's function refs inside `v-for`). The
-// ref reaches each chip through `chipProps`, for the default BChip and a `chip` slot alike: a
-// string ref can't, since refs in slot content belong to the component that wrote the slot.
-// Kept by index, because Vue also calls the ref with `null` on unmount, and chip `i` must be
-// element `i` for keyboard navigation and clicks. Not reactive: function refs run during the
-// render, so writing reactive state there would re-render in a loop, and only handlers read it
-const chipElements: (HTMLElement | null)[] = []
-const setChipElement = (index: number) => (el: Element | ComponentPublicInstance | null) => {
-  chipElements[index] = (unrefElement(el as MaybeElement) as HTMLElement | null | undefined) ?? null
-}
+// Chips are found by `data-bs-chip-value`, which `chipProps` puts on every chip (the default BChip
+// and a `chip` slot alike), the way Bootstrap's own chip input finds its chips. Document order is
+// model order, and a custom chip may sit inside a wrapper
+const chipElements = (): HTMLElement[] =>
+  root.value ? [...root.value.querySelectorAll<HTMLElement>('[data-bs-chip-value]')] : []
 
 const chipProps = (index: number): ChipProps => ({
-  'ref': setChipElement(index),
+  'data-bs-chip-value': modelValue.value[index] ?? '',
   'tabindex': 0,
   'aria-pressed': selected.value.has(index) ? 'true' : undefined,
 })
 
 const focusChip = (index: number) => {
-  chipElements[index]?.focus()
+  chipElements()[index]?.focus()
 }
 
 const focus = () => {
@@ -335,7 +328,7 @@ const onInputBlur = (event: FocusEvent) => {
   if (!props.createOnBlur) return
   // Don't create a chip when focus moves to a chip
   const related = event.relatedTarget as Node | null
-  if (related && chipElements.some((el) => el?.contains(related))) return
+  if (related && chipElements().some((el) => el.contains(related))) return
   createFromInput()
 }
 
@@ -372,9 +365,7 @@ const onInputKeydown = (event: KeyboardEvent) => {
 }
 
 const chipIndexOf = (target: EventTarget | null): number =>
-  target instanceof Node
-    ? chipElements.findIndex((el, i) => i < modelValue.value.length && !!el?.contains(target))
-    : -1
+  target instanceof Node ? chipElements().findIndex((el) => el.contains(target)) : -1
 
 const navigate = (index: number, direction: -1 | 1, shiftKey: boolean) => {
   const target = index + direction

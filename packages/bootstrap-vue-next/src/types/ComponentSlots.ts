@@ -500,11 +500,11 @@ export type BFormSpinbuttonSlots = {
 
 /**
  * Props for the element a `BFormChips` `chip` slot renders. Bind them with `v-bind="props"` on
- * that one element: they carry its ref (keyboard navigation and clicks find the chip through it),
+ * that one element: `data-bs-chip-value` (keyboard navigation and clicks find the chip by it),
  * `tabindex` and `aria-pressed`.
  */
 export interface ChipProps {
-  'ref': (el: Element | ComponentPublicInstance | null) => void
+  'data-bs-chip-value': string
   'tabindex': number
   'aria-pressed'?: 'true'
 }
