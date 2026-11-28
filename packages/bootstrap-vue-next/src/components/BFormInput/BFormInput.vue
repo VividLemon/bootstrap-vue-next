@@ -25,11 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import {computed, useTemplateRef} from 'vue'
+import {computed, inject, useTemplateRef} from 'vue'
 import {useDefaults} from '../../composables/useDefaults'
 import {normalizeInput} from '../../utils/normalizeInput'
 import type {BFormInputProps} from '../../types'
 import {useFormInput} from '../../composables/useFormInput'
+import {formAdornKey} from '../../utils/keys'
 
 const _props = withDefaults(defineProps<Omit<BFormInputProps, 'modelValue'>>(), {
   max: undefined,
@@ -70,6 +71,9 @@ const [modelValue, modelModifiers] = defineModel<
 
 const input = useTemplateRef('input')
 
+// Inside BFormAdorn the wrapper is the visible control, so the input is a borderless ghost
+const inFormAdorn = inject(formAdornKey, false)
+
 const {
   computedId,
   computedAriaInvalid,
@@ -84,6 +88,7 @@ const {
 } = useFormInput(props, input, modelValue, modelModifiers)
 
 const computedClasses = computed(() => {
+  if (inFormAdorn) return [stateClass.value, 'form-ghost']
   const isColor = props.type === 'color'
   return [
     stateClass.value,

@@ -245,6 +245,9 @@ export const defaultsKey: InjectionKey<Ref<Partial<BvnComponentProps>>> =
 export const inputGroupKey: InjectionKey<boolean> = createBvnInjectionKey('inputGroup')
 /** Provided by BFormChips: chips inside it take their dismiss buttons out of the tab order */
 export const chipInputKey: InjectionKey<boolean> = createBvnInjectionKey('chipInput')
+
+/** Provided by BFormAdorn: inner controls render `.form-ghost` instead of `.form-control` */
+export const formAdornKey: InjectionKey<boolean> = createBvnInjectionKey('formAdorn')
 export const buttonGroupKey: InjectionKey<boolean> = createBvnInjectionKey('buttonGroup')
 
 export type OrchestratorStoreObject = {

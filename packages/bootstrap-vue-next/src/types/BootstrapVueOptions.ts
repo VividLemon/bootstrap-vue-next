@@ -59,6 +59,7 @@ export const componentsWithExternalPath = {
   BDropdownItemButton: '/components/BDropdown',
   BDropdownText: '/components/BDropdown',
   BForm: '/components/BForm',
+  BFormAdorn: '/components/BFormAdorn',
   BFormCheckbox: '/components/BFormCheckbox',
   BFormCheckboxGroup: '/components/BFormCheckbox',
   BFormDatalist: '/components/BForm',
@@ -216,6 +217,7 @@ type UnmappedComponentProps<BFormSelectOption = any, BTableLite = any, BTable = 
   BFormFloatingLabel: ComponentProps.BFormFloatingLabelProps
   BFormRow: ComponentProps.BFormRowProps
   BFormText: ComponentProps.BFormTextProps
+  BFormAdorn: ComponentProps.BFormAdornProps
   BFormCheckbox: ComponentProps.BFormCheckboxProps
   BFormCheckboxGroup: ComponentProps.BFormCheckboxGroupProps
   BFormDatalist: ComponentProps.BFormDatalistProps
