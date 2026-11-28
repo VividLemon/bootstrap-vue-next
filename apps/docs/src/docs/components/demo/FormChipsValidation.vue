@@ -1,12 +1,12 @@
 <template>
-  <BFormGroup
+  <BFormField
     label="Tags"
     description="Lowercase letters only, up to 4 tags"
     :state="state"
     :invalid-feedback="message"
   >
     <BFormChips v-model="tags" :max-chips="4" :state="state" @add="onAdd" />
-  </BFormGroup>
+  </BFormField>
 </template>
 
 <script setup lang="ts">

@@ -31,7 +31,7 @@ image: `<template #img="{ props }"><img v-bind="props" src="..." alt="" /></temp
 
 There is no built-in validator: listen to the cancelable `add` event and call
 `event.preventDefault()` to reject a value. Show messages through
-[`BFormGroup`](/docs/components/form-group) feedback; its label targets the chip input's text
+[`BFormField`](/docs/components/form-field) feedback; its label targets the chip input's text
 input.
 
 <<< DEMO ./demo/FormChipsValidation.vue

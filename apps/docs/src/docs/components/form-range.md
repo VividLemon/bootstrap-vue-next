@@ -52,7 +52,7 @@ Use `color.theme` to recolor the filled track and the thumb.
 ## Validation
 
 `state` adds `.is-valid` / `.is-invalid` to the input. Feedback placed after the component (for
-example by [`BFormField`](/docs/components/form-group)) is shown by Bootstrap's
+example by [`BFormField`](/docs/components/form-field)) is shown by Bootstrap's
 `.form-range:has(.form-range-input.is-invalid) ~ .invalid-feedback` rule. Inside a `BForm` with
 `validate`, native `:user-invalid` styling applies too.
 
