@@ -131,7 +131,6 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 | Component                                      | Color object props                                                                                  |
 | ---------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | `BAlert`, `BToast`                             | `close.color`                                                                                       |
-| `BAvatar`                                      | `badge-color`                                                                                       |
 | `BCard`                                        | `header-color`, `body-color`, `footer-color` (with `border`), `subtitle-color` (`fg` only)          |
 | `BCardBody`                                    | `subtitle-color` (`fg` only)                                                                        |
 | `BDropdown`, `BNavItemDropdown`                | `split-color`                                                                                       |
@@ -147,7 +146,7 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 
 ### Defaults are merged per key
 
-Some components and parts have a built-in default. For example `BButton`, `BBadge` and `BAvatar` default to
+Some components and parts have a built-in default. For example `BButton` and `BBadge` default to
 `:color="{ theme: 'secondary' }"`, `BAlert` to `{ theme: 'info' }`, and BAlert / BToast `close.color`,
 `button-color` and the BOffcanvas `header-close.color` default to `{ theme: 'secondary' }`.
 The object you pass is merged with that default key by key:

@@ -9,12 +9,12 @@ description: >
 
 `BLink` works with vue-router, Nuxt and VitePress, and without any router, with no configuration. For a link with a `to` prop it looks for a globally registered router component and renders through it:
 
-| Environment | What renders the link | Notes |
-| --- | --- | --- |
-| vue-router | `RouterLink` in `custom` mode | Registered by `app.use(router)`. `href`, navigation and the active state come from the router |
-| Nuxt | `NuxtLink` in `custom` mode | The BootstrapVueNext Nuxt module registers `NuxtLink` globally and sets `router-component-name`. `BLink` triggers NuxtLink's prefetching itself (see [below](#nuxt-js-specific-router-link-props)) |
-| VitePress | a plain `<a href>` | VitePress has no link component: its router handles clicks on any same-origin `<a href>`. Wrap paths in `withBase()` yourself when the site has a `base` |
-| No router | a plain `<a href>` | `to` is used as the `href`. A named route cannot be resolved and renders `#` |
+| Environment | What renders the link         | Notes                                                                                                                                                                                              |
+| ----------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| vue-router  | `RouterLink` in `custom` mode | Registered by `app.use(router)`. `href`, navigation and the active state come from the router                                                                                                      |
+| Nuxt        | `NuxtLink` in `custom` mode   | The BootstrapVueNext Nuxt module registers `NuxtLink` globally and sets `router-component-name`. `BLink` triggers NuxtLink's prefetching itself (see [below](#nuxt-js-specific-router-link-props)) |
+| VitePress   | a plain `<a href>`            | VitePress has no link component: its router handles clicks on any same-origin `<a href>`. Wrap paths in `withBase()` yourself when the site has a `base`                                           |
+| No router   | a plain `<a href>`            | `to` is used as the `href`. A named route cannot be resolved and renders `#`                                                                                                                       |
 
 In every case the result is a single `<a>` element, so classes, attributes, listeners and directives on `BLink` (and on components that render it, such as `BButton` or `BNavItem`) land on that anchor.
 
@@ -24,7 +24,7 @@ To render links through another component, register it globally and pass its nam
 
 ## Common router link props
 
-In the following sections, we are using the `BLink` component to render router links. `BLink` is the building block of most of BootstrapVue's actionable components. You could use any other component that supports link generation such as `BLink`, `BButton`, `BAvatar`, `BBreadcrumbItem`, `BListGroupItem`, `BNavItem`, `BDropdownItem`, and `BPaginationNav`. Note that not all props are available on all components. Refer to the respective component documentation for details.
+In the following sections, we are using the `BLink` component to render router links. `BLink` is the building block of most of BootstrapVue's actionable components. You could use any other component that supports link generation such as `BLink`, `BButton`, `BBreadcrumbItem`, `BListGroupItem`, `BNavItem`, `BDropdownItem`, and `BPaginationNav`. Note that not all props are available on all components. Refer to the respective component documentation for details.
 
 ### `to`
 

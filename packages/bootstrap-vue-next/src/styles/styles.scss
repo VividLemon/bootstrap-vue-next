@@ -10,7 +10,6 @@
 // All library CSS lives in Bootstrap's `components` layer, so Bootstrap's helpers and utilities
 // (and any unlayered consumer CSS) override it without `!important`.
 @layer components {
-  @include meta.load-css("../components/BAvatar/avatar");
   @include meta.load-css("../components/BFormRating/form-rating");
   @include meta.load-css("../components/BInputGroup/input-group");
   @include meta.load-css("../components/BPagination/pagination");

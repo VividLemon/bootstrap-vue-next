@@ -1,33 +1,27 @@
 ---
 title: Avatar
 description: >
-  Avatars are a custom component, and are typically used to display a user profile as a
-  picture or short text. `BAvatar` provides several props for customizing its
-  appearance such as color variant and roundness, and optionally supports acting as a button, link,
-  or a [router link](/docs/reference/router-links).
+  Avatars display a user or entity as an image, initials or custom content, with optional status
+  indicators, sizes, theme colors and overlapping stacks. `BAvatar` and `BAvatarGroup` render
+  Bootstrap's `.avatar` and `.avatar-stack` markup.
 ---
 
 ## Overview
 
-Avatars are lightweight components, which render inline by default, so that they are vertically
-centered beside any adjoining plain text. They also can be used as children of other components.
+Avatars are lightweight, inline components rendering Bootstrap's `.avatar` markup. They are
+vertically centered beside adjoining text and can be used inside other components.
 
 <<< DEMO ./demo/AvatarOverview.vue#template{vue-html}
 
-## Avatar types
+## Avatar content
 
-The avatar content can be either an image or short text string. Avatar content defaults
-to the [`'person-fill'` icon](https://icons.getbootstrap.com/icons/person-fill/)
-when no other content is specified.
-
-You can also supply custom content via the default slot, although you may need to apply additional
-styling on the content.
+An avatar shows, in order of precedence: the default slot, the `src` image, the `text`, or nothing.
+There is no default icon.
 
 ### Image content
 
-Use the `src` prop to specify a URL of an image to use as the avatar content. The image should have
-an aspect ratio of `1:1` (meaning the width and height should be equal), otherwise image aspect
-distortion will occur. The image will be scaled up or down to fit within the avatar's bounding box.
+Use the `src` prop to render an `<img class="avatar-img">` that covers the avatar (`object-fit: cover`).
+Set `alt` to describe the image (it defaults to `'avatar'`).
 
 <<< DEMO ./demo/AvatarImage.vue#template{vue-html}
 
@@ -35,204 +29,124 @@ distortion will occur. The image will be scaled up or down to fit within the ava
 
 - When using a module bundler and project relative image URLs, please refer to the
   [Image Support](/docs/reference/images) reference section for additional details
-- The `src` prop takes precedence over the `text` prop
-- If the image fails to load, the avatar will
-  fall back to the value of the `text` prop. If the `text` props is not
-  provided, then the default avatar image will be shown. Also, when the image fails to load, the
-  `img-error` event will be emitted
-- [Theme colors](#themes) when using images not normally visible, unless the image fails load.
-  The theme will affect the focus styling when the image avatar is also an
-  [actionable avatar](#actionable-avatars)
-- If neither the `text` or `src` prop is provided _and_ the [default slot](#custom-content)
-  has no content, then the `person-fill` image will be used
+- If the image fails to load, the avatar falls back to the `text` prop (or renders empty) and emits
+  the `img-error` event
 
 ### Text content
 
-You can specify a short string as the content of an avatar via the `text` prop. The string should be
-short (1 to 3 characters), and will be transformed via CSS to be all uppercase. The font size will
-be scaled relative to the [`size` prop setting](#sizing).
+Use the `text` prop for short initials (1 to 3 characters). Bootstrap transforms them to uppercase
+and scales the font with the avatar size.
 
 <<< DEMO ./demo/AvatarText.vue#template{vue-html}
 
 ### Custom content
 
-Use the `default` slot to render custom content in the avatar, for finer grained control of its
-appearance, or if using custom icons or SVGs e.g.:
+Use the `default` slot for custom content such as an icon or SVG. The slot takes precedence over the
+`src` and `text` props.
 
 <<< DEMO ./demo/AvatarCustom.vue#template{vue-html}
 
-**Notes:**
-
-- The default slot takes precedence over the `text` or `src` props.
-- The default slot content will be wrapped in a `<span>` element to ensure proper centering.
-- You may need additional styling applied to the custom content to compensate for the
-  [shape of avatar component](#rounding).
-
 ## Styling
 
-### Themes
+### Colors
 
-Use the `color` prop's `theme` key to specify one of the Bootstrap theme colors. The default theme is
-`secondary`.
+Without a color the avatar uses Bootstrap's neutral avatar background. Use the `color` prop's `theme`
+key to apply one of the theme colors (`.theme-<theme>`).
 
 <<< DEMO ./demo/AvatarVariants.vue#template{vue-html}
 
-When displaying text inside the avatar, text colors come from the theme (class `.theme-<theme>`). You can override the colors with the `bg` and `fg` keys (for example `:color="{ bg: 'subtle-primary', fg: 'emphasis-primary' }"`). Note that
-`bg` and `fg` take precedence over `theme`. See the
+Set `variant="subtle"` for the subtle style (`.avatar-subtle`), which uses the theme's subtle
+background and foreground colors.
+
+<<< DEMO ./demo/AvatarSubtle.vue#template{vue-html}
+
+The `bg` and `fg` keys of `color` override the theme colors with utility classes. See the
 [Color Themes Reference](/docs/reference/color-variants#key-interactions) for details.
 
 <<< DEMO ./demo/AvatarVariantOverride.vue#template{vue-html}
 
 ### Sizing
 
-By default, avatars are sized to `2.5em` (which is relative to the current font size). You can
-change the size of the avatar by changing the current font size, or use the prop `size` to specify
-an explicit size. The sizes `sm`, `md` and `lg` default to `1.5em`, `2.5em` and `3.5em`. Numbers get
-converted to pixel values. Any other value _must_ include the units (such as `px`, `em`, or `rem`).
+The `size` prop accepts `'xs'`, `'sm'`, `'md'` (the default), `'lg'` and `'xl'`, which map to
+Bootstrap's `.avatar-{size}` classes (1.5rem, 2rem, 2.5rem, 3rem and 4rem). Any other value is set as
+the `--bs-avatar-size` CSS variable: numbers are converted to pixels, strings must include their unit.
 
 <<< DEMO ./demo/AvatarSize.vue#template{vue-html}
 
-**Note:** Avatars are _always_ rendered with an aspect ratio of `1:1`.
+### Shape
 
-### Square
-
-Prefer a square avatar? simply set the `square` prop to `true`.
-
-<<< DEMO ./demo/AvatarSquare.vue#template{vue-html}
-
-### Rounding
-
-`BAvatar` renders with a circular border radius. You can change the rounding by setting the prop
-`rounded` to any of the values of [`RadiusElement`](/docs/types#radiuselement).
-When set to `true` (or the empty string `''`), it uses the Bootstrap default of medium rounding.
-When set to `circle`, it uses a border radius of 50%, resulting in a circle.
-Rounding specific edges is accomplished via the `rounded-sides` prop, an object with `top`, `bottom`,
-`start` and `end` keys (for example `:rounded-sides="{ top: 'lg' }"`). See the [migration knowledge base](/docs/migration-data/props/rounded-radius-element) for differences
-from `bootstrap-vue`
-
-<<< DEMO ./demo/AvatarRounding.vue#template{vue-html}
-
-**Notes:**
-
-- The `square` prop takes precedence over the `rounded` prop
-- Rather than `square` prop, you can set the `rounded` prop to the string `'0'` to
-  achieve a square avatar
+Avatars are circles. The `rounded`, `rounded-sides` and `square` props were removed: rounding
+utility classes do not reach the inner image. Change the shape with the `--bs-avatar-border-radius`
+CSS variable instead, for example `<BAvatar text="BV" style="--bs-avatar-border-radius: 0.5rem" />`.
 
 ### Alignment
 
-By default, `BAvatar` will be vertically centered with its adjoining content. In some cases you
-may want to alter the alignment, such as ensuring that a text-only avatar aligns its text with the
-adjoining text. Simply set a [vertical alignment utility](/docs/reference/utility-classes) class on
-the component, such as `<BAvatar class="align-baseline" ...>` or
-`<BAvatar class="align-top" ...>`, etc.
+`BAvatar` is vertically centered with adjoining content. Use a
+[vertical alignment utility](/docs/reference/utility-classes) class such as `align-baseline` or
+`align-top` to change it.
 
-## Actionable avatars
+## Status
 
-Easily create avatars that respond to clicks. Actionable avatars will appear in the document tab sequence,
-and are accessible for both screen reader and keyboard-only users.
+Set `status` to `'online'`, `'offline'`, `'busy'` or `'away'` to render a status indicator
+(`.avatar-status`) in the bottom corner. The indicator has `role="img"` and an `aria-label` that
+defaults to the capitalized status. Use `status-label` to translate or describe it.
 
-Image avatars, when actionable, employ a basic scale transform on the image when hovered.
+<<< DEMO ./demo/AvatarStatus.vue#template{vue-html}
 
-### Button
+## Links, buttons and badges
 
-Want to trigger the opening of a modal or trigger an action? Set the `button` prop to instruct
-`BAvatar` to render as a `<button>` element. When rendered as a button, the component will emit
-the `click` event whenever clicked.
-
-<<< DEMO ./demo/AvatarButton.vue#template{vue-html}
-
-The prop `button-type` can be used to control the type of button to render. Supported values are
-`'button'` (the default), `'submit'`, or `'reset'`.
-
-### Link
-
-Fancy an avatar as a link or router link? Simply set either the `href` or `to` prop (respectively).
-The `to` prop required that the [Vue Router](https://router.vuejs.org/) is installed.
+`BAvatar` always renders a non-interactive `<span>`, as Bootstrap's avatar does. Wrap it in a link or
+button yourself, and give the wrapper an accessible name (the image `alt` or an `aria-label`).
 
 <<< DEMO ./demo/AvatarLink.vue#template{vue-html}
 
-**Note:**
-
-The `button` prop takes precedence over the `href` and `to` props.
-For additional details on the `RouterLink` compatible props, please refer to the
-[Router support reference section](/docs/reference/router-links).
-
-## Badge avatars
-
-Easily add a badge to your avatar via the `badge` prop or `'badge'` slot, and the badge theme can
-be set via the `badge-theme` prop. The badge will scale with the size of the avatar.
+Badges are composed the same way: put the avatar and a positioned [`BBadge`](/docs/components/badge)
+in a `position-relative` wrapper. For presence information, prefer the `status` prop.
 
 <<< DEMO ./demo/AvatarBadge.vue#template{vue-html}
 
-### Badge content
+<BAlert :color="{ theme: 'warning' }" :model-value="true">
 
-Add textual content to the badge by supplying a string to the `badge` prop, or use the named slot
-`'badge'`.
+Wrapping avatars in links or other elements breaks `BAvatarGroup`: the stack styles its `.avatar`
+direct children, so wrapped avatars lose the overlap and border.
 
-<<< DEMO ./demo/AvatarBadgeContent.vue#template{vue-html}
-
-### Badge positioning
-
-By default, the badge appears on the bottom right of the avatar. You can use the `badge-placement` props to change the position.
-Badge positioning properties have changed from `bootstrap-vue`. See the [migration knowledge base](/docs/migration-data/components/bavatar#badge-positioning) for details.
-
-<<< DEMO ./demo/AvatarBadgePositioning.vue#template{vue-html}
+</BAlert>
 
 ## Avatar groups
 
+`BAvatarGroup` renders Bootstrap's `.avatar-stack` with `role="group"`. Give it an `aria-label`.
+Avatars must be its direct children.
+
 <<< DEMO ./demo/AvatarGroups.vue#template{vue-html}
 
-**Notes:**
-
-- The `color`, `square` and `rounded` props on `BAvatarGroup` will take precedence over the
-  respective props on individual avatars.
+**Note:** `.avatar-stack` uses `flex-direction: row-reverse`, so the first avatar in the markup is
+drawn right-most and on top. Screen readers still read the avatars in markup order. A "+N" overflow
+avatar is a plain `BAvatar` with `text`.
 
 ### Group size
 
-To size the avatars, use the prop `size` on `BAvatarGroup`. The `size` prop accepts the same
-type of values as the `size` prop on `BAvatar`. Note that the `size` prop will be ignored on
-individual avatars when they are placed inside a `BAvatarGroup`.
+The group `size` prop takes the same values as `BAvatar`'s and wins over the size of each avatar.
+Literal sizes render `.avatar-stack-{size}`; custom sizes are set on every child avatar.
 
 <<< DEMO ./demo/AvatarGroupSize.vue#template{vue-html}
 
-### Group theme
+### Group color
 
-Use the `color` prop to color all child avatars in the `BAvatarGroup`. Note that its keys, when set,
-will override the same keys specified on individual avatars.
+A `.theme-*` class on the group colors every avatar that has no color of its own.
 
 <<< DEMO ./demo/AvatarGroupVariant.vue#template{vue-html}
 
-### Group rounding
-
-Similar to the `color` prop, the `BAvatarGroup` props `square` and `rounded` take precedence
-over the respective props on individual child avatars.
-
-<<< DEMO ./demo/AvatarGroupRounding.vue#template{vue-html}
-
 ### Group overlap
 
-By default, child avatars inside a `BAvatarGroup` will overlap by a factor of `0.3` (relative to
-the size of the avatar). You can control the overlap amount by setting the `overlap` prop to a value
-between `0` and `1`, where `0` means no overlap and `1` means 100% overlap.
+Avatars in a group overlap by `0.3` of their size by default. Set `overlap` to a number between `0`
+(no overlap) and `1`; it is applied as `--bs-avatar-stack-spacing` on every child avatar.
 
 <<< DEMO ./demo/AvatarGroupOverlap.vue#template{vue-html}
 
-**Note:**
-
-`overlap` only has an effect when you explicitly set the `size` property as well.
-
 ## Accessibility
 
-Use the `aria-label` prop to provide an accessible, screen reader friendly, label for your avatar.
-If you have a badge, it is recommended to add information to your aria-label regarding the badge
-purpose or content (i.g. `'3 messages'`, `'online'`, etc.).
-
-While the `click` event is emitted regardless if the `button`, `href`, or `to` props are set, it is
-highly recommended using the `button` prop when the click event should trigger an action (or use
-the `to` or `href` props when changing routes or changing URLs) for accessibility reasons.
-
-## Implementation notes
-
-Avatars are based upon `BBadge` and `BButton` components, and as such, rely upon Bootstrap's
-`badge` and `btn-*` classes combined with `theme-*` classes, as well as the `rounded-*`
-[utility classes](/docs/reference/utility-classes).
+- Image avatars need a meaningful `alt` (or an empty `alt=""` when a wrapping link or button already
+  carries the name).
+- Status indicators are announced through their `aria-label`; set `status-label` for other languages.
+- A link or button wrapping an avatar needs an accessible name.
+- `BAvatarGroup` has `role="group"`; add an `aria-label` describing the group.

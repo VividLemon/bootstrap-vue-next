@@ -407,8 +407,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### BAvatar / BAvatarGroup
 
-- **Now:** `badge*` colors → `badgeColor`.
-- **Pending:** v6 Avatar markup and classes; library `_avatar.scss` vs v6 avatar CSS.
+- **Done (G5, `bootstrap-v6-g5-avatar`):** v6 `.avatar` / `.avatar-img` / `.avatar-status` / `.avatar-stack` markup; `_avatar.scss` deleted; `variant: 'subtle'`, `status` / `statusLabel`, `xs`–`xl` sizes added; link, button, badge, rounding and group color props removed (see `BOOTSTRAP_V6_DISPLAY.md`).
 
 ### BFormTags → Chips
 
@@ -461,7 +460,7 @@ Released 2026-11-23. The library is still on alpha.1 (`bootstrap` peer `^6.0.0-a
 - **Audit slot scopes against the slot props rule** ([Slot props for elements the component controls](#slot-props-for-elements-the-component-controls)), once the open component PRs have merged (doing it earlier would conflict with them). For every slot: does it render an element the component controls? Then its bindable attributes go under a typed `props` object, never flat, with state and functions next to it; content-only slots get none. Work through the candidates listed in the rule, check slots added after this note, and record each scope change in the ledger.
 
 - **Remove `useHasSlot` before v100** ([Slot presence checks](#slot-presence-checks)). Its remaining users after #183:
-  - `BAvatar` (badge visibility, implicit dot, `badge` class): split the computeds and check `slots.default` / `slots.badge` in the template, in the G5 avatar rewrite ([#190](https://github.com/VividLemon/bootstrap-vue-next/pull/190), `BOOTSTRAP_V6_DISPLAY.md`).
+  - ~~`BAvatar`~~: done in the G5 avatar rewrite ([#190](https://github.com/VividLemon/bootstrap-vue-next/pull/190)). The pure v6 avatar (Q4 C in `BOOTSTRAP_V6_DISPLAY.md`) has no badge, so it checks no slot and no longer uses `useHasSlot`.
   - `BOffcanvas` (header-close attrs): goes away with it when G1 step 3 replaces it with `BDrawer`, which checks slots in its template (`BOOTSTRAP_V6_OVERLAYS.md`).
   - `BFormCheckbox` / `BFormRadio` (`hasOwnLabel`, the label target and the form-check class objects): have `useFormCheckClasses` / `useFormCheckLabelClasses` take the slot flag from the template (or return functions), then drop `useHasSlot`.
   - Then delete `src/composables/useHasSlot.ts` and its spec.

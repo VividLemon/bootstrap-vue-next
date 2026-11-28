@@ -7,115 +7,76 @@ import type {
 } from 'bootstrap-vue-next'
 import {
   type ComponentReference,
-  defaultPropSectionSymbol,
   type EmitRecord,
   type PropRecord,
   type SlotRecord,
   StyleKind,
 } from '../../types'
 import { pick } from '../../utils/objectUtils'
-import { linkedBLinkSection, type linkProps } from '../../utils/linkProps'
 import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
     BAvatar: {
-      styleSpec: { kind: StyleKind.BsvnClass },
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.avatar' },
       props: {
-        [defaultPropSectionSymbol]: {
-          ...pick(
-            buildCommonProps({
-              alt: {
-                default: 'avatar',
-              },
-              rounded: {
-                default: 'circle',
-                description:
-                  'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence',
-              },
-              src: {
-                description: 'Image URL to use for the avatar',
-              },
-              color: {
-                default: { theme: 'secondary' },
-              },
-            }),
-            ['ariaLabel', 'alt', 'color', 'rounded', 'roundedSides', 'src'],
-          ),
-          badge: {
-            type: 'boolean | string',
-            default: false,
-            description:
-              'When `true` shows an empty badge on the avatar, alternatively set to a string for content in the badge',
-          },
-          badgeColor: {
-            type: 'ColorExtendables',
-            default: { theme: 'primary' },
-            description:
-              'Color object for the badge: `theme`, `bg`, `fg` keys. Keys left out (or `undefined`) keep the default; `null` clears it. See [Prefixed color objects](/docs/reference/color-variants#prefixed-color-objects)',
-          },
-          badgeDotIndicator: {
-            type: 'boolean',
-            default: false,
-            description:
-              'When `true` shows a small dot indicator on the Avatar. All of the badge props are applied to the dot. `badge-dot-indicator` takes precedence over `badge`',
-          },
-          badgePlacement: {
-            type: 'CombinedPlacement',
-            default: 'bottom-end',
-            description:
-              'Placement of the badge relative to the avatar. One of the values of `CombinedPlacement`',
-          },
-          badgePill: {
-            type: 'boolean',
-            default: false,
-            description: 'Renders the badge with pill styling',
-          },
-          button: {
-            type: 'boolean',
-            default: false,
-            description: 'When set to `true`, renders the avatar as a button',
-          },
-          buttonType: {
-            type: 'ButtonType',
-            default: 'button',
-            description:
-              'Type of button to render (i.e. `button`, `submit`, `reset`). Has no effect if prop button is not set',
-          },
-          size: {
-            type: 'Size | string',
-            default: undefined,
-            description: 'Size of the avatar. Refer to the documentation for details',
-          },
-          square: {
-            type: 'boolean',
-            default: false,
-            description:
-              'Disables rounding of the avatar, rendering the avatar with square corners',
-          },
-          text: {
-            type: 'string',
-            default: undefined,
-            description: 'Text to place in the avatar',
-          },
-        } satisfies PropRecord<Exclude<keyof BAvatarProps, keyof typeof linkProps>>,
-        'BLink props': linkedBLinkSection,
-      },
-      emits: {
-        click: {
-          description: '', // TODO missing description
-          args: {
-            click: {
-              description: 'Native click event',
-              type: 'MouseEvent',
+        ...pick(
+          buildCommonProps({
+            color: {
+              type: 'ColorExtendables | null',
+              default: undefined,
+              description:
+                'Colors the avatar with one object: `theme` renders `theme-*`, `bg` renders `bg-*` and `fg` renders `fg-*`. Without a color the avatar uses the neutral `--bs-avatar-bg`. See [Color variants](/docs/reference/color-variants)',
             },
-          },
+          }),
+          ['color'],
+        ),
+        alt: {
+          type: 'string',
+          default: 'avatar',
+          description: 'Value for the `alt` attribute of the image rendered by `src`',
         },
+        size: {
+          type: 'LiteralUnion<AvatarSize, Numberish>',
+          default: undefined,
+          description:
+            "Avatar size. `'xs'`, `'sm'`, `'lg'` and `'xl'` render `.avatar-{size}` (`'md'` is the default and adds no class). Any other value is set as `--bs-avatar-size`; numbers are converted to pixels. Overridden by the `size` of a parent `BAvatarGroup`",
+        },
+        src: {
+          type: 'string',
+          default: undefined,
+          description:
+            'Image URL. Renders `<img class="avatar-img">`; falls back to `text` and emits `img-error` when the image fails to load',
+        },
+        status: {
+          type: 'AvatarStatus',
+          default: undefined,
+          description:
+            "Renders a status indicator (`.avatar-status.status-{status}`): `'online'`, `'offline'`, `'busy'` or `'away'`",
+        },
+        statusLabel: {
+          type: 'string',
+          default: undefined,
+          description:
+            'Accessible label (`aria-label`) of the status indicator. Defaults to the capitalized `status`',
+        },
+        text: {
+          type: 'string',
+          default: undefined,
+          description: 'Short text (initials) to render when there is no image or default slot',
+        },
+        variant: {
+          type: 'AvatarVariant | null',
+          default: null,
+          description: "Avatar style: `'subtle'` renders `.avatar-subtle`",
+        },
+      } satisfies PropRecord<keyof BAvatarProps>,
+      emits: {
         'img-error': {
-          description: 'On image error',
+          description: 'Emitted when the `src` image fails to load',
           args: {
             'img-error': {
-              description: 'On img-error',
+              description: 'The native error event of the image',
               type: 'Event',
             },
           },
@@ -123,48 +84,34 @@ export default {
       } satisfies EmitRecord<keyof BAvatarEmits>,
       slots: {
         default: {
-          description: 'Content to place in the avatars optional badge. Overrides the `badge` prop',
-        },
-        badge: {
-          description:
-            'Content to place in the avatar. Overrides props `text`, `src`, and `icon-name`', // TODO prop inconsistency (mentions `icon-name`, which is not in BAvatarProps)
+          description: 'Custom avatar content. Takes precedence over the `src` and `text` props',
         },
       } satisfies SlotRecord<keyof BAvatarSlots>,
     },
     BAvatarGroup: {
-      styleSpec: { kind: StyleKind.BsvnClass },
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.avatar-stack' },
       props: {
-        ...pick(
-          buildCommonProps({
-            rounded: {
-              default: 'circle',
-              description:
-                'Specifies the type of rounding to apply to the component or its children. The `square` prop takes precedence. Refer to the documentation for details.',
-            },
-          }),
-          ['color', 'rounded', 'roundedSides', 'tag'],
-        ),
         overlap: {
           type: 'Numberish',
           default: 0.3,
           description:
-            'Specifies the amount of overlap between child avatars as a number between 0 and 1',
+            'Overlap of the child avatars as a fraction of their size, between `0` (none) and `1`. Set as `--bs-avatar-stack-spacing` on each child avatar',
         },
         size: {
-          type: 'Size | string',
+          type: 'LiteralUnion<AvatarSize, Numberish>',
           default: undefined,
-          description: 'Size of the child avatars. Refer to the documentation for details',
-        },
-        square: {
-          type: 'boolean',
-          default: false,
           description:
-            'Disables rounding of the child avatars, rendering the avatar with square corners',
+            "Size of the child avatars; wins over their own `size`. `'xs'`, `'sm'`, `'lg'` and `'xl'` render `.avatar-stack-{size}`; other values are set as `--bs-avatar-size` on each child",
+        },
+        tag: {
+          type: 'string',
+          default: 'div',
+          description: 'Specify the HTML tag to render instead of the default tag',
         },
       } satisfies PropRecord<keyof BAvatarGroupProps>,
       slots: {
         default: {
-          description: 'Content (avatars) to place in the avatar group',
+          description: 'The avatars of the group. They must be direct children',
         },
       } satisfies SlotRecord<keyof BAvatarGroupSlots>,
     },
