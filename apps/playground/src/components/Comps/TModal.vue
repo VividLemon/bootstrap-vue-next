@@ -4,7 +4,7 @@
     <BRow>
       <BCol>
         <BButton @click="showModal = !showModal">Toggle dialog v-model</BButton>
-        <BButton v-b-toggle.exampleModal>Toggle with v-b-toggle directive</BButton>
+        <BButton v-bind="exampleToggle.props.value">Toggle with useComponentToggle</BButton>
         {{ showModal }}
         <BDialog
           id="exampleModal"
@@ -73,6 +73,7 @@ import type {DialogOrchestratorCreateParamBase} from 'bootstrap-vue-next'
 import {useOrchestratorRegistry} from 'bootstrap-vue-next/composables/orchestratorShared'
 import {BDialog, BDialogActions} from 'bootstrap-vue-next/components/BDialog'
 import {useDialog} from 'bootstrap-vue-next/composables/useDialog'
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
 
 const {create} = useDialog()
 const {store} = useOrchestratorRegistry()
@@ -80,6 +81,7 @@ const modalCount = computed(() => store.value.dialog.size)
 
 const showModal = ref(false)
 const showModal2 = ref(false)
+const exampleToggle = useComponentToggle('exampleModal')
 const showModal3 = ref(false)
 const showNonModal = ref(false)
 

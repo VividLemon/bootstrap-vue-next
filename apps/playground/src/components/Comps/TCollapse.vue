@@ -6,14 +6,18 @@
           <template #header="{visible, toggle, id}">
             <h4>Custom Header</h4>
             <p>Visible: {{ visible }}</p>
-            <BButton :color="{ theme: 'primary' }" :aria-expanded="visible" :aria-controls="id" @click="toggle"
+            <BButton
+              :color="{theme: 'primary'}"
+              :aria-expanded="visible"
+              :aria-controls="id"
+              @click="toggle"
               >Toggle</BButton
             >
           </template>
           <BCard>
             <p class="card-text">Collapse contents Here</p>
-            <BButton v-b-toggle.collapse-1-inner size="sm"
-              >Toggle Inner Collapse with directive</BButton
+            <BButton v-bind="innerToggle.props.value" size="sm"
+              >Toggle Inner Collapse with useComponentToggle</BButton
             >
             <BCollapse id="collapse-1-inner" class="mt-2">
               <BCard>Hello!</BCard>
@@ -24,7 +28,9 @@
         <BCollapse id="collapse-2" visible class="mt-2">
           <template #header="{visible, toggle}">
             <h4>Start open</h4>
-            <BButton :color="{ theme: visible ? 'secondary' : 'primary' }" @click="toggle">Toggle</BButton>
+            <BButton :color="{theme: visible ? 'secondary' : 'primary'}" @click="toggle"
+              >Toggle</BButton
+            >
           </template>
           <BCard>
             <p class="card-text">Started open with visible prop</p>
@@ -33,7 +39,7 @@
         <BCollapse id="collapse-2" toggle class="mt-2">
           <template #header="{toggle}">
             <h4>Toggled open on load</h4>
-            <BButton :color="{ theme: 'primary' }" @click="toggle">Toggle</BButton>
+            <BButton :color="{theme: 'primary'}" @click="toggle">Toggle</BButton>
           </template>
           <BCard>
             <p class="card-text">Openned with animation using toggle prop</p>
@@ -42,7 +48,7 @@
         <div style="min-height: 120px">
           <BCollapse id="collapse-2" horizontal class="mt-2">
             <template #header="{toggle}">
-              <BButton :color="{ theme: 'primary' }" @click="toggle">Toggle horizontal</BButton>
+              <BButton :color="{theme: 'primary'}" @click="toggle">Toggle horizontal</BButton>
             </template>
             <BCard style="width: 300px">
               <p class="card-text">Collapse contents Here</p>
@@ -99,6 +105,8 @@
 // You can use this file as a development spot to test your changes
 // Please do not commit this file
 import {ref, useTemplateRef} from 'vue'
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
 const collapseState = ref(true)
 const collapseRef = useTemplateRef('collapseRef')
+const innerToggle = useComponentToggle('collapse-1-inner')
 </script>
