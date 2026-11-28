@@ -2,7 +2,7 @@
   <div v-bind="props.wrapperAttrs" :class="computedClasses">
     <input
       :id="computedId"
-      ref="_input"
+      ref="input"
       autocomplete="one-time-code"
       v-bind="$attrs"
       type="text"
@@ -102,7 +102,7 @@ const emit = defineEmits<BFormOtpEmits>()
 
 const modelValue = defineModel<string | null>({default: ''})
 
-const input = useTemplateRef<HTMLInputElement>('_input')
+const input = useTemplateRef<HTMLInputElement>('input')
 const slotElements = new Map<number, HTMLElement>()
 const setSlotRef = (el: unknown, index: number) => {
   if (el instanceof HTMLElement) slotElements.set(index, el)
