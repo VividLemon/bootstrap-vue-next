@@ -132,6 +132,43 @@ describe('useComponentToggle trigger props', () => {
     expect(wrapper.find('#a').classes()).not.toContain('show')
   })
 
+  it('works on several elements bound with the same props', async () => {
+    const showSecond = ref(true)
+    const Root = defineComponent({
+      setup() {
+        const toggle = useComponentToggle('a')
+        return () => [
+          h('button', {id: 'one', type: 'button', ...toggle.props.value}, 'One'),
+          showSecond.value
+            ? h('button', {id: 'two', type: 'button', ...toggle.props.value}, 'Two')
+            : null,
+          h(BCollapse, {id: 'a', noTransition: true}, () => 'a'),
+        ]
+      },
+    })
+    const wrapper = mount(BApp, {attachTo: document.body, slots: {default: () => h(Root)}})
+    await flush()
+    const one = wrapper.find('#one')
+    const two = wrapper.find('#two').element as HTMLButtonElement
+    expect(one.attributes('aria-expanded')).toBe('false')
+    expect(two.getAttribute('aria-expanded')).toBe('false')
+
+    two.click()
+    await flush()
+    expect(wrapper.find('#a').classes()).toContain('show')
+    expect(one.attributes('aria-expanded')).toBe('true')
+    expect(two.getAttribute('aria-expanded')).toBe('true')
+
+    // Unmounting one trigger leaves the other registered
+    showSecond.value = false
+    await flush()
+    expect(two.hasAttribute('aria-expanded')).toBe(false)
+    await one.trigger('click')
+    await flush()
+    expect(wrapper.find('#a').classes()).not.toContain('show')
+    expect(one.attributes('aria-expanded')).toBe('false')
+  })
+
   it('still shows, hides and toggles the target programmatically', async () => {
     const {wrapper, toggle} = mountWith('a')
     await flush()

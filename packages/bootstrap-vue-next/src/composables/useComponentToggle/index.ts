@@ -5,6 +5,7 @@ import {
   getCurrentInstance,
   inject,
   type MaybeRefOrGetter,
+  nextTick,
   shallowRef,
   toValue,
   watch,
@@ -74,26 +75,47 @@ export const useComponentToggle = (
   // The first target answers show / hide / toggle, as before multiple ids were accepted
   const myComponent = computed(() => targets.value[0])
 
-  // The trigger element, from the `ref` in `props`. A stable function, so Vue calls it only on
-  // mount (with the element) and unmount (with `null`)
-  const triggerElement = shallowRef<Element | null>(null)
+  // The trigger elements, from the `ref` in `props`. Several elements may bind the same `props`.
+  // Vue calls the ref with an element when one mounts, and with `null` (not saying which) when one
+  // unmounts, so after a `null` the elements that left the document are dropped once it's patched
+  const triggerElements = shallowRef<ReadonlySet<Element>>(new Set())
+  let pruneQueued = false
+  const pruneTriggerElements = () => {
+    pruneQueued = false
+    const connected = [...triggerElements.value].filter((el) => el.isConnected)
+    if (connected.length !== triggerElements.value.size) triggerElements.value = new Set(connected)
+  }
   const setTriggerElement = (el: Element | ComponentPublicInstance | null) => {
-    triggerElement.value =
+    const element =
       (unrefElement(el as Parameters<typeof unrefElement>[0]) as Element | null | undefined) ?? null
+    if (!element) {
+      if (!pruneQueued) {
+        pruneQueued = true
+        void nextTick(pruneTriggerElements)
+      }
+      return
+    }
+    // Vue calls the ref on every patch: only a new element changes the set
+    if (!triggerElements.value.has(element)) {
+      triggerElements.value = new Set([...triggerElements.value, element])
+    }
   }
 
-  // Register the trigger with each target. useShowHide then handles clicks (including the Dialog
+  // Register the triggers with each target. useShowHide then handles clicks (including the Dialog
   // swap) and keeps `aria-expanded` in step; unregistering removes both
   watch(
-    [triggerElement, targets],
-    ([el, currentTargets], _old, onCleanup) => {
-      if (!el) return
-      for (const target of currentTargets) {
-        target.unregisterTrigger('click', el, false)
-        target.registerTrigger('click', el)
+    [triggerElements, targets],
+    ([elements, currentTargets], _old, onCleanup) => {
+      for (const el of elements) {
+        for (const target of currentTargets) {
+          target.unregisterTrigger('click', el, false)
+          target.registerTrigger('click', el)
+        }
       }
       onCleanup(() => {
-        for (const target of currentTargets) target.unregisterTrigger('click', el, true)
+        for (const el of elements) {
+          for (const target of currentTargets) target.unregisterTrigger('click', el, true)
+        }
       })
     },
     {immediate: true, flush: 'post'}
