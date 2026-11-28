@@ -104,7 +104,7 @@ const modelValue = defineModel<Exclude<BDialogProps['modelValue'], undefined>>({
 
 const element = useTemplateRef<HTMLDialogElement | null>('element')
 
-// A `v-b-toggle` trigger inside another open dialog swaps that dialog for this one instead of
+// A registered trigger (`useComponentToggle().props`) inside another open dialog swaps that dialog for this one instead of
 // stacking on it. Bootstrap v6's data API does the same (`dialog.ts`, `_handleDataApiClick`),
 // and the plan's Q5 = B keeps it. `v-model`, exposed `show()` and `useDialog().show()` stack
 const swap = useDialogSwap(element, () => state.value === 'hidden')
