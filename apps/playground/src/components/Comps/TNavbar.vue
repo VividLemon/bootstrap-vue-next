@@ -24,20 +24,20 @@
             >
           </BNavForm>
 
-          <BNavItemDropdown text="Lang" end>
-            <BDropdownItem href="#">EN</BDropdownItem>
-            <BDropdownItem href="#">ES</BDropdownItem>
-            <BDropdownItem href="#">RU</BDropdownItem>
-            <BDropdownItem href="#">FA</BDropdownItem>
+          <BNavItemDropdown text="Lang" placement="bottom-end">
+            <BMenuItem href="#">EN</BMenuItem>
+            <BMenuItem href="#">ES</BMenuItem>
+            <BMenuItem href="#">RU</BMenuItem>
+            <BMenuItem href="#">FA</BMenuItem>
           </BNavItemDropdown>
 
-          <BNavItemDropdown end>
-            <!-- Using 'button-content' slot -->
-            <template #button-content>
+          <BNavItemDropdown placement="bottom-end">
+            <!-- Using the 'toggle' slot -->
+            <template #toggle>
               <em>User</em>
             </template>
-            <BDropdownItem href="#">Profile</BDropdownItem>
-            <BDropdownItem href="#">Sign Out</BDropdownItem>
+            <BMenuItem href="#">Profile</BMenuItem>
+            <BMenuItem href="#">Sign Out</BMenuItem>
           </BNavItemDropdown>
         </BNavbarNav>
       </BCollapse>

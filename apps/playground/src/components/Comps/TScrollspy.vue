@@ -10,11 +10,11 @@
             <BNav ref="target" pills card-header>
               <BNavItem href="#fat" @click="scrollIntoView">@fat</BNavItem>
               <BNavItem href="#mdo" @click="scrollIntoView">@mdo</BNavItem>
-              <BNavItemDropdown text="Dropdown 1,2,3" right-alignment>
-                <BDropdownItem href="#one" @click="scrollIntoView">one</BDropdownItem>
-                <BDropdownItem href="#two" @click="scrollIntoView">two</BDropdownItem>
-                <BDropdownDivider />
-                <BDropdownItem href="#three" @click="scrollIntoView">three</BDropdownItem>
+              <BNavItemDropdown text="Menu 1,2,3">
+                <BMenuItem href="#one" @click="scrollIntoView">one</BMenuItem>
+                <BMenuItem href="#two" @click="scrollIntoView">two</BMenuItem>
+                <BMenuDivider />
+                <BMenuItem href="#three" @click="scrollIntoView">three</BMenuItem>
               </BNavItemDropdown>
               <BNavItem href="#pi0" @click="scrollIntoView">@pi0</BNavItem>
             </BNav>

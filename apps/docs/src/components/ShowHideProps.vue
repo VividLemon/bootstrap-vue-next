@@ -11,7 +11,6 @@
 
 <script setup lang="ts">
 import { buildCommonProps } from '../utils/commonProps'
-import { dropdownProps } from '../utils/dropdownCommon'
 import { kebabCase, pick } from '../utils/objectUtils'
 import { showHideProps } from '../utils/showHideData'
 import { computed } from 'vue'
@@ -27,15 +26,14 @@ interface ComponentMap {
 const mappedComponents: ComponentMap = {
   showHideProps: [
     'BCollapse',
-    'BDropdown',
     'BDialog',
+    'BMenu',
     'BNavItemDropdown',
     'BOffcanvas',
     'BPopover',
     'BToast',
     'BTooltip',
   ],
-  dropdownCommon: ['BDropdown', 'BNavItemDropdown'],
 }
 
 const migrationMap: MigrationMap = {
@@ -54,7 +52,6 @@ const migrationMap: MigrationMap = {
     components: ['BDialog', 'BOffcanvas', 'BPlaceholderCard', 'BPlaceholderTable'],
   },
   noHeaderClose: { oldProp: 'hide-header-close', components: ['BDialog', 'BOffcanvas'] },
-  noWrapper: { oldProp: 'skip-wrapper', components: ['dropdownCommon'] },
   show: { oldProp: '', components: ['showHideProps'] },
   unmountLazy: {
     oldProp: 'lazy',
@@ -72,7 +69,6 @@ const combinedProps = {
     'noHeader',
     'noHeaderClose',
   ]),
-  ...pick(dropdownProps, ['noWrapper']),
 }
 
 const mapComponents = (key: string) =>

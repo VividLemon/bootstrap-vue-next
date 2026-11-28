@@ -1,11 +1,4 @@
-import type {
-  Boundary,
-  Middleware,
-  Padding,
-  Placement as FloatingPlacement,
-  RootBoundary,
-  Strategy,
-} from '@floating-ui/vue'
+import type {Boundary, Middleware, Padding, RootBoundary, Strategy} from '@floating-ui/vue'
 import type {Component, ComponentPublicInstance, TeleportProps} from 'vue'
 import type {RouteLocationRaw} from 'vue-router'
 import type {LinkTarget} from './LinkTarget'
@@ -59,6 +52,13 @@ import type {SpinnerType} from './SpinnerType'
 import type {BadgeVariant} from './BadgeTypes'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {DialogSize, DialogSlide} from './DialogTypes'
+import type {
+  MenuAutoClose,
+  MenuFloatingConfig,
+  MenuOffset,
+  MenuPlacement,
+  MenuReference,
+} from './MenuTypes'
 import type {ButtonType} from './ButtonType'
 import type {LinkOpacity, LinkUnderline} from './LinkDecorators'
 import type {GroupedOptionFields, OptionFields} from './OptionsTypes'
@@ -260,57 +260,30 @@ export interface BAccordionItemProps {
   wrapperAttrs?: Readonly<AttrsValue>
 }
 
-export interface BDropdownDividerProps {
-  color?: ColorExtendables | null
-  dividerClass?: ClassValue
-  tag?: string
-  wrapperAttrs?: Readonly<AttrsValue>
-}
+export type BMenuDividerProps = Record<string, never>
 
-export interface BDropdownFormProps {
-  formClass?: ClassValue
-  novalidate?: boolean
-  validate?: FormValidate
-  wrapperAttrs?: Readonly<AttrsValue>
-}
-
-export interface BDropdownGroupProps {
-  ariaDescribedby?: string
-  header?: string
-  headerClass?: ClassValue
-  headerColor?: ColorExtendables
-  headerTag?: string
-  id?: string
-}
-
-export interface BDropdownHeaderProps {
-  color?: ColorExtendables | null
-  headerClass?: ClassValue
+export interface BMenuHeaderProps {
   tag?: string
   text?: string
-  wrapperAttrs?: Readonly<AttrsValue>
 }
 
-export interface BDropdownItemProps extends BLinkProps {
-  linkClass?: ClassValue
-  wrapperAttrs?: Readonly<AttrsValue>
+export interface BMenuItemProps extends Omit<BLinkProps, 'color'> {
+  /** Only `theme` applies to menu items (`theme-*` on `.menu-item`) */
+  color?: Pick<ColorExtendables, 'theme'> | null
+  /** Secondary text below the item's content (`.menu-item-description`) */
+  description?: string
+  /**
+   * `true` marks the item selected (`.selected`). Any boolean renders the `.menu-item-check`
+   * mark, which is only visible while selected; leave it unset for items that are never selectable
+   */
+  selected?: boolean
+  /** The item's content when the default slot is not used */
+  text?: string
 }
 
-export interface BDropdownItemButtonProps {
-  active?: boolean
-  activeClass?: ClassValue
-  buttonClass?: ClassValue
-  color?: ColorExtendables | null
-  wrapperAttrs?: Readonly<AttrsValue>
-  disabled?: boolean
-}
-
-export interface BDropdownTextProps {
-  color?: ColorExtendables | null
-  textClass?: ClassValue
+export interface BMenuTextProps {
   tag?: string
   text?: string
-  wrapperAttrs?: Readonly<AttrsValue>
 }
 
 export interface BFormFloatingLabelProps {
@@ -1462,46 +1435,38 @@ export interface BFormFeedbackSharedProps {
 export type BFormInvalidFeedbackProps = BFormFeedbackSharedProps
 export type BFormValidFeedbackProps = BFormFeedbackSharedProps
 
-export interface BDropdownProps extends TeleporterProps, ShowHideProps {
-  ariaLabel?: string
-  autoClose?: boolean | 'inside' | 'outside'
-  boundary?: Boundary | RootBoundary
-  boundaryPadding?: Padding
+export interface BMenuProps extends ShowHideProps {
+  autoClose?: MenuAutoClose
+  boundary?: 'clippingParents' | HTMLElement
   color?: ColorExtendables | null
   disabled?: boolean
-  floatingMiddleware?: readonly Middleware[]
-  icon?: boolean
+  display?: 'dynamic' | 'static'
+  floatingConfig?: MenuFloatingConfig
   id?: string
-  isNav?: boolean
-  menuClass?: ClassValue
+  menuAttrs?: Readonly<AttrsValue>
   modelValue?: boolean
-  noCaret?: boolean
-  noFlip?: boolean
-  noShift?: boolean
-  noSize?: boolean
-  offset?:
-    | number
-    | string
-    | Readonly<{mainAxis?: number; crossAxis?: number; alignmentAxis?: number | null}>
-  role?: string
+  offset?: MenuOffset
+  placement?: MenuPlacement
+  reference?: MenuReference
+  /** Overrides `placement` from a breakpoint up, e.g. `{md: 'bottom-end'}` */
+  responsivePlacement?: Readonly<Responsive<MenuPlacement>>
+  scrollable?: boolean
   size?: Size
-  noWrapper?: boolean
   split?: boolean
+  splitAttrs?: Readonly<AttrsValue>
   splitButtonType?: ButtonType
-  splitClass?: ClassValue
   splitColor?: ColorExtendables
   splitDisabled?: boolean
   splitHref?: string
   splitTo?: RouteLocationRaw
   splitVariant?: ButtonVariant | null
   strategy?: Strategy
+  teleportTo?: string | HTMLElement
   text?: string
   toggleAttrs?: Readonly<AttrsValue>
-  toggleClass?: ClassValue
   toggleText?: string
+  translucent?: boolean
   variant?: ButtonVariant | null
-  wrapperClass?: ClassValue
-  placement?: FloatingPlacement
 }
 
 export interface BToastProps extends BLinkProps, ShowHideProps {

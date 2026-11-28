@@ -31,8 +31,8 @@ export const filterEvent = (event: Readonly<Event>) => {
   if (('disabled' in el && el.disabled) || TABLE_TAG_NAMES.indexOf(el.tagName) !== -1) {
     return false
   }
-  // Ignore the click when it was inside a dropdown menu
-  if (el.closest('.dropdown-menu')) return true
+  // Ignore the click when it was inside a menu
+  if (el.closest('.menu')) return true
 
   const label = el.tagName === 'LABEL' ? el : el.closest('label')
   // If the label's form control is not disabled then we don't propagate event

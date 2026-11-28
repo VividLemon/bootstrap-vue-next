@@ -1,11 +1,9 @@
 <template>
-  <li class="nav-item dropdown">
-    <BDropdown
-      ref="dropdown"
+  <li class="nav-item" :class="{show: !!modelValue}">
+    <BMenu
+      ref="menu"
       v-bind="props"
       v-model="modelValue"
-      :color="computedColor"
-      is-nav
       @show="emit('show', $event)"
       @shown="emit('shown', $event)"
       @hide="emit('hide', $event)"
@@ -16,92 +14,85 @@
       @toggle="emit('toggle', $event)"
       @split-click="emit('split-click', $event)"
     >
-      <template #button-content>
-        <slot name="button-content" />
+      <template #activator="{props: toggleProps}">
+        <button
+          type="button"
+          class="nav-link"
+          v-bind="mergeProps(attrs, props.toggleAttrs ?? {}, toggleProps)"
+          :disabled="props.disabled"
+        >
+          <slot name="toggle">{{ props.text }}</slot>
+        </button>
       </template>
-      <template #toggle-text>
-        <slot name="toggle-text" />
+      <template #default="scope">
+        <slot v-bind="scope" />
       </template>
-      <template #default>
-        <slot :hide="hide" :show="show" />
-      </template>
-    </BDropdown>
+    </BMenu>
   </li>
 </template>
 
 <script setup lang="ts">
-import {computed, useTemplateRef} from 'vue'
-import BDropdown from '../BDropdown/BDropdown.vue'
+import {mergeProps, useAttrs, useTemplateRef} from 'vue'
+import BMenu from '../BMenu/BMenu.vue'
 import {useDefaults} from '../../composables/useDefaults'
-import {resolvePartColor} from '../../composables/useThemeClasses'
-import type {BDropdownEmits, BDropdownProps, BNavItemDropdownSlots} from '../../types'
+import type {BMenuEmits, BMenuProps, BNavItemDropdownSlots} from '../../types'
 
-const _props = withDefaults(defineProps<Omit<BDropdownProps, 'modelValue'>>(), {
-  ariaLabel: undefined,
+// Interim: renders the v6 nav menu markup (`li.nav-item` > `button.nav-link` + `.menu`) on top of
+// BMenu until `BNavItemMenu` replaces this component (G2 step 3)
+defineOptions({
+  inheritAttrs: false,
+})
+
+const _props = withDefaults(defineProps<Omit<BMenuProps, 'modelValue'>>(), {
   autoClose: true,
-  block: false,
-  boundary: 'clippingAncestors',
-  boundaryPadding: undefined,
-  teleportTo: undefined,
-  teleportDisabled: false,
+  boundary: 'clippingParents',
+  color: undefined,
   disabled: false,
-  floatingMiddleware: undefined,
-  icon: false,
+  display: 'dynamic',
+  floatingConfig: undefined,
   id: undefined,
   initialAnimation: false,
-  isNav: true,
   lazy: false,
-  menuClass: undefined,
-  noCaret: false,
-  noFlip: false,
-  noShift: false,
-  noSize: false,
-  offset: 0,
-  role: 'menu',
+  menuAttrs: undefined,
+  noTransition: false,
+  offset: () => [0, 2] as const,
+  placement: 'bottom-start',
+  reference: 'toggle',
+  responsivePlacement: undefined,
+  scrollable: false,
+  show: false,
   size: undefined,
   split: false,
+  splitAttrs: undefined,
   splitButtonType: 'button',
-  splitClass: undefined,
   splitColor: undefined,
-  splitDisabled: undefined,
+  splitDisabled: false,
   splitHref: undefined,
   splitTo: undefined,
   splitVariant: undefined,
-  placement: undefined,
-  noWrapper: undefined,
-  wrapperClass: undefined,
   strategy: 'absolute',
+  teleportTo: undefined,
   text: undefined,
   toggleAttrs: undefined,
-  toggleClass: undefined,
-  toggleText: 'Toggle dropdown',
-  variant: 'link',
-  color: undefined,
+  toggleText: 'Toggle menu',
+  translucent: false,
+  unmountLazy: false,
+  variant: 'solid',
+  visible: false,
 })
 const props = useDefaults(_props, 'BNavItemDropdown')
-// A nav dropdown toggle is unthemed unless a theme is set: the `null` clears BDropdown's own
-// `secondary` default, so the toggle keeps the colors of the nav around it
-const computedColor = computed(() => resolvePartColor(props.color, {theme: null}))
-const emit = defineEmits<BDropdownEmits>()
+const emit = defineEmits<BMenuEmits>()
 defineSlots<BNavItemDropdownSlots>()
+const attrs = useAttrs()
 
-const modelValue = defineModel<Exclude<BDropdownProps['modelValue'], undefined>>({default: false})
+const modelValue = defineModel<Exclude<BMenuProps['modelValue'], undefined>>({default: false})
 
-const dropdown = useTemplateRef('dropdown')
-
-const hide = () => {
-  dropdown.value?.hide()
-}
-const show = () => {
-  dropdown.value?.show()
-}
-const toggle = () => {
-  dropdown.value?.toggle()
-}
+const menu = useTemplateRef('menu')
 
 defineExpose({
-  hide,
-  show,
-  toggle,
+  hide: (trigger?: string) => menu.value?.hide(trigger),
+  show: () => menu.value?.show(),
+  toggle: () => menu.value?.toggle(),
+  update: () => menu.value?.update(),
 })
 </script>

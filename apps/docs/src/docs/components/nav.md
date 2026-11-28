@@ -17,7 +17,7 @@ nav.
 `<BNav>` supports the following child components:
 
 - `<BNavItem>` for actionable links (or router-links)
-- `<BNavItemDropdown>` for dropdowns
+- `<BNavItemDropdown>` for menus
 - `<BNavText>` for plain text content
 - `<BNavForm>` for inline forms
 
@@ -81,59 +81,27 @@ also stretches each item to the full width of the nav:
 
 <<< DEMO ./demo/NavVerticalPills.vue#template{vue-html}
 
-## Dropdown support
+## Menus
 
-Use `<BNavItemDropdown>` to place dropdown items within your nav.
+Use `<BNavItemDropdown>` to place a [menu](/docs/components/menu) in your nav. It renders an
+`li.nav-item` with a `button.nav-link` toggle and the `.menu`, and takes the
+[`BMenu`](/docs/components/menu) props (`placement`, `auto-close`, `lazy`, ...), slots and exposed
+methods. The `li` gets `.show` while the menu is open.
 
 <<< DEMO ./demo/NavDropdown.vue#template{vue-html}
 
-Sometimes you want to add your own class names to the generated dropdown toggle button, that by
-default have the classes `nav-link` and `dropdown-toggle`. Use the `toggle-class` prop to add them
-(like above) which will render HTML similar to:
+Add your own attributes or classes to the toggle with `toggle-attrs` (or as plain attributes),
+which renders HTML similar to:
 
 <<< FRAGMENT ./demo/NavDropdown.html#template
 
-Refer to [`<BDropdown>`](/docs/components/dropdown) for a list of supported sub-components.
+Use [`BMenuItem`, `BMenuHeader`, `BMenuText` and `BMenuDivider`](/docs/components/menu) inside it.
+The default slot is scoped with `id`, `visible`, `show()`, `hide()` and `toggle()`, and the `toggle`
+slot replaces the toggle's text.
 
-### Optionally scoped default slot
-
-The dropdown default slot is optionally scoped with the following scope available:
-
-| Property or Method | Description                             |
-| ------------------ | --------------------------------------- |
-| `hide()`           | Can be used to close the dropdown menu. |
-| `show()`           | Can be used to show the dropdown menu.  |
-
-### Lazy dropdown
-
-By default, `<BNavItemDropdown>` renders the menu contents in the DOM even when the menu is not
-shown. When there are a large number of dropdowns rendered on the same page, performance could be
-impacted due to larger overall memory utilization. You can instruct `<BNavItemDropdown>` to
-render the menu contents only when it is shown by setting the `lazy` prop to true.
-
-### Dropdown placement
-
-Use the `start`, `end`, `center`, `placement`, `no-flip`, and `offset` to control the positioning of
-`<BNavItemDropdown>`.
-
-Refer to the [`<BDropdown>` positioning section](/docs/components/dropdown#positioning) for details
-on the effects and usage of these props.
-
-### Dropdown implementation note
-
-Note that the toggle button is actually rendered as a link `<a>` tag with `role="button"` for
-styling purposes, and typically has the `href` set to `#` unless an ID is provided via the `id`
-prop.
-
-The toggle will prevent scroll-top-top behaviour (via JavaScript) when clicking the toggle link. In
-some cases when using SSR, and the user clicks the toggle button _before_ Vue has had a chance to
-hydrate the component, the page will scroll to top. In these cases, simply providing a unique ID via
-the `id` prop will prevent the unwanted scroll-to-top behaviour.
-
-### Dropdown Exposed Methods
-
-`<BNavItemDropdown>` exposes the same methods as `<BDropdown>`, see the
-[dropdown documentation](/docs/components/dropdown#exposed-methods) for details.
+::: info
+`BNavItemDropdown` is an interim component: it will be replaced by `BNavItemMenu`.
+:::
 
 ## Nav text content
 

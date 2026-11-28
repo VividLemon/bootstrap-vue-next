@@ -21,11 +21,11 @@
       NavItem
     </BNavItem>
 
-    <BDropdownItem
-      id="dropdown-item-link"
-      to="/dropdown-item"
+    <BMenuItem
+      id="menu-item-link"
+      to="/menu-item"
     >
-      DropdownItem
-    </BDropdownItem>
+      MenuItem
+    </BMenuItem>
   </div>
 </template>

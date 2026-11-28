@@ -1,22 +1,18 @@
 <template>
   <!-- #region template -->
   <BNav pills>
-    <BNavItem
-      active
-      href="#nav-dropdown"
-      >Active</BNavItem
-    >
+    <BNavItem active href="#nav-dropdown">Active</BNavItem>
     <BNavItem href="#nav-dropdown">Link</BNavItem>
     <BNavItemDropdown
-      id="my-nav-dropdown"
-      text="Dropdown"
-      toggle-class="nav-link-custom"
-      right
+      id="my-nav-menu"
+      text="Menu"
+      :toggle-attrs="{ class: 'nav-link-custom' }"
+      placement="bottom-end"
     >
-      <BDropdownItem>One</BDropdownItem>
-      <BDropdownItem>Two</BDropdownItem>
-      <BDropdownDivider />
-      <BDropdownItem>Three</BDropdownItem>
+      <BMenuItem>One</BMenuItem>
+      <BMenuItem>Two</BMenuItem>
+      <BMenuDivider />
+      <BMenuItem>Three</BMenuItem>
     </BNavItemDropdown>
   </BNav>
   <!-- #endregion template -->

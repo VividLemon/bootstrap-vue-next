@@ -27,8 +27,15 @@ describe('ssr-smoke', async () => {
     expect(html).toContain('carousel-page')
   })
 
-  it('BDropdown renders without SSR error', async () => {
-    const html = await $fetch('/dropdown')
-    expect(html).toContain('dropdown-page')
+  it('BMenu renders without SSR error', async () => {
+    const html = await $fetch<string>('/menu')
+    expect(html).toContain('menu-page')
+    // Toggle and menu are siblings; the menu has no inline position until the client opens it
+    expect(html).toMatch(/<button[^>]*id="ssr-menu"[^>]*aria-controls="ssr-menu-menu"/)
+    // (Vue's SSR renders an unset style binding as `style=""`)
+    expect(html).toMatch(/<div id="ssr-menu-menu" class="menu"(?: style="")?>/)
+    // An initially open menu renders `.show`
+    expect(html).toMatch(/<div class="btn-group show">/)
+    expect(html).toMatch(/<div id="ssr-menu-open-menu" class="menu show[ "]/)
   })
 })

@@ -6,10 +6,10 @@
     </template>
     <BFormInput />
     <template #append>
-      <BDropdown text="Dropdown" :color="{ theme: 'success' }">
-        <BDropdownItem>Action A</BDropdownItem>
-        <BDropdownItem>Action B</BDropdownItem>
-      </BDropdown>
+      <BMenu text="Menu" :color="{ theme: 'success' }">
+        <BMenuItem>Action A</BMenuItem>
+        <BMenuItem>Action B</BMenuItem>
+      </BMenu>
     </template>
   </BInputGroup>
   <!-- #endregion template -->

@@ -10,12 +10,12 @@
     </BButtonToolbar>
   </div>
   <div class="mt-2">
-    <BButtonToolbar aria-label="Toolbar with dropdown size sm">
-      <BDropdown size="sm" placement="right" text="menu">
-        <BDropdownItem>Item 1</BDropdownItem>
-        <BDropdownItem>Item 2</BDropdownItem>
-        <BDropdownItem>Item 3</BDropdownItem>
-      </BDropdown>
+    <BButtonToolbar aria-label="Toolbar with menu size sm">
+      <BMenu size="sm" placement="end" text="menu">
+        <BMenuItem>Item 1</BMenuItem>
+        <BMenuItem>Item 2</BMenuItem>
+        <BMenuItem>Item 3</BMenuItem>
+      </BMenu>
     </BButtonToolbar>
   </div>
   <div class="mt-2">
@@ -28,12 +28,12 @@
     </BButtonToolbar>
   </div>
   <div class="mt-2">
-    <BButtonToolbar aria-label="Toolbar with dropdown size lg">
-      <BDropdown size="lg" placement="right" text="menu">
-        <BDropdownItem>Item 1</BDropdownItem>
-        <BDropdownItem>Item 2</BDropdownItem>
-        <BDropdownItem>Item 3</BDropdownItem>
-      </BDropdown>
+    <BButtonToolbar aria-label="Toolbar with menu size lg">
+      <BMenu size="lg" placement="end" text="menu">
+        <BMenuItem>Item 1</BMenuItem>
+        <BMenuItem>Item 2</BMenuItem>
+        <BMenuItem>Item 3</BMenuItem>
+      </BMenu>
     </BButtonToolbar>
   </div>
   <!-- #endregion template -->

@@ -22,7 +22,7 @@ import {
 import { linkProps, linkTo } from '../../utils/linkProps'
 import { buildCommonProps } from '../../utils/commonProps'
 import { pick } from '../../utils/objectUtils'
-import { dropdownEmits, dropdownProps, dropdownSlots } from '../../utils/dropdownCommon'
+import { menuEmits, menuExposed, menuProps, menuSlots } from '../../utils/menuCommon'
 
 export default {
   load: (): ComponentReference => ({
@@ -169,24 +169,23 @@ export default {
       } satisfies SlotRecord<keyof BNavItemSlots>,
     },
     BNavItemDropdown: {
-      styleSpec: { kind: StyleKind.OverrideClass, value: '.nav-item.dropdown' },
-      props: dropdownProps,
-      emits: dropdownEmits,
-      slots: dropdownSlots,
-      exposed: {
-        show: {
-          type: '() => void',
-          description: 'Shows the dropdown',
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.nav-item' },
+      props: {
+        ...menuProps,
+        text: {
+          type: 'string',
+          default: undefined,
+          description: 'Content of the `.nav-link` toggle',
         },
-        hide: {
-          type: '() => void',
-          description: 'Hides the dropdown',
-        },
+      },
+      emits: menuEmits,
+      slots: {
+        default: menuSlots.default,
         toggle: {
-          type: '() => void',
-          description: 'Toggles the visibility of the dropdown',
+          description: 'Content of the `.nav-link` toggle. Replaces `text`',
         },
-      } satisfies ExposedRecord,
+      },
+      exposed: menuExposed,
     },
     BNavText: {
       styleSpec: { kind: StyleKind.OverrideClass, value: '.navbar-text' },

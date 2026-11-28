@@ -168,13 +168,20 @@ export const useScrollspy = (
     let foundParent = false
     let activeElement: HTMLElement | null = null
     nodes.forEach((node) => {
-      const parentDropdown = node.closest('.dropdown')
+      // A link inside a menu marks the menu's toggle (the element whose `aria-controls` is the
+      // `.menu`) active too
+      const parentMenu = node.closest('.menu')
+      const menuToggle = parentMenu?.id
+        ? (parentMenu.getRootNode() as ParentNode).querySelector(
+            `[aria-controls="${parentMenu.id}"]`
+          )
+        : null
 
       if (node.getAttribute('href')?.includes(`#${newId}`)) {
         activeElement = node as HTMLElement
         node.classList.add('active')
-        if (parentDropdown) {
-          parentDropdown?.querySelector('.dropdown-toggle')?.classList.add('active')
+        if (menuToggle) {
+          menuToggle.classList.add('active')
           foundParent = true
         }
         let parentNav = node.closest('.nav')?.previousSibling as HTMLElement
@@ -185,8 +192,8 @@ export const useScrollspy = (
         }
       } else {
         node.classList.remove('active')
-        if (parentDropdown && !foundParent) {
-          parentDropdown?.querySelector('.dropdown-toggle')?.classList.remove('active')
+        if (menuToggle && !foundParent) {
+          menuToggle.classList.remove('active')
         }
 
         if (!foundParent) {

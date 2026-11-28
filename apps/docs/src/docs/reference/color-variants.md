@@ -134,8 +134,7 @@ the same way with its own `<part>Color` object prop. Both take the keys `theme`,
 | `BAvatar`                                      | `badge-color`                                                                                       |
 | `BCard`                                        | `header-color`, `body-color`, `footer-color` (with `border`), `subtitle-color` (`fg` only)          |
 | `BCardBody`                                    | `subtitle-color` (`fg` only)                                                                        |
-| `BDropdown`, `BNavItemDropdown`                | `split-color`                                                                                       |
-| `BDropdownGroup`                               | `header-color`                                                                                      |
+| `BMenu`, `BNavItemDropdown`                    | `split-color`                                                                                       |
 | `BFormCheckbox`, `BFormRadio` and their groups | `button-color`                                                                                      |
 | `BDialog`                                      | `header-color`, `footer-color` (with `border`), `body-color`                                        |
 | `BOffcanvas`                                   | `header-close.color`                                                                                |
@@ -156,7 +155,7 @@ The object you pass is merged with that default key by key:
 - A key set to `null` removes the default: `<BButton :color="{ theme: null }">` renders no theme class.
 
 Where a part falls back to another one (the table `tfoot` keys fall back to the `thead` keys,
-and the dropdown `split-color` to the dropdown's `color`), the fallback is also applied key by key.
+and the menu `split-color` to the menu's `color`), the fallback is also applied key by key.
 
 ### Global defaults with `BApp`
 

@@ -4,6 +4,7 @@ import type {AttrsValue} from '../types/AnyValuedAttributes'
 import type {Numberish, ValidationState} from '../types/CommonTypes'
 import type {LiteralUnion} from '../types/LiteralUnion'
 import type {Size} from '../types/Size'
+import type {MenuAutoClose} from '../types/MenuTypes'
 import type {RadiusElementExtendables} from '../types/RadiusElement'
 import type {
   BgColor,
@@ -176,14 +177,14 @@ export interface RegisterShowHideValue {
 export const showHideRegistryKey: InjectionKey<RegisterShowHideValue> =
   createBvnRegistryInjectionKey('showHide')
 
-export const dropdownInjectionKey: InjectionKey<{
-  id?: Readonly<Ref<string>>
-  readonly hide?: () => void
-  readonly show?: () => void
-  readonly toggle?: () => void
-  visible?: Readonly<Ref<boolean>>
-  isNav?: Readonly<Ref<boolean>>
-}> = createBvnInjectionKey('dropdown')
+export const menuInjectionKey: InjectionKey<{
+  id: Readonly<Ref<string>>
+  readonly show: () => Promise<boolean | string>
+  readonly hide: (trigger?: string) => Promise<boolean | string>
+  readonly toggle: () => Promise<boolean | string>
+  visible: Readonly<Ref<boolean>>
+  autoClose: Readonly<Ref<MenuAutoClose>>
+}> = createBvnInjectionKey('menu')
 
 export const navbarInjectionKey: InjectionKey<{
   tag?: Readonly<Ref<string>>

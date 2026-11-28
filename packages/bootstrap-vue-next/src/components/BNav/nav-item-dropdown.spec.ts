@@ -1,171 +1,83 @@
 import {enableAutoUnmount, mount} from '@vue/test-utils'
 import {afterEach, describe, expect, it} from 'vitest'
+import {nextTick} from 'vue'
 import BNavItemDropdown from './BNavItemDropdown.vue'
-import BDropdown from '../BDropdown/BDropdown.vue'
+import BMenu from '../BMenu/BMenu.vue'
+
+const flush = async () => {
+  await nextTick()
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)))
+  await nextTick()
+}
 
 describe('nav-item-dropdown', () => {
   enableAutoUnmount(afterEach)
 
-  it('has static class nav-item', () => {
+  it('renders li.nav-item without v5 dropdown classes', () => {
     const wrapper = mount(BNavItemDropdown)
-    expect(wrapper.classes()).toContain('nav-item')
+    expect(wrapper.element.tagName).toBe('LI')
+    expect(wrapper.classes()).toEqual(['nav-item'])
   })
 
-  it('has static class dropdown', () => {
+  it('renders BMenu with a button.nav-link toggle and a sibling .menu', () => {
+    const wrapper = mount(BNavItemDropdown, {props: {id: 'n', text: 'Nav'}})
+    expect(wrapper.findComponent(BMenu).exists()).toBe(true)
+    const toggle = wrapper.get('button#n')
+    expect(toggle.classes()).toEqual(['nav-link'])
+    expect(toggle.text()).toBe('Nav')
+    expect(toggle.attributes('aria-controls')).toBe('n-menu')
+    expect(toggle.element.nextElementSibling?.classList.contains('menu')).toBe(true)
+  })
+
+  it('puts fallthrough attrs and toggleAttrs on the toggle', () => {
+    const wrapper = mount(BNavItemDropdown, {
+      props: {toggleAttrs: {class: 'from-toggle-attrs'}},
+      attrs: {class: 'from-attrs'},
+    })
+    const toggle = wrapper.get('button')
+    expect(toggle.classes()).toContain('nav-link')
+    expect(toggle.classes()).toContain('from-toggle-attrs')
+    expect(toggle.classes()).toContain('from-attrs')
+  })
+
+  it('renders the toggle slot', () => {
+    const wrapper = mount(BNavItemDropdown, {slots: {toggle: 'Custom'}})
+    expect(wrapper.get('button').text()).toBe('Custom')
+  })
+
+  it('passes props on to BMenu', () => {
+    const wrapper = mount(BNavItemDropdown, {
+      props: {placement: 'bottom-end', autoClose: 'outside', disabled: true},
+    })
+    const menu = wrapper.findComponent(BMenu)
+    expect(menu.props('placement')).toBe('bottom-end')
+    expect(menu.props('autoClose')).toBe('outside')
+    expect(wrapper.get('button').attributes('disabled')).toBeDefined()
+  })
+
+  it('adds .show to the li, the toggle and the menu while open', async () => {
+    const wrapper = mount(BNavItemDropdown, {attachTo: document.body})
+    await wrapper.get('button').trigger('click')
+    await flush()
+    expect(wrapper.classes()).toContain('show')
+    expect(wrapper.get('button').classes()).toContain('show')
+    expect(wrapper.get('.menu').classes()).toContain('show')
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([true])
+  })
+
+  it('renders the default slot with the show/hide scope', () => {
+    const wrapper = mount(BNavItemDropdown, {
+      slots: {default: `<template #default="{id}">content {{ id }}</template>`},
+      props: {id: 'x'},
+    })
+    expect(wrapper.get('.menu').text()).toBe('content x')
+  })
+
+  it('exposes show, hide, toggle and update', () => {
     const wrapper = mount(BNavItemDropdown)
-    expect(wrapper.classes()).toContain('dropdown')
-  })
-
-  it('contains b-dropdown', () => {
-    const wrapper = mount(BNavItemDropdown)
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.exists()).toBe(true)
-  })
-
-  it('BDropdown has prop isNav set to true', () => {
-    const wrapper = mount(BNavItemDropdown)
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('isNav')).toBe(true)
-  })
-
-  it('passes text prop to BDropdown', () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {text: 'My Dropdown'},
-    })
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('text')).toBe('My Dropdown')
-  })
-
-  it('passes variant and theme props to BDropdown', () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {variant: 'outline', color: {theme: 'primary'}},
-    })
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('variant')).toBe('outline')
-    expect($bdropdown.props('color')?.theme).toBe('primary')
-  })
-
-  it('leaves the toggle unthemed by default', () => {
-    const wrapper = mount(BNavItemDropdown)
-    const toggle = wrapper.find('button')
-    expect(toggle.exists()).toBe(true)
-    expect(toggle.classes().some((c) => c.startsWith('theme-'))).toBe(false)
-  })
-
-  it('stays unthemed when only another color key is set', () => {
-    const wrapper = mount(BNavItemDropdown, {props: {color: {bg: 'primary'}}})
-    const classes = wrapper.find('button').classes()
-    expect(classes).toContain('bg-primary')
-    expect(classes.some((c) => c.startsWith('theme-'))).toBe(false)
-  })
-
-  it('themes the toggle when a theme is set', () => {
-    const wrapper = mount(BNavItemDropdown, {props: {color: {theme: 'primary'}}})
-    expect(wrapper.find('button').classes()).toContain('theme-primary')
-  })
-
-  it('passes split prop to BDropdown', async () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {split: true},
-    })
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('split')).toBe(true)
-    await wrapper.setProps({split: false})
-    expect($bdropdown.props('split')).toBe(false)
-  })
-
-  it('passes id prop to BDropdown', () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {id: 'my-dropdown-id'},
-    })
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('id')).toBe('my-dropdown-id')
-  })
-
-  it('passes disabled prop to BDropdown', async () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {disabled: true},
-    })
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('disabled')).toBe(true)
-    await wrapper.setProps({disabled: false})
-    expect($bdropdown.props('disabled')).toBe(false)
-  })
-
-  it('passes size prop to BDropdown', () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {size: 'lg'},
-    })
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('size')).toBe('lg')
-  })
-
-  it('passes noCaret prop to BDropdown', async () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {noCaret: true},
-    })
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('noCaret')).toBe(true)
-    await wrapper.setProps({noCaret: false})
-    expect($bdropdown.props('noCaret')).toBe(false)
-  })
-
-  it('passes menuClass prop to BDropdown', () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {menuClass: 'custom-menu'},
-    })
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('menuClass')).toBe('custom-menu')
-  })
-
-  it('modelValue defaults to false', () => {
-    const wrapper = mount(BNavItemDropdown)
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('modelValue')).toBe(false)
-  })
-
-  it('modelValue is passed to BDropdown', async () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {modelValue: true},
-    })
-    const $bdropdown = wrapper.findComponent(BDropdown)
-    expect($bdropdown.props('modelValue')).toBe(true)
-    await wrapper.setProps({modelValue: false})
-    expect($bdropdown.props('modelValue')).toBe(false)
-  })
-
-  it('renders button-content slot', () => {
-    const wrapper = mount(BNavItemDropdown, {
-      slots: {'button-content': 'button text'},
-    })
-    expect(wrapper.text()).toContain('button text')
-  })
-
-  it('renders default slot content when modelValue is true', () => {
-    const wrapper = mount(BNavItemDropdown, {
-      props: {modelValue: true},
-      slots: {default: 'dropdown content'},
-    })
-    expect(wrapper.text()).toContain('dropdown content')
-  })
-
-  describe('exposed methods', () => {
-    it('exposes show method', () => {
-      const wrapper = mount(BNavItemDropdown)
-      expect(wrapper.vm.show).toBeDefined()
-      expect(typeof wrapper.vm.show).toBe('function')
-    })
-
-    it('exposes hide method', () => {
-      const wrapper = mount(BNavItemDropdown)
-      expect(wrapper.vm.hide).toBeDefined()
-      expect(typeof wrapper.vm.hide).toBe('function')
-    })
-
-    it('exposes toggle method', () => {
-      const wrapper = mount(BNavItemDropdown)
-      expect(wrapper.vm.toggle).toBeDefined()
-      expect(typeof wrapper.vm.toggle).toBe('function')
-    })
+    expect(typeof wrapper.vm.show).toBe('function')
+    expect(typeof wrapper.vm.hide).toBe('function')
+    expect(typeof wrapper.vm.toggle).toBe('function')
+    expect(typeof wrapper.vm.update).toBe('function')
   })
 })

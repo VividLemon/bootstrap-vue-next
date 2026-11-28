@@ -1,0 +1,5 @@
+export {default as BMenu} from './BMenu.vue'
+export {default as BMenuDivider} from './BMenuDivider.vue'
+export {default as BMenuHeader} from './BMenuHeader.vue'
+export {default as BMenuItem} from './BMenuItem.vue'
+export {default as BMenuText} from './BMenuText.vue'

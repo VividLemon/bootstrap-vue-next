@@ -39,9 +39,9 @@ Navbars come with built-in support for a handful of sub-components. Choose from 
 - `BNavbarBrand` for your company, product, or project name.
 - `BNavbarToggle` for use with the `<BCollapse is-nav>` component.
 - `<BCollapse is-nav>` for grouping and hiding navbar contents by a parent breakpoint.
-- `BNavbarNav` for a full-height and lightweight navigation (including support for dropdowns). The following sub-components inside `BNavbarNav` are supported:
+- `BNavbarNav` for a full-height and lightweight navigation (including support for menus). The following sub-components inside `BNavbarNav` are supported:
   - `BNavItem` for link (and router-link) action items
-  - `BNavItemDropdown` for nav dropdown menus
+  - `BNavItemDropdown` for nav menus
   - `BNavText` for adding vertically centered strings of text.
   - `BNavForm` for any form controls and actions.
 
@@ -67,7 +67,7 @@ Navbar navigation links build on the `BNavbarNav` parent component and requires 
 
 - `BNavItem` for link (and router-link) action items
 - `BNavText` for adding vertically centered strings of text.
-- `BNavItemDropdown` for navbar dropdown menus
+- `BNavItemDropdown` for navbar menus
 - `BNavForm` for adding simple forms to the navbar.
 
 ### `BNavItem`
@@ -86,7 +86,7 @@ Navbars may contain bits of text with the help of `BNavText`. This component adj
 
 ### `BNavItemDropdown`
 
-For `BNavItemDropdown` usage, see the [`BDropdown`](./dropdown.md) docs. Note split dropdowns are not supported in `BNavbar` and `BNavbarNav`.
+`BNavItemDropdown` renders a `.nav-link` toggle and a [`BMenu`](./menu.md) menu; see the [nav docs](./nav.md#menus). Split menus are not supported in `BNavbar` and `BNavbarNav`.
 
 <<< DEMO ./demo/NavbarItemDropdown.vue#template{vue-html}
 

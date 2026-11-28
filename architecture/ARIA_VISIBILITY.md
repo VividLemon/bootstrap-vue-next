@@ -11,7 +11,7 @@ During the migration there are two paths:
 | Path               | Composables                              | Components                                                                                                             |
 | ------------------ | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse (+ BAccordionItem, which renders it), BAlert, BToast, BPopover / BTooltip, BDialog (through `useDialogBase`) |
-| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BOffcanvas, BDropdown (deferred)                                                                                       |
+| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BOffcanvas (deferred); BDropdown is replaced by the native `BMenu` (G2 step 1)                                         |
 
 Both paths share `useShowHideRegistration` (app registry + trigger registry + `aria-expanded`), so ARIA behavior is identical on both.
 
