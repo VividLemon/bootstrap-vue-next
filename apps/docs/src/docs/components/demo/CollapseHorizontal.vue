@@ -1,7 +1,6 @@
 <template>
-  <!-- #region template -->
   <BButton
-    v-b-toggle.collapse-horizontal
+    v-bind="collapseHorizontalToggle"
     class="m-1"
     >Toggle Horizontal Collapse</BButton
   >
@@ -11,10 +10,13 @@
       id="collapse-horizontal"
       horizontal
     >
-      <BCard style="width: 300px">
-        I collapse horizontally instead of vertically.
-      </BCard>
+      <BCard style="width: 300px"> I collapse horizontally instead of vertically. </BCard>
     </BCollapse>
   </div>
-  <!-- #endregion template -->
 </template>
+
+<script setup lang="ts">
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
+
+const {props: collapseHorizontalToggle} = useComponentToggle('collapse-horizontal')
+</script>

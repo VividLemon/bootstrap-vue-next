@@ -1,12 +1,9 @@
 <template>
-  <!-- #region template -->
   <div class="d-flex gap-2">
-    <!-- Via multiple directive modifiers -->
-    <BButton v-b-toggle.collapse-a.collapse-b>Toggle Collapse A and B</BButton>
-    <!-- Via space separated string of Ids passed to directive value -->
-    <BButton v-b-toggle="'collapse-a collapse-b'">Toggle Collapse A and B</BButton>
-    <!-- Via array of string Ids passed to directive value -->
-    <BButton v-b-toggle="['collapse-a', 'collapse-b']">Toggle Collapse A and B</BButton>
+    <!-- An array of ids -->
+    <BButton v-bind="arrayToggle">Toggle Collapse A and B</BButton>
+    <!-- A space-separated string of ids -->
+    <BButton v-bind="stringToggle">Toggle Collapse A and B</BButton>
   </div>
   <!-- Elements to collapse -->
   <BCollapse id="collapse-a">
@@ -15,5 +12,11 @@
   <BCollapse id="collapse-b">
     <BCard class="mt-4">I am collapsible content B!</BCard>
   </BCollapse>
-  <!-- #endregion template -->
 </template>
+
+<script setup lang="ts">
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
+
+const {props: arrayToggle} = useComponentToggle(['collapse-a', 'collapse-b'])
+const {props: stringToggle} = useComponentToggle('collapse-a collapse-b')
+</script>

@@ -1,8 +1,8 @@
 ---
 title: Tooltip
 description: >
-  Easily add tooltips to an interactive element or component via the `<BTooltip>` component
-  or [`v-b-tooltip`](/docs/directives/BTooltip) directive. Tooltips can also be created and programmatically controlled via the composable
+  Easily add tooltips to an interactive element or component via the `<BTooltip>` component.
+  Tooltips can also be created and programmatically controlled via the composable
   [`usePopover`](/docs/composables/usePopover)
 ---
 
@@ -145,9 +145,6 @@ See [Color Themes](/docs/reference/color-variants) for the available values.
 <<< DEMO ./demo/TooltipVariant.vue#template{vue-html}
 
 `body-attrs` and `title-attrs` are reactive and can be changed while the tooltip is open.
-
-Refer to the [tooltip directive](/docs/directives/BTooltip) docs on applying custom
-classes to the directive version.
 
 For finer control, use Bootstrap's `--bs-tooltip-*` CSS variables to apply styles directly.
 

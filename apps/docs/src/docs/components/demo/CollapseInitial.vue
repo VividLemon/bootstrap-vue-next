@@ -1,8 +1,7 @@
 <template>
-  <!-- #region template -->
   <!-- Using modifiers -->
   <BButton
-    v-b-toggle.collapse-3
+    v-bind="collapse3Toggle"
     class="m-1"
     >Toggle Collapse</BButton
   >
@@ -13,5 +12,10 @@
   >
     <BCard class="mt-4">I should start open!</BCard>
   </BCollapse>
-  <!-- #endregion template -->
 </template>
+
+<script setup lang="ts">
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
+
+const {props: collapse3Toggle} = useComponentToggle('collapse-3')
+</script>

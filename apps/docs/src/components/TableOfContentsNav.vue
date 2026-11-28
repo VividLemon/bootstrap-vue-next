@@ -34,17 +34,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute, withBase } from 'vitepress'
-import { breakpointsBootstrapV5, useBreakpoints } from '@vueuse/core'
+import {computed, onMounted, ref, watch} from 'vue'
+import {useRoute, withBase} from 'vitepress'
+import {breakpointsBootstrapV5, useBreakpoints} from '@vueuse/core'
 import IntersectIcon from '~icons/bi/intersect'
-import CodeSlashIcon from '~icons/bi/code-slash'
 import PieChartIcon from '~icons/bi/pie-chart'
 import GearIcon from '~icons/bi/gear'
-import { data as componentsData } from '../data/components.data'
-import { data as composablesData } from '../data/composables.data'
-import { data as directivesData } from '../data/directives.data'
-import { data as configurationsData } from '../data/configurations.data'
+import {data as componentsData} from '../data/components.data'
+import {data as composablesData} from '../data/composables.data'
+import {data as configurationsData} from '../data/configurations.data'
 
 defineProps<{
   name?: string
@@ -53,7 +51,7 @@ defineProps<{
 
 const routerRoute = useRoute()
 
-const { greaterOrEqual } = useBreakpoints(breakpointsBootstrapV5)
+const {greaterOrEqual} = useBreakpoints(breakpointsBootstrapV5)
 
 const isLargeScreen = ref(true)
 
@@ -70,7 +68,7 @@ onMounted(() => {
     (newValue) => {
       isLargeScreen.value = newValue
     },
-    { immediate: true },
+    {immediate: true}
   )
 })
 
@@ -116,28 +114,21 @@ const componentsComputedList = computed(() =>
   componentsData.map((component) => ({
     name: component.name,
     route: component.url,
-  })),
+  }))
 )
 
 const composablesComputedList = computed(() =>
   composablesData.map((composable) => ({
     name: composable.name,
     route: composable.url,
-  })),
-)
-
-const directivesComputedList = computed(() =>
-  directivesData.map((directive) => ({
-    name: directive.name,
-    route: directive.url,
-  })),
+  }))
 )
 
 const configurationsComputedList = computed(() =>
   configurationsData.map((configuration) => ({
     name: configuration.name,
     route: configuration.url,
-  })),
+  }))
 )
 
 const groupComputedList = computed(() => [
@@ -152,12 +143,6 @@ const groupComputedList = computed(() => [
     uri: '/docs/composables',
     icon: () => PieChartIcon,
     children: composablesComputedList.value,
-  },
-  {
-    label: 'Directives',
-    uri: '/docs/directives',
-    icon: () => CodeSlashIcon,
-    children: directivesComputedList.value,
   },
   {
     label: 'Configurations',

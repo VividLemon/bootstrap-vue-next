@@ -1,22 +1,16 @@
-import type { MarkdownRenderer } from 'vitepress'
-import { parse } from 'yaml'
-import { kebabToTitleCase } from '../../src/utils/dataLoaderUtils'
+import type {MarkdownRenderer} from 'vitepress'
+import {parse} from 'yaml'
+import {kebabToTitleCase} from '../../src/utils/dataLoaderUtils'
 
 /**
  * Convert kebab-case filename to Title Case.
  * Examples:
  *   button-group → Button Group
  *   useBootstrapColorMode → useBootstrapColorMode (composables keep camelCase)
- *   BTooltip → BTooltip (directives keep PascalCase)
  */
 function filenameToTitle(filename: string, directory: string): string {
-  // For composables and directives (both in subdirectories and root level), keep the original casing
-  if (
-    directory === 'composables' ||
-    directory === 'directives' ||
-    directory.endsWith('/composables') ||
-    directory.endsWith('/directives')
-  ) {
+  // Composables (both in subdirectories and root level) keep their original casing
+  if (directory === 'composables' || directory.endsWith('/composables')) {
     return filename
   }
 
@@ -36,14 +30,14 @@ function filenameToCamelCase(filename: string): string {
 }
 
 /**
- * Auto-inject page header and footer for component/composable/directive documentation files.
+ * Auto-inject page header and footer for component/composable documentation files.
  *
  * This plugin automatically adds:
  * 1. An h1 heading with the filename converted to proper case (for proper document structure)
  * 2. A <PageHeader /> component (for description and source links)
  * 3. For components only: A <ComponentReference /> component with data import (before any <style> section)
  *
- * Only applies to files in /components/, /composables/, /directives/, or /configurations/ directories
+ * Only applies to files in /components/, /composables/, or /configurations/ directories
  * that have a `description` in their frontmatter.
  */
 export function autoInjectDocComponents(md: MarkdownRenderer) {
@@ -58,8 +52,8 @@ export function autoInjectDocComponents(md: MarkdownRenderer) {
     env: {
       relativePath?: string
       path?: string
-      frontmatter?: { description?: string; title?: string }
-    },
+      frontmatter?: {description?: string; title?: string}
+    }
   ): string | undefined {
     // Check if this is a documentation file that should get auto-injection
     const rawPath = env?.relativePath || env?.path || ''
@@ -102,7 +96,7 @@ export function autoInjectDocComponents(md: MarkdownRenderer) {
     }
 
     // Parse frontmatter to check for description
-    let frontmatter: { description?: string; title?: string } | undefined = undefined
+    let frontmatter: {description?: string; title?: string} | undefined = undefined
     try {
       if (frontmatterMatch[1] !== undefined) {
         frontmatter = parse(frontmatterMatch[1])
@@ -170,7 +164,7 @@ export function autoInjectDocComponents(md: MarkdownRenderer) {
           const dataImport = `import {data} from '../../data/components/${dataFilename}.data'\n`
           afterFrontmatter = afterFrontmatter.replace(
             scriptSetupPattern,
-            `<script setup lang="ts">\n${dataImport}`,
+            `<script setup lang="ts">\n${dataImport}`
           )
         }
       }

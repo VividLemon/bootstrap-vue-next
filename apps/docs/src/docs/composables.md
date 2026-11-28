@@ -5,7 +5,7 @@ description: Browse BootstrapVueNext composables for programmatic control, share
 
 These composables help you control BootstrapVueNext behavior from Vue logic without depending on template-only APIs.
 
-See also [Components](/docs/components) and [Directives](/docs/directives).
+See also [Components](/docs/components).
 
 <TableOfContentsCard v-for="composable in data" :key="composable.name" class="my-3" :name="composable.name" :description="composable.description" :route="composable.url" />
 

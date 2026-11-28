@@ -1,7 +1,10 @@
 <template>
   <!-- #region template -->
   <!-- As a link -->
-  <BNavbar v-b-color-mode="'dark'" :color="{ theme: 'success' }">
+  <BNavbar
+    data-bs-theme="dark"
+    :color="{theme: 'success'}"
+  >
     <BNavbarBrand href="#navbar-brand-image-text">
       <img
         src="https://picsum.photos/30/30/?image=40"

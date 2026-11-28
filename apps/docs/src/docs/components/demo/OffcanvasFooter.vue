@@ -1,11 +1,20 @@
 <template>
   <div>
-    <BButton v-b-toggle.offcanvas-footer>Toggle Offcanvas</BButton>
-    <BOffcanvas id="offcanvas-footer" aria-label="Offcanvas with custom footer" no-header shadow>
+    <BButton v-bind="offcanvasFooterToggle">Toggle Offcanvas</BButton>
+    <BOffcanvas
+      id="offcanvas-footer"
+      aria-label="Offcanvas with custom footer"
+      no-header
+      shadow
+    >
       <template #footer="scope">
         <div class="d-flex bg-inverse fg-contrast-inverse align-items-center px-3 py-2">
           <strong class="me-auto">Footer</strong>
-          <BButton size="sm" @click="() => scope?.hide()">Close</BButton>
+          <BButton
+            size="sm"
+            @click="() => scope?.hide()"
+            >Close</BButton
+          >
         </div>
       </template>
       <div class="px-3 py-2">
@@ -13,8 +22,18 @@
           Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
           in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
         </p>
-        <BImg src="https://picsum.photos/500/500/?image=54" fluid thumbnail />
+        <BImg
+          src="https://picsum.photos/500/500/?image=54"
+          fluid
+          thumbnail
+        />
       </div>
     </BOffcanvas>
   </div>
 </template>
+
+<script setup lang="ts">
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
+
+const {props: offcanvasFooterToggle} = useComponentToggle('offcanvas-footer')
+</script>

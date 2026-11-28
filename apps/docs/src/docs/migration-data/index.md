@@ -83,5 +83,6 @@ This is the canonical BootstrapVue to BootstrapVueNext migration knowledge base.
 - [v-b-hover Migration](/docs/migration-data/directives/v-b-hover) — `v-b-hover`
 - [v-b-modal Migration](/docs/migration-data/directives/v-b-modal) — `v-b-modal`
 - [v-b-popover Migration](/docs/migration-data/directives/v-b-popover) — `v-b-popover`
+- [v-b-toggle Migration](/docs/migration-data/directives/v-b-toggle) — `v-b-toggle`
 - [v-b-tooltip Migration](/docs/migration-data/directives/v-b-tooltip) — `v-b-tooltip`
 - [v-b-visible Migration](/docs/migration-data/directives/v-b-visible) — `v-b-visible`

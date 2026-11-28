@@ -215,7 +215,7 @@ Use the `color` prop's `theme` key. This replaces `.alert-<x>`, `.badge`/`.text-
 Use `color` on tables, on columns (the field's `color`), and on the helper components `BThead`, `BTfoot`, `BTr`, `BTd` and `BTh`.
 Per-item overrides use the item properties `_rowColor` and `_cellColors`. Their `theme` maps to `.theme-<theme>` (replacing `.table-<x>`).
 Table-level props are `color`, the `thead` and `tfoot` sections (with `color` and `rowColor` keys) and `selection-color`.
-The `dark` prop has been removed (v6 removed `.table-dark`). Use the [`v-b-color-mode`](/docs/directives/BColorMode) directive or the [`useBootstrapColorMode`](/docs/composables/useBootstrapColorMode) composable to place a table in dark mode.
+The `dark` prop has been removed (v6 removed `.table-dark`). Set the `data-bs-theme` attribute or use the [`useBootstrapColorMode`](/docs/composables/useBootstrapColorMode) composable to place a table in dark mode.
 
 ### Links
 

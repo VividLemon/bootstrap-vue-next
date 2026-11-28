@@ -2,31 +2,33 @@
 title: Collapse
 description: >
   Easily toggle visibility of almost any content on your pages in a vertically collapsing container.
-  Includes support for making accordions. Visibility can be easily toggled with our
-  [`v-b-toggle` directive](/docs/directives/BToggle), or via [`v-model`](#v-model-support).
+  Includes support for making accordions. Visibility can be easily toggled with the
+  [`useComponentToggle`](/docs/composables/useComponentToggle) composable, or via
+  [`v-model`](#v-model-support).
 ---
 
-<<< DEMO ./demo/CollapseOverview.vue#template{vue-html}
+<<< DEMO ./demo/CollapseOverview.vue
 
 ## Usage
 
-Other elements can easily toggle `BCollapse` components using the
-[`v-b-toggle` directive](/docs/directives/BToggle).
+Other elements can easily toggle `BCollapse` components with the
+[`useComponentToggle`](/docs/composables/useComponentToggle) composable: bind the `props` it
+returns on the trigger element.
 
-<<< DEMO ./demo/CollapseUsage.vue#template{vue-html}
+<<< DEMO ./demo/CollapseUsage.vue
 
 ## Initial visibility (start expanded)
 
 To make the `BCollapse` show initially, set the `v-model` prop:
 
-<<< DEMO ./demo/CollapseInitial.vue#template{vue-html}
+<<< DEMO ./demo/CollapseInitial.vue
 
 ## `v-model` support
 
 The component's collapsed (visible) state can also be set with `v-model`.
 
 Note, when using `v-model` to control `BCollapse`, the `aria-*` attributes are not automatically
-placed on the trigger button (as is the case when using the `v-b-toggle` directive). In this example
+placed on the trigger button (as is the case when binding `useComponentToggle().props`). In this example
 we **must control the attributes ourselves** for proper accessibility support.
 
 By default, an initially visible collapse will not animate on mount. To enable the collapse expanding animation on mount,
@@ -65,16 +67,14 @@ default vertical axis (Bootstrap's `collapse-horizontal` class). The element sti
 collapsed and expanded states, but its width (`inline-size`) is what transitions rather than its
 height. When open, the element is as wide as its content (`fit-content`).
 
-<<< DEMO ./demo/CollapseHorizontal.vue#template{vue-html}
+<<< DEMO ./demo/CollapseHorizontal.vue
 
 ## Trigger multiple collapse elements
 
-You can even collapse multiple `BCollapse` components via a single `v-b-toggle` by providing
-multiple target Ids using _modifiers_.
+A single trigger can toggle several `BCollapse` components: pass `useComponentToggle` an array of
+target ids, or a space-separated string of them.
 
-You can also pass multiple target Ids via the directive _value_ in BootstrapVueNext.
-
-<<< DEMO ./demo/CollapseMultiple.vue#template{vue-html}
+<<< DEMO ./demo/CollapseMultiple.vue
 
 ## Slots
 
@@ -104,15 +104,15 @@ to its children as well as the value of the `isNav` prop.
 
 ## Accessibility
 
-The `v-b-toggle` directive will automatically add the ARIA attribute `aria-controls` to the trigger
+The `props` from `useComponentToggle` add the ARIA attribute `aria-controls` to the trigger
 element and register it with the target `BCollapse` component. The collapse component will then
 automatically manage the `aria-expanded` attribute on the trigger element to reflect its visibility
 state. Bootstrap v6 has no trigger state classes; to style a trigger by state, use the
 `[aria-expanded="true"]` / `[aria-expanded="false"]` attribute selectors.
 
-For detailed information on managing ARIA attributes for triggers, including examples of using `v-b-toggle` with `v-model` and manual ARIA management, see the [ARIA Trigger Registration for Component Visibility](/docs/reference/accessibility#aria-trigger-registration-for-component-visibility) section in the Accessibility reference.
+For detailed information on managing ARIA attributes for triggers, including examples of using `useComponentToggle` with `v-model` and manual ARIA management, see the [ARIA Trigger Registration for Component Visibility](/docs/reference/accessibility#aria-trigger-registration-for-component-visibility) section in the Accessibility reference.
 
-While the `v-b-toggle` directive can be placed on almost any HTML element or Vue component, it is
+While `useComponentToggle().props` can be bound on almost any HTML element or Vue component, it is
 recommended to use a button or link (or similar component) to act as your toggler; otherwise your
 trigger elements may be inaccessible to keyboard or screen reader users. If you do place them on
 something other than a button or link (or similar component), you should add the attributes

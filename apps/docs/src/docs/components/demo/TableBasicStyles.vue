@@ -1,35 +1,80 @@
 <template>
   <div>
-    <BFormGroup v-slot="{ ariaDescribedby }" label="Table Options" :label-cols="{ lg: 2 }">
+    <BFormGroup
+      v-slot="{ariaDescribedby}"
+      label="Table Options"
+      :label-cols="{lg: 2}"
+    >
       <div class="d-flex flex-wrap column-gap-5">
-        <BFormCheckbox v-model="striped" :aria-describedby="ariaDescribedby">Striped</BFormCheckbox>
-        <BFormCheckbox v-model="stripedColumns" :aria-describedby="ariaDescribedby"
+        <BFormCheckbox
+          v-model="striped"
+          :aria-describedby="ariaDescribedby"
+          >Striped</BFormCheckbox
+        >
+        <BFormCheckbox
+          v-model="stripedColumns"
+          :aria-describedby="ariaDescribedby"
           >Striped Columns</BFormCheckbox
         >
-        <BFormCheckbox v-model="bordered" :aria-describedby="ariaDescribedby"
+        <BFormCheckbox
+          v-model="bordered"
+          :aria-describedby="ariaDescribedby"
           >Bordered</BFormCheckbox
         >
-        <BFormCheckbox v-model="borderless" :aria-describedby="ariaDescribedby"
+        <BFormCheckbox
+          v-model="borderless"
+          :aria-describedby="ariaDescribedby"
           >Borderless</BFormCheckbox
         >
-        <BFormCheckbox v-model="outlined" :aria-describedby="ariaDescribedby"
+        <BFormCheckbox
+          v-model="outlined"
+          :aria-describedby="ariaDescribedby"
           >Outlined</BFormCheckbox
         >
-        <BFormCheckbox v-model="small" :aria-describedby="ariaDescribedby">Small</BFormCheckbox>
-        <BFormCheckbox v-model="hover" :aria-describedby="ariaDescribedby">Hover</BFormCheckbox>
-        <BFormCheckbox v-model="dark" :aria-describedby="ariaDescribedby">Dark</BFormCheckbox>
-        <BFormCheckbox v-model="fixed" :aria-describedby="ariaDescribedby">Fixed</BFormCheckbox>
-        <BFormCheckbox v-model="footClone" :aria-describedby="ariaDescribedby"
+        <BFormCheckbox
+          v-model="small"
+          :aria-describedby="ariaDescribedby"
+          >Small</BFormCheckbox
+        >
+        <BFormCheckbox
+          v-model="hover"
+          :aria-describedby="ariaDescribedby"
+          >Hover</BFormCheckbox
+        >
+        <BFormCheckbox
+          v-model="dark"
+          :aria-describedby="ariaDescribedby"
+          >Dark</BFormCheckbox
+        >
+        <BFormCheckbox
+          v-model="fixed"
+          :aria-describedby="ariaDescribedby"
+          >Fixed</BFormCheckbox
+        >
+        <BFormCheckbox
+          v-model="footClone"
+          :aria-describedby="ariaDescribedby"
           >Foot Clone</BFormCheckbox
         >
-        <BFormCheckbox v-model="noCollapse" :aria-describedby="ariaDescribedby"
+        <BFormCheckbox
+          v-model="noCollapse"
+          :aria-describedby="ariaDescribedby"
           >No border collapse</BFormCheckbox
         >
       </div>
     </BFormGroup>
 
-    <BFormGroup label="Theme" label-for="table-style-theme" :label-cols="{ lg: 2 }" class="my-2">
-      <BFormSelect id="table-style-theme" v-model="theme" :options="themes">
+    <BFormGroup
+      label="Theme"
+      label-for="table-style-theme"
+      :label-cols="{lg: 2}"
+      class="my-2"
+    >
+      <BFormSelect
+        id="table-style-theme"
+        v-model="theme"
+        :options="themes"
+      >
         <template #first>
           <option :value="null">-- None --</option>
         </template>
@@ -39,10 +84,14 @@
     <BFormGroup
       label="Head Theme"
       label-for="head-style-theme"
-      :label-cols="{ lg: 2 }"
+      :label-cols="{lg: 2}"
       class="my-2"
     >
-      <BFormSelect id="head-style-theme" v-model="headTheme" :options="themes">
+      <BFormSelect
+        id="head-style-theme"
+        v-model="headTheme"
+        :options="themes"
+      >
         <template #first>
           <option :value="null">-- None --</option>
         </template>
@@ -52,10 +101,14 @@
     <BFormGroup
       label="Foot Theme"
       label-for="foot-style-theme"
-      :label-cols="{ lg: 2 }"
+      :label-cols="{lg: 2}"
       class="my-2"
     >
-      <BFormSelect id="foot-style-theme" v-model="footTheme" :options="themes">
+      <BFormSelect
+        id="foot-style-theme"
+        v-model="footTheme"
+        :options="themes"
+      >
         <template #first>
           <option :value="null">-- None --</option>
         </template>
@@ -70,28 +123,28 @@
       :outlined="outlined"
       :small="small"
       :hover="hover"
-      v-b-color-mode="dark ? 'dark' : 'light'"
+      :data-bs-theme="dark ? 'dark' : 'light'"
       :fixed="fixed"
       :foot-clone="footClone"
       :no-border-collapse="noCollapse"
       :items="items"
       :fields="fields"
-      :color="{ theme: theme }"
-      :thead="{ color: { theme: headTheme } }"
-      :tfoot="{ color: { theme: footTheme } }"
+      :color="{theme: theme}"
+      :thead="{color: {theme: headTheme}}"
+      :tfoot="{color: {theme: footTheme}}"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { ThemeColor } from 'bootstrap-vue-next'
-import { ref } from 'vue'
+import type {ThemeColor} from 'bootstrap-vue-next'
+import {ref} from 'vue'
 
 const fields = ['first_name', 'last_name', 'age']
 const items = [
-  { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-  { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-  { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
+  {age: 40, first_name: 'Dickerson', last_name: 'Macdonald'},
+  {age: 21, first_name: 'Larsen', last_name: 'Shaw'},
+  {age: 89, first_name: 'Geneva', last_name: 'Wilson'},
 ]
 
 const striped = ref(false)

@@ -8,6 +8,7 @@ components:
 match:
   - Popover
   - v-b-popover
+  - bv::show::popover
   - .click
   - .hover
   - .focus
@@ -16,12 +17,6 @@ match:
   - .bottom
   - .left
   - .right
-  - .body
-  - .child
-  - .inline
-  - .lazy
-  - .realtime
-  - .interactive
 tags:
   - migration
   - directives
@@ -30,8 +25,6 @@ safeRewrite: false
 migrationType: directive-migration
 introducedIn: bootstrap-vue-next
 manualReviewRequired: true
-deprecated:
-  - .inline
 confidence: high
 ---
 
@@ -39,7 +32,8 @@ confidence: high
 
 ## Summary
 
-Migration notes for v-b-popover from BootstrapVue to BootstrapVueNext.
+BootstrapVueNext has no `v-b-popover` directive. Use the `<BPopover>` component with its
+`activator` slot, or the [`usePopover`](/docs/composables/usePopover) composable's `popover()`.
 
 ## Affected APIs
 
@@ -47,131 +41,66 @@ Migration notes for v-b-popover from BootstrapVue to BootstrapVueNext.
 
 ## Breaking Change
 
-The `v-b-popover` directive syntax has changed to use modifier-based configuration instead of configuration objects.
+<DeprecatedFeature :reason="DeprecationReason.MODERN_ALTERNATIVE" what="`v-b-popover` directive">
+  Wrap the element in <code>&lt;BPopover&gt;</code> and bind the <code>activator</code> slot's
+  <code>props</code> on it. <code>props</code> carries the element's ref, the trigger listeners and
+  <code>aria-describedby</code>.
+</DeprecatedFeature>
 
-### Trigger Configuration
+<<< FRAGMENT ../../demo/PopoverDirectiveMigration.html#basic-bsv{vue-html}
 
-BSV used string-based triggers while BSVN uses modifiers:
+<<< FRAGMENT ../../demo/PopoverDirectiveMigration.html#basic-bsvn{vue-html}
 
-<<< FRAGMENT ../../demo/PopoverDirectiveTrigger.html#template{vue-html}
+### Modifiers and the value object
 
-Available trigger modifiers:
+Each modifier and each key of the directive's value object becomes a `<BPopover>` prop:
 
-- `.click` - Toggle on click (BSV: `'click'`)
-- `.hover` - Show on hover (BSV: `'hover'`)
-- `.focus` - Show on focus (BSV: `'focus'`)
-- `.manual` - Manual control (BSV: `'manual'`)
+| `v-b-popover`                           | `<BPopover>`                                   |
+| --------------------------------------- | ---------------------------------------------- |
+| value string or `content` key           | `body` prop (or the default slot)              |
+| `title` attribute or `title` key        | `title` prop (or the `title` slot)             |
+| `.hover`, `.focus`, `.click`            | `hover`, `focus`, `click`                      |
+| `.manual`                               | `manual`, with `v-model` for the visibility    |
+| `.top`, `.topright`, `.bottomleft`, ... | `placement` (`top`, `top-end`, `bottom-start`) |
+| `.html`                                 | the default and `title` slots                  |
+| `delay`                                 | `delay` (a number or `{show, hide}`)           |
+| `customClass`                           | `body-attrs` / `title-attrs` (or a `class`)    |
+| `variant`                               | Bootstrap v6 `.theme-*` classes                |
+| `boundary`, `container`                 | `boundary`, `teleport-to`                      |
 
-Default behavior: If no trigger modifier is specified, BSVN defaults to **both hover and focus** triggers (same as BSV).
+<<< FRAGMENT ../../demo/PopoverDirectiveMigration.html#click-bsv{vue-html}
 
-### Placement Configuration
+<<< FRAGMENT ../../demo/PopoverDirectiveMigration.html#click-bsvn{vue-html}
 
-BSV used complex placement strings while BSVN uses simple modifiers:
+### Manual control
 
-<<< FRAGMENT ../../demo/PopoverDirectivePlacement.html#template{vue-html}
-
-BSVN uses four simple placement modifiers:
-
-- `.top`
-- `.bottom`
-- `.left`
-- `.right`
-
-BSV's fine-grained placements (`topleft`, `topright`, `bottomleft`, `bottomright`, `lefttop`, `leftbottom`, `righttop`, `rightbottom`) are not available as modifiers. Use the component version `<BPopover>` for precise placement control.
-
-### Value Configuration
-
-The directive value can be a string or an object:
-
-<<< FRAGMENT ../../demo/PopoverDirectiveValueSimple.html#template{vue-html}
-
-<<< FRAGMENT ../../demo/PopoverDirectiveValueObject.html#bsv{vue-html}
-
-<<< FRAGMENT ../../demo/PopoverDirectiveValueObject.html#bsvn{vue-html}
-
-Note: BSV used `content` property, BSVN uses `body` property in object configuration.
-
-### Custom Class Properties
-
-BSV used a `customClass` property, while BSVN provides more granular control:
-
-**BSV:**
-
-<<< FRAGMENT ../../demo/PopoverDirectiveCustomClassBefore.html{vue-html}
-
-**BSVN:**
-
-<<< FRAGMENT ../../demo/PopoverDirectiveCustomClassAfter.html{vue-html}
-
-BSVN provides separate `bodyClass` and `titleClass` properties for more precise styling control.
-
-### Special Modifiers
-
-BSVN adds new modifiers not available in BSV:
-
-- `.body` - Append to `<body>` (BSV: no equivalent modifier)
-- `.child` - Append as child element
-- `.inline` - Use inline positioning for multi-line text
-- `.lazy` - Defer rendering until first shown
-- `.realtime` - Update position in real-time
-- `.interactive` - Allow interactive content
-
-### Title Attribute Handling
-
-Both versions support using the element's `title` attribute:
-
-<<< FRAGMENT ../../demo/PopoverDirectiveTitleAttribute.html#template{vue-html}
-
-BSVN automatically removes the `title` attribute and stores it as `data-original-title` to prevent browser tooltips.
-
-### Migration Examples
-
-**Basic hover popover:**
-
-<<< FRAGMENT ../../demo/PopoverDirectiveHover.html#bsv{vue-html}
-
-<<< FRAGMENT ../../demo/PopoverDirectiveHover.html#bsvn{vue-html}
-
-**Click popover with placement:**
-
-<<< FRAGMENT ../../demo/PopoverDirectiveClick.html#bsv{vue-html}
-
-<<< FRAGMENT ../../demo/PopoverDirectiveClick.html#bsvn{vue-html}
-
-**Manual control:**
+BootstrapVue opened a manual popover with `this.$root.$emit('bv::show::popover', id)`. Bind
+`v-model` instead:
 
 <<< DEMO ../../demo/PopoverDirectiveManualBSV.vue
 
-<<< DEMO ../../demo/PopoverDirectiveManualBSVN.vue
+<<< FRAGMENT ../../demo/PopoverDirectiveMigration.html#manual-bsvn{vue-html}
 
-**Complex configuration:**
+### Elements you don't render
 
-<<< FRAGMENT ../../demo/PopoverDirectiveComplex.html#bsv{vue-html}
-
-<<< FRAGMENT ../../demo/PopoverDirectiveComplex.html#bsvn{vue-html}
-
-### When to Use Component Instead
-
-For complex scenarios, migrate to the `<BPopover>` component:
-
-- Fine-grained placement control (`top-start`, `bottom-end`, etc.)
-- Rich HTML content via slots
-- Programmatic control with full API
-- Interactive content (forms, buttons)
-- Custom variants and styling
-
-<<< FRAGMENT ../../demo/PopoverDirectiveComponentAlternative.html#bsv{vue-html}
-
-<<< FRAGMENT ../../demo/PopoverDirectiveComponentAlternative.html#bsvn{vue-html}
+When the trigger is not in your template, pass it as `<BPopover>`'s `activator` prop, or call
+`usePopover().popover({activator})`. See [Popover](/docs/components/popover) and
+[`usePopover`](/docs/composables/usePopover).
 
 ## Migration Notes
 
-- Extracted from the canonical BootstrapVue → BootstrapVueNext migration guide.
+- `v-b-popover` was removed in the Bootstrap v6 release of BootstrapVueNext in favor of the component and
+  the composable.
 
 ## Safe Automatic Rewrite
 
-No. This entry includes behavioral or structural changes and should be reviewed manually before applying automated transforms.
+No. The trigger element moves into the `activator` slot, which changes the template structure.
 
 ## Related Migrations
 
-- None
+- [BPopover Migration](/docs/migration-data/components/bpopover)
+- [v-b-tooltip Migration](/docs/migration-data/directives/v-b-tooltip)
+
+<script setup lang="ts">
+import {DeprecationReason} from '../../../types/deprecation'
+</script>

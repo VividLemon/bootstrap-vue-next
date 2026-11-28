@@ -43,11 +43,11 @@ Use `table-attrs` to apply additional attributes to the `<table>` element in res
 See the [v-html](/docs/migration-data/patterns/v-html-props) section for information on deprecation of the `caption-html` prop.
 
 The `dark` prop has been removed, because Bootstrap v6 no longer ships `.table-dark`. Apply the dark color mode
-with the [`v-b-color-mode`](/docs/directives/BColorMode) directive or the [`useBootstrapColorMode`](/docs/composables/useBootstrapColorMode)
+with the `data-bs-theme` attribute or the [`useBootstrapColorMode`](/docs/composables/useBootstrapColorMode)
 composable instead. This also applies to `BTable` and `BTableLite`:
 
 ```vue-html
-<BTableSimple v-b-color-mode="'dark'">...</BTableSimple>
+<BTableSimple data-bs-theme="dark">...</BTableSimple>
 ```
 
 ### BTBody

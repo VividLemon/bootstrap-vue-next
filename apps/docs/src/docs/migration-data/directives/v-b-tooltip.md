@@ -3,21 +3,27 @@ id: v-b-tooltip
 title: v-b-tooltip Migration
 description: 'Migration notes for v-b-tooltip from BootstrapVue to BootstrapVueNext.'
 category: directives
-components: []
+components:
+  - BTooltip
 match:
   - Tooltip
   - v-b-tooltip
   - data-original-title
+  - .hover
+  - .focus
+  - .click
   - .top
   - .bottom
+  - .left
+  - .right
 tags:
   - migration
   - directives
   - tooltip
-safeRewrite: true
+safeRewrite: false
 migrationType: directive-migration
 introducedIn: bootstrap-vue-next
-manualReviewRequired: false
+manualReviewRequired: true
 confidence: high
 ---
 
@@ -25,86 +31,65 @@ confidence: high
 
 ## Summary
 
-Migration notes for v-b-tooltip from BootstrapVue to BootstrapVueNext.
+BootstrapVueNext has no `v-b-tooltip` directive. Use the `<BTooltip>` component with its
+`activator` slot, or the [`usePopover`](/docs/composables/usePopover) composable's `tooltip()`.
 
 ## Affected APIs
 
-- None explicitly listed
+- BTooltip
 
 ## Breaking Change
 
-The `v-b-tooltip` directive works similarly between BSV and BSVN, but has some important differences:
+<DeprecatedFeature :reason="DeprecationReason.MODERN_ALTERNATIVE" what="`v-b-tooltip` directive">
+  Wrap the element in <code>&lt;BTooltip&gt;</code> and bind the <code>activator</code> slot's
+  <code>props</code> on it. <code>props</code> carries the element's ref, the trigger listeners and
+  <code>aria-describedby</code>.
+</DeprecatedFeature>
 
-### Basic Usage
+<<< FRAGMENT ../../demo/TooltipDirectiveMigration.html#basic-bsv{vue-html}
 
-Simple string tooltips work the same:
+<<< FRAGMENT ../../demo/TooltipDirectiveMigration.html#basic-bsvn{vue-html}
 
-**BSV:**
+### Modifiers and the value object
 
-<<< FRAGMENT ../../demo/TooltipDirectiveBasicBefore.html{html}
+Each modifier and each key of the directive's value object becomes a `<BTooltip>` prop:
 
-**BSVN:**
+| `v-b-tooltip`                                  | `<BTooltip>`                                |
+| ---------------------------------------------- | ------------------------------------------- |
+| value string, `title` attribute or `title` key | `title` prop (or the default slot)          |
+| `.hover`, `.focus`, `.click`                   | `hover`, `focus`, `click`                   |
+| `.manual`                                      | `manual`, with `v-model` for the visibility |
+| `.top`, `.bottom`, `.left`, `.right`           | `placement` (any Floating UI placement)     |
+| `.html`                                        | the default slot                            |
+| `delay`                                        | `delay` (a number or `{show, hide}`)        |
+| `customClass`                                  | `body-attrs` / `title-attrs` (or a `class`) |
+| `variant`                                      | Bootstrap v6 `.theme-*` classes             |
+| `boundary`, `container`                        | `boundary`, `teleport-to`                   |
 
-<<< FRAGMENT ../../demo/TooltipDirectiveBasicAfter.html{html}
+<<< FRAGMENT ../../demo/TooltipDirectiveMigration.html#object-bsv{vue-html}
 
-### Trigger Modifiers
+<<< FRAGMENT ../../demo/TooltipDirectiveMigration.html#object-bsvn{vue-html}
 
-When using modifiers, BSVN recommends providing tooltip content via the directive value, although it will still fall back to the element's `title`/`data-original-title` attributes when no value is given.
+### Elements you don't render
 
-**BSV:**
-
-<<< FRAGMENT ../../demo/TooltipDirectiveTriggersBefore.html{html}
-
-**BSVN:**
-
-<<< FRAGMENT ../../demo/TooltipDirectiveTriggersAfter.html{html}
-
-BSVN automatically removes the `title` attribute and stores it as `data-original-title` to prevent browser tooltips.
-
-### Object Configuration
-
-The object configuration interface has changed:
-
-**BSV:**
-
-<<< FRAGMENT ../../demo/TooltipDirectiveObjectBefore.html{html}
-
-**BSVN:**
-
-<<< FRAGMENT ../../demo/TooltipDirectiveObjectAfter.html{html}
-
-Key changes:
-
-- `placement` is now specified via modifier (`.top`, `.bottom`, etc.) instead of in the object
-- `delay` accepts either a scalar number (applies to both show and hide) or an object `{show: number, hide: number}` for independent control
-- Floating UI (instead of Popper.js) is used for positioning
-
-### Custom Classes (Directive)
-
-BSV's `customClass` property has been replaced with `bodyClass` and `titleClass` for more granular control:
-
-**BSV:**
-
-<<< FRAGMENT ../../demo/TooltipDirectiveCustomClassBefore.html#template{html}
-
-**BSVN:**
-
-<<< FRAGMENT ../../demo/TooltipDirectiveCustomClassAfter.html#template{html}
-
-::: tip Tooltip Rendering Behavior
-Unlike popovers which can display both title and body simultaneously, tooltips only display **either** title **or** body content. The `titleClass` and `bodyClass` properties are mutually exclusive - only one will apply at a time depending on which content is rendered.
-:::
-
-See the [Tooltip Directive documentation](/docs/directives/BTooltip) for complete details.
+When the trigger is not in your template (a third-party component's element, or one found at run
+time), pass it as `<BTooltip>`'s `activator` prop, or call `usePopover().tooltip({activator})`.
+See [Tooltip](/docs/components/tooltip) and [`usePopover`](/docs/composables/usePopover).
 
 ## Migration Notes
 
-- Extracted from the canonical BootstrapVue → BootstrapVueNext migration guide.
+- `v-b-tooltip` was removed in the Bootstrap v6 release of BootstrapVueNext in favor of the component and
+  the composable.
 
 ## Safe Automatic Rewrite
 
-Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
+No. The trigger element moves into the `activator` slot, which changes the template structure.
 
 ## Related Migrations
 
-- None
+- [BTooltip Migration](/docs/migration-data/components/btooltip)
+- [v-b-popover Migration](/docs/migration-data/directives/v-b-popover)
+
+<script setup lang="ts">
+import {DeprecationReason} from '../../../types/deprecation'
+</script>

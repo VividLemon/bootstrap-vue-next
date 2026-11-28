@@ -6,7 +6,7 @@
           <h1>{{ title }}</h1>
         </slot>
       </BCol>
-      <BCol v-if="href" :cols="{ xs: 4 }" class="text-md-right">
+      <BCol v-if="href" :cols="{xs: 4}" class="text-md-right">
         <ViewSourceButton :href />
       </BCol>
     </BRow>
@@ -19,10 +19,7 @@ import {appInfoKey} from '../../.vitepress/theme/keys'
 
 const globalData = inject(appInfoKey)
 
-type Base = Extract<
-  keyof Exclude<typeof globalData, undefined>,
-  'githubComposablesDirectory' | 'githubDirectivesDirectory'
->
+type Base = Extract<keyof Exclude<typeof globalData, undefined>, 'githubComposablesDirectory'>
 
 const props = defineProps<{
   title: string

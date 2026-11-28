@@ -2,7 +2,7 @@
 <template>
   <BApp>
     <BNavbar
-      v-b-color-mode="'dark'"
+      data-bs-theme="dark"
       theme="primary"
       bg="primary"
       sticky="top"
@@ -44,14 +44,14 @@
         </BNavbarNav>
         <BNavbarNav class="ms-auto">
           <div class="d-flex align-items-center gap-2">
-            <VPNavBarSearch :class="{ dark: colorMode === 'dark' }" />
+            <VPNavBarSearch :class="{dark: colorMode === 'dark'}" />
             <div class="d-flex gap-2 flex-wrap socials">
               <BNav class="d-flex">
                 <BNavItem
                   v-for="link in headerExternalLinks"
                   :key="link.url"
                   :href="link.url"
-                  :link-attrs="{ 'aria-label': link.label }"
+                  :link-attrs="{'aria-label': link.label}"
                   target="_blank"
                   rel="noopener"
                   link-classes="py-1 px-0"
@@ -90,10 +90,12 @@
       <div v-if="!isLargeScreen && !page.isNotFound" class="d-flex border-bottom">
         <div class="px-3">
           <BButton
-            v-b-toggle.sidebar-menu
+            aria-controls="sidebar-menu"
+            :aria-expanded="sidebar"
             class="otp-menu-toggle text-decoration-none"
             variant="link"
             size="sm"
+            @click="sidebar = !sidebar"
           >
             <List aria-hidden />
             {{ isMigrationPage ? 'Browse migrations' : 'Browse docs' }}
@@ -101,10 +103,12 @@
         </div>
         <div class="px-3 ms-auto">
           <BButton
-            v-b-toggle.otp-menu
+            aria-controls="otp-menu"
+            :aria-expanded="onThisPage"
             class="otp-menu-toggle text-decoration-none"
             variant="link"
             size="sm"
+            @click="onThisPage = !onThisPage"
           >
             On this page
             <ChevronRight aria-hidden />
@@ -182,10 +186,8 @@
 </template>
 
 <script setup lang="ts">
-import { useBootstrapColorMode } from 'bootstrap-vue-next/composables/useBootstrapColorMode'
-import { useScrollspy } from 'bootstrap-vue-next/composables/useScrollspy'
-import { vBColorMode } from 'bootstrap-vue-next/directives/BColorMode'
-import { vBToggle } from 'bootstrap-vue-next/directives/BToggle'
+import {useBootstrapColorMode} from 'bootstrap-vue-next/composables/useBootstrapColorMode'
+import {useScrollspy} from 'bootstrap-vue-next/composables/useScrollspy'
 import {
   type ComponentPublicInstance,
   computed,
@@ -206,17 +208,17 @@ import ChevronRight from '~icons/bi/chevron-right'
 import ChevronLeft from '~icons/bi/chevron-left'
 import CircleHalf from '~icons/bi/circle-half'
 import List from '~icons/bi/list'
-import { useData, useRoute, withBase } from 'vitepress'
-import { VPNavBarSearch } from 'vitepress/theme'
-import { appInfoKey } from './keys'
-import { useMediaQuery, useMutationObserver } from '@vueuse/core'
+import {useData, useRoute, withBase} from 'vitepress'
+import {VPNavBarSearch} from 'vitepress/theme'
+import {appInfoKey} from './keys'
+import {useMediaQuery, useMutationObserver} from '@vueuse/core'
 import PageContents from '../../src/components/PageContents.vue'
 import MigrationNav from '../../src/components/MigrationNav.vue'
-import { type ContentsItem, type HeaderItem } from '../../src/types'
+import {type ContentsItem, type HeaderItem} from '../../src/types'
 import TableOfContentsNav from '../../src/components/TableOfContentsNav.vue'
 
 // https://vitepress.dev/reference/runtime-api#usedata
-const { page } = useData()
+const {page} = useData()
 const route = useRoute()
 
 const content = useTemplateRef<ComponentPublicInstance<HTMLElement>>('content')
@@ -256,11 +258,11 @@ const updateHeadings = () => {
 onMounted(updateHeadings)
 watch(
   () => route.path,
-  () => nextTick(updateHeadings),
+  () => nextTick(updateHeadings)
 )
-useMutationObserver(contentEl, updateHeadings, { childList: true })
+useMutationObserver(contentEl, updateHeadings, {childList: true})
 
-const { current: activeId } = useScrollspy(content, target)
+const {current: activeId} = useScrollspy(content, target)
 
 const globalData = inject(appInfoKey, {
   discordUrl: '',
@@ -269,12 +271,11 @@ const globalData = inject(appInfoKey, {
   githubComponentsDirectory: '',
   githubComposablesDirectory: '',
   githubMainBranch: '',
-  githubDirectivesDirectory: '',
   opencollectiveUrl: '',
   githubDocsDirectory: '',
 })
 
-const isLargeScreen = useMediaQuery('(min-width: 1024px)', { ssrWidth: 1024 })
+const isLargeScreen = useMediaQuery('(min-width: 1024px)', {ssrWidth: 1024})
 const sidebar = ref(false)
 const onThisPage = ref(false)
 
@@ -327,7 +328,7 @@ const headerExternalLinks = [
   },
 ]
 
-const { store: colorMode } = useBootstrapColorMode({
+const {store: colorMode} = useBootstrapColorMode({
   persist: true,
 })
 
@@ -337,7 +338,7 @@ onMounted(() => {
     (newValue) => {
       document.documentElement.classList.toggle('dark', newValue === 'dark')
     },
-    { immediate: true },
+    {immediate: true}
   )
 })
 
@@ -361,8 +362,8 @@ const headers = computed(() =>
     const isHeading = /^H[1-6]$/.test(rawTag)
     const tag = isHeading ? rawTag : 'DIV'
     const level = tag.startsWith('H') ? Number.parseInt(tag.replace('H', '')) : 3
-    return { id: el.id, el, text: el.textContent, tag, level }
-  }),
+    return {id: el.id, el, text: el.textContent, tag, level}
+  })
 )
 
 const contents = computed(() => {
@@ -370,7 +371,7 @@ const contents = computed(() => {
   const stack: ContentsItem[] = []
 
   headers.value.forEach((header) => {
-    const item = { ...header, children: [] as ContentsItem[] } as ContentsItem
+    const item = {...header, children: [] as ContentsItem[]} as ContentsItem
 
     while (stack.length > 0 && (stack[stack.length - 1]?.level ?? 0) >= item.level) {
       stack.pop()
@@ -398,10 +399,10 @@ const isMigrationPage = computed(() => page.value.relativePath.startsWith('docs/
 const isMigrationEntry = computed(
   () =>
     page.value.relativePath.startsWith('docs/migration-data/') &&
-    page.value.relativePath !== 'docs/migration-data/index.md',
+    page.value.relativePath !== 'docs/migration-data/index.md'
 )
 const sidebarNavigationComponent = computed(() =>
-  isMigrationPage.value ? MigrationNav : TableOfContentsNav,
+  isMigrationPage.value ? MigrationNav : TableOfContentsNav
 )
 
 watch(
@@ -410,7 +411,7 @@ watch(
     if (isLargeScreen.value === false) {
       sidebar.value = false
     }
-  },
+  }
 )
 </script>
 

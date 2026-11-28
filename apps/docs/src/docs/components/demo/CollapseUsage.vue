@@ -1,15 +1,6 @@
 <template>
-  <!-- #region template -->
-  <!-- Using modifiers -->
   <BButton
-    v-b-toggle.collapse-2
-    class="m-1"
-    >Toggle Collapse</BButton
-  >
-
-  <!-- Using value -->
-  <BButton
-    v-b-toggle="'collapse-2'"
+    v-bind="collapseToggle"
     class="m-1"
     >Toggle Collapse</BButton
   >
@@ -18,5 +9,10 @@
   <BCollapse id="collapse-2">
     <BCard class="mt-4">I am collapsible content!</BCard>
   </BCollapse>
-  <!-- #endregion template -->
 </template>
+
+<script setup lang="ts">
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
+
+const {props: collapseToggle} = useComponentToggle('collapse-2')
+</script>
