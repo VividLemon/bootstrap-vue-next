@@ -1,0 +1,61 @@
+<!-- #region basic-bsv -->
+<!-- BootstrapVue -->
+<button
+  v-b-popover.hover="'Content'"
+  title="Title"
+>
+  Hover
+</button>
+<!-- #endregion basic-bsv -->
+
+<!-- #region basic-bsvn -->
+<!-- BootstrapVueNext -->
+<BPopover
+  title="Title"
+  body="Content"
+  hover
+>
+  <template #activator="{ props }">
+    <BButton v-bind="props">Hover</BButton>
+  </template>
+</BPopover>
+<!-- #endregion basic-bsvn -->
+
+<!-- #region click-bsv -->
+<!-- BootstrapVue -->
+<button
+  v-b-popover.click.topright="'Content'"
+  title="Title"
+>
+  Click
+</button>
+<!-- #endregion click-bsv -->
+
+<!-- #region click-bsvn -->
+<!-- BootstrapVueNext: any Floating UI placement -->
+<BPopover
+  title="Title"
+  body="Content"
+  placement="top-end"
+  click
+>
+  <template #activator="{ props }">
+    <BButton v-bind="props">Click</BButton>
+  </template>
+</BPopover>
+<!-- #endregion click-bsvn -->
+
+<!-- #region manual-bsvn -->
+<!-- BootstrapVueNext: `manual` plus `v-model` replaces `bv::show::popover` -->
+<BPopover
+  v-model="isShown"
+  title="Title"
+  body="Content"
+  manual
+>
+  <template #activator="{ props }">
+    <BButton v-bind="props">Manual</BButton>
+  </template>
+</BPopover>
+<BButton @click="isShown = !isShown">Toggle the popover</BButton>
+<!-- #endregion manual-bsvn -->

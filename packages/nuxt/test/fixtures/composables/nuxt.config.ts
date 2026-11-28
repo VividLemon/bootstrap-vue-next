@@ -5,7 +5,6 @@ export default defineNuxtConfig({
   compatibilityDate: 'latest',
   bootstrapVueNext: {
     composables: true,
-    directives: false,
     css: false,
   },
 })

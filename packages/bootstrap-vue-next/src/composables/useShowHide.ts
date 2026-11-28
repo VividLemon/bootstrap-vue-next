@@ -27,11 +27,11 @@ import {BvTriggerableEvent} from '../utils'
 export type {ShowHideState}
 
 /**
- * Registers a show/hide component in the app-wide show/hide registry (used by `useComponentToggle`,
- * `v-b-toggle`, ...) and manages the triggers registered through it.
+ * Registers a show/hide component in the app-wide show/hide registry (used by `useComponentToggle`
+ * and its trigger `props`) and manages the triggers registered through it.
  *
  * Registered triggers get a listener for their event and an `aria-expanded` attribute that
- * follows `isExpanded`. `aria-controls` is owned by the directive that registers the trigger.
+ * follows `isExpanded`. `aria-controls` is owned by what registers the trigger (`useComponentToggle().props`).
  *
  * Shared by `useShowHide` and the deprecated `useLegacyShowHide`.
  *
@@ -155,7 +155,7 @@ export interface UseShowHideOptions {
    */
   beforeShowCommit?: () => boolean
   /**
-   * Called when a registered trigger (`v-b-toggle`) fires, with the trigger element. Return
+   * Called when a registered trigger (`useComponentToggle().props`) fires, with the trigger element. Return
    * `true` when the component handled it; otherwise it toggles. Dialog uses it for the v6 swap.
    */
   onTrigger?: (trigger: Element) => boolean

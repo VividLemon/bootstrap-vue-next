@@ -1,11 +1,11 @@
 import {mount} from '@vue/test-utils'
 import {describe, expect, it, vi} from 'vitest'
-import {defineComponent, h, inject, nextTick, ref, withDirectives} from 'vue'
+import {defineComponent, h, inject, nextTick, ref} from 'vue'
 import BApp from '../components/BApp/BApp.vue'
 import BDialog from '../components/BDialog/BDialog.vue'
 import type {BvTriggerableEvent} from '../utils'
 import {dialogStackKey} from '../utils/keys'
-import {vBToggle} from '../directives/BToggle'
+import {useComponentToggle} from './useComponentToggle'
 
 const flush = async (frames = 3) => {
   for (let i = 0; i < frames; i++) {
@@ -98,7 +98,15 @@ describe('useDialogStack', () => {
   })
 })
 
-describe('useDialogSwap (v-b-toggle inside an open dialog)', () => {
+describe('useDialogSwap (a useComponentToggle trigger inside an open dialog)', () => {
+  // The trigger: a button bound to useComponentToggle('second').props
+  const NextButton = defineComponent({
+    setup() {
+      const toggle = useComponentToggle('second')
+      return () => h('button', {id: 'next', type: 'button', ...toggle.props.value}, 'Next')
+    },
+  })
+
   const mountSwap = async (
     firstProps: Record<string, unknown> = {},
     secondProps: Record<string, unknown> = {}
@@ -120,10 +128,7 @@ describe('useDialogSwap (v-b-toggle inside an open dialog)', () => {
               ...firstProps,
             },
             {
-              default: () =>
-                withDirectives(h('button', {id: 'next', type: 'button'}, 'Next'), [
-                  [vBToggle, 'second'],
-                ]),
+              default: () => h(NextButton),
             }
           ),
           h(
@@ -144,8 +149,6 @@ describe('useDialogSwap (v-b-toggle inside an open dialog)', () => {
     })
     const wrapper = mount(BApp, {attachTo: document.body, slots: {default: () => h(Root)}})
     await flush()
-    // v-b-toggle looks its target up in the registry
-    await new Promise((resolve) => setTimeout(resolve, 150))
     return {wrapper, first, second}
   }
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BButton v-b-toggle.offcanvas-border>Toggle Offcanvas</BButton>
+    <BButton v-bind="offcanvasBorderToggle">Toggle Offcanvas</BButton>
     <BOffcanvas
       id="offcanvas-border"
       title="Offcanvas with Border"
@@ -20,3 +20,9 @@
     </BOffcanvas>
   </div>
 </template>
+
+<script setup lang="ts">
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
+
+const {props: offcanvasBorderToggle} = useComponentToggle('offcanvas-border')
+</script>

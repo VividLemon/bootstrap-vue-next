@@ -1,16 +1,32 @@
 <template>
   <!-- #region template -->
-  <BNavbar v-b-color-mode="'dark'" :toggleable="true" :color="{ theme: 'primary' }">
+  <BNavbar
+    data-bs-theme="dark"
+    :toggleable="true"
+    :color="{theme: 'primary'}"
+  >
     <BNavbarBrand href="#navbar-offcanvas">NavBar</BNavbarBrand>
     <BNavbarToggle target="nav-offcanvas" />
-    <BOffcanvas id="nav-offcanvas" title="Offcanvas" placement="end" is-nav>
+    <BOffcanvas
+      id="nav-offcanvas"
+      title="Offcanvas"
+      placement="end"
+      is-nav
+    >
       <BNavbarNav>
         <BNavItem href="#navbar-offcanvas">Link</BNavItem>
-        <BNavItem href="#navbar-offcanvas" disabled>Disabled</BNavItem>
+        <BNavItem
+          href="#navbar-offcanvas"
+          disabled
+          >Disabled</BNavItem
+        >
       </BNavbarNav>
       <!-- Right aligned nav items -->
       <BNavbarNav class="ms-auto mb-2 mb-lg-0">
-        <BNavItemDropdown text="Lang" right>
+        <BNavItemDropdown
+          text="Lang"
+          right
+        >
           <BDropdownItem>EN</BDropdownItem>
           <BDropdownItem>ES</BDropdownItem>
           <BDropdownItem>RU</BDropdownItem>
@@ -26,8 +42,16 @@
         </BNavItemDropdown>
       </BNavbarNav>
       <BNavForm class="d-flex">
-        <BFormInput class="me-2" placeholder="Search" />
-        <BButton type="submit" variant="outline" :color="{ theme: 'success' }">Search</BButton>
+        <BFormInput
+          class="me-2"
+          placeholder="Search"
+        />
+        <BButton
+          type="submit"
+          variant="outline"
+          :color="{theme: 'success'}"
+          >Search</BButton
+        >
       </BNavForm>
     </BOffcanvas>
   </BNavbar>

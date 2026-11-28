@@ -1,11 +1,11 @@
-import { defineNuxtModule, createResolver, addImports, addPlugin, hasNuxtModule } from '@nuxt/kit'
-import { composableNames, directiveNames, composablesWithExternalPath } from 'bootstrap-vue-next'
-import { useComponents } from './composables/useComponents'
-import type { ModuleDependencies } from '@nuxt/schema'
-import type { ModuleOptions } from './types/ModuleOptions'
-import type { ModuleOptions as NuxtColorModeConfigOptions } from '@nuxtjs/color-mode'
-import { parseActiveImports } from './utils/parseActiveImports'
-import { normalizeConfigurationValue } from './utils/normalizeConfigurationValue'
+import {defineNuxtModule, createResolver, addImports, addPlugin, hasNuxtModule} from '@nuxt/kit'
+import {composableNames, composablesWithExternalPath} from 'bootstrap-vue-next'
+import {useComponents} from './composables/useComponents'
+import type {ModuleDependencies} from '@nuxt/schema'
+import type {ModuleOptions} from './types/ModuleOptions'
+import type {ModuleOptions as NuxtColorModeConfigOptions} from '@nuxtjs/color-mode'
+import {parseActiveImports} from './utils/parseActiveImports'
+import {normalizeConfigurationValue} from './utils/normalizeConfigurationValue'
 
 const nuxtColorModeDefaults = {
   dataValue: 'bs-theme',
@@ -21,7 +21,6 @@ export default defineNuxtModule<ModuleOptions>({
   },
   defaults: {
     composables: true,
-    directives: true,
     css: true,
     autoUseNuxtImage: true,
     autoConfigureNuxtColorMode: true,
@@ -41,15 +40,15 @@ export default defineNuxtModule<ModuleOptions>({
     }
   },
   setup(options, nuxt) {
-    const { resolve } = createResolver(import.meta.url)
+    const {resolve} = createResolver(import.meta.url)
 
     nuxt.options.build.transpile.push(resolve('./runtime'))
     nuxt.hook('components:extend', (components) => {
       for (const component of components) {
         if (
-          component.pascalName === 'NuxtLink'
-          || component.kebabName === 'nuxt-link'
-          || component.export === 'NuxtLink'
+          component.pascalName === 'NuxtLink' ||
+          component.kebabName === 'nuxt-link' ||
+          component.export === 'NuxtLink'
         ) {
           component.global = true
         }
@@ -61,7 +60,6 @@ export default defineNuxtModule<ModuleOptions>({
     }
 
     const normalizedComposableOptions = normalizeConfigurationValue(options.composables)
-    const normalizedDirectiveOptions = normalizeConfigurationValue(options.directives)
 
     nuxt.options.vite.optimizeDeps = nuxt.options.vite.optimizeDeps || {}
     nuxt.options.vite.optimizeDeps.include = nuxt.options.vite.optimizeDeps.include || []
@@ -77,14 +75,14 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.vite.vue = nuxt.options.vite.vue || {}
     nuxt.options.vite.vue.template = nuxt.options.vite.vue.template || {}
-    nuxt.options.vite.vue.template.transformAssetUrls
-      = nuxt.options.vite.vue.template.transformAssetUrls ?? {}
+    nuxt.options.vite.vue.template.transformAssetUrls =
+      nuxt.options.vite.vue.template.transformAssetUrls ?? {}
 
     if (
-      typeof nuxt.options.vite.vue.template.transformAssetUrls !== 'boolean'
-      && !(
-        'BImg' in nuxt.options.vite.vue.template.transformAssetUrls
-        || 'b-img' in nuxt.options.vite.vue.template.transformAssetUrls
+      typeof nuxt.options.vite.vue.template.transformAssetUrls !== 'boolean' &&
+      !(
+        'BImg' in nuxt.options.vite.vue.template.transformAssetUrls ||
+        'b-img' in nuxt.options.vite.vue.template.transformAssetUrls
       )
     ) {
       nuxt.options.vite.vue.template.transformAssetUrls = {
@@ -116,19 +114,9 @@ export default defineNuxtModule<ModuleOptions>({
       addPlugin(resolve('./runtime/registerNuxtImage'))
     }
 
-    // Add directives
-    const activeDirectives = Object.values(normalizedDirectiveOptions).includes(true)
-      ? parseActiveImports(normalizedDirectiveOptions, directiveNames)
-      : []
-
-    // Expose the values for the runtime to use in useDirectives / createBootstrap
+    // Expose the plugin options for the runtime to use in createBootstrap
     nuxt.options.runtimeConfig.public.bootstrapVueNext = {
-      directives: activeDirectives,
       plugin: options.plugin,
-    }
-
-    if (activeDirectives.length > 0) {
-      addPlugin(resolve('./runtime/useDirectives'))
     }
 
     // Add composables

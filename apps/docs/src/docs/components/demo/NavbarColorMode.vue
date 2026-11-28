@@ -1,7 +1,14 @@
 <template>
   <!-- #region template -->
-  <BNavbar v-b-color-mode="'dark'" :color="{ theme: 'primary' }">
-    <BNavbarBrand tag="h1" class="mb-0">BootstrapVue</BNavbarBrand>
+  <BNavbar
+    data-bs-theme="dark"
+    :color="{theme: 'primary'}"
+  >
+    <BNavbarBrand
+      tag="h1"
+      class="mb-0"
+      >BootstrapVue</BNavbarBrand
+    >
   </BNavbar>
   <!-- #endregion template -->
 </template>

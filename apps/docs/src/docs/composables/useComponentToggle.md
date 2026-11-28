@@ -33,6 +33,20 @@ find modal since the component in lazy mode may not render at page initial. If t
 
 <<< DEMO ./demo/UseComponentToggleWithId.vue
 
+## Trigger props
+
+`props` turns an element into the target's trigger. Bind it with `v-bind` on a button (or any
+element or component): a click toggles the target, `aria-controls` names it, and the target keeps
+`aria-expanded` on the trigger in step with its visibility. A trigger inside an open `BDialog`
+swaps that dialog for its target (see [Swapping dialogs](/docs/components/dialog#swapping-dialogs)).
+
+Pass several ids, as an array or a space-separated string, and one trigger toggles them all.
+`show`, `hide`, `toggle` and `value` keep acting on the first of them.
+
+<<< DEMO ./demo/UseComponentToggleTrigger.vue
+
+The same `props` can be bound on several triggers.
+
 ## Promise Flow
 
 The `show` and `toggle` methods take a boolean argument to control wether to resolve the promise on show (`false`) or on hide (`true`). On `show` the promise resolves to `true` when shown and to `'show-prevented'` if show is prevented. On `hide` the promise resolves to the trigger that caused the hide event. The promise can be awaited to get the result.

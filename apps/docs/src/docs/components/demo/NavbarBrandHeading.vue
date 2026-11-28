@@ -1,8 +1,15 @@
 <template>
   <!-- #region template -->
   <!-- As a heading -->
-  <BNavbar v-b-color-mode="'dark'" :color="{ theme: 'secondary' }">
-    <BNavbarBrand tag="h1" class="mb-0">BootstrapVueNext</BNavbarBrand>
+  <BNavbar
+    data-bs-theme="dark"
+    :color="{theme: 'secondary'}"
+  >
+    <BNavbarBrand
+      tag="h1"
+      class="mb-0"
+      >BootstrapVueNext</BNavbarBrand
+    >
   </BNavbar>
   <!-- #endregion template -->
 </template>

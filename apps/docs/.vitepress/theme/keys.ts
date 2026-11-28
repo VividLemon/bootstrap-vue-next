@@ -6,7 +6,6 @@ export const appInfoKey: InjectionKey<{
   githubPackageDirectory: string
   githubComponentsDirectory: string
   githubComposablesDirectory: string
-  githubDirectivesDirectory: string
   githubDocsDirectory: string
   discordUrl: string
   opencollectiveUrl: string

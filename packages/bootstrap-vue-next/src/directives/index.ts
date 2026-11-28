@@ -1,5 +1,0 @@
-export {vBColorMode} from './BColorMode'
-export {vBPopover} from './BPopover'
-export {vBScrollspy} from './BScrollspy'
-export {vBToggle} from './BToggle'
-export {vBTooltip} from './BTooltip'

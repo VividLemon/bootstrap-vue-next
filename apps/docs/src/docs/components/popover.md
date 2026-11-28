@@ -2,8 +2,8 @@
 title: Popover
 description: >
   The Popover feature, which provides a tooltip-like behavior, can be easily applied to any
-  interactive element via the `<BPopover>` component or [`v-b-popover`](/docs/directives/BPopover)
-  directive. Popovers can also be created and programmatically controlled via the composable
+  interactive element via the `<BPopover>` component. Popovers can also be created and
+  programmatically controlled via the composable
   [`usePopover`](/docs/composables/usePopover)
 ---
 
@@ -131,9 +131,6 @@ See [Color Themes](/docs/reference/color-variants) for the available values.
 <<< DEMO ./demo/PopoverVariant.vue#template{vue-html}
 
 `body-attrs` and `title-attrs` are reactive and can be changed while the popover is open.
-
-Refer to the [popover directive](/docs/directives/BPopover) docs on applying custom
-classes to the directive version.
 
 For finer control, use Bootstrap's `--bs-popover-*` CSS variables to apply styles directly.
 

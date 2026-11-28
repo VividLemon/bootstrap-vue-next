@@ -129,18 +129,18 @@ Docs (`navbar.md`) still describe v5: `<BCollapse is-nav>`, `navbar-nav-scroll`,
 
 ### `BNavbar`
 
-| Prop                | Disposition                               | Notes                                                                                                                                          |
-| ------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tag`               | keep                                      | `role="navigation"` when not `nav` stays.                                                                                                      |
-| `container`         | keep                                      | `boolean \| 'fluid' \| Breakpoint`, default `'fluid'` (v6 docs: an inner container is still required). Already fixed in #164.                  |
-| `toggleable`        | **replace with v6 equivalent** → `expand` | See Q2. `true` → `navbar-expand`, `'md'` → `md:navbar-expand`, `false` → no class (always drawer).                                             |
-| `fixed`             | keep                                      | `'top' \| 'bottom'` → `fixed-top` / `fixed-bottom` (exist in v6).                                                                              |
-| `sticky`            | keep                                      | `'top' \| 'bottom'` → `sticky-top` / `sticky-bottom`. Responsive `{bp}:sticky-top` reachable via `class`; no prop change.                      |
-| `print`             | **remove**                                | Emits `d-print`, which never existed. v6 alpha.1 ships no print utilities; navbars are not hidden when printing.                               |
-| `noAutoClose`       | keep (small additive)                     | Rewired to the drawer. See Q3.                                                                                                                 |
+| Prop                | Disposition                               | Notes                                                                                                                                                      |
+| ------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tag`               | keep                                      | `role="navigation"` when not `nav` stays.                                                                                                                  |
+| `container`         | keep                                      | `boolean \| 'fluid' \| Breakpoint`, default `'fluid'` (v6 docs: an inner container is still required). Already fixed in #164.                              |
+| `toggleable`        | **replace with v6 equivalent** → `expand` | See Q2. `true` → `navbar-expand`, `'md'` → `md:navbar-expand`, `false` → no class (always drawer).                                                         |
+| `fixed`             | keep                                      | `'top' \| 'bottom'` → `fixed-top` / `fixed-bottom` (exist in v6).                                                                                          |
+| `sticky`            | keep                                      | `'top' \| 'bottom'` → `sticky-top` / `sticky-bottom`. Responsive `{bp}:sticky-top` reachable via `class`; no prop change.                                  |
+| `print`             | **remove**                                | Emits `d-print`, which never existed. v6 alpha.1 ships no print utilities; navbars are not hidden when printing.                                           |
+| `noAutoClose`       | keep (small additive)                     | Rewired to the drawer. See Q3.                                                                                                                             |
 | `color`             | keep (`{ theme, bg, fg }` object)         | `color.theme` tints brand / active link / navbar-text links via `--bs-theme-fg`; it does **not** color the background (`color.bg` does). Docs must say so. |
-| _new_ `translucent` | add (v6 equivalent)                       | `.navbar-translucent`. Same name as `BToast` / `BCard` `translucent`.                                                                          |
-| Slot `default`      | keep                                      |                                                                                                                                                |
+| _new_ `translucent` | add (v6 equivalent)                       | `.navbar-translucent`. Same name as `BToast` / `BCard` `translucent`.                                                                                      |
+| Slot `default`      | keep                                      |                                                                                                                                                            |
 
 ### `BNavbarBrand`
 
@@ -185,19 +185,19 @@ Docs (`navbar.md`) still describe v5: `<BCollapse is-nav>`, `navbar-nav-scroll`,
 
 ```ts
 interface BNavbarProps {
-  color?: ColorExtendables | null;
-  tag?: string; // 'nav'
-  container?: boolean | "fluid" | Breakpoint; // 'fluid'
-  expand?: boolean | Breakpoint; // true  (Q2)
-  fixed?: "top" | "bottom";
-  sticky?: "top" | "bottom";
-  translucent?: boolean; // false
-  noAutoClose?: boolean; // false (Q3)
+  color?: ColorExtendables | null
+  tag?: string // 'nav'
+  container?: boolean | 'fluid' | Breakpoint // 'fluid'
+  expand?: boolean | Breakpoint // true  (Q2)
+  fixed?: 'top' | 'bottom'
+  sticky?: 'top' | 'bottom'
+  translucent?: boolean // false
+  noAutoClose?: boolean // false (Q3)
 }
 interface BNavbarToggleProps {
-  target?: string; // drawer (or any show/hide) id
-  label?: string; // 'Toggle navigation'
-  disabled?: boolean;
+  target?: string // drawer (or any show/hide) id
+  label?: string // 'Toggle navigation'
+  disabled?: boolean
 }
 ```
 
@@ -250,14 +250,14 @@ No exposed methods on `BNavbar`; open/close goes through the Drawer's `v-model` 
 
 ### Class mapping
 
-| Prop                  | Class                                           |
-| --------------------- | ----------------------------------------------- |
-| `expand: true`        | `navbar-expand`                                 |
-| `expand: 'md'`        | `md:navbar-expand`                              |
-| `expand: false`       | — (always drawer)                               |
-| `translucent`         | `navbar-translucent`                            |
-| `fixed: 'top'`        | `fixed-top`                                     |
-| `sticky: 'bottom'`    | `sticky-bottom`                                 |
+| Prop                          | Class                                           |
+| ----------------------------- | ----------------------------------------------- |
+| `expand: true`                | `navbar-expand`                                 |
+| `expand: 'md'`                | `md:navbar-expand`                              |
+| `expand: false`               | — (always drawer)                               |
+| `translucent`                 | `navbar-translucent`                            |
+| `fixed: 'top'`                | `fixed-top`                                     |
+| `sticky: 'bottom'`            | `sticky-bottom`                                 |
 | `color.theme` / `.bg` / `.fg` | `theme-*` / `bg-*` / `fg-*` (`useThemeClasses`) |
 
 ### Auto-close (`noAutoClose`)
@@ -308,7 +308,7 @@ No exposed methods on `BNavbar`; open/close goes through the Drawer's `v-model` 
 | D1  | `BOffcanvas` becomes a Drawer component rendering native `<dialog class="drawer drawer-{start\|end\|top\|bottom}">` with `.drawer-header`, `.drawer-title` (id for `aria-labelledby`), `.drawer-body`.                   |
 | D2  | It is **not teleported** when inside a navbar (ideally never: native `<dialog>` uses the top layer). v6 navbar CSS only works when the dialog is a descendant of `.navbar`.                                              |
 | D3  | Inside a navbar, content renders always (no `lazy` / `unmountLazy`), and the dialog has no `v-show` / inline `display`. The expanded navbar shows the closed dialog inline via CSS.                                      |
-| D4  | It registers in the show/hide registry by `id` (toggle via `BNavbarToggle`, `v-b-toggle`, `useComponentToggle`), on the native transition path, adding `.hiding` during the exit.                                                 |
+| D4  | It registers in the show/hide registry by `id` (toggle via `BNavbarToggle`, `v-b-toggle`, `useComponentToggle`), on the native transition path, adding `.hiding` during the exit.                                        |
 | D5  | When inside `.navbar` (inject `navbarInjectionKey`, or `closest('.navbar')` on mount) it observes the navbar and hides itself when open and `getComputedStyle(el).position !== 'fixed'` (port of `_initResizeObserver`). |
 | D6  | Inside a navbar it uses a plain `.drawer`; its `responsive` (`md:drawer`, viewport) prop is documented as not for navbars.                                                                                               |
 | D7  | It provides a context with `hide()` for auto-close (consumed by `BLink` / menu items), honoring the navbar's `noAutoClose`.                                                                                              |
@@ -418,6 +418,6 @@ Answered by the maintainer on 2026-11-03. Where an answer differs from the propo
 1. **PR A — Navbar core** (independent of G1/G2): `expand` + class mapping, `translucent`, remove `print`, `BNavbarToggle` v6 markup + `aria-controls` / `aria-expanded` + `target: string`, remove `BCollapse isNav` and the `collapseInjectionKey.isNav` close path, data/spec updates. Demos temporarily keep `BOffcanvas` (no teleport) for the drawer.
 2. **PR B — Navbar + Drawer integration** (after G1's Drawer PR): navbar context consumed by the Drawer (no teleport, eager content, resize auto-hide), auto-close via the drawer context in `BLink`, docs rewrite and demos with `BDrawer`.
 3. **PR C — Navbar + Menu** (after G2): `BNavItemDropdown` successor in `BNavbarNav`, menu-item auto-close, demo updates.
-4. Cross-cutting (Q5-A): `vBColorMode` `getSSRProps`, any time.
+4. ~~Cross-cutting (Q5-A): `vBColorMode` `getSSRProps`, any time.~~ Moot: #195 removed `vBColorMode` (use `data-bs-theme`).
 
 Checks per AGENTS.md: library `test:lint`, `test:unit:ci`, `build`; `pnpm --filter docs run type-check`; playground type-check; manual check of `md:navbar-expand` at different navbar widths and the drawer exit animation inside a navbar.

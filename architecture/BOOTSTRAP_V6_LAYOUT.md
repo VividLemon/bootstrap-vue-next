@@ -104,28 +104,28 @@ Defects to fix in the rebuild:
 
 ```ts
 interface UseScrollspyOptions {
-  topMargin?: string; // '12%'; '%' or 'px'
-  rootMargin?: string | null; // null; overrides topMargin
-  threshold?: number | number[]; // [0]
-  smoothScroll?: boolean; // false
-  manual?: boolean; // false: don't touch link classes
-  watchChanges?: boolean; // true
-  sections?: string; // Q1: content-driven selector, used when target is null
+  topMargin?: string // '12%'; '%' or 'px'
+  rootMargin?: string | null // null; overrides topMargin
+  threshold?: number | number[] // [0]
+  smoothScroll?: boolean // false
+  manual?: boolean // false: don't touch link classes
+  watchChanges?: boolean // true
+  sections?: string // Q1: content-driven selector, used when target is null
 }
 
 declare function useScrollspy(
   content: MaybeRefOrGetter<string | ComponentPublicInstance | HTMLElement | null>,
   target?: MaybeRefOrGetter<string | ComponentPublicInstance | HTMLElement | null>,
-  options?: MaybeRefOrGetter<UseScrollspyOptions>, // re-reads on change, then refresh()
+  options?: MaybeRefOrGetter<UseScrollspyOptions> // re-reads on change, then refresh()
 ): {
-  current: Readonly<Ref<string | null>>;
-  sections: Readonly<Ref<readonly ScrollspySection[]>>; // {id, el, text, link: HTMLElement | null}
-  content: Readonly<Ref<HTMLElement | null>>;
-  target: Readonly<Ref<HTMLElement | null>>;
-  scrollTo: (idOrEvent: string | Event, opts?: { smooth?: boolean }) => void;
-  refresh: () => void;
-  dispose: () => void;
-};
+  current: Readonly<Ref<string | null>>
+  sections: Readonly<Ref<readonly ScrollspySection[]>> // {id, el, text, link: HTMLElement | null}
+  content: Readonly<Ref<HTMLElement | null>>
+  target: Readonly<Ref<HTMLElement | null>>
+  scrollTo: (idOrEvent: string | Event, opts?: {smooth?: boolean}) => void
+  refresh: () => void
+  dispose: () => void
+}
 ```
 
 ```vue-html
@@ -189,17 +189,17 @@ The algorithm is about 200 lines with no third-party dependency. Port it faithfu
 
 ### v6 overview
 
-| Piece                            | v6                                                                                                                                                                                                                                        |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `.grid`                          | `display: grid; container-type: inline-size; grid-template-rows: repeat(var(--bs-rows), 1fr); grid-template-columns: repeat(var(--bs-columns), 1fr); gap: var(--bs-gap)`; defaults `--bs-columns: 12`, `--bs-rows: 1`, `--bs-gap: 1.5rem` |
-| `.g-col-{1..12}`                 | `grid-column: auto / span N`                                                                                                                                                                                                              |
-| `.g-start-{1..11}`               | `grid-column-start: N`                                                                                                                                                                                                                    |
-| `{bp}:g-col-*`, `{bp}:g-start-*` | **`@container (width >= …)`**: items respond to the width of their `.grid`, not the viewport                                                                                                                                              |
-| Children without `g-col-*`       | One track each (auto placement)                                                                                                                                                                                                           |
-| Nesting                          | Nested `.grid` inherits `--bs-columns` / `--bs-rows` / `--bs-gap` unless overridden                                                                                                                                                       |
-| Grid utilities                   | `grid-cols-{1,2,3,4,6,subgrid}` (sets `grid-template-columns` directly), `grid-cols-fill` (`grid-column: 1 / -1`), `grid-auto-flow-{row,column,dense}`; all responsive through **viewport** `@media`                                      |
-| Gap utilities                    | `gap-*`, `row-gap-*`, `column-gap-*`, responsive through viewport `@media`; the utilities layer beats `.grid`'s `gap`                                                                                                                     |
-| Sass                             | `$enable-cssgrid` is `true` in alpha.1 `_config.scss` and the dist CSS includes `.grid`. The alpha.1 docs page said it is opt-in (corrected in alpha.2, [twbs/bootstrap#43240](https://github.com/twbs/bootstrap/pull/43240)); treat the installed CSS as authoritative and note that users who disable it get an unstyled `BGrid`    |
+| Piece                            | v6                                                                                                                                                                                                                                                                                                                                 |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.grid`                          | `display: grid; container-type: inline-size; grid-template-rows: repeat(var(--bs-rows), 1fr); grid-template-columns: repeat(var(--bs-columns), 1fr); gap: var(--bs-gap)`; defaults `--bs-columns: 12`, `--bs-rows: 1`, `--bs-gap: 1.5rem`                                                                                          |
+| `.g-col-{1..12}`                 | `grid-column: auto / span N`                                                                                                                                                                                                                                                                                                       |
+| `.g-start-{1..11}`               | `grid-column-start: N`                                                                                                                                                                                                                                                                                                             |
+| `{bp}:g-col-*`, `{bp}:g-start-*` | **`@container (width >= …)`**: items respond to the width of their `.grid`, not the viewport                                                                                                                                                                                                                                       |
+| Children without `g-col-*`       | One track each (auto placement)                                                                                                                                                                                                                                                                                                    |
+| Nesting                          | Nested `.grid` inherits `--bs-columns` / `--bs-rows` / `--bs-gap` unless overridden                                                                                                                                                                                                                                                |
+| Grid utilities                   | `grid-cols-{1,2,3,4,6,subgrid}` (sets `grid-template-columns` directly), `grid-cols-fill` (`grid-column: 1 / -1`), `grid-auto-flow-{row,column,dense}`; all responsive through **viewport** `@media`                                                                                                                               |
+| Gap utilities                    | `gap-*`, `row-gap-*`, `column-gap-*`, responsive through viewport `@media`; the utilities layer beats `.grid`'s `gap`                                                                                                                                                                                                              |
+| Sass                             | `$enable-cssgrid` is `true` in alpha.1 `_config.scss` and the dist CSS includes `.grid`. The alpha.1 docs page said it is opt-in (corrected in alpha.2, [twbs/bootstrap#43240](https://github.com/twbs/bootstrap/pull/43240)); treat the installed CSS as authoritative and note that users who disable it get an unstyled `BGrid` |
 
 The `.row` grid (`BRow` / `BCol`) is unchanged and uses viewport media queries (`make-grid-columns` → `media-breakpoint-up`).
 
@@ -306,15 +306,15 @@ Why no `useContainerBreakpoint`: nothing in the library needs JS container break
 
 ## CSS-only helpers and utilities
 
-| Helper            | v6 classes (verified)                                                                                                                                        | Proposal                                                                                                                                                                                              |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Hover lift        | `.hover-lift`; tokens `--bs-hover-lift-transform`, `-box-shadow`, `-transition-duration`, `-transition-timing`; lifts on `:hover` and `:focus-visible`       | Docs only (`class="hover-lift"` on `BCard`, `BButton`, `BLink`). A card demo shows it. No prop (Q8)                                                                                                   |
-| Theme utilities   | `.theme-{primary,accent,success,danger,warning,info,inverse,secondary}`, `.theme-contrast`, `.theme-subtle`, `.theme-muted`, `.theme-border`, `.theme-reset` | Already covered: `color.theme` (`ThemeProp`, modifiers `contrast` / `subtle` / `muted` / `border` / `reset` in `useThemeClasses.ts`). Docs cross-link only                                         |
+| Helper            | v6 classes (verified)                                                                                                                                        | Proposal                                                                                                                                                                                                       |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hover lift        | `.hover-lift`; tokens `--bs-hover-lift-transform`, `-box-shadow`, `-transition-duration`, `-transition-timing`; lifts on `:hover` and `:focus-visible`       | Docs only (`class="hover-lift"` on `BCard`, `BButton`, `BLink`). A card demo shows it. No prop (Q8)                                                                                                            |
+| Theme utilities   | `.theme-{primary,accent,success,danger,warning,info,inverse,secondary}`, `.theme-contrast`, `.theme-subtle`, `.theme-muted`, `.theme-border`, `.theme-reset` | Already covered: `color.theme` (`ThemeProp`, modifiers `contrast` / `subtle` / `muted` / `border` / `reset` in `useThemeClasses.ts`). Docs cross-link only                                                     |
 | Color scheme      | `.color-scheme-light`, `.color-scheme-dark`, `.color-scheme-auto` (CSS `color-scheme`)                                                                       | Docs only. Different from `data-bs-theme` (`useBootstrapColorMode` / `vBColorMode`); the docs should explain both: `color-scheme` changes UA controls and scrollbars, `data-bs-theme` changes Bootstrap tokens |
-| Motion            | `.transition-none`, `.animation-none`, `.animation-shake`, `.animation-pop`                                                                                  | Docs only. `transition-none` is already the documented escape hatch (and `BCollapse` uses it for `noTransition`). `animation-shake` on invalid submit belongs to G4 if anywhere                       |
-| Space             | `space-x-*`, `space-y-*` (`> :not(:last-child)` margins), responsive (viewport)                                                                              | Docs only                                                                                                                                                                                             |
-| Divide            | `divide-x`, `divide-y`, `divide-x-0`, `divide-y-0`, responsive (viewport)                                                                                    | Docs only                                                                                                                                                                                             |
-| Container queries | `.contains-inline`, `.contains-size`                                                                                                                         | See above                                                                                                                                                                                             |
+| Motion            | `.transition-none`, `.animation-none`, `.animation-shake`, `.animation-pop`                                                                                  | Docs only. `transition-none` is already the documented escape hatch (and `BCollapse` uses it for `noTransition`). `animation-shake` on invalid submit belongs to G4 if anywhere                                |
+| Space             | `space-x-*`, `space-y-*` (`> :not(:last-child)` margins), responsive (viewport)                                                                              | Docs only                                                                                                                                                                                                      |
+| Divide            | `divide-x`, `divide-y`, `divide-x-0`, `divide-y-0`, responsive (viewport)                                                                                    | Docs only                                                                                                                                                                                                      |
+| Container queries | `.contains-inline`, `.contains-size`                                                                                                                         | See above                                                                                                                                                                                                      |
 
 None of these is a component state the library manages, so a prop would only rename a class.
 
@@ -440,6 +440,6 @@ Each PR targets `bootstrap-v6` and runs the required checks in `BOOTSTRAP_V6_MIG
 
 1. **`BGrid` / `BGridItem`** (independent, small): components, types, exports, specs, `gridSystem.data.ts`, docs section and demos.
 2. **`useScrollspy` rebuild:** composable port, types, specs, `useScrollspy.md` + demos, docs `Layout.vue` update, `types.md`.
-3. **Remove `vBScrollspy`** (Q2 = C): delete `src/directives/BScrollspy`, its exports and `BootstrapVueOptions` entries, `BScrollspy.md` and its demo; move the playground `TScrollspy.vue` to `useScrollspy`. Can merge with 2. Menu parent activation (reactive-only, Q3 = B) is verified once G2 lands.
+3. **Remove `vBScrollspy`** (Q2 = C; #195 later removed the other directives too, see `BOOTSTRAP_V6_MIGRATION.md` "Directives removed in favor of composables"): delete `src/directives/BScrollspy`, its exports and `BootstrapVueOptions` entries, `BScrollspy.md` and its demo; move the playground `TScrollspy.vue` to `useScrollspy`. Can merge with 2. Menu parent activation (reactive-only, Q3 = B) is verified once G2 lands.
 4. **Docs: container queries and CSS-only helpers:** container-queries page or section, shared sentence wired into `listGroup.data.ts`, `table.data.ts`, navbar and grid data; hover-lift / color-scheme / motion / space / divide notes; fix `Layout.vue` `992px` → `1024px`. Land after G3 / G5 settle their container-based props.
 5. **Migration notes** (Phase 3): `usescrollspy` / `vbscrollspy` notes, new `BGrid`.

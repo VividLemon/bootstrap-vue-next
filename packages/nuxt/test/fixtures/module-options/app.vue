@@ -1,43 +1,17 @@
 <template>
   <BApp>
     <div>
-      <BButton id="btn">
-        Click me
-      </BButton>
-      <BButton
-        id="toast-trigger"
-        @click="showToast"
-      >
-        Show toast
-      </BButton>
-      <BButton
-        id="configured-dialog-trigger"
-        @click="isConfiguredDialogVisible = true"
-      >
+      <BButton id="btn"> Click me </BButton>
+      <BButton id="toast-trigger" @click="showToast"> Show toast </BButton>
+      <BButton id="configured-dialog-trigger" @click="isConfiguredDialogVisible = true">
         Open configured dialog
       </BButton>
-      <BDialog
-        id="configured-dialog"
-        v-model="isConfiguredDialogVisible"
-        title="Configured dialog"
-      >
+      <BDialog id="configured-dialog" v-model="isConfiguredDialogVisible" title="Configured dialog">
         Configured dialog body
       </BDialog>
-      <BLink
-        id="configured-link"
-        to="/module-options-target"
-      >
-        Configured link
-      </BLink>
+      <BLink id="configured-link" to="/module-options-target"> Configured link </BLink>
       <div id="toast-status">
         {{ toastStatus }}
-      </div>
-      <div
-        id="tooltip-target"
-        v-b-tooltip.hover
-        title="A tooltip"
-      >
-        Hover me
       </div>
     </div>
   </BApp>
@@ -50,7 +24,7 @@ const isConfiguredDialogVisible = ref(false)
 const toastStatus = computed(() =>
   toast._isOrchestratorInstalled.value && typeof toast.create === 'function'
     ? 'toast-ready'
-    : 'toast-missing',
+    : 'toast-missing'
 )
 
 const showToast = () => {

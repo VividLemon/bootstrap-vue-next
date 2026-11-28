@@ -1,18 +1,34 @@
 <template>
   <div>
-    <BButton v-b-toggle.aria-demo-programmatic class="mb-2"> Toggle using v-b-toggle </BButton>
+    <BButton
+      v-bind="collapseToggle"
+      class="mb-2"
+    >
+      Toggle using useComponentToggle
+    </BButton>
 
-    <BCollapse id="aria-demo-programmatic" v-model="visible">
+    <BCollapse
+      id="aria-demo-programmatic"
+      v-model="visible"
+    >
       <template #default="scope">
         <BCard>
-          <p>This demonstrates combining v-model with v-b-toggle.</p>
-          <p>The v-b-toggle button above has automatic ARIA management.</p>
+          <p>This demonstrates combining v-model with useComponentToggle.</p>
+          <p>The toggle button above has automatic ARIA management.</p>
           <p>You can close this from inside using the slot's hide function:</p>
           <div class="d-flex gap-2">
-            <BButton :color="{ theme: 'danger' }" size="sm" @click="() => scope.hide()">
+            <BButton
+              :color="{theme: 'danger'}"
+              size="sm"
+              @click="() => scope.hide()"
+            >
               Close (slot function)
             </BButton>
-            <BButton :color="{ theme: 'secondary' }" size="sm" @click="closeFromCode">
+            <BButton
+              :color="{theme: 'secondary'}"
+              size="sm"
+              @click="closeFromCode"
+            >
               Close (v-model)
             </BButton>
           </div>
@@ -23,7 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
+import {ref} from 'vue'
+
+const {props: collapseToggle} = useComponentToggle('aria-demo-programmatic')
 
 const visible = ref(false)
 

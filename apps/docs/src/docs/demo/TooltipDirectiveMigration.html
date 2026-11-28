@@ -1,0 +1,44 @@
+<!-- #region basic-bsv -->
+<!-- BootstrapVue -->
+<BButton
+  v-b-tooltip.hover.bottom
+  title="Tooltip text"
+  >Button</BButton
+>
+<!-- #endregion basic-bsv -->
+
+<!-- #region basic-bsvn -->
+<!-- BootstrapVueNext -->
+<BTooltip
+  title="Tooltip text"
+  placement="bottom"
+  hover
+>
+  <template #activator="{ props }">
+    <BButton v-bind="props">Button</BButton>
+  </template>
+</BTooltip>
+<!-- #endregion basic-bsvn -->
+
+<!-- #region object-bsv -->
+<!-- BootstrapVue -->
+<BButton
+  v-b-tooltip="{ title: 'Tooltip text', delay: 500, placement: 'bottom', customClass: 'my-tip' }"
+>
+  Button
+</BButton>
+<!-- #endregion object-bsv -->
+
+<!-- #region object-bsvn -->
+<!-- BootstrapVueNext: each object key is a prop -->
+<BTooltip
+  title="Tooltip text"
+  :delay="500"
+  placement="bottom"
+  :body-attrs="{ class: 'my-tip' }"
+>
+  <template #activator="{ props }">
+    <BButton v-bind="props">Button</BButton>
+  </template>
+</BTooltip>
+<!-- #endregion object-bsvn -->

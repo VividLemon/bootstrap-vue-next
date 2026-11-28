@@ -7,8 +7,8 @@ import {dialogStackKey, type DialogStackEntry, type DialogStackValue} from '../u
  * `useRegistry`), so nothing is shared between apps or SSR requests.
  *
  * The browser's top layer orders open dialogs; the stack is only bookkeeping for `useDialog()`
- * (`show()` / `hide()` without an id, `hideAll()`, `get()`) and for the v6 swap (`v-b-toggle`
- * inside an open dialog), which has to find the dialog it replaces.
+ * (`show()` / `hide()` without an id, `hideAll()`, `get()`) and for the v6 swap (a registered
+ * trigger, `useComponentToggle().props`, inside an open dialog), which has to find the dialog it replaces.
  *
  * @internal
  */
@@ -53,7 +53,7 @@ export const useDialogStack = (entry: DialogStackEntry, open: Readonly<Ref<boole
 const swapInClass = 'dialog-swap-in'
 
 /**
- * The v6 Dialog swap: a `v-b-toggle` trigger inside an open dialog opens its target dialog
+ * The v6 Dialog swap: a registered trigger (`useComponentToggle().props`) inside an open dialog opens its target dialog
  * (`.dialog-swap-in`) and hides the dialog it sits in at once (`.dialog-instant`), instead of
  * stacking the new dialog on top. Both cancelable events are checked first: the new dialog's
  * `show`, then the current dialog's `hide` (trigger `'swap'`). If either is prevented, neither

@@ -1,12 +1,10 @@
 import type * as ExportedComponents from '../components'
-import type * as ExportedDirectives from '../directives'
 import type * as ExportedComposables from '../composables'
 import type * as ComponentProps from './ComponentProps'
 
 type AllComponentsTyped = typeof ExportedComponents
 
 export type ComponentType = keyof AllComponentsTyped
-export type DirectiveType = keyof typeof ExportedDirectives
 export type ComposableType = keyof typeof ExportedComposables
 
 export type BvnComponents = {
@@ -132,17 +130,6 @@ export const componentsWithExternalPath = {
 } as const satisfies Record<ComponentType, string>
 export const componentNames = Object.freeze(
   Object.keys(componentsWithExternalPath) as ComponentType[]
-)
-
-export const directivesWithExternalPath = {
-  vBColorMode: '/directives/BColorMode',
-  vBPopover: '/directives/BPopover',
-  vBScrollspy: '/directives/BScrollspy',
-  vBToggle: '/directives/BToggle',
-  vBTooltip: '/directives/BTooltip',
-} as const satisfies Record<DirectiveType, string>
-export const directiveNames = Object.freeze(
-  Object.keys(directivesWithExternalPath) as DirectiveType[]
 )
 
 export const composablesWithExternalPath = {

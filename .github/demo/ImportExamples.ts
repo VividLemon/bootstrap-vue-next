@@ -10,7 +10,3 @@ import type {BCard} from 'bootstrap-vue-next/components/BCard'
 // #region composables
 import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
 // #endregion composables
-
-// #region directives
-import {vBToggle} from 'bootstrap-vue-next/directives/BToggle'
-// #endregion directives

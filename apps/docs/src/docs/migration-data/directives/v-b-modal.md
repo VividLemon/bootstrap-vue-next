@@ -3,13 +3,15 @@ id: v-b-modal
 title: v-b-modal Migration
 description: 'Migration notes for v-b-modal from BootstrapVue to BootstrapVueNext.'
 category: directives
-components: []
+components:
+  - BDialog
 match:
   - Modal
   - v-b-modal
   - v-b-toggle
   - not-collapsed
   - this.$bvModal.show(id)
+  - useComponentToggle
 tags:
   - migration
   - directives
@@ -25,49 +27,50 @@ confidence: high
 
 ## Summary
 
-Migration notes for v-b-modal from BootstrapVue to BootstrapVueNext.
+BootstrapVueNext has no `v-b-modal` directive. Call
+[`useComponentToggle`](/docs/composables/useComponentToggle) with the dialog's id and bind the
+`props` it returns on the trigger.
 
 ## Affected APIs
 
-- None explicitly listed
+- BDialog
 
 ## Breaking Change
 
-### Relationship with v-b-toggle
+<DeprecatedFeature :reason="DeprecationReason.MODERN_ALTERNATIVE" what="`v-b-modal` directive">
+  <code>v-b-modal.my-modal</code> becomes <code>useComponentToggle('my-modal')</code>, with its
+  <code>props</code> bound on the trigger.
+</DeprecatedFeature>
 
-In BSVN, `v-b-modal` is an alias for `v-b-toggle`:
+It works the same way for `BCollapse` and `BOffcanvas`; see the
+[v-b-toggle migration](/docs/migration-data/directives/v-b-toggle).
 
-- Both directives work identically
-- `v-b-modal` is semantically clearer when working with modals
-- `v-b-toggle` works with modals, collapse, and offcanvas
-- Use whichever makes your code more readable
+<<< FRAGMENT ../../demo/ToggleDirectiveMigrationBSV.html{vue-html}
 
-<<< FRAGMENT ../../directives/demo/ModalDirectiveMigration.html#alias-bsv{vue-html}
+<<< DEMO ../../demo/ToggleDirectiveMigrationBSVN.vue
 
-<<< FRAGMENT ../../directives/demo/ModalDirectiveMigration.html#alias-bsvn{vue-html}
+**Trigger state:** `aria-expanded` on the trigger follows the dialog. There are no
+`collapsed` / `not-collapsed` classes; style triggers with `[aria-expanded="true"]` and
+`[aria-expanded="false"]`.
 
-### New Features in BSVN
-
-**Array value support:**
-
-<<< FRAGMENT ../../directives/demo/ModalDirectiveMigration.html#array-value{vue-html}
-
-**Trigger state:**
-
-BSVN sets `aria-expanded` on trigger elements to follow the modal state. There are no `collapsed`/`not-collapsed` trigger classes; style triggers with the `[aria-expanded="true"]` and `[aria-expanded="false"]` attribute selectors.
-
-**Migration from BSV `this.$bvModal.show(id)`:**
-
-BSV's `this.$bvModal.show(id)` has been replaced with multiple approaches. See the [BModal directive documentation](/docs/directives/BModal#comparison-with-other-approaches) for detailed migration examples.
+**Migration from `this.$bvModal.show(id)`:** call `show()` from `useComponentToggle(id)`, bind
+the dialog's `v-model`, or create the dialog with [`useDialog`](/docs/composables/useDialog). See
+[Dialog](/docs/components/dialog#toggle-dialog-visibility).
 
 ## Migration Notes
 
-- Extracted from the canonical BootstrapVue → BootstrapVueNext migration guide.
+- `v-b-modal` was removed in the Bootstrap v6 release of BootstrapVueNext in favor of
+  `useComponentToggle`.
 
 ## Safe Automatic Rewrite
 
-Yes. This entry is mostly mechanical and can usually be rewritten automatically when the surrounding code matches the documented patterns.
+Yes. Each directive maps to one `useComponentToggle` call and a `v-bind` on the same element.
 
 ## Related Migrations
 
-- None
+- [v-b-toggle Migration](/docs/migration-data/directives/v-b-toggle)
+- [BModal Migration](/docs/migration-data/components/bmodal)
+
+<script setup lang="ts">
+import {DeprecationReason} from '../../../types/deprecation'
+</script>

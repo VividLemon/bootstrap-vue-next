@@ -15,27 +15,39 @@
     </BRow>
     <BRow class="my-5">
       <BCol class="d-flex justify-content-between">
-        <button
-          v-b-tooltip.show.realtime="{
-            title: textValue,
-            placement: popoverPlacement,
-            manual: true,
-          }"
+        <BTooltip
+          :title="textValue"
+          :placement="popoverPlacement"
+          :model-value="true"
+          realtime
+          manual
         >
-          sync position
-        </button>
+          <template #activator="{props}">
+            <button v-bind="props">sync position</button>
+          </template>
+        </BTooltip>
 
-        <button v-b-popover.body.show="{content: textValue, placement: 'top'}">popover</button>
+        <BPopover :body="textValue" placement="top" teleport-to="body" :model-value="true">
+          <template #activator="{props}">
+            <button v-bind="props">popover</button>
+          </template>
+        </BPopover>
       </BCol>
       <BCol style="width: 250px">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        <span v-b-tooltip.show="'tool tip not inline'" class="fg-warning">
-          this is without using .inline modifier.
-        </span>
+        <BTooltip title="tool tip not inline" :model-value="true">
+          <template #activator="{props}">
+            <span v-bind="props" class="fg-warning"> this is without using inline. </span>
+          </template>
+        </BTooltip>
         Ut porta rhoncus elit et tincidunt gravida.
-        <span v-b-tooltip.inline.show="'tool tip inline'" class="fg-warning">
-          Better inline tooltip location with .inline.
-        </span>
+        <BTooltip title="tool tip inline" inline :model-value="true">
+          <template #activator="{props}">
+            <span v-bind="props" class="fg-warning">
+              Better inline tooltip location with inline.
+            </span>
+          </template>
+        </BTooltip>
         Curabitur bibendum, velit vel gravida finibus, nisl tortor condimentum metus, eu pulvinar
         risus augue in neque.
       </BCol>
@@ -44,7 +56,7 @@
       <BCol>
         <BPopover click :model-value="true" placement="right">
           <template #title> Click </template>
-          <template #activator="{ props }">
+          <template #activator="{props}">
             <BButton v-bind="props">click</BButton>
           </template>
           this should close on click outside
@@ -52,8 +64,8 @@
       </BCol>
       <BCol>
         <BTooltip click>
-          <template #activator="{ props, visible }">
-            <BButton v-bind="props" :color="{ theme: visible ? 'primary' : 'secondary' }">
+          <template #activator="{props, visible}">
+            <BButton v-bind="props" :color="{theme: visible ? 'primary' : 'secondary'}">
               click tooltip component
             </BButton>
           </template>
@@ -63,7 +75,7 @@
       <BCol>
         <BPopover click :placement="popoverPlacement">
           <template #title> Click </template>
-          <template #activator="{ props }">
+          <template #activator="{props}">
             <BButton v-bind="props">click longlist</BButton>
           </template>
           <div v-for="i in 200" :key="i">foobar {{ i }}</div>
@@ -78,7 +90,7 @@
             <em>Title</em>
             - {{ popoverInput }}
           </template>
-          <template #activator="{ props }">
+          <template #activator="{props}">
             <BButton v-bind="props" id="popover-target-1">Hover Me</BButton>
           </template>
           <BButton @click="consoleLog('Button Click!')">456</BButton>I am popover
@@ -87,25 +99,27 @@
         </BPopover>
       </BCol>
       <BCol>
-        <button
-          v-b-popover.click.top="{
-            title: 'Popover title',
-            content: 'And here\'s some amazing content. It\'s very engaging. Right?',
-          }"
-          type="button"
-          class="btn btn-lg btn-solid theme-danger"
+        <BPopover
+          click
+          placement="top"
+          title="Popover title"
+          body="And here's some amazing content. It's very engaging. Right?"
         >
-          Click to toggle popover
-        </button>
+          <template #activator="{props}">
+            <button v-bind="props" type="button" class="btn btn-lg btn-solid theme-danger">
+              Click to toggle popover
+            </button>
+          </template>
+        </BPopover>
       </BCol>
       <BCol>
-        <button
-          v-b-popover.left="'I\'m another popover!'"
-          type="button"
-          class="btn btn-lg btn-solid theme-success"
-        >
-          Hover to toggle popover
-        </button>
+        <BPopover placement="left" body="I'm another popover!">
+          <template #activator="{props}">
+            <button v-bind="props" type="button" class="btn btn-lg btn-solid theme-success">
+              Hover to toggle popover
+            </button>
+          </template>
+        </BPopover>
       </BCol>
       <BCol>
         <BButton ref="popoverRef">Hover popover by ref with ref target</BButton>
@@ -141,7 +155,7 @@
       <BCol>
         <BPopover placement="auto">
           <template #title> Auto placement </template>
-          <template #activator="{ props }">
+          <template #activator="{props}">
             <BButton v-bind="props" id="popover-target-1">Hover Me</BButton>
           </template>
           Pop over content
@@ -151,7 +165,7 @@
     <BRow class="my-5 position-relative">
       <BPopover :click="true" :close-on-hide="true" :delay="{show: 0, hide: 0}">
         <template #title>Scroll me out of view</template>
-        <template #activator="{ props }">
+        <template #activator="{props}">
           <BButton v-bind="props">Click me. Popover closes when clipped</BButton>
         </template>
       </BPopover>
@@ -165,7 +179,7 @@
 
           <p>Position is calculated to parent relative element. (Try changing the textarea size)</p>
 
-          <template #activator="{ props, toggle, visible }">
+          <template #activator="{props, toggle, visible}">
             <BButton v-bind="props" @click="toggle">Click to toggle popover</BButton>
             <div>
               {{ visible ? 'Visible' : 'hidden' }}
@@ -187,7 +201,7 @@
             Popover
             <em>Title</em>
           </template>
-          <template #activator="{ props }">
+          <template #activator="{props}">
             <BButton v-bind="props">hover / focus</BButton>
           </template>
           <BButton @click="consoleLog('Button Click!')">456</BButton>I am popover
@@ -198,8 +212,10 @@
       <BCol>
         <BPopover realtime :model-value="true" click placement="bottom">
           <template #title> Title </template>
-          <template #activator="{ props }">
-            <span v-bind="props" class="border rounded m-3 p-2">sync position with RequestAnimationFrame</span>
+          <template #activator="{props}">
+            <span v-bind="props" class="border rounded m-3 p-2"
+              >sync position with RequestAnimationFrame</span
+            >
           </template>
           Burn cpu cycles to be more accurate. Try changing the size of the textarea above.
         </BPopover>
@@ -209,7 +225,7 @@
       <BCol>
         <BPopover click placement="bottom" teleport-to="body">
           <template #title> Title </template>
-          <template #activator="{ props }">
+          <template #activator="{props}">
             <span v-bind="props" class="border rounded m-3 p-2">move to body.</span>
           </template>
           in body. {{ textValue }}
@@ -220,7 +236,7 @@
           <div v-for="i in 20" :key="i" style="height: 100px">
             <BPopover v-bind="vari">
               jee
-              <template #activator="{ props }">
+              <template #activator="{props}">
                 <BButton v-bind="props">hover / focus</BButton>
               </template>
             </BPopover>
@@ -232,7 +248,7 @@
           <div v-for="i in 20" :key="i" style="height: 100px">
             <BPopover v-bind="vari" noninteractive>
               jee
-              <template #activator="{ props }">
+              <template #activator="{props}">
                 <BButton v-bind="props">hover / focus noninteractive</BButton>
               </template>
             </BPopover>
@@ -266,6 +282,5 @@ const vari = ref({
   },
 })
 
- 
 const consoleLog = (...args: unknown[]) => console.log(...args)
 </script>

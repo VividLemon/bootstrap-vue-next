@@ -83,10 +83,6 @@ const plugins = {
   ...processDirectory(resolve(__dirname, 'src/plugins'), 'src/plugins'),
   'src/plugins/index': resolve(__dirname, 'src/plugins/index.ts'),
 }
-const directives = {
-  ...processDirectory(resolve(__dirname, 'src/directives'), 'src/directives'),
-  'src/directives/index': resolve(__dirname, 'src/directives/index.ts'),
-}
 const composables = {
   ...processDirectory(resolve(__dirname, 'src/composables'), 'src/composables'),
   'src/composables/index': resolve(__dirname, 'src/composables/index.ts'),
@@ -104,7 +100,6 @@ export default defineConfig({
         'src/utils/index': resolve(__dirname, 'src/utils/index.ts'),
         ...components,
         ...plugins,
-        ...directives,
         ...composables,
         'src/types/index': resolve(__dirname, 'src/types/index.ts'),
       },

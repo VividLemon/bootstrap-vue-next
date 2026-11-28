@@ -7,7 +7,7 @@ components:
   - BNavbar
 match:
   - BNavbar
-  - v-b-color-mode
+  - data-bs-theme
   - useBootstrapColorMode
   - <BNavbar>
 tags:
@@ -35,7 +35,7 @@ Migration notes for BNavbar from BootstrapVue to BootstrapVueNext.
 
 ## Breaking Change
 
-The `type` prop is deprecated. Use the `v-b-color-mode` directive or `useBootstrapColorMode` composable instead. Details in our [docs](/docs/components/navbar#color-schemes)
+The `type` prop is deprecated. Set `data-bs-theme` on the navbar, or use the `useBootstrapColorMode` composable, instead. Details in our [docs](/docs/components/navbar#color-schemes)
 
 ### BNavbarNav
 

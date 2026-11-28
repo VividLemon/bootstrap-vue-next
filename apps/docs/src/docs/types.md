@@ -556,21 +556,18 @@ type RadiusElementExtendables = {
 
 </BCard>
 
-## ScrollspyList
+## ScrollspySection
 
-This type is used by the `useScrollspy` composable to represent tracked elements.
+A section spied by the [`useScrollspy`](/docs/composables/useScrollspy) composable.
 
 <BCard class="bg-body-tertiary">
 
 ```ts
-type ScrollspyListItem = {
-  id: string | null // Element ID
-  el: HTMLElement | null // DOM element reference
-  visible: boolean // Whether element is currently visible
-  text: string | null // Text content of the element
+interface ScrollspySection {
+  id: string // The section element's id
+  el: HTMLElement // The section element
+  link: HTMLElement // The target link pointing at the section (the last one wins)
 }
-
-type ScrollspyList = ScrollspyListItem[]
 ```
 
 </BCard>
@@ -750,6 +747,24 @@ interface ThemeColors {
 
 ```ts
 type TransitionMode = 'in-out' | 'out-in'
+```
+
+</BCard>
+
+## UseScrollspyOptions
+
+Options of the [`useScrollspy`](/docs/composables/useScrollspy) composable.
+
+<BCard class="bg-body-tertiary">
+
+```ts
+interface UseScrollspyOptions {
+  topMargin?: string // '12%': activation line from the top of the scroll root, '%' or 'px'
+  rootMargin?: string | null // null: raw IntersectionObserver rootMargin, overrides topMargin
+  threshold?: number | number[] // [0]
+  smoothScroll?: boolean // false
+  watchChanges?: boolean // true
+}
 ```
 
 </BCard>

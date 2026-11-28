@@ -57,7 +57,6 @@ export default defineNuxtConfig({
   modules: ['@bootstrap-vue-next/nuxt'],
   bootstrapVueNext: {
     composables: true,
-    directives: true,
     css: true,
     autoUseNuxtImage: true,
     autoConfigureNuxtColorMode: true,

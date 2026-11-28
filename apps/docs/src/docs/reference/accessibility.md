@@ -27,12 +27,12 @@ Several BootstrapVueNext components (`BCollapse`, `BOffcanvas`, `BDialog`, `BDro
 
 Trigger registration is **opt-in** and happens through one of these methods:
 
-1. **Using the `v-b-toggle` directive** (recommended for most cases)
+1. **Binding `useComponentToggle().props` on the trigger** (recommended for most cases)
 2. **Manual ARIA management** for unregistered triggers
 
-#### What the `v-b-toggle` Directive Does
+#### What `useComponentToggle` Does
 
-When you use `v-b-toggle`, the directive:
+When you bind the `props` from `useComponentToggle` on a trigger, they:
 
 - Sets the `aria-controls` attribute on the trigger element (pointing to the target component's ID)
 - Registers the trigger element with the target component's visibility system
@@ -40,40 +40,40 @@ When you use `v-b-toggle`, the directive:
 
 #### What the Component's Visibility System Does
 
-Once a trigger is registered (via `v-b-toggle`), the component automatically:
+Once a trigger is registered (via `useComponentToggle`), the component automatically:
 
 - Sets and maintains the `aria-expanded` attribute (`"true"` or `"false"`) based on visibility state
-- Updates it whenever visibility changes, regardless of the method used (`v-b-toggle` click, `v-model` change, slot functions, etc.). It changes when a show or hide starts, not after the transition
+- Updates it whenever visibility changes, regardless of the method used (trigger click, `v-model` change, slot functions, etc.). It changes when a show or hide starts, not after the transition
 - Cleans up the `aria-expanded` attribute when the trigger unregisters
 
-This split responsibility ensures that `aria-controls` (which depends on target IDs known by the directive) is managed separately from `aria-expanded` (which depends on the component's visibility state).
+This split responsibility ensures that `aria-controls` (which depends on target IDs known by the composable) is managed separately from `aria-expanded` (which depends on the component's visibility state).
 
-### Method 1: Using v-b-toggle (Automatic Registration)
+### Method 1: Using useComponentToggle (Automatic Registration)
 
-The simplest approach is to use the [`v-b-toggle` directive](/docs/directives/BToggle), which automatically handles both `aria-controls` and trigger registration:
+The simplest approach is to bind the `props` from [`useComponentToggle`](/docs/composables/useComponentToggle) on the trigger, which handles both `aria-controls` and trigger registration:
 
-<<< DEMO ./demo/AriaRegistrationDirective.vue#template{vue-html}
+<<< DEMO ./demo/AriaRegistrationToggle.vue
 
 With this approach, the button automatically receives:
 
-- `aria-controls="aria-demo-directive"`
+- `aria-controls="aria-demo-toggle"`
 - `aria-expanded="true"` or `aria-expanded="false"` (updated automatically)
 
-### Method 2: Using v-model with v-b-toggle
+### Method 2: Using v-model with useComponentToggle
 
-You can combine `v-model` for programmatic control with `v-b-toggle` for automatic ARIA management. This is useful when you need to control visibility from code while still having trigger buttons with proper accessibility:
+You can combine `v-model` for programmatic control with `useComponentToggle` for automatic ARIA management. This is useful when you need to control visibility from code while still having trigger buttons with proper accessibility:
 
 <<< DEMO ./demo/AriaRegistrationProgrammatic.vue{vue}
 
 **Key Points**:
 
-- The `v-b-toggle` directive handles all ARIA attributes automatically
+- `useComponentToggle().props` handles all ARIA attributes automatically
 - You can still use `v-model` to control visibility programmatically
 - Slot functions like `toggle`, `show`, and `hide` work seamlessly with registered triggers
 
 ### Method 3: Manual ARIA Management
 
-If you don't register a trigger (via directive or programmatically), you must manually manage all ARIA attributes yourself:
+If you don't register a trigger (via `useComponentToggle`), you must manually manage all ARIA attributes yourself:
 
 <<< DEMO ./demo/AriaRegistrationManual.vue{vue}
 
@@ -84,9 +84,9 @@ This approach requires you to manually:
 
 ### When to Use Each Method
 
-- **Use `v-b-toggle`** when you want automatic ARIA management (recommended for most cases)
-- **Combine `v-b-toggle` with `v-model`** when you need both automatic ARIA management and programmatic control
-- **Use manual ARIA management** only when you have specific requirements that prevent using `v-b-toggle`
+- **Use `useComponentToggle`** when you want automatic ARIA management (recommended for most cases)
+- **Combine `useComponentToggle` with `v-model`** when you need both automatic ARIA management and programmatic control
+- **Use manual ARIA management** only when you have specific requirements that prevent using `useComponentToggle`
 
 ### Components Supporting Trigger Registration
 

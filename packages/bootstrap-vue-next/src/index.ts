@@ -1,7 +1,5 @@
 export * from './composables'
 export * as Composables from './composables'
-export * from './directives'
-export * as Directives from './directives'
 export * from './utils'
 export * as Utils from './utils'
 export * from './components'

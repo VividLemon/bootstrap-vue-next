@@ -9,7 +9,6 @@ export default defineNuxtConfig({
   css: ['bootstrap/dist/css/bootstrap.min.css'],
   compatibilityDate: 'latest',
   bootstrapVueNext: {
-    directives: { all: true },
     plugin: {
       components: {
         BAlert: {

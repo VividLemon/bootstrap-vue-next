@@ -41,13 +41,6 @@ hidden with `unmount-lazy`).
 
 <<< DEMO ./demo/DialogModel.vue
 
-### Using the `v-b-toggle` directive
-
-`v-b-toggle` opens the dialog with the given `id` and keeps `aria-controls` and `aria-expanded` on
-the trigger up to date.
-
-<<< DEMO ./demo/DialogDirective.vue
-
 ### Using exposed methods
 
 You can control the dialog through a template ref. See the
@@ -56,6 +49,14 @@ You can control the dialog through a template ref. See the
 <<< DEMO ./demo/DialogExposed.vue
 
 ### Using the `useComponentToggle` composable
+
+[`useComponentToggle`](/docs/composables/useComponentToggle) gives a trigger for the dialog with
+the given `id`. Bind its `props` on the trigger element: clicks open the dialog, and
+`aria-controls` and `aria-expanded` stay up to date.
+
+<<< DEMO ./demo/DialogTriggerProps.vue
+
+It also shows and hides the dialog from code:
 
 <<< DEMO ./demo/DialogToggle.vue
 
@@ -97,16 +98,16 @@ Set `focus="ok"` or `focus="cancel"` on the dialog to focus one of the two butto
 There are no `close`, `esc` or `backdrop` events. Every way of closing emits `hide` and `hidden`
 with a `trigger`:
 
-| `trigger`    | Cause                                                                                   |
-| ------------ | --------------------------------------------------------------------------------------- |
-| `'ok'`       | `ok()`                                                                                  |
-| `'cancel'`   | `cancel()` (the `<BDialogActions>` Cancel button)                                       |
-| `'close'`    | `close()` (the header close button)                                                     |
-| `'esc'`      | The <kbd>Esc</kbd> key                                                                  |
-| `'backdrop'` | A click on the backdrop                                                                 |
-| `'submit'`   | A `<form method="dialog">` inside the dialog was submitted                              |
-| `'native'`   | The browser closed the dialog itself. This `hide` cannot be prevented                   |
-| anything     | The argument of `hide(trigger)`; `'modelValue'` when `v-model` was set to `false`       |
+| `trigger`    | Cause                                                                             |
+| ------------ | --------------------------------------------------------------------------------- |
+| `'ok'`       | `ok()`                                                                            |
+| `'cancel'`   | `cancel()` (the `<BDialogActions>` Cancel button)                                 |
+| `'close'`    | `close()` (the header close button)                                               |
+| `'esc'`      | The <kbd>Esc</kbd> key                                                            |
+| `'backdrop'` | A click on the backdrop                                                           |
+| `'submit'`   | A `<form method="dialog">` inside the dialog was submitted                        |
+| `'native'`   | The browser closed the dialog itself. This `hide` cannot be prevented             |
+| anything     | The argument of `hide(trigger)`; `'modelValue'` when `v-model` was set to `false` |
 
 All events receive a `BvTriggerableEvent`:
 
@@ -220,25 +221,25 @@ their part (`class` and `style` are merged), for example
 
 ### Custom rendering with slots
 
-| Slot           | Description                                                               |
-| -------------- | ------------------------------------------------------------------------- |
-| `default`      | The dialog body                                                           |
-| `title`        | The content of the title                                                  |
-| `header`       | Replaces the content of the header, including the title and close button  |
-| `header-close` | Replaces the header close button                                          |
-| `footer`       | The dialog footer. Without it, no footer is rendered                      |
+| Slot           | Description                                                              |
+| -------------- | ------------------------------------------------------------------------ |
+| `default`      | The dialog body                                                          |
+| `title`        | The content of the title                                                 |
+| `header`       | Replaces the content of the header, including the title and close button |
+| `header-close` | Replaces the header close button                                         |
+| `footer`       | The dialog footer. Without it, no footer is rendered                     |
 
 All slots receive the same scope:
 
-| Method or Property      | Description                                                                 |
-| ----------------------- | --------------------------------------------------------------------------- |
-| `ok(value?)`            | Emits `ok` (cancelable), then hides with `trigger = 'ok'`                   |
-| `cancel()`              | Hides with `trigger = 'cancel'`                                             |
-| `close()`               | Hides with `trigger = 'close'`                                              |
-| `hide(trigger?, value?)` | Hides with the given `trigger`                                              |
-| `show()`, `toggle()`    | Shows / toggles the dialog                                                  |
-| `visible`, `active`     | Whether the dialog is shown, and whether it is on screen (also while it hides) |
-| `id`                    | The id of the dialog element                                                |
+| Method or Property       | Description                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| `ok(value?)`             | Emits `ok` (cancelable), then hides with `trigger = 'ok'`                      |
+| `cancel()`               | Hides with `trigger = 'cancel'`                                                |
+| `close()`                | Hides with `trigger = 'close'`                                                 |
+| `hide(trigger?, value?)` | Hides with the given `trigger`                                                 |
+| `show()`, `toggle()`     | Shows / toggles the dialog                                                     |
+| `visible`, `active`      | Whether the dialog is shown, and whether it is on screen (also while it hides) |
+| `id`                     | The id of the dialog element                                                   |
 
 <<< DEMO ./demo/DialogScopedSlots.vue
 
@@ -251,7 +252,7 @@ own backdrop, and <kbd>Esc</kbd> closes the topmost one. There is no z-index to 
 
 ### Swapping dialogs
 
-A `v-b-toggle` trigger inside an open dialog **swaps** that dialog for its target instead of
+A `useComponentToggle` trigger (one bound with its `props`) inside an open dialog **swaps** that dialog for its target instead of
 stacking: the target opens (its backdrop starts opaque, `.dialog-swap-in`) and the current dialog
 closes at once (`.dialog-instant`) with the trigger `'swap'`. Both cancelable events are checked
 first: if the target's `show` or the current dialog's `hide` is prevented, neither dialog changes.

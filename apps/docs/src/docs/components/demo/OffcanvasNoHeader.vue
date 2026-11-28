@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BButton v-b-toggle.offcanvas-no-header>Toggle Offcanvas</BButton>
+    <BButton v-bind="offcanvasNoHeaderToggle">Toggle Offcanvas</BButton>
     <BOffcanvas
       id="offcanvas-no-header"
       aria-labelledby="offcanvas-no-header-title"
@@ -14,8 +14,15 @@
             Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
             in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
           </p>
-          <BImg src="https://picsum.photos/500/500/?image=54" fluid thumbnail />
-          <BButton :color="{ theme: 'primary' }" block @click="() => scope.hide()"
+          <BImg
+            src="https://picsum.photos/500/500/?image=54"
+            fluid
+            thumbnail
+          />
+          <BButton
+            :color="{theme: 'primary'}"
+            block
+            @click="() => scope.hide()"
             >Close Offcanvas</BButton
           >
         </div>
@@ -23,3 +30,9 @@
     </BOffcanvas>
   </div>
 </template>
+
+<script setup lang="ts">
+import {useComponentToggle} from 'bootstrap-vue-next/composables/useComponentToggle'
+
+const {props: offcanvasNoHeaderToggle} = useComponentToggle('offcanvas-no-header')
+</script>

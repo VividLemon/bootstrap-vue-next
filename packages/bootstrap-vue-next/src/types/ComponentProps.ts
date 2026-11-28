@@ -1567,7 +1567,7 @@ export interface BPopoverProps extends TeleporterProps, ShowHideProps {
   strategy?: Strategy
   /**
    * The element that opens the popover, for elements the `activator` slot can't render
-   * (directives, `usePopover().create()`, elements owned by other code). Prefer the slot.
+   * (`usePopover().popover()` / `tooltip()`, elements owned by other code). Prefer the slot.
    */
   activator?: ValueOrCallBack<
     string | Readonly<ComponentPublicInstance> | Readonly<HTMLElement> | null

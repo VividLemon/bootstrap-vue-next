@@ -12,8 +12,8 @@ You can place almost any content inside the `<BOffcanvas>`
 [vertical navs](/docs/components/nav#vertical-variation).
 
 The component supports a header and built-in close button, of which you can optionally disable and
-provide your own header (if needed), and can be easily toggled with our
-[`v-b-toggle` directive](/docs/directives/BToggle).
+provide your own header (if needed), and can be easily toggled with the
+[`useComponentToggle`](/docs/composables/useComponentToggle) composable.
 
 The component has minimal default styling, which provides you with great flexibility in laying out
 the content of the offcanvas.
@@ -149,20 +149,20 @@ elements outside of the offcanvas.
 
 ## Visibility control
 
-### `v-b-toggle` directive
+### `useComponentToggle`
 
-Using the [`v-b-toggle` directive](/docs/directives/BToggle) is the preferred method for _opening_
-the offcanvas, as it automatically handles applying the `aria-controls` attribute and registering
-the trigger with the offcanvas. The offcanvas will then manage the `aria-expanded` attribute and
-visual state classes on the trigger element to reflect its open/closed state.
+Binding the `props` of [`useComponentToggle`](/docs/composables/useComponentToggle) on a trigger is the preferred method for _opening_ the offcanvas, as it
+applies the `aria-controls` attribute and registers the trigger with the offcanvas. The offcanvas
+will then manage the `aria-expanded` attribute on the trigger element to reflect its open/closed
+state.
 
-The majority of examples on this page use the `v-b-toggle` directive.
+The majority of examples on this page use `useComponentToggle`.
 
 ### `v-model`
 
 The `v-model` reflects the current visibility state of the offcanvas. While it can be used to control
 the visibility state of the offcanvas, it is recommended to use the
-[`v-b-toggle` directive](#v-b-toggle-directive) to _show_ the offcanvas for accessibility reasons.
+[`useComponentToggle`](#usecomponenttoggle) to _show_ the offcanvas for accessibility reasons.
 
 For detailed information on managing ARIA attributes when using `v-model`, including examples of programmatic trigger registration and manual ARIA management, see the [ARIA Trigger Registration for Component Visibility](/docs/reference/accessibility#aria-trigger-registration-for-component-visibility) section in the Accessibility reference.
 
@@ -222,7 +222,7 @@ controlling the background and font color via the `body-class` and `header-class
 
 ## See also
 
-- [`v-b-toggle` directive](/docs/directives/BToggle)
+- [`useComponentToggle`](/docs/composables/useComponentToggle) composable
 - [`<BCollapse>` component](/docs/components/collapse)
 - [`<BCloseButton>` component](/docs/components/button#comp-ref-b-close-button)
 

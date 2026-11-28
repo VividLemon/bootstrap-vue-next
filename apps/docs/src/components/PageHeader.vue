@@ -25,24 +25,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject } from 'vue'
-import { useData, withBase } from 'vitepress'
-import { useEditThisPageOnGithub } from '../composables/useEditLink'
-import { useMarkdownRenderer } from '../composables/useMarkdownRenderer'
-import { data as migrationData } from '../data/migration.data'
-import { appInfoKey } from '../../.vitepress/theme/keys'
-import { kebabToTitleCase } from '../utils/dataLoaderUtils'
+import {computed, inject} from 'vue'
+import {useData, withBase} from 'vitepress'
+import {useEditThisPageOnGithub} from '../composables/useEditLink'
+import {useMarkdownRenderer} from '../composables/useMarkdownRenderer'
+import {data as migrationData} from '../data/migration.data'
+import {appInfoKey} from '../../.vitepress/theme/keys'
+import {kebabToTitleCase} from '../utils/dataLoaderUtils'
 import MarkdownActionsDropdown from './MarkdownActionsDropdown.vue'
 
 interface AppInfo {
   githubComponentsDirectory: string
   githubComposablesDirectory: string
-  githubDirectivesDirectory: string
 }
 
 const globalData = inject<AppInfo | undefined>(appInfoKey)
 
-type Base = 'githubComponentsDirectory' | 'githubComposablesDirectory' | 'githubDirectivesDirectory'
+type Base = 'githubComponentsDirectory' | 'githubComposablesDirectory'
 
 /**
  * Convert kebab-case to PascalCase
@@ -58,19 +57,6 @@ function toPascalCase(str: string): string {
  */
 function toCamelCase(str: string): string {
   return str.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())
-}
-
-function fileNameToDirectiveMigrationId(str: string): string {
-  if (str.startsWith('B')) {
-    const directiveName = str
-      .slice(1)
-      .replace(/([A-Z])/g, '-$1')
-      .toLowerCase()
-      .replace(/^-/, '')
-    return `v-b-${directiveName}`
-  }
-
-  return `v-${str.toLowerCase()}`
 }
 
 function getFallbackMigrationUrl(anchorName?: string | null): string {
@@ -94,10 +80,10 @@ const props = withDefaults(
   }>(),
   {
     withPageHeader: true,
-  },
+  }
 )
 
-const { frontmatter, page } = useData()
+const {frontmatter, page} = useData()
 const description = computed(() => (frontmatter.value?.description as string) || '')
 const renderedDescription = useMarkdownRenderer(description)
 
@@ -108,7 +94,6 @@ const inferredBase = computed((): Base | null => {
   const path = page.value.relativePath
   if (path.includes('/components/')) return 'githubComponentsDirectory'
   if (path.includes('/composables/')) return 'githubComposablesDirectory'
-  if (path.includes('/directives/')) return 'githubDirectivesDirectory'
 
   return null
 })
@@ -131,10 +116,6 @@ const derivedPath = computed(() => {
     // Composables: convert kebab-case to camelCase (e.g., 'use-toast' -> 'useToast')
     const composableName = toCamelCase(filename)
     return `${composableName}/index.ts`
-  } else if (base === 'githubDirectivesDirectory') {
-    // Directives: convert kebab-case to PascalCase (e.g., 'b-color-mode' -> 'BColorMode')
-    const directiveName = toPascalCase(filename)
-    return `${directiveName}/index.ts`
   }
 
   return null
@@ -147,15 +128,13 @@ const editHref = useEditThisPageOnGithub()
 const sourceHref = computed(() =>
   path.value && inferredBase.value && globalData
     ? `${globalData[inferredBase.value]}/${path.value}`
-    : null,
+    : null
 )
 
 /**
  * Derive the migration docs link from the current page path.
  * - Components: kebab filename → PascalCase → prepend B → lowercase anchor
  *   e.g. "form-checkbox" → "BFormCheckbox" → "bformcheckbox"
- * - Directives: PascalCase filename → strip B → lowercase anchor
- *   e.g. "BToggle" → "Toggle" → "toggle"
  *
  * Frontmatter `migrationGuide` overrides:
  *   - string value: used as the anchor fragment (e.g. `migrationGuide: 'grid'`)
@@ -182,16 +161,6 @@ const migrationHref = computed(() => {
     // Derive: kebab → PascalCase → prepend B → lowercase
     anchor = `b${toPascalCase(filename)}`.toLowerCase()
     migrationId = anchor
-  } else if (base === 'githubDirectivesDirectory') {
-    // Normalize: handle both kebab-case (b-toggle) and PascalCase (BToggle)
-    // Strip b-/B prefix, remove hyphens, lowercase
-    const name = filename.startsWith('b-')
-      ? filename.slice(2).replace(/-/g, '')
-      : filename.startsWith('B')
-        ? filename.slice(1)
-        : filename
-    anchor = name.toLowerCase()
-    migrationId = fileNameToDirectiveMigrationId(filename)
   }
 
   if (typeof fmOverride === 'string' && fmOverride) {
@@ -211,6 +180,6 @@ const markdownActionsAvailable = computed(() => Boolean(page.value?.relativePath
 const showButtons = computed(
   () =>
     props.withPageHeader &&
-    (editHref.value || sourceHref.value || migrationHref.value || markdownActionsAvailable.value),
+    (editHref.value || sourceHref.value || migrationHref.value || markdownActionsAvailable.value)
 )
 </script>

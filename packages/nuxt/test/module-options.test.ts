@@ -1,6 +1,6 @@
-import { fileURLToPath } from 'node:url'
-import { describe, it, expect } from 'vitest'
-import { setup, $fetch, createPage } from '@nuxt/test-utils/e2e'
+import {fileURLToPath} from 'node:url'
+import {describe, it, expect} from 'vitest'
+import {setup, $fetch, createPage} from '@nuxt/test-utils/e2e'
 
 describe('module-options', async () => {
   await setup({
@@ -15,11 +15,6 @@ describe('module-options', async () => {
   it('renders BButton without errors when CSS is disabled', async () => {
     const html = await $fetch('/')
     expect(html).toContain('btn')
-  })
-
-  it('selective directive vBTooltip is registered and renders without error', async () => {
-    const html = await $fetch('/')
-    expect(html).toContain('tooltip-target')
   })
 
   it('configured useToast works at runtime', async () => {
@@ -39,7 +34,7 @@ describe('module-options', async () => {
     await page.click('#configured-dialog-trigger')
     await page.waitForSelector('#configured-dialog[open].dialog-lg')
     expect(await page.locator('#configured-dialog .dialog-body').textContent()).toContain(
-      'Configured dialog body',
+      'Configured dialog body'
     )
 
     await page.close()
@@ -50,10 +45,10 @@ describe('module-options', async () => {
 
     // The stand-in NuxtLink marks its links active through the `custom` slot scope
     expect(await page.locator('#configured-link').getAttribute('class')).toContain(
-      'router-link-active',
+      'router-link-active'
     )
     expect(await page.locator('#configured-link').getAttribute('href')).toBe(
-      '/module-options-target',
+      '/module-options-target'
     )
 
     await page.close()

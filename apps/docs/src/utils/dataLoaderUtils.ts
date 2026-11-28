@@ -51,21 +51,21 @@ export function extractTitleFromUrl(url: string, directory: string): string {
  * @returns Sorted array of doc items
  */
 export function transformDocData(
-  rawData: Array<{ url: string; frontmatter: Record<string, unknown> }>,
+  rawData: Array<{url: string; frontmatter: Record<string, unknown>}>,
   directory: string,
   options: {
     filterByDescription?: boolean
     useTitleCase?: boolean
-  } = {},
+  } = {}
 ): DocItem[] {
-  const { filterByDescription = true, useTitleCase = true } = options
+  const {filterByDescription = true, useTitleCase = true} = options
 
   let items = rawData.map((page) => {
     let name: string
     if (useTitleCase) {
       name = (page.frontmatter.title as string) || extractTitleFromUrl(page.url, directory)
     } else {
-      // For composables/directives that should keep their original casing
+      // For composables that should keep their original casing
       name = extractFilenameFromUrl(page.url)
     }
 

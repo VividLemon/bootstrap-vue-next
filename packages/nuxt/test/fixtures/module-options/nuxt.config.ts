@@ -5,12 +5,11 @@ export default defineNuxtConfig({
   compatibilityDate: 'latest',
   bootstrapVueNext: {
     css: false,
-    composables: { all: false, useToast: true },
-    directives: { all: false, vBTooltip: true },
+    composables: {all: false, useToast: true},
     plugin: {
       components: {
-        BDialog: { size: 'lg' },
-        BLink: { routerComponentName: 'NuxtLink' },
+        BDialog: {size: 'lg'},
+        BLink: {routerComponentName: 'NuxtLink'},
       },
     },
   },

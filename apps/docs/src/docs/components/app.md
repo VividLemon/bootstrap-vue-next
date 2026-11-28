@@ -207,7 +207,7 @@ vi.mock('bootstrap-vue-next', async () => {
 The `BApp` component automatically provides several internal services:
 
 - **Show/Hide Registry** - Global registry for show/hide components
-- **Dialog stack** - The mounted and open dialogs, for `useDialog()` and the `v-b-toggle` swap
+- **Dialog stack** - The mounted and open dialogs, for `useDialog()` and the `useComponentToggle` swap
 - **Breadcrumb Service** - Global breadcrumb item management
 - **RTL Service** - Right-to-left text direction support
 

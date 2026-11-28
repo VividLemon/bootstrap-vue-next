@@ -10,9 +10,10 @@ description: 'The component `BNavbar` is a wrapper that positions branding, navi
 `BNavbar` is themed with Bootstrap v6's `.theme-*` classes. Set the `theme` prop to one of the theme colors (`primary`, `accent`, `secondary`, `success`, `info`, `warning`, `danger`, `inverse`) to color the navbar, or use the `bg` prop for finer control (for example `bg="subtle-primary"`). See [Color Themes](/docs/reference/color-variants).
 
 If the `color` prop's `theme` or `bg` key is set, it may be necessary to control the text color so that it contrasts with the background
-irrespective of the theme. This can be done by using the `v-b-color-mode` directive or `useBootstrapColorMode` composable
+irrespective of the theme. This can be done by setting the `data-bs-theme` attribute, or with the
+[`useBootstrapColorMode`](/docs/composables/useBootstrapColorMode) composable.
 
-The example below uses `v-b-colorMode`. For more information see the [BColorMode directive](/docs/directives/BColorMode).
+The example below sets `data-bs-theme="dark"` on the navbar.
 
 <<< DEMO ./demo/NavbarColorMode.vue#template{vue-html}
 
@@ -116,8 +117,6 @@ See the first example on this page for reference, and also refer to `BCollapse` 
 
 Besides being used to control a collapse, the `BNavbarToggle` can also be used to toggle visibility of the `BSidebar` component. Just specify the ID of the `BSidebar` via the target prop.
 
-Internally, `BNavbarToggle` uses the v-b-toggle directive.
-
 ### Custom navbar toggle
 
 `BNavbarToggle` renders the default Bootstrap v5 hamburger (which is a background SVG image). You can supply your own content (such as an icon) via the optionally scoped default slot. The default slot scope contains the property expanded, which will be true when the collapse is expanded, or false when the collapse is collapsed.
@@ -161,7 +160,7 @@ Navbars are hidden by default when printing. Force them to be printed by setting
 
 - `BCollapse` component
 - `BSidebar` component
-- v-b-toggle directive
+- `useComponentToggle` composable
 - `BNav` documentation for additional components and sub-component aliases
   Refer to the Router support reference page for router-link specific props.
 

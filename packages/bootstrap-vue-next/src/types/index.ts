@@ -84,6 +84,8 @@ export type {
   PasswordStrengthWeights,
 } from './PasswordStrength'
 export type {FormRangeTick} from './FormRangeTypes'
+export type {ScrollspySection, UseScrollspyOptions} from './Scrollspy'
+export type {ComponentToggleTriggerProps} from './ComponentToggle'
 export type {LinkTarget} from './LinkTarget'
 export type {LinkOpacity, LinkUnderline, UnderlineOffset, UnderlineOpacity} from './LinkDecorators'
 export type {HoverState} from './HoverState'
@@ -114,15 +116,11 @@ export {
   // Real
   composableNames,
   // Real
-  directiveNames,
-  // Real
   componentNames,
   componentsWithExternalPath,
   composablesWithExternalPath,
-  directivesWithExternalPath,
   type ComponentType,
   type ComposableType,
-  type DirectiveType,
 } from './BootstrapVueOptions'
 export type {FormValidate, ValidationState} from './CommonTypes'
 export type {MaybePromise} from './MaybePromise'
