@@ -83,6 +83,10 @@ export type BAlertEmits = BToastEmits
 
 export type BAccordionItemEmits = BCollapseEmits
 
+export type BStepperItemEmits = {
+  click: [value: MouseEvent]
+}
+
 export type BAvatarEmits = {
   'click': [value: MouseEvent]
   'img-error': [value: Event]

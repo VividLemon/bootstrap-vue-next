@@ -415,6 +415,10 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 - **Now:** `tag*` / `addButton*` colors → `tagColor` / `addButtonColor`.
 - **Done (G4, [#201](https://github.com/VividLemon/bootstrap-vue-next/pull/201)):** replaced by `BFormChips` / `BChip` (v6 Chips markup, `chipAttrs`, `inputAttrs`).
 
+### BStepper (new)
+
+- **Done (G5, `bootstrap-v6-g5-stepper`):** new `BStepper` / `BStepperItem` on v6 `.stepper` markup (see `BOOTSTRAP_V6_DISPLAY.md`).
+
 ### Other new-in-v6 counterparts
 
 - `BAutocomplete` → Combobox; `BDatePicker` / `BDateRangePicker` → Datepicker (hard-coded z-index 1050 now ties with popovers); `BFormOtp` → OTP input; `vBScrollspy` → Scrollspy; `BFormInput type="range"` → `BFormRange` (G4, [#191](https://github.com/VividLemon/bootstrap-vue-next/pull/191)); `BFormGroup` → Field (review once Field is adopted).
