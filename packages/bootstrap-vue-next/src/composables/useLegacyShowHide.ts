@@ -10,9 +10,11 @@
 import {
   computed,
   type EmitFn,
+  inject,
   nextTick,
   onMounted,
   onUnmounted,
+  provide,
   readonly,
   ref,
   type Ref,
@@ -23,6 +25,7 @@ import {BvTriggerableEvent} from '../utils'
 import {useEventListener, useThrottleFn} from '@vueuse/core'
 import {noop} from '../utils/functions'
 import {useShowHideRegistration} from './useShowHide'
+import {orchestratorItemKey} from '../utils/keys'
 
 /** @deprecated legacy show/hide path, delete with `useLegacyShowHide` */
 export const fadeBaseTransitionProps = {
@@ -75,6 +78,9 @@ export const useLegacyShowHide = (
     hideFn: () => {},
   }
 ) => {
+  // Not connected to an orchestrated item's controller (no state machine), but no show/hide
+  // component inside it may take its place either
+  if (inject(orchestratorItemKey, null)) provide(orchestratorItemKey, null)
   let noAction = false
   const initialShow = (!!modelValue.value && !props.initialAnimation) || props.visible || false
   const showRef = ref<boolean>(initialShow)

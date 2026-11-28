@@ -1,6 +1,6 @@
 # Bootstrap v6 Overlays (G1): Dialog, Drawer, `useModal`
 
-**Status 2026-11-24: step 1 (Dialog core) merged as [#183](https://github.com/VividLemon/bootstrap-vue-next/pull/183) (`bf4ce06a6`); step 2 (orchestrator and `useDialog`) done in [#209](https://github.com/VividLemon/bootstrap-vue-next/pull/209); a follow-up (the machine-reading controller, below) comes before step 3; steps 3–4 are open.**
+**Status 2026-11-24: step 1 (Dialog core) merged as [#183](https://github.com/VividLemon/bootstrap-vue-next/pull/183) (`bf4ce06a6`); step 2 (orchestrator and `useDialog`) done in [#209](https://github.com/VividLemon/bootstrap-vue-next/pull/209), and its follow-up (the machine-reading controller, below) in [#214](https://github.com/VividLemon/bootstrap-vue-next/pull/214); steps 3–4 are open.**
 
 What step 2 decided where the text below is silent, or left for later:
 
@@ -13,7 +13,7 @@ What step 2 decided where the text below is silent, or left for later:
 - **Swap (Q5):** `useDialogSwap`. The target's `show` is emitted first; the current dialog's `hide` (trigger `'swap'`, instant) runs from a new `beforeShowCommit` hook in the machine, between the target's `show` and its commit, so a prevented hide refuses the target's show (it emits `show-prevented`). Only `v-b-toggle` triggers swap; the registered trigger's element reaches the dialog through a new `onTrigger` hook in `useShowHide`. v6's focus restoration to the trigger on `hidden` is not ported.
 - **`useSafeScrollLock`** stays internal for BOffcanvas (step 3 removes it); the public `useSharedScrollLock` is gone.
 - **`create()` before an orchestrator mounts** warns once in total instead of throwing (maintainer decision on #209), as #210 did for `useToast`: a module-level boolean gates a dev-only warning, because every SSR request builds a new registry. The dialog renders once an orchestrator mounts. `usePopover` still throws.
-- **Follow-up before step 3 (maintainer decision on #209):** the controller of `useDialog`, `useToast` and `usePopover` reads the item's state machine directly (the state machine plan's remaining G1.2 items) instead of the store's `modelValue`. `controller.state` stays **internal**, not public.
+- **Follow-up before step 3 (maintainer decision on #209), done in #214:** the controller of `useDialog`, `useToast` and `usePopover` reads the item's state machine directly (the state machine plan's remaining G1.2 items) instead of the store's `modelValue`. `controller.state` stays **internal**, not public. Step 3: `BDrawer` must use the native `useShowHide` to be orchestrable; `BOffcanvas` (legacy path) cannot be driven by a controller any more.
 
 What step 1 did differently from the text below, or left for a later step:
 

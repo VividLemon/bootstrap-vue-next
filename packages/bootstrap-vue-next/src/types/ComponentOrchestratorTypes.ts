@@ -7,6 +7,7 @@ import type {ContainerPosition} from './Alignment'
 import type {BDialogSlots, BPopoverSlots, BToastSlots, BTooltipSlots} from './ComponentSlots'
 import type {BDialogEmits, BPopoverEmits, BToastEmits, BTooltipEmits} from './ComponentEmits'
 import type {BvTriggerableEvent} from '../utils'
+import type {ShowHideState} from '../composables/showHideMachine'
 
 // Common
 export type ControllerKey = symbol | string
@@ -29,7 +30,10 @@ export type OrchestratorCreateOptions<Slots extends Record<string, any> = Record
    * `show({resolveOnHide})` overrides it for one show
    */
   resolveOnHide?: boolean
-  /** The component to render instead of the default one (`BDialog`, `BToast`, ...) */
+  /**
+   * The component to render instead of the default one (`BDialog`, `BToast`, ...). It must render
+   * a show/hide component: the controller shows and hides the first one it renders
+   */
   component?: Readonly<Component>
   /** Slot content, by slot name: a slot function or a component */
   slots?: OrchestratorSlots<Slots>
@@ -51,7 +55,8 @@ export type OrchestratorShowOptions = {
 export interface DialogResult<T = unknown> {
   /**
    * What hid the dialog: `'ok'`, `'cancel'`, `'close'`, `'esc'`, `'backdrop'`, `'submit'`,
-   * `'native'`, `'swap'`, `'abort'`, `'destroy'`, a custom trigger from `hide(trigger)`,
+   * `'native'`, `'swap'`, `'abort'`, `'destroy'`, `'dispose'` (unmounted while shown), a custom
+   * trigger from `hide(trigger)`,
    * `'show-prevented'` (a `show` listener prevented the show; nothing was shown), or `null` (no
    * trigger)
    */
@@ -87,8 +92,74 @@ export type PromiseWithController<
   Props extends Ref<OrchestratorArrayValue>,
   Result extends object = BvTriggerableEvent,
 > = {
-  resolve: (value: BvTriggerableEvent) => void
   controller: ComponentController<Component, Props, Result>
+  /** What the store item carries for `BOrchestrator` */
+  fns: OrchestratorItemFns
+}
+
+/**
+ * The show/hide component an orchestrated item renders, as its controller sees it. The first
+ * component using `useShowHide` inside the item connects itself.
+ *
+ * @internal
+ */
+export interface OrchestratedShowHide {
+  /** The component's state machine state */
+  readonly state: Readonly<Ref<ShowHideState>>
+  /** Resolves like `useShowHide().show()` */
+  readonly show: () => Promise<boolean | string>
+  /** Hides without the trigger's own event. Resolves like `useShowHide().hide()` */
+  readonly hide: (trigger?: string) => Promise<boolean | string>
+  /** Resolves like `useShowHide().toggle()` */
+  readonly toggle: () => Promise<boolean | string>
+  /** The component's current `modelValue` */
+  readonly model: () => boolean | number
+  /** Writes the component's `modelValue`: a toast's countdown before it is shown again */
+  readonly setModel: (value: number) => void
+}
+
+/**
+ * What the controller gets told by the component connected to it.
+ *
+ * @internal
+ */
+export interface OrchestratorItemConnection {
+  /** Every event the component emits, after its listeners ran and before it reads the outcome */
+  readonly onEvent: (event: BvTriggerableEvent) => void
+  /** Every state the machine moves to, before the events that follow from it */
+  readonly onState: (state: ShowHideState) => void
+  /** The component mounted: it can now be shown */
+  readonly mounted: () => void
+  /** The component unmounts */
+  readonly disconnect: () => void
+}
+
+/**
+ * Provided to the component an orchestrated item renders, so its show/hide state machine can
+ * connect to the item's controller.
+ *
+ * @internal
+ */
+export interface OrchestratorItemLink {
+  readonly connect: (showHide: OrchestratedShowHide) => OrchestratorItemConnection
+  /** Whether a component is connected */
+  readonly connected: () => boolean
+}
+
+/**
+ * What a store item carries for `BOrchestrator` and the helpers (`useDialog().show(id)`, ...).
+ *
+ * @internal
+ */
+export interface OrchestratorItemFns {
+  /** Connects the rendered show/hide component to the controller */
+  link: OrchestratorItemLink
+  setRef: (v: ComponentPublicInstance | null) => void
+  destroy: () => Promise<void>
+  /** Shows the item, without waiting for a result */
+  show: () => void
+  /** Hides the item, as `controller.hide(trigger)` */
+  hide: (trigger?: string) => void
 }
 
 type OrchestratorCreateBase<
@@ -112,11 +183,7 @@ type ArrayValue<
    * If the input is undefined, it will be a symbol stored in the Map<>
    */
   id: string | symbol
-  fns: {
-    resolve: (value: BvTriggerableEvent) => void
-    setRef: (v: ComponentPublicInstance) => void
-    destroy: () => Promise<void>
-  }
+  fns: OrchestratorItemFns
   props: BaseComponentProps & {
     [K in keyof BaseComponentEmits as CamelCase<Prefix<'on-', Extract<K, string>>>]?: (
       e: BaseComponentEmits[K][0]

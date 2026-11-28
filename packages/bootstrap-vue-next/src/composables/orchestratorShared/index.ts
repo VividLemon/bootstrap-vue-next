@@ -1,23 +1,25 @@
 import {
   type ComponentPublicInstance,
-  effectScope,
   inject,
-  nextTick,
   provide,
   readonly,
   type Ref,
   ref,
   shallowReactive,
   shallowRef,
-  watch,
 } from 'vue'
 import type {
   ComponentController,
   ControllerKey,
+  OrchestratedShowHide,
+  OrchestratorArrayValue,
   OrchestratorCreateOptions,
+  OrchestratorItemConnection,
+  OrchestratorItemLink,
   OrchestratorShowOptions,
   PromiseWithController,
 } from '../../types'
+import type {ShowHideState} from '../showHideMachine'
 import {BvTriggerableEvent} from '../../utils'
 import {orchestratorRegistryKey, type OrchestratorStoreObject} from '../../utils/keys'
 
@@ -36,6 +38,42 @@ export interface BuildControllerOptions<TResult> {
   toResult?: (event: BvTriggerableEvent, instance: unknown) => TResult
 }
 
+/**
+ * The controller as the library sees it: `state` is internal, not part of `ComponentController`
+ *
+ * @internal
+ */
+export type InternalComponentController<
+  TComponent,
+  TItem extends Ref<OrchestratorArrayValue>,
+  TResult extends object,
+> = ComponentController<TComponent, TItem, TResult> & {
+  /**
+   * Where the item is in its show/hide lifecycle: the connected component's machine state. An
+   * item without a mounted component is `showing` while a show waits for it to mount
+   */
+  readonly state: ShowHideState
+}
+
+/** One `show()` call's wait: from the show until the hide that ends it */
+interface Cycle {
+  readonly promise: Promise<BvTriggerableEvent>
+  readonly resolve: (event: BvTriggerableEvent) => void
+  /** Settles on the `hide` that starts hiding rather than on `hidden` */
+  resolveOnHide: boolean
+  /** The `show({signal})` of the call that opened it. Aborting it hides the item */
+  signal: AbortSignal | undefined
+}
+
+/**
+ * Builds the controller `create()` returns. The single source of truth for whether the item is
+ * shown is the state machine of the show/hide component the item renders: it connects through
+ * `fns.link` when it is set up, and the controller sends it requests and reads its state and
+ * events. The store item only says what to render.
+ *
+ * Results are per cycle: each `show()` waits for the hide that ends the cycle it opened or
+ * joined, and only that hide (or the prevention of its own show) settles it.
+ */
 export const buildController = <
   TComponent,
   TItems extends OrchestratorStoreObject[keyof OrchestratorStoreObject],
@@ -46,271 +84,230 @@ export const buildController = <
   items: TItems,
   {createOptions = {}, toResult}: BuildControllerOptions<TResult> = {}
 ): PromiseWithController<TComponent, ValueInMapRecord<TItems>, TResult> => {
-  /** Whether the current cycle settles on `hide` rather than `hidden` */
-  let cycleResolvesOnHide = createOptions.resolveOnHide === true
-  /**
-   * True from a show() request on a mounted component until the store records it as open (the
-   * component reveals it) or the cycle settles. A show can still be waiting for its frame or delay
-   */
-  let showRequested = false
-  /**
-   * The cycle waiting for a show requested through the store's modelValue: the mount-time show of
-   * an item that was not mounted when show() was called, or the show a mounted component starts
-   * when its modelValue changes. Only that show's show-prevented event may settle it
-   */
-  let storeShowCycle: Dismissal | undefined
-  /**
-   * True from a hide request until the store's modelValue changes or the component reports hidden.
-   * The store keeps recording the component as open until its hide delay has passed, so a show()
-   * in that window has to reach the component to cancel the hide
-   */
-  let hideRequested = false
-  /**
-   * The last numeric modelValue the item had: a toast's countdown. The component counts it down to
-   * 0, so showing the item again has to put it back. Forgotten once the item is shown with `true`
-   */
-  let countdown: number | undefined
+  type Item = ValueInMapRecord<TItems>
+  const findItem = (): Item | undefined => items.get(id) as Item | undefined
 
-  type Dismissal = {promise: Promise<BvTriggerableEvent>; resolve: (e: BvTriggerableEvent) => void}
+  /** The connected component's machine. Set from its setup until it unmounts */
+  let showHide: OrchestratedShowHide | undefined
+  /** The connected component mounted: requests can reach it */
+  let mounted = false
   /**
-   * The dismissal the current show/hide cycle is waiting for. Each cycle gets its own, so a
-   * controller can be shown again after it was dismissed
+   * A show was asked for while no mounted component could take it. The component requests it
+   * once it mounts; a hide before that cancels it
    */
-  let dismissal: Dismissal | undefined
-  const currentDismissal = (): Dismissal => {
-    if (!dismissal) {
-      let resolve: (e: BvTriggerableEvent) => void = () => {}
-      const promise = new Promise<BvTriggerableEvent>((r) => {
-        resolve = r
-      })
-      dismissal = {promise, resolve}
-    }
-    return dismissal
-  }
+  let showPending = false
+  /** The open cycle, if any. Cleared in the same step that settles it */
+  let cycle: Cycle | undefined
+  /**
+   * Set while this controller's own show request runs (its listeners are called synchronously),
+   * to the cycle it shows. Lets the `show` and `show-prevented` events be attributed to it
+   */
+  let ownShowRequest: {cycle: Cycle | undefined} | undefined
+  /** The `hide` event of the last hide request, for the cycle that settles when it commits */
+  let lastHideEvent: BvTriggerableEvent | undefined
+  let destroyed = false
 
-  type RefWithMethods = ComponentPublicInstance<TComponent> & {
-    show?: () => unknown
-    hide?: (trigger?: string, noEmit?: boolean) => void
-    toggle?: () => void
-    visible?: boolean
-  }
-  const findItem = () => items.get(id)
-  // Detached, so the watcher lives exactly as long as the controller whether or not it was created
-  // inside a component's setup. destroy() stops it
-  const scope = effectScope(true)
-  scope.run(() => {
-    watch(
-      () => findItem()?.value.props.modelValue,
-      (value) => {
-        hideRequested = false
-        if (value) showRequested = false
-        if (typeof value === 'number' && value > 0) {
-          countdown = value
-        } else if (value === true) {
-          countdown = undefined
-        }
-      },
-      {flush: 'sync'}
-    )
-  })
+  // Backs controller.ref. Shallow because component instances must not be made deeply reactive
+  const instance = shallowRef<ComponentPublicInstance<TComponent> | null>(null)
 
-  // Backs controller.ref. It has to be reactive so awaitDismissal notices the component unmounting,
-  // shallow because component instances must not be made deeply reactive
-  const instance = shallowRef<RefWithMethods | null>(null)
-  /**
-   * Called with the component's hide, hidden or show-prevented event. Settles the current cycle
-   */
-  const finishCycle = (event: BvTriggerableEvent) => {
-    showRequested = false
-    storeShowCycle = undefined
-    const current = dismissal
-    dismissal = undefined
-    current?.resolve(event)
-  }
-  const settle = (event: BvTriggerableEvent) => {
-    // A component reports show-prevented for any show. It only ends the cycle waiting for a show
-    // requested through the store; a prevented show() call is read from that call's own result
-    if (event.eventType === 'show-prevented' && (!dismissal || storeShowCycle !== dismissal)) return
-    // The orchestrator reports every hide; only a cycle with resolveOnHide settles on it
-    if (event.eventType === 'hide' && !cycleResolvesOnHide) return
-    finishCycle(event)
-    // A hide event only gets here with resolveOnHide. The component is still open at this point
-    hideRequested = event.eventType === 'hide'
-  }
-  /**
-   * Shows the item by writing its modelValue. Used when there is no component show() to call, and
-   * to restart a countdown, which the component only does for a numeric modelValue
-   */
-  const showThroughStore = (cycle: Dismissal, modelValue: true | number) => {
-    storeShowCycle = cycle
-    controller.set({modelValue} as never)
-    // A mounted component reacts to its new modelValue in the next flush. One that has yet to
-    // mount shows in its mounted hook, see the ref setter
-    if (instance.value !== null) {
-      void nextTick(() => {
-        if (storeShowCycle === cycle) storeShowCycle = undefined
-      })
-    }
-  }
-  // The trigger of a hide() made while no component is mounted, for the event awaitDismissal makes up
-  let unmountedHideTrigger: string | undefined
-
-  /**
-   * Resolves with the component's own event. A hidden item with no mounted component never emits
-   * one: it was dismissed before it mounted, or it unmounted before its hide finished. In that case
-   * it resolves on its own. Mounted items always go through the component.
-   * Take the cycle before asking the component to show or hide: it may report synchronously
-   */
-  const awaitDismissal = async (cycle: Dismissal = currentDismissal()) => {
-    let stopWatch = () => {}
-    const dismissedWithoutInstance = new Promise<BvTriggerableEvent>((resolve) => {
-      stopWatch = watch(
-        [() => findItem()?.value.props.modelValue, instance],
-        ([modelValue, mounted]) => {
-          if (!modelValue && mounted === null) {
-            const event = new BvTriggerableEvent('hidden', {
-              trigger: unmountedHideTrigger ?? null,
-            })
-            // Settle now, so a show() right after this can't join the finished cycle
-            if (dismissal === cycle) finishCycle(event)
-            resolve(event)
-          }
-        },
-        // immediate: destroy() hides before it awaits, so the dismissal may already have happened.
-        // sync: decide before the orchestrator can mount the item
-        {immediate: true, flush: 'sync'}
-      )
+  const newCycle = (): Cycle => {
+    let resolve: (event: BvTriggerableEvent) => void = () => {}
+    const promise = new Promise<BvTriggerableEvent>((r) => {
+      resolve = r
     })
-    try {
-      return await Promise.race([cycle.promise, dismissedWithoutInstance])
-    } finally {
-      stopWatch()
+    return {
+      promise,
+      resolve,
+      resolveOnHide: createOptions.resolveOnHide === true,
+      signal: undefined,
     }
+  }
+
+  const settle = (current: Cycle | undefined, event: BvTriggerableEvent) => {
+    if (!current || cycle !== current) return
+    cycle = undefined
+    current.resolve(event)
+  }
+
+  /** `showing` or `shown`, or a show waiting for the component to mount */
+  const isShowing = (): boolean =>
+    mounted && showHide
+      ? showHide.state.value === 'showing' || showHide.state.value === 'shown'
+      : showPending
+
+  const state = (): ShowHideState =>
+    mounted && showHide ? showHide.state.value : showPending ? 'showing' : 'hidden'
+
+  /**
+   * A toast created with a numeric `modelValue` counts it down to 0. Showing it again has to put
+   * the countdown back, since the component only counts down a numeric `modelValue`
+   */
+  const restoreCountdown = (target: OrchestratedShowHide) => {
+    const countdown = findItem()?.value.props.modelValue
+    if (typeof countdown === 'number' && countdown > 0 && !target.model()) {
+      target.setModel(countdown)
+    }
+  }
+
+  /** Sends a show request to the mounted component, attributing its outcome to `forCycle` */
+  const requestShow = (target: OrchestratedShowHide, forCycle: Cycle | undefined) => {
+    restoreCountdown(target)
+    const request = {cycle: forCycle}
+    const previous = ownShowRequest
+    ownShowRequest = request
+    let result: Promise<boolean | string>
+    try {
+      result = target.show()
+    } finally {
+      ownShowRequest = previous
+    }
+    // A disabled component refuses without events
+    void result.then((value) => {
+      if (value === 'show-prevented') settle(forCycle, new BvTriggerableEvent('show-prevented'))
+    })
+  }
+
+  const connection: OrchestratorItemConnection = {
+    onEvent: (event) => {
+      switch (event.eventType) {
+        case 'show': {
+          // Aborting during the show request (in an `onShow` listener) prevents the show: there
+          // is nothing to hide yet
+          if (ownShowRequest?.cycle?.signal?.aborted) event.preventDefault()
+          break
+        }
+        case 'show-prevented': {
+          // Any entry point can emit it; only the request this controller made ends a cycle
+          const request = ownShowRequest
+          if (!request) break
+          settle(
+            request.cycle,
+            request.cycle?.signal?.aborted
+              ? new BvTriggerableEvent('hidden', {trigger: 'abort'})
+              : event
+          )
+          break
+        }
+        case 'hide': {
+          if (!event.defaultPrevented) lastHideEvent = event
+          break
+        }
+        case 'hidden': {
+          settle(cycle, event)
+          break
+        }
+      }
+    },
+    onState: (next) => {
+      if (next === 'hiding' && cycle?.resolveOnHide && lastHideEvent) {
+        settle(cycle, lastHideEvent)
+      }
+    },
+    mounted: () => {
+      mounted = true
+      if (!showPending || !showHide) return
+      showPending = false
+      requestShow(showHide, cycle)
+    },
+    disconnect: () => {
+      showHide = undefined
+      mounted = false
+      // The machine settles its own requests silently when it is disposed; so does this cycle
+      settle(cycle, new BvTriggerableEvent('hidden', {trigger: 'dispose'}))
+    },
+  }
+
+  const link: OrchestratorItemLink = {
+    connect: (target) => {
+      showHide = target
+      mounted = false
+      return connection
+    },
+    connected: () => showHide !== undefined,
+  }
+
+  /** Shows the item: through its mounted component, or once one mounts */
+  const startShow = (forCycle: Cycle | undefined) => {
+    if (isShowing()) return
+    if (showHide && mounted) {
+      requestShow(showHide, forCycle)
+    } else {
+      showPending = true
+    }
+  }
+
+  const hide = (trigger?: string) => {
+    if (showHide && mounted) {
+      void showHide.hide(trigger)
+      return
+    }
+    // Nothing is on screen: cancel the show waiting for the component
+    showPending = false
+    // A `modelValue` from the item's props would still show it when it mounts
+    const item = findItem()
+    if (item?.value.props.modelValue) controller.set({modelValue: false} as never)
+    settle(cycle, new BvTriggerableEvent('hidden', {trigger: trigger ?? null}))
+  }
+
+  const toResultWithDispose = (event: BvTriggerableEvent) => {
+    const dispose = {[Symbol.asyncDispose]: controller.destroy}
+    // A plain result is copied; an event keeps its prototype (getters such as `defaultPrevented`)
+    return toResult
+      ? Object.assign({...toResult(event, instance.value)}, dispose)
+      : Object.assign(Object.create(event), dispose)
   }
 
   const controller = {
     id,
     // A getter so the public API keeps returning the instance itself rather than the ref
     // v100 TODO: expose it as `ref: readonly(instance)`. Exposing a Ref is a breaking change, so it waits for a major
-    get ref(): RefWithMethods | null {
+    get ref() {
       return instance.value
     },
-    set ref(value: RefWithMethods | null) {
+    set ref(value: ComponentPublicInstance<TComponent> | null) {
       instance.value = value
-      // The mount-time show runs in the component's mounted hook, right after its ref is set
-      if (value !== null && storeShowCycle) {
-        const cycle = storeShowCycle
-        void Promise.resolve().then(() => {
-          if (storeShowCycle === cycle) storeShowCycle = undefined
-        })
-      }
+    },
+    get state() {
+      return state()
     },
     async show({signal, resolveOnHide}: OrchestratorShowOptions = {}) {
-      const withDispose = (event: BvTriggerableEvent) => {
-        const dispose = {[Symbol.asyncDispose]: controller.destroy}
-        // A plain result is copied; an event keeps its prototype (getters such as `defaultPrevented`)
-        return toResult
-          ? Object.assign({...toResult(event, instance.value)}, dispose)
-          : Object.assign(Object.create(event), dispose)
+      if (signal?.aborted && !isShowing()) {
+        return toResultWithDispose(new BvTriggerableEvent('hidden', {trigger: 'abort'}))
       }
-      const currentModelValue = controller.get()?.value.props.modelValue
-      // The store learns the component is open only once its show is revealed, so also count a show
-      // this controller requested and the component's own visible flag
-      const isShown =
-        !!currentModelValue ||
-        showRequested ||
-        (controller.ref as RefWithMethods | null)?.visible === true
-      if (signal?.aborted && !isShown) {
-        return withDispose(new BvTriggerableEvent('hidden', {trigger: 'abort'}))
-      }
-      const cycle = currentDismissal()
-      // Joining a cycle that is already open overrides its setting too
-      cycleResolvesOnHide = resolveOnHide ?? createOptions.resolveOnHide === true
+      // Joining the open cycle overrides its settings too
+      const current = (cycle ??= newCycle())
+      current.resolveOnHide = resolveOnHide ?? createOptions.resolveOnHide === true
+      if (signal) current.signal = signal
       const abort = () => {
-        controller.hide('abort')
-        // A show listener can abort before its show is committed, when there is nothing to hide
-        // yet: the mount-time show of an item that was not mounted, or a show still being
-        // requested. Hide again once it had the chance to commit; a repeated hide is ignored
-        void Promise.resolve().then(() => {
-          if (dismissal === cycle) controller.hide('abort')
-        })
+        // During this controller's own show request, the `show` event is prevented instead
+        if (ownShowRequest?.cycle === current) return
+        hide('abort')
       }
       signal?.addEventListener('abort', abort, {once: true})
       try {
         if (signal?.aborted) {
-          abort()
-        } else if (!showRequested && (!currentModelValue || hideRequested)) {
-          // With hideRequested the store still records the component as open, but it may be
-          // waiting out a hide. Its show() cancels that hide, and does nothing if there is none
-          const cancelsHide = !!currentModelValue
-          if (!cancelsHide) unmountedHideTrigger = undefined
-          const refWithMethods = controller.ref
-          if (!cancelsHide && countdown !== undefined) {
-            showThroughStore(cycle, countdown)
-          } else if (
-            refWithMethods !== null &&
-            'show' in refWithMethods &&
-            typeof refWithMethods.show === 'function'
-          ) {
-            // The store clears showRequested when it records the open, which it already has here
-            if (!cancelsHide) showRequested = true
-            hideRequested = false
-            void Promise.resolve(refWithMethods.show()).then((result) => {
-              if (result === 'show-prevented' && dismissal === cycle) {
-                finishCycle(new BvTriggerableEvent('show-prevented'))
-              }
-            })
-          } else if (!cancelsHide) {
-            showThroughStore(cycle, true)
-          }
-          // A show listener may have aborted while the show was being requested, before there was
-          // anything to hide. Hide now that the show is committed
-          if (signal?.aborted) abort()
+          hide('abort')
+        } else {
+          startShow(current)
         }
-        return withDispose(await awaitDismissal(cycle))
+        return toResultWithDispose(await current.promise)
       } finally {
         signal?.removeEventListener('abort', abort)
       }
     },
-    hide(trigger?: string) {
-      const refWithMethods = controller.ref
-      if (
-        refWithMethods !== null &&
-        'hide' in refWithMethods &&
-        typeof refWithMethods.hide === 'function'
-      ) {
-        // Before the call: a hide that finishes at once is recorded by the store, which clears it
-        hideRequested = true
-        // Skip the trigger's own event. `BDialog`'s `hide(trigger, value, noTriggerEmit)` takes
-        // a return value second (it exposes `returnValue`); the other components take
-        // `hide(trigger, noTriggerEmit)`
-        if ('returnValue' in refWithMethods) {
-          refWithMethods.hide(trigger, undefined, true)
-        } else {
-          refWithMethods.hide(trigger, true)
-        }
-      } else {
-        if (refWithMethods === null) unmountedHideTrigger = trigger
-        controller.set({modelValue: false})
-      }
-    },
+    hide,
     toggle() {
-      const currentItem = controller.get()
-      const refWithMethods = controller.ref
-      if (!currentItem?.value.props.modelValue && countdown !== undefined) {
-        controller.set({modelValue: countdown} as never)
-      } else if (
-        refWithMethods !== null &&
-        'toggle' in refWithMethods &&
-        typeof refWithMethods.toggle === 'function'
-      ) {
-        refWithMethods.toggle()
+      if (showHide && mounted) {
+        if (!isShowing()) restoreCountdown(showHide)
+        void showHide.toggle()
+      } else if (showPending) {
+        hide('toggle-function')
       } else {
-        controller.set({modelValue: !currentItem?.value.props.modelValue})
+        startShow(cycle)
       }
     },
     get: findItem,
-    set(val: Partial<ValueInMapRecord<TItems>['value']['props']>) {
+    set(val: Partial<Item['value']['props']>) {
       const current = findItem()
       if (current?.value) {
         current.value = {
@@ -325,27 +322,38 @@ export const buildController = <
       }
     },
     async destroy() {
-      const item = findItem()
+      if (destroyed) return
+      destroyed = true
       try {
-        if (item && (item.value.props.modelValue || showRequested)) {
-          const cycle = currentDismissal()
-          controller.hide('destroy')
-          await awaitDismissal(cycle)
-          await nextTick()
+        if (showHide && mounted && state() !== 'hidden') {
+          // Settles once hidden (joining a hide in progress), or when the hide is prevented or
+          // superseded. The item is removed either way, which disposes the component
+          await showHide.hide('destroy')
+        } else {
+          hide('destroy')
         }
       } finally {
-        if (item) items.delete(id)
-        scope.stop()
+        items.delete(id)
       }
     },
     [Symbol.asyncDispose]() {
       return controller.destroy()
     },
-  } as ComponentController<TComponent, ValueInMapRecord<TItems>, TResult>
+  } as InternalComponentController<TComponent, Item, TResult>
 
   return {
     controller,
-    resolve: settle,
+    fns: {
+      link,
+      setRef: (value) => {
+        controller.ref = value as ComponentPublicInstance<TComponent> | null
+      },
+      destroy: controller.destroy,
+      show: () => {
+        startShow(cycle)
+      },
+      hide,
+    },
   }
 }
 

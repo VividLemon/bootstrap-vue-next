@@ -1,12 +1,4 @@
-import {
-  type ComponentPublicInstance,
-  computed,
-  inject,
-  type MaybeRef,
-  onScopeDispose,
-  type Ref,
-  ref,
-} from 'vue'
+import {computed, inject, type MaybeRef, onScopeDispose, type Ref, ref} from 'vue'
 import {
   dialogInjectionKey,
   dialogStackKey,
@@ -125,7 +117,7 @@ export const useDialog = () => {
     const dialogItems = store.value.dialog
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
-    const {resolve, controller} = buildController<
+    const {controller, fns} = buildController<
       typeof BDialog,
       OrchestratorStoreObject['dialog'],
       DialogResult
@@ -138,13 +130,7 @@ export const useDialog = () => {
         return {
           component,
           slots: itemSlots,
-          fns: {
-            resolve,
-            setRef: (v: ComponentPublicInstance) => {
-              controller.ref = v
-            },
-            destroy: controller.destroy,
-          },
+          fns,
           id: storeId,
           props: {
             ...props,
@@ -180,14 +166,6 @@ export const useDialog = () => {
     return stack[stack.length - 1]
   }
 
-  /** Writes the modelValue of a created dialog that has no mounted component yet */
-  const setStoreItem = (id: ControllerKey, modelValue: boolean): boolean => {
-    const item = store.value.dialog.get(id)
-    if (!item) return false
-    item.value = {...item.value, props: {...item.value.props, modelValue}}
-    return true
-  }
-
   /**
    * Shows a dialog
    * @param id - The id of the dialog to show. Without it, the topmost open dialog
@@ -202,7 +180,8 @@ export const useDialog = () => {
       void mounted.show()
       return
     }
-    setStoreItem(id, true)
+    // A created dialog whose component has not mounted yet: its controller shows it once it does
+    store.value.dialog.get(id)?.value.fns.show()
   }
 
   /**
@@ -221,7 +200,7 @@ export const useDialog = () => {
       void mounted.hide(trigger)
       return
     }
-    setStoreItem(id, false)
+    store.value.dialog.get(id)?.value.fns.hide(trigger)
   }
 
   /**

@@ -24,9 +24,12 @@ const buildItem = <T extends DialogOrchestratorArrayValue | ToastOrchestratorArr
     component: DummyComponent,
     id,
     fns: {
-      resolve: () => {},
+      // The dummy renders no show/hide component; report a connection so no warning is logged
+      link: {connect: () => ({}) as never, connected: () => true},
       setRef: () => {},
       destroy: async () => {},
+      show: () => {},
+      hide: () => {},
     },
     props,
   }) as T

@@ -14,6 +14,9 @@ import {useToast} from './index'
 // events by identity to count hide cycles rather than listener calls
 const uniqueEvents = (events: readonly BvTriggerableEvent[]) => [...new Set(events)]
 
+/** The controller's internal state: the toast's own state machine, not a copy in the store */
+const stateOf = (controller: unknown) => (controller as {state?: string} | undefined)?.state
+
 describe('useToast', () => {
   it('create accepts a plain object and reads back the initial props', async () => {
     let toastRef: ReturnType<ReturnType<typeof useToast>['create']> | undefined
@@ -189,12 +192,11 @@ describe('useToast', () => {
       mount(BApp, {slots: {default: () => h(TestComponent)}})
       await nextTick()
 
-      expect(toastRef?.get()?.value.props.modelValue).toBe(true)
+      await vi.waitFor(() => expect(stateOf(toastRef)).toBe('shown'))
 
       toastHide?.('clear', toastRef?.id)
-      await nextTick()
 
-      expect(toastRef?.get()?.value.props.modelValue).toBe(false)
+      await vi.waitFor(() => expect(stateOf(toastRef)).toBe('hidden'))
     })
 
     it('hides a toast declared in a template', async () => {
@@ -381,6 +383,27 @@ describe('useToast', () => {
     })
   })
 
+  it('calls onHide and onHidden from create() once per hide', async () => {
+    const onHide = vi.fn<(event: BvTriggerableEvent) => void>()
+    const onHidden = vi.fn<(event: BvTriggerableEvent) => void>()
+    let toastRef: ReturnType<ReturnType<typeof useToast>['create']> | undefined
+    const TestComponent = defineComponent({
+      setup() {
+        toastRef = useToast().create({title: 'Once', onHide, onHidden})
+        return () => h('div')
+      },
+    })
+    mount(BApp, {slots: {default: () => h(TestComponent)}})
+    await nextTick()
+
+    const shown = toastRef?.show()
+    await vi.waitFor(() => expect(stateOf(toastRef)).toBe('shown'))
+    toastRef?.hide('done')
+    await shown
+    expect(onHide).toHaveBeenCalledOnce()
+    expect(onHidden).toHaveBeenCalledOnce()
+  })
+
   it('counts down again when a toast that timed out is shown again', async () => {
     let toastRef: ReturnType<ReturnType<typeof useToast>['create']> | undefined
     const TestComponent = defineComponent({
@@ -393,12 +416,15 @@ describe('useToast', () => {
 
     mount(BApp, {slots: {default: () => h(TestComponent)}})
     await new Promise((resolve) => setTimeout(resolve, 400))
-    expect(toastRef?.get()?.value.props.modelValue).toBe(0)
+    expect(stateOf(toastRef)).toBe('hidden')
 
-    void toastRef?.show()
+    const shown = toastRef?.show()
+    expect(stateOf(toastRef)).toBe('showing')
+    // Timed out again: the countdown was put back
+    expect((await shown)?.eventType).toBe('hidden')
+    expect(stateOf(toastRef)).toBe('hidden')
+    // The store keeps the countdown the toast was created with
     expect(toastRef?.get()?.value.props.modelValue).toBe(100)
-    await new Promise((resolve) => setTimeout(resolve, 400))
-    expect(toastRef?.get()?.value.props.modelValue).toBe(0)
   })
 
   describe('dismissal before the orchestrator renders the toast', () => {

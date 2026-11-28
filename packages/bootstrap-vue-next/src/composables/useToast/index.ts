@@ -1,13 +1,4 @@
-import {
-  type ComponentPublicInstance,
-  computed,
-  inject,
-  type MaybeRef,
-  onScopeDispose,
-  ref,
-  type Ref,
-  toRaw,
-} from 'vue'
+import {computed, inject, type MaybeRef, onScopeDispose, ref, type Ref, toRaw} from 'vue'
 import {
   orchestratorRegistryKey,
   type OrchestratorStoreObject,
@@ -68,7 +59,7 @@ export const useToast = () => {
     const toastItems = store.value.toast
     const {htmlAttributeId, storeId} = getOrchestratorControllerId(resolvedProps.value.id)
 
-    const {resolve, controller} = buildController<typeof BToast, OrchestratorStoreObject['toast']>(
+    const {controller, fns} = buildController<typeof BToast, OrchestratorStoreObject['toast']>(
       storeId,
       toastItems,
       {createOptions}
@@ -82,13 +73,7 @@ export const useToast = () => {
           component,
           slots,
           id: storeId,
-          fns: {
-            resolve,
-            setRef: (v: ComponentPublicInstance) => {
-              controller.ref = v
-            },
-            destroy: controller.destroy,
-          },
+          fns,
           props: {
             ...props,
             id: htmlAttributeId,
@@ -137,19 +122,12 @@ export const useToast = () => {
   }
 
   /**
-   * Hides a toast that lives in the orchestrator store. Prefers the mounted instance, falling back
-   * to the store entry itself, which also covers toasts that the orchestrator has yet to render
-   * and toasts rendered through a custom `component`
+   * Hides a toast that lives in the orchestrator store through its controller, which also covers
+   * toasts that the orchestrator has yet to render and toasts rendered through a custom
+   * `component`
    */
   const hideStoreItem = (item: Ref<ToastOrchestratorArrayValue>, trigger?: string): void => {
-    if (hideRegisteredInstance(item.value.props.id ?? item.value.id, trigger)) return
-    item.value = {
-      ...item.value,
-      props: {
-        ...item.value.props,
-        modelValue: false,
-      },
-    }
+    item.value.fns.hide(trigger)
   }
 
   /**
