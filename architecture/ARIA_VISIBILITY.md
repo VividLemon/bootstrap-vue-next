@@ -23,7 +23,7 @@ Both paths share `useShowHideRegistration` (app registry + trigger registry + `a
 - `packages/bootstrap-vue-next/src/composables/useShowHide.ts` - native-path state/v-model/events, plus the shared `useShowHideRegistration`
 - `packages/bootstrap-vue-next/src/composables/showHideMachine.ts` - the lifecycle state machine behind `useShowHide` (internal, no Vue)
 - `packages/bootstrap-vue-next/src/composables/useLegacyShowHide.ts` - deprecated pre-v6 path
-- `packages/bootstrap-vue-next/src/directives/BToggle/index.ts` - `v-b-toggle` (and `v-b-modal`)
+- `packages/bootstrap-vue-next/src/composables/useComponentToggle/index.ts` - `useComponentToggle(id).props`, the trigger binding (replaced `v-b-toggle` / `v-b-modal` in #195)
 
 ## Native path
 
@@ -35,7 +35,7 @@ Both paths share `useShowHideRegistration` (app registry + trigger registry + `a
 | Mapping state to v6 classes (`.show`, `.hiding`, `-instant`) | The component                          |
 | Waiting for the transition                                   | `useCssTransition`                     |
 | Duration, easing, animated properties                        | CSS (`--bs-{component}-transition-*`)  |
-| `aria-controls` on triggers                                  | `v-b-toggle`                           |
+| `aria-controls` on triggers                                  | `useComponentToggle().props`           |
 | `aria-expanded` on registered triggers                       | `useShowHideRegistration`              |
 
 `useShowHide` has **no class and no timing logic**. The only "timing" it knows about is the optional `delay` prop (a wait before the state flips, used by popovers).
@@ -184,11 +184,11 @@ Checklist: check the `-instant` class exists in `node_modules/bootstrap/dist/css
 
 ## Trigger registration and ARIA (both paths)
 
-Registration is **opt-in**: `v-b-toggle` / `v-b-modal` register their element with the target through the app-wide show/hide registry (`showHideRegistryKey`). Unregistered triggers must manage their own ARIA attributes.
+Registration is **opt-in**: binding `useComponentToggle(id).props` registers the element with the target through the app-wide show/hide registry (`showHideRegistryKey`). Unregistered triggers must manage their own ARIA attributes.
 
 | Attribute       | Owner                     | Lifecycle                                                                                                |
 | --------------- | ------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `aria-controls` | `v-b-toggle`              | Static: set from the binding (modifiers, arg, value, `href`), removed on unmount                         |
+| `aria-controls` | `useComponentToggle`      | From the ids passed (or the found parent's id), rendered through `props`; leaves with the element        |
 | `aria-expanded` | `useShowHideRegistration` | Dynamic: set on registration, updated on every visibility change, removed on unregister (`clean = true`) |
 
 There are **no trigger state classes**. The v5 `collapsed` / `not-collapsed` classes were removed; style triggers with `[aria-expanded="true"]` / `[aria-expanded="false"]`. (BAccordionItem's own header button still renders the v5 accordion `collapsed` class until the accordion markup is migrated; that is accordion markup, not the trigger system.)
@@ -198,11 +198,12 @@ There are **no trigger state classes**. The v5 `collapsed` / `not-collapsed` cla
 ### Registration flow
 
 ```
-v-b-toggle mounted/updated
-  → parse targets, set aria-controls, store targets in data-bvtoggle
-  → find target in the registry (retries 5 × 100 ms)
-  → target.registerTrigger('click', el)
+element bound with useComponentToggle(ids).props mounts
+  → the `ref` in props adds it to the composable's trigger elements
+  → a post-flush watch over (elements, targets found in the reactive registry)
+  → target.registerTrigger('click', el) for every element × target
       → push to the trigger registry, add the click listener, set aria-expanded
+  (a target that mounts later appears in the registry and re-runs the watch: no polling)
 ```
 
 ### Visibility change flow
@@ -216,12 +217,12 @@ any source (trigger click, v-model, slot function, exposed method, useComponentT
 ### Unregistration flow
 
 ```
-v-b-toggle unmounted
-  → target.unregisterTrigger('click', el, true) → remove listener and aria-expanded
-  → directive removes aria-controls and data-bvtoggle
+a bound element unmounts (the ref gets null) or the composable's scope stops
+  → after the patch, elements no longer in the document leave the set
+  → the watch cleanup: target.unregisterTrigger('click', el, true) → remove listener and aria-expanded
 ```
 
-`unregisterTrigger(..., false)` keeps `aria-expanded`; the directive uses it when targets change before re-registering.
+`unregisterTrigger(..., false)` keeps `aria-expanded`; `useComponentToggle` uses it before re-registering so a re-run never stacks a second click listener.
 
 ### `useShowHideRegistration`
 
@@ -230,13 +231,13 @@ useShowHideRegistration({id, isExpanded, value, show, hide, toggle, triggerToggl
 // → {registerTrigger, unregisterTrigger}
 ```
 
-Registers the component in the app registry (`useComponentToggle`, directives), follows `id` changes, keeps `aria-expanded` of registered triggers in sync with `isExpanded()`, and removes listeners and the registry entry before unmount.
+Registers the component in the app registry (for `useComponentToggle`), follows `id` changes, keeps `aria-expanded` of registered triggers in sync with `isExpanded()`, and removes listeners and the registry entry before unmount.
 
 ## Usage patterns
 
-1. **`v-b-toggle`** - automatic `aria-controls`, `aria-expanded` and click handling.
-2. **`v-b-toggle` + `v-model`** - programmatic control; registered triggers stay in sync whatever changed the state. Other buttons get no ARIA.
-3. **Slot functions** (`toggle`, `show`, `hide`) - use the same show/hide functions; external triggers still need `v-b-toggle` or manual ARIA.
+1. **`useComponentToggle(id).props`** - automatic `aria-controls`, `aria-expanded` and click handling.
+2. **`useComponentToggle` + `v-model`** - programmatic control; registered triggers stay in sync whatever changed the state. Other buttons get no ARIA.
+3. **Slot functions** (`toggle`, `show`, `hide`) - use the same show/hide functions; external triggers still need `useComponentToggle().props` or manual ARIA.
 4. **Manual** - the author sets `aria-controls` and `:aria-expanded`.
 
 Components with internal triggers manage ARIA in their template (BAccordionItem header button, BDropdown toggle / split button).
