@@ -172,7 +172,7 @@
                 <ChevronLeft aria-hidden class="me-1" />
                 Back to migration overview
               </BButton>
-              <Content ref="_content" style="height: 100%" class="doc-content" />
+              <Content ref="content" style="height: 100%" class="doc-content" />
             </div>
           </div>
         </BRow>
@@ -219,7 +219,7 @@ import TableOfContentsNav from '../../src/components/TableOfContentsNav.vue'
 const { page } = useData()
 const route = useRoute()
 
-const content = useTemplateRef<ComponentPublicInstance<HTMLElement>>('_content')
+const content = useTemplateRef<ComponentPublicInstance<HTMLElement>>('content')
 // The "On this page" nav. It moves into a teleported offcanvas on small screens, so spy on the
 // rendered nav itself rather than on the aside
 const target = useTemplateRef<ComponentPublicInstance>('toc')
