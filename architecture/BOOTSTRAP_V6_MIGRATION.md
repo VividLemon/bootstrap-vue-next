@@ -389,6 +389,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 - **Now:** `noTransition`, `transProps` removed, `headerCloseColor`.
 - **Done early:** the JS breakpoint widths for `responsive` now come from the shared v6 `breakpointWidths` (lg 1024, xl 1280, 2xl 1536), needed for the `Breakpoint` type change.
 - **Pending:** v6 Drawer markup (native `<dialog class="drawer">`, `.hiding`, `.drawer-instant`); `responsive` must emit `md:drawer` prefix syntax; part attrs (`bodyClass`, `footerClass`, `headerClass`, `headerCloseClass` → `*Attrs`).
+- **SSR hydration (decided 2026-11-27, [#218](https://github.com/VividLemon/bootstrap-vue-next/pull/218)):** `BOffcanvas` can't hydrate with default settings: it teleports to `body`, which Vue can't hydrate (body holds other server-rendered content). Left for the Drawer rather than patched on `BOffcanvas`. The Drawer must hydrate with its defaults: a native `<dialog>` needs no teleport (the top layer stacks it), so don't teleport by default, or teleport to a dedicated container. Then remove `BOffcanvas` from `knownIssues` in `src/hydration.spec.ts` (`it.fails` turns red once it hydrates).
 
 ### BDropdown / BNavItemDropdown → Menu
 
