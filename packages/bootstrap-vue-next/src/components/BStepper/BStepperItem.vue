@@ -1,7 +1,7 @@
 <template>
   <component
     :is="computedTag"
-    ref="_el"
+    ref="rootRef"
     class="stepper-item"
     :class="computedClasses"
     :aria-current="isCurrent ? 'step' : undefined"
@@ -36,7 +36,7 @@ defineSlots<BStepperItemSlots>()
 
 const parentData = inject(stepperInjectionKey, null)
 
-const rootRef = useTemplateRef<HTMLElement | ComponentPublicInstance>('_el')
+const rootRef = useTemplateRef<HTMLElement | ComponentPublicInstance>('rootRef')
 const el = computed<HTMLElement | null>(() => {
   const value = rootRef.value
   if (!value) return null
