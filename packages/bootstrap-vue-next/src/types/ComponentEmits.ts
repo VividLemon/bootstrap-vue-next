@@ -101,10 +101,8 @@ export type BCloseButtonEmits = {
 }
 
 export type BCarouselEmits = {
-  'slide': [value: BvCarouselEvent]
-  'slid': [value: BvCarouselEvent]
-  'prev-click': [value: MouseEvent]
-  'next-click': [value: MouseEvent]
+  slide: [value: BvCarouselEvent]
+  slid: [value: BvCarouselEvent]
 }
 
 export type BDropdownItemEmits = {

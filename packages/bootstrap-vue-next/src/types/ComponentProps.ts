@@ -57,6 +57,7 @@ import type {
 import type {RadiusElementExtendables} from './RadiusElement'
 import type {SpinnerType} from './SpinnerType'
 import type {BadgeVariant} from './BadgeTypes'
+import type {CarouselEnds} from './CarouselTypes'
 import type {PlaceholderAnimation, PlaceholderSize} from './PlaceholderTypes'
 import type {DialogSize, DialogSlide} from './DialogTypes'
 import type {ButtonType} from './ButtonType'
@@ -1237,46 +1238,35 @@ export interface BCardTitleProps {
 }
 
 export interface BCarouselProps {
-  background?: string
+  auto?: boolean
+  autoplay?: boolean
+  center?: boolean
   controls?: boolean
   controlsNextText?: string
   controlsPrevText?: string
+  ends?: CarouselEnds
   fade?: boolean
   id?: string
-  imgHeight?: string
-  imgWidth?: string
   indicators?: boolean
   indicatorsButtonLabel?: string
   interval?: number
-  labelIndicators?: string
   keyboard?: boolean
+  labelIndicators?: string
   modelValue?: number
   noTransition?: boolean
-  noHoverPause?: boolean
-  noTouch?: boolean
-  noWrap?: boolean
-  ride?: boolean | 'carousel'
-  rideReverse?: boolean
-  touchThreshold?: Numberish
+  overlay?: boolean
+  pause?: 'hover' | false
+  pauseLabel?: string
+  playLabel?: string
+  playPause?: boolean
 }
 
 export interface BCarouselSlideProps {
-  background?: string
-  caption?: string
-  captionTag?: string
-  contentTag?: string
-  contentVisibleUp?: string
   id?: string
   imgAlt?: string
-  imgBlank?: boolean
-  imgBlankColor?: string
-  imgHeight?: Numberish
   imgSrc?: string
   imgSrcset?: string | readonly string[]
-  imgWidth?: Numberish
-  interval?: number | 'requestAnimationFrame'
-  text?: string
-  textTag?: string
+  interval?: number
 }
 
 export interface BTransitionProps {

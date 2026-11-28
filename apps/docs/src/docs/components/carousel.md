@@ -1,148 +1,140 @@
 ---
 title: Carousel
 description: >
-  The carousel is a slideshow for cycling through a series of content. It works with a series of images, text,
-  or custom markup. It also includes support for previous/next controls and indicators.
-
-  Nested carousels are not supported. You should also be aware that carousels in general can often cause
-  usability and accessibility challenges.
+  A slideshow for cycling through images, text or custom markup, built on Bootstrap v6's
+  scroll-snap carousel with optional controls, indicators, autoplay and multi-item layouts.
 ---
 
 ## Basic usage
 
+`BCarousel` renders Bootstrap v6's scroll-snap carousel: `.carousel-inner` is a horizontal scroller
+that the browser owns (swiping, dragging, momentum, keyboard scrolling) and each `BCarouselSlide` is
+a `.carousel-item` snap point. `controls`, `indicators` and `play-pause` render one bar below the
+slides.
+
 <<< DEMO ./demo/CarouselBasic.vue#template{vue-html}
 
-### Sizing
+### Slide content
 
-Carousels don't automatically normalize slide dimensions. As such, you may need to use additional
-utilities or custom styles to appropriately size content. When using images in each slide, ensure
-they all have the same dimensions (or aspect ratio).
-
-When using `img-src` or `img-blank` on `<BCarouselSlide>`, you can set the image width and height
-via the `img-width` and `img-height` props on `<BCarousel>` and have these values automatically
-applied to each `carousel-slide` image.
-
-Note that images will still be responsive and automatically grow or shrink to fit within the width
-of its parent container.
-
-Internally, `<BCarouselSlide>` uses the [`<BImg>`](/docs/components/image) component to render
-the images. The `img-*` props map to the corresponding props available to `<BImg>`.
-
-### Responsive images
-
-Use the `img-srcset` prop on `<BCarouselSlide>` to provide a comma-separated list of candidate
-image sources, letting the browser pick the best fit for the current viewport and pixel density.
-This pairs naturally with `img-src` (which acts as the fallback).
+A slide renders whatever is in its default slot. `img-src`, `img-srcset` and `img-alt` add an
+`<img class="d-block w-100">` (through [`BImg`](/docs/components/image)); the `img` slot replaces it.
+Captions are plain content in the default slot. Carousels don't normalize slide dimensions, so give
+images the same aspect ratio.
 
 <<< DEMO ./demo/CarouselResponsiveImages.vue#template{vue-html}
 
 ### Indicators
 
-With the `indicators` prop, can add indicators to the Carousel, along side the previous/next controls. The indicators let users jump to a particular slide.
+`indicators` renders one button per slide. The active one is wider and, while autoplay runs, fills
+like a progress bar over the slide's interval. Labels are 1-based (`Slide 1`).
 
 <<< DEMO ./demo/CarouselIndicators.vue#template{vue-html}
 
-### Captions
+### Overlay
 
-You can add captions to a particular slide using the following methods: using the `caption` prop, that will render its text, by using `captionHtml` prop, which will render html, or by using the `caption` _slot_.
+`overlay` places the control bar over the slides (`.carousel-overlay-controls`) with subtle buttons.
 
-<<< DEMO ./demo/CarouselCaptions.vue#template{vue-html}
+<<< DEMO ./demo/CarouselOverlay.vue#template{vue-html}
 
 ### Crossfade
 
-You can use the `fade` prop to animate slides with a fade transition instead of a slide.
+`fade` stacks the slides and crossfades the active one (`.carousel-fade`). Non-active slides are
+hidden and not focusable.
 
 <<< DEMO ./demo/CarouselCrossfade.vue#template{vue-html}
 
-## Autoplaying Carousels
+## Ends
 
-You can make your Carousels autoplay on a page load by setting the `ride` prop to `carousel`. Autoplaying Carousels are automatically paused when hovering with a mouse. You can disable pausing during hover by using the `noHoverPause` prop.
+`ends` decides what happens past the first or last slide:
 
-<BAlert :model-value="true" :color="{ theme: 'info' }">
-For accessibility reasons, we recommend avoiding the use of autoplaying carousels. If your page does include an autoplaying carousel, we recommend providing an additional button or control to explicitly pause/stop the carousel.
+- `'loop'` (default) continues seamlessly through a temporary copy of the destination slide. It only
+  applies to single-slide layouts without peek, `center` or `auto`, and not with reduced motion or
+  `no-transition`; otherwise it behaves like `'wrap'`.
+- `'wrap'` jumps to the other end.
+- `'stop'` stops at the ends and disables the prev / next control there.
 
-See [WCAG 2.1 Success Criterion 2.2.2 Pause, Stop, Hide.](https://www.w3.org/TR/WCAG21/#pause-stop-hide),
+<<< DEMO ./demo/CarouselEnds.vue
 
-Related: [Autoplay Manipulation](#autoplay-manipulation),
-</BAlert>
+## Layouts
 
-### Ride
+### Multiple items and peek
+
+Set Bootstrap's CSS variables on the carousel: `--bs-carousel-items` (slides per view),
+`--bs-carousel-items-gap` and `--bs-carousel-items-peek` (a sliver of the neighbours).
+
+<<< DEMO ./demo/CarouselMultiItem.vue#template{vue-html}
+
+### Centered
+
+`center` snaps slides to the center (`.carousel-center`).
+
+<<< DEMO ./demo/CarouselCenter.vue#template{vue-html}
+
+### Variable width
+
+`auto` lets each slide keep its own width (`.carousel-auto`).
+
+<<< DEMO ./demo/CarouselAuto.vue#template{vue-html}
+
+## Autoplay
+
+`autoplay` advances the slides every `interval` milliseconds (default `5000`). It pauses while the
+pointer is over the carousel (set `:pause="false"` to keep playing), skips ticks while the page or
+the carousel is hidden, and stops for good once the user interacts: a control, an indicator, the
+keyboard, or touching the slides. Autoplay is required to be pausable (WCAG 2.2.2), so use
+`play-pause` with it; it renders a play/pause button labelled with `play-label` / `pause-label`.
 
 <<< DEMO ./demo/CarouselAutoplay.vue#template{vue-html}
 
-When the `ride` prop is set to `true`, rather than `carousel`, the Carousel will not automatically start to cycle on page load. Instead, it will only start after the first user interaction.
+### Interval per slide
 
-<<< DEMO ./demo/CarouselRideTrue.vue#template{vue-html}
+`interval` on a `BCarouselSlide` overrides the carousel interval for that slide.
 
-### Interval
+<<< DEMO ./demo/CarouselInterval.vue#template{vue-html}
 
-You can adjust the speed at which the Carousel is moving by adjusting the interval in real time. The default is `5000ms`. You can also set intervals per slide by setting the `interval` prop on the slide
+## Usage with v-model
 
-<<< DEMO ./demo/CarouselInterval.vue
-
-### Autoplay Reverse
-
-You can use the `ride-reverse` prop to reverse the direction that the Carousel will autoplay.
-
-<<< DEMO ./demo/CarouselAutoplayReverse.vue#template{vue-html}
-
-### Autoplay Manipulation
-
-There can come situations where you need to manually pause/resume the state of an autoplay. BCarousel exposes two functions for this: `pause(), resume()`. These are accessed through the [template ref](https://vuejs.org/guide/essentials/template-refs.html#template-refs).
-
-<<< DEMO ./demo/CarouselAutoplayManipulation.vue
-
-## Touch Swiping
-
-BCarousel comes with automatic support for touch swiping devices. You can disable touch swiping by using the `no-touch` prop.
-
-<BAlert :model-value="true" :color="{ theme: 'info' }">
-  Due to touch swiping not being available to everyone, such as a user that is using a mouse, you will likely want to include multiple ways to transition the slides. Otherwise, transitioning can be impossible to those users.
-</BAlert>
-
-<<< DEMO ./demo/CarouselTouchSwiping.vue#template{vue-html}
-
-### Touch Threshold
-
-You can adjust the distance in pixels it takes to cause a transition to occur by using the `touch-threshold` prop. A higher value will mean the user needs to swipe a longer distance in order to trigger a transition.
-
-<<< DEMO ./demo/CarouselTouchThreshold.vue
-
-## Usage With v-model
-
-You are not required to, but you can bind the v-model. This allows for finer control and allows for outside manipulation of the slide, beyond the controls exposed through [Exposed Methods](#exposed-methods).
+`v-model` is the index of the active slide. It updates once a slide settles, including when the user
+scrolls or swipes. Setting it navigates to that slide; the initial value is rendered as `.active` on
+the server and scrolled to on mount without animation.
 
 <<< DEMO ./demo/CarouselModel.vue
 
-### Changing the Starting Slide
+## Events
 
-You can change the default starting slide by binding the v-model to the index of the slide you want the Carousel to start at.
+`slide` fires before the carousel navigates and can be canceled with `preventDefault()`; a canceled
+change caused by `v-model` reverts the model. `slid` fires when the slide has settled. Both receive a
+`BvCarouselEvent` with `from`, `to`, `direction` and `relatedTarget`. `slide` is only emitted for
+navigation the carousel starts (controls, indicators, keyboard, autoplay, `to()`, `v-model`), not for
+free scrolling; a multi-slide scroll can emit intermediate `slid` events.
 
-- Starts at the last index (2)
+<<< DEMO ./demo/CarouselEvents.vue
 
-<<< DEMO ./demo/CarouselStartingSlide.vue
+## Custom controls
 
-## Handling navigation events
+The `controls` slot replaces the control bar. It receives `prev`, `next`, `to`, `cycle`, `pause`,
+`togglePlay`, `playing`, `index`, `count`, `canPrev` and `canNext`.
 
-`BCarousel` emits `prev-click` and `next-click` events when the user clicks the previous/next
-controls. These are useful for analytics, logging, or triggering side effects without reading the
-current slide index. Both events pass the native `MouseEvent`.
+<<< DEMO ./demo/CarouselCustomControls.vue#template{vue-html}
 
-Note: these events fire only from the prev/next arrow controls — clicking the indicators or
-programmatic navigation (via `v-model` or the exposed `next()`/`prev()` methods) will not
-trigger them.
+## Exposed methods
 
-<<< DEMO ./demo/CarouselClickEvents.vue
-
-## Exposed Methods
-
-You can control the carousel programmatically using template ref methods. See the [Component Reference Exposed section](#comp-reference-bcarousel-exposed) for available methods.
+Through a template ref: `next()`, `prev()`, `to(index)`, `cycle()`, `pause()`, `nextWhenVisible()` and
+the readonly `playing` ref.
 
 <<< DEMO ./demo/CarouselMethods.vue
 
-## Full Example
+## Accessibility
 
-<<< DEMO ./demo/CarouselFull.vue#template{vue-html}
+- Arrow keys navigate when the carousel has focus (unless `:keyboard="false"`), mirrored in RTL;
+  they are ignored in inputs and textareas.
+- The slide scroller is focusable so keyboard users can scroll it.
+- Controls have visually hidden labels (`controls-prev-text`, `controls-next-text`) and indicators
+  have `aria-label`s (`indicators-button-label`, `label-indicators`).
+- With `prefers-reduced-motion`, scrolling is instant, `'loop'` falls back to `'wrap'` and the
+  indicator does not fill.
+- The markup matches Bootstrap; it adds no carousel `role` or live region. Add a label to the
+  carousel (for example `aria-label`) if it needs one.
 
 ## Internationalization
 

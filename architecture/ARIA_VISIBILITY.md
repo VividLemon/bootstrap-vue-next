@@ -15,7 +15,7 @@ During the migration there are two paths:
 
 Both paths share `useShowHideRegistration` (app registry + trigger registry + `aria-expanded`), so ARIA behavior is identical on both.
 
-`useLegacyShowHide.ts` is marked `@deprecated` and must be deleted once the last component has moved to the native path. BCarousel, BOverlay (`useFadeTransition` in `useTransitions.ts`) and BOrchestrator use Vue `<Transition>` directly and are migrated with their own components.
+`useLegacyShowHide.ts` is marked `@deprecated` and must be deleted once the last component has moved to the native path. BOverlay (`useFadeTransition` in `useTransitions.ts`) and BOrchestrator use Vue `<Transition>` directly (BCarousel no longer does: it is a v6 scroll-snap carousel) and are migrated with their own components.
 
 ## Files
 

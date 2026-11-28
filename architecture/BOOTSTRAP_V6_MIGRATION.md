@@ -397,8 +397,7 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### BCarousel
 
-- **Now:** `noAnimation` → `noTransition`.
-- **Pending:** v6 Carousel rewrite (removed `.carousel-control-prev/next`, `.carousel-caption`, `.carousel-dark`, `.carousel-stacked`; `data-bs-ride` → autoplay; `wrap` → `ends`); replace `<Transition>`.
+- **Done (G5, `bootstrap-v6-g5-carousel`):** v6 scroll-snap rewrite on an internal engine ported from `carousel.ts`; no `<TransitionGroup>`; `autoplay` / `ends` / `pause` / `playPause` / `overlay` / `center` / `auto`; cancelable `slide`; captions and swipe props removed (see `BOOTSTRAP_V6_DISPLAY.md`).
 
 ### BOverlay
 
