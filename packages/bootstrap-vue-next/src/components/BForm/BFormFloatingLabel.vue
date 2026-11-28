@@ -25,7 +25,7 @@ const props = useDefaults(_props, 'BFormFloatingLabel')
 defineSlots<BFormFloatingLabelSlots>()
 
 // Boundary: BFormFloatingLabel renders its own <label for>. State/disabled forward through
-// from the outer BFormGroup; the isolated label-target registry isn't read, so descendant
+// from the outer BFormField; the isolated label-target registry isn't read, so descendant
 // claims never reach the outer group.
 const parentFormGroupData = inject(formGroupKey, null)?.()
 if (parentFormGroupData) useProvideFormGroupData(parentFormGroupData)

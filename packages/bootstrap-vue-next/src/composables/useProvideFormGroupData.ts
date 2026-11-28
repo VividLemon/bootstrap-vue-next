@@ -20,10 +20,10 @@ const useLabelTargetRegistry = () => {
 
 /**
  * Provides formGroupKey for descendant form controls. Each provider has its own isolated
- * label-target registry: BFormGroup uses the resulting `singleLabelTargetId` to drive its
+ * label-target registry: BFormField uses the resulting `singleLabelTargetId` to drive its
  * label/legend rendering. Intermediate components (e.g. BFormFloatingLabel) call this with
  * passed-through state/disabled, acting as a boundary — their registry exists but is unused,
- * so descendant claims never reach an outer BFormGroup.
+ * so descendant claims never reach an outer BFormField.
  */
 export const useProvideFormGroupData = ({
   state,

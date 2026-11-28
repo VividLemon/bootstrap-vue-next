@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BFormGroup
+    <BFormField
       label="Selection mode:"
       label-for="table-select-mode-select"
       :label-cols="{ md: 4 }"
@@ -11,7 +11,7 @@
         :options="modes"
         class="mb-3"
       />
-    </BFormGroup>
+    </BFormField>
 
     <BTable
       ref="selectable-table"
@@ -23,7 +23,7 @@
       @update:selected-items="onSelectedItems"
     >
       <!-- Example scoped slot for select state illustrative purposes -->
-      <template #cell(selected)="{rowSelected}">
+      <template #cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
           <span aria-hidden="true">&check;</span>
           <span class="sr-only">Selected</span>
@@ -35,29 +35,10 @@
       </template>
     </BTable>
     <p>
-      <BButton
-        size="sm"
-        class="me-2"
-        @click="selectAllRows"
-        >Select all</BButton
-      >
-      <BButton
-        size="sm"
-        class="me-2"
-        @click="clearSelected"
-        >Clear selected</BButton
-      >
-      <BButton
-        size="sm"
-        class="me-2"
-        @click="selectThirdRow"
-        >Select 3rd row</BButton
-      >
-      <BButton
-        size="sm"
-        @click="unselectThirdRow"
-        >Unselect 3rd row</BButton
-      >
+      <BButton size="sm" class="me-2" @click="selectAllRows">Select all</BButton>
+      <BButton size="sm" class="me-2" @click="clearSelected">Clear selected</BButton>
+      <BButton size="sm" class="me-2" @click="selectThirdRow">Select 3rd row</BButton>
+      <BButton size="sm" @click="unselectThirdRow">Unselect 3rd row</BButton>
     </p>
     <p>
       Selected Rows:<br />
@@ -67,9 +48,9 @@
 </template>
 
 <script setup lang="ts">
-import {ref, useTemplateRef} from 'vue'
-import {BTable} from 'bootstrap-vue-next/components/BTable'
-import type {ComponentExposed} from 'vue-component-type-helpers'
+import { ref, useTemplateRef } from 'vue'
+import { BTable } from 'bootstrap-vue-next/components/BTable'
+import type { ComponentExposed } from 'vue-component-type-helpers'
 
 interface Person {
   first_name: string
@@ -83,10 +64,10 @@ const selectableTable = useTemplateRef<ComponentExposed<typeof BTable>>('selecta
 const modes = ['multi', 'single', 'range']
 const fields = ['selected', 'isActive', 'age', 'first_name', 'last_name']
 const items: Person[] = [
-  {isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald'},
-  {isActive: false, age: 21, first_name: 'Larsen', last_name: 'Shaw'},
-  {isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson'},
-  {isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney'},
+  { isActive: true, age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
+  { isActive: false, age: 21, first_name: 'Larsen', last_name: 'Shaw' },
+  { isActive: false, age: 89, first_name: 'Geneva', last_name: 'Wilson' },
+  { isActive: true, age: 38, first_name: 'Jami', last_name: 'Carney' },
 ]
 const selectMode = ref<'multi' | 'single' | 'range'>('multi')
 

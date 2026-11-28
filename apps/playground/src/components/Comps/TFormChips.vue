@@ -2,7 +2,7 @@
   <BContainer fluid>
     <BRow>
       <BCol>
-        <BFormGroup
+        <BFormField
           label="Chips"
           :state="state"
           invalid-feedback="Add between 2 and 5 chips"
@@ -16,7 +16,7 @@
             placeholder="Add a chip..."
             @add="onAdd"
           />
-        </BFormGroup>
+        </BFormField>
         <p>Value: {{ value }}</p>
         <div class="d-flex flex-wrap gap-2">
           <BChip>Plain</BChip>

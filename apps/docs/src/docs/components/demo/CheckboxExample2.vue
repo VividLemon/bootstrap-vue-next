@@ -1,9 +1,6 @@
 <template>
   <div>
-    <BFormGroup
-      v-slot="{ariaDescribedby}"
-      label="Using options array:"
-    >
+    <BFormField v-slot="{ ariaDescribedby }" label="Using options array:">
       <BFormCheckboxGroup
         id="checkbox-group-1"
         v-model="selected"
@@ -11,12 +8,9 @@
         :aria-describedby="ariaDescribedby"
         name="flavour-1"
       />
-    </BFormGroup>
+    </BFormField>
 
-    <BFormGroup
-      v-slot="{ariaDescribedby}"
-      label="Using sub-components:"
-    >
+    <BFormField v-slot="{ ariaDescribedby }" label="Using sub-components:">
       <BFormCheckboxGroup
         id="checkbox-group-2"
         v-model="selected"
@@ -28,7 +22,7 @@
         <BFormCheckbox value="pineapple">Pineapple</BFormCheckbox>
         <BFormCheckbox value="grape">Grape</BFormCheckbox>
       </BFormCheckboxGroup>
-    </BFormGroup>
+    </BFormField>
 
     <div>
       Selected: <strong>{{ selected }}</strong>
@@ -37,14 +31,14 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 const selected = ref([])
 
 const options = [
-  {text: 'Orange', value: 'orange'},
-  {text: 'Apple', value: 'apple'},
-  {text: 'Pineapple', value: 'pineapple'},
-  {text: 'Grape', value: 'grape'},
+  { text: 'Orange', value: 'orange' },
+  { text: 'Apple', value: 'apple' },
+  { text: 'Pineapple', value: 'pineapple' },
+  { text: 'Grape', value: 'grape' },
 ]
 </script>

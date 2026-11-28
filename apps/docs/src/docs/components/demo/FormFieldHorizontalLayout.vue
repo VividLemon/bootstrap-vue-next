@@ -1,6 +1,6 @@
 <template>
   <!-- #region template -->
-  <BFormGroup
+  <BFormField
     id="fieldset-horizontal"
     :label-cols="{ sm: 4, lg: 3 }"
     :content-cols="{ sm: true, lg: 7 }"
@@ -9,6 +9,6 @@
     label-for="input-horizontal"
   >
     <BFormInput id="input-horizontal" />
-  </BFormGroup>
+  </BFormField>
   <!-- #endregion template -->
 </template>

@@ -12,7 +12,7 @@ export const getActiveElement = (excludes: readonly HTMLElement[] = []): Element
 }
 
 /**
- * @deprecated only used in BFormGroup, which is not an SFC... Function could probably be replaced with pure Vue
+ * @deprecated only used in BFormField, which is not an SFC... Function could probably be replaced with pure Vue
  */
 export const attemptFocus = (
   el: Readonly<HTMLElement>,
@@ -29,7 +29,7 @@ export const attemptFocus = (
 }
 
 /**
- * @deprecated only used in BFormGroup, which is not an SFC... Function could probably be replaced with pure Vue
+ * @deprecated only used in BFormField, which is not an SFC... Function could probably be replaced with pure Vue
  */
 export const isVisible = (el: Readonly<Element>): boolean => {
   //if (!isElement(el) || !el.parentNode || !contains(DOCUMENT.body, el)) {

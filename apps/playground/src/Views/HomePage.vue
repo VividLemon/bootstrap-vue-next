@@ -67,7 +67,7 @@ import TFormCheckbox from '../components/Comps/TFormCheckbox.vue'
 import TFormCheckboxGroup from '../components/Comps/TFormCheckboxGroup.vue'
 import TFormFile from '../components/Comps/TFormFile.vue'
 import TFormFloatingLabel from '../components/Comps/TFormFloatingLabel.vue'
-import TFormGroup from '../components/Comps/TFormGroup.vue'
+import TFormField from '../components/Comps/TFormField.vue'
 import TFormInput from '../components/Comps/TFormInput.vue'
 import TFocusTest from '../components/Comps/TFocusTest.vue'
 import TFormRadio from '../components/Comps/TFormRadio.vue'
@@ -112,7 +112,7 @@ const comps: {name: string; is: unknown; disabled?: true}[] = [
   {name: 'FormCheckboxGroup', is: TFormCheckboxGroup},
   {name: 'FormFile', is: TFormFile},
   {name: 'FormFloatingLabel', is: TFormFloatingLabel},
-  {name: 'FormGroup', is: TFormGroup},
+  {name: 'FormGroup', is: TFormField},
   {name: 'FormInput', is: TFormInput},
   {name: 'FocusTest', is: TFocusTest},
   {name: 'FormRadio', is: TFormRadio},

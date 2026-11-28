@@ -1,6 +1,6 @@
 import {afterEach, describe, expect, it} from 'vitest'
 import {enableAutoUnmount, mount} from '@vue/test-utils'
-import BFormGroup from './BFormGroup.vue'
+import BFormField from './BFormField.vue'
 import {h, nextTick} from 'vue'
 import BFormInput from '../BFormInput/BFormInput.vue'
 import BFormTextarea from '../BFormTextarea/BFormTextarea.vue'
@@ -9,56 +9,77 @@ import BFormCheckbox from '../BFormCheckbox/BFormCheckbox.vue'
 import BFormRadio from '../BFormRadio/BFormRadio.vue'
 import BFormFloatingLabel from '../BForm/BFormFloatingLabel.vue'
 
-describe('form-group', () => {
+describe('form-field', () => {
   enableAutoUnmount(afterEach)
 
-  it('has static class b-form-group', () => {
-    const wrapper = mount(BFormGroup)
-    expect(wrapper.classes()).toContain('b-form-group')
+  it('has static class b-form-field', () => {
+    const wrapper = mount(BFormField)
+    expect(wrapper.classes()).toContain('b-form-field')
   })
 
-  it('has static class b-form-group when labelFor is set', () => {
-    const wrapper = mount(BFormGroup, {
+  it('has static class b-form-field when labelFor is set', () => {
+    const wrapper = mount(BFormField, {
       props: {labelFor: 'foo'},
     })
-    expect(wrapper.classes()).toContain('b-form-group')
+    expect(wrapper.classes()).toContain('b-form-field')
   })
 
   it('tag is default fieldset', () => {
-    const wrapper = mount(BFormGroup)
+    const wrapper = mount(BFormField)
     expect(wrapper.element.tagName).toBe('FIELDSET')
   })
 
-  it('tag is fieldset even when labelFor is set', () => {
-    const wrapper = mount(BFormGroup, {
+  it('tag is div when labelFor is set (single control)', () => {
+    const wrapper = mount(BFormField, {
       props: {labelFor: 'foobar'},
     })
+    expect(wrapper.element.tagName).toBe('DIV')
+    expect(wrapper.classes()).toContain('form-field')
+    expect(wrapper.classes()).not.toContain('form-group')
+  })
+
+  it('tag is div in floating mode', () => {
+    const wrapper = mount(BFormField, {
+      props: {label: 'foo', floating: true},
+    })
+    expect(wrapper.element.tagName).toBe('DIV')
+  })
+
+  it('keeps the fieldset root but switches to form-field for an auto-detected single control', async () => {
+    const wrapper = mount(BFormField, {
+      props: {label: 'foo'},
+      slots: {default: h(BFormInput, {id: 'auto-input'})},
+    })
+    await nextTick()
     expect(wrapper.element.tagName).toBe('FIELDSET')
+    expect(wrapper.classes()).toContain('form-field')
+    expect(wrapper.classes()).not.toContain('form-group')
+    expect(wrapper.find('label').attributes('for')).toBe('auto-input')
   })
 
   it('has class is-valid when prop state is true', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {state: true},
     })
     expect(wrapper.classes()).toContain('is-valid')
   })
 
   it('has class is-invalid when prop state is false', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {state: false},
     })
     expect(wrapper.classes()).toContain('is-invalid')
   })
 
   it('legend has class visually-hidden when prop label-visually-hidden is true', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {label: 'foo', labelVisuallyHidden: true},
     })
     expect(wrapper.get('legend').classes()).toContain('visually-hidden')
   })
 
   it('does not contain a valid class when prop state is null', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {state: null},
     })
     expect(wrapper.classes()).not.toContain('is-valid')
@@ -66,7 +87,7 @@ describe('form-group', () => {
   })
 
   it('does not contain a valid class when prop state is undefined', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {state: undefined},
     })
     expect(wrapper.classes()).not.toContain('is-valid')
@@ -74,7 +95,7 @@ describe('form-group', () => {
   })
 
   it('state class is reactive', async () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {state: null},
     })
     expect(wrapper.classes()).not.toContain('is-valid')
@@ -91,126 +112,136 @@ describe('form-group', () => {
   })
 
   it('never has class was-validated', () => {
-    const wrapper = mount(BFormGroup)
+    const wrapper = mount(BFormField)
     expect(wrapper.classes()).not.toContain('was-validated')
   })
 
-  it('has class form-field in stacked mode', () => {
-    const wrapper = mount(BFormGroup, {
+  it('has class form-group (not form-field) for a group without a single label target', () => {
+    const wrapper = mount(BFormField, {
       props: {label: 'foo'},
+    })
+    expect(wrapper.classes()).toContain('form-group')
+    expect(wrapper.classes()).not.toContain('form-field')
+  })
+
+  it('has class form-field in stacked mode with a label target', () => {
+    const wrapper = mount(BFormField, {
+      props: {label: 'foo', labelFor: 'bar'},
     })
     expect(wrapper.classes()).toContain('form-field')
   })
 
   it('has class form-field in floating mode', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {label: 'foo', floating: true},
     })
     expect(wrapper.classes()).toContain('form-field')
   })
 
   it('does not have class form-field in horizontal mode', async () => {
-    const wrapper = mount(BFormGroup, {
-      props: {label: 'foo', labelCols: {xs: 3}},
+    const wrapper = mount(BFormField, {
+      props: {label: 'foo', labelFor: 'bar', labelCols: {xs: 3}},
     })
     expect(wrapper.classes()).not.toContain('form-field')
+    expect(wrapper.classes()).not.toContain('form-group')
     await wrapper.setProps({labelCols: undefined})
     expect(wrapper.classes()).toContain('form-field')
   })
 
   it('attr id is defined by default', () => {
-    const wrapper = mount(BFormGroup)
+    const wrapper = mount(BFormField)
     expect(wrapper.attributes('id')).toBeDefined()
   })
 
   it('attr id is prop id', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {id: 'foobar'},
     })
     expect(wrapper.attributes('id')).toBe('foobar')
   })
 
   it('attr disabled is false by default', () => {
-    const wrapper = mount(BFormGroup)
+    const wrapper = mount(BFormField)
     expect(wrapper.attributes('disabled')).toBeUndefined()
   })
 
   it('attr disabled is true when prop disabled', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {disabled: true},
     })
     expect(wrapper.attributes('disabled')).toBe('')
   })
 
-  it('attr disabled is true when prop disabled and labelFor is set', () => {
-    // Root is always <fieldset>, so disabled cascades to all descendants regardless of mode.
-    const wrapper = mount(BFormGroup, {
+  it('has no disabled attribute on the div root when labelFor is set', () => {
+    // A div can't be disabled; the control still gets `disabled` through the form-group injection
+    const wrapper = mount(BFormField, {
       props: {disabled: true, labelFor: 'foo'},
     })
-    expect(wrapper.attributes('disabled')).toBe('')
+    expect(wrapper.element.tagName).toBe('DIV')
+    expect(wrapper.attributes('disabled')).toBeUndefined()
   })
 
   it('attr disabled is undefined when disabled false and labelFor is set', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {disabled: false, labelFor: 'foo'},
     })
     expect(wrapper.attributes('disabled')).toBeUndefined()
   })
 
   it('attr aria-invalid is undefined by default', () => {
-    const wrapper = mount(BFormGroup)
+    const wrapper = mount(BFormField)
     expect(wrapper.attributes('aria-invalid')).toBeUndefined()
   })
 
   it('attr aria-invalid is true when prop ariaInvalid is true', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {ariaInvalid: true},
     })
     expect(wrapper.attributes('aria-invalid')).toBe('true')
   })
 
   it('attr aria-invalid is false when prop ariaInvalid is false', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {ariaInvalid: false},
     })
     expect(wrapper.attributes('aria-invalid')).toBe('false')
   })
 
   it('attr aria-invalid is grammar when prop ariaInvalid is grammar', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {ariaInvalid: 'grammar'},
     })
     expect(wrapper.attributes('aria-invalid')).toBe('grammar')
   })
 
   it('attr aria-invalid is spelling when prop ariaInvalid is spelling', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {ariaInvalid: 'spelling'},
     })
     expect(wrapper.attributes('aria-invalid')).toBe('spelling')
   })
 
   it('attr aria-invalid is true when prop state is false', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {state: false},
     })
     expect(wrapper.attributes('aria-invalid')).toBe('true')
   })
 
   it('attr aria-invalid is true when prop state is false and prop ariaInvalid is false', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {state: false, ariaInvalid: false},
     })
     expect(wrapper.attributes('aria-invalid')).toBe('true')
   })
 
   it('attr aria-labelledby is undefined by default', () => {
-    const wrapper = mount(BFormGroup)
+    const wrapper = mount(BFormField)
     expect(wrapper.attributes('aria-labelledby')).toBeUndefined()
   })
 
   it('attr aria-labelledby is undefined when prop labelFor', () => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props: {labelFor: 'foo'},
     })
     expect(wrapper.attributes('aria-labelledby')).toBeUndefined()
@@ -234,7 +265,7 @@ describe('form-group', () => {
       ])
     )
   )('sets aria-labelledby for $column with $labelSource label', ({props, labelSlot}) => {
-    const wrapper = mount(BFormGroup, {
+    const wrapper = mount(BFormField, {
       props,
       ...(labelSlot ? {slots: {label: labelSlot.label}} : {}),
     })
@@ -243,7 +274,7 @@ describe('form-group', () => {
 
   describe('provide functionality', () => {
     it('label should automatically inherit input id', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo'},
         slots: {
           default: h(BFormInput, {id: 'foobar'}),
@@ -251,7 +282,7 @@ describe('form-group', () => {
       })
       await nextTick()
       expect(wrapper.get('label').attributes('for')).toBe('foobar')
-      const textArea = mount(BFormGroup, {
+      const textArea = mount(BFormField, {
         props: {label: 'foo'},
         slots: {
           default: h(BFormTextarea, {id: 'foobar'}),
@@ -261,7 +292,7 @@ describe('form-group', () => {
       expect(textArea.get('label').attributes('for')).toBe('foobar')
     })
     it('label should automatically inherit BFormSelect id', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo'},
         slots: {
           default: h(BFormSelect, {id: 'select-id'}),
@@ -273,7 +304,7 @@ describe('form-group', () => {
     })
 
     it('label inherits auto-generated BFormSelect id when no id prop', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo'},
         slots: {
           default: h(BFormSelect),
@@ -290,7 +321,7 @@ describe('form-group', () => {
     })
 
     it('uses prop labelFor over input id', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelFor: 'spam and eggs'},
         slots: {
           default: h(BFormInput, {id: 'foobar'}),
@@ -302,7 +333,7 @@ describe('form-group', () => {
 
     describe('sub input to receive state of parent', () => {
       it('sub input should receive state of parent', async () => {
-        const wrapper = mount(BFormGroup, {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', labelFor: 'spam and eggs', state: true},
           slots: {
             default: h(BFormInput, {id: 'foobar', state: undefined}),
@@ -313,7 +344,7 @@ describe('form-group', () => {
       })
 
       it('sub input explicit prop state should override parent state', async () => {
-        const wrapper = mount(BFormGroup, {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', labelFor: 'spam and eggs', state: true},
           slots: {
             default: h(BFormInput, {id: 'foobar', state: null}),
@@ -325,8 +356,8 @@ describe('form-group', () => {
     })
 
     describe('sub input to receive disabled of parent', () => {
-      it('BFormInput should be disabled when parent BFormGroup is disabled', async () => {
-        const wrapper = mount(BFormGroup, {
+      it('BFormInput should be disabled when parent BFormField is disabled', async () => {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', disabled: true},
           slots: {
             default: h(BFormInput, {id: 'foobar'}),
@@ -336,8 +367,8 @@ describe('form-group', () => {
         expect(wrapper.get('#foobar').attributes('disabled')).toBeDefined()
       })
 
-      it('BFormInput should not be disabled when parent BFormGroup is not disabled', async () => {
-        const wrapper = mount(BFormGroup, {
+      it('BFormInput should not be disabled when parent BFormField is not disabled', async () => {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', disabled: false},
           slots: {
             default: h(BFormInput, {id: 'foobar'}),
@@ -347,8 +378,8 @@ describe('form-group', () => {
         expect(wrapper.get('#foobar').attributes('disabled')).toBeUndefined()
       })
 
-      it('BFormTextarea should be disabled when parent BFormGroup is disabled', async () => {
-        const wrapper = mount(BFormGroup, {
+      it('BFormTextarea should be disabled when parent BFormField is disabled', async () => {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', disabled: true},
           slots: {
             default: h(BFormTextarea, {id: 'foobar'}),
@@ -359,7 +390,7 @@ describe('form-group', () => {
       })
 
       it('BFormInput own disabled prop should also disable the input', async () => {
-        const wrapper = mount(BFormGroup, {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', disabled: false},
           slots: {
             default: h(BFormInput, {id: 'foobar', disabled: true}),
@@ -369,8 +400,8 @@ describe('form-group', () => {
         expect(wrapper.get('#foobar').attributes('disabled')).toBeDefined()
       })
 
-      it('BFormSelect should be disabled when parent BFormGroup is disabled', async () => {
-        const wrapper = mount(BFormGroup, {
+      it('BFormSelect should be disabled when parent BFormField is disabled', async () => {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', disabled: true},
           slots: {
             default: h(BFormSelect, {id: 'foobar'}),
@@ -380,8 +411,8 @@ describe('form-group', () => {
         expect(wrapper.get('#foobar').attributes('disabled')).toBeDefined()
       })
 
-      it('BFormCheckbox should be disabled when parent BFormGroup is disabled', async () => {
-        const wrapper = mount(BFormGroup, {
+      it('BFormCheckbox should be disabled when parent BFormField is disabled', async () => {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', disabled: true},
           slots: {
             default: h(BFormCheckbox, {id: 'foobar'}),
@@ -391,8 +422,8 @@ describe('form-group', () => {
         expect(wrapper.get('#foobar').attributes('disabled')).toBeDefined()
       })
 
-      it('BFormRadio should be disabled when parent BFormGroup is disabled', async () => {
-        const wrapper = mount(BFormGroup, {
+      it('BFormRadio should be disabled when parent BFormField is disabled', async () => {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', disabled: true},
           slots: {
             default: h(BFormRadio, {id: 'foobar'}),
@@ -408,7 +439,7 @@ describe('form-group', () => {
       // to "last id wins" and the group rendered <label for="lastId">. We now bind label[for]
       // only when exactly one input registers; anything else stays <legend>.
       it('falls back to legend when multiple inputs register (e.g. inside a BInputGroup)', async () => {
-        const wrapper = mount(BFormGroup, {
+        const wrapper = mount(BFormField, {
           props: {label: 'Range'},
           slots: {
             default: () => [h(BFormInput, {id: 'range-start'}), h(BFormInput, {id: 'range-end'})],
@@ -422,11 +453,11 @@ describe('form-group', () => {
     })
 
     // BFormCheckbox renders its own <label v-if="hasDefaultSlot || !resolvedPlain">. The
-    // claim on BFormGroup's label[for] only happens in the negative case (plain + no slot
+    // claim on BFormField's label[for] only happens in the negative case (plain + no slot
     // content), where no own label is rendered.
     describe('BFormCheckbox label-for claim depends on own label', () => {
       it('claims label-for when plain and no slot (no own label)', async () => {
-        const wrapper = mount(BFormGroup, {
+        const wrapper = mount(BFormField, {
           props: {label: 'Agreement'},
           slots: {default: () => h(BFormCheckbox, {id: 'agree', plain: true})},
         })
@@ -438,7 +469,7 @@ describe('form-group', () => {
       })
 
       it('does not claim when checkbox has a default slot (own label rendered)', async () => {
-        const wrapper = mount(BFormGroup, {
+        const wrapper = mount(BFormField, {
           props: {label: 'Agreement'},
           slots: {default: () => h(BFormCheckbox, {id: 'agree'}, () => 'I accept the terms')},
         })
@@ -453,7 +484,7 @@ describe('form-group', () => {
     // condition (`hasDefaultSlot || !resolvedPlain`), so the claim logic is identical.
     describe('BFormRadio label-for claim depends on own label', () => {
       it('claims label-for when plain and no slot (no own label)', async () => {
-        const wrapper = mount(BFormGroup, {
+        const wrapper = mount(BFormField, {
           props: {label: 'Pick one'},
           slots: {default: () => h(BFormRadio, {id: 'opt', plain: true})},
         })
@@ -465,7 +496,7 @@ describe('form-group', () => {
       })
 
       it('does not claim when radio has a default slot (own label rendered)', async () => {
-        const wrapper = mount(BFormGroup, {
+        const wrapper = mount(BFormField, {
           props: {label: 'Pick one'},
           slots: {default: () => h(BFormRadio, {id: 'opt'}, () => 'Option A')},
         })
@@ -477,7 +508,7 @@ describe('form-group', () => {
     })
 
     it('falls back to legend when BFormFloatingLabel intervenes between group and input', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Email'},
         slots: {
           default: () =>
@@ -494,7 +525,7 @@ describe('form-group', () => {
 
   describe('horizontal layout', () => {
     it('applies labelAlign md classes to BCol wrapper in horizontal mode', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Login:',
           labelFor: 'loginname',
@@ -516,7 +547,7 @@ describe('form-group', () => {
 
     it('applies user classes to root element in both horizontal and non-horizontal mode', () => {
       // Test horizontal mode
-      const wrapperHorizontal = mount(BFormGroup, {
+      const wrapperHorizontal = mount(BFormField, {
         attrs: {
           class: 'align-items-center custom-class',
         },
@@ -534,7 +565,7 @@ describe('form-group', () => {
       expect(wrapperHorizontal.classes()).toContain('custom-class')
 
       // Test non-horizontal mode
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         attrs: {
           class: 'custom-class',
         },
@@ -551,7 +582,7 @@ describe('form-group', () => {
     })
 
     it('applies labelAlign classes to label in non-horizontal mode', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Login:',
           labelFor: 'loginname',
@@ -568,7 +599,7 @@ describe('form-group', () => {
 
   describe('legend click focus behavior', () => {
     it('does not throw error when legend is clicked in vertical fieldset mode', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Username'},
         slots: {
           default: () => h('input', {type: 'text', class: 'form-control'}),
@@ -589,7 +620,7 @@ describe('form-group', () => {
     })
 
     it('does not throw error when legend is clicked in horizontal fieldset mode', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Username',
           labelCols: {md: 3},
@@ -614,7 +645,7 @@ describe('form-group', () => {
     })
 
     it('does not throw error when legend is clicked with textarea in horizontal fieldset mode', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Comments',
           labelCols: {md: 4},
@@ -637,7 +668,7 @@ describe('form-group', () => {
     })
 
     it('does not focus when label (not legend) is used with labelFor', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Username',
           labelFor: 'username-input',
@@ -655,13 +686,13 @@ describe('form-group', () => {
       expect(label.exists()).toBe(true)
       expect(wrapper.find('legend').exists()).toBe(false)
 
-      expect(wrapper.element.tagName).toBe('FIELDSET')
+      expect(wrapper.element.tagName).toBe('DIV')
 
       wrapper.unmount()
     })
 
     it('does not throw error when clicking legend with no input', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Empty Group',
           labelCols: {md: 3},
@@ -677,7 +708,7 @@ describe('form-group', () => {
     })
 
     it('does not focus disabled input when legend is clicked', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Username',
           labelCols: {md: 3},
@@ -699,7 +730,7 @@ describe('form-group', () => {
     })
 
     it('does not focus when clicking on button inside legend', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Username',
           labelCols: {md: 3},
@@ -726,7 +757,7 @@ describe('form-group', () => {
     })
 
     it('renders a label (not legend) linked to BFormSelect so clicking it focuses the select', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Select an item'},
         slots: {
           default: h(BFormSelect),
@@ -738,7 +769,7 @@ describe('form-group', () => {
       const select = wrapper.find('select')
       const label = wrapper.find('label')
 
-      // BFormGroup must render a <label for="..."> (not a <legend>) whose for attribute
+      // BFormField must render a <label for="..."> (not a <legend>) whose for attribute
       // points at the select — this is what causes the browser to focus the select on click.
       expect(label.exists()).toBe(true)
       expect(wrapper.find('legend').exists()).toBe(false)
@@ -748,7 +779,7 @@ describe('form-group', () => {
     })
 
     it('renders a label (not legend) linked to BFormSelect in horizontal layout', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Select an item', labelCols: {md: 3}},
         slots: {
           default: h(BFormSelect),
@@ -771,7 +802,7 @@ describe('form-group', () => {
 
   describe('label rendering', () => {
     it('renders legend tag when no labelFor is set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'My Label'},
       })
       expect(wrapper.find('legend').exists()).toBe(true)
@@ -779,7 +810,7 @@ describe('form-group', () => {
     })
 
     it('renders label tag when labelFor is set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'My Label', labelFor: 'input-id'},
       })
       expect(wrapper.find('label').exists()).toBe(true)
@@ -787,21 +818,21 @@ describe('form-group', () => {
     })
 
     it('renders label text from prop', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'My Label Text'},
       })
       expect(wrapper.find('legend').text()).toBe('My Label Text')
     })
 
     it('renders label text from slot', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         slots: {label: 'Slot Label Text'},
       })
       expect(wrapper.find('legend').text()).toBe('Slot Label Text')
     })
 
     it('renders label HTML from slot', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         slots: {label: '<strong>Bold Label</strong>'},
       })
       expect(wrapper.find('legend').find('strong').exists()).toBe(true)
@@ -809,7 +840,7 @@ describe('form-group', () => {
     })
 
     it('slot label takes precedence over prop label', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Prop Label'},
         slots: {label: 'Slot Label'},
       })
@@ -817,27 +848,27 @@ describe('form-group', () => {
     })
 
     it('does not render label element when no label prop or slot is provided and not horizontal', () => {
-      const wrapper = mount(BFormGroup)
+      const wrapper = mount(BFormField)
       expect(wrapper.find('legend').exists()).toBe(false)
       expect(wrapper.find('label').exists()).toBe(false)
     })
 
     it('renders label element when horizontal even without label prop or slot', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {labelCols: {xs: 3}},
       })
       expect(wrapper.find('legend').exists()).toBe(true)
     })
 
     it('label has for attribute matching labelFor prop', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'My Label', labelFor: 'my-input'},
       })
       expect(wrapper.find('label').attributes('for')).toBe('my-input')
     })
 
     it('label prop is reactive', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Initial'},
       })
       expect(wrapper.find('legend').text()).toBe('Initial')
@@ -847,66 +878,70 @@ describe('form-group', () => {
   })
 
   describe('label classes', () => {
-    it('legend has col-form-label class by default', () => {
-      const wrapper = mount(BFormGroup, {
+    it('stacked legend has only form-label (no v5 col-form-label / pt-0 / bv-no-focus-ring)', () => {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo'},
       })
-      expect(wrapper.find('legend').classes()).toContain('col-form-label')
+      expect(wrapper.find('legend').classes()).toEqual(['form-label'])
     })
 
-    it('label has form-label and d-block classes when labelFor is set', () => {
-      const wrapper = mount(BFormGroup, {
+    it('label has form-label but no d-block when labelFor is set', () => {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelFor: 'bar'},
       })
       const label = wrapper.find('label')
       expect(label.classes()).toContain('form-label')
-      expect(label.classes()).toContain('d-block')
-    })
-
-    it('legend has bv-no-focus-ring class', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'foo'},
-      })
-      expect(wrapper.find('legend').classes()).toContain('bv-no-focus-ring')
+      expect(label.classes()).not.toContain('d-block')
     })
 
     it('label does not have bv-no-focus-ring class when labelFor is set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelFor: 'bar'},
       })
       expect(wrapper.find('label').classes()).not.toContain('bv-no-focus-ring')
     })
 
-    it('legend has pt-0 class when not horizontal', () => {
-      const wrapper = mount(BFormGroup, {
+    it('legend does not have pt-0 class when not horizontal', () => {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo'},
-      })
-      expect(wrapper.find('legend').classes()).toContain('pt-0')
-    })
-
-    it('legend does not have pt-0 class when horizontal', () => {
-      const wrapper = mount(BFormGroup, {
-        props: {label: 'foo', labelCols: {xs: 3}},
       })
       expect(wrapper.find('legend').classes()).not.toContain('pt-0')
     })
 
+    it('horizontal legend has col-form-label and pt-0 (as the v6 layout docs)', () => {
+      const wrapper = mount(BFormField, {
+        props: {label: 'foo', labelCols: {xs: 3}},
+      })
+      expect(wrapper.find('legend').classes()).toEqual(
+        expect.arrayContaining(['col-form-label', 'pt-0'])
+      )
+    })
+
+    it('horizontal label has col-form-label but no pt-0', () => {
+      const wrapper = mount(BFormField, {
+        props: {label: 'foo', labelFor: 'bar', labelCols: {xs: 3}},
+      })
+      const label = wrapper.find('label')
+      expect(label.classes()).toContain('col-form-label')
+      expect(label.classes()).not.toContain('pt-0')
+    })
+
     it('applies col-form-label-{size} class when labelSize is set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelSize: 'lg'},
       })
       expect(wrapper.find('legend').classes()).toContain('col-form-label-lg')
     })
 
     it('applies col-form-label-sm class when labelSize is sm', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelSize: 'sm'},
       })
       expect(wrapper.find('legend').classes()).toContain('col-form-label-sm')
     })
 
     it('does not apply col-form-label-{size} class when labelSize is not set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo'},
       })
       const classes = wrapper.find('legend').classes()
@@ -914,31 +949,31 @@ describe('form-group', () => {
     })
 
     it('applies visually-hidden class when labelVisuallyHidden is true', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelVisuallyHidden: true},
       })
       expect(wrapper.find('legend').classes()).toContain('visually-hidden')
     })
 
     it('does not apply visually-hidden class when labelVisuallyHidden is false', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelVisuallyHidden: false},
       })
       expect(wrapper.find('legend').classes()).not.toContain('visually-hidden')
     })
 
     it('merges labelAttrs class with the component classes', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelAttrs: {class: 'my-custom-class', title: 'bar'}},
       })
       const legend = wrapper.find('legend')
       expect(legend.classes()).toContain('my-custom-class')
-      expect(legend.classes()).toContain('col-form-label')
+      expect(legend.classes()).toContain('form-label')
       expect(legend.attributes('title')).toBe('bar')
     })
 
     it('merges array labelAttrs class and style', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'foo',
           labelAttrs: {class: ['class-a', 'class-b'], style: {color: 'red'}},
@@ -951,7 +986,7 @@ describe('form-group', () => {
     })
 
     it('merges labelAttrs class in horizontal mode', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelCols: {xs: 3}, labelAttrs: {class: 'my-custom-class'}},
       })
       const legend = wrapper.find('legend')
@@ -961,7 +996,7 @@ describe('form-group', () => {
     })
 
     it('merges labelAttrs class in floating mode', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', floating: true, labelAttrs: {class: 'my-custom-class'}},
       })
       const label = wrapper.find('.form-floating > label')
@@ -970,7 +1005,7 @@ describe('form-group', () => {
     })
 
     it('label has col-form-label class in horizontal mode', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelCols: {xs: 3}},
       })
       expect(wrapper.find('legend').classes()).toContain('col-form-label')
@@ -986,7 +1021,7 @@ describe('form-group', () => {
     ] as const)(
       'applies $className for labelAlign in non-horizontal mode',
       ({value, className}) => {
-        const wrapper = mount(BFormGroup, {
+        const wrapper = mount(BFormField, {
           props: {label: 'foo', labelFor: 'bar', labelAlign: value},
         })
         for (const cls of className) expect(wrapper.find('label').classes()).toContain(cls)
@@ -994,7 +1029,7 @@ describe('form-group', () => {
     )
 
     it('does not switch to horizontal mode when cols objects have no truthy values', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelCols: {}, contentCols: {md: false}},
       })
       expect(wrapper.find('.row').exists()).toBe(false)
@@ -1002,7 +1037,7 @@ describe('form-group', () => {
     })
 
     it('renders responsive label and content cols as v6 prefix classes', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelCols: {xs: 12, md: 4}, contentCols: {xs: 12, md: true}},
       })
       expect(wrapper.find('legend').classes()).toEqual(
@@ -1014,7 +1049,7 @@ describe('form-group', () => {
     })
 
     it('renders an equal-width label column for labelCols {xs: true}', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelCols: {xs: true}},
       })
       expect(wrapper.find('legend').classes()).toContain('col')
@@ -1023,28 +1058,28 @@ describe('form-group', () => {
 
   describe('label id', () => {
     it('legend has an auto-generated id', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo'},
       })
       expect(wrapper.find('legend').attributes('id')).toBeDefined()
     })
 
     it('label has an auto-generated id when labelFor is set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelFor: 'bar'},
       })
       expect(wrapper.find('label').attributes('id')).toBeDefined()
     })
 
     it('legend has tabindex -1', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo'},
       })
       expect(wrapper.find('legend').attributes('tabindex')).toBe('-1')
     })
 
     it('label does not have tabindex when labelFor is set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'foo', labelFor: 'bar'},
       })
       expect(wrapper.find('label').attributes('tabindex')).toBeUndefined()
@@ -1053,21 +1088,21 @@ describe('form-group', () => {
 
   describe('invalid feedback', () => {
     it('renders invalid feedback from prop', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {invalidFeedback: 'Error message'},
       })
       expect(wrapper.text()).toContain('Error message')
     })
 
     it('renders invalid feedback from slot', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         slots: {'invalid-feedback': 'Slot error message'},
       })
       expect(wrapper.text()).toContain('Slot error message')
     })
 
     it('slot invalid-feedback takes precedence over prop', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {invalidFeedback: 'Prop error'},
         slots: {'invalid-feedback': 'Slot error'},
       })
@@ -1076,13 +1111,13 @@ describe('form-group', () => {
     })
 
     it('does not render invalid feedback when neither prop nor slot is provided', () => {
-      const wrapper = mount(BFormGroup)
+      const wrapper = mount(BFormField)
       expect(wrapper.find('.invalid-feedback').exists()).toBe(false)
       expect(wrapper.find('.invalid-tooltip').exists()).toBe(false)
     })
 
     it('invalid feedback has auto-generated id', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {invalidFeedback: 'Error'},
       })
       const feedback = wrapper.find('.invalid-feedback')
@@ -1092,21 +1127,21 @@ describe('form-group', () => {
 
   describe('valid feedback', () => {
     it('renders valid feedback from prop', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {validFeedback: 'Success message'},
       })
       expect(wrapper.text()).toContain('Success message')
     })
 
     it('renders valid feedback from slot', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         slots: {'valid-feedback': 'Slot success message'},
       })
       expect(wrapper.text()).toContain('Slot success message')
     })
 
     it('slot valid-feedback takes precedence over prop', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {validFeedback: 'Prop success'},
         slots: {'valid-feedback': 'Slot success'},
       })
@@ -1115,13 +1150,13 @@ describe('form-group', () => {
     })
 
     it('does not render valid feedback when neither prop nor slot is provided', () => {
-      const wrapper = mount(BFormGroup)
+      const wrapper = mount(BFormField)
       expect(wrapper.find('.valid-feedback').exists()).toBe(false)
       expect(wrapper.find('.valid-tooltip').exists()).toBe(false)
     })
 
     it('valid feedback has auto-generated id', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {validFeedback: 'Good'},
       })
       const feedback = wrapper.find('.valid-feedback')
@@ -1131,21 +1166,21 @@ describe('form-group', () => {
 
   describe('description', () => {
     it('renders description from prop', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {description: 'Help text'},
       })
       expect(wrapper.text()).toContain('Help text')
     })
 
     it('renders description from slot', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         slots: {description: 'Slot help text'},
       })
       expect(wrapper.text()).toContain('Slot help text')
     })
 
     it('slot description takes precedence over prop', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {description: 'Prop help'},
         slots: {description: 'Slot help'},
       })
@@ -1154,12 +1189,12 @@ describe('form-group', () => {
     })
 
     it('does not render description when neither prop nor slot is provided', () => {
-      const wrapper = mount(BFormGroup)
+      const wrapper = mount(BFormField)
       expect(wrapper.find('.form-text').exists()).toBe(false)
     })
 
     it('description has auto-generated id', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {description: 'Help'},
       })
       const desc = wrapper.find('.form-text')
@@ -1169,7 +1204,7 @@ describe('form-group', () => {
 
   describe('tooltip feedback', () => {
     it('renders invalid-tooltip class when tooltip is true', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {invalidFeedback: 'Error', tooltip: true},
       })
       expect(wrapper.find('.invalid-tooltip').exists()).toBe(true)
@@ -1177,7 +1212,7 @@ describe('form-group', () => {
     })
 
     it('renders valid-tooltip class when tooltip is true', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {validFeedback: 'Good', tooltip: true},
       })
       expect(wrapper.find('.valid-tooltip').exists()).toBe(true)
@@ -1185,7 +1220,7 @@ describe('form-group', () => {
     })
 
     it('renders feedback classes (not tooltip) when tooltip is false', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {invalidFeedback: 'Error', validFeedback: 'Good', tooltip: false},
       })
       expect(wrapper.find('.invalid-feedback').exists()).toBe(true)
@@ -1197,28 +1232,28 @@ describe('form-group', () => {
 
   describe('feedbackAriaLive', () => {
     it('invalid feedback has aria-live assertive by default', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {invalidFeedback: 'Error'},
       })
       expect(wrapper.find('.invalid-feedback').attributes('aria-live')).toBe('assertive')
     })
 
     it('invalid feedback has custom aria-live value', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {invalidFeedback: 'Error', feedbackAriaLive: 'polite'},
       })
       expect(wrapper.find('.invalid-feedback').attributes('aria-live')).toBe('polite')
     })
 
     it('valid feedback has aria-live assertive by default', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {validFeedback: 'Good'},
       })
       expect(wrapper.find('.valid-feedback').attributes('aria-live')).toBe('assertive')
     })
 
     it('valid feedback has custom aria-live value', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {validFeedback: 'Good', feedbackAriaLive: 'polite'},
       })
       expect(wrapper.find('.valid-feedback').attributes('aria-live')).toBe('polite')
@@ -1227,7 +1262,7 @@ describe('form-group', () => {
 
   describe('floating label', () => {
     it('renders form-floating wrapper when floating is true', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {floating: true, label: 'Email'},
         slots: {
           default: h(BFormInput),
@@ -1237,7 +1272,7 @@ describe('form-group', () => {
     })
 
     it('does not render form-floating wrapper when floating is false', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {floating: false, label: 'Email'},
         slots: {
           default: h(BFormInput),
@@ -1247,7 +1282,7 @@ describe('form-group', () => {
     })
 
     it('in floating mode, label comes before default slot content', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {floating: true, label: 'Email'},
         slots: {
           default: h(BFormInput, {id: 'email-input'}),
@@ -1267,7 +1302,7 @@ describe('form-group', () => {
       // The label must still be a <label> element on that first pass, otherwise SSR HTML
       // (which only contains the first pass) would render an unstyled legend below the box
       // and hydration would flip it to a label, causing a repaint/layout shift.
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {floating: true, label: 'Email'},
         slots: {
           default: h(BFormInput, {id: 'email-input'}),
@@ -1278,7 +1313,7 @@ describe('form-group', () => {
     })
 
     it('wires the for attribute after child registration without changing the element', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {floating: true, label: 'Email'},
         slots: {
           default: h(BFormInput, {id: 'email-input'}),
@@ -1292,7 +1327,7 @@ describe('form-group', () => {
     })
 
     it('does not apply form-floating when horizontal', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {floating: true, label: 'Email', labelCols: {xs: 3}},
         slots: {
           default: h(BFormInput),
@@ -1305,7 +1340,7 @@ describe('form-group', () => {
   describe('default slot props', () => {
     it('passes id to default slot', () => {
       let slotProps: Record<string, unknown> | undefined
-      mount(BFormGroup, {
+      mount(BFormField, {
         props: {id: 'my-group'},
         slots: {
           default: (props: Record<string, unknown>) => {
@@ -1320,7 +1355,7 @@ describe('form-group', () => {
 
     it('passes descriptionId to default slot', () => {
       let slotProps: Record<string, unknown> | undefined
-      mount(BFormGroup, {
+      mount(BFormField, {
         props: {description: 'Help text'},
         slots: {
           default: (props: Record<string, unknown>) => {
@@ -1335,7 +1370,7 @@ describe('form-group', () => {
 
     it('passes labelId to default slot', () => {
       let slotProps: Record<string, unknown> | undefined
-      mount(BFormGroup, {
+      mount(BFormField, {
         props: {label: 'My Label'},
         slots: {
           default: (props: Record<string, unknown>) => {
@@ -1350,7 +1385,7 @@ describe('form-group', () => {
 
     it('passes ariaDescribedby as null to default slot', () => {
       let slotProps: Record<string, unknown> | undefined
-      mount(BFormGroup, {
+      mount(BFormField, {
         slots: {
           default: (props: Record<string, unknown>) => {
             slotProps = props
@@ -1364,7 +1399,7 @@ describe('form-group', () => {
 
     it('passes descriptionId as ariaDescribedby when description exists', () => {
       let slotProps: Record<string, unknown> | undefined
-      mount(BFormGroup, {
+      mount(BFormField, {
         props: {description: 'Help text'},
         slots: {
           default: (props: Record<string, unknown>) => {
@@ -1380,7 +1415,7 @@ describe('form-group', () => {
 
     it('includes invalid feedback id in ariaDescribedby when state is invalid', () => {
       let slotProps: Record<string, unknown> | undefined
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {description: 'Help text', invalidFeedback: 'Invalid', state: false},
         slots: {
           default: (props: Record<string, unknown>) => {
@@ -1398,7 +1433,7 @@ describe('form-group', () => {
 
   describe('disabled reactivity', () => {
     it('disabled attribute is reactive', async () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {disabled: false},
       })
       expect(wrapper.attributes('disabled')).toBeUndefined()
@@ -1411,7 +1446,7 @@ describe('form-group', () => {
 
   describe('inheritAttrs', () => {
     it('forwards custom attrs to root element', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         attrs: {'data-testid': 'my-form-group', 'aria-label': 'test'},
       })
       expect(wrapper.attributes('data-testid')).toBe('my-form-group')
@@ -1419,7 +1454,7 @@ describe('form-group', () => {
     })
 
     it('forwards style attribute to root element', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         attrs: {style: 'margin-top: 10px'},
       })
       expect(wrapper.attributes('style')).toContain('margin-top')
@@ -1428,7 +1463,7 @@ describe('form-group', () => {
 
   describe('horizontal layout structure', () => {
     it('renders row structure when labelCols is set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name', labelCols: {xs: 3}},
         slots: {
           default: h(BFormInput),
@@ -1439,7 +1474,7 @@ describe('form-group', () => {
     })
 
     it('renders row structure when contentCols is set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name', contentCols: {xs: 9}},
         slots: {
           default: h(BFormInput),
@@ -1449,7 +1484,7 @@ describe('form-group', () => {
     })
 
     it('does not render row structure when no col props are set', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name'},
         slots: {
           default: h(BFormInput),
@@ -1466,7 +1501,7 @@ describe('form-group', () => {
       {value: {xl: 6}, className: 'xl:col-6'},
       {value: {'2xl': 6}, className: '2xl:col-6'},
     ] as const)('renders $className on label for labelCols', ({value, className}) => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name', labelCols: value},
         slots: {default: h(BFormInput)},
       })
@@ -1476,7 +1511,7 @@ describe('form-group', () => {
     })
 
     it('renders col class when labelCols is {xs: true}', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name', labelCols: {xs: true}},
         slots: {
           default: h(BFormInput),
@@ -1488,7 +1523,7 @@ describe('form-group', () => {
     })
 
     it('renders col class when contentCols is {xs: true}', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name', contentCols: {xs: true}},
         slots: {
           default: h(BFormInput),
@@ -1505,7 +1540,7 @@ describe('form-group', () => {
       {bp: 'xl', value: 'end', className: 'xl:text-end'},
       {bp: '2xl', value: 'end', className: '2xl:text-end'},
     ] as const)('applies $className in horizontal mode', ({bp, value, className}) => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name', labelCols: {[bp]: 3}, labelAlign: {[bp]: value}},
         slots: {default: h(BFormInput)},
       })
@@ -1522,7 +1557,7 @@ describe('form-group', () => {
       {value: {xl: 5}, className: 'xl:col-5'},
       {value: {'2xl': 4}, className: '2xl:col-4'},
     ] as const)('applies $className for contentCols', ({value, className}) => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name', contentCols: value},
         slots: {default: h(BFormInput)},
       })
@@ -1533,7 +1568,7 @@ describe('form-group', () => {
     })
 
     it('uses auto keyword for content cols', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name', contentCols: {xs: 'auto'}},
         slots: {
           default: h(BFormInput),
@@ -1545,7 +1580,7 @@ describe('form-group', () => {
     })
 
     it('uses auto keyword for label cols', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {label: 'Name', labelCols: {xs: 'auto'}},
         slots: {
           default: h(BFormInput),
@@ -1559,14 +1594,14 @@ describe('form-group', () => {
 
   describe('default slot rendering', () => {
     it('renders text in default slot', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         slots: {default: 'Default content'},
       })
       expect(wrapper.text()).toContain('Default content')
     })
 
     it('renders HTML in default slot', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         slots: {default: '<span class="custom">Content</span>'},
       })
       expect(wrapper.find('.custom').exists()).toBe(true)
@@ -1574,7 +1609,7 @@ describe('form-group', () => {
     })
 
     it('renders component in default slot', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         slots: {
           default: h(BFormInput, {id: 'my-input'}),
         },
@@ -1585,7 +1620,7 @@ describe('form-group', () => {
 
   describe('combined rendering', () => {
     it('renders label, default slot, description, and feedback together', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Username',
           description: 'Enter your username',
@@ -1605,7 +1640,7 @@ describe('form-group', () => {
     })
 
     it('fieldset contains label, default, feedback and description in vertical mode', () => {
-      const wrapper = mount(BFormGroup, {
+      const wrapper = mount(BFormField, {
         props: {
           label: 'Name',
           invalidFeedback: 'Invalid',

@@ -1,5 +1,5 @@
 <template>
-  <BFormGroup
+  <BFormField
     id="fieldset-1"
     description="Let us know your name."
     label="Enter your name"
@@ -10,7 +10,7 @@
     :label-attrs="{ class: 'mb-1' }"
   >
     <BFormInput id="input-1" v-model="name" :state="state" trim />
-  </BFormGroup>
+  </BFormField>
   <div>
     Name: <strong>{{ name }}</strong>
   </div>

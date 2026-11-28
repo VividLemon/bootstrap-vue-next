@@ -1,5 +1,5 @@
 <template>
-  <BFormGroup
+  <BFormField
     id="fieldset-4"
     description="Let us know your name."
     label="Name"
@@ -16,19 +16,19 @@
       trim
       placeholder="Enter your name please"
     />
-  </BFormGroup>
+  </BFormField>
   <div>
     Name: <strong>{{ floatingName }}</strong>
   </div>
 </template>
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import { computed, ref } from 'vue'
 
 const floatingName = ref('')
 
 const floatingState = computed(() => floatingName.value.length >= 4)
 const floatingInvalidFeedback = computed(() =>
-  floatingName.value.length > 0 ? 'Enter at least 4 characters.' : 'Please enter something.'
+  floatingName.value.length > 0 ? 'Enter at least 4 characters.' : 'Please enter something.',
 )
 </script>

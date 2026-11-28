@@ -174,7 +174,7 @@
         <!-- User Interface controls -->
         <BRow>
           <BCol :cols="{lg: 6}" class="my-1">
-            <BFormGroup
+            <BFormField
               v-slot="{ariaDescribedby}"
               label="Sort"
               label-for="sort-by-select"
@@ -208,11 +208,11 @@
                   <option value="desc">Desc</option>
                 </BFormSelect>
               </BInputGroup>
-            </BFormGroup>
+            </BFormField>
           </BCol>
 
           <BCol :cols="{lg: 6}" class="my-1">
-            <BFormGroup
+            <BFormField
               label="Filter"
               label-for="filter-input"
               :label-cols="{sm: 3}"
@@ -232,11 +232,11 @@
                   <BButton :disabled="!filter" @click="filter = ''">Clear</BButton>
                 </BInputGroupText>
               </BInputGroup>
-            </BFormGroup>
+            </BFormField>
           </BCol>
 
           <BCol :cols="{lg: 6}" class="my-1">
-            <BFormGroup
+            <BFormField
               v-slot="{ariaDescribedby}"
               v-model="sortDirection"
               label="Filter On"
@@ -260,11 +260,11 @@
                   >Active</BFormCheckbox
                 >
               </div>
-            </BFormGroup>
+            </BFormField>
           </BCol>
 
           <BCol :cols="{sm: 5, md: 6}" class="my-1">
-            <BFormGroup
+            <BFormField
               label="Per page"
               label-for="per-page-select"
               :label-cols="{sm: 6, md: 4, lg: 3}"
@@ -278,7 +278,7 @@
                 :options="pageOptions"
                 size="sm"
               />
-            </BFormGroup>
+            </BFormField>
           </BCol>
 
           <BCol :cols="{sm: 7, md: 6}" class="my-1">

@@ -1,11 +1,11 @@
-import type { BFormGroupProps, BFormGroupSlots } from 'bootstrap-vue-next'
+import type { BFormFieldProps, BFormFieldSlots } from 'bootstrap-vue-next'
 import type { ComponentReference, PropRecord, SlotRecord } from '../../types'
 import { pick } from '../../utils/objectUtils'
 import { buildCommonProps } from '../../utils/commonProps'
 
 export default {
   load: (): ComponentReference => ({
-    BFormGroup: {
+    BFormField: {
       props: {
         ...pick(
           buildCommonProps({
@@ -20,12 +20,12 @@ export default {
           type: 'Responsive<ColsValue>',
           default: 'undefined',
           description:
-            "Number of columns (1 to 12), 'auto', or `true` for an equal-width column, for the content (`{md: 8}` renders `md:col-8`). Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'). Setting it switches the form group into horizontal layout",
+            "Number of columns (1 to 12), 'auto', or `true` for an equal-width column, for the content (`{md: 8}` renders `md:col-8`). Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'). Setting it switches the form field into horizontal layout",
         },
         description: {
           type: 'string',
           default: 'undefined',
-          description: 'Text to place in the help text area of the form group',
+          description: 'Text to place in the help text area of the form field',
         },
         feedbackAriaLive: {
           type: 'string',
@@ -40,12 +40,12 @@ export default {
         invalidFeedback: {
           type: 'string',
           default: 'undefined',
-          description: 'Text to show when the form group has an invalid state',
+          description: 'Text to show when the form field has an invalid state',
         },
         label: {
           type: 'string',
           default: 'undefined',
-          description: 'Text to place in the label/legend of the form group',
+          description: 'Text to place in the label/legend of the form field',
         },
         labelAlign: {
           type: 'Responsive<AlignmentTextHorizontal>',
@@ -63,13 +63,13 @@ export default {
           type: 'Responsive<ColsValue>',
           default: 'undefined',
           description:
-            "Number of columns (1 to 12), 'auto', or `true` for an equal-width column, for the label (`{xs: 12, md: 4}` renders `col-12 md:col-4`). Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'). Setting it switches the form group into horizontal layout",
+            "Number of columns (1 to 12), 'auto', or `true` for an equal-width column, for the label (`{xs: 12, md: 4}` renders `col-12 md:col-4`). Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'). Setting it switches the form field into horizontal layout",
         },
         labelFor: {
           type: 'string',
           default: 'undefined',
           description:
-            'Set to the ID of the singular form control in the form group. Do not set a value if there is more than one form control in the group',
+            'Set to the ID of the singular form control in the form field. Do not set a value if there is more than one form control in the group',
         },
         labelSize: {
           type: 'string',
@@ -86,22 +86,22 @@ export default {
         validFeedback: {
           type: 'string',
           default: 'undefined',
-          description: 'Text to show when the form group has a valid state',
+          description: 'Text to show when the form field has a valid state',
         },
-      } satisfies PropRecord<keyof BFormGroupProps>,
+      } satisfies PropRecord<keyof BFormFieldProps>,
       emits: {},
       slots: {
         default: {
-          description: 'Content to place in the form group',
+          description: 'Content to place in the form field',
           scope: {
             ariaDescribedby: {
               type: 'string',
               description:
-                'The value for the `aria-describedby` attribute for input elements in the form group. Will be auto-assigned when `label-for` prop is given',
+                'The value for the `aria-describedby` attribute for input elements in the form field. Will be auto-assigned when `label-for` prop is given',
             },
             id: {
               type: 'string',
-              description: 'The ID of the form group. Will equal `id` prop, when provided',
+              description: 'The ID of the form field. Will equal `id` prop, when provided',
             },
             descriptionId: {
               type: 'string',
@@ -129,7 +129,7 @@ export default {
           description:
             'Content to place in the valid feedback area. Overrides the `valid-feedback` prop',
         },
-      } satisfies SlotRecord<keyof BFormGroupSlots>,
+      } satisfies SlotRecord<keyof BFormFieldSlots>,
     },
   }),
 }

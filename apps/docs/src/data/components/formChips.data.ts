@@ -66,7 +66,7 @@ export default {
         id: {
           type: 'string',
           default: undefined,
-          description: 'ID of the text input, so a `BFormGroup` label (or `label-for`) targets it',
+          description: 'ID of the text input, so a `BFormField` label (or `label-for`) targets it',
         },
         inputAttrs: {
           type: 'Readonly<AttrsValue>',

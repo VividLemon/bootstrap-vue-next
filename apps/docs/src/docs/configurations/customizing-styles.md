@@ -27,10 +27,9 @@ has a class called `table` class and `BAccordion` has a class called `accordion`
 defined by `bootstrap` and added by `bootstrap-vue-next` to trigger the bootstrap styling on the components.
 
 For most of the components where `bootstrap` doesn't define a class to trigger its behaviors, we've
-added a class of our own, which you can use to add styles. For instance, `bootstrap 5`
-[deprecated](https://getbootstrap.com/) the use of `form-group` along with other form-specific classes.
-So there was no easy way to add styling to `BFormGroup` other than wrapping it in your own component,
-which introduces additional overhead. So we've added the `b-form-group` class.
+added a class of our own, which you can use to add styles. For instance, `BFormField` renders
+Bootstrap's `form-field` or `form-group` class (or a grid row in horizontal mode) depending on its
+content, so it also always has the `b-form-field` class to target every mode.
 
 See this [stack-blitz example](https://stackblitz.com/edit/github-lgg91u-usex9n?file=src%2FApp.vue).
 

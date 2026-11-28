@@ -27,7 +27,7 @@
       </template>
 
       <div>
-        <BFormGroup
+        <BFormField
           label="Name"
           label-for="popover-input-1"
           :state="input1State"
@@ -42,9 +42,9 @@
             :state="input1State"
             size="sm"
           />
-        </BFormGroup>
+        </BFormField>
 
-        <BFormGroup
+        <BFormField
           label="Color"
           label-for="popover-input-2"
           :state="input2State"
@@ -59,7 +59,7 @@
             :options="options"
             size="sm"
           />
-        </BFormGroup>
+        </BFormField>
 
         <BAlert v-if="input1 || input2" :color="{ theme: 'info' }" class="small mb-2">
           <strong>Current Values:</strong><br />
