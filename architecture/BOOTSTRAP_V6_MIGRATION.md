@@ -296,7 +296,7 @@ Decided 2026-11-24 ([#183](https://github.com/VividLemon/bootstrap-vue-next/pull
 - Rewrite `BCol`'s `.col` fallback detection so prefix classes don't add a stray `.col`.
 - Types: remove `'fill'` from alignment values; row-cols `1…6 | 'auto'`; gutters `0…12` passed straight through (document the new spacing scale, no remap); include `order-0`.
 - Fix `useContainerClasses` (shared with `BNavbar`). Delete unused `utils/getBreakpointProps.ts`. Update grid docs tables (breakpoints, container widths).
-- CSS Grid mode (`BGrid`): deferred.
+- CSS Grid mode: `BGrid` / `BGridItem` (G6, see `BOOTSTRAP_V6_LAYOUT.md`).
 
 ### Buttons
 
@@ -423,7 +423,6 @@ These map to components Bootstrap marks "New" in v6 and need large structural ch
 
 ### Deferred features
 
-- CSS Grid mode (`BGrid`, `.grid` / `g-col-*`).
 - Bump to Bootstrap 6.0.0-alpha.2 to pick up upstream fixes; see [Bootstrap 6.0.0-alpha.2](#bootstrap-600-alpha2) for what it fixes and what the library has to change with it.
 - A future v6 `.btn-icon` feature on `BButton` needs a new prop name: `icon` is already taken by `BLink`'s `icon-link`.
 

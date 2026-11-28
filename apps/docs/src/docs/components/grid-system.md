@@ -5,6 +5,7 @@ description: >
   Use the powerful mobile-first flexbox grid (via the `<BContainer>`, `<BRow>` and
   `<BCol>` components) to build layouts of all shapes and sizes thanks to a twelve column system,
   five default responsive tiers, CSS Sass variables and mixins, and dozens of predefined classes.
+  The CSS Grid alternative is available through `<BGrid>` and `<BGridItem>`.
 ---
 
 ## Overview
@@ -421,6 +422,77 @@ than v5: the default `1.5rem` gutter is step `7`.
 
 Use the `no-gutters` prop on `<BRow>` to remove the gutters entirely (`g-0`).
 
+## CSS Grid
+
+Bootstrap 6 also ships a grid built on [CSS Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout).
+Use `<BGrid>` (renders `.grid`) and `<BGridItem>` (renders `g-col-*` / `g-start-*`) for it. It is an
+alternative to `<BRow>` / `<BCol>`, not a replacement: pick one per layout.
+
+<<< DEMO ./demo/GridCssBasic.vue#template{vue-html}
+
+How it differs from the flexbox grid:
+
+- `<BGrid>` sets the number of columns, rows and the gap as CSS variables (`--bs-columns`,
+  `--bs-rows`, `--bs-gap`) through its `columns`, `rows` and `gap` props, so any value works.
+- Children without a column span take one column each, so `<BGridItem>` is optional.
+- **Breakpoints are container queries.** `<BGridItem :cols="{ md: 4 }">` renders `md:g-col-4`, which
+  applies when the **parent `.grid`** is at least `md` wide, not the viewport. `<BCol>` breakpoints,
+  and `<BGrid>` `flow` / `<BGridItem>` `fill` (Bootstrap utilities), still compare against the
+  viewport.
+- `<BRow>` gutter props (`gx-*` / `g-*`) have no effect on `.grid`; use `gap`, or add `gap-*` /
+  `md:gap-*` utility classes for a gap on the spacing scale.
+- `start` and `flow: 'dense'` can make the visual order differ from the DOM order. Keep the DOM order
+  meaningful for keyboard and screen reader users
+  ([WCAG 1.3.2](https://www.w3.org/WAI/WCAG22/Understanding/meaningful-sequence.html)).
+
+### Responsive
+
+`cols` and `start` take a [responsive object](/docs/types#responsive). The breakpoints compare against
+the width of the grid. Drag the corner of the box below to resize it and watch the items switch from
+two to three per row, independently of the window size.
+
+<<< DEMO ./demo/GridCssResponsive.vue#template{vue-html}
+
+### Starts
+
+`start` sets the column an item starts at (`g-start-1` to `g-start-11`).
+
+<<< DEMO ./demo/GridCssStarts.vue#template{vue-html}
+
+### Auto columns
+
+Plain children without a column span get one column each.
+
+<<< DEMO ./demo/GridCssAuto.vue#template{vue-html}
+
+### Columns and gap
+
+`columns` changes the number of tracks, and `gap` takes any CSS length or a `row column` pair.
+
+<<< DEMO ./demo/GridCssColumnsGap.vue#template{vue-html}
+
+### Custom number of columns
+
+`g-col-*` classes only go up to 12. With more columns, span the extra width with an inline
+`grid-column` style.
+
+<<< DEMO ./demo/GridCssCustomColumns.vue#template{vue-html}
+
+### Nesting
+
+A nested `<BGrid>` is a separate grid. In Bootstrap 6.0.0-alpha.1 `.grid` sets its own defaults
+(`--bs-columns: 12`, `--bs-rows: 1`, `--bs-gap: 1.5rem`), so a nested grid does not inherit the
+parent's `columns`, `rows` or `gap`: set them again where needed.
+
+<<< DEMO ./demo/GridCssNesting.vue#template{vue-html}
+
+### Flow and full-width items
+
+`flow` sets `grid-auto-flow` (`row`, `column` or `dense`), and `<BGridItem>` `fill` makes an item
+span the whole row (`grid-cols-fill`). Both are viewport-based utilities.
+
+<<< DEMO ./demo/GridCssFlow.vue#template{vue-html}
+
 ## Utilities for layout
 
 For faster mobile-friendly and responsive development, Bootstrap includes dozens of
@@ -481,5 +553,24 @@ Invisible elements will still affect the layout of the page, but are visually hi
     min-height: 10rem;
     background-color: rgba(255, 0, 0, 0.1);
   }
+}
+
+.bv-example-grid {
+  > *,
+  .grid > * {
+    padding: 0.5rem;
+    background-color: rgba(86, 61, 124, 0.15);
+    border: 1px solid rgba(86, 61, 124, 0.2);
+  }
+}
+
+.bv-example-resizable {
+  overflow: hidden;
+  resize: horizontal;
+  width: 100%;
+  min-width: 10rem;
+  max-width: 100%;
+  padding: 0.5rem;
+  border: 1px dashed var(--bs-border-color);
 }
 </style>

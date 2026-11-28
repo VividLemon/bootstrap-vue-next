@@ -1,8 +1,18 @@
-import type { BColSlots, BRowSlots } from 'bootstrap-vue-next'
+import type {
+  BColSlots,
+  BGridItemProps,
+  BGridItemSlots,
+  BGridProps,
+  BGridSlots,
+  BRowSlots,
+} from 'bootstrap-vue-next'
 import { type ComponentReference, type PropRecord, type SlotRecord, StyleKind } from '../../types'
 import { pick } from '../../utils/objectUtils'
 import { buildCommonProps } from '../../utils/commonProps'
 import type { BColProps, BContainerProps, BContainerSlots, BRowProps } from 'bootstrap-vue-next'
+
+const containerNote =
+  'Breakpoint keys of this prop are container queries: they compare against the width of the parent `.grid` (`<BGrid>`), not the viewport'
 
 const responsiveNote =
   "Takes a responsive object keyed by breakpoint ('xs', 'sm', 'md', 'lg', 'xl', '2xl'); 'xs' has no class prefix"
@@ -116,6 +126,69 @@ export default {
           description: 'Content to place in the col',
         },
       } satisfies SlotRecord<keyof BColSlots>,
+    },
+    BGrid: {
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.grid' },
+      props: {
+        ...pick(buildCommonProps(), ['tag']),
+        columns: {
+          type: 'Numberish',
+          default: undefined,
+          description:
+            'Number of grid columns, set as the `--bs-columns` CSS variable (Bootstrap defaults to 12). Any number works, e.g. `18`',
+        },
+        rows: {
+          type: 'Numberish',
+          default: undefined,
+          description:
+            'Number of grid rows, set as the `--bs-rows` CSS variable (Bootstrap defaults to 1)',
+        },
+        gap: {
+          type: 'string',
+          default: undefined,
+          description:
+            'Gap between grid cells, set as the `--bs-gap` CSS variable (Bootstrap defaults to `1.5rem`). Any CSS length, or a `row column` pair such as `.25rem 1rem`. For a responsive gap on the spacing scale, add `gap-*` utility classes instead',
+        },
+        flow: {
+          type: 'Responsive<GridFlow>',
+          default: undefined,
+          description: `Grid auto-flow: 'row', 'column' or 'dense' (\`{ xs: 'dense', md: 'column' }\` renders \`grid-auto-flow-dense md:grid-auto-flow-column\`). These are viewport-based utilities. ${responsiveNote}`,
+        },
+      } satisfies PropRecord<keyof BGridProps>,
+      emits: {},
+      slots: {
+        default: {
+          description:
+            'Content to place in the grid. Use `<BGridItem>` or any element; children without a column span take one column each',
+        },
+      } satisfies SlotRecord<keyof BGridSlots>,
+    },
+    BGridItem: {
+      styleSpec: { kind: StyleKind.OverrideClass, value: '.g-col-*, .g-start-*, .{bp}:g-col-*' },
+      props: {
+        ...pick(buildCommonProps(), ['tag']),
+        cols: {
+          type: 'Responsive<ColsNumbers>',
+          default: undefined,
+          description: `Number of grid columns (1 to 12) the item spans (\`{ xs: 6, md: 4 }\` renders \`g-col-6 md:g-col-4\`). ${containerNote}. ${responsiveNote}`,
+        },
+        start: {
+          type: 'Responsive<GridStartNumbers>',
+          default: undefined,
+          description: `Column the item starts at, 1 to 11 (\`{ md: 3 }\` renders \`md:g-start-3\`). ${containerNote}. ${responsiveNote}`,
+        },
+        fill: {
+          type: 'Responsive<boolean>',
+          default: undefined,
+          description: `Makes the item span the full row (\`{ xs: true }\` renders \`grid-cols-fill\`). Unlike \`cols\` and \`start\`, this utility is viewport-based. ${responsiveNote}`,
+        },
+      } satisfies PropRecord<keyof BGridItemProps>,
+      emits: {},
+      slots: {
+        default: {
+          description: 'Content to place in the grid item',
+        },
+      } satisfies SlotRecord<keyof BGridItemSlots>,
     },
   }),
 }
