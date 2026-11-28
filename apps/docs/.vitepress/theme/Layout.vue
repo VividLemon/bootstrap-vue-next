@@ -158,7 +158,7 @@
                   header-class="pb-0 d-flex offcanvas-hidden-width"
                   body-class="py-2"
                 >
-                  <PageContents ref="_toc" :contents="contents" :active-id="activeId" />
+                  <PageContents ref="toc" :contents="contents" :active-id="activeId" />
                 </BOffcanvas>
               </ClientOnly>
             </aside>
@@ -222,7 +222,7 @@ const route = useRoute()
 const content = useTemplateRef<ComponentPublicInstance<HTMLElement>>('_content')
 // The "On this page" nav. It moves into a teleported offcanvas on small screens, so spy on the
 // rendered nav itself rather than on the aside
-const target = useTemplateRef<ComponentPublicInstance>('_toc')
+const target = useTemplateRef<ComponentPublicInstance>('toc')
 
 // Headings and elements for the "On this page" navigation:
 // - h1-h6 headings (excluding those inside demo examples or card bodies)
