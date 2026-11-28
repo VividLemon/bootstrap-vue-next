@@ -110,8 +110,7 @@
                             (el) => el.name !== defaultPropSectionSymbol,
                           )"
                           :key="index"
-                          header-tag="span"
-                          body-class="p-0 m-0"
+                          :body-attrs="{ class: 'p-0 m-0' }"
                         >
                           <template #title>
                             <!-- using :to was causing a full page refresh. Don't know why. Super odd -->

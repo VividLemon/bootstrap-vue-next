@@ -8,10 +8,10 @@ With Bootstrap v6 the system is being moved to Bootstrap's **native transition**
 
 During the migration there are two paths:
 
-| Path               | Composables                              | Components                                                                                                             |
-| ------------------ | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse (+ BAccordionItem, which renders it), BAlert, BToast, BPopover / BTooltip, BDialog (through `useDialogBase`) |
-| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BOffcanvas, BDropdown (deferred)                                                                                       |
+| Path               | Composables                              | Components                                                                        |
+| ------------------ | ---------------------------------------- | --------------------------------------------------------------------------------- |
+| Native (v6)        | `useShowHide` + `useCssTransition`       | BCollapse, BAlert, BToast, BPopover / BTooltip, BDialog (through `useDialogBase`) |
+| Legacy (to delete) | `useLegacyShowHide` + Vue `<Transition>` | BOffcanvas, BDropdown (deferred)                                                  |
 
 Both paths share `useShowHideRegistration` (app registry + trigger registry + `aria-expanded`), so ARIA behavior is identical on both.
 
@@ -191,7 +191,7 @@ Registration is **opt-in**: `v-b-toggle` / `v-b-modal` register their element wi
 | `aria-controls` | `v-b-toggle`              | Static: set from the binding (modifiers, arg, value, `href`), removed on unmount                         |
 | `aria-expanded` | `useShowHideRegistration` | Dynamic: set on registration, updated on every visibility change, removed on unregister (`clean = true`) |
 
-There are **no trigger state classes**. The v5 `collapsed` / `not-collapsed` classes were removed; style triggers with `[aria-expanded="true"]` / `[aria-expanded="false"]`. (BAccordionItem's own header button still renders the v5 accordion `collapsed` class until the accordion markup is migrated; that is accordion markup, not the trigger system.)
+There are **no trigger state classes**. The v5 `collapsed` / `not-collapsed` classes were removed; style triggers with `[aria-expanded="true"]` / `[aria-expanded="false"]`.
 
 `aria-expanded` follows `visible` on the native path (changes when a show/hide starts, like v6) and `!!modelValue` on the legacy path.
 
@@ -239,7 +239,7 @@ Registers the component in the app registry (`useComponentToggle`, directives), 
 3. **Slot functions** (`toggle`, `show`, `hide`) - use the same show/hide functions; external triggers still need `v-b-toggle` or manual ARIA.
 4. **Manual** - the author sets `aria-controls` and `:aria-expanded`.
 
-Components with internal triggers manage ARIA in their template (BAccordionItem header button, BDropdown toggle / split button).
+Components with internal triggers manage ARIA in their template (BDropdown toggle / split button). BAccordionItem is a native `<details>` / `<summary>` and needs no ARIA.
 
 ## Testing
 
