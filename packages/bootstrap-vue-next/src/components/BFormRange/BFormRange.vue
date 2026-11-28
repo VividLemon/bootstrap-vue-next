@@ -2,7 +2,7 @@
   <div v-bind="props.wrapperAttrs" :class="wrapperClasses" :style="wrapperStyle">
     <input
       :id="computedId"
-      ref="_input"
+      ref="input"
       v-bind="$attrs"
       type="range"
       :class="inputClasses"
@@ -92,7 +92,7 @@ const modelValue = defineModel<Exclude<BFormRangeProps['modelValue'], undefined>
   default: 50,
 })
 
-const input = useTemplateRef('_input')
+const input = useTemplateRef('input')
 
 const computedId = useId(() => props.id, 'range')
 const listId = computed(() => `${computedId.value}__ticks`)
