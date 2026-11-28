@@ -1,4 +1,4 @@
-import type {ComponentInternalInstance, ComputedRef, InjectionKey, Ref} from 'vue'
+import type {ComponentInternalInstance, ComputedRef, InjectionKey, Ref, ShallowRef} from 'vue'
 import type {TabType} from '../types/Tab'
 import type {AttrsValue} from '../types/AnyValuedAttributes'
 import type {Numberish, ValidationState} from '../types/CommonTypes'
